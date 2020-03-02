@@ -20,7 +20,6 @@ import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
 import core.config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -29,7 +28,7 @@ import play.api.test.Helpers._
 import scala.concurrent.Future
 
 class IncomeSourceControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService with MockCurrentTimeService with FeatureSwitching {
+  with MockKeystoreService with FeatureSwitching {
 
   override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -41,8 +40,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    mockCurrentTimeService
+    mockAuthService
   )
 
   "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" should {
@@ -104,29 +102,29 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
       s"redirect to ${business.routes.PropertyAccountingMethodController.show().url}" when {
-          "not in edit mode" when {
-            "income source is property" in {
+        "not in edit mode" when {
+          "income source is property" in {
 
-              setupMockKeystoreSaveFunctions()
+            setupMockKeystoreSaveFunctions()
 
-              val result = await(callSubmit(Property, isEditMode = false))
+            val result = await(callSubmit(Property, isEditMode = false))
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
-            }
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
           }
-          "in edit mode" when {
-            "income source has changed to property" in {
+        }
+        "in edit mode" when {
+          "income source has changed to property" in {
 
-              setupMockKeystoreSaveFunctions()
-              setupMockKeystore(fetchIncomeSource = Business)
+            setupMockKeystoreSaveFunctions()
+            setupMockKeystore(fetchIncomeSource = Business)
 
-              val result = await(callSubmit(Property, isEditMode = true))
+            val result = await(callSubmit(Property, isEditMode = true))
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
-            }
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
           }
+        }
 
       }
     }

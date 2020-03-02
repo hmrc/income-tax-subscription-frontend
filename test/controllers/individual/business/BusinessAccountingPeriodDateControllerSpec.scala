@@ -26,7 +26,6 @@ import core.services.mocks.{MockAccountingPeriodService, MockKeystoreService}
 import core.utils.TestModels
 import core.utils.TestModels.testCacheMapCustom
 import forms.individual.business.AccountingPeriodDateForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import org.jsoup.Jsoup
@@ -38,7 +37,6 @@ import scala.concurrent.Future
 
 class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockCurrentTimeService
   with FeatureSwitching
   with MockAccountingPeriodService {
 
@@ -54,7 +52,6 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
       messagesApi,
       MockKeystoreService,
       mockAuthService,
-      mockCurrentTimeService,
       mockAccountingPeriodService
     )
 

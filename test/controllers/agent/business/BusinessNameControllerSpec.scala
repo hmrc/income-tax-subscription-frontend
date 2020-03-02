@@ -21,7 +21,6 @@ import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
 import core.config.featureswitch.FeatureSwitching
 import forms.agent.BusinessNameForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.agent.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -30,7 +29,7 @@ import play.api.test.Helpers._
 import scala.concurrent.Future
 
 class BusinessNameControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService with MockCurrentTimeService with FeatureSwitching {
+  with MockKeystoreService with FeatureSwitching {
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -42,8 +41,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    mockCurrentTimeService
+    mockAuthService
   )
 
   "The back url for BusinessNameController" should {

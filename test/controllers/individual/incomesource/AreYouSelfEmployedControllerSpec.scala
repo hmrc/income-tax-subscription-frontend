@@ -22,7 +22,6 @@ import core.config.featureswitch.FeatureSwitching
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.incomesource.AreYouSelfEmployedForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.individual.incomesource.AreYouSelfEmployedModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -33,8 +32,7 @@ import scala.concurrent.Future
 class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
   with FeatureSwitching
-  with MockConfig
-  with MockCurrentTimeService {
+  with MockConfig {
 
   override val controllerName: String = "AreYouSelfEmployedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -43,8 +41,7 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    mockCurrentTimeService
+    mockAuthService
   )
 
   "Calling the show action of the AreYouSelfEmployed controller with an authorised user" when {
@@ -124,14 +121,14 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
 
       "the user rents out a uk property and is not self employed" when {
 
-          s"redirect to ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}" in {
-            setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
+        s"redirect to ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}" in {
+          setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
 
-            val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
+          val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
-          }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
+        }
       }
 
       "the user does not rent out a uk property and is self employed" should {

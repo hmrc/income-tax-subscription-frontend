@@ -17,10 +17,9 @@
 package controllers.individual.incomesource
 
 import core.auth.SignUpController
-import core.config.{AppConfig, BaseControllerConfig}
+import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import forms.individual.incomesource.RentUkPropertyForm._
-import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import models.individual.incomesource.RentUkPropertyModel
 import models.{No, Yes}
@@ -35,8 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                                          val messagesApi: MessagesApi,
                                          val keystoreService: KeystoreService,
-                                         val authService: AuthService,
-                                         val currentTimeService: CurrentTimeService
+                                         val authService: AuthService
                                         )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>

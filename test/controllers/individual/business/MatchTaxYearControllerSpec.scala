@@ -21,7 +21,6 @@ import core.config.featureswitch._
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.MatchTaxYearForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.individual.business.MatchTaxYearModel
 import models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
@@ -33,7 +32,6 @@ import scala.concurrent.Future
 
 class MatchTaxYearControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockCurrentTimeService
   with FeatureSwitching {
 
   override val controllerName: String = "MatchTaxYearController"
@@ -46,8 +44,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    mockCurrentTimeService
+    mockAuthService
   )
 
   override def beforeEach(): Unit = {
@@ -102,7 +99,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
   "Calling the submit action of the MatchTaxYearController with an authorised user and valid submission" when {
 
     def callSubmitCore(answer: YesNo, isEditMode: Boolean): Future[Result] = {
-        TestMatchTaxYearController.submit(isEditMode)(subscriptionRequest.post(MatchTaxYearForm.matchTaxYearForm, MatchTaxYearModel(answer)))
+      TestMatchTaxYearController.submit(isEditMode)(subscriptionRequest.post(MatchTaxYearForm.matchTaxYearForm, MatchTaxYearModel(answer)))
     }
 
     "Not in edit mode and " when {

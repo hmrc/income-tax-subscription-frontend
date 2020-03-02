@@ -22,7 +22,6 @@ import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
 import core.services.AuthService
 import forms.agent.IncomeSourceForm
-import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.data.Form
@@ -37,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
-                                       val authService: AuthService,
-                                       val currentTimeService: CurrentTimeService
+                                       val authService: AuthService
                                       )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
 
   def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
