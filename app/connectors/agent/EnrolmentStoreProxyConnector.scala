@@ -43,14 +43,14 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClient,
 
   def getUserIds(utr: String)(implicit hc: HeaderCarrier): Future[QueryUsersResponse] = {
     http.GET[QueryUsersResponse](
-      url = appConfig.queryUsersUrl(utr),
-      queryParams = Seq(principalQueryKey))
+      url = appConfig.queryUsersUrl(utr)
+    )
   }
 
-  def upsertEnrolment(mtdid: String,
+  def upsertEnrolment(mtditid: String,
                       nino: String)
                      (implicit hc: HeaderCarrier): Future[UpsertEnrolmentResponse] = {
-    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid"
+    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtditid"
 
     val requestBody = Json.obj(
       "verifiers" -> Json.arr(
@@ -69,9 +69,9 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClient,
 
   def allocateEnrolmentWithoutKnownFacts(groupId: String,
                                          credentialId: String,
-                                         mtdid: String
+                                         mtditid: String
                                         )(implicit hc: HeaderCarrier): Future[AllocateEnrolmentResponse] = {
-    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid"
+    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtditid"
 
     val requestBody = Json.obj(
       "userId" -> credentialId,

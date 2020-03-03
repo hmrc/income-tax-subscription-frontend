@@ -32,7 +32,7 @@ object EnrolmentStoreProxyStub extends WireMockMethods {
     )
 
   def stubGetUserIds(utr: String)(status: Int, body: JsValue = Json.obj()): StubMapping = {
-    when(method = GET, uri = s"$enrolmentStoreProxyUri/enrolments/IR-SA~UTR~$utr/users\\?type=principal")
+    when(method = GET, uri = s"$enrolmentStoreProxyUri/enrolments/IR-SA~UTR~$utr/users")
       .thenReturn(status = status, body = body)
   }
 

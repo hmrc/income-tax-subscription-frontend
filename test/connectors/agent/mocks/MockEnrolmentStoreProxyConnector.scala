@@ -40,40 +40,40 @@ trait MockEnrolmentStoreProxyConnector extends MockitoSugar with BeforeAndAfterE
 
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
 
-  def mockGetAllocatedEnrolment(utr: String)(response: Future[EnrolmentStoreProxyResponse]): Unit = {
+  def mockGetAllocatedEnrolment(utr: String)(response: EnrolmentStoreProxyResponse): Unit = {
     when(mockEnrolmentStoreProxyConnector.getAllocatedEnrolments(
       ArgumentMatchers.eq(utr)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
   }
 
-  def mockGetUserIds(utr: String)(response: Future[QueryUsersResponse]): Unit = {
+  def mockGetUserIds(utr: String)(response: QueryUsersResponse): Unit = {
     when(mockEnrolmentStoreProxyConnector.getUserIds(
       ArgumentMatchers.eq(utr)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
   }
 
   def mockAllocateEnrolmentWithoutKnownFacts(groupId: String,
                                              credentialId: String,
-                                             mtdId: String)(response: Future[AllocateEnrolmentResponse]): Unit =
+                                             mtdId: String)(response: AllocateEnrolmentResponse): Unit =
     when(mockEnrolmentStoreProxyConnector.allocateEnrolmentWithoutKnownFacts(
       ArgumentMatchers.eq(groupId),
       ArgumentMatchers.eq(credentialId),
       ArgumentMatchers.eq(mtdId)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
 
-  def mockAssignEnrolment(userId: String, mtdId: String)(response: Future[AssignEnrolmentToUserResponse]): Unit =
+  def mockAssignEnrolment(userId: String, mtdId: String)(response: AssignEnrolmentToUserResponse): Unit =
     when(mockEnrolmentStoreProxyConnector.assignEnrolment(
       ArgumentMatchers.eq(userId),
       ArgumentMatchers.eq(mtdId)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
 
 
   def mockEnrolmentStoreUpsertEnrolment(mtdId: String,
-                                        nino: String)(response: Future[UpsertEnrolmentResponse]): Unit = {
+                                        nino: String)(response: UpsertEnrolmentResponse): Unit = {
     when(mockEnrolmentStoreProxyConnector.upsertEnrolment(
       ArgumentMatchers.eq(mtdId),
       ArgumentMatchers.eq(nino)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
   }
 }
 

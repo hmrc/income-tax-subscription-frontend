@@ -19,15 +19,13 @@ package services
 import java.util.UUID
 
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser
-import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyFailure
 import connectors.agent.mocks.MockEnrolmentStoreProxyConnector
 import org.scalatest.{Matchers, WordSpec}
 import play.api.test.Helpers._
-import services.CheckEnrolmentAllocationService.UnexpectedEnrolmentStoreProxyFailure
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class CheckEnrolmentAllocationServiceSpec extends WordSpec with Matchers
   with MockEnrolmentStoreProxyConnector {
@@ -42,7 +40,7 @@ class CheckEnrolmentAllocationServiceSpec extends WordSpec with Matchers
     "EnrolmentStoreProxy returns EnrolmentNotAllocated" should {
       "returns EnrolmentNotAllocated" in {
         lazy val testUtr: String = new Generator().nextAtedUtr.utr
-        mockGetAllocatedEnrolment(testUtr)(Future.successful(Right(EnrolmentStoreProxyHttpParser.EnrolmentNotAllocated)))
+        mockGetAllocatedEnrolment(testUtr)(Right(EnrolmentStoreProxyHttpParser.EnrolmentNotAllocated))
 
         val res = TestCheckEnrolmentAllocationService.getGroupIdForEnrolment(testUtr)
 
@@ -53,9 +51,7 @@ class CheckEnrolmentAllocationServiceSpec extends WordSpec with Matchers
       "return EnrolmentAlreadyAllocated" in {
         lazy val testUtr: String = new Generator().nextAtedUtr.utr
         val testGroupId: String = UUID.randomUUID.toString
-        mockGetAllocatedEnrolment(testUtr)(
-          Future.successful(Right(EnrolmentStoreProxyHttpParser.EnrolmentAlreadyAllocated(testGroupId)))
-        )
+        mockGetAllocatedEnrolment(testUtr)(Right(EnrolmentStoreProxyHttpParser.EnrolmentAlreadyAllocated(testGroupId)))
 
         val res = TestCheckEnrolmentAllocationService.getGroupIdForEnrolment(testUtr)
 
@@ -65,11 +61,21 @@ class CheckEnrolmentAllocationServiceSpec extends WordSpec with Matchers
     "EnrolmentStoreProxy returns an unexpected failure" should {
       "return Failure" in {
         lazy val testUtr: String = new Generator().nextAtedUtr.utr
-        mockGetAllocatedEnrolment(testUtr)(Future.successful(Left(EnrolmentStoreProxyFailure(BAD_REQUEST))))
+        mockGetAllocatedEnrolment(testUtr)(Left(EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyFailure(BAD_REQUEST)))
 
         val res = TestCheckEnrolmentAllocationService.getGroupIdForEnrolment(testUtr)
 
-        await(res) shouldBe Left(UnexpectedEnrolmentStoreProxyFailure(BAD_REQUEST))
+        await(res) shouldBe Left(CheckEnrolmentAllocationService.UnexpectedEnrolmentStoreProxyFailure(BAD_REQUEST))
+      }
+    }
+    "EnrolmentStoreProxy returns invalid json" should {
+      "return InvalidJson response" in {
+        lazy val testUtr: String = new Generator().nextAtedUtr.utr
+        mockGetAllocatedEnrolment(testUtr)(Left(EnrolmentStoreProxyHttpParser.InvalidJsonResponse))
+
+        val res = TestCheckEnrolmentAllocationService.getGroupIdForEnrolment(testUtr)
+
+        await(res) shouldBe Left(CheckEnrolmentAllocationService.EnrolmentStoreProxyInvalidJsonResponse)
       }
     }
   }

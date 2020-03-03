@@ -22,9 +22,9 @@ import play.api.libs.json._
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object GetUsersForGroupsHttpParser {
+object GetUsersForGroupHttpParser {
 
-  type GetUsersForGroupsResponse = Either[GetUsersForGroupsFailure, GetUsersForGroupsSuccess]
+  type GetUsersForGroupResponse = Either[GetUsersForGroupFailure, GetUsersForGroupSuccess]
 
   implicit object CredentialRoleReads extends Reads[CredentialRole] {
     val AdminKey = "Admin"
@@ -48,8 +48,8 @@ object GetUsersForGroupsHttpParser {
       } yield (userId, credentialRole)
   }
 
-  implicit object GetUsersForGroupsHttpReads extends HttpReads[GetUsersForGroupsResponse] {
-    override def read(method: String, url: String, response: HttpResponse): GetUsersForGroupsResponse =
+  implicit object GetUsersForGroupsHttpReads extends HttpReads[GetUsersForGroupResponse] {
+    override def read(method: String, url: String, response: HttpResponse): GetUsersForGroupResponse =
       response.status match {
         case NON_AUTHORITATIVE_INFORMATION => response.json.validate[Seq[(String, CredentialRole)]] match {
           case JsSuccess(users, _) => Right(UsersFound(users.toMap))
@@ -59,14 +59,14 @@ object GetUsersForGroupsHttpParser {
       }
   }
 
-  sealed trait GetUsersForGroupsSuccess
+  sealed trait GetUsersForGroupSuccess
 
-  case class UsersFound(retrievedUserIds: Map[String, CredentialRole]) extends GetUsersForGroupsSuccess
+  case class UsersFound(retrievedUserIds: Map[String, CredentialRole]) extends GetUsersForGroupSuccess
 
-  sealed trait GetUsersForGroupsFailure
+  sealed trait GetUsersForGroupFailure
 
-  case object InvalidJson extends GetUsersForGroupsFailure
+  case object InvalidJson extends GetUsersForGroupFailure
 
-  case class UsersGroupsSearchConnectionFailure(status: Int) extends GetUsersForGroupsFailure
+  case class UsersGroupsSearchConnectionFailure(status: Int) extends GetUsersForGroupFailure
 
 }
