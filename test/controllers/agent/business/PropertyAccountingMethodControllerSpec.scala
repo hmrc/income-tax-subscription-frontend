@@ -21,7 +21,6 @@ import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
 import core.config.featureswitch._
 import forms.agent.AccountingMethodPropertyForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.Cash
 import models.agent.AccountingMethodPropertyModel
 import play.api.http.Status
@@ -33,7 +32,6 @@ import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
-  with MockCurrentTimeService
   with FeatureSwitching {
 
   override val controllerName: String = "PropertyAccountingMethod"

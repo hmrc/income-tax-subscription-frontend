@@ -21,7 +21,6 @@ import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import core.services.mocks.MockKeystoreService
 import forms.individual.incomesource.RentUkPropertyForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.individual.incomesource.RentUkPropertyModel
 import models.{No, Yes, YesNo}
 import play.api.http.Status
@@ -33,7 +32,6 @@ import scala.concurrent.Future
 
 class RentUkPropertyControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockCurrentTimeService
   with MockConfig
   with FeatureSwitching {
 
@@ -41,8 +39,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    mockCurrentTimeService
+    mockAuthService
   )
 
   override val controllerName: String = "IncomeSourceController"
@@ -166,8 +163,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         MockBaseControllerConfig,
         messagesApi,
         MockKeystoreService,
-        mockAuthService,
-        mockCurrentTimeService
+        mockAuthService
       )
 
       def callSubmit(option: (YesNo, Option[YesNo]), isEditMode: Boolean): Future[Result] =

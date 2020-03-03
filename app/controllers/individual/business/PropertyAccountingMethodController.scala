@@ -17,11 +17,10 @@
 package controllers.individual.business
 
 import core.auth.SignUpController
-import core.config.{AppConfig, BaseControllerConfig}
+import core.config.BaseControllerConfig
 import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.AccountingMethodPropertyForm
-import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import models.individual.business.AccountingMethodPropertyModel
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
@@ -38,8 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
-                                                   val authService: AuthService,
-                                                   val currentTimeService: CurrentTimeService
+                                                   val authService: AuthService
                                                   )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {

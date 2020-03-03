@@ -21,7 +21,6 @@ import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import forms.agent.BusinessNameForm
-import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import models.agent.BusinessNameModel
 import play.api.data.Form
@@ -35,8 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
-                                       val authService: AuthService,
-                                       currentTimeService: CurrentTimeService
+                                       val authService: AuthService
                                       )(implicit val ec: ExecutionContext) extends AuthenticatedController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {

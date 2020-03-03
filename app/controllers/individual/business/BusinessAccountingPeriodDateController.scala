@@ -20,7 +20,6 @@ import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AccountingPeriodService, AuthService, KeystoreService}
 import forms.individual.business.AccountingPeriodDateForm
-import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import models.Yes
 import models.individual.business.AccountingPeriodModel
@@ -37,7 +36,6 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService,
                                                        val authService: AuthService,
-                                                       val currentTimeService: CurrentTimeService,
                                                        val accountingPeriodService: AccountingPeriodService
                                                       )(implicit val ec: ExecutionContext) extends SignUpController {
 

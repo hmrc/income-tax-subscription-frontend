@@ -21,7 +21,6 @@ import core.config.BaseControllerConfig
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.MatchTaxYearForm
-import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.Business
@@ -37,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
-                                       val authService: AuthService,
-                                       val currentTimeService: CurrentTimeService
+                                       val authService: AuthService
                                       )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =

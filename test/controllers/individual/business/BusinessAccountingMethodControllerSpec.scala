@@ -22,7 +22,6 @@ import core.config.featureswitch._
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.AccountingMethodForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.individual.business.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.incomesource.RentUkPropertyModel
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
@@ -36,7 +35,6 @@ import scala.concurrent.Future
 
 class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockCurrentTimeService
   with FeatureSwitching {
 
   override val controllerName: String = "BusinessAccountingMethod"
@@ -50,8 +48,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
       new MockConfig {}),
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    mockCurrentTimeService
+    mockAuthService
   )
 
   private def fetchAllCacheMap(matchTaxYear: Option[MatchTaxYearModel] = None,
@@ -77,13 +74,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   val taxYear2019AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2019"))
 
   def matchTaxYearCacheMap(incomeSourceType: IncomeSourceType = Business): CacheMap = fetchAllCacheMap(
-                                                                              matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+    matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
 
   def matchTaxYearYesIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both): CacheMap = fetchAllCacheMap(
-                                                                                    matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+    matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
 
   def matchTaxYearNoIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both): CacheMap = fetchAllCacheMap(
-                                                                                    matchTaxYear = testMatchTaxYearNo, incomeSourceType = incomeSourceType)
+    matchTaxYear = testMatchTaxYearNo, incomeSourceType = incomeSourceType)
 
   def taxYear2018CacheMap(incomeSourceType: IncomeSourceType = Business): CacheMap = fetchAllCacheMap(
     matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2018AccountingPeriod, incomeSourceType = incomeSourceType)
@@ -178,8 +175,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
           new MockConfig {}),
         messagesApi,
         MockKeystoreService,
-        mockAuthService,
-        mockCurrentTimeService
+        mockAuthService
       )
       s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
         setupMockKeystore(fetchAll = matchTaxYearCacheMap())
@@ -191,7 +187,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         s"point to ${controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
           setupMockKeystore(fetchAll = matchTaxYearNoIncomeSourceBoth())
           await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe
-          controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
+            controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
         }
       }
 

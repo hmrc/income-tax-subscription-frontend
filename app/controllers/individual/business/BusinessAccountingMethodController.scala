@@ -21,7 +21,6 @@ import core.config.BaseControllerConfig
 import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.AccountingMethodForm
-import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import models.individual.business.{AccountingMethodModel, MatchTaxYearModel}
 import models.individual.incomesource.RentUkPropertyModel
@@ -39,8 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
-                                                   val authService: AuthService,
-                                                   val currentTimeService: CurrentTimeService
+                                                   val authService: AuthService
                                                   )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {

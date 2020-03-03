@@ -21,7 +21,6 @@ import core.config.featureswitch._
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.AccountingMethodPropertyForm
-import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.Cash
 import models.individual.business.AccountingMethodPropertyModel
 import play.api.http.Status
@@ -33,7 +32,6 @@ import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockCurrentTimeService
   with FeatureSwitching {
 
   override val controllerName: String = "PropertyAccountingMethod"
@@ -46,8 +44,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    mockCurrentTimeService
+    mockAuthService
   )
 
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_only))
