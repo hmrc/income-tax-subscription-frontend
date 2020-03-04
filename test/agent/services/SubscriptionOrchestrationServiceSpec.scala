@@ -16,56 +16,51 @@
 
 package agent.services
 
-import agent.services.mocks.TestSubscriptionOrchestrationService
 import agent.utils.TestConstants._
-import core.connectors.models.ConnectorError
 import core.utils.TestModels.testSummaryData
-import core.utils.UnitTestTrait
-import models.individual.subscription.SubscriptionSuccess
-import org.scalatest.concurrent.ScalaFutures
+import incometax.subscription.services.mocks.MockSubscriptionService
+import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess}
+import play.api.test.Helpers._
+import services.AutoEnrolmentService
+import services.mocks.MockAutoEnrolmentService
 
 import scala.concurrent.Future
 
-class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutures
-  with TestSubscriptionOrchestrationService {
+class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with MockAutoEnrolmentService {
+
+  object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
+    mockSubscriptionService,
+    mockAutoEnrolmentService
+  )
 
   "createSubscription" should {
-    def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
-      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testSummaryData)
 
-    "return a success when all services succeed" in {
-      mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
-      mockAddKnownFactsSuccess(testMTDID, testNino)
+    def res: Future[Either[SubscriptionFailure, SubscriptionSuccess]] = {
+      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testSummaryData)
+    }
 
-      whenReady(res)(_ mustBe testSubscriptionSuccess)
+    "return a success" when {
+      "all services succeed" in {
+        mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
+
+        await(res) mustBe testSubscriptionSuccess
+      }
+      "the auto enrolment service returns a failure response" in {
+        mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
+
+        await(res) mustBe testSubscriptionSuccess
+      }
     }
 
     "return a failure" when {
       "create subscription returns an error" in {
         mockCreateSubscriptionFailure(testNino, testSummaryData, testARN)
 
-        whenReady(res)(_ mustBe testSubscriptionFailure)
+        await(res) mustBe testSubscriptionFailure
       }
 
-      "create subscription returns an exception" in {
-        mockCreateSubscriptionException(testNino, testSummaryData, testARN)
-
-        whenReady(res.failed)(_ mustBe testException)
-      }
-
-      "add known facts returns an error" in {
-        mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
-        mockAddKnownFactsFailure(testMTDID, testNino)
-
-        whenReady(res)(_ mustBe testKnownFactsFailure)
-      }
-
-      "add known facts returns an exception" in {
-        mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
-        mockAddKnownFactsException(testMTDID, testNino)
-
-        whenReady(res.failed)(_ mustBe core.utils.TestConstants.testException)
-      }
     }
   }
 

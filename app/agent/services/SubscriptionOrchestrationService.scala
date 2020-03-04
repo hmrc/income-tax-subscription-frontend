@@ -16,35 +16,27 @@
 
 package agent.services
 
-import cats.data.EitherT
-import cats.implicits._
-import core.connectors.models.ConnectorError
-import incometax.subscription.services.{KnownFactsService, SubscriptionService}
+import incometax.subscription.services.SubscriptionService
 import javax.inject.{Inject, Singleton}
-import models.individual.subscription.{KnownFactsSuccess, SubscriptionSuccess, SummaryModel}
+import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess, SummaryModel}
+import services.AutoEnrolmentService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,
-                                                 knownFactsService: KnownFactsService
-                                                )(implicit ec: ExecutionContext) {
+                                                 autoEnrolmentService: AutoEnrolmentService)
+                                                (implicit ec: ExecutionContext) {
 
-  def createSubscription(arn: String,
-                         nino: String,
-                         summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
-    val res: EitherT[Future, ConnectorError, SubscriptionSuccess] = for {
-      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(
-        nino = nino,
-        summaryData = summaryModel,
-        arn = Some(arn)
-      ))
-      mtditId = subscriptionResponse.mtditId
-      _ <- EitherT[Future, ConnectorError, KnownFactsSuccess.type](knownFactsService.addKnownFacts(mtditId, nino))
-    } yield subscriptionResponse
-
-    res.value
+  def createSubscription(arn: String, nino: String, utr: String, summaryModel: SummaryModel)
+                        (implicit hc: HeaderCarrier): Future[Either[SubscriptionFailure, SubscriptionSuccess]] = {
+    subscriptionService.submitSubscription(nino, summaryModel, Some(arn)) flatMap {
+      case right@Right(subscriptionSuccess) => autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map { _ =>
+        right
+      }
+      case left => Future.successful(left)
+    }
   }
 
 }

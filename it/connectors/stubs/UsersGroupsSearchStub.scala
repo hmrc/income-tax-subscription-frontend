@@ -11,7 +11,7 @@ object UsersGroupsSearchStub extends WireMockMethods {
 
   private def getUsersForGroupUrl(groupId: String) = s"/users-groups-search/groups/$groupId/users"
 
-  def stubGetUsersForGroups(groupId: String)(responseStatus: Int, responseBody: JsValue): Unit = {
+  def stubGetUsersForGroups(groupId: String)(responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
     when(
       method = GET,
       uri = getUsersForGroupUrl(groupId)

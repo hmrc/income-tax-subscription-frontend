@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
   with MockClientRelationshipService
-  with MockSubscriptionOrchestrationService{
+  with MockSubscriptionOrchestrationService {
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -94,11 +94,15 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     }
 
     "The agent is authorised and" should {
-      "There is a matched nino in keystore and the submission is successful" should {
+      "There is a matched nino and utr in keystore and the submission is successful" should {
         // generate a new nino specifically for this test,
         // since the default value in test constant may be used by accident
         lazy val newTestNino = new Generator().nextNino.nino
-        lazy val authorisedAgentRequest = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> newTestNino)
+        lazy val authorisedAgentRequest = subscriptionRequest.addingToSession(
+          ITSASessionKeys.ArnKey -> testARN,
+          ITSASessionKeys.NINO -> newTestNino,
+          ITSASessionKeys.UTR -> testUtr
+        )
 
         lazy val result = call(authorisedAgentRequest)
 
@@ -106,7 +110,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           setupMockKeystore(
             fetchAll = testSummary
           )
-          mockCreateSubscriptionSuccess(testARN, newTestNino, testSummary.getSummary())
+          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getSummary())
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
@@ -119,11 +123,15 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
 
       "When the submission is unsuccessful" should {
-        lazy val authorisedAgentRequest = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> testNino)
+        lazy val authorisedAgentRequest = subscriptionRequest.addingToSession(
+          ITSASessionKeys.ArnKey -> testARN,
+          ITSASessionKeys.NINO -> testNino,
+          ITSASessionKeys.UTR -> testUtr
+        )
 
         "return a failure if subscription fails" in {
           setupMockKeystore(fetchAll = TestModels.testCacheMap)
-          mockCreateSubscriptionFailure(testARN, testNino, TestModels.testCacheMap.getSummary())
+          mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getSummary())
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
           ex.message mustBe "Successful response not received from submission"
@@ -133,7 +141,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           val request = authorisedAgentRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
 
           setupMockKeystore(fetchAll = TestModels.testCacheMap)
-          mockCreateSubscriptionSuccess(testARN, testNino, testCacheMap.getSummary())
+          mockCreateSubscriptionSuccess(testARN, testNino, testUtr, testCacheMap.getSummary())
 
           val ex = intercept[InternalServerException](await(call(request)))
           ex.message mustBe "Failed to create client relationship"
@@ -145,12 +153,12 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   "The back url" should {
     s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" when {
-        "on the property only journey" in {
-          TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
-        }
-        "on the property and business journey" in {
-          TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
-        }
+      "on the property only journey" in {
+        TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+      }
+      "on the property and business journey" in {
+        TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+      }
     }
 
     s"point to ${controllers.agent.business.routes.BusinessAccountingMethodController.show().url}" when {

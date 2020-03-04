@@ -47,7 +47,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                               (noCacheMapErrMessage: String): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        if (user.clientNino.isDefined) {
+        if (user.clientNino.isDefined && user.clientUtr.isDefined) {
           keystoreService.fetchAll().flatMap {
             case Some(cache) => processFunc(user)(request)(cache)
             case _ => error(noCacheMapErrMessage)
@@ -81,15 +81,14 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
           ))
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any keystore cached data")
 
-  private def submitForAuthorisedAgent(arn: String, nino: String
-                                      )(implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap
-                                      ): Future[Result] = {
+  private def submitForAuthorisedAgent(arn: String, nino: String, utr: String)
+                                      (implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {
-      mtditid <- subscriptionService.createSubscription(arn, nino, cache.getSummary())(headerCarrier)
+      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getSummary())(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }
-      cacheMap <- keystoreService.saveSubscriptionId(mtditid)
+      _ <- keystoreService.saveSubscriptionId(mtditid)
         .recoverWith { case _ => error("Failed to save to keystore") }
     } yield Redirect(controllers.agent.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }
@@ -97,10 +96,16 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       implicit cache =>
-        // Will fail if there is no NINO
-        val nino = user.clientNino.get
-        // Will fail if there is no ARN in session
-        submitForAuthorisedAgent(user.arn.get, nino)
+        val arn: String = user.arn.getOrElse(
+          throw new InternalServerException("[CheckYourAnswers][submit] - ARN not found")
+        )
+        val nino: String = user.clientNino.getOrElse(
+          throw new InternalServerException("[CheckYourAnswersController][submit] - Client nino not found")
+        )
+        val utr: String = user.clientUtr.getOrElse(
+          throw new InternalServerException("[CheckYourAnswersController][submit] - Client utr not found")
+        )
+        submitForAuthorisedAgent(arn = arn, nino = nino, utr = utr)
 
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
 
