@@ -16,7 +16,6 @@
 
 package forms.agent
 
-import forms.validation.ErrorMessageFactory
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.data.Forms.{of, single}
 import play.api.data.format.Formatter
@@ -29,7 +28,7 @@ object IncomeSourceForm {
   val option_property: String = IncomeSourceType.property
   val option_both: String = IncomeSourceType.both
 
-  val incomeSourceError: Seq[FormError] = ErrorMessageFactory.formError(incomeSource, "agent.error.income_source.invalid")
+  val incomeSourceError: Seq[FormError] = Seq(FormError(incomeSource, "agent.error.income_source.invalid"))
 
   private val formatter: Formatter[IncomeSourceType] = new Formatter[IncomeSourceType] {
 

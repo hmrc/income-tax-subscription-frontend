@@ -17,14 +17,13 @@
 package forms.individual.business
 
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
-import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
 import models.individual.business.BusinessNameModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 object BusinessNameForm {
 
@@ -34,21 +33,21 @@ object BusinessNameForm {
 
   val nameEmpty: Constraint[String] = constraint[String](
     name => {
-      lazy val emptyName = ErrorMessageFactory.error("error.business_name.empty")
+      lazy val emptyName = Invalid("error.business_name.empty")
       if (name.isEmpty) emptyName else Valid
     }
   )
 
   val nameTooLong: Constraint[String] = constraint[String](
     name => {
-      lazy val tooLong = ErrorMessageFactory.error("error.business_name.maxLength")
+      lazy val tooLong = Invalid("error.business_name.maxLength")
       if (name.trim.length > businessNameMaxLength) tooLong else Valid
     }
   )
 
   val nameInvalid: Constraint[String] = constraint[String](
     name => {
-      lazy val invalidName = ErrorMessageFactory.error("error.business_name.invalid")
+      lazy val invalidName = Invalid("error.business_name.invalid")
       if (Patterns.validText(name.trim)) Valid else invalidName
     }
   )

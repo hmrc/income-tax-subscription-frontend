@@ -18,13 +18,14 @@ package forms.individual.business
 
 import assets.MessageLookup
 import forms.submapping.AccountingMethodMapping
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Cash
 import models.individual.business.AccountingMethodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import play.api.data.FormError
+import play.api.data.validation.Invalid
 import play.api.i18n.Messages.Implicits._
 
 class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
@@ -40,36 +41,36 @@ class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
 
       actual shouldBe Some(expected)
     }
+  }
 
-    "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.accounting-method.empty")
-      val invalid = ErrorMessageFactory.error("error.accounting-method.invalid")
+    "validate income type correctly" should {
+      val empty = "error.accounting-method.empty"
+      val invalid = "error.accounting-method.invalid"
 
-      empty fieldErrorIs MessageLookup.Error.AccountingMethod.empty
-      empty summaryErrorIs MessageLookup.Error.AccountingMethod.empty
+        "show an empty error when the map is empty" in {
+          val emptyInput0 = DataMap.EmptyMap
+          val emptyTest0 = accountingMethodForm.bind(emptyInput0)
+          emptyTest0.errors should contain(FormError(accountingMethod, empty))
+        }
+        "show an empty error when the input is empty" in {
+          val emptyInput = DataMap.accountingMethod("")
+          val emptyTest = accountingMethodForm.bind(emptyInput)
+          emptyTest.errors should contain(FormError(accountingMethod, empty))
+        }
+        "show invalid when the input is invalid" in {
+          val invalidInput = DataMap.accountingMethod("α")
+          val invalidTest = accountingMethodForm.bind(invalidInput)
+          invalidTest.errors should contain(FormError(accountingMethod, invalid))
+        }
 
-      invalid fieldErrorIs MessageLookup.Error.AccountingMethod.invalid
-      invalid summaryErrorIs MessageLookup.Error.AccountingMethod.invalid
-
-      val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = accountingMethodForm.bind(emptyInput0)
-      emptyTest0 assert accountingMethod hasExpectedErrors empty
-
-      val emptyInput = DataMap.accountingMethod("")
-      val emptyTest = accountingMethodForm.bind(emptyInput)
-      emptyTest assert accountingMethod hasExpectedErrors empty
-
-      val invalidInput = DataMap.accountingMethod("α")
-      val invalidTest = accountingMethodForm.bind(invalidInput)
-      invalidTest assert accountingMethod hasExpectedErrors invalid
-    }
-
-    "The following submission should be valid" in {
-      val testCash = DataMap.accountingMethod(AccountingMethodMapping.option_cash)
-      accountingMethodForm isValidFor testCash
-      val testAccruals = DataMap.accountingMethod(AccountingMethodMapping.option_accruals)
-      accountingMethodForm isValidFor testAccruals
+      "The Cash submission should be valid" in {
+        val testCash = DataMap.accountingMethod(AccountingMethodMapping.option_cash)
+        accountingMethodForm isValidFor testCash
+      }
+      "The Accruals submission should be valid" in {
+        val testAccruals = DataMap.accountingMethod(AccountingMethodMapping.option_accruals)
+        accountingMethodForm isValidFor testAccruals
+      }
     }
   }
 
-}

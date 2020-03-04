@@ -26,11 +26,9 @@ import play.api.data.{Field, Form}
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits.applicationMessages
 import uk.gov.hmrc.play.language.LanguageUtils.Welsh
+import views.html.helpers.dateHelper
 
 class DateHelperSpec extends UnitTestTrait {
-
-  private def dateHelper(field: Field, label: Option[String])(implicit messages: Messages = applicationMessages)
-  = views.html.helpers.dateHelper(field, label)(messages)
 
   val dateName = "testDate"
   val testForm = Form(
@@ -43,7 +41,7 @@ class DateHelperSpec extends UnitTestTrait {
     "populate the relevant content in the correct positions" in {
       val testField = testForm(dateName)
 
-      val doc = dateHelper(testField, testLabel).doc
+      val doc = dateHelper(testField, testLabel, None, testForm).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("div").hasClass("form-field") shouldBe true
       doc.getElementsByTag("legend").text() should include(testLabel)
@@ -70,7 +68,7 @@ class DateHelperSpec extends UnitTestTrait {
     "the day & month class changes for the Welsh language" in {
       val testField = testForm(dateName)
 
-      val doc = dateHelper(testField, testLabel)(applicationMessages(Welsh, app)).doc
+      val doc = dateHelper(testField, testLabel, None, testForm)(applicationMessages(Welsh, app)).doc
 
       val inputs = doc.getElementsByTag("input")
 
@@ -81,7 +79,7 @@ class DateHelperSpec extends UnitTestTrait {
 
     "if the form is populated with true, then the checkbox is marked as checked" in {
       val testField = testForm.fill(DateModel("31", "01", "2017"))(dateName)
-      val doc = dateHelper(testField, testLabel).doc
+      val doc = dateHelper(testField, testLabel, None, testForm).doc
 
       val inputs = doc.getElementsByTag("input")
 
@@ -93,12 +91,13 @@ class DateHelperSpec extends UnitTestTrait {
 
     "when there is error on the field, the errors needs to be displayed, but not otherwise" in {
       val testField = testForm(dateName)
-      val doc = dateHelper(testField, testLabel).doc
+      val doc = dateHelper(testField, testLabel, None, testForm).doc
       doc.getElementsByTag("div").hasClass("form-field--error") shouldBe false
       doc.getElementsByClass("error-notification").isEmpty shouldBe true
 
-      val errorField = testForm.bind(DataMap.EmptyMap)(dateName)
-      val errDoc = dateHelper(errorField, testLabel).doc
+      val errorForm = testForm.bind(DataMap.EmptyMap)
+      val errorField = errorForm(dateName)
+      val errDoc = dateHelper(errorField, testLabel, None, errorForm).doc
       errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
       errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
     }

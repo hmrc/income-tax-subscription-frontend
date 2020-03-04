@@ -18,7 +18,7 @@
 @import play.api.data.Field
 @(field: Field,
         label: Option[String] = None,
-        parentForm: Option[Form[_]] = None,
+        parentForm: Form[_],
         maxLength: Option[Int] = None,
         divClass: Option[String] = None,
         labelClass: Option[String] = None,
@@ -26,7 +26,6 @@
         formHint: Option[Seq[String]] = None
 )(implicit messages: Messages)
 
-@import forms.validation.ErrorMessageHelper._
 
 @hintText(hint: String) = {
     <span class="form-hint">
@@ -34,20 +33,20 @@
     </span>
 }
 
-@hasError = @{
-    val fieldError = getFieldError(field, parentForm)
-    fieldError match {
-        case Some(_) => true
-        case _ => false
+    @hasError = @{parentForm.errors(field.name).nonEmpty}
+
+    @errorNotification = @{
+        if(hasError)
+        <span class="error-notification" role="tooltip" id="error-message-@field.name">{Messages(s"${parentForm.error(field.name).get.message}")}</span>
     }
-}
 
 <div class="form-group form-field@divClass.map(cls => s" $cls")@if(hasError) { form-field--error}">
+        @errorNotification
     <label class='form-label @labelClass.fold("")(x => x)' for=@field.name>
         @label.fold(Html(""))(label => Html(label))
         @formHint.fold(Nil: Seq[Html])(_.map(hintText))
     </label>
-    @fieldErrorHelper(field, parentForm)
+
     <input name="@field.name" class="form-control" id="@field.name" type="text"
         @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
     value="@field.value.fold("")(v => v)"

@@ -16,7 +16,6 @@
 
 package forms.validation
 
-import forms.validation.models.{FieldError, SummaryError}
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.validation.Invalid
@@ -33,6 +32,7 @@ package object testutils {
   }
 
 
+
   implicit class ErrorValidationUtil[T](testForm: Form[T]) {
     implicit def assert(testFieldName: String): FormValidationTrait[T] = new FormValidationTrait[T] {
       override val form: Form[T] = testForm
@@ -47,6 +47,7 @@ package object testutils {
 
     def isValidFor(data: Map[String, String]): Unit = {
       val validated = testForm.bind(data)
+      println(validated.errors)
       validated.hasErrors shouldBe false
       validated.hasGlobalErrors shouldBe false
     }
@@ -60,13 +61,14 @@ package object testutils {
 
   implicit class InvalidUtil(invalid: Invalid) {
 
-    import ErrorMessageFactory._
-
-    def fieldErrorIs(expectedText: String)(implicit messages: Messages): Unit =
-      invalid.errors.head.args(FieldErrorLoc).asInstanceOf[FieldError].toText shouldBe expectedText
-
-    def summaryErrorIs(expectedText: String)(implicit messages: Messages): Unit =
-      invalid.errors.head.args(SummaryErrorLoc).asInstanceOf[SummaryError].toText shouldBe expectedText
+    def errorTextIs(expectedText: String)(implicit messages: Messages): Unit =
+      invalid.errors.head.message shouldBe expectedText
   }
 
+}
+
+trait FormValidationTrait[T] {
+
+  val form: Form[T]
+  val fieldName: String
 }

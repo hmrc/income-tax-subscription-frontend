@@ -17,10 +17,10 @@
 package forms.agent
 
 import forms.submapping.YesNoMapping
-import forms.validation.ErrorMessageFactory
 import models.individual.business.MatchTaxYearModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.data.validation.Invalid
 
 object MatchTaxYearForm {
 
@@ -29,8 +29,8 @@ object MatchTaxYearForm {
   val matchTaxYearForm = Form(
     mapping(
       matchTaxYear -> YesNoMapping.yesNoMapping(
-        yesNoInvalid = ErrorMessageFactory.error("agent.error.match_tax_year.invalid"),
-        yesNoEmpty = Some(ErrorMessageFactory.error("agent.error.match_tax_year.empty"))
+        yesNoInvalid = Invalid("agent.error.match_tax_year.invalid"),
+        yesNoEmpty = Some(Invalid("agent.error.match_tax_year.empty"))
       )
     )(MatchTaxYearModel.apply)(MatchTaxYearModel.unapply)
   )

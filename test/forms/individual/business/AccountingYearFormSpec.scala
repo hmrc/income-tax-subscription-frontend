@@ -16,20 +16,17 @@
 
 package forms.individual.business
 
-import assets.MessageLookup
+import forms.individual.business.AccountingYearForm._
 import forms.submapping.AccountingYearMapping
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Current
 import models.individual.business.AccountingYearModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
 
 class AccountingYearFormSpec extends PlaySpec with OneAppPerTest {
-
-  import forms.individual.business.AccountingYearForm._
 
   "The AccountingYearForm" should {
     "transform the request to the form case class" in {
@@ -41,35 +38,41 @@ class AccountingYearFormSpec extends PlaySpec with OneAppPerTest {
       actual shouldBe Some(expected)
     }
 
-    "validate accounting year correctly" in {
-      val empty = ErrorMessageFactory.error("error.what-year.empty")
-      val invalid = ErrorMessageFactory.error("error.what-year.invalid")
+    "validate accounting year correctly" when {
+      val empty = "error.what-year.empty"
+      val invalid = "error.what-year.invalid"
 
-      empty fieldErrorIs MessageLookup.Error.AccountingYear.empty
-      empty summaryErrorIs MessageLookup.Error.AccountingYear.empty
-
-      invalid fieldErrorIs MessageLookup.Error.AccountingYear.invalid
-      invalid summaryErrorIs MessageLookup.Error.AccountingYear.invalid
-
-      val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = accountingYearForm.bind(emptyInput0)
-      emptyTest0 assert accountingYear hasExpectedErrors empty
-
-      val emptyInput = DataMap.accountingYear("")
-      val emptyTest = accountingYearForm.bind(emptyInput)
-      emptyTest assert accountingYear hasExpectedErrors empty
-
-      val invalidInput = DataMap.accountingYear("α")
-      val invalidTest = accountingYearForm.bind(invalidInput)
-      invalidTest assert accountingYear hasExpectedErrors invalid
+      "the map be empty" in {
+        val emptyInput0 = DataMap.EmptyMap
+        val emptyTest0 = accountingYearForm.bind(emptyInput0)
+        emptyTest0.errors must contain(FormError(accountingYear,empty))
+      }
+      "the name be empty" in {
+        val emptyInput = DataMap.accountingYear("")
+        val emptyTest = accountingYearForm.bind(emptyInput)
+        emptyTest.errors must contain(FormError(accountingYear,empty))
+      }
+      "the input should be invalid" in {
+        val invalidInput = DataMap.accountingYear("α")
+        val invalidTest = accountingYearForm.bind(invalidInput)
+        invalidTest.errors must contain(FormError(accountingYear,invalid))
+      }
     }
 
-    "The following submission should be valid" in {
-      val testCash = DataMap.accountingYear(AccountingYearMapping.option_current)
-      accountingYearForm isValidFor testCash
-      val testAccruals = DataMap.accountingYear(AccountingYearMapping.option_next)
-      accountingYearForm isValidFor testAccruals
+      "The Cash submission should be valid" in {
+        val testCash = DataMap.accountingYear(AccountingYearMapping.option_current)
+        accountingYearForm isValidFor testCash
+      }
+
+      "The Accruals submission should be valid" in {
+        val testAccruals = DataMap.accountingYear(AccountingYearMapping.option_current)
+        accountingYearForm isValidFor testAccruals
+      }
+
+      "The Accruals and next year submission should be valid" in {
+        val testAccruals = DataMap.accountingYear(AccountingYearMapping.option_next)
+        accountingYearForm isValidFor testAccruals
+      }
     }
+
   }
-
-}

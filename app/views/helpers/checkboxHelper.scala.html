@@ -15,12 +15,11 @@
  *@
 
 @import play.api.data.Field
+
 @(field: Field,
     label: String,
-    parentForm: Option[Form[_]] = None
+    parentForm: Form[_]
 )(implicit messages: Messages)
-
-@import forms.validation.ErrorMessageHelper._
 
 @isChecked = @{
     field.value.map {
@@ -29,16 +28,14 @@
     }
 }
 
-@hasError = @{
-    val fieldError = getFieldError(field, parentForm)
-    fieldError match {
-        case Some(_) => true
-        case _ => false
-    }
+@hasError = @{ parentForm.errors(field.name).nonEmpty }
+
+@errorNotification = @{
+if(hasError) <span class="error-notification" role="tooltip" id="error-message-@field.name">{Messages(s"${parentForm.error(field.name).get.message}")}</span>
 }
 
 <div class="multiple-choice@if(hasError) { form-field--error}">
-    @fieldErrorHelper(field, parentForm)
+    @errorNotification
     <input id="@{field.name}" name="@{field.name}" type="checkbox" value="true" @isChecked>
     <label class="block-label selection-button-checkbox" for="@{field.name}">@Html(label)</label>
 </div>

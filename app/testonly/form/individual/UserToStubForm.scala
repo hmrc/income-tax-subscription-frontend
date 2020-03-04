@@ -21,13 +21,12 @@ import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.prevalidation.TrimOption._
 import forms.submapping.DateMapping.dateMapping
 import forms.validation.Constraints._
-import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 import testonly.models.UserToStubModel
 
 import scala.util.Try
@@ -59,13 +58,13 @@ object UserToStubForm {
     constraint[Option[String]] {
       case Some(utr) =>
         if (utr.filterNot(_.isWhitespace).matches(utrRegex)) Valid
-        else ErrorMessageFactory.error("You must enter a valid SA UTR")
+        else Invalid("You must enter a valid SA UTR")
       case _ => Valid
     }
 
   val dobEmpty: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error("error.dob_date.empty")
+      lazy val emptyDate = Invalid("error.dob_date.empty")
       if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
     }
   )
@@ -75,7 +74,7 @@ object UserToStubForm {
       Try[ValidationResult] {
         date.toLocalDate
         Valid
-      }.getOrElse(ErrorMessageFactory.error("error.dob_date.invalid"))
+      }.getOrElse(Invalid("error.dob_date.invalid"))
     }
   )
 

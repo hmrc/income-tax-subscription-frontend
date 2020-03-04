@@ -16,17 +16,15 @@
 
 package forms.individual.business
 
-import assets.MessageLookup
 import forms.individual.business.MatchTaxYearForm._
 import forms.submapping.YesNoMapping
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Yes
 import models.individual.business.MatchTaxYearModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
 
 class MatchTaxYearFormSpec extends PlaySpec with OneAppPerTest {
 
@@ -40,32 +38,32 @@ class MatchTaxYearFormSpec extends PlaySpec with OneAppPerTest {
       actual shouldBe Some(expected)
     }
 
-    "validate do you match the tax year answered correctly" in {
-      val empty = ErrorMessageFactory.error("error.business.match_tax_year.empty")
-      val invalid = ErrorMessageFactory.error("error.business.match_tax_year.invalid")
+    "validate do you match the tax year answered correctly" should {
+      val empty = "error.business.match_tax_year.empty"
+      val invalid = "error.business.match_tax_year.invalid"
 
-      empty fieldErrorIs MessageLookup.Error.Business.MatchTaxYear.empty
-      empty summaryErrorIs MessageLookup.Error.Business.MatchTaxYear.empty
-
-      invalid fieldErrorIs MessageLookup.Error.Business.MatchTaxYear.invalid
-      invalid summaryErrorIs MessageLookup.Error.Business.MatchTaxYear.invalid
-
-      val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = matchTaxYearForm.bind(emptyInput0)
-      emptyTest0 assert matchTaxYear hasExpectedErrors empty
-
-      val emptyInput = DataMap.matchTaxYear("")
-      val emptyTest = matchTaxYearForm.bind(emptyInput)
-      emptyTest assert matchTaxYear hasExpectedErrors empty
-
-      val invalidInput = DataMap.matchTaxYear("α")
-      val invalidTest = matchTaxYearForm.bind(invalidInput)
-      invalidTest assert matchTaxYear hasExpectedErrors invalid
+      "show an empty error when the map is empty" in {
+        val emptyInput0 = DataMap.EmptyMap
+        val emptyTest0 = matchTaxYearForm.bind(emptyInput0)
+        emptyTest0.errors should contain(FormError(matchTaxYear, empty))
+      }
+      "show an empty error when the input is empty" in {
+        val emptyInput = DataMap.matchTaxYear("")
+        val emptyTest = matchTaxYearForm.bind(emptyInput)
+        emptyTest.errors should contain(FormError(matchTaxYear, empty))
+      }
+      "show invalid when the input is invalid" in {
+        val invalidInput = DataMap.matchTaxYear("α")
+        val invalidTest = matchTaxYearForm.bind(invalidInput)
+        invalidTest.errors should contain(FormError(matchTaxYear, invalid))
+      }
     }
 
     "The following submission should be valid" in {
       val testYes = DataMap.matchTaxYear(YesNoMapping.option_yes)
       matchTaxYearForm isValidFor testYes
+    }
+    "The Accruals submission should be valid" in {
       val testNo = DataMap.matchTaxYear(YesNoMapping.option_no)
       matchTaxYearForm isValidFor testNo
     }

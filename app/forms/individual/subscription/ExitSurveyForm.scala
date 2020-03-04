@@ -17,12 +17,11 @@
 package forms.individual.subscription
 
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
-import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil.constraint
 import models.individual.subscription.ExitSurveyModel
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 object ExitSurveyForm {
 
@@ -32,7 +31,7 @@ object ExitSurveyForm {
 
   val improvementsTooLong: Constraint[Option[String]] = constraint[Option[String]] {
     case Some(name) if name.trim.length > improvementsMaxLength =>
-      ErrorMessageFactory.error("error.survey-feedback.maxLength")
+      Invalid("error.survey-feedback.maxLength")
     case _ => Valid
   }
 

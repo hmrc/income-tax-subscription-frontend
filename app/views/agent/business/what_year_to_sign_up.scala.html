@@ -46,7 +46,7 @@
                 RadioOption(AccountingYearMapping.option_current, Messages("agent.business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
                 RadioOption(AccountingYearMapping.option_next, Messages("agent.business.what_year_to_sign_up.option_2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString))
             ),
-            parentForm = Some(accountingYearForm)
+            parentForm = accountingYearForm
         )
         @if(isEditMode) {
             @continueButton(Some(Messages("base.update")))

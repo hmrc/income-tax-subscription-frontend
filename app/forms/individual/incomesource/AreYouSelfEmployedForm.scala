@@ -17,10 +17,10 @@
 package forms.individual.incomesource
 
 import forms.submapping.YesNoMapping
-import forms.validation.ErrorMessageFactory
 import models.YesNo
 import models.individual.incomesource.AreYouSelfEmployedModel
 import play.api.data.Forms.mapping
+import play.api.data.validation.Invalid
 import play.api.data.{Form, Mapping}
 
 object AreYouSelfEmployedForm {
@@ -28,8 +28,8 @@ object AreYouSelfEmployedForm {
   val choice = "choice"
 
   val choiceMapping: Mapping[YesNo] = YesNoMapping.yesNoMapping(
-    yesNoInvalid = ErrorMessageFactory.error("error.are_you_selfemployed.invalid"),
-    yesNoEmpty = Some(ErrorMessageFactory.error("error.are_you_selfemployed.empty"))
+    yesNoInvalid = Invalid("error.are_you_selfemployed.invalid"),
+    yesNoEmpty = Some(Invalid("error.are_you_selfemployed.empty"))
   )
 
   val areYouSelfEmployedForm = Form(

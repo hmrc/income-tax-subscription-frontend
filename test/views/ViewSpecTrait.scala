@@ -20,7 +20,6 @@ import assets.MessageLookup
 import assets.MessageLookup.{Base => common}
 import controllers.SignOutController
 import core.utils.UnitTestTrait
-import forms.validation.models.{SummaryError, TargetIds}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
@@ -471,7 +470,7 @@ trait ViewSpecTrait extends UnitTestTrait {
   }
 
   implicit class FormUtil[T](form: Form[T]) {
-    def addError(addError: Boolean): Form[T] = if (addError) form.withError("test", "test", "err", SummaryError(""), TargetIds("")) else form
+    def addError(addError: Boolean): Form[T] = if (addError) form.withError("test", "test", "err") else form
   }
 
 }

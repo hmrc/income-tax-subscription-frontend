@@ -20,14 +20,12 @@ import core.utils.UnitTestTrait
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
+import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits._
+import views.html.helpers.radioHelper
 
 class RadioHelperSpec extends UnitTestTrait {
-
-  private def radioHelper(field: Field, legend: String, options: Seq[RadioOption])
-  = views.html.helpers.radioHelper(field, legend, options)(applicationMessages)
 
   case class TestData(radio: String)
 
@@ -82,7 +80,7 @@ class RadioHelperSpec extends UnitTestTrait {
   "RadioHelper" should {
     "populate the relevent content in the correct positions" in {
       val testField = testForm(radioName)
-      val doc = radioHelper(testField, testLegend, testOptions).doc
+      val doc = radioHelper(testField, testLegend, testOptions, testForm).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("legend").text() shouldBe testLegend
       val inputs = doc.getElementsByTag("input")
@@ -103,8 +101,10 @@ class RadioHelperSpec extends UnitTestTrait {
     }
 
     "if the form is populated, then select the correct radio button" in {
-      val testField = testForm.fill(TestData(noOption.optionName))(radioName)
-      val doc = radioHelper(testField, testLegend, testOptions).doc
+
+      val filledForm = testForm.fill(TestData(noOption.optionName))
+      val testField = filledForm(radioName)
+      val doc = radioHelper(testField, testLegend, testOptions, filledForm).doc
 
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 2
@@ -116,12 +116,13 @@ class RadioHelperSpec extends UnitTestTrait {
 
     "when there is error on the field, the errors needs to be displayed, but not otherwise" in {
       val testField = testForm(radioName)
-      val doc = radioHelper(testField, testLegend, testOptions).doc
+      val doc = radioHelper(testField, testLegend, testOptions, testForm).doc
       doc.getElementsByTag("div").hasClass("form-field--error") shouldBe false
       doc.getElementsByClass("error-notification").isEmpty shouldBe true
 
-      val errorField = testForm.bind(DataMap.EmptyMap)(radioName)
-      val errDoc = radioHelper(errorField, testLegend, testOptions).doc
+      val errorForm = testForm.bind(DataMap.EmptyMap)
+      val errorField = errorForm(radioName)
+      val errDoc = radioHelper(errorField, testLegend, testOptions, errorForm).doc
       errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
       errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
     }

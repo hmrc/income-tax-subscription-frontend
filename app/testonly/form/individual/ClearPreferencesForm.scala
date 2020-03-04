@@ -17,13 +17,12 @@
 package testonly.form.individual
 
 import forms.prevalidation.{CaseOption, PreprocessedForm, PrevalidationAPI, TrimOption, trimAllFunc}
-import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import testonly.models.preferences.ClearPreferencesModel
 
 object ClearPreferencesForm {
@@ -32,14 +31,14 @@ object ClearPreferencesForm {
 
   val ninoEmpty: Constraint[String] = constraint[String](
     nino => {
-      lazy val emptyNino = ErrorMessageFactory.error("You must enter a nino")
+      lazy val emptyNino = Invalid("You must enter a nino")
       if (nino.isEmpty) emptyNino else Valid
     }
   )
 
   val ninoInvalid: Constraint[String] = constraint[String](
     nino => {
-      lazy val invalidNino = ErrorMessageFactory.error("You must enter a valid nino")
+      lazy val invalidNino = Invalid("You must enter a valid nino")
       if (Patterns.validNino(trimAllFunc(nino).toUpperCase())) Valid else invalidNino
     }
   )

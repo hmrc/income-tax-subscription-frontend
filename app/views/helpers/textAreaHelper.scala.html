@@ -17,23 +17,22 @@
 @(field: Field,
         label: String,
         showLabel: Boolean,
-        parentForm: Option[Form[_]] = None,
+        parentForm: Form[_],
         maxLength: Option[Int] = None,
         cols: Option[Int] = Some(45),
         rows: Option[Int] = Some(5)
 )(implicit messages: Messages)
-@import forms.validation.ErrorMessageHelper._
 
-@hasError = @{
-    val fieldError = getFieldError(field, parentForm)
-    fieldError match {
-        case Some(_) => true
-        case _ => false
-    }
-}
+@hasError = @{ parentForm.errors(field.name).nonEmpty }
 
 <div class="form-group@if(hasError) { form-field--error}">
-    @fieldErrorHelper(field, parentForm)
+
+    @if(hasError){
+    <span class="error-notification" role="tooltip" id="error-message-@field.name">
+        @Messages(s"${parentForm.error(field.name).get.message}")
+    </span>
+    }
+
     <label class="form-label@if(!showLabel){ hidden}" for="@field.name">
         @label
     </label>

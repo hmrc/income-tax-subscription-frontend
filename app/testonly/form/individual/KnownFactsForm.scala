@@ -17,13 +17,12 @@
 package testonly.form.individual
 
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI, trimAllFunc}
-import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import testonly.models.KnownFactsModel
 
 object KnownFactsForm {
@@ -32,28 +31,28 @@ object KnownFactsForm {
 
   val ninoEmpty: Constraint[String] = constraint[String](
     nino => {
-      lazy val emptyNino = ErrorMessageFactory.error("You must enter a nino")
+      lazy val emptyNino = Invalid("You must enter a nino")
       if (nino.isEmpty) emptyNino else Valid
     }
   )
 
   val ninoInvalid: Constraint[String] = constraint[String](
     nino => {
-      lazy val invalidNino = ErrorMessageFactory.error("You must enter a valid nino")
+      lazy val invalidNino = Invalid("You must enter a valid nino")
       if (Patterns.validNino(trimAllFunc(nino).toUpperCase())) Valid else invalidNino
     }
   )
 
   val mtdidEmpty: Constraint[String] = constraint[String](
     mtdid => {
-      lazy val emptyMtdid = ErrorMessageFactory.error("You must enter a MTD-ID")
+      lazy val emptyMtdid = Invalid("You must enter a MTD-ID")
       if (mtdid.isEmpty) emptyMtdid else Valid
     }
   )
 
   val mtdidInvalid: Constraint[String] = constraint[String](
     mtdid => {
-      lazy val invalidMtdid = ErrorMessageFactory.error("You must enter a valid MTD-ID")
+      lazy val invalidMtdid = Invalid("You must enter a valid MTD-ID")
       val id = trimAllFunc(mtdid)
       id.length match {
         case 15 | 16 => Valid

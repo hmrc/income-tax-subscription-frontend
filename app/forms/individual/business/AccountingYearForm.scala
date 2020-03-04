@@ -17,10 +17,10 @@
 package forms.individual.business
 
 import forms.submapping.AccountingYearMapping
-import forms.validation.ErrorMessageFactory
 import models.individual.business.AccountingYearModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.data.validation.Invalid
 
 object AccountingYearForm {
 
@@ -29,8 +29,8 @@ object AccountingYearForm {
   val accountingYearForm: Form[AccountingYearModel] = Form(
     mapping(
       accountingYear -> AccountingYearMapping(
-        errInvalid = ErrorMessageFactory.error("error.what-year.invalid"),
-        errEmpty = Some(ErrorMessageFactory.error("error.what-year.empty"))
+        errInvalid = Invalid("error.what-year.invalid"),
+        errEmpty = Some(Invalid("error.what-year.empty"))
       )
     )(AccountingYearModel.apply)(AccountingYearModel.unapply)
   )

@@ -18,8 +18,6 @@ package forms.individual.incomesource
 
 import forms.submapping.YesNoMapping
 import forms.submapping.YesNoMapping.{option_no, option_yes}
-import forms.validation.ErrorMessageFactory
-import forms.validation.models.TargetIds
 import models.individual.incomesource.RentUkPropertyModel
 import models.{No, Yes, YesNo}
 import play.api.data.Forms.{mapping, of}
@@ -33,14 +31,14 @@ object RentUkPropertyForm {
   val onlySourceOfSelfEmployedIncome = "onlySourceOfSelfEmployedIncome"
 
   val rentUkPropertyMapping: Mapping[YesNo] = YesNoMapping.yesNoMapping(
-    yesNoInvalid = ErrorMessageFactory.error("error.rent-uk-property.invalid"),
-    yesNoEmpty = Some(ErrorMessageFactory.error("error.rent-uk-property.empty"))
+    yesNoInvalid = Invalid("error.rent-uk-property.invalid"),
+    yesNoEmpty = Some(Invalid("error.rent-uk-property.empty"))
   )
 
   val onlySourceOfSelfEmployedIncomeMapping: Mapping[Option[YesNo]] = of(new Formatter[Option[YesNo]] {
 
-    val invalid: Invalid = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.rent-uk-property.only-source-invalid")
-    val empty: Invalid = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.rent-uk-property.only-source-empty")
+    val invalid: Invalid = Invalid("error.rent-uk-property.only-source-invalid")
+    val empty: Invalid = Invalid("error.rent-uk-property.only-source-empty")
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[YesNo]] = {
       data.get(rentUkProperty) match {

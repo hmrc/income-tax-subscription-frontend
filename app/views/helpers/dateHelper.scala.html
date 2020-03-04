@@ -22,18 +22,15 @@
 @(field: Field,
         label: Option[String] = None,
         hintText: Option[String] = None,
-        parentForm: Option[Form[_]] = None
+        parentForm: Form[_]
 )(implicit messages: Messages)
 
-@import forms.validation.ErrorMessageHelper._
 @import uk.gov.hmrc.play.language.LanguageUtils.Welsh
 
-@hasError = @{
-    val fieldError = getFieldError(field, parentForm)
-    fieldError match {
-        case Some(_) => true
-        case _ => false
-    }
+@hasError = @{ parentForm.errors(field.name).nonEmpty }
+
+@errorNotification = @{
+    if(hasError) <span class="error-notification" role="tooltip" id="error-message-@field.name">{Messages(s"${parentForm.error(field.name).get.message}")}</span>
 }
 
 @* SAR-2367 a hacky fix until a formal decision is made. This changes the spacing for day & month fields in the Welsh language to match the year *@
@@ -49,11 +46,12 @@
         <legend>
             <span class="form-label-bold">@label</span>
             @hintText.map(hint => Html(s"""<span class="form-hint">$hint</span>"""))
-            @fieldErrorHelper(field, parentForm)
+            @errorNotification
         </legend>
             <div class="form-date">
                 @inputHelper(
                     field(dateDay),
+                    parentForm = parentForm,
                     label = Some(Messages("base.day")),
                     divClass = Some(ifNotWelsh("form-group-day")),
                     maxLength = Some(2),
@@ -61,6 +59,7 @@
                 )
                 @inputHelper(
                     field(dateMonth),
+                    parentForm = parentForm,
                     label = Some(Messages("base.month")),
                     divClass = Some(ifNotWelsh("form-group-month")),
                     maxLength = Some(2),
@@ -68,6 +67,7 @@
                 )
                 @inputHelper(
                     field(dateYear),
+                    parentForm = parentForm,
                     label = Some(Messages("base.year")),
                     divClass = Some("form-group-year"),
                     maxLength = Some(4),

@@ -16,16 +16,14 @@
 
 package forms.individual.incomesource
 
-import assets.MessageLookup
 import forms.submapping.YesNoMapping
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.No
 import models.individual.incomesource.AreYouSelfEmployedModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
 
 class AreYouSelfEmployedFormSpec extends PlaySpec with OneAppPerTest {
 
@@ -41,32 +39,33 @@ class AreYouSelfEmployedFormSpec extends PlaySpec with OneAppPerTest {
       actual shouldBe Some(expected)
     }
 
-    "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.are_you_selfemployed.empty")
-      val invalid = ErrorMessageFactory.error("error.are_you_selfemployed.invalid")
+    "validate income type correctly" should {
+      val empty = "error.are_you_selfemployed.empty"
+      val invalid = "error.are_you_selfemployed.invalid"
 
-      empty fieldErrorIs MessageLookup.Error.AreYouSelfEmployed.empty
-      empty summaryErrorIs MessageLookup.Error.AreYouSelfEmployed.empty
 
-      invalid fieldErrorIs MessageLookup.Error.AreYouSelfEmployed.invalid
-      invalid summaryErrorIs MessageLookup.Error.AreYouSelfEmployed.invalid
-
-      val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = areYouSelfEmployedForm.bind(emptyInput0)
-      emptyTest0 assert choice hasExpectedErrors empty
-
-      val emptyInput = DataMap.areYouSelfEmployed("")
-      val emptyTest = areYouSelfEmployedForm.bind(emptyInput)
-      emptyTest assert choice hasExpectedErrors empty
-
-      val invalidInput = DataMap.areYouSelfEmployed("α")
-      val invalidTest = areYouSelfEmployedForm.bind(invalidInput)
-      invalidTest assert choice hasExpectedErrors invalid
+      "show an empty error when the map is empty" in {
+        val emptyInput0 = DataMap.EmptyMap
+        val emptyTest0 = areYouSelfEmployedForm.bind(emptyInput0)
+        emptyTest0.errors should contain(FormError(choice, empty))
+      }
+      "show an empty error when the input is empty" in {
+        val emptyInput = DataMap.areYouSelfEmployed("")
+        val emptyTest = areYouSelfEmployedForm.bind(emptyInput)
+        emptyTest.errors should contain(FormError(choice, empty))
+      }
+      "show invalid when the input is invalid" in {
+        val invalidInput = DataMap.areYouSelfEmployed("α")
+        val invalidTest = areYouSelfEmployedForm.bind(invalidInput)
+        invalidTest.errors should contain(FormError(choice, invalid))
+      }
     }
 
-    "The following submission should be valid" in {
+    "The yes submission should be valid" in {
       val testsYes = DataMap.areYouSelfEmployed(YesNoMapping.option_yes)
       areYouSelfEmployedForm isValidFor testsYes
+    }
+    "The no submission should be valid" in {
       val testsNo = DataMap.areYouSelfEmployed(YesNoMapping.option_no)
       areYouSelfEmployedForm isValidFor testsNo
     }
