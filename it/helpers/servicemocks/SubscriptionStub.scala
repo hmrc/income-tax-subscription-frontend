@@ -32,6 +32,11 @@ object SubscriptionStub extends WireMockMethods {
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 
+  def stubSuccessfulPostFailure(callingPageUri: String): Unit = {
+    when(method = POST, uri = subscriptionURIPost(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
+      .thenReturn(Status.BAD_REQUEST)
+  }
+
   def stubSuccessfulSubscriptionPostWithBoth(callingPageUri: String): Unit = {
     val nino = testNino
     when(method = POST, uri = subscriptionURIPost(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),

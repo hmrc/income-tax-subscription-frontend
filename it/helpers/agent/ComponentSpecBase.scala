@@ -84,7 +84,11 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.income-tax-subscription-eligibility.port" -> mockPort,
     "income-tax-subscription-eligibility-frontend.url" -> mockUrl,
     "auditing.consumer.baseUri.host" -> mockHost,
-    "auditing.consumer.baseUri.port" -> mockPort
+    "auditing.consumer.baseUri.port" -> mockPort,
+    "microservice.services.enrolment-store-proxy.host" -> mockHost,
+    "microservice.services.enrolment-store-proxy.port" -> mockPort,
+    "microservice.services.users-groups-search.host" -> mockHost,
+    "microservice.services.users-groups-search.port" -> mockPort
   )
 
   override def beforeEach(): Unit = {

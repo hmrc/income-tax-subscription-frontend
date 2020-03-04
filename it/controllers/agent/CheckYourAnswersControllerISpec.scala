@@ -16,19 +16,24 @@
 
 package controllers.agent
 
-import helpers.IntegrationTestModels.testEnrolmentKey
+import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
+import connectors.stubs.UsersGroupsSearchStub
+import helpers.IntegrationTestConstants.{testCredentialId, testCredentialId2, testGroupId, testUtr}
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import helpers.servicemocks.{SubscriptionStub, TaxEnrolmentsStub}
+import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
+import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import play.api.test.Helpers.OK
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
   "GET /check-your-answers" when {
     "keystore returns all data" should {
       "show the check your answers page" in {
+
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
@@ -41,21 +46,72 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
           httpStatus(OK),
           pageTitle(Messages("agent.summary.title"))
         )
+
       }
     }
   }
 
+  "POST /check-your-answers" should {
 
-  "POST /check-your-answers" when {
-    "The whole subscription process was successful" when {
-      "agent is authorised" should {
-        "call subscription on the back end service and redirect to confirmation page" in {
+    "return an internal server error" when {
+      "subscription was not successful" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        SubscriptionStub.stubSuccessfulPostFailure(checkYourAnswersURI)
+
+        When("I call POST /check-your-answers")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then(s"The result should have a status of $INTERNAL_SERVER_ERROR")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
+    "redirect to the confirmation page" when {
+      "The whole subscription process was successful" in {
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+        KeystoreStub.stubPutMtditId()
+
+        And("The wiremock stubs for auto enrolment")
+        EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+        EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+        UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+        EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
+        EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(CREATED)
+        EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId)(CREATED)
+        EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId2)(CREATED)
+
+        When("I call POST /check-your-answers")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(confirmationURI)
+        )
+
+        val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+        cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+      }
+
+      "subscription was successful but auto enrolment failed" when {
+        "getting the group id the enrolment is allocated was not successful" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubFullKeystore()
           SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
           KeystoreStub.stubPutMtditId()
+
+          And("The wiremock stubs for auto enrolment")
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(NO_CONTENT)
 
           When("I call POST /check-your-answers")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -68,7 +124,132 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
           val cookieMap = SessionCookieCrumbler.getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+        }
+        "getting the users assigned to the enrolment was not successful" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+          KeystoreStub.stubPutMtditId()
 
+          And("The wiremock stubs for auto enrolment")
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(NO_CONTENT)
+
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
+
+          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+        }
+        "getting the admin in a group was not successful" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+          KeystoreStub.stubPutMtditId()
+
+          And("The wiremock stubs for auto enrolment")
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NOT_FOUND)
+
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
+
+          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+        }
+        "upserting the known facts was not successful" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+          KeystoreStub.stubPutMtditId()
+
+          And("The wiremock stubs for auto enrolment")
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NOT_FOUND)
+
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
+
+          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+        }
+        "allocating the enrolment to a group was not successful" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+          KeystoreStub.stubPutMtditId()
+
+          And("The wiremock stubs for auto enrolment")
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
+          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(NOT_FOUND)
+
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
+
+          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+        }
+        "assigning all the users to the enrolment was not successful" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+          KeystoreStub.stubPutMtditId()
+
+          And("The wiremock stubs for auto enrolment")
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
+          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId2)(NOT_FOUND)
+
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
+
+          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
         }
       }
     }

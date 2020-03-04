@@ -36,7 +36,7 @@ object EnrolmentStoreProxyStub extends WireMockMethods {
       .thenReturn(status = status, body = body)
   }
 
-  def stubGetAllocatedLegacyITEnrolmentStatus(utr: String)(status: Int): StubMapping = {
+  def stubGetAllocatedEnrolmentStatus(utr: String)(status: Int): StubMapping = {
     when(method = GET, uri = s"$enrolmentStoreProxyUri/enrolments/IR-SA~UTR~$utr/groups\\?type=principal")
       .thenReturn(status = status, body = jsonResponseBody(principalGroupIdKey, testGroupId))
   }
