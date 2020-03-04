@@ -19,8 +19,7 @@ package services
 import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser
 import javax.inject.{Inject, Singleton}
-import services.CheckEnrolmentAllocationService.{CheckEnrolmentAllocationResponse, EnrolmentAlreadyAllocated,
-  EnrolmentNotAllocated, UnexpectedEnrolmentStoreProxyFailure}
+import services.CheckEnrolmentAllocationService._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,6 +32,7 @@ class CheckEnrolmentAllocationService @Inject()(enrolmentStoreProxyConnector: En
       case Right(EnrolmentStoreProxyHttpParser.EnrolmentNotAllocated) => Right(EnrolmentNotAllocated)
       case Right(EnrolmentStoreProxyHttpParser.EnrolmentAlreadyAllocated(groupId)) => Left(EnrolmentAlreadyAllocated(groupId))
       case Left(EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyFailure(status)) => Left(UnexpectedEnrolmentStoreProxyFailure(status))
+      case Left(EnrolmentStoreProxyHttpParser.InvalidJsonResponse) => Left(EnrolmentStoreProxyInvalidJsonResponse)
     }
   }
 }
@@ -48,5 +48,8 @@ object CheckEnrolmentAllocationService {
   case class EnrolmentAlreadyAllocated(groupId: String) extends CheckEnrolmentAllocationFailure
 
   case class UnexpectedEnrolmentStoreProxyFailure(status: Int) extends CheckEnrolmentAllocationFailure
+
+  case object EnrolmentStoreProxyInvalidJsonResponse extends CheckEnrolmentAllocationFailure
+
 }
 

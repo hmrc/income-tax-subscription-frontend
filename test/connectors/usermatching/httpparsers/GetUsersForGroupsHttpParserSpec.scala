@@ -16,10 +16,10 @@
 
 package connectors.usermatching.httpparsers
 
-import connectors.agent.httpparsers.GetUsersForGroupsHttpParser.CredentialRoleReads._
-import connectors.agent.httpparsers.GetUsersForGroupsHttpParser.UserReads._
-import connectors.agent.httpparsers.GetUsersForGroupsHttpParser._
-import connectors.agent.httpparsers.GetUsersForGroupsHttpParser.GetUsersForGroupsHttpReads.read
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.CredentialRoleReads._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UserReads._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.GetUsersForGroupsHttpReads.read
 import connectors.usermatching.httpparsers.MatchUserHttpParser.MatchUserHttpReads
 import core.utils.TestConstants._
 import core.utils.UnitTestTrait

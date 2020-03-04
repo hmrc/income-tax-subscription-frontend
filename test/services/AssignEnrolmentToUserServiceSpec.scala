@@ -24,7 +24,6 @@ import services.AssignEnrolmentToUserService.{EnrolmentAssignedToUsers, Enrolmen
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class AssignEnrolmentToUserServiceSpec extends WordSpec with Matchers with MockEnrolmentStoreProxyConnector {
 
@@ -39,7 +38,7 @@ class AssignEnrolmentToUserServiceSpec extends WordSpec with Matchers with MockE
       "the connector returns that all the users have been assigned the enrolment" in {
         val testUserIdSet: Set[String] = Set("userIdOne", "userIdTwo")
 
-        testUserIdSet foreach (userId => mockAssignEnrolment(userId, testMtditid)(Future.successful(Right(EnrolmentAssigned))))
+        testUserIdSet foreach (userId => mockAssignEnrolment(userId, testMtditid)(Right(EnrolmentAssigned)))
 
         val res = await(TestAssignEnrolmentToUserService.assignEnrolment(testUserIdSet, testMtditid))
 
@@ -51,8 +50,8 @@ class AssignEnrolmentToUserServiceSpec extends WordSpec with Matchers with MockE
       "the connector returns that it failed to assign some of the enrolments" in {
         val testUserIdSet = Set("userIdOne", "userIdTwo")
 
-        mockAssignEnrolment("userIdOne", testMtditid)(Future.successful(Right(EnrolmentAssigned)))
-        mockAssignEnrolment("userIdTwo", testMtditid)(Future.successful(Left(EnrolmentAssignmentFailure(BAD_REQUEST, ""))))
+        mockAssignEnrolment("userIdOne", testMtditid)(Right(EnrolmentAssigned))
+        mockAssignEnrolment("userIdTwo", testMtditid)(Left(EnrolmentAssignmentFailure(BAD_REQUEST, "")))
 
         val res = await(TestAssignEnrolmentToUserService.assignEnrolment(testUserIdSet, testMtditid))
 

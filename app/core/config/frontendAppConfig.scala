@@ -115,7 +115,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   // AutoEnrolment links
   def usersGroupsSearchUrl: String = baseUrl("users-groups-search")
 
-  def getUsersForGroupsUrl(groupId: String): String = s"$usersGroupsSearchUrl/users-groups-search/groups/$groupId/users"
+  def getUsersForGroupUrl(groupId: String): String = s"$usersGroupsSearchUrl/users-groups-search/groups/$groupId/users"
 
   override lazy val mode: Mode = environment.mode
 

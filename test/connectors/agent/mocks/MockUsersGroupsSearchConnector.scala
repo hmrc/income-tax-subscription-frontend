@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package connectors.usermatching.mocks
+package connectors.agent.mocks
 
 import connectors.agent.UsersGroupsSearchConnector
-import connectors.agent.httpparsers.GetUsersForGroupsHttpParser.GetUsersForGroupsResponse
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.GetUsersForGroupResponse
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, _}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-trait MockUsersGroupsSearchConnector extends MockitoSugar with BeforeAndAfterEach{
+trait MockUsersGroupsSearchConnector extends MockitoSugar with BeforeAndAfterEach {
   this: Suite =>
 
   override def beforeEach(): Unit = {
@@ -36,10 +36,10 @@ trait MockUsersGroupsSearchConnector extends MockitoSugar with BeforeAndAfterEac
 
   val mockUsersGroupsSearchConnector: UsersGroupsSearchConnector = mock[UsersGroupsSearchConnector]
 
-  def mockGetUsersForGroups(groupId: String)(response: Future[GetUsersForGroupsResponse]): Unit = {
-    when(mockUsersGroupsSearchConnector.getUsersForGroups(
+  def mockGetUsersForGroups(groupId: String)(response: GetUsersForGroupResponse): Unit = {
+    when(mockUsersGroupsSearchConnector.getUsersForGroup(
       ArgumentMatchers.eq(groupId)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
   }
 
 }

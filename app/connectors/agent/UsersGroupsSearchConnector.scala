@@ -16,7 +16,7 @@
 
 package connectors.agent
 
-import connectors.agent.httpparsers.GetUsersForGroupsHttpParser._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser._
 import core.config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -25,9 +25,11 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UsersGroupsSearchConnector @Inject()(val http:HttpClient, appConfig: FrontendAppConfig)
+class UsersGroupsSearchConnector @Inject()(val http: HttpClient, appConfig: FrontendAppConfig)
                                           (implicit ec: ExecutionContext) {
 
-  def getUsersForGroups(groupID: String)(implicit hc:HeaderCarrier): Future[GetUsersForGroupsResponse] = http.GET(appConfig.getUsersForGroupsUrl(groupID))
+  def getUsersForGroup(groupID: String)(implicit hc:HeaderCarrier): Future[GetUsersForGroupResponse] = {
+    http.GET(appConfig.getUsersForGroupUrl(groupID))
+  }
 
 }

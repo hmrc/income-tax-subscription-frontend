@@ -1,8 +1,8 @@
 
 package connectors.stubs
 
-import connectors.agent.httpparsers.GetUsersForGroupsHttpParser.UserReads.{credentialRoleKey, userIdKey}
-import connectors.agent.httpparsers.GetUsersForGroupsHttpParser.CredentialRoleReads._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UserReads.{credentialRoleKey, userIdKey}
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.CredentialRoleReads._
 import helpers.servicemocks.WireMockMethods
 import play.api.libs.json.{JsArray, JsValue, Json}
 import helpers.IntegrationTestConstants._
