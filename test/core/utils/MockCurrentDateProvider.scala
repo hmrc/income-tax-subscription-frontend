@@ -18,7 +18,7 @@ package core.utils
 
 import java.time.LocalDate
 
-import incometax.util.CurrentDateProvider
+import incometax.CurrentDateProvider
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 

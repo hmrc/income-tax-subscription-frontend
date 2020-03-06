@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import agent.services.mocks.MockKeystoreService
+import services.agent.mocks.MockKeystoreService
 import agent.utils.TestModels
 import core.config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm

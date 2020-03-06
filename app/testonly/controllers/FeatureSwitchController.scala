@@ -20,11 +20,11 @@ import core.auth.BaseFrontendController
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitch._
 import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
-import core.services.AuthService
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.AuthService
 import testonly.connectors.{BackendFeatureSwitchConnector, EligibilityFeatureSwitchConnector}
 import testonly.models.FeatureSwitchSetting
 import testonly.views.html.feature_switch

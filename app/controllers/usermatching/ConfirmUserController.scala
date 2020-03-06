@@ -20,14 +20,13 @@ import core.ITSASessionKeys._
 import core.auth.JourneyState._
 import core.auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
+import services.{AuthService, LockoutUpdate, UserLockoutService, UserMatchingService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import usermatching.services.{LockoutUpdate, UserLockoutService, UserMatchingService}
 
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}

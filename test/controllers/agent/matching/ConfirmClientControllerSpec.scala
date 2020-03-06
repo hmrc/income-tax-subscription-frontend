@@ -18,19 +18,19 @@ package controllers.agent.matching
 
 import agent.auth.AgentUserMatched
 import agent.services._
-import agent.services.mocks.{MockAgentQualificationService, MockKeystoreService}
+import services.agent.mocks.{MockAgentQualificationService, MockKeystoreService}
 import agent.utils.{TestConstants, TestModels}
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.{AgentControllerBaseSpec, ITSASessionKeys}
 import core.config.MockConfig
-import incometax.eligibility.services.mocks.MockGetEligibilityStatusService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.{await, _}
+import services.agent.{AgentQualificationService, ApprovedAgent, ClientAlreadySubscribed, NoClientDetails, NoClientMatched, UnApprovedAgent, UnexpectedFailure, UnqualifiedAgent}
+import services.mocks.{MockGetEligibilityStatusService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
-import usermatching.services.mocks.MockUserLockoutService
 
 import scala.concurrent.Future
 

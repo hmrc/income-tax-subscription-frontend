@@ -17,7 +17,7 @@
 package controllers.agent
 
 import agent.auth.{AgentRegistration, AgentSignUp, AgentUserMatched, AgentUserMatching}
-import agent.services.mocks.MockAgentAuthService
+import services.agent.mocks.MockAgentAuthService
 import agent.utils.TestConstants
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer

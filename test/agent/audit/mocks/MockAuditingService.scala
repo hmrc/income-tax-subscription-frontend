@@ -16,11 +16,11 @@
 
 package agent.audit.mocks
 
-import agent.audit.{AuditModel, AuditingService}
 import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import services.agent.{AuditModel, AuditingService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext

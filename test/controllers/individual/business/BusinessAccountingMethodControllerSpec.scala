@@ -19,7 +19,7 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch._
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.AccountingMethodForm
 import models.individual.business.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}

@@ -23,10 +23,11 @@ import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import services.AuthService
+import services.individual.KeystoreService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.incometax.subscription.sign_up_complete
 

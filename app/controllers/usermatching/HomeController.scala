@@ -19,20 +19,17 @@ package controllers.usermatching
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import core.ITSASessionKeys._
-import core.audit.Logging
 import core.auth.JourneyState._
 import core.auth._
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
-import incometax.eligibility.services.GetEligibilityStatusService
-import incometax.subscription.services.SubscriptionService
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.{AuthService, GetEligibilityStatusService, SubscriptionService}
+import services.individual._
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.services.{CitizenDetailsService, OptionalIdentifiers}
 
 import scala.concurrent.{ExecutionContext, Future}
 

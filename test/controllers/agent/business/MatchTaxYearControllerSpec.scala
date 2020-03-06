@@ -16,7 +16,7 @@
 
 package controllers.agent.business
 
-import agent.services.mocks.MockKeystoreService
+import services.agent.mocks.MockKeystoreService
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.MatchTaxYearForm
 import forms.submapping.YesNoMapping

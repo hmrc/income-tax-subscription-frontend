@@ -19,13 +19,14 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch._
-import core.services.mocks.{MockAccountingPeriodService, MockKeystoreService}
+import services.individual.mocks.MockKeystoreService
 import forms.individual.business.AccountingYearForm
 import models.Current
 import models.individual.business.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.mocks.MockAccountingPeriodService
 
 import scala.concurrent.Future
 

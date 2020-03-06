@@ -16,7 +16,7 @@
 
 package agent.audit
 
-import agent.audit.AuditingService._
+import services.agent.AuditingService._
 import agent.audit.models.ClientMatchingAuditing._
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
+import services.agent.AuditingService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 

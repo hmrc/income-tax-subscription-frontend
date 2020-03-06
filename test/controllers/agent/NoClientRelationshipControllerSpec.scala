@@ -17,11 +17,11 @@
 package controllers.agent
 
 import agent.assets.MessageLookup.{NoClientRelationship => messages}
-import agent.services.ClientRelationshipService
-import agent.services.mocks.MockKeystoreService
+import services.agent.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.agent.ClientRelationshipService
 
 class NoClientRelationshipControllerSpec
   extends AgentControllerBaseSpec

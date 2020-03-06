@@ -19,7 +19,7 @@ package controllers.individual.incomesource
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import forms.individual.incomesource.RentUkPropertyForm
 import models.individual.incomesource.RentUkPropertyModel
 import models.{No, Yes, YesNo}

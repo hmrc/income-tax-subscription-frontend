@@ -20,7 +20,8 @@ import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.{EnrolmentAs
 import connectors.agent.mocks.MockEnrolmentStoreProxyConnector
 import org.scalatest.{Matchers, WordSpec}
 import play.api.test.Helpers._
-import services.AssignEnrolmentToUserService.{EnrolmentAssignedToUsers, EnrolmentAssignmentFailed}
+import services.agent.AssignEnrolmentToUserService
+import services.agent.AssignEnrolmentToUserService.{EnrolmentAssignedToUsers, EnrolmentAssignmentFailed}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global

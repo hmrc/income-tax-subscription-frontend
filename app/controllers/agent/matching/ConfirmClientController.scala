@@ -18,20 +18,18 @@ package controllers.agent.matching
 
 import agent.auth.AgentJourneyState._
 import agent.auth._
-import agent.services._
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.ITSASessionKeys
 import controllers.agent.ITSASessionKeys.FailedClientMatching
 import core.config.BaseControllerConfig
-import core.services.AuthService
-import incometax.eligibility.services.GetEligibilityStatusService
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.Html
+import services.agent._
+import services.{AuthService, GetEligibilityStatusService, LockoutUpdate, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.services.{LockoutUpdate, UserLockoutService}
 
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}

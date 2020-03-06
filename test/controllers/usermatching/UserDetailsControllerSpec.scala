@@ -20,7 +20,7 @@ import assets.MessageLookup.{UserDetails => messages}
 import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.auth.UserMatching
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import core.utils.TestConstants._
 import forms.usermatching.UserDetailsForm
 import models.DateModel
@@ -30,8 +30,8 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
+import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
-import usermatching.services.mocks.MockUserLockoutService
 
 import scala.concurrent.Future
 

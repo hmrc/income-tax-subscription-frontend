@@ -19,7 +19,6 @@ package controllers.individual.business
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.CacheUtil._
-import core.services.{AuthService, KeystoreService}
 import forms.individual.business.MatchTaxYearForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.MatchTaxYearModel
@@ -29,6 +28,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.Html
+import services.AuthService
+import services.individual.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -21,9 +21,8 @@ import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.auth.Registration
 import core.config.MockConfig
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.{MockAddressLookupService, MockKeystoreService}
 import core.utils.TestModels._
-import incometax.business.services.mocks.MockAddressLookupService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest

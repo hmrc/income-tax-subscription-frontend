@@ -17,9 +17,8 @@
 package controllers.individual.subscription
 
 import controllers.ControllerBaseSpec
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
 import core.utils.TestConstants._
-import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

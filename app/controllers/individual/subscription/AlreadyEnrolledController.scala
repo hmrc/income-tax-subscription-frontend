@@ -18,9 +18,9 @@ package controllers.individual.subscription
 
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
+import services.AuthService
 
 import scala.concurrent.ExecutionContext
 

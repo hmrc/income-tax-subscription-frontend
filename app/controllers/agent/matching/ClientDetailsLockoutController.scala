@@ -20,14 +20,13 @@ import java.time.{Duration, LocalTime}
 
 import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import core.utils.Implicits._
 import javax.inject.Inject
 import models.usermatching.{LockedOut, NotLockedOut}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.{AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.services.UserLockoutService
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -19,7 +19,6 @@ package views.individual.incometax.subscription
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import core.utils.{TestModels, UnitTestTrait}
-import incometax.util.AccountingPeriodUtil._
 import models.DateModel
 import models.individual.business._
 import models.individual.business.address.Address
@@ -30,8 +29,9 @@ import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import views.individual.helpers.SummaryIdConstants._
+import incometax.AccountingPeriodUtil.getCurrentTaxEndYear
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 

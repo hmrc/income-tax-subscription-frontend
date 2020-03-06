@@ -19,19 +19,16 @@ package controllers.usermatching
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
-import core.audit.Logging
 import core.auth.Registration
 import core.config.MockConfig
-import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
-import incometax.eligibility.services.mocks.MockGetEligibilityStatusService
-import incometax.subscription.services.mocks.MockSubscriptionService
 import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
+import services.individual.mocks.MockKeystoreService
+import services.mocks.{MockCitizenDetailsService, MockGetEligibilityStatusService, MockSubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.services.mocks.MockCitizenDetailsService
 
 import scala.concurrent.Future
 

@@ -18,10 +18,10 @@ package testonly.controllers
 
 
 import core.config.AppConfig
-import core.services.AuthService
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import services.AuthService
 import testonly.connectors.EnrolmentStoreStubConnector
 import testonly.form.UpdateEnrolmentsForm
 import testonly.views.html.individual.update_enrolments

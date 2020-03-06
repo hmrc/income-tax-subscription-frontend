@@ -20,13 +20,13 @@ import core.ITSASessionKeys
 import core.auth.AuthPredicate.AuthPredicateSuccess
 import core.auth.JourneyState._
 import core.config.AppConfig
-import core.services.mocks.MockAuthService
 import core.utils.UnitTestTrait
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._

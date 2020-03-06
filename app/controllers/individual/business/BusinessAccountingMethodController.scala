@@ -19,7 +19,6 @@ package controllers.individual.business
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.CacheUtil.CacheMapUtil
-import core.services.{AuthService, KeystoreService}
 import forms.individual.business.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.{AccountingMethodModel, MatchTaxYearModel}
@@ -30,6 +29,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.AuthService
+import services.individual.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

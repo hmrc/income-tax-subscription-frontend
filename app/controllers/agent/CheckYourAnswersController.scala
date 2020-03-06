@@ -18,14 +18,14 @@ package controllers.agent
 
 import agent.audit.Logging
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
-import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
-import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.AuthService
+import services.agent.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 

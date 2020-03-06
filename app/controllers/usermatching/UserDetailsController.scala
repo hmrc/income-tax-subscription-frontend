@@ -18,7 +18,6 @@ package controllers.usermatching
 
 import core.auth.{IncomeTaxSAUser, UserMatchingController}
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
 import forms.usermatching.UserDetailsForm
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{NotLockedOut, UserDetailsModel}
@@ -26,8 +25,9 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
+import services.{AuthService, UserLockoutService}
+import services.individual.KeystoreService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import usermatching.services.UserLockoutService
 
 import scala.concurrent.{ExecutionContext, Future}
 

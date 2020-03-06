@@ -20,13 +20,13 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import core.ITSASessionKeys
 import core.auth.{Registration, SignUp, UserMatching}
-import core.services.mocks.MockAuthService
 import core.utils.TestConstants
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
+import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 
 trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {

@@ -21,12 +21,12 @@ import java.util.UUID
 import connectors.PaperlessPreferenceTokenConnector
 import core.auth.StatelessController
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import javax.inject.Inject
 import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
+import services.AuthService
 import testonly.models.preferences.{AddTokenRequest, AddTokenResponse}
 import uk.gov.hmrc.http._
 

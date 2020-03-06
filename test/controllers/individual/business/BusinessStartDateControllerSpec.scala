@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels.testBusinessStartDate
 import forms.individual.business.BusinessStartDateForm
 import forms.submapping.YesNoMapping.{option_no, option_yes}

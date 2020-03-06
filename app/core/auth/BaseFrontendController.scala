@@ -19,10 +19,10 @@ package core.auth
 import core.auth.AuthPredicate._
 import core.auth.JourneyState.{RequestFunctions, SessionFunctions}
 import core.config.{AppConfig, BaseControllerConfig}
-import core.services.AuthService
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.AuthService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}

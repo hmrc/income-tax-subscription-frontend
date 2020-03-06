@@ -7,7 +7,7 @@ import core.Constants
 import core.Constants.GovernmentGateway._
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
-import incometax.util.AccountingPeriodUtil
+import incometax.AccountingPeriodUtil
 import models._
 import models.individual.business._
 import models.individual.business.address.{Address, Country, ReturnedAddress}

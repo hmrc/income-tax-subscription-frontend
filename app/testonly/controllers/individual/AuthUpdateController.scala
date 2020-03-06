@@ -20,11 +20,11 @@ package testonly.controllers.individual
 
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Result}
+import services.AuthService
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -25,7 +25,7 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.{keystoreData, _}
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
-import incometax.util.AccountingPeriodUtil
+import incometax.AccountingPeriodUtil
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.{Both, Business}

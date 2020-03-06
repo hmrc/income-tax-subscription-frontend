@@ -18,13 +18,13 @@ package controllers.individual.business
 
 import core.auth.RegistrationController
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
-import incometax.business.services.AddressLookupService
 import javax.inject.{Inject, Singleton}
 import models.individual.business.address._
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.AuthService
+import services.individual.{AddressLookupService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -22,12 +22,12 @@ import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.connectors.models.{ConnectorError, KeystoreMissingError}
 import core.services.CacheConstants.MtditId
-import core.services.{AuthService, KeystoreService}
-import incometax.subscription.services.SubscriptionOrchestrationService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.AuthService
+import services.individual.{KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}

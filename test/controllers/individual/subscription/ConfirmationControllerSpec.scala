@@ -22,7 +22,7 @@ import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.audit.Logging
 import core.config.featureswitch.FeatureSwitching
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._

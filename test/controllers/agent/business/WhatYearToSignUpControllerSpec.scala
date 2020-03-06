@@ -16,17 +16,17 @@
 
 package controllers.agent.business
 
-import agent.services.mocks.MockKeystoreService
+import services.agent.mocks.MockKeystoreService
 import controllers.agent.AgentControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import core.services.mocks.MockAccountingPeriodService
 import forms.agent.AccountingYearForm
 import models.Current
 import models.agent.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.mocks.MockAccountingPeriodService
 
 import scala.concurrent.Future
 

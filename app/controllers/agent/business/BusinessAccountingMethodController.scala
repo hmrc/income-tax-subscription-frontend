@@ -17,12 +17,10 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import agent.services.KeystoreService
 import controllers.utils.AgentAnswers._
 import controllers.utils.AgentRequireAnswer
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
-import core.services.AuthService
 import forms.agent.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
 import models.agent.AccountingMethodModel
@@ -34,6 +32,8 @@ import play.api.i18n.MessagesApi
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.AuthService
+import services.agent.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

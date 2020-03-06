@@ -17,7 +17,7 @@
 package controllers.agent.matching
 
 import agent.assets.MessageLookup.{ClientDetails => messages}
-import agent.services.mocks.MockKeystoreService
+import services.agent.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.ClientDetailsForm
@@ -28,8 +28,8 @@ import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
+import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
-import usermatching.services.mocks.MockUserLockoutService
 
 import scala.concurrent.Future
 
