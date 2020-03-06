@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
-import core.services.{AccountingPeriodService, AuthService, KeystoreService}
 import forms.individual.business.AccountingPeriodDateForm
 import javax.inject.{Inject, Singleton}
 import models.Yes
@@ -28,6 +27,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.{AccountingPeriodService, AuthService}
+import services.individual.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

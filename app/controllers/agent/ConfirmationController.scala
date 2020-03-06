@@ -19,12 +19,12 @@ package controllers.agent
 import agent.audit.Logging
 import agent.auth.PostSubmissionController
 import agent.services.CacheUtil._
-import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import services.AuthService
+import services.agent.KeystoreService
 import views.html.agent.sign_up_complete
 
 import scala.concurrent.ExecutionContext

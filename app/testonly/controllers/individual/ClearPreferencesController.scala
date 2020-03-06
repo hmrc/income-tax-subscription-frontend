@@ -19,12 +19,12 @@ package testonly.controllers.individual
 import connectors.PreferenceFrontendConnector
 import core.auth.StatelessController
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
+import services.AuthService
 import testonly.connectors.individual.ClearPreferencesConnector
 import testonly.form.individual.ClearPreferencesForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}

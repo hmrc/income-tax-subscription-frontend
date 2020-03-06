@@ -16,7 +16,7 @@
 
 package controllers.agent.business
 
-import agent.services.mocks.MockKeystoreService
+import services.agent.mocks.MockKeystoreService
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
 import core.config.featureswitch.FeatureSwitching

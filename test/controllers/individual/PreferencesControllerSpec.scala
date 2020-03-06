@@ -19,9 +19,8 @@ package controllers.individual
 import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.config.featureswitch.FeatureSwitching
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import core.utils.TestConstants._
-import digitalcontact.services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
@@ -29,6 +28,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService}
 
 import scala.concurrent.Future
 

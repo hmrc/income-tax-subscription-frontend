@@ -21,10 +21,9 @@ import core.audit.Logging
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import core.services.CacheUtil._
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
 import core.utils.TestConstants._
 import core.utils.TestModels._
-import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
 import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

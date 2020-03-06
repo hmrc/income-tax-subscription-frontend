@@ -17,10 +17,8 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import agent.services.KeystoreService
+import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
-import core.config.{AppConfig, BaseControllerConfig}
-import core.services.{AccountingPeriodService, AuthService}
 import forms.agent.AccountingYearForm
 import javax.inject.Inject
 import models.agent.AccountingYearModel
@@ -28,6 +26,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.{AccountingPeriodService, AuthService}
+import services.agent.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

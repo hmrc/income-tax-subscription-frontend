@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import forms.individual.business.BusinessNameForm
 import models.individual.business.BusinessNameModel
 import play.api.http.Status

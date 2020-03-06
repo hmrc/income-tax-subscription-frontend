@@ -19,10 +19,11 @@ package controllers.individual.incomesource
 import core.audit.Logging
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import services.AuthService
+import services.individual.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

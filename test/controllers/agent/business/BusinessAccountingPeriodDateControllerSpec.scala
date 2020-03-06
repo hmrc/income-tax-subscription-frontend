@@ -17,19 +17,19 @@
 package controllers.agent.business
 
 import agent.assets.MessageLookup
-import agent.services.mocks.MockKeystoreService
+import services.agent.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
-import core.services.mocks.MockAccountingPeriodService
 import core.utils.TestModels
 import forms.agent.AccountingPeriodDateForm
-import incometax.util.CurrentDateProvider
+import incometax.CurrentDateProvider
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.mocks.MockAccountingPeriodService
 
 import scala.concurrent.Future
 

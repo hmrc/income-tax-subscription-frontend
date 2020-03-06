@@ -20,13 +20,13 @@ package testonly.controllers.individual
 
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
-import core.services.AuthService
-import incometax.subscription.services.KnownFactsService
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.AuthService
+import services.individual.KnownFactsService
 import testonly.form.individual.KnownFactsForm._
 import testonly.models.KnownFactsModel
 import testonly.views.html.individual.add_known_facts

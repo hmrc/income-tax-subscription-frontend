@@ -18,7 +18,7 @@ package core.utils
 
 import java.time.LocalDate
 
-import incometax.util.CurrentDateProvider
+import incometax.CurrentDateProvider
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import uk.gov.hmrc.play.test.UnitSpec
 

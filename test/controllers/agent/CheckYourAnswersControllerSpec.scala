@@ -18,7 +18,7 @@ package controllers.agent
 
 import agent.audit.Logging
 import agent.services.CacheUtil._
-import agent.services.mocks._
+import services.agent.mocks._
 import agent.utils.TestConstants.{testNino, _}
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap

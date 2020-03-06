@@ -18,11 +18,11 @@ package controllers.agent.matching
 
 import agent.auth.UserMatchingController
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import core.utils.Implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import services.AuthService
 
 import scala.concurrent.ExecutionContext
 

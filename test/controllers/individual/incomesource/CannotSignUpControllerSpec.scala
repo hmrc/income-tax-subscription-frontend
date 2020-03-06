@@ -20,7 +20,7 @@ import assets.MessageLookup.{CannotSignUp => messages}
 import controllers.ControllerBaseSpec
 import core.audit.Logging
 import core.config.featureswitch.FeatureSwitching
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

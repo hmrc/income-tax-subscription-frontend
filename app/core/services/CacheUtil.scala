@@ -18,7 +18,7 @@ package core.services
 
 import core.config.AppConfig
 import core.services.CacheConstants._
-import incometax.util.AccountingPeriodUtil.getCurrentTaxYear
+import incometax.AccountingPeriodUtil.getCurrentTaxYear
 import models.individual.business._
 import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}

@@ -19,15 +19,15 @@ package controllers.individual.subscription
 import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
-import core.config.{AppConfig, BaseControllerConfig}
-import core.services.{AuthService, KeystoreService}
-import incometax.subscription.services.SubscriptionOrchestrationService
+import core.config.BaseControllerConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription._
 import models.{No, Yes}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.AuthService
+import services.individual.{KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -93,7 +93,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                 processFunc(user)(request)(cache)
               case (Some(MatchTaxYearModel(No)), _) =>
                 Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(
-                                                                                                                editMode = true, editMatch = true)))
+                  editMode = true, editMatch = true)))
               case _ => throw new InternalServerException("Required answers have not been answered by the user")
             }
           }

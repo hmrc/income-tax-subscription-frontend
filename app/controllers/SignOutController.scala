@@ -19,9 +19,9 @@ package controllers
 import java.net.URLEncoder
 
 import core.config.AppConfig
-import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, Request}
+import services.AuthService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.http.InternalServerException

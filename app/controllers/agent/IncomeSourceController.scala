@@ -17,10 +17,8 @@
 package controllers.agent
 
 import agent.auth.AuthenticatedController
-import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
-import core.services.AuthService
 import forms.agent.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
@@ -28,6 +26,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
+import services.AuthService
+import services.agent.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

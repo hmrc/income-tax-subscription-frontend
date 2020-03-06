@@ -19,7 +19,6 @@ package controllers.usermatching
 import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.auth.{UserMatched, UserMatching}
-import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
 import core.utils.{TestConstants, TestModels}
 import models.usermatching.UserDetailsModel
@@ -28,8 +27,9 @@ import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
+import services.individual.mocks.MockKeystoreService
+import services.mocks.{MockUserLockoutService, MockUserMatchingService}
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
-import usermatching.services.mocks.{MockUserLockoutService, MockUserMatchingService}
 
 import scala.concurrent.Future
 

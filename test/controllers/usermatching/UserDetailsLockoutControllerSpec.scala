@@ -30,9 +30,9 @@ import play.api.i18n.Messages.Implicits.applicationMessagesApi
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Cookie, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
+import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.language.LanguageUtils.WelshLangCode
-import usermatching.services.mocks.MockUserLockoutService
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService {

@@ -20,7 +20,7 @@ import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.auth.Registration
 import core.config.MockConfig
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import core.utils.TestConstants._
 import forms.individual.business.BusinessPhoneNumberForm
 import models.individual.business.BusinessPhoneNumberModel

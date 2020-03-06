@@ -16,7 +16,7 @@
 
 package controllers.utils
 
-import agent.services.{CacheConstants, KeystoreService}
+import agent.services.CacheConstants
 import models.agent.AccountingMethodModel
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.Both
@@ -30,6 +30,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
+import services.agent.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 

@@ -20,7 +20,7 @@ import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import core.utils.TestModels.{testAccountingPeriod, testAgentSummaryData, testBusinessName}
 import core.utils.{TestModels, UnitTestTrait}
-import incometax.util.AccountingPeriodUtil
+import incometax.AccountingPeriodUtil
 import models.individual.business._
 import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}

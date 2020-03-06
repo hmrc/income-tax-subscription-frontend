@@ -19,7 +19,7 @@ package controllers.individual.incomesource
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import core.services.mocks.MockKeystoreService
+import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import models.individual.incomesource.AreYouSelfEmployedModel

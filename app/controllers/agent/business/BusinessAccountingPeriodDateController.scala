@@ -18,12 +18,10 @@ package controllers.agent.business
 
 import agent.auth.AuthenticatedController
 import agent.services.CacheUtil._
-import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.services.{AccountingPeriodService, AuthService}
 import core.utils.Implicits._
 import forms.agent.AccountingPeriodDateForm
-import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
+import incometax.{AccountingPeriodUtil, CurrentDateProvider}
 import javax.inject.{Inject, Singleton}
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.{Both, IncomeSourceType}
@@ -31,6 +29,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.{AccountingPeriodService, AuthService}
+import services.agent.KeystoreService
 
 import scala.concurrent.ExecutionContext
 

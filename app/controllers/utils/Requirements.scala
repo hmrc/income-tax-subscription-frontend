@@ -16,13 +16,13 @@
 
 package controllers.utils
 
-import agent.services.KeystoreService
 import models.agent.AccountingMethodModel
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.IncomeSourceType
 import play.api.libs.functional.~
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
+import services.agent.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 

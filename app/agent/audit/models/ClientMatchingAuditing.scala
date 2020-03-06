@@ -16,8 +16,8 @@
 
 package agent.audit.models
 
-import agent.audit.AuditModel
 import models.usermatching.UserDetailsModel
+import services.agent.AuditModel
 
 object ClientMatchingAuditing {
   val clientMatchingTransactionName = "ITSAMatchingRequest"

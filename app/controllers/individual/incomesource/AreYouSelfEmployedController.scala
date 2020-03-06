@@ -19,7 +19,6 @@ package controllers.individual.incomesource
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.CacheUtil._
-import core.services.{AuthService, KeystoreService}
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import javax.inject.{Inject, Singleton}
 import models.individual.incomesource.AreYouSelfEmployedModel
@@ -28,6 +27,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
+import services.AuthService
+import services.individual.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

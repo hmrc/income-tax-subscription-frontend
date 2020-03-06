@@ -17,7 +17,7 @@
 package controllers.agent
 
 import agent.audit.Logging
-import agent.services.mocks.MockKeystoreService
+import services.agent.mocks.MockKeystoreService
 import agent.utils.TestModels._
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._

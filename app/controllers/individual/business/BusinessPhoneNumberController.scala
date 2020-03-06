@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import core.auth.RegistrationController
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
 import forms.individual.business.BusinessPhoneNumberForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.BusinessPhoneNumberModel
@@ -26,6 +25,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.AuthService
+import services.individual.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -18,10 +18,8 @@ package controllers.agent.business
 
 import agent.auth.AuthenticatedController
 import agent.services.CacheUtil.CacheMapUtil
-import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
-import core.services.AuthService
 import forms.agent.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.agent.AccountingMethodPropertyModel
@@ -30,6 +28,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.AuthService
+import services.agent.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

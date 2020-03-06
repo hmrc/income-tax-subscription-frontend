@@ -23,7 +23,7 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.keystoreData
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
-import incometax.util.AccountingPeriodUtil
+import incometax.AccountingPeriodUtil
 import models.agent.AccountingYearModel
 import models.{Current, Next}
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
