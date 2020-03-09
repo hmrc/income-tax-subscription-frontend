@@ -17,14 +17,13 @@
 package forms.individual.business
 
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
-import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
 import models.individual.business.BusinessPhoneNumberModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 object BusinessPhoneNumberForm {
 
@@ -34,21 +33,21 @@ object BusinessPhoneNumberForm {
 
   val numberEmpty: Constraint[String] = constraint[String](
     number => {
-      lazy val emptyNumber = ErrorMessageFactory.error("error.business_phone_number.empty")
+      lazy val emptyNumber = Invalid("error.business_phone_number.empty")
       if (number.isEmpty) emptyNumber else Valid
     }
   )
 
   val numberTooLong: Constraint[String] = constraint[String](
     number => {
-      lazy val tooLong = ErrorMessageFactory.error("error.business_phone_number.maxLength")
+      lazy val tooLong = Invalid("error.business_phone_number.maxLength")
       if (number.trim.length > phoneNumberMaxLength) tooLong else Valid
     }
   )
 
   val numberInvalid: Constraint[String] = constraint[String](
     number => {
-      lazy val invalidNumber = ErrorMessageFactory.error("error.business_phone_number.invalid")
+      lazy val invalidNumber = Invalid("error.business_phone_number.invalid")
       if (Patterns.validPhoneNumber(number.trim)) Valid else invalidNumber
     }
   )

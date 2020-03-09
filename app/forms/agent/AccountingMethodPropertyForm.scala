@@ -17,10 +17,10 @@
 package forms.agent
 
 import forms.submapping.AccountingMethodMapping
-import forms.validation.ErrorMessageFactory
 import models.agent.AccountingMethodPropertyModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.data.validation.Invalid
 
 object AccountingMethodPropertyForm {
 
@@ -30,8 +30,8 @@ object AccountingMethodPropertyForm {
     mapping(
       accountingMethodProperty -> AccountingMethodMapping(
 
-        errInvalid = ErrorMessageFactory.error("agent.error.accounting-method-property.invalid"),
-        errEmpty = Some(ErrorMessageFactory.error("agent.error.accounting-method-property.invalid"))
+        errInvalid = Invalid("agent.error.accounting-method-property.invalid"),
+        errEmpty = Some(Invalid("agent.error.accounting-method-property.invalid"))
       )
     )(AccountingMethodPropertyModel.apply)(AccountingMethodPropertyModel.unapply)
   )

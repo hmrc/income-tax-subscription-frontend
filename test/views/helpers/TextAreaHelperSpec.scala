@@ -27,6 +27,7 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 class TextAreaHelperSpec extends UnitTestTrait {
 
   private def textAreaHelper(field: Field,
+                             parentForm: Form[_],
                              label: String,
                              showLabel: Boolean,
                              maxLength: Option[Int] = None,
@@ -34,6 +35,7 @@ class TextAreaHelperSpec extends UnitTestTrait {
                              rows: Option[Int] = None) =
     views.html.helpers.textAreaHelper(
       field = field,
+      parentForm = parentForm,
       label = label,
       showLabel = showLabel,
       maxLength = maxLength,
@@ -57,7 +59,7 @@ class TextAreaHelperSpec extends UnitTestTrait {
 
     "output correctly when showLabel=true and max length specified" in {
       val testField = testForm(inputName)
-      val doc = textAreaHelper(testField, testLabel, showLabel = true, maxLength = testMaxLength, cols = testCols, rows = testRows).doc
+      val doc = textAreaHelper(testField,testForm, testLabel, showLabel = true, maxLength = testMaxLength, cols = testCols, rows = testRows).doc
 
       val label = doc.select("label")
       label.hasClass("hidden") mustBe false
@@ -72,7 +74,7 @@ class TextAreaHelperSpec extends UnitTestTrait {
 
     "output correctly when showLabel=false and max length not specified" in {
       val testField = testForm(inputName)
-      val doc = textAreaHelper(testField, testLabel, showLabel = false, maxLength = None, cols = testCols, rows = testRows).doc
+      val doc = textAreaHelper(testField, testForm, testLabel, showLabel = false, maxLength = None, cols = testCols, rows = testRows).doc
 
       val label = doc.select("label")
       label.hasClass("hidden") mustBe true

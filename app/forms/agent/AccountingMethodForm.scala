@@ -17,10 +17,10 @@
 package forms.agent
 
 import forms.submapping.AccountingMethodMapping
-import forms.validation.ErrorMessageFactory
 import models.agent.AccountingMethodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.data.validation.Invalid
 
 object AccountingMethodForm {
 
@@ -29,8 +29,8 @@ object AccountingMethodForm {
   val accountingMethodForm = Form(
     mapping(
       accountingMethod -> AccountingMethodMapping(
-        errInvalid = ErrorMessageFactory.error("agent.error.accounting-method.invalid"),
-        errEmpty = Some(ErrorMessageFactory.error("agent.error.accounting-method.empty"))
+        errInvalid = Invalid("agent.error.accounting-method.invalid"),
+        errEmpty = Some(Invalid("agent.error.accounting-method.empty"))
       )
     )(AccountingMethodModel.apply)(AccountingMethodModel.unapply)
   )

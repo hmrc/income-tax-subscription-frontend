@@ -16,16 +16,14 @@
 
 package forms.agent
 
-import agent.assets.MessageLookup
 import agent.utils.TestConstants
 import forms.submapping.DateMapping._
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils._
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
 
 class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
@@ -33,7 +31,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   val testClientFirstName = "Test client first name"
   val testClientLastName = "Test client last name"
-  val testClientNino = TestConstants.testNino
+  val testClientNino: String = TestConstants.testNino
   val dob = DateModel("01", "02", "1980")
 
   def setupTestData(fname: String = testClientFirstName,
@@ -65,27 +63,24 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the first name" should {
 
         "error if no name is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.client_details.first_name.empty")
-          errors fieldErrorIs MessageLookup.Error.ClientDetails.firstNameEmpty
-          errors summaryErrorIs MessageLookup.Error.ClientDetails.firstNameEmpty
+          val errors = "agent.error.client_details.first_name.empty"
+
           val testInput = setupTestData(fname = "")
-          clientDetailsForm.bind(testInput) assert clientFirstName hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientFirstName, errors))
         }
 
         "error if an invalid name is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.client_details.first_name.invalid")
-          errors fieldErrorIs MessageLookup.Error.ClientDetails.firstNameInvalid
-          errors summaryErrorIs MessageLookup.Error.ClientDetails.firstNameInvalid
+          val errors = "agent.error.client_details.first_name.invalid"
+
           val testInput = setupTestData(fname = "␢")
-          clientDetailsForm.bind(testInput) assert clientFirstName hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientFirstName, errors))
         }
 
         "error if a name which is too long is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.client_details.first_name.maxLength")
-          errors fieldErrorIs MessageLookup.Error.ClientDetails.firstNameMaxLength
-          errors summaryErrorIs MessageLookup.Error.ClientDetails.firstNameMaxLength
+          val errors = "agent.error.client_details.first_name.maxLength"
+
           val testInput = setupTestData(fname = "abc" * 100)
-          clientDetailsForm.bind(testInput) assert clientFirstName hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientFirstName, errors))
         }
 
       }
@@ -93,27 +88,24 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the last name" should {
 
         "Error if no last name is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.client_details.last_name.empty")
-          errors fieldErrorIs MessageLookup.Error.ClientDetails.lastNameEmpty
-          errors summaryErrorIs MessageLookup.Error.ClientDetails.lastNameEmpty
+          val errors = "agent.error.client_details.last_name.empty"
+
           val testInput = setupTestData(lname = "")
-          clientDetailsForm.bind(testInput) assert clientLastName hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientLastName, errors))
         }
 
         "Error if an invalid last name is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.client_details.last_name.invalid")
-          errors fieldErrorIs MessageLookup.Error.ClientDetails.lastNameInvalid
-          errors summaryErrorIs MessageLookup.Error.ClientDetails.lastNameInvalid
+          val errors = "agent.error.client_details.last_name.invalid"
+
           val testInput = setupTestData(lname = "␢")
-          clientDetailsForm.bind(testInput) assert clientLastName hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientLastName, errors))
         }
 
         "error if a name which is too long is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.client_details.last_name.maxLength")
-          errors fieldErrorIs MessageLookup.Error.ClientDetails.lastNameMaxLength
-          errors summaryErrorIs MessageLookup.Error.ClientDetails.lastNameMaxLength
+          val errors = "agent.error.client_details.last_name.maxLength"
+
           val testInput = setupTestData(lname = "abc" * 100)
-          clientDetailsForm.bind(testInput) assert clientLastName hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientLastName, errors))
         }
 
       }
@@ -121,19 +113,17 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the NINO" should {
 
         "error if no NINO is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.nino.empty")
-          errors fieldErrorIs MessageLookup.Error.Nino.empty
-          errors summaryErrorIs MessageLookup.Error.Nino.empty
+          val errors = "agent.error.nino.empty"
+
           val testInput = setupTestData(nino = "")
-          clientDetailsForm.bind(testInput) assert clientNino hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientNino, errors))
         }
 
         "error if an invalid NINO is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.nino.invalid")
-          errors fieldErrorIs MessageLookup.Error.Nino.invalid
-          errors summaryErrorIs MessageLookup.Error.Nino.invalid
+          val errors = "agent.error.nino.invalid"
+
           val testInput = setupTestData(nino = "3456677")
-          clientDetailsForm.bind(testInput) assert clientNino hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientNino, errors))
         }
 
       }
@@ -141,59 +131,52 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the DoB" should {
 
         "error if no DoB is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.dob_date.empty")
-          errors fieldErrorIs MessageLookup.Error.DOBDate.empty
-          errors summaryErrorIs MessageLookup.Error.DOBDate.empty
+          val errors = "agent.error.dob_date.empty"
+
           val testInput = setupTestData(dob = DateModel("", "", ""))
-          clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
         }
 
         "error if a none numeric day is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
-          errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
-          errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
+          val errors = "agent.error.dob_date.invalid_chars"
+
           val testInput = setupTestData(dob = DateModel("aa", "10", "1990"))
-          clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
         }
 
         "error if a none numeric month is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
-          errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
-          errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
+          val errors = "agent.error.dob_date.invalid_chars"
+
           val testInput = setupTestData(dob = DateModel("01", "aa", "1990"))
-          clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
         }
 
         "error if a none numeric year is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
-          errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
-          errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
+          val errors = "agent.error.dob_date.invalid_chars"
+
           val testInput = setupTestData(dob = DateModel("01", "12", "aa"))
-          clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
         }
 
         "error if an invalid numeric day is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
-          errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
-          errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
+          val errors = "agent.error.dob_date.invalid"
+
           val testInput = setupTestData(dob = DateModel("56", "10", "1990"))
-          clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
         }
 
         "error if an invalid numeric month is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
-          errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
-          errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
+          val errors = "agent.error.dob_date.invalid"
+
           val testInput = setupTestData(dob = DateModel("01", "15", "1990"))
-          clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
         }
 
         "error if an invalid numeric year is supplied" in {
-          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
-          errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
-          errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
+          val errors = "agent.error.dob_date.invalid"
+
           val testInput = setupTestData(dob = DateModel("01", "12", "1234567899"))
-          clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
+          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
         }
       }
     }

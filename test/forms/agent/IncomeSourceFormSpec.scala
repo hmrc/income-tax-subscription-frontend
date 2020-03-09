@@ -16,14 +16,12 @@
 
 package forms.agent
 
-import agent.assets.MessageLookup
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.individual.subscription.Business
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
 
 class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
 
@@ -39,34 +37,30 @@ class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
       actual shouldBe Some(expected)
     }
 
-    "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("agent.error.income_source.invalid")
-      val invalid = ErrorMessageFactory.error("agent.error.income_source.invalid")
+    "validate income type correctly" should {
+      val empty = "agent.error.income_source.invalid"
+      val invalid = "agent.error.income_source.invalid"
 
-      empty fieldErrorIs MessageLookup.Error.IncomeSource.empty
-      empty summaryErrorIs MessageLookup.Error.IncomeSource.empty
+      "fail when nothing has been entered in the view" in {
+        val res = incomeSourceForm.bind(Map.empty[String, String])
+        res.errors should contain(FormError(incomeSource, empty))
+      }
 
-      invalid fieldErrorIs MessageLookup.Error.IncomeSource.invalid
-      invalid summaryErrorIs MessageLookup.Error.IncomeSource.invalid
-
-      val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = incomeSourceForm.bind(emptyInput0)
-      emptyTest0 assert incomeSource hasExpectedErrors empty
-
-      val emptyInput = DataMap.incomeSource("")
-      val emptyTest = incomeSourceForm.bind(emptyInput)
-      emptyTest assert incomeSource hasExpectedErrors empty
-
-      val invalidInput = DataMap.incomeSource("α")
-      val invalidTest = incomeSourceForm.bind(invalidInput)
-      invalidTest assert incomeSource hasExpectedErrors invalid
+      "fail when it is not an expected value in the view" in {
+        val res = incomeSourceForm.bind(Map(incomeSource -> "invalid"))
+        res.errors should contain(FormError(incomeSource, invalid))
+      }
     }
 
-    "The following submission should be valid" in {
+    "The Business submission should be valid" in {
       val testBusiness = DataMap.incomeSource(option_business)
       incomeSourceForm isValidFor testBusiness
+    }
+    "The Property submission should be valid" in {
       val testProperty = DataMap.incomeSource(option_property)
       incomeSourceForm isValidFor testProperty
+    }
+    "The Both business and property submission should be valid" in {
       val testBoth = DataMap.incomeSource(option_both)
       incomeSourceForm isValidFor testBoth
     }

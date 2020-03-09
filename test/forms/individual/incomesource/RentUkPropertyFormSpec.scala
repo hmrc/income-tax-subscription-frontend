@@ -19,13 +19,14 @@ package forms.individual.incomesource
 import assets.MessageLookup
 import forms.individual.incomesource.RentUkPropertyForm._
 import forms.submapping.YesNoMapping
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.individual.incomesource.RentUkPropertyModel
 import models.{No, Yes}
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import play.api.data.FormError
+import play.api.data.validation.Invalid
 import play.api.i18n.Messages.Implicits._
 
 class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
@@ -57,49 +58,48 @@ class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
       actual shouldBe Some(expected)
     }
 
-    "validate income type correctly" in {
-      val emptyRentUkProperty = ErrorMessageFactory.error("error.rent-uk-property.empty")
-      val invalidRentUkProperty = ErrorMessageFactory.error("error.rent-uk-property.invalid")
-      val emptyOnlyIncomeSource = ErrorMessageFactory.error("error.rent-uk-property.only-source-empty")
-      val invalidOnlyIncomeSource = ErrorMessageFactory.error("error.rent-uk-property.only-source-invalid")
+    "validate income type correctly" when {
+      val emptyRentUkProperty = "error.rent-uk-property.empty"
+      val invalidRentUkProperty = "error.rent-uk-property.invalid"
+      val emptyOnlyIncomeSource = "error.rent-uk-property.only-source-empty"
+      val invalidOnlyIncomeSource = "error.rent-uk-property.only-source-invalid"
 
-      emptyRentUkProperty fieldErrorIs MessageLookup.Error.RentUkProperty.emptyRentUkProperty
-      emptyRentUkProperty summaryErrorIs MessageLookup.Error.RentUkProperty.emptyRentUkProperty
+      "show an empty error when the map is empty" in {
+        val emptyInput0 = DataMap.EmptyMap
+        val emptyTest0 = rentUkPropertyForm.bind(emptyInput0)
+        emptyTest0.errors must contain(FormError(rentUkProperty, emptyRentUkProperty))
+      }
 
-      invalidRentUkProperty fieldErrorIs MessageLookup.Error.RentUkProperty.invalidRentUkProperty
-      invalidRentUkProperty summaryErrorIs MessageLookup.Error.RentUkProperty.invalidRentUkProperty
+      "show an empty error when the input is empty" in {
+        val emptyInput = DataMap.rentUkProperty("")
+        val emptyTest = rentUkPropertyForm.bind(emptyInput)
+        emptyTest.errors must contain(FormError(rentUkProperty, emptyRentUkProperty))
+      }
 
-      emptyOnlyIncomeSource fieldErrorIs MessageLookup.Error.RentUkProperty.emptyOnlyIncomeSource
-      emptyOnlyIncomeSource summaryErrorIs MessageLookup.Error.RentUkProperty.emptyOnlyIncomeSource
+      "show invalid when the input is invalid" in {
+        val invalidInput = DataMap.rentUkProperty("α")
+        val invalidTest = rentUkPropertyForm.bind(invalidInput)
+        invalidTest.errors must contain(FormError(rentUkProperty, invalidRentUkProperty))
+      }
 
-      invalidOnlyIncomeSource fieldErrorIs MessageLookup.Error.RentUkProperty.invalidOnlyIncomeSource
-      invalidOnlyIncomeSource summaryErrorIs MessageLookup.Error.RentUkProperty.invalidOnlyIncomeSource
+      "show an OnlyIncomeSource-empty error when the map is empty" in {
+        val emptyInputOnlyIncome0 = DataMap.rentUkProperty("Yes")
+        val emptyTestOnlyIncome0 = rentUkPropertyForm.bind(emptyInputOnlyIncome0)
+        emptyTestOnlyIncome0.errors must contain(FormError(onlySourceOfSelfEmployedIncome, emptyOnlyIncomeSource))
+      }
 
-      val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = rentUkPropertyForm.bind(emptyInput0)
-      emptyTest0 assert rentUkProperty hasExpectedErrors emptyRentUkProperty
+      "show an OnlyIncomeSource-empty error when the input is empty" in {
+        val emptyOnlyIncomeInput = DataMap.rentUkProperty("Yes", Some(""))
+        val emptyOnlyIncomeTest = rentUkPropertyForm.bind(emptyOnlyIncomeInput)
+        emptyOnlyIncomeTest.errors must contain(FormError(onlySourceOfSelfEmployedIncome, emptyOnlyIncomeSource))
+      }
 
-      val emptyInput = DataMap.rentUkProperty("")
-      val emptyTest = rentUkPropertyForm.bind(emptyInput)
-      emptyTest assert rentUkProperty hasExpectedErrors emptyRentUkProperty
-
-      val invalidInput = DataMap.rentUkProperty("α")
-      val invalidTest = rentUkPropertyForm.bind(invalidInput)
-      invalidTest assert rentUkProperty hasExpectedErrors invalidRentUkProperty
-
-      val emptyInputOnlyIncome0 = DataMap.rentUkProperty("Yes")
-      val emptyTestOnlyIncome0 = rentUkPropertyForm.bind(emptyInputOnlyIncome0)
-      emptyTestOnlyIncome0 assert onlySourceOfSelfEmployedIncome hasExpectedErrors emptyOnlyIncomeSource
-
-      val emptyOnlyIncomeInput = DataMap.rentUkProperty("Yes", Some(""))
-      val emptyOnlyIncomeTest = rentUkPropertyForm.bind(emptyOnlyIncomeInput)
-      emptyOnlyIncomeTest assert onlySourceOfSelfEmployedIncome hasExpectedErrors emptyOnlyIncomeSource
-
-      val invalidOnlyIncomeInput = DataMap.rentUkProperty("Yes", Some("α"))
-      val invalidOnlyIncomeTest = rentUkPropertyForm.bind(invalidOnlyIncomeInput)
-      invalidOnlyIncomeTest assert onlySourceOfSelfEmployedIncome hasExpectedErrors invalidOnlyIncomeSource
+      "show OnlyIncomeSource-invalid when the input is invalid" in {
+        val invalidOnlyIncomeInput = DataMap.rentUkProperty("Yes", Some("α"))
+        val invalidOnlyIncomeTest = rentUkPropertyForm.bind(invalidOnlyIncomeInput)
+        invalidOnlyIncomeTest.errors must contain(FormError(onlySourceOfSelfEmployedIncome, invalidOnlyIncomeSource))
+      }
     }
-
     "The following submission should be valid" in {
       val testNo = DataMap.rentUkProperty(YesNoMapping.option_no)
       rentUkPropertyForm isValidFor testNo

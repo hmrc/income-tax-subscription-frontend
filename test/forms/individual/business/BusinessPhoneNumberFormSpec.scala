@@ -16,16 +16,14 @@
 
 package forms.individual.business
 
-import assets.MessageLookup
 import core.utils.TestConstants._
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.individual.business.BusinessPhoneNumberModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
 
 class BusinessPhoneNumberFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
@@ -39,42 +37,39 @@ class BusinessPhoneNumberFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       actual shouldBe Some(expected)
     }
 
-    "validate business name correctly" in {
+    "validate business name correctly" should {
       val maxLength = 24
 
-      val empty = ErrorMessageFactory.error("error.business_phone_number.empty")
-      val maxLen = ErrorMessageFactory.error("error.business_phone_number.maxLength")
-      val invalid = ErrorMessageFactory.error("error.business_phone_number.invalid")
-
-      empty fieldErrorIs MessageLookup.Error.BusinessPhoneNumber.empty
-      empty summaryErrorIs MessageLookup.Error.BusinessPhoneNumber.empty
-
-      maxLen fieldErrorIs MessageLookup.Error.BusinessPhoneNumber.maxLength
-      maxLen summaryErrorIs MessageLookup.Error.BusinessPhoneNumber.maxLength
-
-      invalid fieldErrorIs MessageLookup.Error.BusinessPhoneNumber.invalid
-      invalid summaryErrorIs MessageLookup.Error.BusinessPhoneNumber.invalid
+      val empty = "error.business_phone_number.empty"
+      val maxLen = "error.business_phone_number.maxLength"
+      val invalid = "error.business_phone_number.invalid"
 
 
-      val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = businessPhoneNumberForm.bind(emptyInput0)
-      emptyTest0 assert phoneNumber hasExpectedErrors empty
-
-      val emptyInput = DataMap.busPhoneNumber("")
-      val emptyTest = businessPhoneNumberForm.bind(emptyInput)
-      emptyTest assert phoneNumber hasExpectedErrors empty
-
-      val maxLengthInput = DataMap.busPhoneNumber("a" * maxLength + 1)
-      val maxLengthTest = businessPhoneNumberForm.bind(maxLengthInput)
-      maxLengthTest assert phoneNumber hasExpectedErrors maxLen
-
-      val withinLimitInput = DataMap.busPhoneNumber("a" * maxLength)
-      val withinLimitTest = businessPhoneNumberForm.bind(withinLimitInput)
-      withinLimitTest assert phoneNumber doesNotHaveSpecifiedErrors maxLen
-
-      val invalidInput = DataMap.busPhoneNumber("α")
-      val invalidTest = businessPhoneNumberForm.bind(invalidInput)
-      invalidTest assert phoneNumber hasExpectedErrors invalid
+      "show an empty error when the map is empty" in {
+        val emptyInput0 = DataMap.EmptyMap
+        val emptyTest0 = businessPhoneNumberForm.bind(emptyInput0)
+        emptyTest0.errors must contain(FormError(phoneNumber, empty))
+      }
+      "show an empty error when the input is empty" in {
+        val emptyInput = DataMap.busPhoneNumber("")
+        val emptyTest = businessPhoneNumberForm.bind(emptyInput)
+        emptyTest.errors must contain(FormError(phoneNumber, empty))
+      }
+      "show invalid when the input is invalid" in {
+        val invalidInput = DataMap.busPhoneNumber("α")
+        val invalidTest = businessPhoneNumberForm.bind(invalidInput)
+        invalidTest.errors must contain(FormError(phoneNumber, invalid))
+      }
+      "show a maxlength error when the input is too long" in {
+        val maxLengthInput = DataMap.busPhoneNumber("a" * maxLength + 1)
+        val maxLengthTest = businessPhoneNumberForm.bind(maxLengthInput)
+        maxLengthTest.errors must contain(FormError(phoneNumber, maxLen))
+      }
+      "show that the input is ok when it is on the upper boundary" in {
+        val withinLimitInput = DataMap.busPhoneNumber("a" * maxLength)
+        val withinLimitTest = businessPhoneNumberForm.bind(withinLimitInput)
+        withinLimitTest.value mustNot contain(maxLen)
+      }
     }
 
     "The following submission should be valid" in {

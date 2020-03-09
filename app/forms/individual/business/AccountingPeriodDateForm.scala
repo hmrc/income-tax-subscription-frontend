@@ -17,24 +17,24 @@
 package forms.individual.business
 
 import forms.submapping.DateMapping.dateMapping
-import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 
 import scala.util.Try
 
 object AccountingPeriodDateForm {
+
 
   val startDate: String = "startDate"
   val endDate: String = "endDate"
 
   def dateValidation(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val invalidDate = ErrorMessageFactory.error(s"error.$errorName.invalid")
+      lazy val invalidDate = Invalid(s"error.$errorName.invalid")
       Try[ValidationResult] {
         date.toLocalDate
         Valid
@@ -44,14 +44,14 @@ object AccountingPeriodDateForm {
 
   def dateEmpty(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error(s"error.$errorName.empty")
+      lazy val emptyDate = Invalid(s"error.$errorName.empty")
       if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
     }
   )
 
   def dateIsNumeric(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val isNotNumeric = ErrorMessageFactory.error(s"error.$errorName.invalid_chars")
+      lazy val isNotNumeric = Invalid(s"error.$errorName.invalid_chars")
       val numericRegex = "[0-9]*"
 
       def isNumeric(str: String): Boolean = str.replace(" ", "").matches(numericRegex)

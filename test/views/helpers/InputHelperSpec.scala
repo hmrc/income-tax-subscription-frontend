@@ -28,14 +28,15 @@ class InputHelperSpec extends UnitTestTrait {
 
   private def inputHelper(
                            field: Field,
+                           parentForm: Form[_],
                            label: Option[String],
                            formHint: Option[Seq[String]] = None,
                            maxLength: Option[Int] = None,
                            labelClass: Option[String] = None,
                            isNumeric: Boolean = false
                          )
-  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass, isNumeric = isNumeric)(
-    applicationMessages)
+  = views.html.helpers.inputHelper(field, label = label, parentForm = parentForm, formHint = formHint, maxLength = maxLength,
+    labelClass = labelClass, isNumeric = isNumeric)(applicationMessages)
 
   case class TestData(input: String)
 
@@ -52,7 +53,7 @@ class InputHelperSpec extends UnitTestTrait {
       val testHint = "my test hint text"
       val testField = testForm(inputName)
       val maxLength = 10
-      val doc = inputHelper(testField, Some(testLabel), formHint = Some(Seq(testHint)), maxLength = Some(maxLength)).doc
+      val doc = inputHelper(testField, testForm, Some(testLabel), formHint = Some(Seq(testHint)), maxLength = Some(maxLength)).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("div").hasClass("form-field") shouldBe true
       doc.getElementsByTag("label").text() should include(testLabel)
@@ -68,7 +69,7 @@ class InputHelperSpec extends UnitTestTrait {
 
     "if the form is populated, then the input should be populated correctly" in {
       val testField = testForm.fill(TestData("My previous input"))(inputName)
-      val doc = inputHelper(testField, Some(testLabel)).doc
+      val doc = inputHelper(testField, testForm, Some(testLabel)).doc
 
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 1
@@ -77,25 +78,29 @@ class InputHelperSpec extends UnitTestTrait {
 
     "when there is error on the field, the errors needs to be displayed, but not otherwise" in {
       val testField = testForm(inputName)
-      val doc = inputHelper(testField, testLabel).doc
+
+      val doc = inputHelper(testField, testForm, testLabel).doc
       doc.getElementsByTag("div").hasClass("form-field--error") shouldBe false
       doc.getElementsByClass("error-notification").isEmpty shouldBe true
 
-      val errorField = testForm.bind(DataMap.EmptyMap)(inputName)
-      val errDoc = inputHelper(errorField, testLabel).doc
+      val errorForm = testForm.bind(DataMap.EmptyMap)
+      val errorField = errorForm(inputName)
+      val errDoc = inputHelper(errorField, errorForm, testLabel).doc
+
       errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
       errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
     }
 
+
     "if a labelClass is supplied, render the label with an additional class tag" in {
       val testField = testForm.fill(TestData("My previous input"))(inputName)
-      val doc = inputHelper(testField, Some(testLabel), labelClass = "labelClass").doc
+      val doc = inputHelper(testField, testForm, Some(testLabel), labelClass = "labelClass").doc
       doc.getElementsByTag("label").hasClass("labelClass") shouldBe true
     }
 
     "if the type is numeric then the input" should {
       val testField = testForm.fill(TestData("My previous input"))(inputName)
-      val input = inputHelper(testField, Some(testLabel), isNumeric = true).doc.getElementsByTag("input")
+      val input = inputHelper(testField, testForm, Some(testLabel), isNumeric = true).doc.getElementsByTag("input")
 
       "have an additional attribue for pattern=[0-9*]" in {
         input.attr("pattern") shouldBe "[0-9]*"

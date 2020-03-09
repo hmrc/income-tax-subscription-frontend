@@ -16,15 +16,14 @@
 
 package forms.agent
 
-import agent.assets.MessageLookup
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.agent.BusinessNameModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
+import play.api.data.validation.Invalid
 
 class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
@@ -39,43 +38,39 @@ class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       actual shouldBe Some(expected)
     }
 
-    "validate business name correctly" in {
+    "validate business name correctly" should {
       val maxLength = 105
 
-      val empty = ErrorMessageFactory.error("agent.error.business_name.empty")
-      val maxLen = ErrorMessageFactory.error("agent.error.business_name.maxLength")
-      val invalid = ErrorMessageFactory.error("agent.error.business_name.invalid")
+      val empty = "agent.error.business_name.empty"
+      val maxLen = "agent.error.business_name.maxLength"
+      val invalid = "agent.error.business_name.invalid"
 
-      empty fieldErrorIs MessageLookup.Error.BusinessName.empty
-      empty summaryErrorIs MessageLookup.Error.BusinessName.empty
-
-      maxLen fieldErrorIs MessageLookup.Error.BusinessName.maxLength
-      maxLen summaryErrorIs MessageLookup.Error.BusinessName.maxLength
-
-      invalid fieldErrorIs MessageLookup.Error.BusinessName.invalid
-      invalid summaryErrorIs MessageLookup.Error.BusinessName.invalid
-
-
-      val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = businessNameForm.bind(emptyInput0)
-      emptyTest0 assert businessName hasExpectedErrors empty
-
-      val emptyInput = DataMap.busName("")
-      val emptyTest = businessNameForm.bind(emptyInput)
-      emptyTest assert businessName hasExpectedErrors empty
-
-      val maxLengthInput = DataMap.busName("a" * maxLength + 1)
-      val maxLengthTest = businessNameForm.bind(maxLengthInput)
-      maxLengthTest assert businessName hasExpectedErrors maxLen
-
-      val withinLimitInput = DataMap.busName("a" * maxLength)
-      val withinLimitTest = businessNameForm.bind(withinLimitInput)
-      withinLimitTest assert businessName doesNotHaveSpecifiedErrors maxLen
-
-      val invalidInput = DataMap.busName("α")
-      val invalidTest = businessNameForm.bind(invalidInput)
-      invalidTest assert businessName hasExpectedErrors invalid
-    }
+      "show an empty error when the map is empty" in {
+        val emptyInput0 = DataMap.EmptyMap
+        val emptyTest0 = businessNameForm.bind(emptyInput0)
+        emptyTest0.errors must contain(FormError(businessName, empty))
+      }
+      "show an empty error when the input is empty" in {
+        val emptyInput = DataMap.busName("")
+        val emptyTest = businessNameForm.bind(emptyInput)
+        emptyTest.errors must contain(FormError(businessName, empty))
+      }
+      "show invalid when the input is invalid" in {
+        val invalidInput = DataMap.busName("α")
+        val invalidTest = businessNameForm.bind(invalidInput)
+        invalidTest.errors must contain(FormError(businessName, invalid))
+      }
+      "show a maxlength error when the input is too long" in {
+        val maxLengthInput = DataMap.busName("a" * maxLength + 1)
+        val maxLengthTest = businessNameForm.bind(maxLengthInput)
+        maxLengthTest.errors must contain(FormError(businessName, maxLen))
+      }
+      "show that the input is ok when it is on the upper boundary" in {
+        val withinLimitInput = DataMap.busName("a" * maxLength)
+        val withinLimitTest = businessNameForm.bind(withinLimitInput)
+        withinLimitTest.value mustNot contain(maxLen)
+      }
+  }
 
     "The following submission should be valid" in {
       val valid = DataMap.busName("Test business")

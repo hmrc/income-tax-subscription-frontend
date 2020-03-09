@@ -71,6 +71,7 @@
             <p>@Messages("agent.exit-survey.line_1")</p>
             @textAreaHelper(
                 field = exitSurveyForm(ExitSurveyForm.improvements),
+                parentForm = exitSurveyForm,
                 maxLength = ExitSurveyForm.improvementsMaxLength,
                 label = Messages("agent.exit-survey.q2"),
                 showLabel = false

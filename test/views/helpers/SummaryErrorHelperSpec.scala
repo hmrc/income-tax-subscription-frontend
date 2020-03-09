@@ -18,8 +18,6 @@ package views.helpers
 
 import assets.MessageLookup.{Base => common}
 import core.utils.UnitTestTrait
-import forms.validation.ErrorMessageFactory._
-import forms.validation.models.SummaryError
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
@@ -37,7 +35,6 @@ class SummaryErrorHelperSpec extends UnitTestTrait {
   case class TestData(field1: String, field2: String, field3: String)
 
   val errorMessage: Invalid = DataMap.alwaysFailInvalid
-  val summaryErrorMessage: SummaryError = errorMessage.errors.head.args(SummaryErrorLoc).asInstanceOf[SummaryError]
 
   val field1Name = "field1"
   val field2Name = "field2"
@@ -75,14 +72,12 @@ class SummaryErrorHelperSpec extends UnitTestTrait {
       val fieldLi = fieldUl.get(0).getElementsByTag("li")
       fieldLi.size() shouldBe 2
 
-      fieldLi.foreach(x => x.attr("role") shouldBe "tooltip")
-
       val aField1 = fieldLi.get(0).getElementsByTag("a")
       aField1.attr("href") shouldBe "#field1"
-      aField1.text shouldBe summaryErrorMessage.toText
+      aField1.text shouldBe "always fail"
       val aField2 = fieldLi.get(1).getElementsByTag("a")
       aField2.attr("href") shouldBe "#field3"
-      aField2.text shouldBe summaryErrorMessage.toText
+      aField2.text shouldBe "always fail"
       val summaryHeading = doc.getElementsByTag("h2")
       summaryHeading.text shouldBe common.errorHeading
     }

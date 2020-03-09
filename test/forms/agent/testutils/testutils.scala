@@ -16,7 +16,6 @@
 
 package forms.agent
 
-import forms.validation.models.{FieldError, SummaryError}
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.validation.Invalid
@@ -31,6 +30,7 @@ package object testutils {
       case _ => s"$prefix.$name"
     }
   }
+
 
 
   implicit class ErrorValidationUtil[T](testForm: Form[T]) {
@@ -60,13 +60,13 @@ package object testutils {
 
   implicit class InvalidUtil(invalid: Invalid) {
 
-    import forms.validation.ErrorMessageFactory._
-
-    def fieldErrorIs(expectedText: String)(implicit messages: Messages): Unit =
-      invalid.errors.head.args(FieldErrorLoc).asInstanceOf[FieldError].toText shouldBe expectedText
-
-    def summaryErrorIs(expectedText: String)(implicit messages: Messages): Unit =
-      invalid.errors.head.args(SummaryErrorLoc).asInstanceOf[SummaryError].toText shouldBe expectedText
+    def errorTextIs(expectedText: String)(implicit messages: Messages): Unit =
+      invalid.errors.head.message shouldBe expectedText
   }
 
+}
+trait FormValidationTrait[T] {
+
+  val form: Form[T]
+  val fieldName: String
 }

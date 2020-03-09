@@ -19,14 +19,13 @@ package forms.agent
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.submapping.DateMapping.dateMapping
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
-import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 
 import scala.util.Try
 
@@ -51,19 +50,19 @@ object ClientDetailsForm {
   val emptyClientNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
 
   val validateClientNino: Constraint[String] = {
-    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("agent.error.nino.invalid"))
+    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else Invalid("agent.error.nino.invalid"))
   }
 
   val dobNoneEmpty: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error("agent.error.dob_date.empty")
+      lazy val emptyDate = Invalid("agent.error.dob_date.empty")
       if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
     }
   )
 
   val dobIsNumeric: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val isNotNumeric = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
+      lazy val isNotNumeric = Invalid("agent.error.dob_date.invalid_chars")
       val numericRegex = "[0-9]*"
 
       def isNumeric(str: String): Boolean = str.replace(" ","").matches(numericRegex)
@@ -77,7 +76,7 @@ object ClientDetailsForm {
       Try[ValidationResult] {
         date.toLocalDate
         Valid
-      }.getOrElse(ErrorMessageFactory.error("agent.error.dob_date.invalid"))
+      }.getOrElse(Invalid("agent.error.dob_date.invalid"))
     }
   )
 

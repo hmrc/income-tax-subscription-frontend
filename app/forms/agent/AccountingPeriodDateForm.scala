@@ -17,14 +17,12 @@
 package forms.agent
 
 import forms.submapping.DateMapping.dateMapping
-import forms.validation.ErrorMessageFactory
-import forms.validation.models.TargetIds
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 
 import scala.util.Try
 
@@ -35,7 +33,7 @@ object AccountingPeriodDateForm {
 
   def dateValidation(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val invalidDate = ErrorMessageFactory.error(s"agent.error.$errorName.invalid")
+      lazy val invalidDate = Invalid(s"agent.error.$errorName.invalid")
       Try[ValidationResult] {
         date.toLocalDate
         Valid
@@ -45,26 +43,19 @@ object AccountingPeriodDateForm {
 
   def dateEmpty(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error(s"agent.error.$errorName.empty")
+      lazy val emptyDate = Invalid(s"agent.error.$errorName.empty")
       if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
     }
   )
 
   def dateIsNumeric(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val isNotNumeric = ErrorMessageFactory.error(s"agent.error.$errorName.invalid_chars")
+      lazy val isNotNumeric = Invalid(s"agent.error.$errorName.invalid_chars")
       val numericRegex = "[0-9]*"
 
       def isNumeric(str: String): Boolean = str.replace(" ", "").matches(numericRegex)
 
       if (isNumeric(date.day) && isNumeric(date.month) && isNumeric(date.year)) Valid else isNotNumeric
-    }
-  )
-
-  val endDateAfterStart: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
-    accountingPeriod => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "agent.error.end_date_violation")
-      if (DateModel.dateConvert(accountingPeriod.endDate).isAfter(DateModel.dateConvert(accountingPeriod.startDate))) Valid else invalid
     }
   )
 
@@ -82,7 +73,7 @@ object AccountingPeriodDateForm {
     mapping(
       startDate -> dateMapping.verifying(startDateConstraints),
       endDate -> dateMapping.verifying(endDateConstraints)
-    )(AccountingPeriodModel.apply)(AccountingPeriodModel.unapply).verifying(endDateAfterStart)
+    )(AccountingPeriodModel.apply)(AccountingPeriodModel.unapply)
   )
 
 }

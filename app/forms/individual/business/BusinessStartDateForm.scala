@@ -19,14 +19,12 @@ package forms.individual.business
 import java.time.LocalDate
 
 import forms.submapping.DateMapping.dateMapping
-import forms.validation.ErrorMessageFactory
-import forms.validation.models.TargetIds
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import models.individual.business.BusinessStartDateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 
 import scala.util.Try
 
@@ -37,7 +35,7 @@ object BusinessStartDateForm {
 
   val dateValidation: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val invalidDate = ErrorMessageFactory.error("error.date.invalid")
+      lazy val invalidDate = Invalid("error.date.invalid")
       Try[ValidationResult] {
         date.toLocalDate
         Valid
@@ -47,14 +45,14 @@ object BusinessStartDateForm {
 
   val dateEmpty: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error("error.date.empty")
+      lazy val emptyDate = Invalid("error.date.empty")
       if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
     }
   )
 
   val startDateBeforeApr17: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(startDate), "error.business_accounting_period.minStartDate")
+      lazy val invalid = Invalid("error.business_accounting_period.minStartDate")
       if (DateModel.dateConvert(date).isBefore(minStartDate)) invalid else Valid
     }
   )

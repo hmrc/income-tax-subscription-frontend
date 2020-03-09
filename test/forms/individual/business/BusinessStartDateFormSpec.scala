@@ -16,9 +16,7 @@
 
 package forms.individual.business
 
-import assets.MessageLookup
 import forms.submapping.DateMapping
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.DateModel
@@ -26,7 +24,7 @@ import models.individual.business.BusinessStartDateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
 
 class BusinessStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
@@ -59,35 +57,31 @@ class BusinessStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
     "when testing the validation" should {
 
       "output the appropriate error messages for the start date" when {
+        val empty = "error.date.empty"
+        val invalid = "error.date.invalid"
+        val beforeMin = "error.business_accounting_period.minStartDate"
 
-        "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("error.date.empty")
-          empty fieldErrorIs MessageLookup.Error.Date.empty
-          empty summaryErrorIs MessageLookup.Error.Date.empty
+        "the date is not supplied to the map" in {
+          businessStartDateForm.bind(DataMap.EmptyMap).errors must contain(FormError(startDate, empty))
+        }
 
-          businessStartDateForm.bind(DataMap.EmptyMap) assert startDate hasExpectedErrors empty
-          businessStartDateForm.bind(DataMap.emptyDate(startDate)) assert startDate hasExpectedErrors empty
+        "the date supplied is empty" in {
+          businessStartDateForm.bind(DataMap.emptyDate(startDate)).errors must contain(FormError(startDate, empty))
         }
 
         "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("error.date.invalid")
-          invalid fieldErrorIs MessageLookup.Error.Date.invalid
-          invalid summaryErrorIs MessageLookup.Error.Date.invalid
-
           val invalidTest = businessStartDateForm.bind(DataMap.date(startDate)("29", "2", "2017"))
-          invalidTest assert startDate hasExpectedErrors invalid
+          invalidTest.errors must contain(FormError(startDate, invalid))
         }
 
-        "it is before the 6 April 2017" in {
-          val beforeMin = ErrorMessageFactory.error("error.business_accounting_period.minStartDate")
-          beforeMin fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
-          beforeMin summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
-
+        "if it is before the 6 April 2017" in {
           val beforeMinTest = businessStartDateForm.bind(DataMap.date(startDate)("05", "4", "2017"))
-          beforeMinTest assert startDate hasExpectedErrors beforeMin
+          beforeMinTest.errors must contain(FormError(startDate, beforeMin))
+        }
 
+        "if it is not before the 6 April 2017" in {
           val minTest = businessStartDateForm.bind(DataMap.date(startDate)("06", "4", "2017"))
-          minTest assert startDate doesNotHaveSpecifiedErrors beforeMin
+          minTest.errors mustNot contain(FormError(startDate, beforeMin))
         }
       }
     }

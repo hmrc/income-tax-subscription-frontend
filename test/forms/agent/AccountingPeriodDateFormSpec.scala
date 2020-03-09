@@ -18,24 +18,19 @@ package forms.agent
 
 import java.time.LocalDate
 
-import agent.assets.MessageLookup
 import forms.agent.AccountingPeriodDateForm._
-import forms.submapping.DateMapping
 import forms.submapping.DateMapping._
-import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api.i18n.Messages.Implicits._
+import play.api.data.FormError
 
 class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
-
-
-  val today = DateModel.dateConvert(LocalDate.now())
+  val today: DateModel = DateModel.dateConvert(LocalDate.now())
 
   "The AccountingPeriodDateForm" should {
     "transform a valid request to the date form case class" in {
@@ -56,89 +51,62 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
       actual shouldBe Some(expected)
     }
 
-    "when testing the validation" should {
+    "output the appropriate error messages for the start date" when {
 
-      "output the appropriate error messages for the start date" when {
+      val empty = "agent.error.start_date.empty"
+      val invalidChar = "agent.error.start_date.invalid_chars"
+      val invalid = "agent.error.start_date.invalid"
 
-        "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("agent.error.start_date.empty")
-          empty fieldErrorIs MessageLookup.Error.StartDate.empty
-          empty summaryErrorIs MessageLookup.Error.StartDate.empty
-
-          accountingPeriodDateForm.bind(DataMap.EmptyMap) assert startDate hasExpectedErrors empty
-          accountingPeriodDateForm.bind(DataMap.emptyDate(startDate)) assert startDate hasExpectedErrors empty
-        }
-
-        "it is a date with invalid characters" in {
-          val invalidChar = ErrorMessageFactory.error("agent.error.start_date.invalid_chars")
-          invalidChar fieldErrorIs MessageLookup.Error.StartDate.invalid_chars
-          invalidChar summaryErrorIs MessageLookup.Error.StartDate.invalid_chars
-
-          val invalidCharTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("!X", "5", "X0X;"))
-          invalidCharTest assert startDate hasExpectedErrors invalidChar
-        }
-
-        "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("agent.error.start_date.invalid")
-          invalid fieldErrorIs MessageLookup.Error.StartDate.invalid
-          invalid summaryErrorIs MessageLookup.Error.StartDate.invalid
-
-          val invalidTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("29", "2", "2017"))
-          invalidTest assert startDate hasExpectedErrors invalid
-        }
-
+      "the date is not supplied to the map" in {
+        accountingPeriodDateForm.bind(DataMap.EmptyMap).errors must contain(FormError(startDate, empty))
       }
 
-      "output an appropriate error for the end date" when {
+      "the date supplied is empty" in {
+        accountingPeriodDateForm.bind(DataMap.emptyDate(startDate)).errors must contain(FormError(startDate, empty))
+      }
 
-        "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("agent.error.end_date.empty")
-          empty fieldErrorIs MessageLookup.Error.EndDate.empty
-          empty summaryErrorIs MessageLookup.Error.EndDate.empty
+      "it is a date with invalid characters" in {
+        val invalidCharTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("!X", "5", "X0X;"))
+        invalidCharTest.errors must contain(FormError(startDate, invalidChar))
+      }
 
-          val emptyDateInput0 = DataMap.EmptyMap
-          val emptyTest0 = accountingPeriodDateForm.bind(emptyDateInput0)
-          emptyTest0 assert endDate hasExpectedErrors empty
+      "it is an invalid date" in {
+        val invalidTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("29", "2", "2017"))
+        invalidTest.errors must contain(FormError(startDate, invalid))
+      }
 
-          val emptyDateInput = DataMap.emptyDate(endDate)
-          val emptyTest = accountingPeriodDateForm.bind(emptyDateInput)
-          emptyTest assert endDate hasExpectedErrors empty
+    }
 
-        }
+    "output an appropriate error for the end date" should {
+      val empty = "agent.error.end_date.empty"
+      val invalidChar = "agent.error.end_date.invalid_chars"
+      val invalid = "agent.error.end_date.invalid"
+      val violation = "agent.error.end_date_violation"
 
-        "it is a date with invalid characters" in {
-          val invalidChar = ErrorMessageFactory.error("agent.error.end_date.invalid_chars")
-          invalidChar fieldErrorIs MessageLookup.Error.EndDate.invalid_chars
-          invalidChar summaryErrorIs MessageLookup.Error.EndDate.invalid_chars
+      "a date is not supplied to the map" in {
+        val emptyDateInput0 = DataMap.EmptyMap
+        val emptyTest0 = accountingPeriodDateForm.bind(emptyDateInput0)
+        emptyTest0.errors must contain(FormError(endDate, empty))
+      }
 
-          val invalidCharTest = accountingPeriodDateForm.bind(DataMap.date(endDate)("!X", "5", "X0X;"))
-          invalidCharTest assert endDate hasExpectedErrors invalidChar
-        }
+      "the date supplied to the map is empty" in {
+        val emptyDateInput = DataMap.emptyDate(endDate)
+        val emptyTest = accountingPeriodDateForm.bind(emptyDateInput)
+        emptyTest.errors must contain(FormError(endDate, empty))
+      }
 
-        "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("agent.error.end_date.invalid")
-          invalid fieldErrorIs MessageLookup.Error.EndDate.invalid
-          invalid summaryErrorIs MessageLookup.Error.EndDate.invalid
+      "it is a date with invalid characters" in {
+        val invalidCharTest = accountingPeriodDateForm.bind(DataMap.date(endDate)("!X", "5", "X0X;"))
+        invalidCharTest.errors must contain(FormError(endDate, invalidChar))
+      }
 
-          val invalidDateInput = DataMap.date(endDate)("29", "2", "2017")
-          val invalidTest = accountingPeriodDateForm.bind(invalidDateInput)
-          invalidTest assert endDate hasExpectedErrors invalid
-        }
-
-        "it is not after the start date" in {
-          val violation = ErrorMessageFactory.error("agent.error.end_date_violation")
-          violation fieldErrorIs MessageLookup.Error.EndDate.end_violation
-          violation summaryErrorIs MessageLookup.Error.EndDate.end_violation
-
-          val endDateViolationInput = DataMap.date(startDate)(today.day, today.month, today.year)++
-            DataMap.date(endDate)(today.day, today.month, today.year)
-
-          val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
-          violationTest assert endDate hasExpectedErrors violation
-        }
-
+      "it is an invalid date" in {
+        val invalidDateInput = DataMap.date(endDate)("29", "2", "2017")
+        val invalidTest = accountingPeriodDateForm.bind(invalidDateInput)
+        invalidTest.errors must contain(FormError(endDate, invalid))
       }
     }
+
 
     "accept a valid date" in {
 

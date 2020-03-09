@@ -15,12 +15,13 @@
  *@
 
 @import play.api.data.Field
+@import play.api.data.Form
 @import views.helpers.RadioOption
 
 @(field: Field,
     legend: String,
     options: Seq[RadioOption],
-    parentForm: Option[Form[_]] = None,
+    parentForm: Form[_],
     inline: Boolean = false,
     fieldSetClass: Option[String] = None,
     useTextForValue: Boolean = false,
@@ -28,7 +29,9 @@
     target: Option[String] = None
 )(implicit messages: Messages)
 
-@import forms.validation.ErrorMessageHelper._
+@hasError = @{
+    parentForm.error(field.name).isDefined
+}
 
 @fieldSetClassValue = @{
     (inline, fieldSetClass) match {
@@ -42,14 +45,6 @@
     @field.value match {
         case Some(`option`) => {checked="checked"}
         case _ => {}
-    }
-}
-
-@hasError = @{
-    val fieldError = getFieldError(field, parentForm)
-    fieldError match {
-        case Some(_) => true
-        case _ => false
     }
 }
 
@@ -75,9 +70,15 @@
 }
 
 <div class="form-group @if(hasError) { form-field--error}">
+
+    @if(hasError){
+    <span class="error-notification" role="tooltip" id="error-message-@field.name">
+        @Messages(s"${parentForm.error(field.name).get.message}")
+    </span>
+    }
     <fieldset @fieldSetClassValue>
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
-        @fieldErrorHelper(field, parentForm)
+
         @for(option <- options) {
             <div class="multiple-choice" @hasTargetHostId(option.optionName)>
                 <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@valueAttr(option)" @isSelected(option.optionName)>

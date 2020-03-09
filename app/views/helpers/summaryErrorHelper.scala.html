@@ -19,15 +19,12 @@
 
 @(form: Form[_])(implicit messages: Messages)
 
-@import forms.validation.ErrorMessageHelper._
-@import forms.validation.models._
-
 @errors = @{
-    getSummaryErrors(form)
+    form.errors
 }
 
-@errMsg(err: (String, SummaryError)) = {
-    <li role="tooltip" data-metrics="itsa:error:@err._2.toText"><a href="#@err._1">@err._2.toText</a></li>
+@errMsg(err: FormError) = {
+    <li><a href="#@err.key">@{Messages(s"${err.message}")}</a></li>
 }
 
 @if(form.hasErrors) {

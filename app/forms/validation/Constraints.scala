@@ -18,20 +18,20 @@ package forms.validation
 
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.Patterns
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 object Constraints {
 
   val nonEmpty: String => Constraint[String] = msgKey => constraint[String](
-    x => if (x.isEmpty) ErrorMessageFactory.error(msgKey) else Valid
+    x => if (x.isEmpty) Invalid(msgKey) else Valid
   )
 
   val maxLength: (Int, String) => Constraint[String] = (length, msgKey) => constraint[String](
-    x => if (x.trim.length > length) ErrorMessageFactory.error(msgKey) else Valid
+    x => if (x.trim.length > length) Invalid(msgKey) else Valid
   )
 
   val invalidFormat: String => Constraint[String] = msgKey => constraint[String](
-    x => if (Patterns.validText(x.trim)) Valid else ErrorMessageFactory.error(msgKey)
+    x => if (Patterns.validText(x.trim)) Valid else Invalid(msgKey)
   )
 
   val emptyNino: Constraint[String] = nonEmpty("error.nino.empty")
@@ -42,7 +42,7 @@ object Constraints {
   val ninoRegex = """^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]$"""
 
   val validateNino: Constraint[String] = {
-    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("error.nino.invalid"))
+    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else Invalid("error.nino.invalid"))
   }
 
 }
