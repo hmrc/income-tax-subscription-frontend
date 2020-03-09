@@ -43,8 +43,6 @@ trait MockConfig extends AppConfig {
   override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
   override lazy val softwareUrl = "https://www.gov.uk/guidance/software-for-sending-income-tax-updates"
   override lazy val shutterPage = "https://www.tax.service.gov.uk/outage-income-tax-subscription/"
-  override lazy val whitelistIps: Seq[String] = Seq("127.0.0.1")
-  override lazy val ipExclusionList: Seq[Call] = Nil
   override val matchingAttempts: Int = 3
   override val matchingLockOutSeconds: Int = 60
 

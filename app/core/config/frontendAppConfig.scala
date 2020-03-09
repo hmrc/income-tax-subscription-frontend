@@ -49,8 +49,6 @@ trait AppConfig extends FeatureSwitching {
   val softwareUrl: String
   val agentAuthUrl: String
   val agentAccountUrl: String
-  val whitelistIps: Seq[String]
-  val ipExclusionList: Seq[Call]
   val shutterPage: String
   val ggURL: String
   val agentServicesUrl: String
@@ -179,12 +177,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val preferencesUrl: String = baseUrl("preferences")
 
   override lazy val shutterPage: String = loadConfig("shutter-page.url")
-
-  private def whitelistConfig(key: String): Seq[String] = configuration.getString(key).fold(Seq[String]())(ips => ips.split(",").toSeq)
-
-  override lazy val whitelistIps: Seq[String] = whitelistConfig("ip-whitelist.urls")
-
-  override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET", ip))
 
   override lazy val ggAuthenticationURL: String = baseUrl("gg-authentication")
   override lazy val ggURL: String = baseUrl("government-gateway")

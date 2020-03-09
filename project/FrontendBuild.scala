@@ -21,7 +21,6 @@ private object AppDependencies {
   private val scalaTestPlusVersion = "2.0.1"
   private val pegdownVersion = "1.6.0"
   private val httpCachingClientVersion = "9.0.0-play-25"
-  private val playWhitelistFilterVersion = "2.0.0"
   private val wiremockVersion = "2.22.0"
   private val domainVersion = "5.6.0-play-25"
   private val catsVersion = "0.9.0"
@@ -34,7 +33,6 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
-    "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion,
     "uk.gov.hmrc" %% "domain" % domainVersion,
     "org.typelevel" %% "cats" % catsVersion,
     "uk.gov.hmrc" %% "play-language" % playLanguageVersion,

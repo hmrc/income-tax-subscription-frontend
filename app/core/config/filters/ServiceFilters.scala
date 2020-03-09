@@ -24,20 +24,12 @@ import uk.gov.hmrc.play.bootstrap.filters.FrontendFilters
 
 class ServiceFilters @Inject()(configuration: Configuration,
                                defaultFilters: FrontendFilters,
-                               whitelistFilter: WhitelistFilter,
                                csrfWithExclusion: ExcludingCSRFFilter
                               ) extends DefaultHttpFilters({
 
   // this adds marking of routes to excludes csrf check, see https://dominikdorn.com/2014/07/playframework-2-3-global-csrf-protection-disable-csrf-selectively/
-  val coreFilters = defaultFilters.filters.filterNot(f => f.isInstanceOf[CSRFFilter]) :+ csrfWithExclusion
+  defaultFilters.filters.filterNot(f => f.isInstanceOf[CSRFFilter]) :+ csrfWithExclusion
 
-  // this adds the whitelisting filter if it's enabled
-  val ipWhitelistKey = "feature-switch.enable-ip-whitelisting"
-
-  configuration.getString(ipWhitelistKey).getOrElse(throw new Exception(s"Missing configuration key: $ipWhitelistKey")).toBoolean match {
-    case true => coreFilters :+ whitelistFilter
-    case _ => coreFilters
-  }
 
 }: _*)
 
