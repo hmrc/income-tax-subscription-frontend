@@ -28,7 +28,7 @@
 @(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
-    <div class="tabular-data__entry divider--top--thick" id="@field-row">
+    <div class="tabular-data__entry divider--bottom" id="@field-row">
         <span class="tabular-data__heading tabular-data__heading--label" id="@field-question">
         @question
         </span>
@@ -111,8 +111,6 @@
 
     <h1 class="heading-large">@Messages("agent.summary.heading") <span class="visuallyhidden">@Messages("agent.summary.heading_hidden")</span></h1>
 
-    <h2 class="heading-medium">@Html(Messages("agent.summary.h2"))</h2>
-
     <div class="form-group">
         @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.matchTaxYear.map(matchTaxYear)
@@ -125,7 +123,7 @@
         @summaryModel.businessName.map(businessName)
         @summaryModel.accountingMethod.map(accountingMethod)
         @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
-        <div class="divider--top--thick"></div>
+
     </div>
 
     @form(action = postAction) {
