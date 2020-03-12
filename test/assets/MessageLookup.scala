@@ -276,7 +276,6 @@ object MessageLookup {
     val title = "Check your answers"
     val heading: String = title
     val heading_hidden = "before signing up"
-    val h2 = "You’ve told us"
     val income_source = "Where does your income come from?"
     val rentUkProperty = "You rent out UK property"
     val onlySourceOfIncome = "You only receive income from self-employment"
@@ -361,7 +360,6 @@ object MessageLookup {
     val title = "Confirm your details"
     val heading = "Check your answers"
     val heading_hidden = "before looking up your details"
-    val h2 = "You’ve told us"
     val firstName = "First name"
     val lastName = "Last name"
     val nino = "National Insurance number"

@@ -89,10 +89,6 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       document().select("h1 span").text() must include(messages.heading_hidden)
     }
 
-    s"have the secondary heading (H2) '${messages.h2}'" in {
-      document().select("h2").text() must include(messages.h2)
-    }
-
     "has a form" which {
 
       "has a submit button" in {
