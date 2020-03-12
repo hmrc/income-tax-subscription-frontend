@@ -18,7 +18,7 @@ package core.auth
 
 import core.auth.AuthPredicate._
 import core.auth.JourneyState.{RequestFunctions, SessionFunctions}
-import core.config.{AppConfig, BaseControllerConfig}
+import core.config.AppConfig
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -33,11 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 trait BaseFrontendController extends FrontendController with I18nSupport with AuthPredicates {
 
   val authService: AuthService
-  val baseConfig: BaseControllerConfig
 
   implicit val ec: ExecutionContext
-
-  lazy implicit val appConfig: AppConfig = baseConfig.appConfig
 
   type ActionBody[User <: IncomeTaxUser] = Request[AnyContent] => User => Future[Result]
   type AuthenticatedAction[User <: IncomeTaxUser] = ActionBody[User] => Action[AnyContent]

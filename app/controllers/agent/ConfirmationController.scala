@@ -19,7 +19,7 @@ package controllers.agent
 import agent.audit.Logging
 import agent.auth.PostSubmissionController
 import agent.services.CacheUtil._
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -30,12 +30,10 @@ import views.html.agent.sign_up_complete
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
+class ConfirmationController @Inject()(val authService: AuthService,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService,
-                                       val authService: AuthService,
-                                       val logging: Logging
-                                      )(implicit val ec: ExecutionContext) extends PostSubmissionController {
+                                       keystoreService: KeystoreService)
+                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

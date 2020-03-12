@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import services.agent.mocks.MockKeystoreService
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
 import core.config.featureswitch._
@@ -26,6 +25,7 @@ import models.agent.AccountingMethodPropertyModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
@@ -41,10 +41,9 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestPropertyAccountingMethodController extends PropertyAccountingMethodController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceProperty))

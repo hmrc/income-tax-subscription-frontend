@@ -18,7 +18,6 @@ package controllers
 
 import assets.MessageLookup
 import controllers.individual.IdentityVerificationController
-import core.audit.Logging
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -32,9 +31,8 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
   )
 
   object TestIdentityVerificationController extends IdentityVerificationController(
-    MockBaseControllerConfig,
-    messagesApi,
-    mockAuthService
+    mockAuthService,
+    messagesApi
   )
 
   // not a real journey id and its value doesn't really matter for unit test purposes

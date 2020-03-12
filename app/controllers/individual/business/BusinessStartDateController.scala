@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import core.auth.RegistrationController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import forms.individual.business.BusinessStartDateForm
 import javax.inject.Inject
 import models.individual.business.BusinessStartDateModel
@@ -31,11 +31,10 @@ import services.individual.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class BusinessStartDateController @Inject()(val baseConfig: BaseControllerConfig,
+class BusinessStartDateController @Inject()(val authService: AuthService,
                                             val messagesApi: MessagesApi,
-                                            val keystoreService: KeystoreService,
-                                            val authService: AuthService
-                                           )(implicit val ec: ExecutionContext) extends RegistrationController {
+                                            keystoreService: KeystoreService)
+                                           (implicit val ec: ExecutionContext, val appConfig: AppConfig) extends RegistrationController {
 
   def view(businessStartDateForm: Form[BusinessStartDateModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =
     views.html.individual.incometax.business.business_start_date(

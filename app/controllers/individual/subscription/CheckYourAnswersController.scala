@@ -19,7 +19,8 @@ package controllers.individual.subscription
 import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
-import core.config.BaseControllerConfig
+import core.config.AppConfig
+import core.services.CacheUtil._
 import javax.inject.{Inject, Singleton}
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription._
@@ -34,15 +35,12 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
+class CheckYourAnswersController @Inject()(val authService: AuthService,
                                            val messagesApi: MessagesApi,
-                                           val keystoreService: KeystoreService,
-                                           val subscriptionService: SubscriptionOrchestrationService,
-                                           val authService: AuthService,
-                                           logging: Logging
-                                          )(implicit val ec: ExecutionContext) extends SignUpController {
-
-  import core.services.CacheUtil._
+                                           keystoreService: KeystoreService,
+                                           logging: Logging,
+                                           subscriptionService: SubscriptionOrchestrationService)
+                                          (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
 
   def backUrl(incomeSource: IncomeSourceType): String = {
     incomeSource match {

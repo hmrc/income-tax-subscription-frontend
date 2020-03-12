@@ -31,9 +31,8 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
   )
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(
-    MockBaseControllerConfig,
-    messagesApi,
-    mockAuthService
+    mockAuthService,
+    messagesApi
   )
 
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
@@ -51,7 +50,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
       document.title mustBe messages.heading
 
       document.select("#sign-out-button").attr("href") mustBe
-      controllers.SignOutController.signOut(subscriptionRequest.path).url
+        controllers.SignOutController.signOut(subscriptionRequest.path).url
     }
   }
 

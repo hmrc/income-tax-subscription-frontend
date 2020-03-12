@@ -34,9 +34,8 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestExitSurveyController extends ExitSurveyController(
-    app.injector.instanceOf[Logging],
-    appConfig,
-    messagesApi
+    messagesApi,
+    app.injector.instanceOf[Logging]
   )
 
   val testSurvey = ExitSurveyModel("Very satisfied", "This is my extended feedback")

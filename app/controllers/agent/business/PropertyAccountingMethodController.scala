@@ -18,8 +18,7 @@ package controllers.agent.business
 
 import agent.auth.AuthenticatedController
 import agent.services.CacheUtil.CacheMapUtil
-import core.config.BaseControllerConfig
-import core.config.featureswitch.FeatureSwitching
+import core.config.AppConfig
 import forms.agent.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.agent.AccountingMethodPropertyModel
@@ -35,11 +34,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
+class PropertyAccountingMethodController @Inject()(val authService: AuthService,
                                                    val messagesApi: MessagesApi,
-                                                   val keystoreService: KeystoreService,
-                                                   val authService: AuthService
-                                                  )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
+                                                   keystoreService: KeystoreService)
+                                                  (implicit val ec: ExecutionContext,
+                                                   appConfig: AppConfig) extends AuthenticatedController {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
     for {

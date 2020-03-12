@@ -17,8 +17,7 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
-import core.config.featureswitch.FeatureSwitching
+import core.config.AppConfig
 import forms.agent.MatchTaxYearForm
 import javax.inject.Inject
 import models.No
@@ -33,11 +32,10 @@ import services.agent.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
+class MatchTaxYearController @Inject()(val authService: AuthService,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService,
-                                       val authService: AuthService)
-                                      (implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
+                                       keystoreService: KeystoreService)
+                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
 
   private def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
     views.html.agent.business.match_to_tax_year(

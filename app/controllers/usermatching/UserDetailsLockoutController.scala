@@ -19,7 +19,7 @@ package controllers.usermatching
 import java.time.{Duration, LocalTime}
 
 import core.auth.{IncomeTaxSAUser, UserMatchingController}
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.Inject
 import models.usermatching.{LockedOut, NotLockedOut}
 import play.api.i18n.{Messages, MessagesApi}
@@ -30,11 +30,10 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfig,
+class UserDetailsLockoutController @Inject()(val authService: AuthService,
                                              val messagesApi: MessagesApi,
-                                             val authService: AuthService,
-                                             val lockoutService: UserLockoutService
-                                            )(implicit val ec: ExecutionContext) extends UserMatchingController {
+                                             lockoutService: UserLockoutService)
+                                            (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
     val bearerToken = implicitly[HeaderCarrier].userId.get.value
@@ -66,7 +65,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        val duration = Duration.ofSeconds(baseConfig.appConfig.matchingLockOutSeconds)
+        val duration = Duration.ofSeconds(appConfig.matchingLockOutSeconds)
         Future.successful(Ok(views.html.individual.usermatching.user_details_lockout(durationText(duration))))
       }
   }

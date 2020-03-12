@@ -23,9 +23,8 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
-class ThankYouController @Inject()(implicit val appConfig: AppConfig,
-                                   val messagesApi: MessagesApi
-                                  ) extends FrontendController with I18nSupport {
+class ThankYouController @Inject()(val messagesApi: MessagesApi)
+                                  (implicit appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
     Ok(views.html.agent.feedback.feedback_thank_you())

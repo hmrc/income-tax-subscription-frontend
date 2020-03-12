@@ -30,10 +30,7 @@ class ThankYouControllerSpec extends AgentControllerBaseSpec {
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestThankYouController extends ThankYouController()(
-    appConfig,
-    messagesApi
-  )
+  object TestThankYouController extends ThankYouController(messagesApi)
 
   "TestThankYouController.show" should {
     lazy val result = TestThankYouController.show()(FakeRequest())

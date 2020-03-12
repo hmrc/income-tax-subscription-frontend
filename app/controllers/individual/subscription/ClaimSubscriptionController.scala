@@ -19,7 +19,7 @@ package controllers.individual.subscription
 import cats.data.EitherT
 import cats.implicits._
 import core.auth.SignUpController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import core.connectors.models.{ConnectorError, KeystoreMissingError}
 import core.services.CacheConstants.MtditId
 import javax.inject.{Inject, Singleton}
@@ -33,12 +33,11 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig,
+class ClaimSubscriptionController @Inject()(val authService: AuthService,
                                             val messagesApi: MessagesApi,
-                                            val authService: AuthService,
-                                            val subscriptionOrchestrationService: SubscriptionOrchestrationService,
-                                            val keystoreService: KeystoreService
-                                           )(implicit val ec: ExecutionContext) extends SignUpController {
+                                            keystoreService: KeystoreService,
+                                            subscriptionOrchestrationService: SubscriptionOrchestrationService)
+                                           (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
 
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>

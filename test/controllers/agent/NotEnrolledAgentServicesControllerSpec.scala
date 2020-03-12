@@ -28,10 +28,7 @@ class NotEnrolledAgentServicesControllerSpec extends AgentControllerBaseSpec {
   override val controllerName: String = "NotEnrolledAgentServices"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestNotEnrolledAgentServicesController extends NotEnrolledAgentServicesController(
-    MockBaseControllerConfig,
-    messagesApi
-  )
+  object TestNotEnrolledAgentServicesController extends NotEnrolledAgentServicesController(messagesApi)
 
   "Calling the 'show' action of the NotEnrolledAgentServicesController" should {
 

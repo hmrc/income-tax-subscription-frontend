@@ -19,7 +19,7 @@ package controllers.agent.matching
 import java.time.{Duration, LocalTime}
 
 import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import core.utils.Implicits._
 import javax.inject.Inject
 import models.usermatching.{LockedOut, NotLockedOut}
@@ -31,11 +31,10 @@ import uk.gov.hmrc.http.InternalServerException
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class ClientDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfig,
+class ClientDetailsLockoutController @Inject()(val authService: AuthService,
                                                val messagesApi: MessagesApi,
-                                               val authService: AuthService,
-                                               val lockoutService: UserLockoutService
-                                              )(implicit val ec: ExecutionContext) extends UserMatchingController {
+                                               lockoutService: UserLockoutService)
+                                              (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
     lockoutService.getLockoutStatus(user.arn.get) flatMap {
@@ -66,7 +65,7 @@ class ClientDetailsLockoutController @Inject()(val baseConfig: BaseControllerCon
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        val duration = Duration.ofSeconds(baseConfig.appConfig.matchingLockOutSeconds)
+        val duration = Duration.ofSeconds(appConfig.matchingLockOutSeconds)
         Ok(views.html.agent.client_details_lockout(durationText(duration)))
       }
   }

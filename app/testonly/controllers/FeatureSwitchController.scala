@@ -17,7 +17,7 @@
 package testonly.controllers
 
 import core.auth.BaseFrontendController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import core.config.featureswitch.FeatureSwitch._
 import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import javax.inject.Inject
@@ -32,12 +32,12 @@ import testonly.views.html.feature_switch
 import scala.collection.immutable.ListMap
 import scala.concurrent.{ExecutionContext, Future}
 
-class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
-                                        val baseConfig: BaseControllerConfig,
-                                        val authService: AuthService,
+class FeatureSwitchController @Inject()(val authService: AuthService,
+                                        val messagesApi: MessagesApi,
                                         backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
                                         eligibilityFeatureSwitchConnector: EligibilityFeatureSwitchConnector)
-                                       (implicit val ec: ExecutionContext) extends BaseFrontendController with FeatureSwitching with I18nSupport {
+                                       (implicit val ec: ExecutionContext, appConfig: AppConfig) extends BaseFrontendController
+  with FeatureSwitching with I18nSupport {
 
   private def view(switchNames: Map[FeatureSwitch, Boolean],
                    backendFeatureSwitches: Map[String, Boolean],

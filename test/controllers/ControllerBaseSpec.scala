@@ -20,7 +20,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import core.ITSASessionKeys
 import core.auth.{Registration, SignUp, UserMatching}
-import core.utils.TestConstants
+import core.utils.{TestConstants, UnitTestTrait}
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
@@ -29,7 +29,7 @@ import play.api.test.Helpers.{await, _}
 import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 
-trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
+trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
@@ -59,7 +59,7 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
     implicit def post[T](form: Form[T], data: T): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.post(form.fill(data))
 
-    implicit def postInvalid[T,I](form: Form[T], data: I): FakeRequest[AnyContentAsFormUrlEncoded] =
+    implicit def postInvalid[T, I](form: Form[T], data: I): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.withFormUrlEncodedBody(form.mapping.key -> data.toString)
 
     implicit def post[T](form: Form[T]): FakeRequest[AnyContentAsFormUrlEncoded] =

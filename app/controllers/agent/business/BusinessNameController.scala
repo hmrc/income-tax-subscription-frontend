@@ -17,7 +17,7 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import forms.agent.BusinessNameForm
 import javax.inject.{Inject, Singleton}
 import models.agent.BusinessNameModel
@@ -31,11 +31,10 @@ import services.agent.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
+class BusinessNameController @Inject()(val authService: AuthService,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService,
-                                       val authService: AuthService
-                                      )(implicit val ec: ExecutionContext) extends AuthenticatedController {
+                                       keystoreService: KeystoreService)
+                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.agent.business.business_name(

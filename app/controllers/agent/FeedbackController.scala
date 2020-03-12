@@ -25,7 +25,6 @@ import play.api.http.{Status => HttpStatus}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
@@ -37,13 +36,11 @@ import views.html.agent.feedback.feedback_thankyou
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class FeedbackController @Inject()(implicit val appConfig: AppConfig,
-                                   protected val authConnector: AuthConnector,
-                                   val sessionCookieCrypto: SessionCookieCrypto,
-                                   val http: HttpClient,
-                                   val messagesApi: MessagesApi,
-                                   ec: ExecutionContext
-                                  ) extends FrontendController with PartialRetriever with I18nSupport {
+class FeedbackController @Inject()(val messagesApi: MessagesApi,
+                                   http: HttpClient,
+                                   sessionCookieCrypto: SessionCookieCrypto)
+                                  (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController with PartialRetriever with I18nSupport {
+
   private val TICKET_ID = "ticketId"
 
   override val httpGet: HttpClient = http
@@ -84,8 +81,9 @@ class FeedbackController @Inject()(implicit val appConfig: AppConfig,
 
   def submit: Action[AnyContent] = UnauthorisedAction.async {
     implicit request =>
-      request.body.asFormUrlEncoded.map { formData => http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(
-        rds = readPartialsForm, hc = partialsReadyHeaderCarrier, implicitly[ExecutionContext]).map {
+      request.body.asFormUrlEncoded.map { formData =>
+        http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(
+          rds = readPartialsForm, hc = partialsReadyHeaderCarrier, implicitly[ExecutionContext]).map {
           resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))

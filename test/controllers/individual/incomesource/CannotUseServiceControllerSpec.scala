@@ -31,9 +31,8 @@ class CannotUseServiceControllerSpec extends ControllerBaseSpec {
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestCannotUseServiceController extends CannotUseServiceController(
-    MockBaseControllerConfig,
-    messagesApi,
-    mockAuthService
+    mockAuthService,
+    messagesApi
   )
 
   "Calling the show action of the Cannot Use Service Controller" when {

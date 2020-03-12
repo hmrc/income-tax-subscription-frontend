@@ -20,7 +20,6 @@ import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.auth.Registration
 import core.config.MockConfig
-import services.individual.mocks.MockKeystoreService
 import core.utils.TestConstants._
 import forms.individual.business.BusinessPhoneNumberForm
 import models.individual.business.BusinessPhoneNumberModel
@@ -28,6 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
@@ -43,13 +43,12 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
 
   def createTestBusinessPhoneNumberController(setEnableRegistration: Boolean): BusinessPhoneNumberController =
     new BusinessPhoneNumberController(
-      mockBaseControllerConfig(new MockConfig {
-        override val enableRegistration: Boolean = setEnableRegistration
-      }),
+      mockAuthService,
       messagesApi,
-      MockKeystoreService,
-      mockAuthService
-    )
+      MockKeystoreService
+    )(implicitly, new MockConfig {
+      override val enableRegistration: Boolean = setEnableRegistration
+    })
 
   lazy val TestBusinessPhoneNumberController: BusinessPhoneNumberController =
     createTestBusinessPhoneNumberController(setEnableRegistration = true)

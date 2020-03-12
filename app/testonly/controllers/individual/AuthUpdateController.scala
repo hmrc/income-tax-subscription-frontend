@@ -19,9 +19,9 @@
 package testonly.controllers.individual
 
 import core.auth.SignUpController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Result}
 import services.AuthService
@@ -36,16 +36,16 @@ import scala.concurrent.{ExecutionContext, Future}
   * But we need to stub out the enrolment calls which we cannot simulate solely using the auth stubs
   */
 @Singleton
-class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
+class AuthUpdateController @Inject()(val authService: AuthService,
                                      val messagesApi: MessagesApi,
-                                     val http: HttpClient,
-                                     val authService: AuthService
-                                    )(implicit val ec: ExecutionContext) extends SignUpController with I18nSupport {
+                                     appConfig: AppConfig,
+                                     http: HttpClient)
+                                    (implicit val ec: ExecutionContext) extends SignUpController {
 
   lazy val noAction: Future[String] = Future.successful("no actions taken")
   lazy val updated: Future[Result] = Future.successful(Ok("updated"))
 
-  lazy val updateURL = s"${baseConfig.appConfig.authUrl}/auth/authority"
+  lazy val updateURL = s"${appConfig.authUrl}/auth/authority"
 
   val update: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

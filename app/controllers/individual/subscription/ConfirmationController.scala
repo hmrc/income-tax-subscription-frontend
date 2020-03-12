@@ -20,9 +20,9 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 import core.ITSASessionKeys
-import core.audit.Logging
 import core.auth.PostSubmissionController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
+import core.services.CacheUtil._
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -34,16 +34,14 @@ import views.html.individual.incometax.subscription.sign_up_complete
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
+class ConfirmationController @Inject()(val authService: AuthService,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService,
-                                       val logging: Logging,
-                                       val authService: AuthService
-                                      )(implicit val ec: ExecutionContext) extends PostSubmissionController {
+                                       keystoreService: KeystoreService)
+                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      import core.services.CacheUtil._
+
 
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()

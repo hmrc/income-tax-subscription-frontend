@@ -17,9 +17,7 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.config.MockConfig
 import core.config.featureswitch._
-import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.AccountingMethodForm
 import models.individual.business.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
@@ -29,6 +27,7 @@ import models.{Cash, DateModel, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
@@ -44,11 +43,9 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   )
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
-    mockBaseControllerConfig(
-      new MockConfig {}),
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   private def fetchAllCacheMap(matchTaxYear: Option[MatchTaxYearModel] = None,
@@ -171,11 +168,9 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   "The back url not in edit mode" when {
     "income source type is business" should {
       object TestBusinessAccountingMethodController2 extends BusinessAccountingMethodController(
-        mockBaseControllerConfig(
-          new MockConfig {}),
+        mockAuthService,
         messagesApi,
-        MockKeystoreService,
-        mockAuthService
+        MockKeystoreService
       )
       s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
         setupMockKeystore(fetchAll = matchTaxYearCacheMap())

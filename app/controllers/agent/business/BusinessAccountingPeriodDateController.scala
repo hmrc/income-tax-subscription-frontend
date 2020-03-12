@@ -18,10 +18,10 @@ package controllers.agent.business
 
 import agent.auth.AuthenticatedController
 import agent.services.CacheUtil._
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import core.utils.Implicits._
 import forms.agent.AccountingPeriodDateForm
-import incometax.{AccountingPeriodUtil, CurrentDateProvider}
+import incometax.AccountingPeriodUtil
 import javax.inject.{Inject, Singleton}
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.{Both, IncomeSourceType}
@@ -29,19 +29,17 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AccountingPeriodService, AuthService}
 import services.agent.KeystoreService
+import services.{AccountingPeriodService, AuthService}
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
+class BusinessAccountingPeriodDateController @Inject()(val authService: AuthService,
                                                        val messagesApi: MessagesApi,
-                                                       val keystoreService: KeystoreService,
-                                                       val authService: AuthService,
-                                                       val accountingPeriodService: AccountingPeriodService,
-                                                       val currentDateProvider: CurrentDateProvider
-                                                      )(implicit val ec: ExecutionContext) extends AuthenticatedController {
+                                                       accountingPeriodService: AccountingPeriodService,
+                                                       keystoreService: KeystoreService)
+                                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.agent.business.accounting_period_date(

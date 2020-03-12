@@ -17,12 +17,12 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import services.individual.mocks.MockKeystoreService
 import forms.individual.business.BusinessNameForm
 import models.individual.business.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 
@@ -36,10 +36,9 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
   )
 
   object TestBusinessNameController extends BusinessNameController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   "Calling the show action of the BusinessNameController with an authorised user" should {

@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import services.agent.mocks.MockKeystoreService
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.MatchTaxYearForm
 import forms.submapping.YesNoMapping
@@ -25,6 +24,7 @@ import models.individual.subscription.IncomeSourceType
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 
 class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
 
@@ -39,10 +39,9 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
              fetchIncomeSource: Option[IncomeSourceType] = None) {
 
     val controller = new MatchTaxYearController(
-      MockBaseControllerConfig,
+      mockAuthService,
       messagesApi,
-      MockKeystoreService,
-      mockAuthService
+      MockKeystoreService
     )
 
     setupMockKeystore(fetchMatchTaxYear = fetchMatchTaxYear, fetchIncomeSource = fetchIncomeSource)

@@ -16,7 +16,7 @@
 
 package testonly.controllers.agent
 
-import core.config.{AppConfig, BaseControllerConfig}
+import core.config.AppConfig
 import core.utils.Implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -36,12 +36,10 @@ import scala.concurrent.ExecutionContext
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
 @Singleton
-class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
-                                       val messagesApi: MessagesApi,
-                                       matchingStubConnector: MatchingStubConnector
-                                      )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+class MatchingStubController @Inject()(val messagesApi: MessagesApi,
+                                       matchingStubConnector: MatchingStubConnector)
+                                      (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  implicit lazy val appConfig: AppConfig = baseConfig.appConfig
 
   def view(clientToStubForm: Form[ClientToStubModel])(implicit request: Request[_]): Html =
     stub_client(

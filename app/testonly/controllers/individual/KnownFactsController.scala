@@ -19,7 +19,7 @@
 package testonly.controllers.individual
 
 import core.auth.SignUpController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -34,11 +34,10 @@ import testonly.views.html.individual.add_known_facts
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
+class KnownFactsController @Inject()(val authService: AuthService,
                                      val messagesApi: MessagesApi,
-                                     val authService: AuthService,
-                                     knownFactsService: KnownFactsService
-                                    )(implicit val ec: ExecutionContext) extends SignUpController {
+                                     knownFactsService: KnownFactsService)
+                                    (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
 
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
     add_known_facts(

@@ -32,10 +32,9 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.Future
 
 @Singleton
-class ExitSurveyController @Inject()(val logging: Logging,
-                                     implicit val appConfig: AppConfig,
-                                     val messagesApi: MessagesApi
-                                    ) extends FrontendController with I18nSupport {
+class ExitSurveyController @Inject()(val messagesApi: MessagesApi,
+                                     logging: Logging)
+                                    (implicit appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   def view(exitSurveyForm: Form[ExitSurveyModel])(implicit request: Request[_]): Html =
     views.html.individual.incometax.subscription.exit_survey(

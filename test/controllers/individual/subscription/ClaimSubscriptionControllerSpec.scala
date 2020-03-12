@@ -17,11 +17,11 @@
 package controllers.individual.subscription
 
 import controllers.ControllerBaseSpec
-import services.individual.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
 import core.utils.TestConstants._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.individual.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
 import uk.gov.hmrc.http.InternalServerException
 
 class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeystoreService with MockSubscriptionOrchestrationService {
@@ -32,11 +32,10 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
   )
 
   object TestClaimSubscriptionController extends ClaimSubscriptionController(
-    MockBaseControllerConfig,
-    messagesApi,
     mockAuthService,
-    mockSubscriptionOrchestrationService,
-    MockKeystoreService
+    messagesApi,
+    MockKeystoreService,
+    mockSubscriptionOrchestrationService
   )
 
   "Calling the claim action of the ClaimSubscriptionController with a subscribed Authenticated User" should {

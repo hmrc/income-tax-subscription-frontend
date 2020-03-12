@@ -16,10 +16,10 @@
 
 package controllers.agent
 
-import services.agent.mocks.MockKeystoreService
 import core.config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -34,17 +34,17 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestAddAnotherClientController extends AddAnotherClientController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    appConfig,
+    MockKeystoreService
   )
 
   "AddAnotherClientController.addAnother" should {
 
     lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue")
 
-    def call: Future[Result]= TestAddAnotherClientController.addAnother()(request)
+    def call: Future[Result] = TestAddAnotherClientController.addAnother()(request)
 
 
     "redirect to the agent eligibility frontend terms page, clearing keystore and session values" in {
@@ -53,7 +53,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       val result: Result = await(call)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(s"${MockBaseControllerConfig.appConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
+      redirectLocation(result) mustBe Some(s"${appConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
 
       result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
       result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None

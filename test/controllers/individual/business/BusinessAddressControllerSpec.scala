@@ -21,12 +21,12 @@ import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.auth.Registration
 import core.config.MockConfig
-import services.individual.mocks.{MockAddressLookupService, MockKeystoreService}
 import core.utils.TestModels._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
+import services.individual.mocks.{MockAddressLookupService, MockKeystoreService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 
 import scala.concurrent.Future
@@ -45,14 +45,13 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest.withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
 
   def createTestBusinessAddressController(setEnableRegistration: Boolean): BusinessAddressController = new BusinessAddressController(
-    mockBaseControllerConfig(new MockConfig {
-      override val enableRegistration: Boolean = setEnableRegistration
-    }),
-    messagesApi,
     mockAuthService,
+    messagesApi,
     mockAddressLookupService,
     MockKeystoreService
-  )
+  )(implicitly, new MockConfig {
+    override val enableRegistration: Boolean = setEnableRegistration
+  })
 
   lazy val TestBusinessAddressController: BusinessAddressController =
     createTestBusinessAddressController(setEnableRegistration = true)

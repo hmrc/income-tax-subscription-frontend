@@ -18,7 +18,6 @@ package testonly.controllers.agent
 
 import agent.auth.StatelessController
 import controllers.agent.ITSASessionKeys
-import core.config.BaseControllerConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -27,10 +26,9 @@ import services.AuthService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ResetUserController @Inject()(val baseConfig: BaseControllerConfig,
-                                    val messagesApi: MessagesApi,
-                                    val authService: AuthService
-                                   )(implicit val ec: ExecutionContext) extends StatelessController {
+class ResetUserController @Inject()(val authService: AuthService,
+                                    val messagesApi: MessagesApi)
+                                   (implicit val ec: ExecutionContext) extends StatelessController {
 
   val resetUser: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

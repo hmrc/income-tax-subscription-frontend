@@ -21,27 +21,26 @@ import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import core.ITSASessionKeys._
 import core.auth.JourneyState._
 import core.auth._
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import core.utils.Implicits._
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.{AuthService, GetEligibilityStatusService, SubscriptionService}
 import services.individual._
+import services.{AuthService, GetEligibilityStatusService, SubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
-                               override val messagesApi: MessagesApi,
-                               subscriptionService: SubscriptionService,
-                               keystoreService: KeystoreService,
-                               val authService: AuthService,
+class HomeController @Inject()(val authService: AuthService,
+                               val messagesApi: MessagesApi,
                                citizenDetailsService: CitizenDetailsService,
-                               getEligibilityStatusService: GetEligibilityStatusService
-                              )(implicit val ec: ExecutionContext) extends StatelessController {
+                               getEligibilityStatusService: GetEligibilityStatusService,
+                               keystoreService: KeystoreService,
+                               subscriptionService: SubscriptionService)
+                              (implicit val ec: ExecutionContext, appConfig: AppConfig) extends StatelessController {
 
   def home: Action[AnyContent] = Action { implicit request =>
     val redirect = routes.HomeController.index()

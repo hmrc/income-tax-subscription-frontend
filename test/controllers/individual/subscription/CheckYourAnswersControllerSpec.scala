@@ -18,16 +18,15 @@ package controllers.individual.subscription
 
 import controllers.ControllerBaseSpec
 import core.audit.Logging
-import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import core.services.CacheUtil._
-import services.individual.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.individual.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
@@ -44,12 +43,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   )
 
   object TestCheckYourAnswersController extends CheckYourAnswersController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
     MockKeystoreService,
-    subscriptionService = mockSubscriptionOrchestrationService,
-    mockAuthService,
-    app.injector.instanceOf[Logging]
+    app.injector.instanceOf[Logging],
+    mockSubscriptionOrchestrationService
   )
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {
@@ -144,7 +142,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "When required answers by the user are not retrieved" in {
       setupMockKeystore(fetchAll = testCacheMap())
-//      mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
+      //      mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
 
       val result = call
 

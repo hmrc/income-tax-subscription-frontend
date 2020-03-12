@@ -44,11 +44,10 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   )
 
   object TestConfirmUserController extends ConfirmUserController(
-    MockBaseControllerConfig,
     messagesApi,
     mockAuthService,
-    mockUserMatchingService,
-    mockUserLockoutService
+    mockUserLockoutService,
+    mockUserMatchingService
   )
 
   override def beforeEach(): Unit = {

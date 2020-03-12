@@ -17,7 +17,7 @@
 package controllers.agent.eligibility
 
 import core.auth.StatelessController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -26,10 +26,9 @@ import services.AuthService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NotEligibleForIncomeTaxController @Inject()(val baseConfig: BaseControllerConfig,
-                                                  val messagesApi: MessagesApi,
-                                                  val authService: AuthService)
-                                                 (implicit val ec: ExecutionContext) extends StatelessController {
+class NotEligibleForIncomeTaxController @Inject()(val authService: AuthService,
+                                                  val messagesApi: MessagesApi)
+                                                 (implicit val ec: ExecutionContext, appConfig: AppConfig) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user => Future.successful(Ok(views.html.agent.eligibility.not_eligible_for_income_tax()))

@@ -17,7 +17,7 @@
 package controllers.agent
 
 import agent.auth.UserMatchingController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -26,10 +26,9 @@ import services.AuthService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientAlreadySubscribedController @Inject()(val baseConfig: BaseControllerConfig,
-                                                  val messagesApi: MessagesApi,
-                                                  val authService: AuthService
-                                                 )(implicit val ec: ExecutionContext) extends UserMatchingController {
+class ClientAlreadySubscribedController @Inject()(val authService: AuthService,
+                                                  val messagesApi: MessagesApi)
+                                                 (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
