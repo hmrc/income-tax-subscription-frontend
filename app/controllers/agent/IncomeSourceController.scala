@@ -17,8 +17,7 @@
 package controllers.agent
 
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
-import core.config.featureswitch.FeatureSwitching
+import core.config.AppConfig
 import forms.agent.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
@@ -33,11 +32,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
+class IncomeSourceController @Inject()(val authService: AuthService,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService,
-                                       val authService: AuthService
-                                      )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
+                                       keystoreService: KeystoreService)
+                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
 
   def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.agent.income_source(

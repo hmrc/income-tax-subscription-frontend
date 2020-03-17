@@ -16,18 +16,17 @@
 
 package controllers.language
 
-import core.config.FrontendAppConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, Controller}
 import uk.gov.hmrc.play.language.LanguageUtils
 
 @Singleton
-class LanguageSwitchController @Inject()(val appConfig: FrontendAppConfig,
-                                         override implicit val messagesApi: MessagesApi)
-  extends Controller with I18nSupport {
+class LanguageSwitchController @Inject()(val messagesApi: MessagesApi,
+                                         appConfig: AppConfig) extends Controller with I18nSupport {
 
-  def langToCall(lang: String) : String => Call = appConfig.routeToSwitchLanguage
+  def langToCall(lang: String): String => Call = appConfig.routeToSwitchLanguage
 
   protected def fallbackURL: String = controllers.usermatching.routes.HomeController.home().url
 

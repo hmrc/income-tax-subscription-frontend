@@ -19,7 +19,7 @@ package controllers.usermatching
 import core.ITSASessionKeys._
 import core.auth.JourneyState._
 import core.auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.i18n.MessagesApi
@@ -33,12 +33,11 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
 
 @Singleton
-class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
-                                      val messagesApi: MessagesApi,
+class ConfirmUserController @Inject()(val messagesApi: MessagesApi,
                                       val authService: AuthService,
-                                      val userMatching: UserMatchingService,
-                                      val lockOutService: UserLockoutService
-                                     )(implicit val ec: ExecutionContext) extends UserMatchingController {
+                                      lockOutService: UserLockoutService,
+                                      userMatching: UserMatchingService)
+                                     (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     views.html.individual.usermatching.check_your_user_details(

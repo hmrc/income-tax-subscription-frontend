@@ -21,7 +21,7 @@ import agent.auth._
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.ITSASessionKeys
 import controllers.agent.ITSASessionKeys.FailedClientMatching
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
 import play.api.i18n.MessagesApi
@@ -37,13 +37,12 @@ import scala.util.Left
 
 
 @Singleton
-class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
+class ConfirmClientController @Inject()(val authService: AuthService,
                                         val messagesApi: MessagesApi,
-                                        val agentQualificationService: AgentQualificationService,
-                                        val authService: AuthService,
-                                        val lockOutService: UserLockoutService,
-                                        val eligibilityService: GetEligibilityStatusService
-                                       )(implicit val ec: ExecutionContext) extends UserMatchingController {
+                                        agentQualificationService: AgentQualificationService,
+                                        eligibilityService: GetEligibilityStatusService,
+                                        lockOutService: UserLockoutService)
+                                       (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     views.html.agent.check_your_client_details(

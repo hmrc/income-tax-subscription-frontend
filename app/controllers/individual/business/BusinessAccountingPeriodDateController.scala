@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import core.auth.{Registration, SignUpController}
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import forms.individual.business.AccountingPeriodDateForm
 import javax.inject.{Inject, Singleton}
 import models.Yes
@@ -27,18 +27,17 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AccountingPeriodService, AuthService}
 import services.individual.KeystoreService
+import services.{AccountingPeriodService, AuthService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
+class BusinessAccountingPeriodDateController @Inject()(val authService: AuthService,
                                                        val messagesApi: MessagesApi,
-                                                       val keystoreService: KeystoreService,
-                                                       val authService: AuthService,
-                                                       val accountingPeriodService: AccountingPeriodService
-                                                      )(implicit val ec: ExecutionContext) extends SignUpController {
+                                                       accountingPeriodService: AccountingPeriodService,
+                                                       keystoreService: KeystoreService)
+                                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, editMatch: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.incometax.business.accounting_period_date(

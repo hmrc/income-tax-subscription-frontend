@@ -23,9 +23,8 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
-class ExitSurveyThankYouController @Inject()(implicit val appConfig: AppConfig,
-                                             val messagesApi: MessagesApi
-                                            ) extends FrontendController with I18nSupport {
+class ExitSurveyThankYouController @Inject()(val messagesApi: MessagesApi)
+                                            (implicit appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
     Ok(views.html.individual.incometax.subscription.exit_survey_thank_you())

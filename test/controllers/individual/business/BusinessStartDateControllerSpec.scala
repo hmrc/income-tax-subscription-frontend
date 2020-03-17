@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
-import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels.testBusinessStartDate
 import forms.individual.business.BusinessStartDateForm
 import forms.submapping.YesNoMapping.{option_no, option_yes}
@@ -26,6 +25,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
+import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
@@ -41,13 +41,12 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
 
   def createTestBusinessStartDateController(setEnableRegistration: Boolean): BusinessStartDateController =
     new BusinessStartDateController(
-      mockBaseControllerConfig(new MockConfig {
-        override val enableRegistration: Boolean = setEnableRegistration
-      }),
+      mockAuthService,
       messagesApi,
-      MockKeystoreService,
-      mockAuthService
-    )
+      MockKeystoreService
+    )(implicitly, new MockConfig {
+      override val enableRegistration: Boolean = setEnableRegistration
+    })
 
   lazy val TestBusinessStartDateController: BusinessStartDateController =
     createTestBusinessStartDateController(setEnableRegistration = true)

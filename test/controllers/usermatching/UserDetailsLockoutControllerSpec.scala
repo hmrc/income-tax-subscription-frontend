@@ -27,7 +27,7 @@ import org.jsoup.Jsoup
 import play.api.Play
 import play.api.http.Status
 import play.api.i18n.Messages.Implicits.applicationMessagesApi
-import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Cookie, Request}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import services.mocks.MockUserLockoutService
@@ -44,9 +44,8 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   )
 
   def createTestUserDetailsLockoutController(enableMatchingFeature: Boolean): UserDetailsLockoutController = new UserDetailsLockoutController(
-    MockBaseControllerConfig,
-    messagesApi,
     mockAuthService,
+    messagesApi,
     mockUserLockoutService
   )
 

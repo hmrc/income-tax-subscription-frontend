@@ -19,8 +19,7 @@ package controllers.agent.business
 import agent.auth.AuthenticatedController
 import controllers.utils.AgentAnswers._
 import controllers.utils.AgentRequireAnswer
-import core.config.BaseControllerConfig
-import core.config.featureswitch.FeatureSwitching
+import core.config.AppConfig
 import forms.agent.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
 import models.agent.AccountingMethodModel
@@ -38,12 +37,11 @@ import services.agent.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
+class BusinessAccountingMethodController @Inject()(val authService: AuthService,
                                                    val messagesApi: MessagesApi,
-                                                   val keystoreService: KeystoreService,
-                                                   val authService: AuthService)
-                                                  (implicit val ec: ExecutionContext)
-  extends AuthenticatedController with FeatureSwitching with AgentRequireAnswer {
+                                                   val keystoreService: KeystoreService)
+                                                  (implicit val ec: ExecutionContext,
+                                                   appConfig: AppConfig) extends AuthenticatedController with AgentRequireAnswer {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {
     views.html.agent.business.accounting_method(

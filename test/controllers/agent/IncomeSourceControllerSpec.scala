@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import services.agent.mocks.MockKeystoreService
 import agent.utils.TestModels
 import core.config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
@@ -24,6 +23,7 @@ import models.individual.subscription.{Both, Business, IncomeSourceType, Propert
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 
@@ -37,10 +37,9 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestIncomeSourceController extends IncomeSourceController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" should {

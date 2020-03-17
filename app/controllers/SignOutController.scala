@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SignOutController @Inject()(val appConfig: AppConfig,
+class SignOutController @Inject()(appConfig: AppConfig,
                                   authService: AuthService)
                                  (implicit ec: ExecutionContext) extends FrontendController {
 

@@ -30,10 +30,7 @@ class ExitSurveyThankYouControllerSpec extends ControllerBaseSpec {
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestExitSurveyThankYouController extends ExitSurveyThankYouController()(
-    appConfig,
-    messagesApi
-  )
+  object TestExitSurveyThankYouController extends ExitSurveyThankYouController(messagesApi)
 
   "ExitSurveyThankYouController.show" should {
     lazy val result = TestExitSurveyThankYouController.show()(subscriptionRequest)

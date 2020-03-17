@@ -52,16 +52,15 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   def testHomeController(showStartPage: Boolean = true, registrationFeature: Boolean = false): HomeController = new HomeController(
-    mockBaseControllerConfig(new MockConfig {
-      override val enableRegistration: Boolean = registrationFeature
-    }),
-    messagesApi,
-    mockSubscriptionService,
-    MockKeystoreService,
     mockAuthService,
+    messagesApi,
     mockCitizenDetailsService,
-    mockGetEligibilityStatusService
-  )
+    mockGetEligibilityStatusService,
+    MockKeystoreService,
+    mockSubscriptionService
+  )(implicitly, new MockConfig {
+    override val enableRegistration: Boolean = registrationFeature
+  })
 
   val testNino: String = TestConstants.testNino
   val testUtr: String = TestConstants.testUtr

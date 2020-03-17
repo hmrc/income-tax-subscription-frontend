@@ -18,30 +18,27 @@ package controllers.agent
 
 import agent.audit.Logging
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
-import core.config.BaseControllerConfig
-import core.config.featureswitch.FeatureSwitching
+import agent.services.CacheUtil._
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.AuthService
-import services.agent.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
+import services.agent.{KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
+class CheckYourAnswersController @Inject()(val authService: AuthService,
                                            val messagesApi: MessagesApi,
-                                           val keystoreService: KeystoreService,
-                                           val subscriptionService: SubscriptionOrchestrationService,
-                                           val clientRelationshipService: ClientRelationshipService,
-                                           val authService: AuthService,
-                                           logging: Logging
-                                          )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
+                                           keystoreService: KeystoreService,
+                                           logging: Logging,
+                                           subscriptionService: SubscriptionOrchestrationService)
+                                          (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
 
-  import agent.services.CacheUtil._
 
   private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
                               (noCacheMapErrMessage: String): Action[AnyContent] =

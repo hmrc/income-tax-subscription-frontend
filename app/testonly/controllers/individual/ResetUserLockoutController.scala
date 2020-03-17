@@ -16,7 +16,6 @@
 
 package testonly.controllers.individual
 
-import core.config.BaseControllerConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.individual.ResetUserLockoutConnector
@@ -25,8 +24,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ResetUserLockoutController @Inject()(val baseConfig: BaseControllerConfig,
-                                           val resetUserLockoutConnector: ResetUserLockoutConnector)
+class ResetUserLockoutController @Inject()(val resetUserLockoutConnector: ResetUserLockoutConnector)
                                           (implicit ec: ExecutionContext) extends FrontendController {
 
   val resetLockout: Action[AnyContent] = Action.async { implicit request =>

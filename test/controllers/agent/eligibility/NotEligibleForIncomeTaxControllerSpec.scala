@@ -31,9 +31,8 @@ class NotEligibleForIncomeTaxControllerSpec extends ControllerBaseSpec {
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestCannotUseServiceController extends NotEligibleForIncomeTaxController(
-    MockBaseControllerConfig,
-    messagesApi,
-    mockAuthService
+    mockAuthService,
+    messagesApi
   )
 
   "Calling the show action of the Agent Not Eligible For Income Tax Controller" when {

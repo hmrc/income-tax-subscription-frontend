@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import core.auth.{Registration, SignUpController}
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.BusinessNameModel
@@ -31,11 +31,10 @@ import services.individual.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
+class BusinessNameController @Inject()(val authService: AuthService,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService,
-                                       val authService: AuthService
-                                      )(implicit val ec: ExecutionContext) extends SignUpController {
+                                       keystoreService: KeystoreService)
+                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
     views.html.individual.incometax.business.business_name(

@@ -17,7 +17,6 @@
 package controllers.agent.matching
 
 import agent.assets.MessageLookup.{ClientDetails => messages}
-import services.agent.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.ClientDetailsForm
@@ -28,6 +27,7 @@ import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
+import services.agent.mocks.MockKeystoreService
 import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 
@@ -45,10 +45,9 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestClientDetailsController extends ClientDetailsController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
     mockUserLockoutService
   )
 
@@ -162,7 +161,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifyKeystore( deleteAll = 1)
+            verifyKeystore(deleteAll = 1)
           }
 
         }
@@ -213,7 +212,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
           // bad requests do not trigger a save
           await(badResult).verifyStoredUserDetailsIs(None)(userMatchingRequest)
-          verifyKeystore( deleteAll = 0)
+          verifyKeystore(deleteAll = 0)
         }
 
         "return HTML" in {

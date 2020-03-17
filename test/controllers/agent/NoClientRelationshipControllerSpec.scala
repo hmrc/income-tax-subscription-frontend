@@ -17,11 +17,11 @@
 package controllers.agent
 
 import agent.assets.MessageLookup.{NoClientRelationship => messages}
-import services.agent.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.agent.ClientRelationshipService
+import services.agent.mocks.MockKeystoreService
 
 class NoClientRelationshipControllerSpec
   extends AgentControllerBaseSpec
@@ -35,11 +35,8 @@ class NoClientRelationshipControllerSpec
   val mockClientRelationshipService = mock[ClientRelationshipService]
 
   object TestNoClientRelationshipController extends NoClientRelationshipController(
-    MockBaseControllerConfig,
-    messagesApi,
-    mockClientRelationshipService,
-    MockKeystoreService,
-    mockAuthService
+    mockAuthService,
+    messagesApi
   )
 
 

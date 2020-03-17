@@ -35,11 +35,9 @@ import scala.concurrent.ExecutionContext
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
 @Singleton
-class MatchingStubController @Inject()(implicit val appConfig: AppConfig,
-                                       val messagesApi: MessagesApi,
-                                       matchingStubConnector: MatchingStubConnector,
-                                       ec: ExecutionContext
-                                      ) extends FrontendController with I18nSupport {
+class MatchingStubController @Inject()(val messagesApi: MessagesApi,
+                                       matchingStubConnector: MatchingStubConnector)
+                                      (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def view(clientToStubForm: Form[UserToStubModel])(implicit request: Request[_]): Html =
     stub_user(

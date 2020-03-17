@@ -18,8 +18,7 @@ package controllers.agent
 
 import agent.auth.{IncomeTaxAgentUser, StatelessController}
 import core.auth.AuthPredicate.AuthPredicate
-import core.config.BaseControllerConfig
-import core.config.featureswitch.FeatureSwitching
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -29,11 +28,11 @@ import services.agent.KeystoreService
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AddAnotherClientController @Inject()(override val baseConfig: BaseControllerConfig,
-                                           override val messagesApi: MessagesApi,
-                                           keystore: KeystoreService,
-                                           val authService: AuthService
-                                          )(implicit val ec: ExecutionContext) extends StatelessController with FeatureSwitching {
+class AddAnotherClientController @Inject()(val authService: AuthService,
+                                           val messagesApi: MessagesApi,
+                                           appConfig: AppConfig,
+                                           keystore: KeystoreService)
+                                          (implicit val ec: ExecutionContext) extends StatelessController {
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = agent.auth.AuthPredicates.defaultPredicates
 

@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import controllers.ControllerBaseSpec
 import core.config.featureswitch._
-import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.AccountingMethodPropertyForm
 import models.Cash
@@ -26,6 +25,7 @@ import models.individual.business.AccountingMethodPropertyModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
@@ -41,10 +41,9 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   )
 
   object TestPropertyAccountingMethodController extends PropertyAccountingMethodController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_only))

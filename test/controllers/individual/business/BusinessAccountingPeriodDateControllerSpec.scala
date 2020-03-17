@@ -20,9 +20,7 @@ import java.time.LocalDate
 
 import assets.MessageLookup
 import controllers.ControllerBaseSpec
-import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels
 import core.utils.TestModels.testCacheMapCustom
 import forms.individual.business.AccountingPeriodDateForm
@@ -32,6 +30,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 import services.mocks.MockAccountingPeriodService
 
 import scala.concurrent.Future
@@ -49,11 +48,10 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
   lazy val testBusinessAccountingPeriodDateController: BusinessAccountingPeriodDateController =
     new BusinessAccountingPeriodDateController(
-      mockBaseControllerConfig(new MockConfig {}),
-      messagesApi,
-      MockKeystoreService,
       mockAuthService,
-      mockAccountingPeriodService
+      messagesApi,
+      mockAccountingPeriodService,
+      MockKeystoreService
     )
 
   s"When the user is in the sign up journey, $controllerName" when {

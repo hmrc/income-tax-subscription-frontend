@@ -33,12 +33,10 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class UpdateEnrolmentsController @Inject()(implicit val appConfig: AppConfig,
-                                           val messagesApi: MessagesApi,
-                                           enrolmentStoreStubConnector: EnrolmentStoreStubConnector,
+class UpdateEnrolmentsController @Inject()(val messagesApi: MessagesApi,
                                            authService: AuthService,
-                                           ec: ExecutionContext
-                                          ) extends FrontendController with I18nSupport {
+                                           enrolmentStoreStubConnector: EnrolmentStoreStubConnector)
+                                          (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   import authService._
 
@@ -52,7 +50,6 @@ class UpdateEnrolmentsController @Inject()(implicit val appConfig: AppConfig,
       case _ => throw new InternalServerException("[UpdateEnrolmentsController][show] could not retrieve credentials from auth")
     }
   )
-
 
   def submit: Action[AnyContent] = Action.async(implicit req =>
     UpdateEnrolmentsForm.updateEnrolmentsForm.bindFromRequest.fold(

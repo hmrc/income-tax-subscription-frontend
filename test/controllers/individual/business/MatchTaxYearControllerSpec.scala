@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import controllers.ControllerBaseSpec
 import core.config.featureswitch._
-import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.MatchTaxYearForm
 import models.individual.business.MatchTaxYearModel
@@ -27,6 +26,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 
@@ -41,10 +41,9 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
   )
 
   object TestMatchTaxYearController extends MatchTaxYearController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   override def beforeEach(): Unit = {

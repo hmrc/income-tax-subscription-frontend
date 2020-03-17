@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import core.auth.RegistrationController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import forms.individual.business.BusinessPhoneNumberForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.BusinessPhoneNumberModel
@@ -31,11 +31,10 @@ import services.individual.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConfig,
+class BusinessPhoneNumberController @Inject()(val authService: AuthService,
                                               val messagesApi: MessagesApi,
-                                              val keystoreService: KeystoreService,
-                                              val authService: AuthService
-                                             )(implicit val ec: ExecutionContext) extends RegistrationController {
+                                              keystoreService: KeystoreService)
+                                             (implicit val ec: ExecutionContext, val appConfig: AppConfig) extends RegistrationController {
 
   def view(businessPhoneNumberForm: Form[BusinessPhoneNumberModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.incometax.business.business_phone_number(

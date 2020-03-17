@@ -16,8 +16,6 @@
 
 package controllers.agent
 
-import agent.audit.Logging
-import services.agent.mocks.MockKeystoreService
 import agent.utils.TestModels._
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
@@ -26,6 +24,7 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Cookie}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.language.LanguageUtils._
 
@@ -33,11 +32,9 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   object TestConfirmationController extends ConfirmationController(
-    MockBaseControllerConfig,
-    messagesApi,
-    MockKeystoreService,
     mockAuthService,
-    app.injector.instanceOf[Logging]
+    messagesApi,
+    MockKeystoreService
   )
 
   override val controllerName: String = "ConfirmationControllerSpec"

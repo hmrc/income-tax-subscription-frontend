@@ -17,8 +17,7 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
-import core.config.featureswitch.FeatureSwitching
+import core.config.AppConfig
 import forms.agent.AccountingYearForm
 import javax.inject.Inject
 import models.agent.AccountingYearModel
@@ -26,17 +25,16 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AccountingPeriodService, AuthService}
 import services.agent.KeystoreService
+import services.{AccountingPeriodService, AuthService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
+class WhatYearToSignUpController @Inject()(val authService: AuthService,
                                            val messagesApi: MessagesApi,
-                                           val keystoreService: KeystoreService,
-                                           val authService: AuthService,
-                                           val accountingPeriodService: AccountingPeriodService
-                                          )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
+                                           accountingPeriodService: AccountingPeriodService,
+                                           keystoreService: KeystoreService)
+                                          (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {

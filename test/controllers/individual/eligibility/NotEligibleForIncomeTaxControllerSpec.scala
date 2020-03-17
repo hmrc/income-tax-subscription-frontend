@@ -31,14 +31,13 @@ class NotEligibleForIncomeTaxControllerSpec extends ControllerBaseSpec {
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestCannotUseServiceController extends NotEligibleForIncomeTaxController(
-    MockBaseControllerConfig,
-    messagesApi,
-    mockAuthService
+    mockAuthService,
+    messagesApi
   )
 
   "Calling the show action of the Not Eligible For Income Tax Controller" when {
 
-    def call: Future[Result]= TestCannotUseServiceController.show(subscriptionRequest)
+    def call: Future[Result] = TestCannotUseServiceController.show(subscriptionRequest)
 
     "return ok (200)" in {
       val result = call

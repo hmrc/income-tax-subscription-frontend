@@ -42,9 +42,8 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestClientDetailsLockoutController extends ClientDetailsLockoutController(
-    MockBaseControllerConfig,
-    messagesApi,
     mockAuthService,
+    messagesApi,
     mockUserLockoutService
   )
 

@@ -16,9 +16,7 @@
 
 package controllers.agent.business
 
-import services.agent.mocks.MockKeystoreService
 import controllers.agent.AgentControllerBaseSpec
-import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import forms.agent.AccountingYearForm
 import models.Current
@@ -26,6 +24,7 @@ import models.agent.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 import services.mocks.MockAccountingPeriodService
 
 import scala.concurrent.Future
@@ -42,11 +41,10 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
-    MockBaseControllerConfig,
-    messagesApi,
-    MockKeystoreService,
     mockAuthService,
-    mockAccountingPeriodService
+    messagesApi,
+    mockAccountingPeriodService,
+    MockKeystoreService
   )
 
   "show" should {

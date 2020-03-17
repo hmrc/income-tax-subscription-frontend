@@ -17,22 +17,18 @@
 package controllers.agent
 
 import agent.auth.UserMatchingController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
-import services.agent.{ClientRelationshipService, KeystoreService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NoClientRelationshipController @Inject()(val baseConfig: BaseControllerConfig,
-                                               val messagesApi: MessagesApi,
-                                               clientRelationshipService: ClientRelationshipService,
-                                               keystoreService: KeystoreService,
-                                               val authService: AuthService)
-                                              (implicit val ec: ExecutionContext) extends UserMatchingController {
+class NoClientRelationshipController @Inject()(val authService: AuthService,
+                                               val messagesApi: MessagesApi)
+                                              (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

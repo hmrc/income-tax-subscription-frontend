@@ -25,9 +25,8 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.Future
 
 @Singleton
-class NoSAController @Inject()(implicit val appConfig: AppConfig,
-                               val messagesApi: MessagesApi
-                              ) extends FrontendController with I18nSupport {
+class NoSAController @Inject()(val messagesApi: MessagesApi)
+                              (implicit appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action.async {
     implicit request => Future.successful(Ok(views.html.agent.no_sa()))

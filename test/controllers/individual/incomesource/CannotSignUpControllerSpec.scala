@@ -18,13 +18,12 @@ package controllers.individual.incomesource
 
 import assets.MessageLookup.{CannotSignUp => messages}
 import controllers.ControllerBaseSpec
-import core.audit.Logging
 import core.config.featureswitch.FeatureSwitching
-import services.individual.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 
@@ -34,11 +33,8 @@ class CannotSignUpControllerSpec extends ControllerBaseSpec with MockKeystoreSer
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestCannotSignUpController extends CannotSignUpController(
-    MockBaseControllerConfig,
-    messagesApi,
-    MockKeystoreService,
-    app.injector.instanceOf[Logging],
-    mockAuthService
+    mockAuthService,
+    messagesApi
   )
 
   "Calling the show action of the CannotSignUpController" when {

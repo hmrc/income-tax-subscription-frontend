@@ -20,9 +20,7 @@ import java.time.LocalDateTime
 
 import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
-import core.audit.Logging
 import core.config.featureswitch.FeatureSwitching
-import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
@@ -32,6 +30,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Cookie, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import uk.gov.hmrc.play.language.LanguageUtils.{Welsh, WelshLangCode}
 
@@ -42,11 +41,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   with FeatureSwitching {
 
   object TestConfirmationController extends ConfirmationController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    app.injector.instanceOf[Logging],
-    mockAuthService
+    MockKeystoreService
   )
 
   override val controllerName: String = "ConfirmationControllerSpec"

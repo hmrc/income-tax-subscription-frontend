@@ -19,13 +19,13 @@ package controllers.individual.incomesource
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import services.individual.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import models.individual.incomesource.AreYouSelfEmployedModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, status, _}
+import services.individual.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 
@@ -38,10 +38,9 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestAreYouSelfEmployedController extends AreYouSelfEmployedController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   "Calling the show action of the AreYouSelfEmployed controller with an authorised user" when {

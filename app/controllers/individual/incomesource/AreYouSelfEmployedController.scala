@@ -17,7 +17,7 @@
 package controllers.individual.incomesource
 
 import core.auth.SignUpController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import core.services.CacheUtil._
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import javax.inject.{Inject, Singleton}
@@ -33,11 +33,10 @@ import services.individual.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfig,
+class AreYouSelfEmployedController @Inject()(val authService: AuthService,
                                              val messagesApi: MessagesApi,
-                                             val keystoreService: KeystoreService,
-                                             val authService: AuthService
-                                            )(implicit val ec: ExecutionContext) extends SignUpController {
+                                             keystoreService: KeystoreService)
+                                            (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
 
   def view(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.incometax.incomesource.are_you_selfemployed(

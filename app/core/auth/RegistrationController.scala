@@ -16,6 +16,7 @@
 
 package core.auth
 
+import core.config.AppConfig
 import play.api.mvc.Action
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 import uk.gov.hmrc.http.NotFoundException
@@ -23,6 +24,8 @@ import uk.gov.hmrc.http.NotFoundException
 import scala.concurrent.Future
 
 trait RegistrationController extends BaseFrontendController {
+
+  val appConfig: AppConfig
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 

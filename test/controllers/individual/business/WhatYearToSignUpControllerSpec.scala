@@ -17,15 +17,14 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.config.MockConfig
 import core.config.featureswitch._
-import services.individual.mocks.MockKeystoreService
 import forms.individual.business.AccountingYearForm
 import models.Current
 import models.individual.business.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.individual.mocks.MockKeystoreService
 import services.mocks.MockAccountingPeriodService
 
 import scala.concurrent.Future
@@ -42,11 +41,10 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   )
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
-    MockBaseControllerConfig,
-    messagesApi,
-    MockKeystoreService,
     mockAuthService,
-    mockAccountingPeriodService
+    messagesApi,
+    mockAccountingPeriodService,
+    MockKeystoreService
   )
 
   "show" should {
@@ -86,11 +84,11 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
   "submit" should {
 
-    def callShow(isEditMode: Boolean):Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callShow(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingYearForm.accountingYearForm, AccountingYearModel(Current))
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean):Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 

@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import services.agent.mocks.MockKeystoreService
 import agent.utils.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodForm
@@ -27,6 +26,7 @@ import models.individual.subscription.{Both, Business}
 import models.{Cash, No, Yes}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
@@ -38,18 +38,16 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   trait Test {
     val controller = new BusinessAccountingMethodController(
-      MockBaseControllerConfig,
+      mockAuthService,
       messagesApi,
-      MockKeystoreService,
-      mockAuthService
+      MockKeystoreService
     )
   }
 

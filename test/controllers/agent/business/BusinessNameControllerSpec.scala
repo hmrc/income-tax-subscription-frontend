@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import services.agent.mocks.MockKeystoreService
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
 import core.config.featureswitch.FeatureSwitching
@@ -25,6 +24,7 @@ import models.agent.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 
@@ -38,10 +38,9 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestBusinessNameController extends BusinessNameController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
-    MockKeystoreService,
-    mockAuthService
+    MockKeystoreService
   )
 
   "The back url for BusinessNameController" should {

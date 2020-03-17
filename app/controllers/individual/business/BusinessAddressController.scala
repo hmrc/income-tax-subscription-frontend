@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import core.auth.RegistrationController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.business.address._
 import play.api.i18n.{Messages, MessagesApi}
@@ -30,12 +30,11 @@ import uk.gov.hmrc.http.InternalServerException
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
+class BusinessAddressController @Inject()(val authService: AuthService,
                                           val messagesApi: MessagesApi,
-                                          val authService: AuthService,
                                           addressLookupService: AddressLookupService,
-                                          keystoreService: KeystoreService
-                                         )(implicit val ec: ExecutionContext) extends RegistrationController {
+                                          keystoreService: KeystoreService)
+                                         (implicit val ec: ExecutionContext, val appConfig: AppConfig) extends RegistrationController {
 
 
   private[controllers] def callbackUrl(editMode: Boolean)(implicit request: Request[AnyContent]): String =

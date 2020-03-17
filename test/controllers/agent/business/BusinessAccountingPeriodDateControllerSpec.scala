@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import agent.assets.MessageLookup
-import services.agent.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
@@ -29,6 +28,7 @@ import models.individual.business.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import services.agent.mocks.MockKeystoreService
 import services.mocks.MockAccountingPeriodService
 
 import scala.concurrent.Future
@@ -45,12 +45,10 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
   object DateProvider extends CurrentDateProvider
 
   object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodDateController(
-    MockBaseControllerConfig,
-    messagesApi,
-    MockKeystoreService,
     mockAuthService,
+    messagesApi,
     mockAccountingPeriodService,
-    DateProvider
+    MockKeystoreService
   )
 
   "show" should {

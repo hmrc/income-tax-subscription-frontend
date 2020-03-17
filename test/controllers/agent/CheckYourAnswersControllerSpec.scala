@@ -18,7 +18,6 @@ package controllers.agent
 
 import agent.audit.Logging
 import agent.services.CacheUtil._
-import services.agent.mocks._
 import agent.utils.TestConstants.{testNino, _}
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
@@ -26,6 +25,7 @@ import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
+import services.agent.mocks._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.InternalServerException
 
@@ -43,13 +43,11 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestCheckYourAnswersController extends CheckYourAnswersController(
-    MockBaseControllerConfig,
+    mockAuthService,
     messagesApi,
     MockKeystoreService,
-    subscriptionService = mockSubscriptionOrchestrationService,
-    clientRelationshipService = mockClientRelationshipService,
-    mockAuthService,
-    app.injector.instanceOf[Logging]
+    app.injector.instanceOf[Logging],
+    mockSubscriptionOrchestrationService
   )
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {

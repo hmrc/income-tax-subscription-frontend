@@ -17,7 +17,7 @@
 package controllers.individual
 
 import core.auth.StatelessController
-import core.config.BaseControllerConfig
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -27,10 +27,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class IdentityVerificationController @Inject()(override val baseConfig: BaseControllerConfig,
-                                               override val messagesApi: MessagesApi,
-                                               val authService: AuthService
-                                              )(implicit val ec: ExecutionContext) extends StatelessController {
+class IdentityVerificationController @Inject()(val authService: AuthService,
+                                               val messagesApi: MessagesApi)
+                                              (implicit val ec: ExecutionContext, appConfig: AppConfig) extends StatelessController {
 
   def identityVerificationUrl(implicit request: Request[AnyContent]): String =
     appConfig.identityVerificationURL +
