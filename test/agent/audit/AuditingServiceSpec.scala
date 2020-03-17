@@ -16,7 +16,6 @@
 
 package agent.audit
 
-import services.agent.AuditingService._
 import agent.audit.models.ClientMatchingAuditing._
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
@@ -24,35 +23,37 @@ import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.Configuration
-import services.agent.AuditingService
+import play.api.mvc.Request
+import play.api.test.FakeRequest
+import services.AuditingService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext
 
 class AuditingServiceSpec extends MockTrait with BeforeAndAfterEach {
-  val mockAuditConnector: AuditConnector = mock[AuditConnector]
-  val mockConfiguration: Configuration = mock[Configuration]
-  val testAppName = "app"
 
-  val testAuditingService = new AuditingService(mockConfiguration, mockAuditConnector)
+  val mockAuditConnector: AuditConnector = mock[AuditConnector]
+
+  val testAuditingService = new AuditingService(appConfig, mockAuditConnector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAuditConnector, mockConfiguration)
-
-    when(mockConfiguration.getString("appName")) thenReturn Some(testAppName)
+    reset(mockAuditConnector)
   }
 
   "audit" when {
     "given a ClientMatchingAuditModel of type ClientMatchingRequest" should {
       "extract the data and pass it into the AuditConnector" in {
+
+        val path: String = "/test-path"
+
+        implicit val request: Request[_] = FakeRequest("GET", path)
+
         val testModel = ClientMatchingAuditModel(testARN, testClientDetails, isSuccess = true)
+        val expectedData = AuditingService.toDataEvent(appConfig.appName, testModel, path)
 
-        val expectedData = toDataEvent(testAppName, testModel, controllers.agent.matching.routes.ConfirmClientController.submit().url)
-
-        testAuditingService.audit(testModel, controllers.agent.matching.routes.ConfirmClientController.submit().url)
+        testAuditingService.audit(testModel)
 
         verify(mockAuditConnector)
           .sendEvent(

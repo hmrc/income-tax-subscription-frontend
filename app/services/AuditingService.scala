@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package services.agent
+package services
 
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
-import services.agent.AuditingService.toDataEvent
+import play.api.mvc.Request
+import services.AuditingService.toDataEvent
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -27,17 +28,18 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AuditingService @Inject()(configuration: Configuration,
-                                auditConnector: AuditConnector) {
-  lazy val appName: String = configuration.getString("appName").get //Will fail if appName does not exists
+class AuditingService @Inject()(appConfig: AppConfig,
+                                auditConnector: AuditConnector)
+                               (implicit ec: ExecutionContext) {
 
+  def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier, request: Request[_]): Unit = {
+    auditConnector.sendEvent(toDataEvent(appConfig.appName, auditModel, request.path))
+  }
 
-  // TODO: Change this to extract path from Request/Header rather than having it passed in
-  def audit(auditModel: AuditModel, path: String = "N/A")(implicit hc: HeaderCarrier, ec: ExecutionContext): Unit =
-    auditConnector.sendEvent(toDataEvent(appName, auditModel, path))
 }
 
 object AuditingService {
+
   def toDataEvent(appName: String, auditModel: AuditModel, path: String)(implicit hc: HeaderCarrier): DataEvent = {
     val auditType: String = auditModel.auditType
     val transactionName: String = auditModel.transactionName
@@ -51,6 +53,7 @@ object AuditingService {
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails(detail.toSeq: _*)
     )
   }
+
 }
 
 trait AuditModel {

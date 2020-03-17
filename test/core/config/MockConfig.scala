@@ -20,6 +20,8 @@ import play.api.mvc.Call
 
 trait MockConfig extends AppConfig {
 
+  override val appName: String = "app"
+
   override val reportAProblemPartialUrl: String = ""
   override val reportAProblemNonJSUrl: String = ""
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"

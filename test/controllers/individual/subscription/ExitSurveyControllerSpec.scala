@@ -16,9 +16,9 @@
 
 package controllers.individual.subscription
 
+import agent.audit.mocks.MockAuditingService
 import assets.MessageLookup
 import controllers.ControllerBaseSpec
-import core.audit.Logging
 import forms.individual.subscription.ExitSurveyForm
 import models.individual.subscription.ExitSurveyModel
 import org.jsoup.Jsoup
@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
 
-class ExitSurveyControllerSpec extends ControllerBaseSpec {
+class ExitSurveyControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
   override val controllerName: String = "ExitSurveyController"
 
@@ -35,7 +35,7 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
 
   object TestExitSurveyController extends ExitSurveyController(
     messagesApi,
-    app.injector.instanceOf[Logging]
+    mockAuditingService
   )
 
   val testSurvey = ExitSurveyModel("Very satisfied", "This is my extended feedback")

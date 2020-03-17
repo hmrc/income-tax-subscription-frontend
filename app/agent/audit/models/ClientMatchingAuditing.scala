@@ -17,7 +17,7 @@
 package agent.audit.models
 
 import models.usermatching.UserDetailsModel
-import services.agent.AuditModel
+import services.AuditModel
 
 object ClientMatchingAuditing {
   val clientMatchingTransactionName = "ITSAMatchingRequest"
@@ -35,4 +35,5 @@ object ClientMatchingAuditing {
     )
     override val auditType: String = clientMatchingAuditType
   }
+
 }

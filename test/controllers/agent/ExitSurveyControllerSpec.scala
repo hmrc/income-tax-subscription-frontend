@@ -17,7 +17,7 @@
 package controllers.agent
 
 import agent.assets.MessageLookup
-import agent.audit.Logging
+import agent.audit.mocks.MockAuditingService
 import forms.agent.ExitSurveyForm
 import models.agent.ExitSurveyModel
 import org.jsoup.Jsoup
@@ -27,7 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
-class ExitSurveyControllerSpec extends AgentControllerBaseSpec {
+class ExitSurveyControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
 
   override val controllerName: String = "ExitSurveyController"
 
@@ -35,7 +35,7 @@ class ExitSurveyControllerSpec extends AgentControllerBaseSpec {
 
   object TestExitSurveyController extends ExitSurveyController(
     messagesApi,
-    app.injector.instanceOf[Logging]
+    mockAuditingService
   )
 
   val testSurvey = ExitSurveyModel("Very satisfied", "This is my extended feedback")

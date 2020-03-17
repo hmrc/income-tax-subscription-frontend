@@ -31,13 +31,11 @@ import scala.concurrent.Future
 
 class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
-  lazy val auditPath = controllers.agent.matching.routes.ConfirmClientController.submit().url
-
   def verifyClientMatchingSuccessAudit(): Unit =
-    verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = true), auditPath)
+    verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = true))
 
   def verifyClientMatchingFailureAudit(): Unit =
-    verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = false), auditPath)
+    verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = false))
 
   val matchedClient = ApprovedAgent(testNino, testUtr)
   val unapprovedMatchedClient = UnApprovedAgent(testNino, testUtr)

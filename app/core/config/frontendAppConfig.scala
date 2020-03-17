@@ -22,10 +22,11 @@ import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.config
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig extends FeatureSwitching {
+
+  val appName: String
 
   val contactFormServiceIdentifier: String
   val contactFrontendPartialBaseUrl: String
@@ -107,8 +108,9 @@ trait AppConfig extends FeatureSwitching {
 }
 
 @Singleton
-class FrontendAppConfig @Inject()(configuration: Configuration,
-                                  environment: Environment) extends AppConfig with ServicesConfig {
+class FrontendAppConfig @Inject()(configuration: Configuration, environment: Environment) extends AppConfig with ServicesConfig {
+
+  val appName: String = getString("appName")
 
   // AutoEnrolment links
   def usersGroupsSearchUrl: String = baseUrl("users-groups-search")
