@@ -21,10 +21,10 @@ package testonly.connectors.agent
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, ResolverStyle}
 
-import agent.audit.Logging
 import core.connectors.RawResponseReads
 import javax.inject.{Inject, Singleton}
 import models.DateModel
+import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json, OFormat}
 import testonly.TestOnlyAppConfig
@@ -101,8 +101,7 @@ import core.utils.Implicits._
 
 @Singleton
 class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                      http: HttpClient,
-                                      logging: Logging)
+                                      http: HttpClient)
                                      (implicit ec: ExecutionContext) extends RawResponseReads {
 
   lazy val dynamicStubUrl: String = appConfig.matchingStubsURL + "/dynamic-cid"
@@ -118,10 +117,10 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
       response =>
         response.status match {
           case CREATED =>
-            logging.info("MatchingStubConnector.newUser successful")
+            Logger.info("MatchingStubConnector.newUser successful")
             true
           case status =>
-            logging.warn(
+            Logger.warn(
               s"""MatchingStubConnector.newUser failure:
                  | Request {
                  |   dynamicStubUrl: $dynamicStubUrl
@@ -135,4 +134,5 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   }
 
 }
+
 // $COVERAGE-ON$

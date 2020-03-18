@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import agent.audit.Logging
 import agent.services.CacheUtil._
 import agent.utils.TestConstants.{testNino, _}
 import agent.utils.TestModels
@@ -46,7 +45,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     mockAuthService,
     messagesApi,
     MockKeystoreService,
-    app.injector.instanceOf[Logging],
     mockSubscriptionOrchestrationService
   )
 

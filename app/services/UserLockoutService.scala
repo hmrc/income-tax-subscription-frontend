@@ -20,10 +20,10 @@ import java.net.URLEncoder
 
 import connectors.usermatching.UserLockoutConnector
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import core.audit.Logging
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockoutStatus, LockoutStatusFailure, NotLockedOut}
+import play.api.Logger
 import services.individual.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -34,21 +34,19 @@ case class LockoutUpdate(status: LockoutStatus, updatedCount: Option[Int])
 @Singleton
 class UserLockoutService @Inject()(appConfig: AppConfig,
                                    userLockoutConnector: UserLockoutConnector,
-                                   keystoreService: KeystoreService,
-                                   logging: Logging) {
-
+                                   keystoreService: KeystoreService) {
 
   private def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)
 
-    logging.debug(s"Creating a lock for token=$token encoded=$encodedToken")
+    Logger.debug(s"Creating a lock for token=$token encoded=$encodedToken")
     userLockoutConnector.lockoutUser(encodedToken)
   }
 
   def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)
 
-    logging.debug(s"Getting lockout status for token=$token encoded=$encodedToken")
+    Logger.debug(s"Getting lockout status for token=$token encoded=$encodedToken")
     userLockoutConnector.getLockoutStatus(encodedToken)
   }
 

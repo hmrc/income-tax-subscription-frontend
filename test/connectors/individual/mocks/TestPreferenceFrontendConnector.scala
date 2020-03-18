@@ -17,7 +17,6 @@
 package connectors.individual.mocks
 
 import connectors.PreferenceFrontendConnector
-import core.audit.Logging
 import core.config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
 import core.connectors.mocks.MockHttp
 import core.utils.TestConstants._
@@ -58,12 +57,11 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait with I18nSupport wit
   implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   object TestPreferenceFrontendConnector extends PreferenceFrontendConnector(
-    app.injector.instanceOf[AppConfig],
-    app.injector.instanceOf[ITSAHeaderCarrierForPartialsConverter],
-    mockHttp,
     app.injector.instanceOf[MessagesApi],
-    app.injector.instanceOf[Logging],
-    app.injector.instanceOf[ApplicationCrypto]
+    app.injector.instanceOf[AppConfig],
+    app.injector.instanceOf[ApplicationCrypto],
+    app.injector.instanceOf[ITSAHeaderCarrierForPartialsConverter],
+    mockHttp
   )
 
   def setupCheckPaperless(token: String)(tuple: (Int, Option[JsValue]))(implicit request: Request[AnyContent]): Unit =

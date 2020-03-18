@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package agent.audit.models
+package models.audits
 
 import models.usermatching.UserDetailsModel
 import services.AuditModel
 
 object ClientMatchingAuditing {
+
   val clientMatchingTransactionName = "ITSAMatchingRequest"
   val clientMatchingAuditType = "ClientMatchingCheckSubmitted"
 

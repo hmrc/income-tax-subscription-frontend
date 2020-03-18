@@ -19,7 +19,6 @@ package services
 import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import core.audit.Logging
 import core.config.AppConfig
 import core.config.featureswitch.FeatureSwitching
 import incometax.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
@@ -27,13 +26,13 @@ import javax.inject.{Inject, Singleton}
 import models.individual.business.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
 import models.individual.subscription._
 import models.{Next, Yes}
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 @Singleton
 class SubscriptionService @Inject()(appConfig: AppConfig,
-                                    logging: Logging,
                                     subscriptionConnector: SubscriptionConnector
                                    ) extends FeatureSwitching {
 
@@ -74,13 +73,13 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
                          arn: Option[String]
                         )(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
 
-      val requestPost = buildRequestPost(nino, summaryData, arn)
-      logging.debug(s"Submitting subscription with request: $requestPost")
-      subscriptionConnector.subscribe(requestPost)
+    val requestPost = buildRequestPost(nino, summaryData, arn)
+    Logger.debug(s"Submitting subscription with request: $requestPost")
+    subscriptionConnector.subscribe(requestPost)
   }
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
-    logging.debug(s"Getting subscription for nino=$nino")
+    Logger.debug(s"Getting subscription for nino=$nino")
     subscriptionConnector.getSubscription(nino)
   }
 

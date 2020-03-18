@@ -17,7 +17,6 @@
 package controllers.individual.subscription
 
 import controllers.ControllerBaseSpec
-import core.audit.Logging
 import core.config.featureswitch.FeatureSwitching
 import core.services.CacheUtil._
 import core.utils.TestConstants._
@@ -46,7 +45,6 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     mockAuthService,
     messagesApi,
     MockKeystoreService,
-    app.injector.instanceOf[Logging],
     mockSubscriptionOrchestrationService
   )
 

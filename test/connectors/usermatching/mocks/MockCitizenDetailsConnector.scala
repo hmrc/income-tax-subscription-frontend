@@ -17,7 +17,6 @@
 package connectors.usermatching.mocks
 
 import connectors.usermatching.CitizenDetailsConnector
-import core.audit.Logging
 import core.utils.TestConstants.testException
 import core.utils.{MockTrait, UnitTestTrait}
 import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}

@@ -20,11 +20,11 @@ import java.net.URLEncoder
 
 import connectors.PaperlessPreferenceHttpParser._
 import core.Constants._
-import core.audit.Logging
 import core.config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
 import core.utils.HttpResult._
 import javax.inject.{Inject, Singleton}
 import models.{PaperlessPreferenceError, PaperlessState}
+import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
@@ -33,13 +33,12 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
+class PreferenceFrontendConnector @Inject()(val messagesApi: MessagesApi,
+                                            appConfig: AppConfig,
+                                            applicationCrypto: ApplicationCrypto,
                                             hc: ITSAHeaderCarrierForPartialsConverter,
-                                            http: HttpClient,
-                                            val messagesApi: MessagesApi,
-                                            logging: Logging,
-                                            applicationCrypto: ApplicationCrypto
-                                           )(implicit ec: ExecutionContext) {
+                                            http: HttpClient)
+                                           (implicit ec: ExecutionContext) {
 
   import hc._
 
@@ -52,14 +51,14 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
     appConfig.preferencesFrontendRedirect + choosePaperlessUri(returnUrl)
 
   def checkPaperless(token: String)(implicit request: Request[AnyContent], messages: Messages):
-                                    Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
+  Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
     // this header is converted implicitly by functions in core.config.ITSAHeaderCarrierForPartialsConverter which implements
     // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
     http.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl(token), "") map {
       case Right(paperlessState) => Right(paperlessState)
       case Left(error) =>
-        logging.warn(s"PreferencesFrontendConnector#checkPaperless failed. Returned status:${error.httpResponse.status} body:${error.httpResponse.body}")
+        Logger.warn(s"PreferencesFrontendConnector#checkPaperless failed. Returned status:${error.httpResponse.status} body:${error.httpResponse.body}")
         Left(PaperlessPreferenceError)
     }
   }
