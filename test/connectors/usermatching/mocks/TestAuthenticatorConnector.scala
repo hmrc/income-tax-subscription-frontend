@@ -17,7 +17,6 @@
 package connectors.usermatching.mocks
 
 import connectors.usermatching.AuthenticatorConnector
-import core.audit.Logging
 import core.connectors.mocks.MockHttp
 import core.utils.TestConstants.testException
 import core.utils.TestModels._
@@ -33,8 +32,7 @@ import scala.concurrent.Future
 
 trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
 
-  object TestAuthenticatorConnector extends AuthenticatorConnector(
-    appConfig, mockHttp, app.injector.instanceOf[Logging])
+  object TestAuthenticatorConnector extends AuthenticatorConnector(appConfig, mockHttp)
 
   def setupMockMatchUser(userDetailsModel: Option[UserDetailsModel])(status: Int, response: JsValue): Unit =
     setupMockHttpPost(TestAuthenticatorConnector.matchingEndpoint,

@@ -16,7 +16,7 @@
 
 package services.agent
 
-import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
+import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import core.utils.Implicits._
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess

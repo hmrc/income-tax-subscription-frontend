@@ -19,7 +19,6 @@ package services.mocks
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.mocks.MockSubscriptionConnector
-import core.audit.Logging
 import core.config.MockConfig
 import core.utils.MockTrait
 import core.utils.TestConstants._
@@ -33,7 +32,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 trait MockSubscriptionService extends MockTrait {
-  val mockSubscriptionService = mock[SubscriptionService]
+  
+  val mockSubscriptionService: SubscriptionService = mock[SubscriptionService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -78,7 +78,6 @@ trait TestSubscriptionService extends MockSubscriptionConnector {
 
   object TestSubscriptionService extends SubscriptionService(
     appConfig = MockConfig,
-    logging = app.injector.instanceOf[Logging],
     subscriptionConnector = mockSubscriptionConnector
   )
 

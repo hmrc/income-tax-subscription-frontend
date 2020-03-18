@@ -16,7 +16,7 @@
 
 package services.agent
 
-import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
+import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
 import agent.utils.{TestConstants, TestModels}

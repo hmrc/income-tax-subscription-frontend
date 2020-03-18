@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import agent.audit.Logging
 import agent.auth.PostSubmissionController
 import agent.services.CacheUtil._
 import core.config.AppConfig

@@ -17,10 +17,10 @@
 package connectors.usermatching
 
 import connectors.usermatching.httpparsers.MatchUserHttpParser._
-import core.audit.Logging
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{UserDetailsModel, UserMatchRequestModel}
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -28,8 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AuthenticatorConnector @Inject()(appConfig: AppConfig,
-                                       val http: HttpClient,
-                                       logging: Logging)
+                                       val http: HttpClient)
                                       (implicit ec: ExecutionContext) {
 
   lazy val matchingEndpoint: String = appConfig.authenticatorUrl + "/authenticator/match"
@@ -39,10 +38,10 @@ class AuthenticatorConnector @Inject()(appConfig: AppConfig,
 
     http.POST[UserMatchRequestModel, MatchUserResponse](matchingEndpoint, request).map {
       case Right(result) =>
-        logging.debug("AuthenticatorConnector.matchUser response received: " + result)
+        Logger.debug("AuthenticatorConnector.matchUser response received: " + result)
         Right(result)
       case Left(error) =>
-        logging.warn(s"AuthenticatorConnector.matchUser unexpected response from authenticator: ${error.errors}")
+        Logger.warn(s"AuthenticatorConnector.matchUser unexpected response from authenticator: ${error.errors}")
         Left(error)
     }
   }

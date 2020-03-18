@@ -16,7 +16,7 @@
 
 package agent.audit
 
-import agent.audit.models.ClientMatchingAuditing._
+import models.audits.ClientMatchingAuditing._
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
 import core.utils.MockTrait

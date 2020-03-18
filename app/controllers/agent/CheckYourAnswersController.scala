@@ -16,12 +16,12 @@
 
 package controllers.agent
 
-import agent.audit.Logging
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
 import agent.services.CacheUtil._
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription._
+import play.api.Logger
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.AuthService
@@ -35,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersController @Inject()(val authService: AuthService,
                                            val messagesApi: MessagesApi,
                                            keystoreService: KeystoreService,
-                                           logging: Logging,
                                            subscriptionService: SubscriptionOrchestrationService)
                                           (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
 
@@ -107,7 +106,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
 
   def error(message: String): Future[Nothing] = {
-    logging.warn(message)
+    Logger.warn(message)
     Future.failed(new InternalServerException(message))
   }
 

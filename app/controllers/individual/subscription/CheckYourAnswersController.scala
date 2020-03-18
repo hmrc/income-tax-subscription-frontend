@@ -17,7 +17,6 @@
 package controllers.individual.subscription
 
 import core.ITSASessionKeys
-import core.audit.Logging
 import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
 import core.config.AppConfig
 import core.services.CacheUtil._
@@ -25,6 +24,7 @@ import javax.inject.{Inject, Singleton}
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription._
 import models.{No, Yes}
+import play.api.Logger
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.AuthService
@@ -38,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersController @Inject()(val authService: AuthService,
                                            val messagesApi: MessagesApi,
                                            keystoreService: KeystoreService,
-                                           logging: Logging,
                                            subscriptionService: SubscriptionOrchestrationService)
                                           (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
 
@@ -99,7 +98,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
     }
 
   def error(message: String): Future[Nothing] = {
-    logging.warn(message)
+    Logger.warn(message)
     Future.failed(new InternalServerException(message))
   }
 }

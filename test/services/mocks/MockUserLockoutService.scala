@@ -18,7 +18,6 @@ package services.mocks
 
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import connectors.usermatching.mocks.MockUserLockoutConnector
-import core.audit.Logging
 import core.utils.MockTrait
 import core.utils.TestConstants.{testException, testLockoutResponse}
 import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
@@ -34,7 +33,8 @@ import usermatching.utils.UserMatchingTestSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockUserLockoutService extends MockTrait with UserMatchingTestSupport {
-  val mockUserLockoutService = mock[UserLockoutService]
+
+  val mockUserLockoutService: UserLockoutService = mock[UserLockoutService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -92,8 +92,7 @@ trait TestUserLockoutService extends MockUserLockoutConnector
   object TestUserLockoutService extends UserLockoutService(
     appConfig,
     mockUserLockoutConnector,
-    MockKeystoreService,
-    app.injector.instanceOf[Logging]
+    MockKeystoreService
   )
 
 }
