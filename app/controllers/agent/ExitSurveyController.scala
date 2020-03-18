@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import agent.audit.Logging
 import core.config.AppConfig
 import core.utils.Implicits._
 import forms.agent.ExitSurveyForm
@@ -26,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import services.{AuditModel, AuditingService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 @Singleton
 class ExitSurveyController @Inject()(val messagesApi: MessagesApi,
-                                     logging: Logging)
+                                     auditingService: AuditingService)
                                     (implicit appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   def view(exitSurveyForm: Form[ExitSurveyModel])(implicit request: Request[_]): Html =
@@ -56,10 +56,8 @@ class ExitSurveyController @Inject()(val messagesApi: MessagesApi,
     )
   }
 
-  private def submitSurvey(survey: ExitSurveyModel)(implicit hc: HeaderCarrier): Unit = {
-    val surveyAsMap = surveyFormDataToMap(survey)
-    if (surveyAsMap.nonEmpty)
-      logging.audit(transactionName = "ITSA Survey", detail = surveyAsMap, auditType = Logging.eventTypeSurveyFeedback)
+  private def submitSurvey(survey: ExitSurveyModel)(implicit hc: HeaderCarrier, request: Request[_]): Unit = {
+    auditingService.audit(SurveyAuditModel(survey))
   }
 
   private[controllers] final def surveyFormDataToMap(survey: ExitSurveyModel): Map[String, String] = {
@@ -78,6 +76,12 @@ class ExitSurveyController @Inject()(val messagesApi: MessagesApi,
         case _ => true
       }
     }
+  }
+
+  case class SurveyAuditModel(survey: ExitSurveyModel) extends AuditModel {
+    override val transactionName: String = "ITSA Survey"
+    override val detail: Map[String, String] = surveyFormDataToMap(survey)
+    override val auditType: String = "mtdItsaExitSurveyFeedback"
   }
 
 }

@@ -22,7 +22,7 @@ import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request}
-import services.{SubscriptionService, UserMatchingService}
+import services.{AuditingService, SubscriptionService, UserMatchingService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -71,15 +71,12 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
         clientMatchingService.matchUser(cd)
           .collect {
             case Right(Some(matchedClient)) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true),
-                                                                  controllers.agent.matching.routes.ConfirmClientController.submit().url)
+              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true))
               Right(ApprovedAgent(matchedClient.nino, matchedClient.saUtr))
             case Right(None) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false),
-                                                                  controllers.agent.matching.routes.ConfirmClientController.submit().url)
+              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false))
               Left(NoClientMatched)
-          }
-          .recoverWith { case _ => Left(UnexpectedFailure) }
+          }.recoverWith { case _ => Left(UnexpectedFailure) }
     }
   }
 
