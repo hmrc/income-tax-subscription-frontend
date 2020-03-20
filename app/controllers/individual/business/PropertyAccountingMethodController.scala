@@ -16,9 +16,9 @@
 
 package controllers.individual.business
 
-import core.auth.SignUpController
-import core.config.AppConfig
-import core.services.CacheUtil._
+import auth.individual.SignUpController
+import config.AppConfig
+import utilities.individual.CacheUtil._
 import forms.individual.business.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.AccountingMethodPropertyModel

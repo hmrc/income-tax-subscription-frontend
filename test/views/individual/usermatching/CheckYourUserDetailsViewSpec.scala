@@ -18,14 +18,15 @@ package views.individual.usermatching
 
 import assets.MessageLookup
 import assets.MessageLookup.{Base => common, ConfirmUser => messages}
-import core.utils.{TestConstants, TestModels, UnitTestTrait}
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
+import utilities.individual.TestConstants
+import utilities.{TestModels, UnitTestTrait}
 import views.individual.helpers.ConfirmUserIdConstants._
 
 class CheckYourUserDetailsViewSpec extends UnitTestTrait {

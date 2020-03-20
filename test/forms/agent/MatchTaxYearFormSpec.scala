@@ -16,7 +16,6 @@
 
 package forms.agent
 
-import assets.MessageLookup
 import forms.submapping.YesNoMapping
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
@@ -25,8 +24,6 @@ import models.individual.business.MatchTaxYearModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.data.FormError
-import play.api.data.validation.Invalid
-import play.api.i18n.Messages.Implicits._
 
 class MatchTaxYearFormSpec extends PlaySpec with OneAppPerTest {
 

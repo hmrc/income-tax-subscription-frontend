@@ -16,7 +16,7 @@
 
 package testonly.connectors
 
-import core.config.AppConfig
+import config.AppConfig
 import javax.inject.Inject
 import testonly.models.FeatureSwitchSetting
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}

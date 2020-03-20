@@ -16,16 +16,16 @@
 
 package services.individual.mocks
 
+import config.MockConfig
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
-import core.Constants.GovernmentGateway._
-import core.config.MockConfig
-import core.utils.MockTrait
-import core.utils.TestConstants._
+import utilities.individual.Constants.GovernmentGateway._
+import utilities.individual.TestConstants._
 import models.individual.subscription.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.individual.KnownFactsService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

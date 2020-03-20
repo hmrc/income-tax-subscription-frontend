@@ -1,13 +1,13 @@
 
 package helpers.agent.servicemocks
 
-import agent.common.Constants._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import helpers.agent.IntegrationTestConstants._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
+import utilities.agent.Constants._
 
 object AuthStub extends WireMockMethods {
   private val authIDs = "/uri/to/ids"

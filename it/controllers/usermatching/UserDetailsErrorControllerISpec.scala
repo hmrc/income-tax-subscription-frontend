@@ -16,7 +16,7 @@
 
 package controllers.usermatching
 
-import core.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.OK

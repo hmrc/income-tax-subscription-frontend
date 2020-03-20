@@ -18,7 +18,7 @@ package controllers.agent
 
 import java.net.URLEncoder
 
-import core.config.AppConfig
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}

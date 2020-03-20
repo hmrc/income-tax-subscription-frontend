@@ -17,9 +17,6 @@
 package agent.audit
 
 import models.audits.ClientMatchingAuditing._
-import agent.utils.TestConstants._
-import agent.utils.TestModels._
-import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -28,6 +25,9 @@ import play.api.test.FakeRequest
 import services.AuditingService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import utilities.MockTrait
+import utilities.agent.TestConstants._
+import utilities.agent.TestModels._
 
 import scala.concurrent.ExecutionContext
 

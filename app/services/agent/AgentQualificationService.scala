@@ -16,14 +16,14 @@
 
 package services.agent
 
-import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
-import core.utils.Implicits._
 import javax.inject.{Inject, Singleton}
+import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import models.individual.subscription.SubscriptionSuccess
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request}
 import services.{AuditingService, SubscriptionService, UserMatchingService}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,7 +54,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
                                           auditingService: AuditingService)
                                          (implicit ec: ExecutionContext) {
 
-  import usermatching.utils.UserMatchingSessionUtil._
+  import utilities.UserMatchingSessionUtil._
 
   type ReturnType = Either[UnqualifiedAgent, QualifiedAgent]
 

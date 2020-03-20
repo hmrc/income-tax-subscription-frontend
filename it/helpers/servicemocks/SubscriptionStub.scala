@@ -16,12 +16,12 @@
 
 package helpers.servicemocks
 
-import core.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
 import models.individual.subscription.SubscriptionSuccess
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
+import utilities.ITSASessionKeys
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"

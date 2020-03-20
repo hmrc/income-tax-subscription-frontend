@@ -16,9 +16,9 @@
 
 package connectors.individual.subscription
 
+import config.AppConfig
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser._
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser._
-import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionRequest
 import uk.gov.hmrc.http.HeaderCarrier

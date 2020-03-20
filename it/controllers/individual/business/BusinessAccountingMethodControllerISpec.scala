@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testMatchTaxYearYes}
@@ -26,6 +25,7 @@ import models.individual.incomesource.RentUkPropertyModel
 import models.{Accruals, Cash, No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import utilities.individual.CacheConstants
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 

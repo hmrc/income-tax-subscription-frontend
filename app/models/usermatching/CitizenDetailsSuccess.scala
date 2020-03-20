@@ -16,7 +16,7 @@
 
 package models.usermatching
 
-import core.connectors.models.ConnectorError
+import models.ConnectorError
 import play.api.libs.json._
 
 case class CitizenDetailsSuccess(utr: Option[String], nino: String)

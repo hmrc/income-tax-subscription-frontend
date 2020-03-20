@@ -18,8 +18,7 @@ package services.mocks
 
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import connectors.usermatching.mocks.MockUserLockoutConnector
-import core.utils.MockTrait
-import core.utils.TestConstants.{testException, testLockoutResponse}
+import utilities.individual.TestConstants.{testException, testLockoutResponse}
 import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -28,7 +27,7 @@ import play.api.http.Status._
 import services.individual.mocks.MockKeystoreService
 import services.{LockoutUpdate, UserLockoutService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import usermatching.utils.UserMatchingTestSupport
+import utilities.{MockTrait, UserMatchingTestSupport}
 
 import scala.concurrent.{ExecutionContext, Future}
 

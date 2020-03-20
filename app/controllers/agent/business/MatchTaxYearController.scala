@@ -16,8 +16,8 @@
 
 package controllers.agent.business
 
-import agent.auth.AuthenticatedController
-import core.config.AppConfig
+import auth.agent.AuthenticatedController
+import config.AppConfig
 import forms.agent.MatchTaxYearForm
 import javax.inject.Inject
 import models.No

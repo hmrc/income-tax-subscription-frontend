@@ -16,12 +16,12 @@
 
 package controllers.agent.matching
 
-import agent.auth.AgentJourneyState._
-import agent.auth._
+import auth.agent.AgentJourneyState._
+import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
+import config.AppConfig
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.ITSASessionKeys
 import controllers.agent.ITSASessionKeys.FailedClientMatching
-import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
 import play.api.i18n.MessagesApi

@@ -17,10 +17,9 @@
 package controllers.usermatching
 
 import assets.MessageLookup.{UserDetails => messages}
+import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
-import core.ITSASessionKeys
-import core.auth.UserMatching
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import forms.usermatching.UserDetailsForm
 import models.DateModel
 import models.usermatching.UserDetailsModel
@@ -32,6 +31,7 @@ import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.individual.mocks.MockKeystoreService
 import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
+import utilities.ITSASessionKeys
 
 import scala.concurrent.Future
 

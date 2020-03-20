@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import agent.services.CacheConstants
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
@@ -25,6 +24,7 @@ import models.agent.BusinessNameModel
 import models.individual.subscription.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
+import utilities.agent.CacheConstants
 
 class BusinessNameControllerISpec extends ComponentSpecBase {
 

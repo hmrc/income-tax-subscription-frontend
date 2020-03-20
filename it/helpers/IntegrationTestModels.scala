@@ -3,11 +3,8 @@ package helpers
 
 import java.time.LocalDate
 
-import core.Constants
-import core.Constants.GovernmentGateway._
-import core.services.CacheConstants
+import utilities.individual.Constants.GovernmentGateway._
 import helpers.IntegrationTestConstants._
-import incometax.AccountingPeriodUtil
 import models._
 import models.individual.business._
 import models.individual.business.address.{Address, Country, ReturnedAddress}
@@ -16,6 +13,8 @@ import models.individual.subscription._
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
+import utilities.AccountingPeriodUtil
+import utilities.individual.{CacheConstants, Constants}
 
 
 object IntegrationTestModels {

@@ -16,9 +16,9 @@
 
 package models.individual.business
 
-import incometax.AccountingPeriodUtil
 import models.DateModel
 import play.api.libs.json.{Json, OFormat}
+import utilities.AccountingPeriodUtil
 
 
 case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {

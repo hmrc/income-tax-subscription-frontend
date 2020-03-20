@@ -16,6 +16,6 @@
 
 package views.agent
 
-import core.utils.Implicits
+import utilities.Implicits
 
 package object helpers extends Implicits

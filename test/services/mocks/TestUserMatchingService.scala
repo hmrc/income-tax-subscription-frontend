@@ -17,15 +17,14 @@
 package services.mocks
 
 import connectors.usermatching.mocks.MockAuthenticatiorConnector
-import core.utils.MockTrait
-import core.utils.TestConstants._
-import core.utils.TestModels._
+import utilities.individual.TestConstants._
+import utilities.TestModels._
 import models.usermatching.{UserDetailsModel, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.UserMatchingService
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.utils.UserMatchingTestSupport
+import utilities.{MockTrait, UserMatchingTestSupport}
 
 import scala.concurrent.Future
 

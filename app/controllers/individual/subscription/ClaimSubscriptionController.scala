@@ -16,19 +16,19 @@
 
 package controllers.individual.subscription
 
+import auth.individual.SignUpController
 import cats.data.EitherT
 import cats.implicits._
-import core.auth.SignUpController
-import core.config.AppConfig
-import core.connectors.models.{ConnectorError, KeystoreMissingError}
-import core.services.CacheConstants.MtditId
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.ConnectorError
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.AuthService
 import services.individual.{KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.individual.CacheConstants.MtditId
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -59,4 +59,6 @@ class ClaimSubscriptionController @Inject()(val authService: AuthService,
     views.html.individual.incometax.subscription.enrolled.claim_subscription()
   }
 
+  case class KeystoreMissingError(key: String) extends ConnectorError
 }
+

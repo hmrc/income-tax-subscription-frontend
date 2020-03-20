@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import core.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.agent.mocks.MockKeystoreService

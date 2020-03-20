@@ -16,9 +16,9 @@
 
 package controllers.individual.incomesource
 
-import core.auth.SignUpController
-import core.config.AppConfig
-import core.services.CacheUtil._
+import auth.individual.SignUpController
+import config.AppConfig
+import utilities.individual.CacheUtil._
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import javax.inject.{Inject, Singleton}
 import models.individual.incomesource.AreYouSelfEmployedModel

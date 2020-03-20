@@ -18,8 +18,7 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
-import core.config.featureswitch.FeatureSwitching
-import core.services.CacheConstants
+import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
@@ -28,6 +27,7 @@ import models.individual.business.AccountingPeriodModel
 import models.{DateModel, No}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import utilities.individual.CacheConstants
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

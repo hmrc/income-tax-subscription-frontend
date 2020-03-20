@@ -19,10 +19,9 @@ package controllers.usermatching
 import java.time.Duration
 
 import assets.MessageLookup.{UserDetailsLockout => messages}
+import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
-import core.ITSASessionKeys
-import core.auth.UserMatching
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import org.jsoup.Jsoup
 import play.api.Play
 import play.api.http.Status
@@ -33,6 +32,7 @@ import play.api.test.Helpers.{contentAsString, contentType, _}
 import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.language.LanguageUtils.WelshLangCode
+import utilities.ITSASessionKeys
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService {

@@ -16,7 +16,6 @@
 
 package services.individual
 
-import core.services.CacheConstants
 import javax.inject._
 import models.individual.business._
 import models.individual.business.address.Address
@@ -25,6 +24,7 @@ import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
+import utilities.individual.CacheConstants
 
 import scala.concurrent.{ExecutionContext, Future}
 

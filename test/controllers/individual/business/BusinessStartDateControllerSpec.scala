@@ -16,9 +16,9 @@
 
 package controllers.individual.business
 
+import config.MockConfig
 import controllers.ControllerBaseSpec
-import core.config.MockConfig
-import core.utils.TestModels.testBusinessStartDate
+import utilities.TestModels.testBusinessStartDate
 import forms.individual.business.BusinessStartDateForm
 import forms.submapping.YesNoMapping.{option_no, option_yes}
 import org.jsoup.Jsoup

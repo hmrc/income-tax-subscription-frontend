@@ -16,19 +16,19 @@
 
 package connectors.individual.subscription.mocks
 
+import auth.MockHttp
+import config.AppConfig
 import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import core.config.AppConfig
-import core.connectors.mocks.MockHttp
-import core.utils.MockTrait
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import models.individual.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

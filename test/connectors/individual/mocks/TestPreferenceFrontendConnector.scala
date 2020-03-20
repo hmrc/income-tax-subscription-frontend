@@ -16,11 +16,10 @@
 
 package connectors.individual.mocks
 
+import auth.MockHttp
+import config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
 import connectors.PreferenceFrontendConnector
-import core.config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
-import core.connectors.mocks.MockHttp
-import core.utils.TestConstants._
-import core.utils.{MockTrait, UnitTestTrait}
+import utilities.individual.TestConstants._
 import models.{Activated, PaperlessPreferenceError, PaperlessState, Unset}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -29,6 +28,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.ApplicationCrypto
+import utilities.{MockTrait, UnitTestTrait}
 
 import scala.concurrent.Future
 

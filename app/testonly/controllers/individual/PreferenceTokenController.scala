@@ -18,8 +18,8 @@ package testonly.controllers.individual
 
 import java.util.UUID
 
+import auth.individual.StatelessController
 import connectors.PaperlessPreferenceTokenConnector
-import core.auth.StatelessController
 import javax.inject.Inject
 import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import play.api.i18n.{I18nSupport, MessagesApi}

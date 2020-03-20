@@ -19,7 +19,6 @@ package views
 import assets.MessageLookup
 import assets.MessageLookup.{Base => common}
 import controllers.SignOutController
-import core.utils.UnitTestTrait
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
@@ -27,6 +26,7 @@ import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import utilities.UnitTestTrait
 
 
 trait ViewSpecTrait extends UnitTestTrait {

@@ -16,7 +16,7 @@
 
 package controllers.agent.matching
 
-import agent.auth.AgentUserMatched
+import auth.agent.AgentUserMatched
 import controllers.agent.ITSASessionKeys
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.IntegrationTestConstants._

@@ -16,10 +16,10 @@
 
 package controllers.agent.business
 
-import agent.auth.AuthenticatedController
+import auth.agent.AuthenticatedController
+import config.AppConfig
 import controllers.utils.AgentAnswers._
 import controllers.utils.AgentRequireAnswer
-import core.config.AppConfig
 import forms.agent.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
 import models.agent.AccountingMethodModel

@@ -16,8 +16,8 @@
 
 package connectors.usermatching
 
+import config.AppConfig
 import connectors.usermatching.httpparsers.MatchUserHttpParser._
-import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{UserDetailsModel, UserMatchRequestModel}
 import play.api.Logger

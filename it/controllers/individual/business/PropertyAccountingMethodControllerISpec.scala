@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testAccountingMethodProperty}
@@ -25,6 +24,7 @@ import models.individual.business.AccountingMethodPropertyModel
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import utilities.individual.CacheConstants
 
 class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 

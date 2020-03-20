@@ -17,13 +17,13 @@
 package services.mocks
 
 import connectors.individual.mocks.MockPaperlessPreferenceTokenConnector
-import core.utils.MockTrait
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.PaperlessPreferenceTokenService
 import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

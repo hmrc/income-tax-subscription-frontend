@@ -16,9 +16,9 @@
 
 package models.individual.subscription
 
-import core.Constants
-import core.Constants.GovernmentGateway._
 import play.api.libs.json.{JsValue, Json, Writes}
+import utilities.individual.Constants
+import utilities.individual.Constants.GovernmentGateway._
 
 case class EmacEnrolmentRequest(userId: String, nino: String)
 

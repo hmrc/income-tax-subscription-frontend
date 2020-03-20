@@ -18,10 +18,11 @@ package helpers
 
 import java.util.UUID
 
-import core.ITSASessionKeys._
-import core.auth.{JourneyState, Registration, SignUp, UserMatching}
-import core.config.AppConfig
-import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import auth.individual.{JourneyState, Registration, SignUp, UserMatching}
+import utilities.ITSASessionKeys._
+import auth.individual.{Registration, SignUp, UserMatching}
+import config.AppConfig
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
 import forms.individual.incomesource.{AreYouSelfEmployedForm, RentUkPropertyForm}
 import forms.usermatching.UserDetailsForm

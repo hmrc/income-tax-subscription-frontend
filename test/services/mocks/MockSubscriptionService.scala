@@ -16,18 +16,18 @@
 
 package services.mocks
 
+import config.MockConfig
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.mocks.MockSubscriptionConnector
-import core.config.MockConfig
-import core.utils.MockTrait
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

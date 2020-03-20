@@ -16,8 +16,8 @@
 
 package connectors.agent
 
-import core.config.AppConfig
-import core.connectors.RawResponseReads
+import config.AppConfig
+import connectors.RawResponseReads
 import javax.inject.{Inject, Singleton}
 import play.api.http.Status
 import uk.gov.hmrc.http._

@@ -16,9 +16,9 @@
 
 package controllers.agent
 
-import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
-import agent.services.CacheUtil._
-import core.config.AppConfig
+
+import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription._
 import play.api.Logger
@@ -28,6 +28,7 @@ import services.AuthService
 import services.agent.{KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.agent.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -18,9 +18,9 @@ package services
 
 import java.net.URLEncoder
 
+import config.AppConfig
 import connectors.usermatching.UserLockoutConnector
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockoutStatus, LockoutStatusFailure, NotLockedOut}
 import play.api.Logger

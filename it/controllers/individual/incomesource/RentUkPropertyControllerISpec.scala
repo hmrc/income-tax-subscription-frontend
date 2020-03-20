@@ -16,7 +16,6 @@
 
 package controllers.individual.incomesource
 
-import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
@@ -25,6 +24,7 @@ import models.individual.incomesource.RentUkPropertyModel
 import models.{No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import utilities.individual.CacheConstants
 
 class RentUkPropertyControllerISpec extends ComponentSpecBase {
 

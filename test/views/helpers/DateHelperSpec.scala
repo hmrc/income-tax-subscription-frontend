@@ -17,7 +17,6 @@
 package views.helpers
 
 import assets.MessageLookup
-import core.utils.UnitTestTrait
 import forms.submapping.DateMapping._
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
@@ -26,6 +25,7 @@ import play.api.data.{Field, Form}
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits.applicationMessages
 import uk.gov.hmrc.play.language.LanguageUtils.Welsh
+import utilities.UnitTestTrait
 import views.html.helpers.dateHelper
 
 class DateHelperSpec extends UnitTestTrait {

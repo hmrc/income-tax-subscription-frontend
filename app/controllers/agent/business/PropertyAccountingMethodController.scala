@@ -16,9 +16,8 @@
 
 package controllers.agent.business
 
-import agent.auth.AuthenticatedController
-import agent.services.CacheUtil.CacheMapUtil
-import core.config.AppConfig
+import auth.agent.AuthenticatedController
+import config.AppConfig
 import forms.agent.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.agent.AccountingMethodPropertyModel
@@ -30,6 +29,7 @@ import play.twirl.api.Html
 import services.AuthService
 import services.agent.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.agent.CacheUtil.CacheMapUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 

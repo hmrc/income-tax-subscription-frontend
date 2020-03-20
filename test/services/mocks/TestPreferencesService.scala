@@ -17,14 +17,14 @@
 package services.mocks
 
 import connectors.individual.mocks.MockPreferenceFrontendConnector
-import core.utils.TestConstants._
-import core.utils.{MockTrait, UnitTestTrait}
+import utilities.individual.TestConstants._
 import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import services.PreferencesService
+import utilities.{MockTrait, UnitTestTrait}
 
 import scala.concurrent.Future
 

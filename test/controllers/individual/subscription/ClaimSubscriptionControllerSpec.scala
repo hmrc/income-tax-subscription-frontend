@@ -17,7 +17,7 @@
 package controllers.individual.subscription
 
 import controllers.ControllerBaseSpec
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

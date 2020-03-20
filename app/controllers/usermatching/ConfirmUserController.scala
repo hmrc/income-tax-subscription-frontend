@@ -16,10 +16,11 @@
 
 package controllers.usermatching
 
-import core.ITSASessionKeys._
-import core.auth.JourneyState._
-import core.auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
-import core.config.AppConfig
+import auth.individual.{IncomeTaxSAUser, UserMatched, UserMatchingController}
+import utilities.ITSASessionKeys._
+import auth.individual.JourneyState._
+import auth.individual.{UserMatched, UserMatchingController}
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.i18n.MessagesApi

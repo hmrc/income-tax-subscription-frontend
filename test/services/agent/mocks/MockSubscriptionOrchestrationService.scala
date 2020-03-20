@@ -16,13 +16,13 @@
 
 package services.agent.mocks
 
-import agent.utils.TestConstants._
-import core.utils.MockTrait
+import utilities.agent.TestConstants._
 import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.agent.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

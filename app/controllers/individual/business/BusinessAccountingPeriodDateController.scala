@@ -16,8 +16,9 @@
 
 package controllers.individual.business
 
-import core.auth.{Registration, SignUpController}
-import core.config.AppConfig
+import auth.individual.JourneyState.RequestFunctions
+import auth.individual.{Registration, SignUpController}
+import config.AppConfig
 import forms.individual.business.AccountingPeriodDateForm
 import javax.inject.{Inject, Singleton}
 import models.Yes

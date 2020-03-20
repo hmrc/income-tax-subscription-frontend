@@ -53,7 +53,7 @@ trait Answer[A] {
 // If both keystore services, cacheutils and models were combined, that would be simpler as we wouldn't need seperate agent and individual answers
 object AgentAnswers {
 
-  import agent.services.CacheUtil._
+  import utilities.agent.CacheUtil._
 
   val incomeSourceTypeAnswer: Answer[IncomeSourceType] = SingleAnswer(
     retrieveAnswer = _.getIncomeSource(),

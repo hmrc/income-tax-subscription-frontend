@@ -18,8 +18,8 @@
 
 package testonly.controllers.individual
 
-import core.auth.SignUpController
-import core.config.AppConfig
+import auth.individual.SignUpController
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi

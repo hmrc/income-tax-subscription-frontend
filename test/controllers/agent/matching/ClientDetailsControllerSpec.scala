@@ -17,7 +17,6 @@
 package controllers.agent.matching
 
 import agent.assets.MessageLookup.{ClientDetails => messages}
-import agent.utils.TestConstants
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.ClientDetailsForm
 import models.DateModel
@@ -30,6 +29,7 @@ import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.agent.mocks.MockKeystoreService
 import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
+import utilities.agent.TestConstants
 
 import scala.concurrent.Future
 

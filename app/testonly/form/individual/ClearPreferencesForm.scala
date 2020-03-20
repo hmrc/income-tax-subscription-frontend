@@ -16,7 +16,7 @@
 
 package testonly.form.individual
 
-import forms.prevalidation.{CaseOption, PreprocessedForm, PrevalidationAPI, TrimOption, trimAllFunc}
+import forms.prevalidation._
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns

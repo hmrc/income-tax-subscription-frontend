@@ -16,7 +16,7 @@
 
 package services
 
-import core.utils.TestModels._
+import utilities.TestModels._
 import models.usermatching.UserMatchUnexpectedError
 import play.api.test.Helpers._
 import services.mocks.TestUserMatchingService

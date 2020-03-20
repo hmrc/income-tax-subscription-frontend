@@ -3,7 +3,7 @@ package helpers.agent
 
 import java.util.UUID
 
-import agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
+import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration

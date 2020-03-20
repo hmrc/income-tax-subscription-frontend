@@ -17,9 +17,9 @@
 package connectors.agent.mocks
 
 import connectors.agent.AgentServicesConnector
-import core.utils.MockTrait
 import org.mockito.Mockito._
 import play.api.libs.json.JsValue
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

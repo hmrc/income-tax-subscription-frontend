@@ -16,9 +16,9 @@
 
 package controllers.agent
 
-import agent.auth.{IncomeTaxAgentUser, StatelessController}
-import core.auth.AuthPredicate.AuthPredicate
-import core.config.AppConfig
+import auth.agent.{AuthPredicates, IncomeTaxAgentUser, StatelessController}
+import auth.individual.AuthPredicate.AuthPredicate
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -34,7 +34,7 @@ class AddAnotherClientController @Inject()(val authService: AuthService,
                                            keystore: KeystoreService)
                                           (implicit val ec: ExecutionContext) extends StatelessController {
 
-  override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = agent.auth.AuthPredicates.defaultPredicates
+  override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = AuthPredicates.defaultPredicates
 
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

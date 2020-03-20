@@ -16,7 +16,6 @@
 
 package services.agent
 
-import agent.services.CacheConstants
 import javax.inject._
 import models.agent.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
@@ -24,6 +23,7 @@ import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utilities.agent.CacheConstants
 
 import scala.concurrent.{ExecutionContext, Future}
 

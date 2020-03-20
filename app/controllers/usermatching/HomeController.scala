@@ -18,11 +18,12 @@ package controllers.usermatching
 
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
-import core.ITSASessionKeys._
-import core.auth.JourneyState._
-import core.auth._
-import core.config.AppConfig
-import core.utils.Implicits._
+import utilities.ITSASessionKeys._
+import auth.individual.JourneyState._
+import auth.individual.{Registration, SignUp, StatelessController, UserMatching}
+import auth.individual._
+import config.AppConfig
+import utilities.Implicits._
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess
 import play.api.i18n.MessagesApi

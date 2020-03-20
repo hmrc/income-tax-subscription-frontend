@@ -17,12 +17,12 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponseHttpReads
-import core.utils.UnitTestTrait
 import models.individual.subscription.{KnownFactsFailure, KnownFactsSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
+import utilities.UnitTestTrait
 
 class UpsertEnrolmentResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "PUT"

@@ -16,13 +16,13 @@
 
 package services.agent
 
-import agent.utils.TestModels
-import core.config.SessionCache
-import core.utils.UnitTestTrait
+import config.SessionCache
 import models.agent.BusinessNameModel
 import org.scalatest.Matchers._
 import services.agent.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HttpResponse
+import utilities.UnitTestTrait
+import utilities.agent.TestModels
 
 class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {

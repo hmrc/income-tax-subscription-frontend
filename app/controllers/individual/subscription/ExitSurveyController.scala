@@ -16,8 +16,8 @@
 
 package controllers.individual.subscription
 
-import core.config.AppConfig
-import core.utils.Implicits._
+
+import config.AppConfig
 import forms.individual.subscription.ExitSurveyForm
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.ExitSurveyModel
@@ -28,6 +28,7 @@ import play.twirl.api.Html
 import services.{AuditModel, AuditingService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utilities.Implicits._
 
 import scala.concurrent.Future
 

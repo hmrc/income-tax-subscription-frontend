@@ -16,8 +16,8 @@
 
 package controllers.individual.business
 
-import core.auth.RegistrationController
-import core.config.AppConfig
+import auth.individual.RegistrationController
+import config.AppConfig
 import forms.individual.business.BusinessPhoneNumberForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.BusinessPhoneNumberModel

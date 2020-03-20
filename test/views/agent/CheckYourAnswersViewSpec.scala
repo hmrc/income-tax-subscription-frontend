@@ -18,9 +18,6 @@ package views.agent
 
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
-import core.utils.TestModels.{testAccountingPeriod, testAgentSummaryData, testBusinessName}
-import core.utils.{TestModels, UnitTestTrait}
-import incometax.AccountingPeriodUtil
 import models.individual.business._
 import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
@@ -31,7 +28,9 @@ import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
+import utilities.TestModels.{testAccountingPeriod, testAgentSummaryData, testBusinessName}
+import utilities.{AccountingPeriodUtil, TestModels, UnitTestTrait}
 import views.agent.helpers.SummaryIdConstants._
 
 

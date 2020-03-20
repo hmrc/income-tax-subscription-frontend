@@ -16,7 +16,6 @@
 
 package forms.agent
 
-import agent.utils.TestConstants
 import forms.submapping.DateMapping._
 import forms.validation.testutils._
 import models.DateModel
@@ -24,6 +23,7 @@ import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
+import utilities.agent.TestConstants
 
 class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 

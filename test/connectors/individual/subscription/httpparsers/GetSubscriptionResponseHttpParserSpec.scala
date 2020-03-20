@@ -17,13 +17,13 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponseHttpReads
-import core.utils.TestConstants._
-import core.utils.UnitTestTrait
+import utilities.individual.TestConstants._
 import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
+import utilities.UnitTestTrait
 
 class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"

@@ -21,7 +21,7 @@ package testonly.connectors.agent
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, ResolverStyle}
 
-import core.connectors.RawResponseReads
+import connectors.RawResponseReads
 import javax.inject.{Inject, Singleton}
 import models.DateModel
 import play.api.Logger
@@ -97,7 +97,7 @@ object Request {
   implicit val format: OFormat[Request] = Json.format[Request]
 }
 
-import core.utils.Implicits._
+import utilities.Implicits._
 
 @Singleton
 class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,

@@ -16,8 +16,8 @@
 
 package controllers.individual.incomesource
 
-import core.auth.SignUpController
-import core.config.AppConfig
+import auth.individual.SignUpController
+import config.AppConfig
 import forms.individual.incomesource.RentUkPropertyForm._
 import javax.inject.{Inject, Singleton}
 import models.individual.incomesource.RentUkPropertyModel

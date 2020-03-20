@@ -16,13 +16,13 @@
 
 package views.helpers
 
-import core.utils.UnitTestTrait
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages.Implicits._
+import utilities.UnitTestTrait
 import views.html.helpers.radioHelper
 
 class RadioHelperSpec extends UnitTestTrait {

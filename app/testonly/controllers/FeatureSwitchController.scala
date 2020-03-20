@@ -16,10 +16,10 @@
 
 package testonly.controllers
 
-import core.auth.BaseFrontendController
-import core.config.AppConfig
-import core.config.featureswitch.FeatureSwitch._
-import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import auth.individual.BaseFrontendController
+import config.AppConfig
+import config.featureswitch.FeatureSwitch._
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}

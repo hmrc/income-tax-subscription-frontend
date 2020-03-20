@@ -15,9 +15,7 @@
  */
 
 package controllers.agent
-
-import core.config.AppConfig
-import core.utils.Implicits._
+import config.AppConfig
 import forms.agent.ExitSurveyForm
 import javax.inject.{Inject, Singleton}
 import models.agent.ExitSurveyModel
@@ -28,6 +26,7 @@ import play.twirl.api.Html
 import services.{AuditModel, AuditingService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utilities.Implicits._
 
 import scala.concurrent.Future
 

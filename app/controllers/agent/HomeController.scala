@@ -16,14 +16,14 @@
 
 package controllers.agent
 
-import agent.auth.AgentJourneyState._
-import agent.auth._
+import auth.agent.AgentJourneyState._
+import auth.agent.{AgentSignUp, AgentUserMatching, StatelessController}
 import controllers.agent.ITSASessionKeys._
-import core.utils.Implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
+import utilities.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 

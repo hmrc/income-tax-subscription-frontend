@@ -16,9 +16,9 @@
 
 package models.individual.subscription
 
-import core.utils.TestConstants
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.test.UnitSpec
+import utilities.individual.TestConstants
 
 class SubscriptionRequestSpec extends UnitSpec {
 

@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import core.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitching
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.SEE_OTHER

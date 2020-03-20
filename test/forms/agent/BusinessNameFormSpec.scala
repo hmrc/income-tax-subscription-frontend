@@ -23,7 +23,6 @@ import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
-import play.api.data.validation.Invalid
 
 class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 

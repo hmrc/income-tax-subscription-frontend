@@ -16,8 +16,8 @@
 
 package controllers.agent
 
-import agent.auth.AuthenticatedController
-import core.config.AppConfig
+import auth.agent.AuthenticatedController
+import config.AppConfig
 import forms.agent.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}

@@ -19,11 +19,11 @@ package helpers
 import java.net.URLEncoder
 import java.time.LocalDateTime
 
-import core.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import play.api.libs.Crypto
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
 import uk.gov.hmrc.http.SessionKeys
+import utilities.ITSASessionKeys
 
 object SessionCookieBaker {
   private val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="

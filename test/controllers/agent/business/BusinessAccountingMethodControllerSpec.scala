@@ -16,7 +16,7 @@
 
 package controllers.agent.business
 
-import agent.utils.TestModels.testCacheMap
+import utilities.agent.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodForm
 import models.agent.AccountingMethodModel

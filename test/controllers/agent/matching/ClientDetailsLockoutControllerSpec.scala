@@ -19,7 +19,7 @@ package controllers.agent.matching
 import java.time.Duration
 
 import agent.assets.MessageLookup.{ClientDetailsLockout => messages}
-import agent.utils.TestConstants.testARN
+import utilities.agent.TestConstants.testARN
 import controllers.agent.AgentControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.Play

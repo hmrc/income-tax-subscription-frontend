@@ -18,20 +18,20 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
-import agent.services.CacheConstants
-import agent.services.CacheConstants.IncomeSource
-import core.config.featureswitch.FeatureSwitching
+import utilities.agent.CacheConstants.IncomeSource
+import config.featureswitch.FeatureSwitching
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.{keystoreData, _}
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
-import incometax.AccountingPeriodUtil
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.{Both, Business}
 import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import utilities.AccountingPeriodUtil
+import utilities.agent.CacheConstants
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

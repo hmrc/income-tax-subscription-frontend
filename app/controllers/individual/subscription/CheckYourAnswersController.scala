@@ -16,10 +16,8 @@
 
 package controllers.individual.subscription
 
-import core.ITSASessionKeys
-import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
-import core.config.AppConfig
-import core.services.CacheUtil._
+import auth.individual.{IncomeTaxSAUser, Registration, SignUpController}
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription._
@@ -31,6 +29,8 @@ import services.AuthService
 import services.individual.{KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.ITSASessionKeys
+import utilities.individual.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 

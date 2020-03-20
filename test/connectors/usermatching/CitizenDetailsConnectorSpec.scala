@@ -17,7 +17,7 @@
 package connectors.usermatching
 
 import connectors.usermatching.mocks.TestCitizenDetailsConnector
-import core.utils.TestConstants.testNino
+import utilities.individual.TestConstants.testNino
 
 class CitizenDetailsConnectorSpec extends TestCitizenDetailsConnector {
 

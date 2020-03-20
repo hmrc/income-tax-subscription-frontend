@@ -16,8 +16,6 @@
 
 package services.agent.mocks
 
-import agent.common.Constants
-import agent.utils.TestConstants
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -26,6 +24,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.agent.{Constants, TestConstants}
 
 import scala.concurrent.{ExecutionContext, Future}
 

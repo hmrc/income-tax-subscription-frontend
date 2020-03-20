@@ -16,7 +16,8 @@
 
 package controllers.agent
 
-import agent.auth.{AgentSignUp, AgentUserMatched, AgentUserMatching}
+import auth.agent.{AgentSignUp, AgentUserMatched}
+import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}

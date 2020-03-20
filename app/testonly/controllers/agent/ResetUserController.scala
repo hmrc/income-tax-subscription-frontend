@@ -16,7 +16,7 @@
 
 package testonly.controllers.agent
 
-import agent.auth.StatelessController
+import auth.agent.StatelessController
 import controllers.agent.ITSASessionKeys
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi

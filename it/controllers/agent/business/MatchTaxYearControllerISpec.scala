@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import agent.services.CacheConstants
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
@@ -26,6 +25,7 @@ import models.individual.subscription.IncomeSourceType
 import models.{No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import utilities.agent.CacheConstants
 
 class MatchTaxYearControllerISpec extends ComponentSpecBase {
 

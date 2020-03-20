@@ -16,13 +16,13 @@
 
 package services.individual
 
-import core.connectors.models.ConnectorError
-import core.utils.TestConstants._
-import core.utils.TestModels._
-import core.utils.UnitTestTrait
+import models.ConnectorError
+import utilities.individual.TestConstants._
+import utilities.TestModels._
 import models.individual.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures
 import services.individual.mocks.TestSubscriptionOrchestrationService
+import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 

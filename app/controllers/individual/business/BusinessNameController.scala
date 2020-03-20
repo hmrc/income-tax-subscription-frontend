@@ -16,8 +16,8 @@
 
 package controllers.individual.business
 
-import core.auth.{Registration, SignUpController}
-import core.config.AppConfig
+import auth.individual.{Registration, SignUpController}
+import config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.BusinessNameModel

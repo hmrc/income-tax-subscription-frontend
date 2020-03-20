@@ -16,8 +16,8 @@
 
 package controllers.agent.matching
 
-import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
-import core.config.AppConfig
+import auth.agent.{IncomeTaxAgentUser, UserMatchingController}
+import config.AppConfig
 import forms.agent.ClientDetailsForm
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{NotLockedOut, UserDetailsModel}

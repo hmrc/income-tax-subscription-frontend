@@ -18,8 +18,8 @@ package services.individual
 
 import cats.data.EitherT
 import cats.implicits._
-import core.connectors.models.ConnectorError
 import javax.inject.{Inject, Singleton}
+import models.ConnectorError
 import models.individual.subscription.{SubscriptionSuccess, SummaryModel}
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier

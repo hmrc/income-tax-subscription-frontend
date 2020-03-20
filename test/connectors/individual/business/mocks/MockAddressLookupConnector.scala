@@ -18,14 +18,14 @@ package connectors.individual.business.mocks
 
 import connectors.individual.business.AddressLookupConnector
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
-import core.utils.MockTrait
-import core.utils.TestConstants.testException
-import core.utils.TestModels.testReturnedAddress
+import utilities.individual.TestConstants.testException
+import utilities.TestModels.testReturnedAddress
 import models.individual.business.address._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.mockito.stubbing.OngoingStubbing
 import play.api.http.Status.BAD_REQUEST
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

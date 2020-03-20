@@ -16,13 +16,13 @@
 
 package services.individual
 
+import config.AppConfig
 import connectors.individual.subscription.TaxEnrolmentsConnector
-import core.Constants
-import core.Constants.GovernmentGateway._
-import core.config.AppConfig
+import utilities.individual.Constants.GovernmentGateway._
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.individual.Constants
 
 import scala.concurrent.Future
 

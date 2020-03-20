@@ -16,13 +16,13 @@
 
 package connectors.agent
 
+import config.AppConfig
 import connectors.agent.EnrolmentStoreProxyConnector.principalQueryKey
-import core.config.AppConfig
-import httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
-import httpparsers.AssignEnrolmentToUserHttpParser.AssignEnrolmentToUserResponse
-import httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyResponse
-import httpparsers.QueryUsersHttpParser.QueryUsersResponse
-import httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
+import connectors.agent.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
+import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.AssignEnrolmentToUserResponse
+import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyResponse
+import connectors.agent.httpparsers.QueryUsersHttpParser.QueryUsersResponse
+import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier

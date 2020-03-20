@@ -16,13 +16,13 @@
 
 package services.individual
 
-import core.Constants
-import core.Constants.GovernmentGateway._
-import core.utils.TestConstants._
-import core.utils.UnitTestTrait
+import utilities.individual.Constants.GovernmentGateway._
+import utilities.individual.TestConstants._
 import models.individual.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import services.individual.mocks.TestKnownFactsService
+import utilities.UnitTestTrait
+import utilities.individual.Constants
 
 import scala.concurrent.Future
 

@@ -16,8 +16,8 @@
 
 package controllers.agent.matching
 
-import agent.auth.AgentUserMatched
-import agent.utils.{TestConstants, TestModels}
+import utilities.agent.TestModels
+import auth.agent.AgentUserMatched
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.{AgentControllerBaseSpec, ITSASessionKeys}
 import org.mockito.ArgumentMatchers
@@ -29,6 +29,7 @@ import services.agent.mocks.{MockAgentQualificationService, MockKeystoreService}
 import services.agent._
 import services.mocks.{MockGetEligibilityStatusService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
+import utilities.agent.{TestConstants, TestModels}
 
 import scala.concurrent.Future
 

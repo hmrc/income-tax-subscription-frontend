@@ -16,13 +16,13 @@
 
 package views.helpers
 
-import core.utils.UnitTestTrait
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
+import utilities.UnitTestTrait
 
 class InputHelperSpec extends UnitTestTrait {
 

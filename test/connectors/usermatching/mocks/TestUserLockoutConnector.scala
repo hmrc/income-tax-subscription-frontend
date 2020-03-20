@@ -16,17 +16,17 @@
 
 package connectors.usermatching.mocks
 
+import auth.MockHttp
+import config.AppConfig
 import connectors.usermatching.UserLockoutConnector
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import core.config.AppConfig
-import core.connectors.mocks.MockHttp
-import core.utils.MockTrait
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import models.usermatching.{LockoutStatusFailureResponse, NotLockedOut}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 
