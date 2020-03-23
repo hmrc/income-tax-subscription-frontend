@@ -16,7 +16,7 @@
 
 package models.individual.subscription
 
-import core.connectors.models.ConnectorError
+import models.ConnectorError
 import play.api.libs.json.{Json, OFormat}
 
 case class SubscriptionSuccess(mtditId: String)

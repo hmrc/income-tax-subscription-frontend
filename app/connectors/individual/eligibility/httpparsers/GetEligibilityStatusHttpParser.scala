@@ -16,10 +16,10 @@
 
 package connectors.individual.eligibility.httpparsers
 
-import core.utils.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
 import play.api.http.Status.OK
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.HttpResponse
+import utilities.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
 
 object GetEligibilityStatusHttpParser {
 

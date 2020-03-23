@@ -16,7 +16,7 @@
 
 package models.usermatching
 
-import core.utils.{TestModels, UnitTestTrait}
+import utilities.{TestModels, UnitTestTrait}
 
 
 class UserMatchRequestModelSpec extends UnitTestTrait {

@@ -18,7 +18,7 @@ package controllers
 
 import java.net.URLEncoder
 
-import core.config.AppConfig
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, Request}
 import services.AuthService

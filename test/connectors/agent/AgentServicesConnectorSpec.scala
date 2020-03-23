@@ -16,7 +16,7 @@
 
 package connectors.agent
 
-import agent.utils.TestConstants._
+import utilities.agent.TestConstants._
 import connectors.agent.mocks.TestAgentServicesConnector
 import play.api.libs.json.Json
 import play.api.test.Helpers._

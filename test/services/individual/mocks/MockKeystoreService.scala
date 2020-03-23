@@ -16,8 +16,7 @@
 
 package services.individual.mocks
 
-import core.services.CacheConstants._
-import core.utils.MockTrait
+import utilities.individual.CacheConstants._
 import models.individual.business._
 import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
@@ -27,6 +26,7 @@ import org.mockito.Mockito._
 import services.individual.KeystoreService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

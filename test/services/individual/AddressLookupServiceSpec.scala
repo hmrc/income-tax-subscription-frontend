@@ -17,7 +17,7 @@
 package services.individual
 
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
-import core.utils.TestModels._
+import utilities.TestModels._
 import models.individual.business.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, UnexpectedStatusReturned}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.BAD_REQUEST

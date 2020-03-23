@@ -16,8 +16,8 @@
 
 package controllers.individual
 
-import core.auth.StatelessController
-import core.config.AppConfig
+import auth.individual.StatelessController
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

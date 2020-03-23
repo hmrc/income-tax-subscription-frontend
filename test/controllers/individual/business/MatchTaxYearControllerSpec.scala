@@ -17,8 +17,8 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.config.featureswitch._
-import core.utils.TestModels._
+import config.featureswitch._
+import utilities.TestModels._
 import forms.individual.business.MatchTaxYearForm
 import models.individual.business.MatchTaxYearModel
 import models.{No, Yes, YesNo}

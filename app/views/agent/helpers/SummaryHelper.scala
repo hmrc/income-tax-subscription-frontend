@@ -20,7 +20,7 @@ import models.individual.business.{AccountingMethodModel, AccountingMethodProper
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.{Accruals, Cash, Current, Next}
 import play.api.i18n.Messages
-import incometax.AccountingPeriodUtil.getCurrentTaxEndYear
+import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 
 object SummaryHelper {
 

@@ -17,8 +17,8 @@
 package services
 
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
-import core.utils.HttpResult.HttpConnectorError
-import core.utils.TestConstants.testUtr
+import utilities.HttpResult.HttpConnectorError
+import utilities.individual.TestConstants.testUtr
 import play.api.libs.json.JsError
 import play.api.test.Helpers._
 import services.mocks.TestGetEligibilityStatusService

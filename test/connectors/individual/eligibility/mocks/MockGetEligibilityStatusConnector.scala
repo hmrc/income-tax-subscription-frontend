@@ -16,15 +16,15 @@
 
 package connectors.individual.eligibility.mocks
 
+import auth.MockHttp
+import config.AppConfig
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import connectors.individual.eligibility.httpparsers.EligibilityStatus
-import core.config.AppConfig
-import core.connectors.mocks.MockHttp
-import core.utils.HttpResult.HttpResult
-import core.utils.MockTrait
+import utilities.HttpResult.HttpResult
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.libs.json.JsValue
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

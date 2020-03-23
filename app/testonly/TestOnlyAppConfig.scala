@@ -18,7 +18,7 @@
 
 package testonly
 
-import core.config.FrontendAppConfig
+import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Environment}
 

@@ -16,7 +16,7 @@
 
 package services
 
-import core.config.AppConfig
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.Request
 import services.AuditingService.toDataEvent

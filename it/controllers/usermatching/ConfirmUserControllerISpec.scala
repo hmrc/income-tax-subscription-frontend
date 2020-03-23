@@ -16,12 +16,12 @@
 
 package controllers.usermatching
 
-import core.ITSASessionKeys
-import core.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitching
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
+import utilities.ITSASessionKeys
 
 
 class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching {

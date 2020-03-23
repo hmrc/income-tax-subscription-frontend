@@ -16,9 +16,9 @@
 
 package controllers.individual.business
 
-import core.config.featureswitch
-import core.config.featureswitch.FeatureSwitching
-import core.services.CacheConstants._
+import config.featureswitch
+import config.featureswitch.FeatureSwitching
+import utilities.individual.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._

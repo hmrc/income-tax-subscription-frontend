@@ -18,13 +18,13 @@ package views.helpers
 
 import assets.MessageLookup
 import controllers.SignOutController
-import core.utils.UnitTestTrait
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import utilities.UnitTestTrait
 import views.html.helpers.signOutButton
 
 class SignOutButtonHelperSpec extends UnitTestTrait {

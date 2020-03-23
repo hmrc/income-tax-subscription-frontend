@@ -17,7 +17,7 @@
 package services
 
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._

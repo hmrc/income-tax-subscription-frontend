@@ -16,8 +16,7 @@
 
 package controllers.individual.business
 
-import core.config.featureswitch.FeatureSwitching
-import core.services.CacheConstants
+import config.featureswitch.FeatureSwitching
 import forms.individual.business.MatchTaxYearForm
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -27,6 +26,7 @@ import models.individual.business.MatchTaxYearModel
 import models.{No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import utilities.individual.CacheConstants
 
 class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

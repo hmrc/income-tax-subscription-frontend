@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.config.featureswitch._
+import config.featureswitch._
 import forms.individual.business.AccountingYearForm
 import models.Current
 import models.individual.business.AccountingYearModel

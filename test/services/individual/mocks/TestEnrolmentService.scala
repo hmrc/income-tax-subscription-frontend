@@ -16,17 +16,17 @@
 
 package services.individual.mocks
 
+import auth.MockAuth
+import config.MockConfig
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
-import core.Constants.GovernmentGateway.{ggServiceName, _}
-import core.config.MockConfig
-import core.connectors.mocks.MockAuth
-import core.utils.MockTrait
-import core.utils.TestConstants._
+import utilities.individual.Constants.GovernmentGateway.{ggServiceName, _}
+import utilities.individual.TestConstants._
 import models.individual.subscription.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.individual.EnrolmentService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

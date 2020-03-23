@@ -16,10 +16,10 @@
 
 package models.individual.business
 
-import core.utils.TestModels
 import models.DateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
+import utilities.TestModels
 
 class AccountingPeriodModelSpec extends PlaySpec {
 

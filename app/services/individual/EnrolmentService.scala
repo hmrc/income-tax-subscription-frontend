@@ -16,10 +16,9 @@
 
 package services.individual
 
+import config.AppConfig
 import connectors.individual.subscription.TaxEnrolmentsConnector
-import core.Constants
-import core.Constants.GovernmentGateway._
-import core.config.AppConfig
+import utilities.individual.Constants.GovernmentGateway._
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.{EmacEnrolmentRequest, EnrolFailure, EnrolSuccess, EnrolmentKey}
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -27,6 +26,7 @@ import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.individual.Constants
 
 import scala.concurrent.{ExecutionContext, Future}
 

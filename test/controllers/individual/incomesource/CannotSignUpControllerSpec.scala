@@ -18,7 +18,7 @@ package controllers.individual.incomesource
 
 import assets.MessageLookup.{CannotSignUp => messages}
 import controllers.ControllerBaseSpec
-import core.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitching
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

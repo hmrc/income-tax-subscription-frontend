@@ -16,7 +16,8 @@
 
 package controllers.agent
 
-import agent.auth.{AgentSignUp, AgentUserMatching}
+import auth.agent.AgentSignUp
+import auth.agent.{AgentSignUp, AgentUserMatching}
 import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

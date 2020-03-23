@@ -16,8 +16,8 @@
 
 package services.individual
 
+import config.AppConfig
 import connectors.usermatching.CitizenDetailsConnector
-import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.CitizenDetailsSuccess
 import play.api.mvc.{AnyContent, Request}

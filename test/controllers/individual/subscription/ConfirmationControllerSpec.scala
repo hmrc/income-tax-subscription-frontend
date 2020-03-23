@@ -19,9 +19,7 @@ package controllers.individual.subscription
 import java.time.LocalDateTime
 
 import controllers.ControllerBaseSpec
-import core.ITSASessionKeys
-import core.config.featureswitch.FeatureSwitching
-import core.utils.TestModels
+import config.featureswitch.FeatureSwitching
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
 import play.api.Play
@@ -33,6 +31,7 @@ import play.api.test.Helpers._
 import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import uk.gov.hmrc.play.language.LanguageUtils.{Welsh, WelshLangCode}
+import utilities.{ITSASessionKeys, TestModels}
 
 import scala.concurrent.Future
 

@@ -17,7 +17,7 @@
 package connectors.individual.eligibility
 
 import connectors.individual.eligibility.mocks.TestGetEligibilityStatusConnector
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import org.scalatest.Matchers._
 import org.scalatest.{EitherValues, OptionValues}
 

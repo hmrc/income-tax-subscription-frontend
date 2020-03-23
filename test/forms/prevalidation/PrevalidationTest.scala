@@ -16,11 +16,11 @@
 
 package forms.prevalidation
 
-import core.utils.UnitTestTrait
 import forms.prevalidation.CaseOption.CaseOption
 import forms.prevalidation.TrimOption.TrimOption
 import play.api.data.Form
 import play.api.data.Forms._
+import utilities.UnitTestTrait
 
 class PrevalidationTest extends UnitTestTrait {
 

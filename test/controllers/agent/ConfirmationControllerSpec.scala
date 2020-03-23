@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import agent.utils.TestModels._
+import utilities.agent.TestModels._
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
 import play.api.Play

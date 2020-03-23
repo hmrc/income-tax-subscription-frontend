@@ -17,17 +17,17 @@
 package controllers.individual.business
 
 import assets.MessageLookup
+import auth.individual.Registration
+import config.MockConfig
 import controllers.ControllerBaseSpec
-import core.ITSASessionKeys
-import core.auth.Registration
-import core.config.MockConfig
-import core.utils.TestModels._
+import utilities.TestModels._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.individual.mocks.{MockAddressLookupService, MockKeystoreService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import utilities.ITSASessionKeys
 
 import scala.concurrent.Future
 

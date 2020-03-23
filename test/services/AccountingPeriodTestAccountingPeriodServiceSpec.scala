@@ -18,9 +18,9 @@ package services
 
 import java.time.LocalDate
 
-import core.utils.MockCurrentDateProvider
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.play.test.UnitSpec
+import utilities.MockCurrentDateProvider
 
 class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with BeforeAndAfterEach with MockCurrentDateProvider {
 

@@ -16,8 +16,8 @@
 
 package connectors.usermatching
 
+import config.AppConfig
 import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser._
-import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient

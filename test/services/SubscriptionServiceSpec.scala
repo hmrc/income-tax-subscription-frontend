@@ -18,16 +18,16 @@ package services
 
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import core.utils.TestConstants._
-import core.utils.TestModels._
-import core.utils.{TestConstants, TestModels}
-import incometax.AccountingPeriodUtil
+import utilities.individual.TestConstants._
+import utilities.TestModels._
 import models.Cash
 import models.individual.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import services.mocks.TestSubscriptionService
+import utilities.{AccountingPeriodUtil, TestModels}
+import utilities.individual.TestConstants
 
 
 class SubscriptionServiceSpec extends TestSubscriptionService

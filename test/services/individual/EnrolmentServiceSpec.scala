@@ -16,15 +16,15 @@
 
 package services.individual
 
-import core.Constants.GovernmentGateway._
-import core.utils.TestConstants._
-import core.utils.UnitTestTrait
+import utilities.individual.Constants.GovernmentGateway._
+import utilities.individual.TestConstants._
 import models.individual.subscription.{EnrolFailure, EnrolSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import services.individual.mocks.TestEnrolmentService
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
+import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 

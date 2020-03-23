@@ -19,7 +19,7 @@ package helpers
 import models.usermatching.UserDetailsModel
 import org.scalatest.Matchers
 import play.api.libs.ws.WSResponse
-import usermatching.utils.UserMatchingSessionUtil._
+import utilities.UserMatchingSessionUtil._
 
 trait UserMatchingIntegrationResultSupport {
   matchers: Matchers =>

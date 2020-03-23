@@ -16,12 +16,10 @@
 
 package controllers.usermatching
 
+import auth.individual.Registration
+import config.MockConfig
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.ControllerBaseSpec
-import core.ITSASessionKeys
-import core.auth.Registration
-import core.config.MockConfig
-import core.utils.TestConstants
 import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -29,6 +27,8 @@ import play.api.test.Helpers.{await, _}
 import services.individual.mocks.MockKeystoreService
 import services.mocks.{MockCitizenDetailsService, MockGetEligibilityStatusService, MockSubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.ITSASessionKeys
+import utilities.individual.TestConstants
 
 import scala.concurrent.Future
 

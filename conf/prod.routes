@@ -1,6 +1,6 @@
 # Add all the application routes to the app.routes file
 
-# if the routes changes from /report-quarterly/income-and-expenses/sign-up also update core.config.filters.UnplannedOutageFilter
+# if the routes changes from /report-quarterly/income-and-expenses/sign-up also update config.filters.UnplannedOutageFilter
 ->         /report-quarterly/income-and-expenses/sign-up                        app.Routes
 ->         /report-quarterly/income-and-expenses/sign-up/client                 agent.Routes
 ->         /                                                                    health.Routes

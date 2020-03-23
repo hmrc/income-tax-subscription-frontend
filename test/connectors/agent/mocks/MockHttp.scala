@@ -16,13 +16,13 @@
 
 package connectors.agent.mocks
 
-import agent.utils.TestConstants.testErrorMessage
-import core.utils.MockTrait
+import utilities.agent.TestConstants.testErrorMessage
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.libs.json.{JsString, JsValue}
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utilities.MockTrait
 
 import scala.concurrent.{ExecutionContext, Future}
 

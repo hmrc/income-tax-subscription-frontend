@@ -16,7 +16,7 @@
 
 package services.agent
 
-import agent.utils.TestConstants._
+import utilities.agent.TestConstants._
 import play.api.test.Helpers._
 import services.agent.mocks.TestClientRelationshipService
 

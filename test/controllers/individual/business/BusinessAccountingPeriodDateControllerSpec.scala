@@ -19,10 +19,8 @@ package controllers.individual.business
 import java.time.LocalDate
 
 import assets.MessageLookup
+import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-import core.config.featureswitch.FeatureSwitching
-import core.utils.TestModels
-import core.utils.TestModels.testCacheMapCustom
 import forms.individual.business.AccountingPeriodDateForm
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
@@ -32,6 +30,8 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockKeystoreService
 import services.mocks.MockAccountingPeriodService
+import utilities.TestModels
+import utilities.TestModels.testCacheMapCustom
 
 import scala.concurrent.Future
 

@@ -17,11 +17,11 @@
 package connectors.individual.mocks
 
 import connectors.PaperlessPreferenceTokenConnector
-import core.utils.MockTrait
 import models.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenResult, PaperlessPreferenceTokenSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{verify, when}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

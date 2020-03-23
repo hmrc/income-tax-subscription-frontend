@@ -17,7 +17,7 @@
 package controllers.agent.business
 
 import controllers.agent.AgentControllerBaseSpec
-import core.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitching
 import forms.agent.AccountingYearForm
 import models.Current
 import models.agent.AccountingYearModel

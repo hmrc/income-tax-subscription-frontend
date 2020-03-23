@@ -16,16 +16,17 @@
 
 package services.agent
 
+
 import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
-import agent.utils.TestConstants._
-import agent.utils.TestModels._
-import agent.utils.{TestConstants, TestModels}
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentQualificationService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.agent.TestConstants._
+import utilities.agent.TestModels._
+import utilities.agent.{TestConstants, TestModels}
 
 import scala.concurrent.Future
 

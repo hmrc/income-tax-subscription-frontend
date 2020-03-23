@@ -16,8 +16,7 @@
 
 package services.agent.mocks
 
-import agent.services.CacheConstants._
-import core.utils.MockTrait
+import utilities.agent.CacheConstants._
 import models.agent.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.IncomeSourceType
@@ -26,6 +25,7 @@ import org.mockito.Mockito._
 import services.agent.KeystoreService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import utilities.MockTrait
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -16,14 +16,15 @@
 
 package controllers.agent
 
-import agent.auth.PostSubmissionController
-import agent.services.CacheUtil._
-import core.config.AppConfig
+
+import auth.agent.PostSubmissionController
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
 import services.agent.KeystoreService
+import utilities.agent.CacheUtil._
 import views.html.agent.sign_up_complete
 
 import scala.concurrent.ExecutionContext

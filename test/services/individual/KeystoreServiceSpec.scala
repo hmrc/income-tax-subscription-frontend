@@ -16,14 +16,14 @@
 
 package services.individual
 
-import core.config.SessionCache
-import core.utils.{TestModels, UnitTestTrait}
+import config.SessionCache
 import models.individual.business.BusinessNameModel
 import org.scalatest.Matchers._
 import play.api.http.Status
 import play.api.test.Helpers._
 import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HttpResponse
+import utilities.{TestModels, UnitTestTrait}
 
 class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {

@@ -16,10 +16,7 @@
 
 package controllers.agent
 
-import agent.services.CacheUtil._
-import agent.utils.TestConstants.{testNino, _}
-import agent.utils.TestModels
-import agent.utils.TestModels.testCacheMap
+
 import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -27,6 +24,10 @@ import play.api.test.Helpers._
 import services.agent.mocks._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.InternalServerException
+import utilities.agent.CacheUtil._
+import utilities.agent.TestConstants.{testNino, _}
+import utilities.agent.TestModels
+import utilities.agent.TestModels.testCacheMap
 
 import scala.concurrent.Future
 

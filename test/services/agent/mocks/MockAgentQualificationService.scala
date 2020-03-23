@@ -17,11 +17,11 @@
 package services.agent.mocks
 
 import agent.audit.mocks.MockAuditingService
-import agent.utils.TestConstants
-import agent.utils.TestConstants.{testARN, testNino}
-import agent.utils.TestModels.testClientDetails
+import utilities.agent.TestConstants.{testARN, testNino}
+import utilities.agent.TestModels.testClientDetails
 import services.agent._
 import services.mocks.{MockSubscriptionService, MockUserMatchingService}
+import utilities.agent.TestConstants
 
 trait MockAgentQualificationService extends MockClientRelationshipService
   with MockUserMatchingService

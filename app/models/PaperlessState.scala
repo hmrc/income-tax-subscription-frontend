@@ -16,8 +16,6 @@
 
 package models
 
-import core.connectors.models.ConnectorError
-
 sealed trait PaperlessState
 
 case object Activated extends PaperlessState

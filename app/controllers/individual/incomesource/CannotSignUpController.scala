@@ -16,8 +16,8 @@
 
 package controllers.individual.incomesource
 
-import core.auth.SignUpController
-import core.config.AppConfig
+import auth.individual.SignUpController
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}

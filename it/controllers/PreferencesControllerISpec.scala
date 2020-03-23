@@ -16,15 +16,15 @@
 
 package controllers
 
-import core.ITSASessionKeys
-import core.config.featureswitch.FeatureSwitching
-import core.services.CacheConstants._
+import config.featureswitch.FeatureSwitching
+import utilities.individual.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, PreferencesStub, PreferencesTokenStub}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
+import utilities.ITSASessionKeys
 
 class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

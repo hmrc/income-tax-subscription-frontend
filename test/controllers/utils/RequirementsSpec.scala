@@ -16,7 +16,6 @@
 
 package controllers.utils
 
-import agent.services.CacheConstants
 import models.agent.AccountingMethodModel
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.Both
@@ -33,6 +32,7 @@ import play.api.test.Helpers._
 import services.agent.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
+import utilities.agent.CacheConstants
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

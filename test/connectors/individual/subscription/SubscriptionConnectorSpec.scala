@@ -17,7 +17,7 @@
 package connectors.individual.subscription
 
 import connectors.individual.subscription.mocks.TestSubscriptionConnector
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import org.scalatest.Matchers._
 import org.scalatest.{EitherValues, OptionValues}
 

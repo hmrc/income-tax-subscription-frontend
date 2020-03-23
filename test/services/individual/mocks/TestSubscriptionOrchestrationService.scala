@@ -17,15 +17,15 @@
 package services.individual.mocks
 
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import core.connectors.models.ConnectorError
-import core.utils.MockTrait
-import core.utils.TestConstants._
+import models.ConnectorError
+import utilities.individual.TestConstants._
 import models.individual.subscription.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.individual.SubscriptionOrchestrationService
 import services.mocks.MockSubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

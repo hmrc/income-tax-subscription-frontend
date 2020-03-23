@@ -17,7 +17,7 @@
 package helpers
 
 import models.usermatching.UserDetailsModel
-import usermatching.utils.UserMatchingSessionUtil._
+import utilities.UserMatchingSessionUtil._
 
 trait UserMatchingIntegrationRequestSupport {
 

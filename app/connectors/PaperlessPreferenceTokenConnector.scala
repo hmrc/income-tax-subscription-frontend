@@ -16,8 +16,8 @@
 
 package connectors
 
+import config.AppConfig
 import connectors.PaperlessPreferenceTokenResultHttpParser._
-import core.config.AppConfig
 import javax.inject.Inject
 import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenResult
 import play.api.libs.json.{JsObject, Json}

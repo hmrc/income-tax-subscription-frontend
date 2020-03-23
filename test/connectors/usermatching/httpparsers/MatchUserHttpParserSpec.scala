@@ -17,14 +17,14 @@
 package connectors.usermatching.httpparsers
 
 import connectors.usermatching.httpparsers.MatchUserHttpParser.MatchUserHttpReads
-import core.utils.TestConstants._
-import core.utils.TestModels._
-import core.utils.UnitTestTrait
+import utilities.individual.TestConstants._
+import utilities.TestModels._
 import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel, UserMatchUnexpectedError}
 import org.scalatest.EitherValues
 import play.api.libs.json.{JsError, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
+import utilities.UnitTestTrait
 
 class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
   "MatchUserHttpReads" when {

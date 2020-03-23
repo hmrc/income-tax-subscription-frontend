@@ -16,14 +16,14 @@
 
 package controllers.agent
 
-import agent.utils.TestModels
-import core.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.agent.mocks.MockKeystoreService
+import utilities.agent.TestModels
 
 import scala.concurrent.Future
 

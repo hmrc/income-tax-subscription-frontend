@@ -17,9 +17,9 @@
 package services.agent.mocks
 
 import connectors.agent.mocks.MockAgentServicesConnector
-import core.utils.MockTrait
 import org.mockito.Mockito._
 import services.agent.ClientRelationshipService
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

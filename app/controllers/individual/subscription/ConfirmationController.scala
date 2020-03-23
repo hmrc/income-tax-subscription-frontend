@@ -19,16 +19,16 @@ package controllers.individual.subscription
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-import core.ITSASessionKeys
-import core.auth.PostSubmissionController
-import core.config.AppConfig
-import core.services.CacheUtil._
+import auth.individual.PostSubmissionController
+import config.AppConfig
+import utilities.individual.CacheUtil._
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
 import services.individual.KeystoreService
 import uk.gov.hmrc.http.InternalServerException
+import utilities.ITSASessionKeys
 import views.html.individual.incometax.subscription.sign_up_complete
 
 import scala.concurrent.ExecutionContext

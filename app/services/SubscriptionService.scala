@@ -16,12 +16,12 @@
 
 package services
 
+import config.AppConfig
 import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import core.config.AppConfig
-import core.config.featureswitch.FeatureSwitching
-import incometax.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
+import config.featureswitch.FeatureSwitching
+import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 import javax.inject.{Inject, Singleton}
 import models.individual.business.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
 import models.individual.subscription._

@@ -17,10 +17,10 @@
 package controllers.individual.subscription
 
 import controllers.ControllerBaseSpec
-import core.config.featureswitch.FeatureSwitching
-import core.services.CacheUtil._
-import core.utils.TestConstants._
-import core.utils.TestModels._
+import config.featureswitch.FeatureSwitching
+import utilities.individual.CacheUtil._
+import utilities.individual.TestConstants._
+import utilities.TestModels._
 import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

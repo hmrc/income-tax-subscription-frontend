@@ -16,7 +16,7 @@
 
 package models.individual.subscription
 
-import core.connectors.models.ConnectorError
+import models.ConnectorError
 
 sealed trait RefreshProfileResult
 

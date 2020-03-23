@@ -17,7 +17,6 @@
 package views.helpers
 
 import assets.MessageLookup.{Base => common}
-import core.utils.UnitTestTrait
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
@@ -25,6 +24,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid
 import play.api.i18n.Messages.Implicits._
+import utilities.UnitTestTrait
 
 import scala.collection.JavaConversions._
 

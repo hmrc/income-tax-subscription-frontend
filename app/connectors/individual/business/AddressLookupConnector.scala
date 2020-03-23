@@ -16,8 +16,8 @@
 
 package connectors.individual.business
 
+import config.AppConfig
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser._
-import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.business.address.AddressLookupInitRequest
 import uk.gov.hmrc.http.HeaderCarrier

@@ -16,10 +16,10 @@
 
 package controllers.individual
 
-import core.ITSASessionKeys
-import core.auth.AuthPredicate.AuthPredicate
-import core.auth.{IncomeTaxSAUser, StatelessController}
-import core.config.AppConfig
+import auth.individual.AuthPredicate.AuthPredicate
+import auth.individual.{IncomeTaxSAUser, StatelessController}
+import auth.individual.StatelessController
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.{Activated, Unset}
 import play.api.i18n.MessagesApi
@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, PaperlessPreferenceTokenService, PreferencesService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.ITSASessionKeys
 
 import scala.concurrent.ExecutionContext
 

@@ -16,8 +16,8 @@
 
 package connectors.usermatching
 
+import config.AppConfig
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser._
-import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.LockOutRequest
 import uk.gov.hmrc.http.HeaderCarrier

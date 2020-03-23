@@ -17,13 +17,13 @@
 package connectors.individual.business.httpparsers
 
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser._
-import core.utils.UnitTestTrait
 import models.individual.business.address._
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsNull, Json}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.http.HttpResponse
+import utilities.UnitTestTrait
 
 class AddressLookupResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"

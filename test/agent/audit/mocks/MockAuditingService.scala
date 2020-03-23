@@ -16,13 +16,13 @@
 
 package agent.audit.mocks
 
-import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Request
 import services.{AuditModel, AuditingService}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 trait MockAuditingService extends MockTrait with BeforeAndAfterEach {
 

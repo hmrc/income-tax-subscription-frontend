@@ -18,8 +18,9 @@ package controllers.usermatching
 
 import java.time.{Duration, LocalTime}
 
-import core.auth.{IncomeTaxSAUser, UserMatchingController}
-import core.config.AppConfig
+import auth.individual.{IncomeTaxSAUser, UserMatchingController}
+import auth.individual.UserMatchingController
+import config.AppConfig
 import javax.inject.Inject
 import models.usermatching.{LockedOut, NotLockedOut}
 import play.api.i18n.{Messages, MessagesApi}

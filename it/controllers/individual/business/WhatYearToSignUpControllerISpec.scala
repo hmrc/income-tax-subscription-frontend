@@ -18,16 +18,16 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
-import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.keystoreData
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
-import incometax.AccountingPeriodUtil
 import models.individual.business.AccountingYearModel
 import models.{Current, Next}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import utilities.AccountingPeriodUtil
+import utilities.individual.CacheConstants
 
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 

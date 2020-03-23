@@ -16,7 +16,7 @@
 
 package models.individual.business.address
 
-import core.connectors.models.ConnectorError
+import models.ConnectorError
 import play.api.libs.json.{Json, OFormat}
 
 case class ConfirmPage(title: Option[String] = None,

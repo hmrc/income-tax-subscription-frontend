@@ -16,8 +16,7 @@
 
 package testonly.controllers.agent
 
-import core.config.AppConfig
-import core.utils.Implicits._
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +28,7 @@ import testonly.models.agent.ClientToStubModel
 import testonly.views.html.agent.{show_stubbed_details, stub_client}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utilities.Implicits._
 
 import scala.concurrent.ExecutionContext
 

@@ -16,10 +16,10 @@
 
 package controllers.individual.incomesource
 
+import config.MockConfig
 import controllers.ControllerBaseSpec
-import core.config.MockConfig
-import core.config.featureswitch.FeatureSwitching
-import core.utils.TestModels._
+import config.featureswitch.FeatureSwitching
+import utilities.TestModels._
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import models.individual.incomesource.AreYouSelfEmployedModel
 import play.api.http.Status

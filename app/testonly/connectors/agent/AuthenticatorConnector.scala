@@ -18,7 +18,7 @@
 
 package testonly.connectors.agent
 
-import core.connectors.RawResponseReads
+import connectors.RawResponseReads
 import javax.inject.{Inject, Singleton}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}

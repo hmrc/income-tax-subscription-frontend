@@ -16,7 +16,7 @@
 
 package forms.individual.business
 
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.individual.business.BusinessPhoneNumberModel

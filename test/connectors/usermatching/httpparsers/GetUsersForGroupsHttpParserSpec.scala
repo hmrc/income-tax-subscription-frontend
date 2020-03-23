@@ -21,14 +21,14 @@ import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UserReads._
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser._
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.GetUsersForGroupsHttpReads.read
 import connectors.usermatching.httpparsers.MatchUserHttpParser.MatchUserHttpReads
-import core.utils.TestConstants._
-import core.utils.UnitTestTrait
+import utilities.individual.TestConstants._
 import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import org.scalatest.EitherValues
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.HttpResponse
+import utilities.UnitTestTrait
 
 class GetUsersForGroupsHttpParserSpec extends UnitTestTrait with EitherValues{
   val testMethod = "GET"

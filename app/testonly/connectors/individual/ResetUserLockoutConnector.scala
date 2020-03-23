@@ -16,7 +16,7 @@
 
 package testonly.connectors.individual
 
-import core.config.AppConfig
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient

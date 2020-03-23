@@ -18,8 +18,6 @@ package views.agent
 
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Base => common, ConfirmClient => messages}
-import agent.utils.TestConstants
-import core.utils.{TestModels, UnitTestTrait}
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
@@ -28,6 +26,8 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import utilities.agent.TestConstants
+import utilities.{TestModels, UnitTestTrait}
 import views.agent.helpers.ConfirmClientIdConstants._
 
 class CheckYourClientDetailsViewSpec extends UnitTestTrait {

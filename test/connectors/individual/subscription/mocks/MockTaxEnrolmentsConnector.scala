@@ -19,12 +19,12 @@ package connectors.individual.subscription.mocks
 import connectors.individual.subscription.TaxEnrolmentsConnector
 import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
-import core.utils.MockTrait
-import core.utils.TestConstants.{testErrorMessage, testException}
+import utilities.individual.TestConstants.{testErrorMessage, testException}
 import models.individual.subscription._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

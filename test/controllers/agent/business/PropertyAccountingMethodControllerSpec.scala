@@ -16,9 +16,9 @@
 
 package controllers.agent.business
 
-import agent.utils.TestModels._
+import utilities.agent.TestModels._
 import controllers.agent.AgentControllerBaseSpec
-import core.config.featureswitch._
+import config.featureswitch._
 import forms.agent.AccountingMethodPropertyForm
 import models.Cash
 import models.agent.AccountingMethodPropertyModel

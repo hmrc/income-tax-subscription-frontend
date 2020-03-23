@@ -16,9 +16,9 @@
 
 package controllers.usermatching
 
-import core.auth.UserMatchingController
-import core.config.AppConfig
-import core.utils.Implicits._
+import auth.individual.UserMatchingController
+import config.AppConfig
+import utilities.Implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}

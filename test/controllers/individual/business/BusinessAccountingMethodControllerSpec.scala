@@ -17,8 +17,8 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.config.featureswitch._
-import core.utils.TestModels._
+import config.featureswitch._
+import utilities.TestModels._
 import forms.individual.business.AccountingMethodForm
 import models.individual.business.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.incomesource.RentUkPropertyModel

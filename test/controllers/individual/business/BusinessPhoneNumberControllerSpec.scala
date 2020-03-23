@@ -16,11 +16,10 @@
 
 package controllers.individual.business
 
+import auth.individual.Registration
+import config.MockConfig
 import controllers.ControllerBaseSpec
-import core.ITSASessionKeys
-import core.auth.Registration
-import core.config.MockConfig
-import core.utils.TestConstants._
+import utilities.individual.TestConstants._
 import forms.individual.business.BusinessPhoneNumberForm
 import models.individual.business.BusinessPhoneNumberModel
 import play.api.http.Status
@@ -29,6 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
+import utilities.ITSASessionKeys
 
 import scala.concurrent.Future
 

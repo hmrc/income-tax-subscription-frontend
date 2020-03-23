@@ -16,9 +16,9 @@
 
 package controllers.agent.business
 
-import agent.utils.TestModels._
+import utilities.agent.TestModels._
 import controllers.agent.AgentControllerBaseSpec
-import core.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitching
 import forms.agent.BusinessNameForm
 import models.agent.BusinessNameModel
 import play.api.http.Status

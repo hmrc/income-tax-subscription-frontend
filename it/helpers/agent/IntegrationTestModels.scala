@@ -1,13 +1,13 @@
 
 package helpers.agent
 
-import agent.services.CacheConstants
 import models._
 import models.agent.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
+import utilities.agent.CacheConstants
 
 object IntegrationTestModels {
 

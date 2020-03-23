@@ -17,12 +17,12 @@
 package connectors.individual.eligibility.httpparsers
 
 import connectors.individual.eligibility.httpparsers.GetEligibilityStatusHttpParser.GetEligibilityStatusHttpReads
-import core.utils.HttpResult.HttpConnectorError
-import core.utils.UnitTestTrait
+import utilities.HttpResult.HttpConnectorError
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsError, Json}
 import uk.gov.hmrc.http.HttpResponse
+import utilities.UnitTestTrait
 
 class GetEligibilityStatusHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"

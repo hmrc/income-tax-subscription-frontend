@@ -16,8 +16,8 @@
 
 package connectors.agent
 
+import config.FrontendAppConfig
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser._
-import core.config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient

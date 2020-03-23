@@ -18,11 +18,11 @@ package services.mocks
 
 import connectors.individual.eligibility.httpparsers.EligibilityStatus
 import connectors.individual.eligibility.mocks.MockGetEligibilityStatusConnector
-import core.utils.HttpResult.HttpResult
-import core.utils.MockTrait
+import utilities.HttpResult.HttpResult
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.GetEligibilityStatusService
+import utilities.MockTrait
 
 import scala.concurrent.Future
 

@@ -16,13 +16,13 @@
 
 package controllers.agent.matching
 
-import agent.auth.UserMatchingController
-import core.config.AppConfig
-import core.utils.Implicits._
+import auth.agent.UserMatchingController
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
+import utilities.Implicits._
 
 import scala.concurrent.ExecutionContext
 
