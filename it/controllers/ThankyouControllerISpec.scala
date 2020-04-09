@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.agent
+package controllers
 
-import helpers.agent.ComponentSpecBase
-import helpers.agent.servicemocks.AuthStub
+import helpers.ComponentSpecBase
 import play.api.http.Status.OK
 import play.api.i18n.Messages
 
@@ -25,9 +24,6 @@ class ThankyouControllerISpec extends ComponentSpecBase {
 
   "GET /thankyou" should {
     "show the thankyou page" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-
       When("GET /thankyou is called")
       val res = IncomeTaxSubscriptionFrontend.thankYou()
 

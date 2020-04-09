@@ -131,7 +131,7 @@ object MessageLookup {
   object AccountingPeriod {
     val title = "What accounting period are you signing your client up for?"
     val heading = "What accounting period are you signing your client up for?"
-    val line1 = "For example, if your accounting period is 1 August 2019 to 31 July 2020, you will be signing up for the 2020 to 2021 tax year."
+    def line1(year: Int) = s"For example, if your accounting period is 1 August ${year-1} to 31 July $year, you will be signing up for the $year to ${year+1} tax year."
 
     def exampleStartDate(year: Int): String = s"For example, 1 4 ${year.toString}"
 

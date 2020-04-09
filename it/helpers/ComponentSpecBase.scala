@@ -156,6 +156,8 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
+    def thankYou(): WSResponse = get("/thank-you")
+
     def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
 
     def cannotUseService(): WSResponse = get("/error/cannot-use-service")
