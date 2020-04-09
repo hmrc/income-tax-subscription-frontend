@@ -73,7 +73,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
       isEditMode = true
     )
 
-    editModePage.mustHavePara(messages.line1)
+    editModePage.mustHavePara(messages.line1(taxEndYear))
 
     editModePage.mustHaveUpdateButton()
 
