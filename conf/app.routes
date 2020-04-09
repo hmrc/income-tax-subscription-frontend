@@ -83,6 +83,11 @@ GET         /cannot-use-service-yet       controllers.individual.eligibility.Not
 #Language
 GET         /language/:lang               controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
 
+# Feedback Routes
+GET         /feedback                     controllers.FeedbackController.show
+POST        /feedback                     controllers.FeedbackController.submit
+GET         /thank-you                    controllers.FeedbackController.thankyou
+
 ################## Business Routes
 
 #Match tax year Routes

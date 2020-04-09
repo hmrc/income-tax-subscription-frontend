@@ -16,11 +16,6 @@ GET         /confirmation                           controllers.agent.Confirmati
 # Session Timeout Route
 GET         /session-timeout                        controllers.agent.SessionTimeoutController.show
 
-# Feedback Routes
-GET         /feedback                               controllers.agent.FeedbackController.show
-POST        /feedback                               controllers.agent.FeedbackController.submit
-GET         /thankyou                               controllers.agent.FeedbackController.thankyou
-
 #
 GET         /error/client-already-subscribed        controllers.agent.ClientAlreadySubscribedController.show
 POST        /error/client-already-subscribed        controllers.agent.ClientAlreadySubscribedController.submit

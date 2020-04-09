@@ -167,9 +167,6 @@ trait ComponentSpecBase extends UnitSpec
       else
         get("/confirmation")
 
-
-    def thankYou(): WSResponse = get("/thankyou")
-
     def feedback(): WSResponse = get("/feedback-submitted")
 
     def signIn(): WSResponse = get("/sign-in")

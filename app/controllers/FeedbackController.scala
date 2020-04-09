@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.agent
+package controllers
 
 import java.net.URLEncoder
 
@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAc
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.partials._
-import views.html.agent.feedback.feedback_thankyou
+import views.html.feedback_thankyou
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,11 +39,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class FeedbackController @Inject()(val messagesApi: MessagesApi,
                                    http: HttpClient,
                                    sessionCookieCrypto: SessionCookieCrypto)
-                                  (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController with PartialRetriever with I18nSupport {
+                                  (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   private val TICKET_ID = "ticketId"
-
-  override val httpGet: HttpClient = http
 
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
     override val httpGet: HttpGet = http
@@ -74,8 +72,8 @@ class FeedbackController @Inject()(val messagesApi: MessagesApi,
   def show: Action[AnyContent] = UnauthorisedAction {
     implicit request =>
       (request.session.get(REFERER), request.headers.get(REFERER)) match {
-        case (None, Some(ref)) => Ok(views.html.agent.feedback.feedback(feedbackFormPartialUrl, None)).withSession(request.session + (REFERER -> ref))
-        case _ => Ok(views.html.agent.feedback.feedback(feedbackFormPartialUrl, None))
+        case (None, Some(ref)) => Ok(views.html.feedback(feedbackFormPartialUrl, None)).addingToSession(REFERER -> ref)
+        case _ => Ok(views.html.feedback(feedbackFormPartialUrl, None))
       }
   }
 
@@ -86,8 +84,8 @@ class FeedbackController @Inject()(val messagesApi: MessagesApi,
           rds = readPartialsForm, hc = partialsReadyHeaderCarrier, implicitly[ExecutionContext]).map {
           resp =>
             resp.status match {
-              case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
-              case HttpStatus.BAD_REQUEST => BadRequest(views.html.agent.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
+              case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).addingToSession(TICKET_ID -> resp.body)
+              case HttpStatus.BAD_REQUEST => BadRequest(views.html.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
               case status => Logger.error(s"Unexpected status code from feedback form: $status")
                 throw new InternalServerException("feedback controller, submit call failed")
             }
@@ -102,10 +100,10 @@ class FeedbackController @Inject()(val messagesApi: MessagesApi,
     implicit request =>
       val ticketId = request.session.get(TICKET_ID).getOrElse("N/A")
       val referer = request.session.get(REFERER).getOrElse("/")
-      Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).withSession(request.session - REFERER)
+      Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).removingFromSession(REFERER)
   }
 
-  private def urlEncode(value: String) = URLEncoder.encode(value, "UTF-8")
+  def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
   private def partialsReadyHeaderCarrier(implicit request: Request[_]): HeaderCarrier = {
     val hc1 = PlaHeaderCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)
