@@ -44,12 +44,6 @@ GET         /error/affinity-group         controllers.usermatching.AffinityGroup
 # IV Error
 GET         /error/iv-failed              controllers.individual.IdentityVerificationController.ivFailed
 
-# Exit Survey
-GET         /exit-survey                  controllers.individual.subscription.ExitSurveyController.show(origin: String)
-POST        /exit-survey                  controllers.individual.subscription.ExitSurveyController.submit
-
-GET         /feedback-submitted           controllers.individual.subscription.ExitSurveyThankYouController.show
-
 # Claim Subscription
 GET         /claim-subscription           controllers.individual.subscription.ClaimSubscriptionController.claim
 

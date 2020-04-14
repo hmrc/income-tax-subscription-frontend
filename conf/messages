@@ -378,7 +378,6 @@ user-details.summary.last_name                                  = Last name
 user-details.summary.nino                                       = National Insurance number
 user-details.summary.dob                                        = Date of birth
 
-
 ## No SA page ##
 no-sa.title                                                     = You need to register for Self Assessment
 no-sa.heading                                                   = You need to register for Self Assessment
@@ -411,29 +410,6 @@ agent-cannot-report-yet-both-misaligned.para1                   = You can still 
 agent-cannot-report-yet-both-misaligned.bullet1                 = property income until 6 April 2018
 agent-cannot-report-yet-both-misaligned.bullet2                 = sole trader income until {0}
 agent-cannot-report-yet-both-misaligned.para2                   = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
-
-## Exit survey
-exit-survey.title                                               = Give feedback
-exit-survey.heading                                             = Give feedback
-
-exit-survey.q1                                                  = Overall, how did you feel about the service you received today?
-exit-survey.q1.option.size                                      = 5
-exit-survey.q1.option.1                                         = Very satisfied
-exit-survey.q1.option.2                                         = Satisfied
-exit-survey.q1.option.3                                         = Neither satisfied or dissatisfied
-exit-survey.q1.option.4                                         = Dissatisfied
-exit-survey.q1.option.5                                         = Very dissatisfied
-
-exit-survey.q2                                                  = How could we improve this service?
-
-exit-survey.line_1                                              = Please don’t include any personal or financial information, for example your National Insurance or credit card numbers.
-exit-survey.line_2                                              = We use your feedback to make our services better.
-exit-survey.submit                                              = Send feedback
-
-thank-you.title                                                 = Thank you
-thank-you.heading                                               = Thank you
-thank-you.line_1                                                = Your feedback will help us improve this service.
-thank-you.go_to_gov                                             = Go to the GOV.UK page
 
 # Send your feedback
 feedback.title                                                  = Send your feedback
@@ -739,30 +715,6 @@ agent.client-details.field_3                                    = National Insur
 agent.client-details.field_4                                    = Date of birth
 agent.client_details.formhint.1.line_1                          = For example, ‘QQ 12 34 56 C’.
 agent.client-details.formhint.2                                 = For example, 10 12 1990
-
-## Exit survey
-agent.exit-survey.title                                         = Give feedback
-agent.exit-survey.heading                                       = Give feedback
-
-agent.exit-survey.q1                                            = Overall, how did you feel about the service you received today?
-agent.exit-survey.q1.option.size                                = 5
-agent.exit-survey.q1.option.1                                   = Very satisfied
-agent.exit-survey.q1.option.2                                   = Satisfied
-agent.exit-survey.q1.option.3                                   = Neither satisfied or dissatisfied
-agent.exit-survey.q1.option.4                                   = Dissatisfied
-agent.exit-survey.q1.option.5                                   = Very dissatisfied
-
-agent.exit-survey.q2                                            = How could we improve this service?
-
-agent.exit-survey.line_1                                        = Please don’t include any personal or financial information, for example your National Insurance or credit card numbers.
-agent.exit-survey.line_2                                        = We use your feedback to make our services better.
-agent.exit-survey.submit                                        = Send feedback
-
-## Thank You page ##
-agent.thank-you.title                                           = Thank you
-agent.thank-you.heading                                         = Thank you
-agent.thank-you.line_1                                          = Your feedback will help us improve this service.
-agent.thank-you.go_to_gov                                       = Go to the GOV.UK page
 
 agent.no-sa.title                                               = Your client is not registered for Self Assessment
 agent.no-sa.heading                                             = Your client is not registered for Self Assessment
