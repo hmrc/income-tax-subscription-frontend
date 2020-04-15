@@ -209,10 +209,6 @@ trait ComponentSpecBase extends UnitSpec
       )(Map.empty)
     }
 
-    def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
-
-    def exitSurvey(origin: String): WSResponse = get(s"/exit-survey?origin=$origin")
-
     def matchTaxYear(): WSResponse = get("/business/match-to-tax-year")
 
     def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")

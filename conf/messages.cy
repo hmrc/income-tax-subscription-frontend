@@ -414,29 +414,6 @@ agent-cannot-report-yet-both-misaligned.bullet1                 = incwm o eiddo 
 agent-cannot-report-yet-both-misaligned.bullet2                 = incwm fel unig fasnachwr tan {0}
 agent-cannot-report-yet-both-misaligned.para2                   = Mae dal yn rhaid i’ch cleient <a id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a>.
 
-## Exit survey
-exit-survey.title                                               = Rhoi adborth
-exit-survey.heading                                             = Rhoi adborth
-
-exit-survey.q1                                                  = At ei gilydd, sut oeddech yn teimlo am y gwasanaeth a gawsoch heddiw?
-exit-survey.q1.option.size                                      = 5
-exit-survey.q1.option.1                                         = Bodlon iawn
-exit-survey.q1.option.2                                         = Bodlon
-exit-survey.q1.option.3                                         = Ddim yn fodlon nac yn anfodlon
-exit-survey.q1.option.4                                         = Anfodlon
-exit-survey.q1.option.5                                         = Anfodlon iawn
-
-exit-survey.q2                                                  = Sut allwn wella’r gwasanaeth hwn?
-
-exit-survey.line_1                                              = Peidiwch â chynnwys gwybodaeth bersonol nac ariannol, er enghraifft eich rhif Yswiriant Gwladol neu rifau’ch cardiau credyd.
-exit-survey.line_2                                              = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
-exit-survey.submit                                              = Anfon adborth
-
-thank-you.title                                                 = Diolch
-thank-you.heading                                               = Diolch
-thank-you.line_1                                                = Bydd eich adborth yn ein helpu i wella’r gwasanaeth hwn.
-thank-you.go_to_gov                                             = Ewch i dudalen GOV.UK
-
 # Send your feedback
 feedback.title                                                  = Anfon eich adborth
 
@@ -741,30 +718,6 @@ agent.client-details.field_3                                    = Rhif Yswiriant
 agent.client-details.field_4                                    = Dyddiad geni
 agent.client_details.formhint.1.line_1                          = Er enghraifft, ‘QQ 12 34 56 C’.
 agent.client-details.formhint.2                                 = Er enghraifft, 10 12 1990
-
-## Exit survey
-agent.exit-survey.title                                         = Rhoi adborths
-agent.exit-survey.heading                                       = Rhoi adborth
-
-agent.exit-survey.q1                                            = At ei gilydd, sut oeddech yn teimlo am y gwasanaeth a gawsoch heddiw?
-agent.exit-survey.q1.option.size                                = 5
-agent.exit-survey.q1.option.1                                   = Bodlon iawn
-agent.exit-survey.q1.option.2                                   = Bodlon
-agent.exit-survey.q1.option.3                                   = Ddim yn fodlon nac yn anfodlon
-agent.exit-survey.q1.option.4                                   = Anfodlon
-agent.exit-survey.q1.option.5                                   = Anfodlon iawn
-
-agent.exit-survey.q2                                            = Sut allwn wella’r gwasanaeth hwn?
-
-agent.exit-survey.line_1                                        = Peidiwch â chynnwys gwybodaeth bersonol nac ariannol, er enghraifft eich rhif Yswiriant Gwladol neu rifau’ch cardiau credyd.
-agent.exit-survey.line_2                                        = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
-agent.exit-survey.submit                                        = Anfon adborth
-
-## Thank You page ##
-agent.thank-you.title                                           = Diolch
-agent.thank-you.heading                                         = Diolch
-agent.thank-you.line_1                                          = Bydd eich adborth yn ein helpu i wella’r gwasanaeth hwn.
-agent.thank-you.go_to_gov                                       = Ewch i dudalen GOV.UK
 
 agent.no-sa.title                                               = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.heading                                             = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
