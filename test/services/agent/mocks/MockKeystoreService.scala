@@ -93,7 +93,6 @@ trait MockKeystoreService extends MockTrait {
   }
 
   protected final def mockFetchAllFromKeyStore(fetchAll: MFO[CacheMap]): Unit = {
-
     fetchAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetch()(ArgumentMatchers.any(),
       ArgumentMatchers.any[ExecutionContext])).thenReturn(dataToReturn))
   }
