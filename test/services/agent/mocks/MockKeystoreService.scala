@@ -103,36 +103,6 @@ trait MockKeystoreService extends MockTrait {
       ArgumentMatchers.any[ExecutionContext])).thenReturn(dataToReturn))
   }
 
-
-  protected final def setupMockKeystore(
-                                         fetchIncomeSource: MFO[IncomeSourceType] = DoNotConfigure,
-                                         fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
-                                         fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
-                                         fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
-                                         fetchPropertyAccountingMethod: MFO[AccountingMethodPropertyModel] = DoNotConfigure,
-                                         fetchSubscriptionId: MFO[String] = DoNotConfigure,
-                                         fetchMatchTaxYear: MFO[MatchTaxYearModel] = DoNotConfigure,
-                                         fetchWhatYearToSignUp: MFO[AccountingYearModel] = DoNotConfigure,
-                                         fetchAll: MFO[CacheMap] = DoNotConfigure,
-                                         deleteAll: MF[HttpResponse] = DoNotConfigure
-                                       ): Unit = {
-    mockFetchFromKeyStore[IncomeSourceType](IncomeSource, fetchIncomeSource)
-    mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
-    mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
-    mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
-    mockFetchFromKeyStore[AccountingMethodPropertyModel](AccountingMethodProperty, fetchPropertyAccountingMethod)
-    mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
-    mockFetchFromKeyStore[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
-    mockFetchFromKeyStore[AccountingYearModel](WhatYearToSignUp, fetchWhatYearToSignUp)
-
-    setupMockKeystoreSaveFunctions()
-
-    fetchAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetch()(ArgumentMatchers.any(),
-      ArgumentMatchers.any[ExecutionContext])).thenReturn(dataToReturn))
-    deleteAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.remove()(ArgumentMatchers.any(),
-      ArgumentMatchers.any[ExecutionContext])).thenReturn(dataToReturn))
-  }
-
   protected final def verifyKeystore(
                                       fetchIncomeSource: Option[Int] = None,
                                       saveIncomeSource: Option[Int] = None,
