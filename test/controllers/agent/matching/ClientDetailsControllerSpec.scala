@@ -125,9 +125,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         "there are no stored data" should {
 
           s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
-            setupMockKeystore(
-              deleteAll = HttpResponse(OK)
-            )
+            mockDeleteAllFromKeyStore(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
             lazy val r = userMatchingRequest.buildRequest(None)
@@ -146,9 +144,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         "stored user details is different to the new user details" should {
 
           s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} and deleted all pre-existing entries in keystore" in {
-            setupMockKeystore(
-              deleteAll = HttpResponse(OK)
-            )
+            mockDeleteAllFromKeyStore(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
             val newUserDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT")
@@ -169,9 +165,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         "stored user details is the same as the new user details" should {
 
           s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} but do not delete keystore" in {
-            setupMockKeystore(
-              deleteAll = HttpResponse(OK)
-            )
+            mockDeleteAllFromKeyStore(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
             lazy val r = userMatchingRequest.buildRequest(testClientDetails)

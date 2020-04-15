@@ -54,7 +54,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session" should {
       "return OK" in {
-        setupMockKeystore(fetchAll = testCacheMap)
+        mockFetchAllFromKeyStore(testCacheMap)
 
         val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
         status(result) shouldBe OK
@@ -63,7 +63,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session and welsh content applies" should {
       "return OK" in {
-        setupMockKeystore(fetchAll = testCacheMap)
+        mockFetchAllFromKeyStore(testCacheMap)
 
         val result = TestConfirmationController.show(
           subscriptionRequest
@@ -78,7 +78,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session and new Confirmation content applies" should {
       "return OK" in {
-        setupMockKeystore(fetchAll = testCacheMap)
+        mockFetchAllFromKeyStore(testCacheMap)
 
         val result = TestConfirmationController.show(
           subscriptionRequest

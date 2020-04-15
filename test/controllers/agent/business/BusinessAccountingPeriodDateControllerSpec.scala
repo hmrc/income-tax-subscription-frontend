@@ -52,7 +52,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
   "show" should {
     "return the correct view" in {
-      setupMockKeystore(fetchAccountingPeriodDate = None)
+      mockFetchAccountingPeriodFromKeyStore(None)
       lazy val result = await(TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest))
 
       status(result) mustBe OK
@@ -75,12 +75,9 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
     "When it is ineligible dates" should {
       s"return a redirect status (SEE_OTHER - 303) to kickout page" in {
-        setupMockKeystore(
-          fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
-          fetchAll = testCacheMap(
-            accountingPeriodDate = Some(testAccountingPeriodDates)
-          )
-        )
+        mockFetchIncomeSourceFromKeyStore(Some(TestModels.testIncomeSourceBusiness))
+        mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
+
         mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
           hasPropertyIncomeSource = false)(eligible = false)
 
@@ -94,13 +91,11 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     "When it is not in edit mode and is eligible" when {
       "the tax year remained the same" should {
         s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
-          setupMockKeystore(
-            fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
-            fetchAll = testCacheMap(
-              accountingPeriodDate = Some(testAccountingPeriodDates)
-            )
-          )
-          setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
+          mockFetchIncomeSourceFromKeyStore(Some(TestModels.testIncomeSourceBusiness))
+          mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
+          mockFetchAccountingPeriodFromKeyStore(testAccountingPeriodDates)
+          setupMockKeystoreSaveFunctions()
+
           mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
             hasPropertyIncomeSource = false)(eligible = true)
 
@@ -113,12 +108,11 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
       }
       "the tax year changed" should {
         s"return a redirect status (SEE_OTHER - 303) and update terms" in {
-          setupMockKeystore(
-            fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
-            fetchAll = testCacheMap(
-              accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
-            )
-          )
+          mockFetchIncomeSourceFromKeyStore(Some(TestModels.testIncomeSourceBusiness))
+          mockFetchAllFromKeyStore(testCacheMap(
+            accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)))
+          setupMockKeystoreSaveFunctions()
+
           mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
             hasPropertyIncomeSource = false)(eligible = true)
 
@@ -132,12 +126,10 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     }
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystore(
-          fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
-          fetchAll = testCacheMap(
-            accountingPeriodDate = Some(testAccountingPeriodDates)
-          )
-        )
+        mockFetchIncomeSourceFromKeyStore(Some(TestModels.testIncomeSourceBusiness))
+        mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
+        setupMockKeystoreSaveFunctions()
+
         mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), hasPropertyIncomeSource = false)(eligible = true)
 
 
@@ -155,7 +147,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
     "return a bad request status (400)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = testIncomeSourceBusiness)
+      mockFetchIncomeSourceFromKeyStore(testIncomeSourceBusiness)
 
       status(badrequest) mustBe BAD_REQUEST
       verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)

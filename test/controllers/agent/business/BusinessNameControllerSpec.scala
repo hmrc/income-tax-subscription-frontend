@@ -59,11 +59,9 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(
-        fetchBusinessName = None,
-        fetchAccountingPeriodDate = Some(testAccountingPeriod),
-        fetchIncomeSource = Some(testIncomeSourceBusiness)
-      )
+      mockFetchBusinessNameFromKeyStore(None)
+      mockFetchAccountingPeriodFromKeyStore(Some(testAccountingPeriod))
+      mockFetchIncomeSourceFromKeyStore(Some(testIncomeSourceBusiness))
 
       status(result) must be(Status.OK)
 
@@ -125,10 +123,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
-      setupMockKeystore(
-        fetchAccountingPeriodDate = Some(testAccountingPeriod),
-        fetchIncomeSource = Some(testIncomeSourceBusiness)
-      )
+      mockFetchAccountingPeriodFromKeyStore(Some(testAccountingPeriod))
+      mockFetchIncomeSourceFromKeyStore(Some(testIncomeSourceBusiness))
 
       status(badRequest) must be(Status.BAD_REQUEST)
 
