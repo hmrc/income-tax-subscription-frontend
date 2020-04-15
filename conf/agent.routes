@@ -45,12 +45,6 @@ POST        /error/no-client-relationship           controllers.agent.NoClientRe
 # add another client
 GET         /add-another                            controllers.agent.AddAnotherClientController.addAnother()
 
-# Exit Survey
-GET         /exit-survey                            controllers.agent.ExitSurveyController.show(origin: String)
-POST        /exit-survey                            controllers.agent.ExitSurveyController.submit
-
-GET         /feedback-submitted                     controllers.agent.ThankYouController.show
-
 # No NINO Routes
 GET         /register-for-SA                        controllers.agent.matching.NoSAController.show
 
