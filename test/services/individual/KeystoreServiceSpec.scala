@@ -44,7 +44,8 @@ class KeystoreServiceSpec extends UnitTestTrait
 
     "configure and verify fetch and save business name as specified" in {
       val testBusinessName = BusinessNameModel("my business name")
-      setupMockKeystore(fetchBusinessName = testBusinessName)
+      setupMockKeystoreSaveFunctions()
+      mockFetchBusinessNameFromKeyStore(testBusinessName)
 
       val businessName = await(
         for {
@@ -63,7 +64,7 @@ class KeystoreServiceSpec extends UnitTestTrait
 
     "configure and verify fetch all as specified" in {
       val testFetchAll = TestModels.emptyCacheMap
-      setupMockKeystore(fetchAll = testFetchAll)
+      mockFetchAllFromKeyStore(testFetchAll)
 
       val fetched = await(TestKeystore.keystoreService.fetchAll())
       fetched shouldBe testFetchAll
@@ -73,7 +74,7 @@ class KeystoreServiceSpec extends UnitTestTrait
 
     "configure and verify remove all as specified" in {
       val testDeleteAll = HttpResponse(Status.OK)
-      setupMockKeystore(deleteAll = testDeleteAll)
+      mockDeleteAllFromKeyStore(testDeleteAll)
 
       val response = await(TestKeystore.keystoreService.deleteAll())
       verifyKeystore(deleteAll = 1)

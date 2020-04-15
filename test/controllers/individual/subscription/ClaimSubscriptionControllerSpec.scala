@@ -40,7 +40,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
 
   "Calling the claim action of the ClaimSubscriptionController with a subscribed Authenticated User" should {
     "return a a redirect to the confirmation page" in {
-      setupMockKeystore(fetchSubscriptionId = testMTDID)
+      mockFetchSubscriptionIdFromKeyStore(testMTDID)
       mockEnrolAndRefreshSuccess(testMTDID, testNino)
 
       lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
@@ -49,7 +49,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
     }
 
     "return an error where enrolment fails" in {
-      setupMockKeystore(fetchSubscriptionId = testMTDID)
+      mockFetchSubscriptionIdFromKeyStore(testMTDID)
       mockEnrolFailure(testMTDID, testNino)
 
       lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
@@ -58,7 +58,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
     }
 
     "return an error where refresh profile fails" in {
-      setupMockKeystore(fetchSubscriptionId = testMTDID)
+      mockFetchSubscriptionIdFromKeyStore(testMTDID)
       mockRefreshFailure(testMTDID, testNino)
 
       lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
@@ -67,7 +67,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
     }
 
     "return an error where keystore does not contain the MtditId" in {
-      setupMockKeystore(fetchSubscriptionId = None)
+      mockFetchSubscriptionIdFromKeyStore(fetchSubscriptionId = None)
 
       lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
 

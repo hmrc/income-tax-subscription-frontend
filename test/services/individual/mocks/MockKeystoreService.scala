@@ -61,47 +61,72 @@ trait MockKeystoreService extends MockTrait {
     when(MockKeystoreService.session.cache(ArgumentMatchers.any(), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
-  protected final def setupMockKeystore(
-                                         fetchIncomeSource: MFO[IncomeSourceType] = DoNotConfigure,
-                                         fetchRentUkProperty: MFO[RentUkPropertyModel] = DoNotConfigure,
-                                         fetchAreYouSelfEmployed: MFO[AreYouSelfEmployedModel] = DoNotConfigure,
-                                         fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
-                                         fetchBusinessPhoneNumber: MFO[BusinessPhoneNumberModel] = DoNotConfigure,
-                                         fetchBusinessAddress: MFO[Address] = DoNotConfigure,
-                                         fetchMatchTaxYear: MFO[MatchTaxYearModel] = DoNotConfigure,
-                                         fetchBusinessStartDate: MFO[BusinessStartDateModel] = DoNotConfigure,
-                                         fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
-                                         fetchPropertyAccountingMethod: MFO[AccountingMethodPropertyModel] = DoNotConfigure,
-                                         fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
-                                         fetchSelectedTaxYear: MFO[AccountingYearModel] = DoNotConfigure,
-                                         fetchSubscriptionId: MFO[String] = DoNotConfigure,
-                                         fetchPaperlessPreferenceToken: MFO[String] = DoNotConfigure,
-                                         fetchAll: MFO[CacheMap] = DoNotConfigure,
-                                         deleteAll: MF[HttpResponse] = DoNotConfigure
-                                       ): Unit = {
+  protected final def mockFetchIncomeSourceFromKeyStore(fetchIncomeSource: MFO[IncomeSourceType]): Unit = {
     mockFetchFromKeyStore[IncomeSourceType](IncomeSource, fetchIncomeSource)
+  }
+
+  protected final def mockFetchRentUkPropertyFromKeyStore(fetchRentUkProperty: MFO[RentUkPropertyModel]): Unit = {
     mockFetchFromKeyStore[RentUkPropertyModel](RentUkProperty, fetchRentUkProperty)
+  }
+
+  protected final def mockFetchAreYouSelfEmployedFromKeyStore(fetchAreYouSelfEmployed: MFO[AreYouSelfEmployedModel]): Unit = {
     mockFetchFromKeyStore[AreYouSelfEmployedModel](AreYouSelfEmployed, fetchAreYouSelfEmployed)
+  }
+
+  protected final def mockFetchBusinessNameFromKeyStore(fetchBusinessName: MFO[BusinessNameModel]): Unit = {
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
+  }
+
+  protected final def mockFetchBusinessPhoneNumberFromKeyStore(fetchBusinessPhoneNumber: MFO[BusinessPhoneNumberModel]): Unit = {
     mockFetchFromKeyStore[BusinessPhoneNumberModel](BusinessPhoneNumber, fetchBusinessPhoneNumber)
+  }
+
+  protected final def mockFetchBusinessAddressFromKeyStore(fetchBusinessAddress: MFO[Address]): Unit = {
     mockFetchFromKeyStore[Address](BusinessAddress, fetchBusinessAddress)
-    mockFetchFromKeyStore[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
-    mockFetchFromKeyStore[AccountingYearModel](SelectedTaxYear, fetchSelectedTaxYear)
+  }
+
+  protected final def mockFetchBusinessStartDateFromKeyStore(fetchBusinessStartDate: MFO[BusinessStartDateModel]): Unit = {
     mockFetchFromKeyStore[BusinessStartDateModel](BusinessStartDate, fetchBusinessStartDate)
+  }
+
+  protected final def mockFetchAccountingPeriodFromKeyStore(fetchAccountingPeriodDate: MFO[AccountingPeriodModel]): Unit = {
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
+  }
+
+  protected final def mockFetchAccountingMethodFromKeyStore(fetchAccountingMethod: MFO[AccountingMethodModel]): Unit = {
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
+  }
+
+  protected final def mockFetchPropertyAccountingFromKeyStore(fetchPropertyAccountingMethod: MFO[AccountingMethodPropertyModel]): Unit = {
     mockFetchFromKeyStore[AccountingMethodPropertyModel](PropertyAccountingMethod, fetchPropertyAccountingMethod)
+  }
+
+  protected final def mockFetchSubscriptionIdFromKeyStore(fetchSubscriptionId: MFO[String]): Unit = {
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
+  }
+
+  protected final def mockFetchMatchTaxYearFromKeyStore(fetchMatchTaxYear: MFO[MatchTaxYearModel]): Unit = {
+    mockFetchFromKeyStore[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
+  }
+
+  protected final def mockFetchSelectedTaxYearFromKeyStore(fetchSelectedTaxYear: MFO[AccountingYearModel]): Unit = {
+    mockFetchFromKeyStore[AccountingYearModel](SelectedTaxYear, fetchSelectedTaxYear)
+  }
+
+  protected final def mockFetchPaperlessPreferenceToken(fetchPaperlessPreferenceToken: MFO[String]): Unit = {
     mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
+  }
 
-    setupMockKeystoreSaveFunctions()
-
+  protected final def mockFetchAllFromKeyStore(fetchAll: MFO[CacheMap]): Unit = {
     fetchAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetch()(
-      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(dataToReturn))
-    deleteAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.remove()(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(dataToReturn))
   }
 
+  protected final def mockDeleteAllFromKeyStore(deleteAll: MF[HttpResponse]): Unit = {
+    deleteAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.remove()(
+      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(dataToReturn))
+  }
+  
   protected final def verifyKeystore(
                                       fetchIncomeSource: Option[Int] = None,
                                       saveIncomeSource: Option[Int] = None,

@@ -435,27 +435,6 @@ object MessageLookup {
     val dob = "Date of birth"
   }
 
-  object ExitSurvey {
-    val title = "Give feedback"
-    val heading = "Give feedback"
-    val line_1 = "Please don’t include any personal or financial information, for example your National Insurance or credit card numbers."
-    val submit = "Send feedback"
-
-    object Q1 {
-      val question = "Overall, how did you feel about the service you received today?"
-      val option_1 = "Very satisfied"
-      val option_2 = "Satisfied"
-      val option_3 = "Neither satisfied or dissatisfied"
-      val option_4 = "Dissatisfied"
-      val option_5 = "Very dissatisfied"
-    }
-
-    object Q2 {
-      val question = "How could we improve this service?"
-    }
-
-  }
-
 
   object ThankYou {
     val title = "Thank you"

@@ -53,9 +53,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        setupMockKeystore(
-          fetchWhatYearToSignUp = Some(AccountingYearModel(Current))
-        )
+        mockFetchWhatYearToSignUpFromKeyStore(Some(AccountingYearModel(Current)))
 
         status(result) must be(Status.OK)
 
@@ -69,9 +67,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        setupMockKeystore(
-          fetchWhatYearToSignUp = None
-        )
+        mockFetchWhatYearToSignUpFromKeyStore(None)
 
         status(result) must be(Status.OK)
 

@@ -57,7 +57,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         rentUkProperty = testRentUkProperty_no_property,
         areYouSelfEmployed = testAreYouSelfEmployed_yes
       )
-      setupMockKeystore(fetchAll = testBusinessCacheMap)
+      mockFetchAllFromKeyStore(testBusinessCacheMap)
 
       status(result) must be(Status.OK)
     }
@@ -67,7 +67,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         rentUkProperty = testRentUkProperty_property_only,
         areYouSelfEmployed = None
       )
-      setupMockKeystore(fetchAll = testPropertyCacheMap)
+      mockFetchAllFromKeyStore(testPropertyCacheMap)
 
       status(result) must be(Status.OK)
     }
@@ -77,13 +77,13 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         rentUkProperty = testRentUkProperty_property_and_other,
         areYouSelfEmployed = testAreYouSelfEmployed_no
       )
-      setupMockKeystore(fetchAll = testPropertyCacheMap)
+      mockFetchAllFromKeyStore(testPropertyCacheMap)
 
       status(result) must be(Status.OK)
     }
 
     "return ok (200) for both journey" in {
-      setupMockKeystore(fetchAll = testCacheMap)
+      mockFetchAllFromKeyStore(testCacheMap)
 
       status(result) must be(Status.OK)
     }
@@ -99,7 +99,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystore(fetchAll = testCacheMap)
+        setupMockKeystoreSaveFunctions()
+        mockFetchAllFromKeyStore(testCacheMap)
         mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
         status(result) must be(Status.SEE_OTHER)
         await(result)
@@ -115,7 +116,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a internalServer error" in {
-        setupMockKeystore(fetchAll = testCacheMap)
+        mockFetchAllFromKeyStore(testCacheMap)
         mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary())
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
@@ -124,7 +125,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "When match tax year is no and the accounting date is not specified" should {
       "redirect back to Accounting period dates" in {
-        setupMockKeystore(fetchAll = testCacheMapCustom(
+        mockFetchAllFromKeyStore(testCacheMapCustom(
           matchTaxYear = testMatchTaxYearNo,
           accountingPeriodDate = None
         ))
@@ -139,7 +140,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
 
     "When required answers by the user are not retrieved" in {
-      setupMockKeystore(fetchAll = testCacheMap())
+      mockFetchAllFromKeyStore(testCacheMap())
       //      mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
 
       val result = call

@@ -175,8 +175,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def notAuthorised(): WSResponse = get("/not-authorised")
 
-    def exitSurveyThankYou(): WSResponse = get("/feedback-submitted")
-
     def signIn(): WSResponse = get("/sign-in")
 
     def signOut(origin: String): WSResponse = get(s"/logout?origin=$origin")
@@ -193,8 +191,6 @@ trait ComponentSpecBase extends UnitSpec
       uri = "/paperless-error",
       additionalCookies = sessionKeys
     )(Map.empty)
-
-    def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
 
     def matchTaxYear(): WSResponse = get("/business/match-to-tax-year")
 
@@ -225,8 +221,6 @@ trait ComponentSpecBase extends UnitSpec
     def maintenance(): WSResponse = get("/error/maintenance")
 
     def noSA(): WSResponse = get("/register-for-SA")
-
-    def exitSurvey(origin: String): WSResponse = get(s"/exit-survey?origin=$origin")
 
     def submitMatchTaxYear(inEditMode: Boolean, request: Option[MatchTaxYearModel]): WSResponse = {
       val uri = s"/business/match-to-tax-year?editMode=$inEditMode"

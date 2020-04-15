@@ -36,10 +36,6 @@ class SignOutController @Inject()(appConfig: AppConfig,
 
   def signOut(origin: String): Action[AnyContent] = Action.async { implicit request =>
     authService.authorised().retrieve(affinityGroup) {
-      case Some(Agent) =>
-        Future.successful(Redirect(appConfig.ggSignOutUrl(
-          appConfig.baseUrl + controllers.routes.FeedbackController.submit().url//TODO Remove when removing ExitSurveyController
-        )))
       case Some(_) =>
         Future.successful(Redirect(appConfig.ggSignOutUrl(
           appConfig.baseUrl + controllers.routes.FeedbackController.submit().url
