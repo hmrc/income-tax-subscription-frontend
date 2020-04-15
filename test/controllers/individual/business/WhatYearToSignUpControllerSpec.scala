@@ -53,9 +53,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        setupMockKeystore(
-          fetchSelectedTaxYear = Some(AccountingYearModel(Current))
-        )
+        mockFetchSelectedTaxYearFromKeyStore(Some(AccountingYearModel(Current)))
 
         status(result) must be(Status.OK)
 
@@ -69,9 +67,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        setupMockKeystore(
-          fetchSelectedTaxYear = None
-        )
+        mockFetchSelectedTaxYearFromKeyStore(None)
 
         status(result) must be(Status.OK)
 

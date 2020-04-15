@@ -85,7 +85,7 @@ trait TestUserLockoutService extends MockUserLockoutConnector
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    setupMockKeystore(deleteAll = HttpResponse(Status.OK))
+    mockDeleteAllFromKeyStore(HttpResponse(Status.OK))
   }
 
   object TestUserLockoutService extends UserLockoutService(

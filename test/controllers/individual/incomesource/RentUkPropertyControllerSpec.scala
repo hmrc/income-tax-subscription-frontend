@@ -62,7 +62,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
     "the new income source flow feature is enabled" should {
       "return ok (200)" in {
-        setupMockKeystore(fetchRentUkProperty = None)
+        mockFetchRentUkPropertyFromKeyStore(None)
 
         val result = call
         status(result) must be(Status.OK)
@@ -128,7 +128,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
       "When it is in edit mode and user's selection has not changed" should {
         s"return an SEE OTHER (303) for 'No' to rent a uk property and goto " +
           s"${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-          setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
+          mockFetchRentUkPropertyFromKeyStore(RentUkPropertyModel(No, None))
 
           val goodRequest = callSubmit((No, None), isEditMode = true)
 
@@ -142,7 +142,8 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
       "When it is in edit mode and user's selection has changed" should {
         s"return an SEE OTHER (303) and goto ${controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url}" in {
-          setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
+          setupMockKeystoreSaveFunctions()
+          mockFetchRentUkPropertyFromKeyStore(RentUkPropertyModel(No, None))
 
           val goodRequest = callSubmit((Yes, No), isEditMode = true)
 

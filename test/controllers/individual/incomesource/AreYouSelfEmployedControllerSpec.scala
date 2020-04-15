@@ -49,7 +49,7 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
 
     "There are no rentUkProperty data" should {
       "return ok (200)" in {
-        setupMockKeystore(fetchAll = None)
+        mockFetchAllFromKeyStore(None)
 
         val result = call
         status(result) must be(Status.SEE_OTHER)
@@ -61,10 +61,9 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
 
       "There are no rentUkProperty in keystore and but it doesn't needs are you self-employed to be answered" should {
         "return ok (200)" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_property_only,
-              areYouSelfEmployed = None)
+          mockFetchAllFromKeyStore(testCacheMapCustom(
+            rentUkProperty = testRentUkProperty_property_only,
+            areYouSelfEmployed = None)
           )
 
           val result = call
@@ -77,7 +76,7 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
       }
       "There is rentUkProperty in keystore and it needs are you self-employed answered" should {
         "return ok (200)" in {
-          setupMockKeystore(fetchAll =
+          mockFetchAllFromKeyStore(
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
               areYouSelfEmployed = testAreYouSelfEmployed_yes)
@@ -109,7 +108,8 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
     "not in edit mode" when {
       "the user rents out a uk property and is self employed" should {
         s"redirect to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
-          setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
 
           val result = submit(testAreYouSelfEmployed_yes, isEditMode = false)
 
@@ -121,7 +121,8 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
       "the user rents out a uk property and is not self employed" when {
 
         s"redirect to ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}" in {
-          setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
 
           val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
 
@@ -132,7 +133,8 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
 
       "the user does not rent out a uk property and is self employed" should {
         s"redirect to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
-          setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property)))
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property)))
 
           val result = submit(testAreYouSelfEmployed_yes, isEditMode = false)
 
@@ -143,7 +145,8 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
 
       "the user does not rent out a uk property and is not self employed" should {
         s"redirect to ${controllers.individual.incomesource.routes.CannotSignUpController.show().url}" in {
-          setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property)))
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property)))
 
           val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
 
@@ -156,7 +159,8 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
     "in edit mode" when {
       "the user keeps their answer the same" should {
         s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-          setupMockKeystore(fetchAll = testCacheMap(
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(
             rentUkProperty = Some(testRentUkProperty_no_property),
             areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
           ))
@@ -169,7 +173,8 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
       }
       "the user changes their answer" should {
         "redirect to the relevant location" in {
-          setupMockKeystore(fetchAll = testCacheMap(
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(
             rentUkProperty = Some(testRentUkProperty_no_property),
             areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
           ))

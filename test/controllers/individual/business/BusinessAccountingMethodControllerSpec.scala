@@ -91,10 +91,8 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(
-        fetchAccountingMethod = None,
-        fetchAll = matchTaxYearCacheMap() // for the back url
-      )
+      mockFetchAccountingMethodFromKeyStore(None)
+      mockFetchAllFromKeyStore(matchTaxYearCacheMap())
 
       status(result) must be(Status.OK)
 
@@ -111,7 +109,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     "When it is not in edit mode" should {
       s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
-        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
+        mockFetchRentUkPropertyFromKeyStore(RentUkPropertyModel(No, None))
 
         val goodRequest = callSubmit(isEditMode = true)
 
@@ -127,7 +125,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystoreSaveFunctions()
-        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
+        mockFetchRentUkPropertyFromKeyStore(RentUkPropertyModel(No, None))
 
         val goodRequest = callSubmit(isEditMode = true)
 
@@ -139,7 +137,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
       s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
-        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
+        mockFetchRentUkPropertyFromKeyStore(RentUkPropertyModel(No, None))
 
         val goodRequest = callSubmit(isEditMode = true)
 
@@ -156,7 +154,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "return a bad request status (400)" in {
       // for the back url
-      setupMockKeystore(fetchAll = matchTaxYearCacheMap())
+      mockFetchAllFromKeyStore(matchTaxYearCacheMap())
 
       status(badRequest) must be(Status.BAD_REQUEST)
 
@@ -173,14 +171,14 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         MockKeystoreService
       )
       s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-        setupMockKeystore(fetchAll = matchTaxYearCacheMap())
+        mockFetchAllFromKeyStore(matchTaxYearCacheMap())
         await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe
           controllers.individual.business.routes.WhatYearToSignUpController.show().url
       }
 
       "income source type is not business and match tax year is answered with no" should {
         s"point to ${controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-          setupMockKeystore(fetchAll = matchTaxYearNoIncomeSourceBoth())
+          mockFetchAllFromKeyStore(matchTaxYearNoIncomeSourceBoth())
           await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
         }
@@ -188,7 +186,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
       "income source type is not business and match tax year is answered with yes" should {
         s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-          setupMockKeystore(fetchAll = matchTaxYearYesIncomeSourceBoth())
+          mockFetchAllFromKeyStore(matchTaxYearYesIncomeSourceBoth())
           await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.MatchTaxYearController.show().url
         }

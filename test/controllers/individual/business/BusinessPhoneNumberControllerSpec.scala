@@ -87,7 +87,7 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
       lazy val result = TestBusinessPhoneNumberController.show(isEditMode = false)(request)
 
       "return ok (200)" in {
-        setupMockKeystore(fetchBusinessPhoneNumber = None)
+        mockFetchBusinessPhoneNumberFromKeyStore(None)
 
         status(result) must be(Status.OK)
 
