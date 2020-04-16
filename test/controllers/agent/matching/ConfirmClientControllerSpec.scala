@@ -16,7 +16,6 @@
 
 package controllers.agent.matching
 
-import utilities.agent.TestModels
 import auth.agent.AgentUserMatched
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.{AgentControllerBaseSpec, ITSASessionKeys}
@@ -25,8 +24,8 @@ import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.{await, _}
-import services.agent.mocks.{MockAgentQualificationService, MockKeystoreService}
 import services.agent._
+import services.agent.mocks.{MockAgentQualificationService, MockKeystoreService}
 import services.mocks.{MockGetEligibilityStatusService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.agent.{TestConstants, TestModels}
@@ -313,7 +312,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       def fixture(): Unit = {
         setupMockNotLockedOut(arn)
         setupIncrementLockedOut(arn, prevFailedAttempts)
-        setupMockKeystore(deleteAll = HttpResponse(OK))
+        mockDeleteAllFromKeyStore(HttpResponse(OK))
         mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
       }
 

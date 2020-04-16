@@ -46,9 +46,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(
-        fetchBusinessName = None
-      )
+      mockFetchBusinessNameFromKeyStore(None)
 
       status(result) must be(Status.OK)
 

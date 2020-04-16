@@ -94,7 +94,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
       for (editMode <- Seq(true, false)) {
         s"Edit mode is $editMode" when {
           "There is no address saved in keystore redirect to init" in {
-            setupMockKeystore(fetchBusinessAddress = None)
+            mockFetchBusinessAddressFromKeyStore(None)
 
             val result = call(editMode)
 
@@ -106,7 +106,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
           }
 
           "There is an address in keystore" in {
-            setupMockKeystore(fetchBusinessAddress = testAddress)
+            mockFetchBusinessAddressFromKeyStore(testAddress)
 
             val result = call(editMode)
 
