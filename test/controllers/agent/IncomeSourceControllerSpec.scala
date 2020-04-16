@@ -47,7 +47,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
     lazy val result = TestIncomeSourceController.show(isEditMode = true)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(fetchIncomeSource = None)
+      mockFetchIncomeSourceFromKeyStore(None)
 
       status(result) must be(Status.OK)
 
@@ -89,7 +89,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         "in edit mode" when {
           "income source has changed" in {
             setupMockKeystoreSaveFunctions()
-            setupMockKeystore(fetchIncomeSource = Business)
+            mockFetchIncomeSourceFromKeyStore(Business)
 
             val result = await(callSubmit(Both, isEditMode = true))
 
@@ -116,7 +116,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           "income source has changed to property" in {
 
             setupMockKeystoreSaveFunctions()
-            setupMockKeystore(fetchIncomeSource = Business)
+            mockFetchIncomeSourceFromKeyStore(Business)
 
             val result = await(callSubmit(Property, isEditMode = true))
 
@@ -160,7 +160,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
       "it is in edit mode and user's selection has not changed" should {
         s"return an SEE OTHER (303) for business and goto ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-          setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBusiness)
 
           val goodRequest = callSubmit(Business, isEditMode = true)
 
@@ -172,7 +172,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
 
         s"return a SEE OTHER (303) for property and goto ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
-          setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceProperty)
 
           val goodRequest = callSubmit(Property, isEditMode = true)
 
@@ -184,7 +184,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
 
         s"return a SEE OTHER (303) for both and goto ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-          setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBoth)
 
           val goodRequest = callSubmit(Both, isEditMode = true)
 
@@ -198,7 +198,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
       "it is in edit mode and user's selection has changed" should {
         s"return an SEE OTHER (303) for business and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-          setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBoth)
+          setupMockKeystoreSaveFunctions()
 
           val goodRequest = callSubmit(Business, isEditMode = true)
 
@@ -210,7 +211,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
 
         s"return a SEE OTHER (303) for property and goto ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" in {
-          setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBoth)
+          setupMockKeystoreSaveFunctions()
 
           val goodRequest = callSubmit(Property, isEditMode = true)
 
@@ -222,7 +224,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
 
         s"return a SEE OTHER (303) for both and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-          setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBusiness)
+          setupMockKeystoreSaveFunctions()
 
           val goodRequest = callSubmit(Both, isEditMode = true)
 

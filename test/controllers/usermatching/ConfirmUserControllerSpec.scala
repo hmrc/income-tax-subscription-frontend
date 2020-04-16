@@ -190,7 +190,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           mockUserMatchNotFound(userDetails)
           setupMockNotLockedOut(testUserId.value)
           setupIncrementLockedOut(testUserId.value, currentFailedMatches)
-          setupMockKeystore(deleteAll = HttpResponse(Status.OK))
+          mockDeleteAllFromKeyStore(HttpResponse(Status.OK))
 
           val r = requestWithLockout.buildRequest(userDetails)
 

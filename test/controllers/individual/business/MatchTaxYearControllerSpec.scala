@@ -57,9 +57,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
   "Calling the show action of the MatchTaxYearController with an authorised user" should {
 
     def result: Future[Result] = {
-      setupMockKeystore(
-        fetchMatchTaxYear = None
-      )
+      mockFetchMatchTaxYearFromKeyStore(None)
+
       TestMatchTaxYearController.show(isEditMode = false)(subscriptionRequest)
     }
 
@@ -107,8 +106,9 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
       "Option 'Yes' is selected" when {
         "the the user is business only" in {
-          setupMockKeystore(
-            fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(
+            testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
           )
 
           val goodRequest = callSubmit(Yes)
@@ -117,8 +117,9 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
         }
         "the user has business and property income" in {
-          setupMockKeystore(
-            fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(
+            testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
           )
 
           val goodRequest = callSubmit(Yes)
@@ -129,7 +130,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
       }
 
       "Option 'No' is selected and there were no previous entries" in {
-        setupMockKeystore(fetchAll = None)
+        setupMockKeystoreSaveFunctions()
+        mockFetchAllFromKeyStore(None)
 
         val goodRequest = callSubmit(No)
         status(goodRequest) mustBe Status.SEE_OTHER
@@ -144,7 +146,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
       "Option 'Yes' is selected and the answer has not changed" should {
         "Redirect to Check Your Answers page" in {
-          setupMockKeystore(fetchAll = testCacheMap(matchTaxYear = Some(testMatchTaxYearYes)))
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(matchTaxYear = Some(testMatchTaxYearYes)))
 
           val goodRequest = callSubmit(Yes)
           status(goodRequest) mustBe Status.SEE_OTHER
@@ -155,7 +158,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
       "Option 'Yes' is selected and the answer has changed" should {
         "Redirect to Check Your Answers Page page" in {
-          setupMockKeystore(fetchAll = testCacheMap(matchTaxYear = Some(testMatchTaxYearNo)))
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(matchTaxYear = Some(testMatchTaxYearNo)))
 
           val goodRequest = callSubmit(Yes)
           status(goodRequest) mustBe Status.SEE_OTHER
@@ -166,7 +170,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
 
       "Option 'No' is selected " in {
-        setupMockKeystore(fetchAll = testCacheMap(matchTaxYear = Some(testMatchTaxYearYes)))
+        setupMockKeystoreSaveFunctions()
+        mockFetchAllFromKeyStore(testCacheMap(matchTaxYear = Some(testMatchTaxYearYes)))
 
         val goodRequest = callSubmit(No)
         status(goodRequest) mustBe Status.SEE_OTHER
@@ -177,7 +182,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
       }
 
       "if the answer is not changed then do not update terms" in {
-        setupMockKeystore(fetchAll = testCacheMap(matchTaxYear = Some(testMatchTaxYearNo)))
+        setupMockKeystoreSaveFunctions()
+        mockFetchAllFromKeyStore(testCacheMap(matchTaxYear = Some(testMatchTaxYearNo)))
 
         val goodRequest = callSubmit(No)
         status(goodRequest) mustBe Status.SEE_OTHER

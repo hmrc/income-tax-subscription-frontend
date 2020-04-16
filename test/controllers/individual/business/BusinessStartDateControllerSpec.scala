@@ -87,9 +87,7 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
       lazy val result = TestBusinessStartDateController.show(isEditMode = false)(request)
 
       "return ok (200)" in {
-        setupMockKeystore(
-          fetchBusinessStartDate = None
-        )
+        mockFetchBusinessStartDateFromKeyStore(None)
 
         status(result) must be(Status.OK)
 
@@ -170,16 +168,12 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
     "The back url" should {
 
       def result(choice: String): Future[Result] = {
-        setupMockKeystore(
-          fetchBusinessStartDate = None
-        )
+        mockFetchBusinessStartDateFromKeyStore(None)
         TestBusinessStartDateController.show(isEditMode = false)(request)
       }
 
       def resultEdit(choice: String): Future[Result] = {
-        setupMockKeystore(
-          fetchBusinessStartDate = None
-        )
+        mockFetchBusinessStartDateFromKeyStore(None)
         TestBusinessStartDateController.show(isEditMode = true)(request)
       }
 

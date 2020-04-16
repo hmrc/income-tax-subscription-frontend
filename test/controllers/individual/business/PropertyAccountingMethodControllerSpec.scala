@@ -61,10 +61,8 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     "display the property accounting method view and return OK (200)" in {
       lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
-      setupMockKeystore(
-        fetchPropertyAccountingMethod = None,
-        fetchAll = propertyOnlySelfEmNoIncomeSourceType // for the back url
-      )
+      mockFetchPropertyAccountingFromKeyStore(None)
+      mockFetchAllFromKeyStore(propertyOnlySelfEmNoIncomeSourceType) // for the back url
 
       status(result) must be(Status.OK)
       verifyKeystore(fetchPropertyAccountingMethod = 1, savePropertyAccountingMethod = 0, fetchAll = 1)
@@ -133,7 +131,8 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
-        setupMockKeystore(fetchAll = propertyOnlySelfEmNoIncomeSourceType)
+
+        mockFetchAllFromKeyStore(propertyOnlySelfEmNoIncomeSourceType)
 
         val badRequest = callShowWithErrorForm(isEditMode = false)
 
@@ -147,7 +146,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     "The back url is not in edit mode" when {
       "the user has rental property and it is the only income source" should {
         "redirect to rent Uk property page" in {
-          setupMockKeystore(fetchAll = propertyOnlyIncomeSourceType)
+          mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.incomesource.routes.RentUkPropertyController.show().url
         }
@@ -155,7 +154,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
       "the user has rental property and it is not the only income source and the user has a business" should {
         "redirect to business accounting method page" in {
-          setupMockKeystore(fetchAll = bothIncomeSourceType)
+          mockFetchAllFromKeyStore(bothIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.BusinessAccountingMethodController.show().url
         }
@@ -163,7 +162,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
       "the user has rental property and it is not the only income source and the user does not have a business" should {
         "redirect to are you self employed page" in {
-          setupMockKeystore(fetchAll = propertyOnlySelfEmNoIncomeSourceType)
+          mockFetchAllFromKeyStore(fetchAll = propertyOnlySelfEmNoIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
         }

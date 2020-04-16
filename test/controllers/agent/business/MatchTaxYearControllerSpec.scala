@@ -44,7 +44,9 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
       MockKeystoreService
     )
 
-    setupMockKeystore(fetchMatchTaxYear = fetchMatchTaxYear, fetchIncomeSource = fetchIncomeSource)
+    mockFetchMatchTaxYearFromKeyStore(fetchMatchTaxYear)
+    mockFetchIncomeSourceFromKeyStore(fetchIncomeSource)
+    setupMockKeystoreSaveFunctions()
   }
 
   "backUrl" when {

@@ -61,7 +61,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "the user is in confirmation journey state" should {
       "get the ID from keystore if the user is enrolled" in {
         mockAuthEnrolled()
-        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+        mockFetchAllFromKeyStore(TestModels.testCacheMap)
         val result: Future[Result] = TestConfirmationController.show(
           subscriptionRequest.addStartTime(startTime)
         )
@@ -74,7 +74,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
       "fail if no income source is stored" in {
         mockAuthEnrolled()
-        setupMockKeystore(fetchAll = TestModels.emptyCacheMap)
+        mockFetchAllFromKeyStore(TestModels.emptyCacheMap)
         val result: Future[Result] = TestConfirmationController.show(
           subscriptionRequest.addStartTime(startTime)
         )
@@ -83,7 +83,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       }
 
       "return not found if the user is not enrolled" in {
-        setupMockKeystore(fetchSubscriptionId = "testId")
+        mockFetchSubscriptionIdFromKeyStore("testId")
         val result = TestConfirmationController.show(subscriptionRequest)
 
         intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
@@ -93,7 +93,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "the user is in confirmation journey state and welsh content applies" should {
       "return OK" in {
         mockAuthEnrolled()
-        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+        mockFetchAllFromKeyStore(TestModels.testCacheMap)
 
         val result = TestConfirmationController.show(
           subscriptionRequest

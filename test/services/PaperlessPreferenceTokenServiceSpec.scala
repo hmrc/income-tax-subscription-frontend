@@ -24,7 +24,8 @@ import utilities.UnitTestTrait
 class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperlessPreferenceTokenService {
   "storeNino" should {
     "store the NINO against a generated token when there is not already a token in keystore" in {
-      setupMockKeystore(fetchPaperlessPreferenceToken = None)
+      setupMockKeystoreSaveFunctions()
+      mockFetchPaperlessPreferenceToken(None)
       mockStoreNinoSuccess(testNino)
       val res = TestPaperlessPreferenceTokenService.storeNino(testNino)
 
@@ -33,7 +34,7 @@ class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperle
     }
 
     "do not store the token when it is already present in keystore" in {
-      setupMockKeystore(fetchPaperlessPreferenceToken = testToken)
+      mockFetchPaperlessPreferenceToken(testToken)
 
       val res = TestPaperlessPreferenceTokenService.storeNino(testNino)
 

@@ -48,7 +48,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
 
     "redirect to the agent eligibility frontend terms page, clearing keystore and session values" in {
-      setupMockKeystore(deleteAll = HttpResponse(OK))
+      mockDeleteAllFromKeyStore(HttpResponse(OK))
 
       val result: Result = await(call)
 

@@ -64,7 +64,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
       lazy val result = testBusinessAccountingPeriodDateController.show(isEditMode = false, editMatch = false)(request)
 
       "return OK (200)" in {
-        setupMockKeystore(fetchAccountingPeriodDate = None)
+        mockFetchAccountingPeriodFromKeyStore(None)
         status(result) must be(OK)
       }
 
@@ -92,10 +92,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
               DateModel.dateConvert(start),
               DateModel.dateConvert(end)
             )
-
-            setupMockKeystore(
-              fetchRentUkProperty = TestModels.testRentUkProperty_no_property
-            )
+            setupMockKeystoreSaveFunctions()
+            mockFetchRentUkPropertyFromKeyStore(TestModels.testRentUkProperty_no_property)
 
             mockCheckEligibleAccountingPeriod(start, end, hasPropertyIncomeSource = false)(eligible = true)
 
@@ -119,9 +117,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
               DateModel.dateConvert(end)
             )
 
-            setupMockKeystore(
-              fetchRentUkProperty = TestModels.testRentUkProperty_no_property
-            )
+            mockFetchRentUkPropertyFromKeyStore(TestModels.testRentUkProperty_no_property)
 
             mockCheckEligibleAccountingPeriod(start, end, hasPropertyIncomeSource = false)(eligible = false)
 
@@ -148,11 +144,10 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
           mockCheckEligibleAccountingPeriod(start, end, hasPropertyIncomeSource = false)(eligible = true)
 
-          setupMockKeystore(
-            fetchRentUkProperty = TestModels.testRentUkProperty_no_property,
-            fetchAll = testCacheMapCustom(
-              accountingPeriodDate = testAccountingPeriodDates)
-          )
+          setupMockKeystoreSaveFunctions()
+          mockFetchRentUkPropertyFromKeyStore(TestModels.testRentUkProperty_no_property)
+          mockFetchAllFromKeyStore(testCacheMapCustom(
+            accountingPeriodDate = testAccountingPeriodDates))
 
           val goodRequest = callSubmit(isEditMode = true, testAccountingPeriodDates)
 
@@ -170,10 +165,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
       "return a bad request status (400)" in {
         // required for backurl
-        setupMockKeystore(
-          fetchAll = testCacheMapCustom(
-            incomeSource = TestModels.testIncomeSourceBusiness)
-        )
+        mockFetchAllFromKeyStore(testCacheMapCustom(
+          incomeSource = TestModels.testIncomeSourceBusiness))
 
         status(badrequest) must be(BAD_REQUEST)
 
@@ -215,7 +208,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
       lazy val result = testBusinessAccountingPeriodDateController.show(isEditMode = false, editMatch = false)(request)
 
       "return ok (200)" in {
-        setupMockKeystore(fetchAccountingPeriodDate = None)
+        mockFetchAccountingPeriodFromKeyStore(None)
 
         status(result) must be(Status.OK)
 

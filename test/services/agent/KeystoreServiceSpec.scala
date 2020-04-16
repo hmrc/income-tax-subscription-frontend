@@ -19,6 +19,7 @@ package services.agent
 import config.SessionCache
 import models.agent.BusinessNameModel
 import org.scalatest.Matchers._
+import play.api.test.Helpers.OK
 import services.agent.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
@@ -43,7 +44,7 @@ class KeystoreServiceSpec extends UnitTestTrait
 
     "configure and verify fetch and save business name as specified" in {
       val testBusinessName = BusinessNameModel("my business name")
-      setupMockKeystore(fetchBusinessName = testBusinessName)
+      mockFetchBusinessNameFromKeyStore(testBusinessName)
       for {
         businessName <- TestKeystore.keystoreService.fetchBusinessName()
         _ <- TestKeystore.keystoreService.saveBusinessName(testBusinessName)
@@ -59,7 +60,7 @@ class KeystoreServiceSpec extends UnitTestTrait
 
     "configure and verify fetch all as specified" in {
       val testFetchAll = TestModels.emptyCacheMap
-      setupMockKeystore(fetchAll = testFetchAll)
+      mockFetchAllFromKeyStore(testFetchAll)
       for {
         fetched <- TestKeystore.keystoreService.fetchAll()
       } yield {
@@ -70,8 +71,8 @@ class KeystoreServiceSpec extends UnitTestTrait
     }
 
     "configure and verify remove all as specified" in {
-      val testDeleteAll = HttpResponse(200)
-      setupMockKeystore(deleteAll = testDeleteAll)
+      val testDeleteAll = HttpResponse(OK)
+      mockDeleteAllFromKeyStore(testDeleteAll)
       for {
         response <- TestKeystore.keystoreService.deleteAll()
       } yield {

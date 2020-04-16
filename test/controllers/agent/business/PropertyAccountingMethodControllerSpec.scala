@@ -57,10 +57,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "display the property accounting method view and return OK (200)" in {
         lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
-        setupMockKeystore(
-          fetchPropertyAccountingMethod = None,
-          fetchAll = propertyOnlyIncomeSourceType // for the back url
-        )
+        mockFetchPropertyAccountingFromKeyStore(None)
+        mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
         verifyKeystore(fetchPropertyAccountingMethod = 1, savePropertyAccountingMethod = 0, fetchAll = 1)
@@ -72,10 +70,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "display the property accounting method view with the previous selected answer CASH and return OK (200)" in {
         lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
-        setupMockKeystore(
-          fetchPropertyAccountingMethod = AccountingMethodPropertyModel(Cash),
-          fetchAll = propertyOnlyIncomeSourceType // for the back url
-        )
+        mockFetchPropertyAccountingFromKeyStore(AccountingMethodPropertyModel(Cash))
+        mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
         verifyKeystore(fetchPropertyAccountingMethod = 1, savePropertyAccountingMethod = 0, fetchAll = 1)
@@ -145,7 +141,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
-        setupMockKeystore(fetchAll = propertyOnlyIncomeSourceType)
+        mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
 
         val badRequest = callShowWithErrorForm(isEditMode = false)
 
@@ -160,14 +156,14 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
       "the user has rental property" should {
         s"return ${controllers.agent.routes.IncomeSourceController.show().url}" in {
-          setupMockKeystore(fetchAll = propertyOnlyIncomeSourceType)
+          mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe controllers.agent.routes.IncomeSourceController.show().url
         }
       }
 
       "the user has both rental property and business" should {
         "redirect to Business Accounting Method page" in {
-          setupMockKeystore(fetchAll = bothPropertyAndBusinessIncomeSource)
+          mockFetchAllFromKeyStore(bothPropertyAndBusinessIncomeSource)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.agent.business.routes.BusinessAccountingMethodController.show().url
         }
@@ -176,7 +172,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     "The back url is in edit mode" when {
       "the user click back url" should {
         "redirect to Check Your Answer page" in {
-          setupMockKeystore(fetchAll = propertyOnlyIncomeSourceType)
+          mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = true)) mustBe
             controllers.agent.routes.CheckYourAnswersController.show().url
         }
