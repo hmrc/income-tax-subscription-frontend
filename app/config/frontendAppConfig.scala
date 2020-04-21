@@ -253,10 +253,9 @@ class FrontendAppConfig @Inject()(configuration: Configuration, environment: Env
     s"$taxEnrolments/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
 
   override lazy val betaFeedbackUrl: String =
-    s"$contactFrontendService/contact/beta-feedback?service=$contactFormServiceIdentifier"
+    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
 
   override lazy val betaFeedbackUnauthenticatedUrl: String =
-    s"$contactFrontendService/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
-
+    s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 }
 
