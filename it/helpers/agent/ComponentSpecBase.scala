@@ -12,7 +12,6 @@ import controllers.agent.ITSASessionKeys
 import forms.agent._
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.agent.IntegrationTestConstants._
-import helpers.agent.SessionCookieBaker._
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
@@ -26,11 +25,13 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api._
 import play.api.data.Form
 import play.api.http.HeaderNames
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.crypto.DefaultCookieSigner
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.Headers
+import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.test.UnitSpec
@@ -39,9 +40,13 @@ trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
   with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
-  with I18nSupport with CustomMatchers with WireMockMethods {
+  with CustomMatchers with WireMockMethods with SessionCookieBaker {
 
   lazy val ws = app.injector.instanceOf[WSClient]
+
+  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+
+  override lazy val cookieSigner: DefaultCookieSigner = app.injector.instanceOf[DefaultCookieSigner]
 
   lazy val wmConfig: WireMockConfiguration = wireMockConfig().port(wiremockPort)
   lazy val wireMockServer = new WireMockServer(wmConfig)
@@ -61,10 +66,10 @@ trait ComponentSpecBase extends UnitSpec
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
     .build
-  override lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val mockHost: String = WiremockHelper.wiremockHost
-  val mockPort: String = WiremockHelper.wiremockPort.toString
-  val mockUrl = s"http://$mockHost:$mockPort"
+
+  lazy val mockHost: String = WiremockHelper.wiremockHost
+  lazy val mockPort: String = WiremockHelper.wiremockPort.toString
+  lazy val mockUrl = s"http://$mockHost:$mockPort"
 
   def config: Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
@@ -126,13 +131,13 @@ trait ComponentSpecBase extends UnitSpec
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse =
       await(
         buildClient(uri)
-          .withHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies))
+          .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies))
           .get()
       )
 
     def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
     )
 

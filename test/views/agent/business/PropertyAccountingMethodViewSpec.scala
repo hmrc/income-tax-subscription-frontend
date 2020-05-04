@@ -33,7 +33,7 @@ class PropertyAccountingMethodViewSpec extends ViewSpecTrait {
     postAction = action,
     isEditMode,
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def documentCore(isEditMode: Boolean): TestView = TestView(
     name = "Property Accounting Method View",

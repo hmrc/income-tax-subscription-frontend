@@ -46,12 +46,11 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
   def createTestBusinessAddressController(setEnableRegistration: Boolean): BusinessAddressController = new BusinessAddressController(
     mockAuthService,
-    messagesApi,
     mockAddressLookupService,
     MockKeystoreService
   )(implicitly, new MockConfig {
     override val enableRegistration: Boolean = setEnableRegistration
-  })
+  },mockMessagesControllerComponents)
 
   lazy val TestBusinessAddressController: BusinessAddressController =
     createTestBusinessAddressController(setEnableRegistration = true)

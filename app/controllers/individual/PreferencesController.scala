@@ -18,12 +18,10 @@ package controllers.individual
 
 import auth.individual.AuthPredicate.AuthPredicate
 import auth.individual.{IncomeTaxSAUser, StatelessController}
-import auth.individual.StatelessController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.{Activated, Unset}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuthService, PaperlessPreferenceTokenService, PreferencesService}
 import uk.gov.hmrc.http.InternalServerException
@@ -32,11 +30,9 @@ import utilities.ITSASessionKeys
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class PreferencesController @Inject()(val authService: AuthService,
-                                      val messagesApi: MessagesApi,
-                                      preferencesService: PreferencesService,
+class PreferencesController @Inject()(val authService: AuthService, preferencesService: PreferencesService,
                                       paperlessPreferenceTokenService: PaperlessPreferenceTokenService)
-                                     (implicit val ec: ExecutionContext, appConfig: AppConfig) extends StatelessController {
+                                     (implicit val ec: ExecutionContext, appConfig: AppConfig, mcc: MessagesControllerComponents) extends StatelessController {
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxSAUser] = preferencesPredicate
 

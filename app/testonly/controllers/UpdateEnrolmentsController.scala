@@ -18,8 +18,8 @@ package testonly.controllers
 
 import config.AppConfig
 import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.{I18nSupport}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
 import testonly.connectors.EnrolmentStoreStubConnector
 import testonly.form.UpdateEnrolmentsForm
@@ -32,10 +32,10 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class UpdateEnrolmentsController @Inject()(val messagesApi: MessagesApi,
+class UpdateEnrolmentsController @Inject()(mcc: MessagesControllerComponents,
                                            authService: AuthService,
                                            enrolmentStoreStubConnector: EnrolmentStoreStubConnector)
-                                          (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                          (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc){
 
   import authService._
 

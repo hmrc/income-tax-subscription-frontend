@@ -18,15 +18,15 @@ package controllers
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport}
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
 
 @Singleton
-class SessionTimeoutController @Inject()(val messagesApi: MessagesApi)
-                                        (implicit appConfig: AppConfig) extends FrontendController with I18nSupport {
+class SessionTimeoutController @Inject()(mcc: MessagesControllerComponents)
+                                        (implicit appConfig: AppConfig) extends FrontendController(mcc){
 
   val show: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.individual.timeout()))

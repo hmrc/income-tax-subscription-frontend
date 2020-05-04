@@ -25,7 +25,6 @@ import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
 import Constants.{agentServiceEnrolmentName, agentServiceIdentifierKey, mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import utilities.individual
-import utilities.individual.TestConstants
 
 object TestConstants {
   /*

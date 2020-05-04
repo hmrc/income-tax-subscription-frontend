@@ -21,7 +21,7 @@ import forms.agent.AccountingYearForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import play.api.i18n.Messages.Implicits.applicationMessages
+
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -40,7 +40,7 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
       backUrl = backUrl,
       endYearOfCurrentTaxPeriod = taxYearEnd,
       isEditMode = isEditMode
-    )(FakeRequest(), applicationMessages, appConfig)
+    )(FakeRequest(), implicitly, appConfig)
 
     val document: Document = Jsoup.parse(page.body)
   }

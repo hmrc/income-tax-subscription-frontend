@@ -46,7 +46,6 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
   object TestClientDetailsController extends ClientDetailsController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService,
     mockUserLockoutService
   )

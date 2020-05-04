@@ -17,13 +17,14 @@
 package auth.individual
 
 import config.AppConfig
-import play.api.mvc.Action
+import javax.inject.Inject
+import play.api.mvc.{Action, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
 
-trait RegistrationController extends BaseFrontendController {
+abstract class RegistrationController @Inject()(implicit mcc: MessagesControllerComponents) extends BaseFrontendController {
 
   val appConfig: AppConfig
 

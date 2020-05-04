@@ -36,7 +36,7 @@ class NoSAControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the error main income page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.no-sa.title"))
+          pageTitle(messages("agent.no-sa.title"))
         )
       }
     }

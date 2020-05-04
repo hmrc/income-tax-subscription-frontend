@@ -21,7 +21,6 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, UserLockoutStub}
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.i18n.Messages
 
 class UserDetailsLockoutControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -38,7 +37,7 @@ class UserDetailsLockoutControllerISpec extends ComponentSpecBase with FeatureSw
         Then("The result should have a status of OK")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("user-details-lockout.title"))
+          pageTitle(messages("user-details-lockout.title"))
         )
       }
     }

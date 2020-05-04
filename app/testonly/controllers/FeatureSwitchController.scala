@@ -21,8 +21,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch._
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
 import testonly.connectors.{BackendFeatureSwitchConnector, EligibilityFeatureSwitchConnector}
@@ -32,12 +31,10 @@ import testonly.views.html.feature_switch
 import scala.collection.immutable.ListMap
 import scala.concurrent.{ExecutionContext, Future}
 
-class FeatureSwitchController @Inject()(val authService: AuthService,
-                                        val messagesApi: MessagesApi,
-                                        backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
+class FeatureSwitchController @Inject()(val authService: AuthService, backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
                                         eligibilityFeatureSwitchConnector: EligibilityFeatureSwitchConnector)
-                                       (implicit val ec: ExecutionContext, appConfig: AppConfig) extends BaseFrontendController
-  with FeatureSwitching with I18nSupport {
+                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                        mcc: MessagesControllerComponents) extends BaseFrontendController with FeatureSwitching{
 
   private def view(switchNames: Map[FeatureSwitch, Boolean],
                    backendFeatureSwitches: Map[String, Boolean],

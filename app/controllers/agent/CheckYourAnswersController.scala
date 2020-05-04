@@ -22,8 +22,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription._
 import play.api.Logger
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import services.AuthService
 import services.agent.{KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -33,11 +32,10 @@ import utilities.agent.CacheUtil._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(val authService: AuthService,
-                                           val messagesApi: MessagesApi,
-                                           keystoreService: KeystoreService,
+class CheckYourAnswersController @Inject()(val authService: AuthService, keystoreService: KeystoreService,
                                            subscriptionService: SubscriptionOrchestrationService)
-                                          (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
+                                          (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                           mcc: MessagesControllerComponents) extends AuthenticatedController {
 
 
   private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])

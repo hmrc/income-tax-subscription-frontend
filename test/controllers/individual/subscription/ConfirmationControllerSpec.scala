@@ -18,19 +18,16 @@ package controllers.individual.subscription
 
 import java.time.LocalDateTime
 
-import controllers.ControllerBaseSpec
 import config.featureswitch.FeatureSwitching
+import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
-import play.api.Play
 import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent, Cookie, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
-import uk.gov.hmrc.play.language.LanguageUtils.{Welsh, WelshLangCode}
 import utilities.{ITSASessionKeys, TestModels}
 
 import scala.concurrent.Future
@@ -41,9 +38,10 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   object TestConfirmationController extends ConfirmationController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
   )
+
+  implicit val request: Request[_] = FakeRequest()
 
   override val controllerName: String = "ConfirmationControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -87,22 +85,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         val result = TestConfirmationController.show(subscriptionRequest)
 
         intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
-      }
-    }
-
-    "the user is in confirmation journey state and welsh content applies" should {
-      "return OK" in {
-        mockAuthEnrolled()
-        mockFetchAllFromKeyStore(TestModels.testCacheMap)
-
-        val result = TestConfirmationController.show(
-          subscriptionRequest
-            .addStartTime(startTime)
-            .withCookies(Cookie(Play.langCookieName(applicationMessagesApi), WelshLangCode))
-        )
-        status(result) shouldBe OK
-
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("sign-up-complete.title")(applicationMessages(Welsh, app))
       }
     }
 

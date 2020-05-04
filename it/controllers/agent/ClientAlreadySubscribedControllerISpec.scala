@@ -35,7 +35,7 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the client already subscribed page")
       res should have(
         httpStatus(OK),
-        pageTitle(Messages("agent.client-already-subscribed.title"))
+        pageTitle(messages("agent.client-already-subscribed.title"))
       )
     }
   }

@@ -14,6 +14,13 @@
  * limitations under the License.
  *@
 
+@import layouts.{govuk_template => hmrcGovUkTemplate}
+@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
+@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
+@import views.html.helpers.full_width_banner
+@import views.html.helpers.full_width_banner_content_ur
+@import play.twirl.api.HtmlFormat
+
 @(appConfig: config.AppConfig,
         title: String,
         mainClass: Option[String] = None,
@@ -29,12 +36,6 @@
         overrideSignOutCall: Option[Call] = None,
         isUserResearchBannerVisible: Boolean = true
 )(implicit request: Request[_], messages: Messages)
-
-    @import layouts.{govuk_template => hmrcGovUkTemplate}
-    @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
-    @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
-    @import views.html.helpers.full_width_banner
-    @import views.html.helpers.full_width_banner_content_ur
 
 @head = {
     @uiLayouts.head(

@@ -16,11 +16,12 @@
 
 package auth.individual
 
-import play.api.mvc.{AnyContent, Request, Result}
+import javax.inject.Inject
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
 
-trait UserMatchingController extends BaseFrontendController {
+abstract class UserMatchingController @Inject()(implicit mcc: MessagesControllerComponents) extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 

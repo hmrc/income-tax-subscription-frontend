@@ -44,8 +44,8 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the are you self-employed page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("are_you_selfemployed.title")),
-          radioButtonSet(id = "choice-Yes", selectedRadioButton = Some(Messages("base.yes")))
+          pageTitle(messages("are_you_selfemployed.title")),
+          radioButtonSet(id = "choice-Yes", selectedRadioButton = Some(messages("base.yes")))
         )
       }
     }
@@ -62,7 +62,7 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the are you self-employed page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("are_you_selfemployed.title")),
+          pageTitle(messages("are_you_selfemployed.title")),
           radioButtonSet(id = "choice-Yes", selectedRadioButton = None)
         )
       }

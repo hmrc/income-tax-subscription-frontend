@@ -37,7 +37,6 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
   class TestRentUkPropertyController extends RentUkPropertyController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
   )
 
@@ -161,7 +160,6 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
       object TestRentUkPropertyController extends RentUkPropertyController(
         mockAuthService,
-        messagesApi,
         MockKeystoreService
       )
 

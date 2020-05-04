@@ -43,7 +43,6 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   object TestCheckYourAnswersController extends CheckYourAnswersController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService,
     mockSubscriptionOrchestrationService
   )

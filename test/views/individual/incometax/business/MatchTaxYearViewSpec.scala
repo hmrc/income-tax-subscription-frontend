@@ -21,7 +21,7 @@ import assets.MessageLookup.{Base => common}
 import forms.individual.business.MatchTaxYearForm
 import forms.submapping.YesNoMapping
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
@@ -31,6 +31,8 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
   val backUrl: String = ViewSpecTrait.testBackUrl
   val action: Call = ViewSpecTrait.testCall
 
+  implicit val request: Request[_] = FakeRequest()
+
   private def page(isEditMode: Boolean, isRegistration: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable =
     views.html.individual.incometax.business.match_to_tax_year(
     matchTaxYearForm = MatchTaxYearForm.matchTaxYearForm.addError(addFormErrors),
@@ -38,7 +40,7 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
     isRegistration = isRegistration,
     backUrl = backUrl,
     isEditMode
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
 
   "The Match tax year view" when {

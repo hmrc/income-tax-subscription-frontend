@@ -35,7 +35,7 @@ class UserDetailsErrorControllerISpec extends ComponentSpecBase with FeatureSwit
       Then("Should return a OK with the no matching user page")
       res should have(
         httpStatus(OK),
-        pageTitle(Messages("user-details-error.title"))
+        pageTitle(messages("user-details-error.title"))
       )
     }
   }

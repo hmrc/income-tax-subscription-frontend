@@ -25,7 +25,7 @@ import models.individual.subscription.{AgentSummary, IncomeSourceType}
 import models.{Current, Next, Yes}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
-import play.api.i18n.Messages.Implicits.applicationMessages
+
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -69,7 +69,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     summaryModel = testSummaryModel,
     postAction = postAction,
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def document(testSummaryModel: AgentSummary = testAgentSummaryData): Document
   = page(testSummaryModel).doc

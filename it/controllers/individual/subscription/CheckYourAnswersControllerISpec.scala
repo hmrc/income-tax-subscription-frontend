@@ -16,14 +16,14 @@
 
 package controllers.individual.subscription
 
-import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks._
+import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
-import play.api.i18n.Messages
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase {
+class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
+
   "GET /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
     "keystore returns all data" should {
       "show the check your answers page" in {
@@ -37,7 +37,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the check your answers page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("summary.title"))
+          pageTitle(messages("summary.title"))
         )
       }
     }

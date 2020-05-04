@@ -17,15 +17,17 @@
 package views.agent
 
 import assets.MessageLookup.{Base => common, NoSA => messages}
-import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{AnyContentAsEmpty, Call}
+import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class NoSAViewSpec extends ViewSpecTrait {
 
-  val action = ViewSpecTrait.testCall
-  val request = ViewSpecTrait.viewTestRequest
+  val action: Call = ViewSpecTrait.testCall
+  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.agent.no_sa()(request, applicationMessages, appConfig)
+  lazy val page: HtmlFormat.Appendable = views.html.agent.no_sa()(request, implicitly, appConfig)
 
   "The No SA view" should {
 

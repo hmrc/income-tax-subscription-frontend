@@ -19,16 +19,15 @@ package controllers.agent
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.UsersGroupsSearchStub
 import helpers.IntegrationTestConstants.{testCredentialId, testCredentialId2, testGroupId, testUtr}
+import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
-import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub}
 import play.api.http.Status._
-import play.api.i18n.Messages
 import play.api.test.Helpers.OK
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase {
+class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
 
   "GET /check-your-answers" when {
     "keystore returns all data" should {
@@ -44,7 +43,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the check your answers page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.summary.title"))
+          pageTitle(messages("agent.summary.title"))
         )
 
       }
@@ -97,7 +96,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
           redirectURI(confirmationURI)
         )
 
-        val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+        val cookieMap = getSessionMap(res)
         cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
 
       }
@@ -122,7 +121,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
             redirectURI(confirmationURI)
           )
 
-          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          val cookieMap = getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
         }
         "getting the users assigned to the enrolment was not successful" in {
@@ -145,7 +144,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
             redirectURI(confirmationURI)
           )
 
-          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          val cookieMap = getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
         }
         "getting the admin in a group was not successful" in {
@@ -169,7 +168,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
             redirectURI(confirmationURI)
           )
 
-          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          val cookieMap = getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
         }
         "upserting the known facts was not successful" in {
@@ -194,7 +193,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
             redirectURI(confirmationURI)
           )
 
-          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          val cookieMap = getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
         }
         "allocating the enrolment to a group was not successful" in {
@@ -220,7 +219,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
             redirectURI(confirmationURI)
           )
 
-          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          val cookieMap = getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
         }
         "assigning all the users to the enrolment was not successful" in {
@@ -248,7 +247,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
             redirectURI(confirmationURI)
           )
 
-          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          val cookieMap = getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
         }
       }

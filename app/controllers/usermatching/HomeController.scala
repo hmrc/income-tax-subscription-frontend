@@ -16,32 +16,27 @@
 
 package controllers.usermatching
 
-import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
-import controllers.individual.eligibility.{routes => eligibilityRoutes}
-import utilities.ITSASessionKeys._
 import auth.individual.JourneyState._
 import auth.individual.{Registration, SignUp, StatelessController, UserMatching}
-import auth.individual._
 import config.AppConfig
-import utilities.Implicits._
+import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
+import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import services.individual._
 import services.{AuthService, GetEligibilityStatusService, SubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.ITSASessionKeys._
+import utilities.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HomeController @Inject()(val authService: AuthService,
-                               val messagesApi: MessagesApi,
-                               citizenDetailsService: CitizenDetailsService,
-                               getEligibilityStatusService: GetEligibilityStatusService,
-                               keystoreService: KeystoreService,
-                               subscriptionService: SubscriptionService)
-                              (implicit val ec: ExecutionContext, appConfig: AppConfig) extends StatelessController {
+class HomeController @Inject()(val authService: AuthService, citizenDetailsService: CitizenDetailsService,
+                               getEligibilityStatusService: GetEligibilityStatusService, keystoreService: KeystoreService,
+                               subscriptionService: SubscriptionService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                               mcc: MessagesControllerComponents) extends StatelessController {
 
   def home: Action[AnyContent] = Action { implicit request =>
     val redirect = routes.HomeController.index()

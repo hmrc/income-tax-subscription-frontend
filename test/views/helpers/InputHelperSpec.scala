@@ -21,7 +21,7 @@ import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
-import play.api.i18n.Messages.Implicits.applicationMessages
+
 import utilities.UnitTestTrait
 
 class InputHelperSpec extends UnitTestTrait {
@@ -36,7 +36,7 @@ class InputHelperSpec extends UnitTestTrait {
                            isNumeric: Boolean = false
                          )
   = views.html.helpers.inputHelper(field, label = label, parentForm = parentForm, formHint = formHint, maxLength = maxLength,
-    labelClass = labelClass, isNumeric = isNumeric)(applicationMessages)
+    labelClass = labelClass, isNumeric = isNumeric)(implicitly)
 
   case class TestData(input: String)
 

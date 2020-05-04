@@ -19,8 +19,8 @@ package testonly.controllers.agent
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import testonly.connectors.agent.{MatchingStubConnector, UserData}
 import testonly.form.agent.ClientToStubForm
@@ -36,9 +36,8 @@ import scala.concurrent.ExecutionContext
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
 @Singleton
-class MatchingStubController @Inject()(val messagesApi: MessagesApi,
-                                       matchingStubConnector: MatchingStubConnector)
-                                      (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController with I18nSupport {
+class MatchingStubController @Inject()(mcc: MessagesControllerComponents, matchingStubConnector: MatchingStubConnector)
+                                      (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
 
   def view(clientToStubForm: Form[ClientToStubModel])(implicit request: Request[_]): Html =

@@ -23,8 +23,7 @@ import models.individual.business.MatchTaxYearModel
 import models.individual.subscription._
 import models.{No, Yes}
 import play.api.Logger
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import services.AuthService
 import services.individual.{KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -35,11 +34,8 @@ import utilities.individual.CacheUtil._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(val authService: AuthService,
-                                           val messagesApi: MessagesApi,
-                                           keystoreService: KeystoreService,
-                                           subscriptionService: SubscriptionOrchestrationService)
-                                          (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
+class CheckYourAnswersController @Inject()(val authService: AuthService, keystoreService: KeystoreService, subscriptionService: SubscriptionOrchestrationService)
+                                          (implicit val ec: ExecutionContext, appConfig: AppConfig, mcc: MessagesControllerComponents) extends SignUpController {
 
   def backUrl(incomeSource: IncomeSourceType): String = {
     incomeSource match {

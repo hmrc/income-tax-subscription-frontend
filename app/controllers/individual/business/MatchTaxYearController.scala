@@ -24,7 +24,6 @@ import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.Business
 import models.{No, Yes}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
@@ -34,10 +33,8 @@ import utilities.individual.CacheUtil._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MatchTaxYearController @Inject()(val authService: AuthService,
-                                       val messagesApi: MessagesApi,
-                                       keystoreService: KeystoreService)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
+class MatchTaxYearController @Inject()(val authService: AuthService, keystoreService: KeystoreService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                       mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =
     views.html.individual.incometax.business.match_to_tax_year(

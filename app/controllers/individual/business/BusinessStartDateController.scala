@@ -22,8 +22,7 @@ import forms.individual.business.BusinessStartDateForm
 import javax.inject.Inject
 import models.individual.business.BusinessStartDateModel
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
 import services.individual.KeystoreService
@@ -31,10 +30,9 @@ import services.individual.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class BusinessStartDateController @Inject()(val authService: AuthService,
-                                            val messagesApi: MessagesApi,
-                                            keystoreService: KeystoreService)
-                                           (implicit val ec: ExecutionContext, val appConfig: AppConfig) extends RegistrationController {
+class BusinessStartDateController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+                                           (implicit val ec: ExecutionContext, val appConfig: AppConfig,
+                                            mcc: MessagesControllerComponents) extends RegistrationController {
 
   def view(businessStartDateForm: Form[BusinessStartDateModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =
     views.html.individual.incometax.business.business_start_date(

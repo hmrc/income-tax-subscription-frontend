@@ -49,7 +49,6 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   lazy val testBusinessAccountingPeriodDateController: BusinessAccountingPeriodDateController =
     new BusinessAccountingPeriodDateController(
       mockAuthService,
-      messagesApi,
       mockAccountingPeriodService,
       MockKeystoreService
     )

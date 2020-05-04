@@ -20,8 +20,9 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
 import models.individual.subscription.SubscriptionSuccess
 import play.api.http.Status
-import play.api.libs.json.{JsObject, Json}
-import utilities.ITSASessionKeys
+import play.api.libs.json.{JsObject, Json, Writes}
+import utilities.{ITSASessionKeys}
+import utilities.JsonUtils._
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
@@ -91,7 +92,7 @@ object SubscriptionStub extends WireMockMethods {
       ),
       "accountingMethod" -> "Cash"
     ), "selectedTaxYear" -> IntegrationTestModels.testAccountingYearNext
-  ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
+  ) + ("arn" -> arn)
 
   def successfulSubscriptionWithBodyBoth(arn: Option[String] = None, nino: String): JsObject = Json.obj(
     "nino" -> nino,
@@ -112,12 +113,12 @@ object SubscriptionStub extends WireMockMethods {
       "accountingMethod" -> "Cash"
     ),
     "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
-  ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
+  ) + ("arn" -> arn)
 
   def successfulSubscriptionWithBodyProperty(arn: Option[String] = None, nino: String): JsObject = Json.obj(
     "nino" -> nino,
     "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
-  ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
+  ) + ("arn" -> arn)
 
 
   val successfulSubscriptionResponse = SubscriptionSuccess(testMtdId)

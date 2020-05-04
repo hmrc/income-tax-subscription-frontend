@@ -34,7 +34,7 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the session timeout page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.timeout.title"))
+          pageTitle(messages("agent.timeout.title"))
         )
       }
   }

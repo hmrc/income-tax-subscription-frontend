@@ -23,8 +23,7 @@ import auth.individual.{UserMatched, UserMatchingController}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, LockoutUpdate, UserLockoutService, UserMatchingService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -34,11 +33,9 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
 
 @Singleton
-class ConfirmUserController @Inject()(val messagesApi: MessagesApi,
-                                      val authService: AuthService,
-                                      lockOutService: UserLockoutService,
-                                      userMatching: UserMatchingService)
-                                     (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
+class ConfirmUserController @Inject()(val authService: AuthService, lockOutService: UserLockoutService, userMatching: UserMatchingService)
+                                     (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                      mcc: MessagesControllerComponents) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     views.html.individual.usermatching.check_your_user_details(

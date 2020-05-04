@@ -18,13 +18,16 @@ package views.individual
 
 import assets.MessageLookup.{IvFailed => messages}
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
 class IvFailedViewSpec extends ViewSpecTrait {
   val testUrl = "link/iv"
 
-  lazy val page = views.html.individual.iv_failed(testUrl)(FakeRequest(), applicationMessages, appConfig)
+  implicit val request: Request[_] = FakeRequest()
+
+  lazy val page = views.html.individual.iv_failed(testUrl)(FakeRequest(), implicitly, appConfig)
 
   "The IV failed view spec" should {
     val testPage = TestView(

@@ -37,7 +37,7 @@ class CannotSignUpControllerISpec extends ComponentSpecBase with FeatureSwitchin
         Then("Should return a OK with the cannot sign up page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("cannot-sign-up.title"))
+          pageTitle(messages("cannot-sign-up.title"))
         )
       }
     }

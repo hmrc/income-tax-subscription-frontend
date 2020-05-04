@@ -154,7 +154,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Then("Should return a OK status with the paperless error page")
       res should have(
         httpStatus(OK),
-        pageTitle(Messages("preferences_callback.title"))
+        pageTitle(messages("preferences_callback.title"))
       )
     }
   }

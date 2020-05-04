@@ -29,7 +29,7 @@ class AgentFrontPageViewSpec extends ViewSpecTrait {
 
   lazy val page = views.html.agent.agent_frontpage(
     getAction = action
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   lazy val document = Jsoup.parse(page.body)
 

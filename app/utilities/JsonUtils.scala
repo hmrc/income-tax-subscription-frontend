@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package utilities
 
-import helpers.ComponentSpecBase
-import play.api.http.Status.OK
-import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Writes}
 
-class ThankyouControllerISpec extends ComponentSpecBase {
-
-  "GET /thankyou" should {
-    "show the thankyou page" in {
-      When("GET /thankyou is called")
-      val res = IncomeTaxSubscriptionFrontend.thankYou()
-
-      Then("Should return a OK with the thankyou page")
-      res should have(
-        httpStatus(OK),
-        pageTitle(messages("feedback.thankyou.title"))
-      )
+object JsonUtils {
+  implicit class JsObjectUtils(jsObject: JsObject) {
+    def +[A](field: (String, Option[A]))(implicit writes: Writes[A]): JsObject = {
+      field match {
+        case (key, Some(value)) => jsObject + (key -> writes.writes(value))
+        case (_, None) => jsObject
+      }
     }
   }
 }

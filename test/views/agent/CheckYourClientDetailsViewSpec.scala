@@ -22,7 +22,7 @@ import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
-import play.api.i18n.Messages.Implicits.applicationMessages
+
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -49,7 +49,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
     userDetailsModel = testClientDetails,
     postAction = postAction,
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def document(): Document = page().doc
 

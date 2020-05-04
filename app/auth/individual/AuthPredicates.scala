@@ -46,11 +46,11 @@ trait AuthPredicates extends Results {
     if (user.mtdItsaRef.nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.enrolledPredicate")))
 
-  lazy val homeRoute = Redirect(controllers.usermatching.routes.HomeController.index())
+  lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index())
 
-  lazy val cannotUseServiceRoute = Redirect(controllers.individual.incomesource.routes.CannotUseServiceController.show())
+  lazy val cannotUseServiceRoute: Result = Redirect(controllers.individual.incomesource.routes.CannotUseServiceController.show())
 
-  lazy val timeoutRoute = Redirect(controllers.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute: Result  = Redirect(controllers.routes.SessionTimeoutController.show())
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
@@ -62,7 +62,7 @@ trait AuthPredicates extends Results {
 
   val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     user.affinityGroup match {
-      case (Some(Individual) | Some(Organisation)) => Right(AuthPredicateSuccess)
+      case Some(Individual) | Some(Organisation) => Right(AuthPredicateSuccess)
       case _ => Left(Future.successful(wrongAffinity))
     }
 
@@ -89,7 +89,7 @@ trait AuthPredicates extends Results {
     if (!user.isAssistant) Right(AuthPredicateSuccess)
     else Left(Future.successful(cannotUseServiceRoute))
 
-  lazy val goToIv = Redirect(controllers.individual.routes.IdentityVerificationController.gotoIV())
+  lazy val goToIv: Result = Redirect(controllers.individual.routes.IdentityVerificationController.gotoIV())
 
   val ivPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
@@ -99,23 +99,28 @@ trait AuthPredicates extends Results {
     if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
+  val defaultPredicates: AuthPredicate[IncomeTaxSAUser] = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
-  val homePredicates = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate
+  val homePredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate
 
-  val userMatchingPredicates = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate
+  val userMatchingPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
+    timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate
 
-  val subscriptionPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| ivPredicate
+  val subscriptionPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
+    defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| ivPredicate
 
-  val registrationPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
+  val registrationPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
+    defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
 
-  val enrolledPredicates = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate
+  val enrolledPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate
 
-  val preferencesPredicate = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate |+| ivPredicate
+  val preferencesPredicate: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
+    defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate |+| ivPredicate
 
 }
 
 object AuthPredicates extends Results {
+
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
   lazy val userMatching: Result = Redirect(controllers.usermatching.routes.UserDetailsController.show())
@@ -131,9 +136,9 @@ object AuthPredicates extends Results {
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(alreadyEnrolledRoute))
 
-  lazy val homeRoute = Redirect(controllers.usermatching.routes.HomeController.index())
+  lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index())
 
-  lazy val timeoutRoute = Redirect(controllers.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show())
 
   lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show())
 

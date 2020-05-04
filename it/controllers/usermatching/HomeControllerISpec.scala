@@ -18,13 +18,13 @@ package controllers.usermatching
 
 import config.featureswitch
 import config.featureswitch.FeatureSwitching
+import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
-import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import utilities.ITSASessionKeys
 
-class HomeControllerISpec extends ComponentSpecBase {
+class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   "GET /report-quarterly/income-and-expenses/sign-up" should {
     "return the guidance page" in {
@@ -132,7 +132,7 @@ class HomeControllerISpec extends ComponentSpecBase {
               redirectURI(preferencesURI)
             )
 
-            val cookie = SessionCookieCrumbler.getSessionMap(res)
+            val cookie = getSessionMap(res)
             cookie.keys should contain(ITSASessionKeys.UTR)
             cookie(ITSASessionKeys.UTR) shouldBe testUtr
           }
@@ -155,7 +155,7 @@ class HomeControllerISpec extends ComponentSpecBase {
             redirectURI(noSaURI)
           )
 
-          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          val cookie = getSessionMap(res)
           cookie.keys should not contain ITSASessionKeys.UTR
         }
       }
@@ -175,7 +175,7 @@ class HomeControllerISpec extends ComponentSpecBase {
             pageTitle("Sorry, we are experiencing technical difficulties - 500")
           )
 
-          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          val cookie = getSessionMap(res)
           cookie.keys should not contain ITSASessionKeys.UTR
         }
       }

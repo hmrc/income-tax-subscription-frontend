@@ -23,7 +23,7 @@ import views.ViewSpecTrait
 
 class SessionTimeoutViewSpec extends ViewSpecTrait {
 
-  lazy val page = views.html.agent.timeout()(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.agent.timeout()(FakeRequest(), implicitly, appConfig)
 
   "The Session timeout view" should {
 

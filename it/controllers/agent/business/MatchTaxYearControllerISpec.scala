@@ -42,7 +42,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.business.match_tax_year.heading")),
+          pageTitle(messages("agent.business.match_tax_year.heading")),
           radioButtonSet(id = "matchToTaxYear", selectedRadioButton = None)
         )
       }
@@ -59,8 +59,8 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.business.match_tax_year.heading")),
-          radioButtonSet(id = "matchToTaxYear", selectedRadioButton = Some(Messages("base.yes")))
+          pageTitle(messages("agent.business.match_tax_year.heading")),
+          radioButtonSet(id = "matchToTaxYear", selectedRadioButton = Some(messages("base.yes")))
         )
       }
     }

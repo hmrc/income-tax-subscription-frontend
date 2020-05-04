@@ -18,17 +18,20 @@ package views.individual.incometax.incomesource
 
 import assets.MessageLookup.{Base => common, CannotUseService => messages}
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
 class CannotUseServiceViewSpec extends ViewSpecTrait {
+
+  implicit val request: Request[_] = FakeRequest()
 
   val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.individual.incometax.incomesource.cannot_use_service(
     postAction = action)(
     FakeRequest(),
-    applicationMessages,
+    implicitly,
     appConfig
   )
 

@@ -33,8 +33,7 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec {
   )
 
   object TestClientDetailsErrorController extends ClientDetailsErrorController(
-    mockAuthService,
-    messagesApi
+    mockAuthService
   )
 
   "Calling the 'show' action of the ClientDetailsErrorController" should {

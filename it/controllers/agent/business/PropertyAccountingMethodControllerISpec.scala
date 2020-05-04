@@ -41,12 +41,12 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         When("GET /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
 
-        val expectedText = removeHtmlMarkup(Messages("agent.property.accounting_method.radio.cash"))
+        val expectedText = removeHtmlMarkup(messages("agent.property.accounting_method.radio.cash"))
 
         Then("Should return a OK with the property accounting method page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.property.accounting_method.title")),
+          pageTitle(messages("agent.property.accounting_method.title")),
           radioButtonSet(id = "accountingMethodProperty", selectedRadioButton = Some(expectedText))
         )
       }
@@ -64,7 +64,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         Then("Should return a OK with the property accounting method page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.property.accounting_method.title")),
+          pageTitle(messages("agent.property.accounting_method.title")),
           radioButtonSet(id = "accountingMethodProperty", selectedRadioButton = None)
         )
       }

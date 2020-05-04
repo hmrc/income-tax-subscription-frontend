@@ -36,7 +36,7 @@ class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the already enrolled page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("already-enrolled.title"))
+          pageTitle(messages("already-enrolled.title"))
         )
       }
     }

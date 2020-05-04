@@ -22,8 +22,7 @@ import cats.implicits._
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.ConnectorError
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
 import services.individual.{KeystoreService, SubscriptionOrchestrationService}
@@ -33,11 +32,8 @@ import utilities.individual.CacheConstants.MtditId
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClaimSubscriptionController @Inject()(val authService: AuthService,
-                                            val messagesApi: MessagesApi,
-                                            keystoreService: KeystoreService,
-                                            subscriptionOrchestrationService: SubscriptionOrchestrationService)
-                                           (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
+class ClaimSubscriptionController @Inject()(val authService: AuthService, keystoreService: KeystoreService, subscriptionOrchestrationService: SubscriptionOrchestrationService)
+                                           (implicit val ec: ExecutionContext, appConfig: AppConfig, mcc: MessagesControllerComponents) extends SignUpController {
 
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>

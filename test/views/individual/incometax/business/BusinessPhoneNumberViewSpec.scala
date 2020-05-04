@@ -19,12 +19,14 @@ package views.individual.incometax.business
 import assets.MessageLookup.{BusinessPhoneNumber => messages}
 import forms.individual.business.BusinessPhoneNumberForm
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class BusinessPhoneNumberViewSpec extends ViewSpecTrait {
 
+  implicit val request: Request[_] = FakeRequest()
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
@@ -33,7 +35,7 @@ class BusinessPhoneNumberViewSpec extends ViewSpecTrait {
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def documentCore(isEditMode: Boolean):TestView = TestView(
     name = "Business phone number View",

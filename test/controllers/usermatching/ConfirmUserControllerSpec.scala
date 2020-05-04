@@ -18,8 +18,6 @@ package controllers.usermatching
 
 import auth.individual.{UserMatched, UserMatching}
 import controllers.ControllerBaseSpec
-import auth.individual.UserMatched
-import utilities.individual.TestConstants._
 import models.usermatching.UserDetailsModel
 import org.scalatest.OptionValues
 import play.api.http.Status
@@ -30,6 +28,7 @@ import services.individual.mocks.MockKeystoreService
 import services.mocks.{MockUserLockoutService, MockUserMatchingService}
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
 import utilities.individual.TestConstants
+import utilities.individual.TestConstants._
 import utilities.{ITSASessionKeys, TestModels}
 
 import scala.concurrent.Future
@@ -45,7 +44,6 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   )
 
   object TestConfirmUserController extends ConfirmUserController(
-    messagesApi,
     mockAuthService,
     mockUserLockoutService,
     mockUserMatchingService
@@ -69,14 +67,15 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     "when there are no user details stored redirect them to user details" in {
       setupMockNotLockedOut(testUserId.value)
 
-      val r = request.buildRequest(None)
+      val r = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+
       val result = call(r)
 
       status(result) must be(Status.SEE_OTHER)
 
       redirectLocation(result) must contain(controllers.usermatching.routes.UserDetailsController.show().url)
 
-      await(result).verifyStoredUserDetailsIs(None)(r)
+      await(result).verifyStoredUserDetailsIs(None)(userMatchingRequest)
     }
 
     "if there are user details return ok (200)" in {
@@ -110,7 +109,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     "return the user details page" in {
       setupMockNotLockedOut(testUserId.value)
 
-      val r = request.buildRequest(None)
+      val r = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
       val result = callSubmit(r)
 

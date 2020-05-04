@@ -18,25 +18,23 @@ package controllers.individual.incomesource
 
 import auth.individual.SignUpController
 import config.AppConfig
-import utilities.individual.CacheUtil._
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import javax.inject.{Inject, Singleton}
 import models.individual.incomesource.AreYouSelfEmployedModel
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
 import services.individual.KeystoreService
+import utilities.individual.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AreYouSelfEmployedController @Inject()(val authService: AuthService,
-                                             val messagesApi: MessagesApi,
-                                             keystoreService: KeystoreService)
-                                            (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
+class AreYouSelfEmployedController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+                                            (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                             mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.incometax.incomesource.are_you_selfemployed(

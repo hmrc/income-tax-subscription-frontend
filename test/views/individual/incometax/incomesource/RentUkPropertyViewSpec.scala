@@ -21,7 +21,7 @@ import forms.individual.incomesource.RentUkPropertyForm
 import forms.submapping.YesNoMapping
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
@@ -32,12 +32,14 @@ class RentUkPropertyViewSpec extends ViewSpecTrait {
 
   val action: Call = ViewSpecTrait.testCall
 
+  implicit val request: Request[_] = FakeRequest()
+
   def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.incometax.incomesource.rent_uk_property(
     rentUkPropertyForm = RentUkPropertyForm.rentUkPropertyForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   "The Rent Uk Property view" should {
     val testPage = TestView(

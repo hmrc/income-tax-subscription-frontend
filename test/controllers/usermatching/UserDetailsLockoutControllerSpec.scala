@@ -21,18 +21,16 @@ import java.time.Duration
 import assets.MessageLookup.{UserDetailsLockout => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
-import utilities.individual.TestConstants._
 import org.jsoup.Jsoup
 import play.api.Play
 import play.api.http.Status
-import play.api.i18n.Messages.Implicits.applicationMessagesApi
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.language.LanguageUtils.WelshLangCode
 import utilities.ITSASessionKeys
+import utilities.individual.TestConstants._
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService {
@@ -45,7 +43,6 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
 
   def createTestUserDetailsLockoutController(enableMatchingFeature: Boolean): UserDetailsLockoutController = new UserDetailsLockoutController(
     mockAuthService,
-    messagesApi,
     mockUserLockoutService
   )
 
@@ -109,7 +106,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
       }
     }
     "the language is Welsh" should {
-      implicit lazy val r: Request[_] = request.withCookies(Cookie(Play.langCookieName(applicationMessagesApi), WelshLangCode))
+      implicit lazy val r: Request[_] = request.withCookies(Cookie(Play.langCookieName, "cy"))
       "convert time using correct singular units" in {
         val testDuration = List(Duration.ofHours(1), Duration.ofMinutes(1), Duration.ofSeconds(1)).reduce(_.plus(_))
         TestUserDetailsLockoutController.durationText(testDuration) mustBe "1 awr 1 munud 1 eiliad"

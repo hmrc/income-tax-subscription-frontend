@@ -22,7 +22,7 @@ import models.individual.business.MatchTaxYearModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits.applicationMessages
+
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
@@ -36,7 +36,7 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
       postAction = ViewSpecTrait.testCall,
       backUrl = ViewSpecTrait.testBackUrl,
       isEditMode = isEditMode
-    )(FakeRequest(), applicationMessages, appConfig)
+    )(FakeRequest(), implicitly, appConfig)
     val document: Document = Jsoup.parse(view.body)
   }
 

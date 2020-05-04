@@ -16,15 +16,14 @@
 
 package controllers.agent.business
 
-import auth.agent.AuthenticatedController
+import auth.agent.{AuthenticatedController, UserMatchingController}
 import config.AppConfig
 import forms.agent.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.agent.AccountingMethodPropertyModel
 import models.individual.subscription.{Both, Property}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
 import services.agent.KeystoreService
@@ -34,10 +33,8 @@ import utilities.agent.CacheUtil.CacheMapUtil
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(val authService: AuthService,
-                                                   val messagesApi: MessagesApi,
-                                                   keystoreService: KeystoreService)
-                                                  (implicit val ec: ExecutionContext,
+class PropertyAccountingMethodController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+                                                  (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                                    appConfig: AppConfig) extends AuthenticatedController {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {

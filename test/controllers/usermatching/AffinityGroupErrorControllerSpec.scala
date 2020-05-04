@@ -28,7 +28,7 @@ class AffinityGroupErrorControllerSpec extends ControllerBaseSpec {
   override val controllerName: String = "AffinityGroupErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestAffinityGroupErrorController extends AffinityGroupErrorController(messagesApi)
+  object TestAffinityGroupErrorController extends AffinityGroupErrorController(mockMessagesControllerComponents)
 
   "Calling the show action of the AffinityGroupErrorController" should {
 

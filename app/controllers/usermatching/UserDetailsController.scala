@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import play.twirl.api.Html
 import services.individual.KeystoreService
 import services.{AuthService, UserLockoutService}
@@ -33,11 +33,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserDetailsController @Inject()(val authService: AuthService,
-                                      val messagesApi: MessagesApi,
-                                      keystoreService: KeystoreService,
-                                      lockOutService: UserLockoutService)
-                                     (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
+class UserDetailsController @Inject()(val authService: AuthService, keystoreService: KeystoreService, lockOutService: UserLockoutService)
+                                     (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                      mcc: MessagesControllerComponents) extends UserMatchingController {
 
   def view(userDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.usermatching.user_details(

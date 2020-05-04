@@ -42,9 +42,9 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the rent uk property page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("rent_uk_property.title")),
-          radioButtonSet(id = "rentUkProperty", selectedRadioButton = Some(Messages("base.yes"))),
-          radioButtonSet(id = "onlySourceOfSelfEmployedIncome", selectedRadioButton = Some(Messages("base.no")))
+          pageTitle(messages("rent_uk_property.title")),
+          radioButtonSet(id = "rentUkProperty", selectedRadioButton = Some(messages("base.yes"))),
+          radioButtonSet(id = "onlySourceOfSelfEmployedIncome", selectedRadioButton = Some(messages("base.no")))
         )
       }
     }
@@ -61,7 +61,7 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the rent uk property page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("rent_uk_property.title")),
+          pageTitle(messages("rent_uk_property.title")),
           radioButtonSet(id = "rentUkProperty", selectedRadioButton = None),
           radioButtonSet(id = "onlySourceOfSelfEmployedIncome", selectedRadioButton = None)
         )

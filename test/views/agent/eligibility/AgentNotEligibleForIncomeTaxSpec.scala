@@ -24,7 +24,7 @@ class AgentNotEligibleForIncomeTaxSpec extends ViewSpecTrait {
 
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.agent.eligibility.not_eligible_for_income_tax()(request, applicationMessages, appConfig)
+  lazy val page = views.html.agent.eligibility.not_eligible_for_income_tax()(request, implicitly, appConfig)
 
 
   "The Income Tax Not Eligible view for Agents" should {

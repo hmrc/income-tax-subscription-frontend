@@ -16,7 +16,7 @@
 
 package connectors.agent.httpparsers
 
-import play.api.data.validation.ValidationError
+import play.api.libs.json.JsonValidationError
 import play.api.http.Status.NON_AUTHORITATIVE_INFORMATION
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
@@ -31,7 +31,7 @@ object GetUsersForGroupHttpParser {
     val AssistantKey = "Assistant"
 
     override def reads(json: JsValue): JsResult[CredentialRole] =
-      json.validate[String].collect(ValidationError(Seq("Invalid credential role"), Nil)){
+      json.validate[String].collect(JsonValidationError(Seq("Invalid credential role"), Nil)){
         case AdminKey => User
         case AssistantKey => Assistant
       }

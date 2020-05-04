@@ -16,26 +16,27 @@
 
 package controllers.agent.business
 
-import auth.agent.AuthenticatedController
+import auth.agent.{AuthenticatedController, UserMatchingController}
 import config.AppConfig
 import forms.agent.MatchTaxYearForm
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.No
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.Both
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
 import services.agent.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class MatchTaxYearController @Inject()(val authService: AuthService,
-                                       val messagesApi: MessagesApi,
+
                                        keystoreService: KeystoreService)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
+                                      (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
+                                       appConfig: AppConfig) extends AuthenticatedController {
 
   private def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
     views.html.agent.business.match_to_tax_year(

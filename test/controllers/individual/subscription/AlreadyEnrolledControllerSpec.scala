@@ -31,9 +31,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
   )
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(
-    mockAuthService,
-    messagesApi
-  )
+    mockAuthService)
 
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
     "return an OK with the error page" in {

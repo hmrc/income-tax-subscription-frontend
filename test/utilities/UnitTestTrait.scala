@@ -21,13 +21,16 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.MessagesControllerComponents
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
+import play.api.i18n.I18nSupport
+import play.api.test.FakeRequest
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
-trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits {
+trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits with I18nSupport{
 
   implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -46,5 +49,9 @@ trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits 
   implicit val appConfig: AppConfig = MockConfig
 
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+
+  implicit lazy val mockMessages: Messages = messagesApi.preferred(FakeRequest())
+
+  implicit lazy val mockMessagesControllerComponents: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
 }

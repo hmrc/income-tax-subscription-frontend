@@ -39,7 +39,6 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
 
   object TestAreYouSelfEmployedController extends AreYouSelfEmployedController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
   )
 

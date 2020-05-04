@@ -18,6 +18,7 @@ package auth.individual
 
 import auth.individual.AuthPredicate._
 import auth.individual.JourneyState.{RequestFunctions, SessionFunctions}
+import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -29,7 +30,8 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait BaseFrontendController extends FrontendController with I18nSupport with AuthPredicates {
+abstract class BaseFrontendController @Inject()(implicit val mcc: MessagesControllerComponents)
+  extends FrontendController(mcc) with AuthPredicates with I18nSupport {
 
   val authService: AuthService
 

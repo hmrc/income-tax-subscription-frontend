@@ -21,23 +21,20 @@ import java.time.temporal.ChronoUnit
 
 import auth.individual.PostSubmissionController
 import config.AppConfig
-import utilities.individual.CacheUtil._
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
 import services.individual.KeystoreService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
+import utilities.individual.CacheUtil._
 import views.html.individual.incometax.subscription.sign_up_complete
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(val authService: AuthService,
-                                       val messagesApi: MessagesApi,
-                                       keystoreService: KeystoreService)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends PostSubmissionController {
+class ConfirmationController @Inject()(val authService: AuthService, keystoreService: KeystoreService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                       mcc: MessagesControllerComponents) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

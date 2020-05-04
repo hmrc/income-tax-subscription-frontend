@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
 
 class DateModelSpec extends PlaySpec with GuiceOneServerPerSuite{
 
@@ -50,8 +50,8 @@ class DateModelSpec extends PlaySpec with GuiceOneServerPerSuite{
     }
     "should display the date in the user's chosen language" when {
      lazy val messagesApi = app.injector.instanceOf[MessagesApi]
-     lazy val messagesEnglish = new Messages(new Lang("en"), messagesApi)
-     lazy val messagesWelsh = new Messages(new Lang("cy"), messagesApi)
+     lazy val messagesEnglish = MessagesImpl(Lang("en"), messagesApi)
+     lazy val messagesWelsh = MessagesImpl(Lang("cy"), messagesApi)
       "locale is in English" in {
         date.toCheckYourAnswersDateFormat(messagesEnglish) shouldBe "1 February 2017"
       }

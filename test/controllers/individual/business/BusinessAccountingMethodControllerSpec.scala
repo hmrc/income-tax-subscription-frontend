@@ -44,7 +44,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
   )
 
@@ -167,7 +166,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     "income source type is business" should {
       object TestBusinessAccountingMethodController2 extends BusinessAccountingMethodController(
         mockAuthService,
-        messagesApi,
+
         MockKeystoreService
       )
       s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {

@@ -25,7 +25,7 @@ class ClientDetailsErrorViewSpec extends ViewSpecTrait {
   val action = ViewSpecTrait.testCall
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.agent.client_details_error(action)(request, applicationMessages, appConfig)
+  lazy val page = views.html.agent.client_details_error(action)(request, implicitly, appConfig)
 
   "The Client Details Error view" should {
     val testPage = TestView(

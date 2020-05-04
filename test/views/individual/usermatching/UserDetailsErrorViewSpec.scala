@@ -18,14 +18,16 @@ package views.individual.usermatching
 
 import assets.MessageLookup.{Base => commonMessages, UserDetailsError => messages}
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Request
+import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
 class UserDetailsErrorViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
-  val request = ViewSpecTrait.viewTestRequest
+  implicit val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.individual.usermatching.user_details_error(action)(request, applicationMessages, appConfig)
+  lazy val page = views.html.individual.usermatching.user_details_error(action)(request, implicitly, appConfig)
 
   "The User Details Error view" should {
     val testPage = TestView(

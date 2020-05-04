@@ -19,10 +19,9 @@ package controllers
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import auth.individual.{Registration, SignUp, UserMatching}
-import auth.individual.{Registration, SignUp}
 import org.mockito.Mockito
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
 import services.individual.mocks.MockAuthService
@@ -32,8 +31,8 @@ import utilities.{ITSASessionKeys, UnitTestTrait}
 
 trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
+  implicit val system: ActorSystem = ActorSystem()
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   val controllerName: String
   val authorisedRoutes: Map[String, Action[AnyContent]]
@@ -47,7 +46,7 @@ trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
           "return an AuthorisationException" in {
             Mockito.reset(mockAuthService)
 
-            val exception = new InvalidBearerToken()
+            val exception = InvalidBearerToken()
             mockAuthUnauthorised(exception)
 
             intercept[AuthorisationException](await(result)) mustBe exception
@@ -67,19 +66,19 @@ trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
       fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
   }
 
-  lazy val fakeRequest = FakeRequest()
+  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-  lazy val userMatchingRequest = FakeRequest().withSession(
+  lazy val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> UserMatching.name
   )
 
-  lazy val subscriptionRequest = FakeRequest().withSession(
+  lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> SignUp.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
-  lazy val registrationRequest = FakeRequest().withSession(
+  lazy val registrationRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> Registration.name,
     ITSASessionKeys.NINO -> TestConstants.testNino
   )

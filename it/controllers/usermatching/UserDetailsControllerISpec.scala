@@ -59,7 +59,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Then("The result should have a status of OK")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("user-details.title"))
+          pageTitle(messages("user-details.title"))
         )
       }
     }
@@ -96,7 +96,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Then("The result should have a status of BadRequest")
         res should have(
           httpStatus(BAD_REQUEST),
-          pageTitle("Error: " + Messages("user-details.title"))
+          pageTitle("Error: " + messages("user-details.title"))
         )
         res.verifyStoredUserDetailsIs(None)
         KeystoreStub.verifyKeyStoreDelete(Some(0))

@@ -18,13 +18,14 @@ package controllers.language
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, Lang, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, Controller}
-import uk.gov.hmrc.play.language.LanguageUtils
+import play.api.Configuration
+import play.api.i18n.Lang
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
 @Singleton
-class LanguageSwitchController @Inject()(val messagesApi: MessagesApi,
-                                         appConfig: AppConfig) extends Controller with I18nSupport {
+class LanguageSwitchController @Inject()(mcc: MessagesControllerComponents, appConfig: AppConfig, languageUtils: LanguageUtils,
+                                         configuration: Configuration) extends LanguageController(configuration, languageUtils, mcc){
 
   def langToCall(lang: String): String => Call = appConfig.routeToSwitchLanguage
 
@@ -32,8 +33,8 @@ class LanguageSwitchController @Inject()(val messagesApi: MessagesApi,
 
   def languageMap: Map[String, Lang] = appConfig.languageMap
 
-  def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
-    val lang = languageMap.getOrElse(language, LanguageUtils.getCurrentLang)
+  override def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
+    val lang = languageMap.getOrElse(language, languageUtils.getCurrentLang)
 
     val redirectURL = request.headers.get(REFERER).getOrElse(fallbackURL)
 

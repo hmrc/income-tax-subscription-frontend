@@ -33,7 +33,6 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
 
   object TestClaimSubscriptionController extends ClaimSubscriptionController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService,
     mockSubscriptionOrchestrationService
   )

@@ -20,13 +20,13 @@ import utilities.individual.TestConstants._
 import models.{Activated, Unset}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.TestPreferencesService
 import utilities.UnitTestTrait
 
-class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService with EitherValues with I18nSupport {
+class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService with EitherValues {
 
   implicit val fakeRequest = FakeRequest()
   implicit val fakeMessages = app.injector.instanceOf[MessagesApi]

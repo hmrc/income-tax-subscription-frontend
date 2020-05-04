@@ -35,10 +35,9 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
   object TestAddAnotherClientController extends AddAnotherClientController(
     mockAuthService,
-    messagesApi,
     appConfig,
     MockKeystoreService
-  )
+  )(executionContext, mockMessagesControllerComponents)
 
   "AddAnotherClientController.addAnother" should {
 

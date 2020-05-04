@@ -42,7 +42,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the business name page with populated business name")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.business.name.title")),
+          pageTitle(messages("agent.business.name.title")),
           textField("businessName", testBusinessName.businessName)
         )
       }
@@ -60,7 +60,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the business name page with no business name")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.business.name.title")),
+          pageTitle(messages("agent.business.name.title")),
           textField("businessName", "")
         )
       }

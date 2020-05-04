@@ -22,9 +22,10 @@ import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import org.scalatest.Matchers._
 import play.api.data.{Field, Form}
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits.applicationMessages
-import uk.gov.hmrc.play.language.LanguageUtils.Welsh
+import play.api.http.HeaderNames
+import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.mvc.Cookie
+import play.api.test.FakeRequest
 import utilities.UnitTestTrait
 import views.html.helpers.dateHelper
 
@@ -34,6 +35,8 @@ class DateHelperSpec extends UnitTestTrait {
   val testForm = Form(
     dateName -> dateMapping.verifying(DataMap.alwaysFail)
   )
+
+  val welshMessages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
 
   val testLabel = "my test label text"
 
@@ -68,7 +71,7 @@ class DateHelperSpec extends UnitTestTrait {
     "the day & month class changes for the Welsh language" in {
       val testField = testForm(dateName)
 
-      val doc = dateHelper(testField, testLabel, None, testForm)(applicationMessages(Welsh, app)).doc
+      val doc = dateHelper(testField, testLabel, None, testForm)(welshMessages).doc
 
       val inputs = doc.getElementsByTag("input")
 
