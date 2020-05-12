@@ -34,7 +34,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
     summary = testAgentSummaryData,
     postAction = controllers.agent.routes.AddAnotherClientController.addAnother(),
     signOutAction = action
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Sign Up Complete view" should {

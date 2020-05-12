@@ -18,14 +18,13 @@
 @import play.api.data.Field
 @import forms.submapping.DateMapping._
 @import views.html.helpers._
+@import play.twirl.api.HtmlFormat
 
 @(field: Field,
         label: Option[String] = None,
         hintText: Option[String] = None,
         parentForm: Form[_]
 )(implicit messages: Messages)
-
-@import uk.gov.hmrc.play.language.LanguageUtils.Welsh
 
 @hasError = @{ parentForm.errors(field.name).nonEmpty }
 
@@ -35,8 +34,8 @@
 
 @* SAR-2367 a hacky fix until a formal decision is made. This changes the spacing for day & month fields in the Welsh language to match the year *@
 @ifNotWelsh(ifNotWelshClass: String) = @{
-    messages.lang match {
-        case Welsh => "form-group-year"
+    messages.lang.code match {
+        case "cy" => "form-group-year"
         case _ => ifNotWelshClass
     }
 }

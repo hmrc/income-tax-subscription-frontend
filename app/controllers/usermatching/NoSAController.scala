@@ -18,13 +18,12 @@ package controllers.usermatching
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
-class NoSAController @Inject()(val messagesApi: MessagesApi)
-                              (implicit appConfig: AppConfig) extends FrontendController with I18nSupport {
+class NoSAController @Inject()(mcc: MessagesControllerComponents)
+                              (implicit appConfig: AppConfig) extends FrontendController(mcc){
 
   val show: Action[AnyContent] = Action {
     implicit request => Ok(views.html.individual.usermatching.no_sa())

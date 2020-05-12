@@ -44,11 +44,10 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
   def createTestBusinessPhoneNumberController(setEnableRegistration: Boolean): BusinessPhoneNumberController =
     new BusinessPhoneNumberController(
       mockAuthService,
-      messagesApi,
       MockKeystoreService
     )(implicitly, new MockConfig {
       override val enableRegistration: Boolean = setEnableRegistration
-    })
+    }, mockMessagesControllerComponents)
 
   lazy val TestBusinessPhoneNumberController: BusinessPhoneNumberController =
     createTestBusinessPhoneNumberController(setEnableRegistration = true)

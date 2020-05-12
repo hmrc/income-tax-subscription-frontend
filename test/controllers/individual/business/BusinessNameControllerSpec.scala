@@ -37,7 +37,6 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
   object TestBusinessNameController extends BusinessNameController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
   )
 

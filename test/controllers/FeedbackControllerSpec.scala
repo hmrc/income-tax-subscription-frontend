@@ -39,7 +39,7 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
 
   val sessionCookieCrypto: SessionCookieCrypto = app.injector.instanceOf[SessionCookieCrypto]
 
-  object TestFeedbackController extends FeedbackController(messagesApi, mockHttp, sessionCookieCrypto) {
+  object TestFeedbackController extends FeedbackController(mockHttp, sessionCookieCrypto)(appConfig, executionContext, mockMessagesControllerComponents) {
     override val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
       override def httpGet: CoreGet = ???
 

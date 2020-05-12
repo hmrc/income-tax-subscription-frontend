@@ -45,7 +45,7 @@ class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwi
         Then("should return an OK with the business start date page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.start_date.title"))
+          pageTitle(messages("business.start_date.title"))
         )
       }
     }
@@ -62,7 +62,7 @@ class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwi
         Then("should return an OK with the business start date page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.start_date.title")),
+          pageTitle(messages("business.start_date.title")),
           dateField("startDate", testStartDate)
         )
       }

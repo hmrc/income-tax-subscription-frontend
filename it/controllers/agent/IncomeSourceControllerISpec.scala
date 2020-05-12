@@ -41,8 +41,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the income source page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.income_source.title")),
-          radioButtonSet(id = "incomeSource", selectedRadioButton = Some(Messages("agent.income_source.both")))
+          pageTitle(messages("agent.income_source.title")),
+          radioButtonSet(id = "incomeSource", selectedRadioButton = Some(messages("agent.income_source.both")))
         )
       }
     }
@@ -59,7 +59,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the income source page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.income_source.title")),
+          pageTitle(messages("agent.income_source.title")),
           radioButtonSet(id = "incomeSource", selectedRadioButton = None)
         )
       }

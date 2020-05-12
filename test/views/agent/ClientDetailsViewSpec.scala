@@ -32,7 +32,7 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
     clientDetailsForm = ClientDetailsForm.clientDetailsForm.form.addError(addFormErrors),
     postAction = action,
     isEditMode = isEditMode
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def documentCore(isEditMode: Boolean): TestView = TestView(
     name = "Client Details View",

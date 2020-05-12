@@ -19,14 +19,18 @@ package views.helpers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
-import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.i18n.Messages.Implicits.applicationMessages
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 
-class AccordionHelperSpec extends PlaySpec with OneServerPerSuite {
+class AccordionHelperSpec extends PlaySpec with GuiceOneServerPerSuite {
+
+  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   private def accordionHelper(label: String,content: Html)
-  = views.html.helpers.accordionHelper(label,content)(applicationMessages)
+  = views.html.helpers.accordionHelper(label,content)
 
   implicit class HtmlFormatUtil(html: Html) {
     def doc: Document = Jsoup.parse(html.body)

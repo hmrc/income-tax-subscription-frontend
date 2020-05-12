@@ -45,10 +45,9 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
   object TestPreferencesController extends PreferencesController(
     mockAuthService,
-    messagesApi,
     mockPreferencesService,
     mockPaperlessPreferenceTokenService
-  )
+  )(executionContext, appConfig, mockMessagesControllerComponents)
 
   "Calling the checkPreference action of the PreferencesController with an authorised user" when {
     implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest

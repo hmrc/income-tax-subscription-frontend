@@ -19,9 +19,9 @@ package controllers.agent.matching
 import auth.agent.AgentUserMatched
 import controllers.agent.ITSASessionKeys
 import helpers.UserMatchingIntegrationResultSupport
+import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub, KeystoreStub}
-import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{AuthStub => _, KeystoreStub => _, _}
 import play.api.http.Status._
 
@@ -88,7 +88,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             redirectURI(clientDetailsErrorURI)
           )
 
-          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          val cookie = getSessionMap(res)
           cookie.keys should contain(ITSASessionKeys.FailedClientMatching)
         }
       }
@@ -112,7 +112,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             redirectURI(agentLockedOutURI)
           )
 
-          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          val cookie = getSessionMap(res)
           cookie.keys should not contain ITSASessionKeys.FailedClientMatching
 
           KeystoreStub.verifyKeyStoreDelete(Some(1))
@@ -186,7 +186,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           redirectURI(indexURI)
         )
 
-        val session = SessionCookieCrumbler.getSessionMap(res)
+        val session = getSessionMap(res)
         session.get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
         session.get(ITSASessionKeys.NINO) shouldBe Some(testNino)
         session.get(ITSASessionKeys.UTR) shouldBe None
@@ -217,7 +217,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             redirectURI(indexURI)
           )
 
-          val session = SessionCookieCrumbler.getSessionMap(res)
+          val session = getSessionMap(res)
           session.get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
           session.get(ITSASessionKeys.NINO) shouldBe Some(testNino)
           session.get(ITSASessionKeys.UTR) shouldBe Some(testUtr)

@@ -33,9 +33,7 @@ class CannotSignUpControllerSpec extends ControllerBaseSpec with MockKeystoreSer
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestCannotSignUpController extends CannotSignUpController(
-    mockAuthService,
-    messagesApi
-  )
+    mockAuthService)
 
   "Calling the show action of the CannotSignUpController" when {
     def call: Future[Result] = TestCannotSignUpController.show(subscriptionRequest)

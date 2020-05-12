@@ -32,7 +32,7 @@ import utilities.{MockTrait, UnitTestTrait}
 
 import scala.concurrent.Future
 
-trait MockPreferenceFrontendConnector extends MockTrait with I18nSupport {
+trait MockPreferenceFrontendConnector extends MockTrait {
 
   val mockPreferenceFrontendConnector: PreferenceFrontendConnector = mock[PreferenceFrontendConnector]
   implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -52,7 +52,7 @@ trait MockPreferenceFrontendConnector extends MockTrait with I18nSupport {
 
 }
 
-trait TestPreferenceFrontendConnector extends UnitTestTrait with I18nSupport with MockHttp {
+trait TestPreferenceFrontendConnector extends UnitTestTrait with MockHttp {
 
   implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
 

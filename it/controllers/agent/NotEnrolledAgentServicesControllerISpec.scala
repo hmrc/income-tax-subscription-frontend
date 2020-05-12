@@ -34,7 +34,7 @@ class NotEnrolledAgentServicesControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the agent not enrolled page")
       res should have(
         httpStatus(OK),
-        pageTitle(Messages("agent.not_enrolled_agent_services.title"))
+        pageTitle(messages("agent.not_enrolled_agent_services.title"))
       )
     }
   }

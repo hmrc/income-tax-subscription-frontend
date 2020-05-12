@@ -27,9 +27,8 @@ import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.{Both, Business, IncomeSourceType}
 import models.{No, Yes}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.libs.functional.~
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
 import services.agent.KeystoreService
@@ -37,10 +36,8 @@ import services.agent.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAccountingMethodController @Inject()(val authService: AuthService,
-                                                   val messagesApi: MessagesApi,
-                                                   val keystoreService: KeystoreService)
-                                                  (implicit val ec: ExecutionContext,
+class BusinessAccountingMethodController @Inject()(val authService: AuthService, val keystoreService: KeystoreService)
+                                                  (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                                    appConfig: AppConfig) extends AuthenticatedController with AgentRequireAnswer {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {

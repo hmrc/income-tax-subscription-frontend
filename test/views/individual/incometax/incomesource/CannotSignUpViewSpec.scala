@@ -18,6 +18,7 @@ package views.individual.incometax.incomesource
 
 import assets.MessageLookup.{CannotSignUp => messages}
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
@@ -27,11 +28,13 @@ class CannotSignUpViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
+  implicit val request: Request[_] = FakeRequest()
+
   lazy val page = views.html.individual.incometax.incomesource.cannot_sign_up(
     postAction = action,
     backUrl = backUrl)(
     FakeRequest(),
-    applicationMessages,
+    implicitly,
     appConfig
   )
 

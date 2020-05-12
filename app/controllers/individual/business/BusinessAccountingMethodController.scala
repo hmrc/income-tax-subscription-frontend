@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import utilities.individual.CacheUtil.CacheMapUtil
 import forms.individual.business.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.{AccountingMethodModel, MatchTaxYearModel}
@@ -26,20 +25,19 @@ import models.individual.incomesource.RentUkPropertyModel
 import models.individual.subscription.Business
 import models.{No, Yes}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
 import services.individual.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.individual.CacheUtil.CacheMapUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAccountingMethodController @Inject()(val authService: AuthService,
-                                                   val messagesApi: MessagesApi,
-                                                   keystoreService: KeystoreService)
-                                                  (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
+class BusinessAccountingMethodController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+                                                  (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                                   mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
     for {

@@ -38,9 +38,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
   )
 
   def createTestUserDetailsErrorController(enableMatchingFeature: Boolean): UserDetailsErrorController = new UserDetailsErrorController(
-    mockAuthService,
-    messagesApi
-  )
+    mockAuthService)
 
   lazy val TestUserDetailsErrorController: UserDetailsErrorController = createTestUserDetailsErrorController(enableMatchingFeature = true)
 

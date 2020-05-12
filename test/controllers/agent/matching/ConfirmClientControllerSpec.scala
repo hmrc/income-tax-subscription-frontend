@@ -48,7 +48,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
   private def createTestConfirmClientController(enableMatchingFeature: Boolean = false) = new ConfirmClientController(
     mockAuthService,
-    messagesApi,
     mockAgentQualificationService,
     mockGetEligibilityStatusService,
     mockUserLockoutService
@@ -70,9 +69,9 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(Left(expectedResult)))
 
-  val arn = TestConstants.testARN
-  val utr = TestConstants.testUtr
-  val nino = TestConstants.testNino
+  lazy val arn: String = TestConstants.testARN
+  lazy val utr: String = TestConstants.testUtr
+  lazy val nino: String = TestConstants.testNino
 
   lazy val request = userMatchingRequest.buildRequest(TestModels.testClientDetails)
 
@@ -82,13 +81,12 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
     "when there are no client details store redirect them to client details" in {
       setupMockNotLockedOut(arn)
-      val r = request.buildRequest(None)
 
-      val result = call(r)
+      val result = call(userMatchedRequest)
 
       status(result) must be(Status.SEE_OTHER)
 
-      await(result).verifyStoredUserDetailsIs(None)(r)
+      await(result).verifyStoredUserDetailsIs(None)(userMatchedRequest)
 
     }
 

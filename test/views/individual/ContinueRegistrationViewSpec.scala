@@ -17,7 +17,7 @@
 package views.individual
 
 import assets.MessageLookup.{PreferencesCallBack => messages}
-import play.api.i18n.Messages.Implicits.applicationMessages
+
 import views.ViewSpecTrait
 
 class ContinueRegistrationViewSpec extends ViewSpecTrait {
@@ -27,7 +27,7 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
   lazy val page = views.html.individual.continue_registration(
     postAction = action
-  )(request, applicationMessages, appConfig)
+  )(request, implicitly, appConfig)
 
   "The Continue Registration view" should {
     val testPage = TestView(

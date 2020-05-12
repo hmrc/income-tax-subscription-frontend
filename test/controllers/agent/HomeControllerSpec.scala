@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import auth.agent.AgentSignUp
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import org.mockito.Mockito.reset
 import play.api.http.Status
@@ -35,9 +34,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
   )
 
   private def testHomeController() = new HomeController(
-    mockAuthService,
-    messagesApi
-  )
+    mockAuthService)(executionContext, mockMessagesControllerComponents)
 
   "Calling the home action of the Home controller with an authorised user" should {
     lazy val result = testHomeController().home()(FakeRequest())

@@ -34,7 +34,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def documentCore(isEditMode: Boolean): TestView = TestView(
     name = "Business Name View",

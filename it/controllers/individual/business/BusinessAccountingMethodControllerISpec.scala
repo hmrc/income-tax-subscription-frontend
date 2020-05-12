@@ -40,12 +40,12 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
 
-        val expectedText = removeHtmlMarkup(Messages("business.accounting_method.cash"))
+        val expectedText = removeHtmlMarkup(messages("business.accounting_method.cash"))
 
         Then("Should return a OK with the accounting method page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.accounting_method.title")),
+          pageTitle(messages("business.accounting_method.title")),
           radioButtonSet(id = "accountingMethod", selectedRadioButton = Some(expectedText))
         )
       }
@@ -63,7 +63,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the accounting method page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.accounting_method.title")),
+          pageTitle(messages("business.accounting_method.title")),
           radioButtonSet(id = "accountingMethod", selectedRadioButton = None)
         )
       }

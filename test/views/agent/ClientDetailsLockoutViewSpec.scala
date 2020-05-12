@@ -25,7 +25,7 @@ class ClientDetailsLockoutViewSpec extends ViewSpecTrait {
   val testTime = "test time"
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.agent.client_details_lockout(testTime)(request, applicationMessages, appConfig)
+  lazy val page = views.html.agent.client_details_lockout(testTime)(request, implicitly, appConfig)
 
   "The Client Details Lockout view" should {
     val testPage = TestView(

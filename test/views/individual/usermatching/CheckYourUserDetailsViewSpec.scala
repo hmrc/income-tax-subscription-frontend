@@ -18,11 +18,11 @@ package views.individual.usermatching
 
 import assets.MessageLookup
 import assets.MessageLookup.{Base => common, ConfirmUser => messages}
+import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
-import play.api.i18n.Messages.Implicits.applicationMessages
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.individual.TestConstants
@@ -33,24 +33,26 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
 
   val testFirstName = "Test"
   val testLastName = "User"
-  val testNino = TestConstants.testNino
-  val testDob = TestModels.testStartDate
+  val testNino: String = TestConstants.testNino
+  val testDob: DateModel = TestModels.testStartDate
   val testUserDetails = UserDetailsModel(
     testFirstName,
     testLastName,
     testNino,
     testDob)
 
+  implicit val request: Request[_] = FakeRequest()
+
   lazy val postAction: Call = controllers.usermatching.routes.ConfirmUserController.submit()
   lazy val backUrl: String = "testBackUrl"
 
-  val expectedEditLink = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
+  val expectedEditLink: String = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
 
   def page(): HtmlFormat.Appendable = views.html.individual.usermatching.check_your_user_details(
     userDetailsModel = testUserDetails,
     postAction = postAction,
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def document(): Document = page().doc
 

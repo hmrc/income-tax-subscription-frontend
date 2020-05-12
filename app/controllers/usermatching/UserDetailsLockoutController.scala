@@ -19,22 +19,19 @@ package controllers.usermatching
 import java.time.{Duration, LocalTime}
 
 import auth.individual.{IncomeTaxSAUser, UserMatchingController}
-import auth.individual.UserMatchingController
 import config.AppConfig
 import javax.inject.Inject
 import models.usermatching.{LockedOut, NotLockedOut}
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.i18n.Messages
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import services.{AuthService, UserLockoutService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class UserDetailsLockoutController @Inject()(val authService: AuthService,
-                                             val messagesApi: MessagesApi,
-                                             lockoutService: UserLockoutService)
-                                            (implicit val ec: ExecutionContext, appConfig: AppConfig) extends UserMatchingController {
+class UserDetailsLockoutController @Inject()(val authService: AuthService, lockoutService: UserLockoutService)(implicit val ec: ExecutionContext,
+                                             appConfig: AppConfig, mcc: MessagesControllerComponents) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
     val bearerToken = implicitly[HeaderCarrier].userId.get.value

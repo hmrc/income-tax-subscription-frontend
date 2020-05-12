@@ -16,14 +16,13 @@
 
 package controllers.agent
 
-import auth.agent.{AgentSignUp, AgentUserMatched}
 import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
+import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
-import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 
-class HomeControllerISpec extends ComponentSpecBase {
+class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
 
   "GET /" should {
     "return a redirect to the index page" in {
@@ -57,7 +56,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           )
 
           Then("the JourneyStateKey should be added as UserMatching")
-          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
         }
       }
 
@@ -76,7 +75,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           )
 
           Then("the JourneyStateKey should remain as UserMatching")
-          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
         }
       }
 
@@ -97,7 +96,7 @@ class HomeControllerISpec extends ComponentSpecBase {
             )
 
             Then("the JourneyStateKey should be changed to AgentSignUp")
-            SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
           }
         }
 
@@ -116,7 +115,7 @@ class HomeControllerISpec extends ComponentSpecBase {
             )
 
             Then("the JourneyStateKey should be removed")
-            SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe None
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe None
           }
         }
 

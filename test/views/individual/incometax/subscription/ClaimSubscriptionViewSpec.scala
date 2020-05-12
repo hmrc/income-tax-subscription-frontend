@@ -29,7 +29,7 @@ class ClaimSubscriptionViewSpec extends ViewSpecTrait {
   val action = ViewSpecTrait.testCall
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.individual.incometax.subscription.enrolled.claim_subscription()(request, applicationMessages, appConfig)
+  lazy val page = views.html.individual.incometax.subscription.enrolled.claim_subscription()(request, implicitly, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Confirmation view" should {

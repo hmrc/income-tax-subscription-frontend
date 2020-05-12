@@ -17,12 +17,10 @@
 package controllers
 
 import java.net.URLEncoder
-
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, Request}
+import play.api.mvc._
 import services.AuthService
-import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -30,9 +28,8 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SignOutController @Inject()(appConfig: AppConfig,
-                                  authService: AuthService)
-                                 (implicit ec: ExecutionContext) extends FrontendController {
+class SignOutController @Inject()(mcc: MessagesControllerComponents, appConfig: AppConfig, authService: AuthService)
+                                 (implicit ec: ExecutionContext) extends FrontendController(mcc) {
 
   def signOut(origin: String): Action[AnyContent] = Action.async { implicit request =>
     authService.authorised().retrieve(affinityGroup) {

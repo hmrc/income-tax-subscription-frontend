@@ -18,7 +18,7 @@ class AffinityGroupErrorControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the no matching user page")
       res should have(
         httpStatus(OK),
-        pageTitle(Messages("affinity-group-error.title"))
+        pageTitle(messages("affinity-group-error.title"))
       )
     }
   }

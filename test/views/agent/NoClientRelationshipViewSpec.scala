@@ -28,7 +28,7 @@ class NoClientRelationshipViewSpec extends ViewSpecTrait {
 
   val action: Call = ViewSpecTrait.testCall
 
-  lazy val page = views.html.agent.no_client_relationship(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.agent.no_client_relationship(action)(FakeRequest(), implicitly, appConfig)
 
   lazy val document: Document = Jsoup.parse(page.body)
 

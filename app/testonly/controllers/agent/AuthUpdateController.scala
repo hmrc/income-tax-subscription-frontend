@@ -21,9 +21,8 @@ package testonly.controllers.agent
 import auth.agent.StatelessController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.AuthService
 import uk.gov.hmrc.http.HttpPatch
 
@@ -36,11 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
   * But we need to stub out the enrolment calls which we cannot simulate solely using the auth stubs
   */
 @Singleton
-class AuthUpdateController @Inject()(val authService: AuthService,
-                                     val messagesApi: MessagesApi,
-                                     appConfig: AppConfig,
-                                     http: HttpPatch)
-                                    (implicit val ec: ExecutionContext) extends StatelessController {
+class AuthUpdateController @Inject()(val authService: AuthService, appConfig: AppConfig, http: HttpPatch)
+                                    (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents) extends StatelessController {
 
   lazy val noAction: Future[String] = Future.successful("no actions taken")
   lazy val updated: Future[Result] = Future.successful(Ok("updated"))

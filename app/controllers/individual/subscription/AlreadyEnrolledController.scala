@@ -19,16 +19,14 @@ package controllers.individual.subscription
 import auth.individual.PostSubmissionController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AlreadyEnrolledController @Inject()(val authService: AuthService,
-                                          val messagesApi: MessagesApi)
-                                         (implicit val ec: ExecutionContext, appConfig: AppConfig) extends PostSubmissionController {
+class AlreadyEnrolledController @Inject()(val authService: AuthService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                          mcc: MessagesControllerComponents) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
     user => Ok(views.html.individual.incometax.subscription.enrolled.already_enrolled())

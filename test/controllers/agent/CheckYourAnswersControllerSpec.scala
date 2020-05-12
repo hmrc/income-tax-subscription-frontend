@@ -44,7 +44,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   object TestCheckYourAnswersController extends CheckYourAnswersController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService,
     mockSubscriptionOrchestrationService
   )

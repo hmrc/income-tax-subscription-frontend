@@ -20,17 +20,15 @@ import auth.agent.AgentJourneyState._
 import auth.agent.{AgentSignUp, AgentUserMatching, StatelessController}
 import controllers.agent.ITSASessionKeys._
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
 import utilities.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HomeController @Inject()(val authService: AuthService,
-                               val messagesApi: MessagesApi)
-                              (implicit val ec: ExecutionContext) extends StatelessController {
+class HomeController @Inject()(val authService: AuthService)(implicit val ec: ExecutionContext,
+                               mcc: MessagesControllerComponents) extends StatelessController {
 
   def home: Action[AnyContent] = Action.async { implicit request =>
     Redirect(controllers.agent.routes.HomeController.index())

@@ -37,7 +37,7 @@ class ClientDetailsLockoutControllerISpec extends ComponentSpecBase {
         Then("The result should have a status of OK")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.client-details-lockout.title"))
+          pageTitle(messages("agent.client-details-lockout.title"))
         )
       }
     }

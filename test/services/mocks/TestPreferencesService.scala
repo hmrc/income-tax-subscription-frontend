@@ -29,7 +29,7 @@ import utilities.{MockTrait, UnitTestTrait}
 import scala.concurrent.Future
 
 trait MockPreferencesService extends MockTrait {
-  val mockPreferencesService = mock[PreferencesService]
+  val mockPreferencesService: PreferencesService = mock[PreferencesService]
 
   private def mockCheckPaperless(token: String)(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
     when(mockPreferencesService.checkPaperless(ArgumentMatchers.eq(token))(ArgumentMatchers.any[Request[AnyContent]], ArgumentMatchers.any[Messages]))

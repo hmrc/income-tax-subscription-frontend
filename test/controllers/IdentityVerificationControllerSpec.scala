@@ -31,9 +31,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
   )
 
   object TestIdentityVerificationController extends IdentityVerificationController(
-    mockAuthService,
-    messagesApi
-  )
+    mockAuthService)(executionContext, appConfig,mockMessagesControllerComponents)
 
   // not a real journey id and its value doesn't really matter for unit test purposes
   val testJourneyId = "testJourneyId"

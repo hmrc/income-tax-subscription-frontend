@@ -22,7 +22,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
@@ -32,13 +32,15 @@ class PropertyAccountingMethodViewSpec extends ViewSpecTrait {
   val backUrl: String = ViewSpecTrait.testBackUrl
   val action: Call = ViewSpecTrait.testCall
 
+  implicit val request: Request[_] = FakeRequest()
+
   class Setup(isEditMode: Boolean = false) {
     val page: HtmlFormat.Appendable = views.html.individual.incometax.business.property_accounting_method(
       accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm,
       postAction = action,
       isEditMode,
       backUrl = backUrl
-    )(FakeRequest(), applicationMessages, appConfig)
+    )(FakeRequest(), implicitly, appConfig)
 
     val document: Document = Jsoup.parse(page.body)
   }

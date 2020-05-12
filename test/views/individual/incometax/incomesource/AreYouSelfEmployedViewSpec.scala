@@ -20,7 +20,7 @@ import assets.MessageLookup.{AreYouSelfEmployed => messages, Base => coomon}
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import forms.submapping.YesNoMapping
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
@@ -31,12 +31,14 @@ class AreYouSelfEmployedViewSpec extends ViewSpecTrait {
 
   val action: Call = ViewSpecTrait.testCall
 
+  implicit val request: Request[_] = FakeRequest()
+
   def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.incometax.incomesource.are_you_selfemployed(
     areYouSelfEmployedForm = AreYouSelfEmployedForm.areYouSelfEmployedForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   "The Are you self-employed View" should {
 

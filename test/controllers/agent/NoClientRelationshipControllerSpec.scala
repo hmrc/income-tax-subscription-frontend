@@ -32,11 +32,10 @@ class NoClientRelationshipControllerSpec
     "submit" -> TestNoClientRelationshipController.submit
   )
   override val controllerName: String = "NoClientRelationshipController"
-  val mockClientRelationshipService = mock[ClientRelationshipService]
+  val mockClientRelationshipService: ClientRelationshipService = mock[ClientRelationshipService]
 
   object TestNoClientRelationshipController extends NoClientRelationshipController(
-    mockAuthService,
-    messagesApi
+    mockAuthService
   )
 
 

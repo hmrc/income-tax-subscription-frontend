@@ -62,7 +62,7 @@ class BusinessAddressControllerISpec extends ComponentSpecBase with FeatureSwitc
         Then(s"return a OK with the business address page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.address.title"))
+          pageTitle(messages("business.address.title"))
         )
       }
     }

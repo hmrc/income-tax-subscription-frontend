@@ -35,7 +35,7 @@ class CannotUseServiceControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the cannot use service page")
       res should have(
         httpStatus(OK),
-        pageTitle(Messages("cannot-use-service.title"))
+        pageTitle(messages("cannot-use-service.title"))
       )
     }
   }

@@ -34,7 +34,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the no agent client relationship page")
       res should have(
         httpStatus(OK),
-        pageTitle(Messages("agent.no-client-relationship.title"))
+        pageTitle(messages("agent.no-client-relationship.title"))
       )
     }
   }

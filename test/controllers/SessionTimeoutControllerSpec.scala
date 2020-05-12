@@ -27,7 +27,7 @@ class SessionTimeoutControllerSpec extends ControllerBaseSpec {
   override val controllerName: String = "SessionTimeoutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestSessionTimeoutController extends SessionTimeoutController(messagesApi)
+  object TestSessionTimeoutController extends SessionTimeoutController(mockMessagesControllerComponents)
 
   "Calling the timeout action of the SessionTimeoutController" should {
 

@@ -16,26 +16,25 @@
 
 package controllers.agent
 
-import utilities.agent.TestModels._
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
-import play.api.Play
 import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent, Cookie}
+import play.api.mvc.{Action, AnyContent, Request}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.agent.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
-import uk.gov.hmrc.play.language.LanguageUtils._
+import utilities.agent.TestModels._
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   object TestConfirmationController extends ConfirmationController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
-  )
+  )(executionContext, appConfig, mockMessagesControllerComponents)
+
+  implicit val request: Request[_] = FakeRequest()
 
   override val controllerName: String = "ConfirmationControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -58,21 +57,6 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
         val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
         status(result) shouldBe OK
-      }
-    }
-
-    "submitted is in session and welsh content applies" should {
-      "return OK" in {
-        mockFetchAllFromKeyStore(testCacheMap)
-
-        val result = TestConfirmationController.show(
-          subscriptionRequest
-            .addingToSession(ITSASessionKeys.MTDITID -> "any")
-            .withCookies(Cookie(Play.langCookieName(applicationMessagesApi), WelshLangCode))
-        )
-        status(result) shouldBe OK
-
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title")(applicationMessages(Welsh, app))
       }
     }
 

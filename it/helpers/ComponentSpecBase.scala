@@ -19,15 +19,12 @@ package helpers
 import java.util.UUID
 
 import auth.individual.{JourneyState, Registration, SignUp, UserMatching}
-import utilities.ITSASessionKeys._
-import auth.individual.{Registration, SignUp, UserMatching}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
 import forms.individual.incomesource.{AreYouSelfEmployedForm, RentUkPropertyForm}
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
-import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.individual.business._
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
@@ -38,21 +35,27 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api._
 import play.api.data.Form
 import play.api.http.HeaderNames
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.crypto.DefaultCookieSigner
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
+import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.UnitSpec
+import utilities.ITSASessionKeys._
 
-trait ComponentSpecBase extends UnitSpec
-  with GivenWhenThen with TestSuite
+trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
   with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
-  with I18nSupport with CustomMatchers with WireMockMethods with FeatureSwitching {
+  with CustomMatchers with WireMockMethods with FeatureSwitching with SessionCookieBaker {
 
-  val mockHost: String = WiremockHelper.wiremockHost
-  val mockPort: String = WiremockHelper.wiremockPort.toString
-  val mockUrl = s"http://$mockHost:$mockPort"
+  lazy val mockHost: String = WiremockHelper.wiremockHost
+  lazy val mockPort: String = WiremockHelper.wiremockPort.toString
+  lazy val mockUrl = s"http://$mockHost:$mockPort"
+
+  override lazy val cookieSigner: DefaultCookieSigner = app.injector.instanceOf[DefaultCookieSigner]
+
+  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   def config: Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
@@ -96,8 +99,6 @@ trait ComponentSpecBase extends UnitSpec
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  override lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-
   override def beforeEach(): Unit = {
     super.beforeEach()
     resetWiremock()
@@ -120,13 +121,13 @@ trait ComponentSpecBase extends UnitSpec
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name) ++ additionalCookies))
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name) ++ additionalCookies))
         .get()
     )
 
     def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> SessionCookieBaker.bakeSessionCookie(Map(JourneyStateKey -> SignUp.name) ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name) ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
     )
 

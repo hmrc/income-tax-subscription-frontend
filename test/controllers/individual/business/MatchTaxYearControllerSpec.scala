@@ -42,7 +42,6 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
   object TestMatchTaxYearController extends MatchTaxYearController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
   )
 

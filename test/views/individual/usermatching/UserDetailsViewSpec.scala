@@ -18,12 +18,16 @@ package views.individual.usermatching
 
 import assets.MessageLookup.{Base => common, UserDetails => messages}
 import forms.usermatching.UserDetailsForm
+import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class UserDetailsViewSpec extends ViewSpecTrait {
+
+  implicit val request: Request[_] = FakeRequest()
 
   val action = ViewSpecTrait.testCall
 
@@ -31,7 +35,7 @@ class UserDetailsViewSpec extends ViewSpecTrait {
     userDetailsForm = UserDetailsForm.userDetailsForm.form.addError(addFormErrors),
     postAction = action,
     isEditMode = isEditMode
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def documentCore(isEditMode: Boolean): TestView = TestView(
     name = "User Details View",

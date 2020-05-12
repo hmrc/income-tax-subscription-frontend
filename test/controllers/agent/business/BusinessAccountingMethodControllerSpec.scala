@@ -39,14 +39,12 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
   )
 
   trait Test {
     val controller = new BusinessAccountingMethodController(
       mockAuthService,
-      messagesApi,
       MockKeystoreService
     )
   }

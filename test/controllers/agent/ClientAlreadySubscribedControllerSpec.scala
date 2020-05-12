@@ -31,9 +31,8 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec {
   )
 
   object TestClientAlreadySubscribedController extends ClientAlreadySubscribedController(
-    mockAuthService,
-    messagesApi
-  )
+    mockAuthService
+  )(executionContext, appConfig, mockMessagesControllerComponents)
 
   "Calling the show action of the ClientAlreadySubscribedController with an Authenticated User" should {
 

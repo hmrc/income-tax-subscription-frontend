@@ -42,7 +42,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
   object TestPropertyAccountingMethodController extends PropertyAccountingMethodController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
   )
 

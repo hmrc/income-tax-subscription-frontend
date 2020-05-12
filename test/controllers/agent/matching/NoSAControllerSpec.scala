@@ -28,7 +28,7 @@ class NoSAControllerSpec extends ControllerBaseSpec {
   override val controllerName: String = "NoSAController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestNoSAController extends NoSAController(messagesApi)
+  object TestNoSAController extends NoSAController(mockMessagesControllerComponents)
 
   "Calling the show action of the NoSAController" should {
 

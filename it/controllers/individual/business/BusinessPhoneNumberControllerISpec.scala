@@ -46,7 +46,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
         Then("Should return a OK with the business phone number page with populated business number")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.phone_number.title")),
+          pageTitle(messages("business.phone_number.title")),
           textField("phoneNumber", testBusinessPhoneNumber.phoneNumber)
         )
       }
@@ -64,7 +64,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
         Then("Should return a OK with the business phone number page with no business phone number")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.phone_number.title")),
+          pageTitle(messages("business.phone_number.title")),
           textField("phoneNumber", "")
         )
       }

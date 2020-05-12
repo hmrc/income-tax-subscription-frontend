@@ -17,9 +17,11 @@
 package auth.agent
 
 import auth.individual.BaseFrontendController
+import javax.inject.Inject
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 
-trait PostSubmissionController extends BaseFrontendController {
+abstract class PostSubmissionController @Inject()(implicit mcc: MessagesControllerComponents) extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxAgentUser] {
 

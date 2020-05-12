@@ -23,6 +23,7 @@ import play.api.http.Status
 import play.api.test.Helpers._
 import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utilities.{TestModels, UnitTestTrait}
 
 class KeystoreServiceSpec extends UnitTestTrait
@@ -31,9 +32,11 @@ class KeystoreServiceSpec extends UnitTestTrait
   "Keystore service" should {
     "be DIed with the correct session cache object" in {
       val cache = app.injector.instanceOf[SessionCache]
-      cache.defaultSource shouldBe cache.getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
-      cache.baseUri shouldBe cache.baseUrl("session-cache")
-      cache.domain shouldBe cache.getConfString("session-cache.domain", throw new Exception(s"Could not find core.config 'session-cache.domain'"))
+      val config = app.injector.instanceOf[ServicesConfig]
+
+      cache.defaultSource shouldBe config.getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
+      cache.baseUri shouldBe config.baseUrl("session-cache")
+      cache.domain shouldBe config.getConfString("session-cache.domain", throw new Exception(s"Could not find core.config 'session-cache.domain'"))
     }
   }
 

@@ -22,8 +22,7 @@ import forms.agent.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
 import services.agent.KeystoreService
@@ -32,10 +31,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeSourceController @Inject()(val authService: AuthService,
-                                       val messagesApi: MessagesApi,
-                                       keystoreService: KeystoreService)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
+class IncomeSourceController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+                                      (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                       mcc: MessagesControllerComponents) extends AuthenticatedController {
 
   def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.agent.income_source(

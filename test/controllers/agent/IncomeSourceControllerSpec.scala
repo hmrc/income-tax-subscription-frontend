@@ -38,9 +38,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
   object TestIncomeSourceController extends IncomeSourceController(
     mockAuthService,
-    messagesApi,
     MockKeystoreService
-  )
+  )(executionContext, appConfig, mockMessagesControllerComponents)
 
   "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" should {
 

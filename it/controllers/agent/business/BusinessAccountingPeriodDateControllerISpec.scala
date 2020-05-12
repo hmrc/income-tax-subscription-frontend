@@ -49,8 +49,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         Then("Should return a OK with the accounting period dates page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.accounting_period.title")),
-          mainHeading(Messages("agent.accounting_period.heading")),
+          pageTitle(messages("agent.accounting_period.title")),
+          mainHeading(messages("agent.accounting_period.heading")),
           dateField("startDate", testAccountingPeriod.startDate),
           dateField("endDate", testAccountingPeriod.endDate)
         )
@@ -75,8 +75,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         Then("Should return a OK with the accounting period dates page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.accounting_period.title")),
-          mainHeading(Messages("agent.accounting_period.heading")),
+          pageTitle(messages("agent.accounting_period.title")),
+          mainHeading(messages("agent.accounting_period.heading")),
           dateField("startDate", DateModel("", "", "")),
           dateField("endDate", DateModel("", "", ""))
         )

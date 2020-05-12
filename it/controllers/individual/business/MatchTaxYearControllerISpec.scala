@@ -44,8 +44,8 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
         Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.match_tax_year.title.signup")),
-          radioButtonSet(id = MatchTaxYearForm.matchTaxYear, selectedRadioButton = Some(Messages("base.no")))
+          pageTitle(messages("business.match_tax_year.title.signup")),
+          radioButtonSet(id = MatchTaxYearForm.matchTaxYear, selectedRadioButton = Some(messages("base.no")))
         )
       }
     }
@@ -62,7 +62,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
         Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.match_tax_year.title.signup")),
+          pageTitle(messages("business.match_tax_year.title.signup")),
           radioButtonSet(id = "matchTaxYear", selectedRadioButton = None)
         )
       }

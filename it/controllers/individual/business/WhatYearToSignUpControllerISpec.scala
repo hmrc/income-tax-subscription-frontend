@@ -45,12 +45,12 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         val fromYear: String = (AccountingPeriodUtil.getTaxEndYear(LocalDate.now()) - 1).toString
         val toYear: String = AccountingPeriodUtil.getTaxEndYear(LocalDate.now()).toString
 
-        val expectedText = removeHtmlMarkup(Messages("business.what_year_to_sign_up.option_1.signup", fromYear, toYear))
+        val expectedText = removeHtmlMarkup(messages("business.what_year_to_sign_up.option_1.signup", fromYear, toYear))
 
         Then("Should return a OK with the What Year To Sign Up page")
         res should have(
           httpStatus(200),
-          pageTitle(Messages("business.what_year_to_sign_up.title.signup")),
+          pageTitle(messages("business.what_year_to_sign_up.title.signup")),
           radioButtonSet(id = "accountingYear-CurrentYear", selectedRadioButton = Some(expectedText)),
           radioButtonSet(id = "accountingYear-NextYear", selectedRadioButton = None)
         )
@@ -69,7 +69,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the What Year To Sign Up page")
         res should have(
           httpStatus(200),
-          pageTitle(Messages("business.what_year_to_sign_up.title.signup")),
+          pageTitle(messages("business.what_year_to_sign_up.title.signup")),
           radioButtonSet(id = "accountingYear-CurrentYear", selectedRadioButton = None),
           radioButtonSet(id = "accountingYear-NextYear", selectedRadioButton = None)
         )

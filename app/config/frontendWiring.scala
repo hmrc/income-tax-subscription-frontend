@@ -17,28 +17,20 @@
 package config
 
 import javax.inject._
-import play.api.Mode.Mode
-import play.api.{Configuration, Environment}
 import uk.gov.hmrc.crypto.PlainText
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
 @Singleton
-class SessionCache @Inject()(environment: Environment,
-                             configuration: Configuration,
-                             val http: HttpClient) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
-  override lazy val mode: Mode = environment.mode
+class SessionCache @Inject()(config: ServicesConfig,
+                             val http: HttpClient) extends uk.gov.hmrc.http.cache.client.SessionCache{
 
-  override protected def runModeConfiguration: Configuration = configuration
+  lazy val defaultSource: String = config.getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
 
-  override protected def appNameConfiguration: Configuration = configuration
-
-  lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
-
-  lazy val baseUri: String = baseUrl("session-cache")
-  lazy val domain: String = getConfString("session-cache.domain", throw new Exception(s"Could not find core.config 'session-cache.domain'"))
+  lazy val baseUri: String = config.baseUrl("session-cache")
+  lazy val domain: String = config.getConfString("session-cache.domain", throw new Exception(s"Could not find core.config 'session-cache.domain'"))
 }
 
 
@@ -49,5 +41,5 @@ class ITSAHeaderCarrierForPartialsConverter @Inject()(sessionCookieCrypto: Sessi
     sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
   }
 
-  override val crypto: String => String = encryptCookieString
+  override val crypto: String => String = identity
 }

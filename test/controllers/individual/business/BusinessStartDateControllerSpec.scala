@@ -42,11 +42,10 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
   def createTestBusinessStartDateController(setEnableRegistration: Boolean): BusinessStartDateController =
     new BusinessStartDateController(
       mockAuthService,
-      messagesApi,
       MockKeystoreService
     )(implicitly, new MockConfig {
       override val enableRegistration: Boolean = setEnableRegistration
-    })
+    },mockMessagesControllerComponents)
 
   lazy val TestBusinessStartDateController: BusinessStartDateController =
     createTestBusinessStartDateController(setEnableRegistration = true)

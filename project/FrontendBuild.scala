@@ -12,23 +12,23 @@ object FrontendBuild {
 
 private object AppDependencies {
 
-  private val bootstrapPlayVersion = "5.1.0"
-  private val govukTemplateVersion = "5.23.0"
-  private val playUiVersion = "8.2.0-play-25"
-  private val playPartialsVersion = "6.9.0-play-25"
-  private val hmrcTestVersion = "3.9.0-play-25"
-  private val scalaTestVersion = "3.0.7"
-  private val scalaTestPlusVersion = "2.0.1"
+  private val bootstrapPlayVersion = "1.7.0"
+  private val govukTemplateVersion = "5.52.0-play-26"
+  private val playUiVersion = "8.8.0-play-26"
+  private val playPartialsVersion = "6.10.0-play-26"
+  private val hmrcTestVersion = "3.9.0-play-26"
+  private val scalaTestVersion = "3.0.8"
+  private val scalaTestPlusVersion = "3.1.3"
   private val pegdownVersion = "1.6.0"
-  private val httpCachingClientVersion = "9.0.0-play-25"
-  private val wiremockVersion = "2.22.0"
-  private val domainVersion = "5.6.0-play-25"
+  private val httpCachingClientVersion = "9.0.0-play-26"
+  private val wiremockVersion = "2.26.3"
+  private val domainVersion = "5.6.0-play-26"
   private val catsVersion = "0.9.0"
-  private val playLanguageVersion = "3.4.0"
+  private val playLanguageVersion = "4.2.0-play-26"
 
-  val compile = Seq(
+  val compile: Seq[ModuleID] = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-25" % bootstrapPlayVersion,
+    "uk.gov.hmrc" %% "bootstrap-play-26" % bootstrapPlayVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
@@ -36,7 +36,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "domain" % domainVersion,
     "org.typelevel" %% "cats" % catsVersion,
     "uk.gov.hmrc" %% "play-language" % playLanguageVersion,
-    "uk.gov.hmrc" %% "logback-json-logger" % "4.6.0"
+    "uk.gov.hmrc" %% "logback-json-logger" % "4.8.0"
   )
 
   trait TestDependencies {
@@ -46,7 +46,7 @@ private object AppDependencies {
 
   object Test {
     def apply(): Seq[ModuleID] = new TestDependencies {
-      override lazy val test = Seq(
+      override lazy val test: Seq[ModuleID] = Seq(
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
@@ -59,11 +59,11 @@ private object AppDependencies {
   }
 
   object IntegrationTest {
-    def apply() = new TestDependencies {
+    def apply(): Seq[ModuleID] = new TestDependencies {
 
       override lazy val scope: String = "it"
 
-      override lazy val test = Seq(
+      override lazy val test: Seq[ModuleID] = Seq(
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
@@ -71,7 +71,7 @@ private object AppDependencies {
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
         "com.github.fge" % "json-schema-validator" % "2.2.6" % scope,
         "org.jsoup" % "jsoup" % "1.11.3" % scope,
-        "com.github.tomakehurst" % "wiremock" % wiremockVersion % scope
+        "com.github.tomakehurst" % "wiremock-jre8" % wiremockVersion % scope
       )
     }.test
   }

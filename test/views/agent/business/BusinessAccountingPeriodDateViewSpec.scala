@@ -37,7 +37,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
     backUrl = backUrl,
     isEditMode = isEditMode,
     taxEndYear = taxEndYear
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(FakeRequest(), implicitly, appConfig)
 
   def documentCore(suffix: Option[String] = None, isEditMode: Boolean): TestView = TestView(
     name = s"Business Accounting Period Date View${suffix.fold("")(x => x)}",

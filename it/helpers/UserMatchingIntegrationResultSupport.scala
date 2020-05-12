@@ -21,12 +21,12 @@ import org.scalatest.Matchers
 import play.api.libs.ws.WSResponse
 import utilities.UserMatchingSessionUtil._
 
-trait UserMatchingIntegrationResultSupport {
+trait UserMatchingIntegrationResultSupport extends SessionCookieCrumbler {
   matchers: Matchers =>
 
   implicit class UserMatchingResultUtil(result: WSResponse) {
     def verifyStoredUserDetailsIs(userDetails: Option[UserDetailsModel]): Unit = {
-      val session = SessionCookieCrumbler.getSessionMap(result)
+      val session = getSessionMap(result)
 
       userDetails match {
         case Some(detail) =>

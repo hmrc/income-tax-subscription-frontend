@@ -24,13 +24,15 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Request
+import play.api.test.FakeRequest
 import utilities.UnitTestTrait
 
 import scala.collection.JavaConversions._
 
 class SummaryErrorHelperSpec extends UnitTestTrait {
 
-  private def summaryErrorHelper(form: Form[_]) = views.html.helpers.summaryErrorHelper(form)(applicationMessages)
+  private def summaryErrorHelper(form: Form[_]) = views.html.helpers.summaryErrorHelper(form)(implicitly)
 
   case class TestData(field1: String, field2: String, field3: String)
 

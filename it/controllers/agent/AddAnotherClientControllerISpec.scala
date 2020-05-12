@@ -17,12 +17,12 @@
 package controllers.agent
 
 import config.featureswitch.FeatureSwitching
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
+import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status.SEE_OTHER
 
 
-class AddAnotherClientControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler with FeatureSwitching {
 
   "GET /add-another" when {
     s"clear the keystore and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
@@ -40,7 +40,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with FeatureSwit
         redirectURI(expectedRedirect)
       )
 
-      val cookie = SessionCookieCrumbler.getSessionMap(res)
+      val cookie = getSessionMap(res)
       cookie.keys should not contain ITSASessionKeys.MTDITID
       cookie.keys should not contain ITSASessionKeys.JourneyStateKey
 

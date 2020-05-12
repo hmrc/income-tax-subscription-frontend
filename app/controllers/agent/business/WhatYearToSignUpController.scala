@@ -16,25 +16,23 @@
 
 package controllers.agent.business
 
-import auth.agent.AuthenticatedController
+import auth.agent.{AuthenticatedController, UserMatchingController}
 import config.AppConfig
 import forms.agent.AccountingYearForm
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.agent.AccountingYearModel
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.agent.KeystoreService
 import services.{AccountingPeriodService, AuthService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WhatYearToSignUpController @Inject()(val authService: AuthService,
-                                           val messagesApi: MessagesApi,
-                                           accountingPeriodService: AccountingPeriodService,
-                                           keystoreService: KeystoreService)
-                                          (implicit val ec: ExecutionContext, appConfig: AppConfig) extends AuthenticatedController {
+@Singleton
+class WhatYearToSignUpController @Inject()(val authService: AuthService, accountingPeriodService: AccountingPeriodService, keystoreService: KeystoreService)
+                                          (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
+                                           appConfig: AppConfig) extends AuthenticatedController {
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {

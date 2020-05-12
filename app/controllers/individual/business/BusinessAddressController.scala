@@ -20,8 +20,8 @@ import auth.individual.RegistrationController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.business.address._
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.i18n.Messages
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
 import services.individual.{AddressLookupService, KeystoreService}
@@ -30,11 +30,9 @@ import uk.gov.hmrc.http.InternalServerException
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAddressController @Inject()(val authService: AuthService,
-                                          val messagesApi: MessagesApi,
-                                          addressLookupService: AddressLookupService,
-                                          keystoreService: KeystoreService)
-                                         (implicit val ec: ExecutionContext, val appConfig: AppConfig) extends RegistrationController {
+class BusinessAddressController @Inject()(val authService: AuthService, addressLookupService: AddressLookupService,
+                                          keystoreService: KeystoreService)(implicit val ec: ExecutionContext, val appConfig: AppConfig,
+                                          mcc: MessagesControllerComponents) extends RegistrationController {
 
 
   private[controllers] def callbackUrl(editMode: Boolean)(implicit request: Request[AnyContent]): String =

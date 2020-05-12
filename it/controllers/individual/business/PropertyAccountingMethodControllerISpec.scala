@@ -38,12 +38,12 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
         When("GET /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
 
-        val expected = s"${Messages("property.accounting_method.radio.cash")} ${Messages("property.accounting_method.radio.cash.detail")}"
+        val expected = s"${messages("property.accounting_method.radio.cash")} ${messages("property.accounting_method.radio.cash.detail")}"
 
         Then("Should return a OK with the property accounting method page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("property.accounting_method.title")),
+          pageTitle(messages("property.accounting_method.title")),
           radioButtonSet(id = "accountingMethodProperty-Cash", selectedRadioButton = Some(expected))
         )
       }
@@ -61,7 +61,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the property accounting method page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("property.accounting_method.title")),
+          pageTitle(messages("property.accounting_method.title")),
           radioButtonSet(id = "propertyAccountingMethod", selectedRadioButton = None)
         )
       }

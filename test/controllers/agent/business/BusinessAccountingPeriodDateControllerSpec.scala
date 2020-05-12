@@ -45,7 +45,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
   object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodDateController(
     mockAuthService,
-    messagesApi,
+
     mockAccountingPeriodService,
     MockKeystoreService
   )

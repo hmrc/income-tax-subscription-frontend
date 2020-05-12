@@ -60,7 +60,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result should have a status of OK")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("agent.client-details.title"))
+          pageTitle(messages("agent.client-details.title"))
         )
       }
     }
@@ -97,7 +97,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result should have a status of BadRequest")
         res should have(
           httpStatus(BAD_REQUEST),
-          pageTitle("Error: " + Messages("agent.client-details.title"))
+          pageTitle("Error: " + messages("agent.client-details.title"))
         )
 
         res.verifyStoredUserDetailsIs(None)

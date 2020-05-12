@@ -23,8 +23,7 @@ import javax.inject.{Inject, Singleton}
 import models.individual.incomesource.RentUkPropertyModel
 import models.{No, Yes}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
 import services.individual.KeystoreService
@@ -32,10 +31,8 @@ import services.individual.KeystoreService
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RentUkPropertyController @Inject()(val authService: AuthService,
-                                         val messagesApi: MessagesApi,
-                                         keystoreService: KeystoreService)
-                                        (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
+class RentUkPropertyController @Inject()(val authService: AuthService, keystoreService: KeystoreService)(implicit val ec: ExecutionContext,
+                                                         appConfig: AppConfig, mcc: MessagesControllerComponents) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

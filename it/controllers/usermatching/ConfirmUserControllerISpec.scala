@@ -17,14 +17,14 @@
 package controllers.usermatching
 
 import config.featureswitch.FeatureSwitching
+import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
-import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import utilities.ITSASessionKeys
 
 
-class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCrumbler with FeatureSwitching {
 
   "POST /confirm-user" when {
 
@@ -84,7 +84,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
             redirectURI(userDetailsErrorURI)
           )
 
-          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          val cookie = getSessionMap(res)
           cookie.keys should contain(ITSASessionKeys.FailedUserMatching)
         }
       }
@@ -108,7 +108,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
             redirectURI(userLockedOutURI)
           )
 
-          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          val cookie = getSessionMap(res)
           cookie.keys should not contain ITSASessionKeys.FailedUserMatching
 
           KeystoreStub.verifyKeyStoreDelete(Some(1))

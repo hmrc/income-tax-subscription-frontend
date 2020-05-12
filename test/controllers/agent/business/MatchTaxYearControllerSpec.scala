@@ -40,7 +40,6 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
 
     val controller = new MatchTaxYearController(
       mockAuthService,
-      messagesApi,
       MockKeystoreService
     )
 

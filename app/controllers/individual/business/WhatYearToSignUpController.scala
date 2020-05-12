@@ -22,8 +22,7 @@ import forms.individual.business.AccountingYearForm
 import javax.inject.{Inject, Singleton}
 import models.individual.business.AccountingYearModel
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.individual.KeystoreService
 import services.{AccountingPeriodService, AuthService}
@@ -31,11 +30,9 @@ import services.{AccountingPeriodService, AuthService}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatYearToSignUpController @Inject()(val authService: AuthService,
-                                           val messagesApi: MessagesApi,
-                                           accountingPeriodService: AccountingPeriodService,
-                                           keystoreService: KeystoreService)
-                                          (implicit val ec: ExecutionContext, appConfig: AppConfig) extends SignUpController {
+class WhatYearToSignUpController @Inject()(val authService: AuthService, accountingPeriodService: AccountingPeriodService,
+                                           keystoreService: KeystoreService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                           mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.individual.incometax.business.what_year_to_sign_up(
