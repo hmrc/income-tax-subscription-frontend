@@ -16,16 +16,15 @@
 
 package controllers.agent.business
 
-import auth.agent.{AuthenticatedController, UserMatchingController}
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.AccountingYearForm
 import javax.inject.{Inject, Singleton}
-import models.agent.AccountingYearModel
+import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.agent.KeystoreService
-import services.{AccountingPeriodService, AuthService}
+import services.{AccountingPeriodService, AuthService, KeystoreService}
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
-import services.agent.KeystoreService
+import services.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

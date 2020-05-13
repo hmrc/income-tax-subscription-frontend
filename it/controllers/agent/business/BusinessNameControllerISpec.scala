@@ -20,7 +20,7 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
-import models.agent.BusinessNameModel
+import models.common.BusinessNameModel
 import models.individual.subscription.Both
 import play.api.http.Status._
 import play.api.i18n.Messages

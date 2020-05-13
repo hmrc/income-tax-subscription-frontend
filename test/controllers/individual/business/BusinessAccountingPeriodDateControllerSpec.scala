@@ -28,8 +28,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.individual.mocks.MockKeystoreService
-import services.mocks.MockAccountingPeriodService
+import services.mocks.{MockAccountingPeriodService, MockKeystoreService}
 import utilities.TestModels
 import utilities.TestModels.testCacheMapCustom
 

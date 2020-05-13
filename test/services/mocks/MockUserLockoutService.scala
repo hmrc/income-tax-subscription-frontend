@@ -24,7 +24,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.http.Status._
-import services.individual.mocks.MockKeystoreService
 import services.{LockoutUpdate, UserLockoutService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.{MockTrait, UserMatchingTestSupport}

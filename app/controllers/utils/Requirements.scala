@@ -16,13 +16,13 @@
 
 package controllers.utils
 
-import models.agent.AccountingMethodModel
+import models.common.AccountingMethodModel
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.IncomeSourceType
 import play.api.libs.functional.~
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{Call, Result}
-import services.agent.KeystoreService
+import services.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -50,56 +50,33 @@ trait Answer[A] {
   def and[B](other: Answer[B]): Answer[A ~ B] = CompositeAnswer(this, other)
 }
 
-// If both keystore services, cacheutils and models were combined, that would be simpler as we wouldn't need seperate agent and individual answers
-object AgentAnswers {
+object Answers {
 
-  import utilities.agent.CacheUtil._
+  import utilities.CacheUtil._
 
-  val incomeSourceTypeAnswer: Answer[IncomeSourceType] = SingleAnswer(
-    retrieveAnswer = _.getIncomeSource(),
+  val incomeSourceTypeAnswer: Answer[IncomeSourceType] = SingleAnswer[IncomeSourceType](
+    retrieveAnswer = _.agentGetIncomeSource,
     ifEmpty = Redirect(controllers.agent.routes.IncomeSourceController.show().url)
   )
 
   val matchTaxYearAnswer: Answer[MatchTaxYearModel] = SingleAnswer(
-    retrieveAnswer = _.getMatchTaxYear(),
+    retrieveAnswer = _.getMatchTaxYear,
     ifEmpty = Redirect(controllers.agent.business.routes.MatchTaxYearController.show())
   )
 
   val optAccountingMethodAnswer: Answer[Option[AccountingMethodModel]] = OptionalAnswer(
-    retrieveAnswer = _.agentGetAccountingMethod()
+    retrieveAnswer = _.getAccountingMethod
   )
 
 }
 
-// Requires the merging of individual and agent keystore services
-object IndividualAnswers {
-
-  //individual specific requirements if required
-
-}
-
-// Requires the merging of individual and agent keystore services
-trait IndividualRequireAnswer extends BaseRequireAnswer {
-
-  val noDataRedirectLocation: Call = controllers.usermatching.routes.UserDetailsController.show()
-
-}
-
-trait AgentRequireAnswer extends BaseRequireAnswer {
-
-  val noDataRedirectLocation: Call = controllers.agent.matching.routes.ClientDetailsController.show()
-
-}
-
-trait BaseRequireAnswer {
+trait RequireAnswer {
 
   val keystoreService: KeystoreService
-  val noDataRedirectLocation: Call
 
   def require[A](answer: Answer[A])(f: A => Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Result] = {
     keystoreService.fetchAll() flatMap {
-      case None => Future.successful(Redirect(noDataRedirectLocation))
-      case Some(cacheMap) => answer(cacheMap) match {
+      cacheMap => answer(cacheMap) match {
         case Right(answers) => f(answers)
         case Left(result) => Future.successful(result)
       }

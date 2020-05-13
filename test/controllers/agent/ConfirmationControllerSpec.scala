@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.agent.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 import utilities.agent.TestModels._
 

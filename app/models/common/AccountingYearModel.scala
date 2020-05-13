@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package models.agent
+package models.common
 
-import models.AccountingMethod
+import models.AccountingYear
 import play.api.libs.json.{Json, OFormat}
 
-case class AccountingMethodModel(accountingMethod: AccountingMethod)
+case class AccountingYearModel(accountingYear: AccountingYear)
 
-object AccountingMethodModel {
-  implicit val format: OFormat[AccountingMethodModel] = Json.format[AccountingMethodModel]
+object AccountingYearModel {
+  implicit val format: OFormat[AccountingYearModel] = Json.format[AccountingYearModel]
 }

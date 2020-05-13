@@ -25,7 +25,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
-import services.individual.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future

@@ -23,8 +23,8 @@ import models.individual.business.address._
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
-import services.individual.{AddressLookupService, KeystoreService}
+import services.{AuthService, KeystoreService}
+import services.individual.AddressLookupService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}

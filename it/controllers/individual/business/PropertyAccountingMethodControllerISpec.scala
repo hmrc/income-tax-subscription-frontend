@@ -20,7 +20,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testAccountingMethodProperty}
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import models.individual.business.AccountingMethodPropertyModel
+import models.common.AccountingMethodPropertyModel
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.i18n.Messages

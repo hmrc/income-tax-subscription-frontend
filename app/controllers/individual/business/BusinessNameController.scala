@@ -20,12 +20,11 @@ import auth.individual.{Registration, SignUpController}
 import config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
-import models.individual.business.BusinessNameModel
+import models.common.BusinessNameModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
-import services.individual.KeystoreService
+import services.{AuthService, KeystoreService}
 
 import scala.concurrent.{ExecutionContext, Future}
 

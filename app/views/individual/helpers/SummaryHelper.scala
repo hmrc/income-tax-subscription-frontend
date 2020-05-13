@@ -16,7 +16,7 @@
 
 package views.individual.helpers
 
-import models.individual.business.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.{Accruals, Cash, Current, Next}
 import play.api.i18n.Messages

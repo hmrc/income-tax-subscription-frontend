@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package models.individual.business
+package models.common
 
-import models.AccountingYear
 import play.api.libs.json.{Json, OFormat}
 
-case class AccountingYearModel(accountingYear: AccountingYear)
+case class BusinessNameModel(businessName: String)
 
-object AccountingYearModel {
-  implicit val format: OFormat[AccountingYearModel] = Json.format[AccountingYearModel]
+object BusinessNameModel {
+  implicit val format: OFormat[BusinessNameModel] = Json.format[BusinessNameModel]
 }

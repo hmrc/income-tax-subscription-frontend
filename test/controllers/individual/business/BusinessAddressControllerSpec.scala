@@ -25,7 +25,8 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import services.individual.mocks.{MockAddressLookupService, MockKeystoreService}
+import services.individual.mocks.MockAddressLookupService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.ITSASessionKeys
 

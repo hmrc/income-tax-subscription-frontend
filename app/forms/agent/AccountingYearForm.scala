@@ -17,7 +17,7 @@
 package forms.agent
 
 import forms.submapping.AccountingYearMapping
-import models.agent.AccountingYearModel
+import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid

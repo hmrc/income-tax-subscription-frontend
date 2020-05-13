@@ -18,14 +18,15 @@ package controllers.individual.subscription
 
 import controllers.ControllerBaseSpec
 import config.featureswitch.FeatureSwitching
-import utilities.individual.CacheUtil._
+import utilities.CacheUtil._
 import utilities.individual.TestConstants._
 import utilities.TestModels._
 import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.individual.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
+import services.individual.mocks.MockSubscriptionOrchestrationService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future

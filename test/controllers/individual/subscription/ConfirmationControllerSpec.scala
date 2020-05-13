@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.individual.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.{ITSASessionKeys, TestModels}
 

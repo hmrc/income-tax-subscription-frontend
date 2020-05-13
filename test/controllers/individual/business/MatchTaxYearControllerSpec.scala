@@ -26,7 +26,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.individual.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 

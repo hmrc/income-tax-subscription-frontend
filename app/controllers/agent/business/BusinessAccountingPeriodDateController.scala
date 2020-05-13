@@ -25,11 +25,11 @@ import models.individual.subscription.{Both, IncomeSourceType}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.agent.KeystoreService
+import services.KeystoreService
 import services.{AccountingPeriodService, AuthService}
 import utilities.AccountingPeriodUtil
 import utilities.Implicits._
-import utilities.agent.CacheUtil._
+import utilities.CacheUtil._
 
 import scala.concurrent.ExecutionContext
 
@@ -74,7 +74,7 @@ class BusinessAccountingPeriodDateController @Inject()(val authService: AuthServ
               accountingPeriod.endDate.toLocalDate, incomeSources.contains(Both))) {
               for {
                 cache <- keystoreService.fetchAll() map (_.get)
-                _ = cache.getIncomeSource() map (source => IncomeSourceType(source.source))
+                _ = cache.agentGetIncomeSource map (source => IncomeSourceType(source.source))
                 _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
               } yield {
                 if (isEditMode) {

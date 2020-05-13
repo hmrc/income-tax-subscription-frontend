@@ -26,9 +26,8 @@ import models.{No, Yes}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.AuthService
-import services.individual.KeystoreService
-import utilities.individual.CacheUtil._
+import services.{AuthService, KeystoreService}
+import utilities.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -60,7 +59,7 @@ class MatchTaxYearController @Inject()(val authService: AuthService, keystoreSer
           for {
             cacheMap <- keystoreService.fetchAll()
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
-          } yield (isEditMode, matchTaxYear.matchTaxYear, cacheMap.getIncomeSourceType()) match {
+          } yield (isEditMode, matchTaxYear.matchTaxYear, cacheMap.getIncomeSourceType) match {
             case (false, Yes, Some(Business)) =>
               Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
             case (false, Yes, _) =>

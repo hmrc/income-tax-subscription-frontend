@@ -21,7 +21,7 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
-import models.agent._
+import models.common._
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.Both
 import models.{Accruals, Cash}

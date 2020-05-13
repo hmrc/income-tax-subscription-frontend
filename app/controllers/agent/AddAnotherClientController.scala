@@ -22,7 +22,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
-import services.agent.KeystoreService
+import services.KeystoreService
 
 import scala.concurrent.ExecutionContext
 

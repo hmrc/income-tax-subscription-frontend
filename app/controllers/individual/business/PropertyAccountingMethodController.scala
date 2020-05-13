@@ -20,16 +20,15 @@ import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
-import models.individual.business.AccountingMethodPropertyModel
+import models.common.AccountingMethodPropertyModel
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.{No, Yes}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
-import services.individual.KeystoreService
+import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.CacheUtil._
+import utilities.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -78,7 +77,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     else {
       keystoreService.fetchAll() map { cacheMap =>
-        (cacheMap.getRentUkProperty(), cacheMap.getAreYouSelfEmployed()) match {
+        (cacheMap.getRentUkProperty, cacheMap.getAreYouSelfEmployed) match {
           case (Some(RentUkPropertyModel(Yes, Some(Yes))), _) =>
             controllers.individual.incomesource.routes.RentUkPropertyController.show().url
           case (_, Some(AreYouSelfEmployedModel(Yes))) =>

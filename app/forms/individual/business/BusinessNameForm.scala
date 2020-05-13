@@ -20,7 +20,7 @@ import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
-import models.individual.business.BusinessNameModel
+import models.common.BusinessNameModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}

@@ -24,7 +24,6 @@ import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatus
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockoutStatus, LockoutStatusFailure, NotLockedOut}
 import play.api.Logger
-import services.individual.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

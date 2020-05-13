@@ -15,7 +15,7 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
-import models.agent._
+import models.common._
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.IncomeSourceType
 import models.usermatching.UserDetailsModel

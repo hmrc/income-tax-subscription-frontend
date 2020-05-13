@@ -6,6 +6,7 @@ import java.time.LocalDate
 import utilities.individual.Constants.GovernmentGateway._
 import helpers.IntegrationTestConstants._
 import models._
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.business.address.{Address, Country, ReturnedAddress}
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}

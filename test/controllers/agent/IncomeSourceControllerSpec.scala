@@ -22,7 +22,7 @@ import models.individual.subscription.{Both, Business, IncomeSourceType, Propert
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.agent.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 import utilities.agent.TestModels
 
 import scala.concurrent.Future

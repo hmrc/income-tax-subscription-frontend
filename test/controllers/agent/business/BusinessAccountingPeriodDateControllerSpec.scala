@@ -25,7 +25,7 @@ import models.individual.business.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.agent.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 import services.mocks.MockAccountingPeriodService
 import utilities.{CurrentDateProvider, TestModels}
 import utilities.agent.TestConstants

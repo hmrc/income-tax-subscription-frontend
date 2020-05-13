@@ -24,7 +24,7 @@ import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.agent.KeystoreService
+import services.KeystoreService
 import services.{AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 

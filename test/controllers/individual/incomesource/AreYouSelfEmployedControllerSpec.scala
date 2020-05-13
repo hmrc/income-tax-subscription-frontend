@@ -25,7 +25,7 @@ import models.individual.incomesource.AreYouSelfEmployedModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, status, _}
-import services.individual.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 

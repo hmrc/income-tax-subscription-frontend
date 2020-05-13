@@ -25,7 +25,8 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.{await, _}
 import services.agent._
-import services.agent.mocks.{MockAgentQualificationService, MockKeystoreService}
+import services.agent.mocks.MockAgentQualificationService
+import services.mocks. MockKeystoreService
 import services.mocks.{MockGetEligibilityStatusService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.agent.{TestConstants, TestModels}

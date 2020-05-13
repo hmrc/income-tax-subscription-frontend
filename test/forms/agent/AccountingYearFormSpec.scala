@@ -21,7 +21,7 @@ import forms.submapping.AccountingYearMapping
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Current
-import models.agent.AccountingYearModel
+import models.common.AccountingYearModel
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.data.FormError
 
