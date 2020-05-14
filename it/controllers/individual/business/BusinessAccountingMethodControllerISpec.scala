@@ -25,7 +25,7 @@ import models.individual.incomesource.RentUkPropertyModel
 import models.{Accruals, Cash, No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.individual.CacheConstants
+import utilities.CacheConstants
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 

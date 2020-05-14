@@ -16,7 +16,7 @@
 
 package controllers.individual.subscription
 
-import utilities.individual.CacheConstants.MtditId
+import utilities.CacheConstants.MtditId
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testGroupId, testMtdId}
 import helpers.IntegrationTestModels.testEnrolmentKey

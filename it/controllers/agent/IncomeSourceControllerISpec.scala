@@ -23,7 +23,7 @@ import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import models.individual.subscription._
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.agent.CacheConstants
+import utilities.CacheConstants
 
 class IncomeSourceControllerISpec extends ComponentSpecBase {
 

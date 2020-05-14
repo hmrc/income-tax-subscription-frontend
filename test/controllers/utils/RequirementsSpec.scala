@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import services.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.agent.CacheConstants
+import utilities.CacheConstants
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

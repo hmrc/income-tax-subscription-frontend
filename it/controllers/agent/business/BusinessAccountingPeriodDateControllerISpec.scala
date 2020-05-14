@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
-import utilities.agent.CacheConstants.IncomeSource
 import config.featureswitch.FeatureSwitching
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.{keystoreData, _}
@@ -28,10 +27,8 @@ import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.{Both, Business}
 import play.api.http.Status._
-import play.api.i18n.Messages
 import play.api.libs.json.Json
-import utilities.AccountingPeriodUtil
-import utilities.agent.CacheConstants
+import utilities.{AccountingPeriodUtil, CacheConstants}
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -133,7 +130,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(fullKeystoreData.updated(IncomeSource, Json.toJson(Business)))
+        KeystoreStub.stubKeystoreData(fullKeystoreData.updated(CacheConstants.IncomeSource, Json.toJson(Business)))
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")

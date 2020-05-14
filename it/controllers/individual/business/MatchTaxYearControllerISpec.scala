@@ -26,7 +26,7 @@ import models.individual.business.MatchTaxYearModel
 import models.{No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.individual.CacheConstants
+import utilities.CacheConstants
 
 class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

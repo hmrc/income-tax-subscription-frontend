@@ -26,8 +26,7 @@ import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models.individual.business.AccountingPeriodModel
 import models.{DateModel, No}
 import play.api.http.Status._
-import play.api.i18n.Messages
-import utilities.individual.CacheConstants
+import utilities.CacheConstants
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

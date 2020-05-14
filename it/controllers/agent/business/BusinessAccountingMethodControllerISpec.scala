@@ -26,8 +26,7 @@ import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.Both
 import models.{Accruals, Cash, Yes}
 import play.api.http.Status._
-import play.api.i18n.Messages
-import utilities.agent.CacheConstants
+import utilities.CacheConstants
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

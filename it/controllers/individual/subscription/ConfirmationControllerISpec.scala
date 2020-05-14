@@ -16,7 +16,7 @@
 
 package controllers.individual.subscription
 
-import utilities.individual.CacheConstants._
+import utilities.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.testMtdId
 import helpers.IntegrationTestModels.testRentUkProperty_property_only

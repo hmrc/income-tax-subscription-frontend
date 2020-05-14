@@ -24,7 +24,7 @@ import models.common.AccountingMethodPropertyModel
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.individual.CacheConstants
+import utilities.CacheConstants
 
 class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 

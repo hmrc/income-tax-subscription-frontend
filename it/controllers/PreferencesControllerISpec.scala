@@ -17,7 +17,7 @@
 package controllers
 
 import config.featureswitch.FeatureSwitching
-import utilities.individual.CacheConstants._
+import utilities.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, PreferencesStub, PreferencesTokenStub}

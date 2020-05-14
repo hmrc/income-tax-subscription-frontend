@@ -20,7 +20,7 @@ import auth.individual.{Registration, SignUp}
 import auth.individual.Registration
 import config.featureswitch
 import config.featureswitch.FeatureSwitching
-import utilities.individual.CacheConstants.BusinessAddress
+import utilities.CacheConstants.BusinessAddress
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AddressLookupStub, AuthStub, KeystoreStub}

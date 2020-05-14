@@ -108,7 +108,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           setupMockKeystoreSaveFunctions
           mockFetchAllFromKeyStore(testSummary)
 
-          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getSummary())
+          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary())
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
@@ -129,7 +129,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         "return a failure if subscription fails" in {
           mockFetchAllFromKeyStore(TestModels.testCacheMap)
-          mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getSummary())
+          mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getAgentSummary())
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
           ex.message mustBe "Successful response not received from submission"
@@ -139,7 +139,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           val request = authorisedAgentRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
 
           mockFetchAllFromKeyStore(TestModels.testCacheMap)
-          mockCreateSubscriptionSuccess(testARN, testNino, testUtr, testCacheMap.getSummary())
+          mockCreateSubscriptionSuccess(testARN, testNino, testUtr, testCacheMap.getAgentSummary())
 
           val ex = intercept[InternalServerException](await(call(request)))
           ex.message mustBe "Failed to create client relationship"
