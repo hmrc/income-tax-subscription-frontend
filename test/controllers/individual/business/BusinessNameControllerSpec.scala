@@ -18,11 +18,11 @@ package controllers.individual.business
 
 import controllers.ControllerBaseSpec
 import forms.individual.business.BusinessNameForm
-import models.individual.business.BusinessNameModel
+import models.common.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.individual.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 
 import scala.concurrent.Future
 

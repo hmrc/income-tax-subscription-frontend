@@ -26,6 +26,7 @@ import forms.individual.incomesource.{AreYouSelfEmployedForm, RentUkPropertyForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.usermatching.UserDetailsModel

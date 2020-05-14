@@ -21,7 +21,8 @@ import utilities.individual.TestConstants._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.individual.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
+import services.individual.mocks.MockSubscriptionOrchestrationService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.InternalServerException
 
 class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeystoreService with MockSubscriptionOrchestrationService {

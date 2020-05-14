@@ -28,8 +28,7 @@ import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
-import services.individual.mocks.MockKeystoreService
-import services.mocks.MockUserLockoutService
+import services.mocks.{MockKeystoreService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
 import utilities.ITSASessionKeys
 

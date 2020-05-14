@@ -24,7 +24,7 @@ import models.individual.subscription.IncomeSourceType
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
-import services.agent.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 
 class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
 

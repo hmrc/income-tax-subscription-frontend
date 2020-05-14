@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess
 import play.api.mvc._
 import services.individual._
-import services.{AuthService, GetEligibilityStatusService, SubscriptionService}
+import services.{AuthService, GetEligibilityStatusService, KeystoreService, SubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys._
 import utilities.Implicits._

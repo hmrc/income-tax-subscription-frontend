@@ -18,6 +18,7 @@ package views.agent
 
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
 import models.individual.business._
 import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}

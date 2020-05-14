@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
-import services.agent.KeystoreService
+import services.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

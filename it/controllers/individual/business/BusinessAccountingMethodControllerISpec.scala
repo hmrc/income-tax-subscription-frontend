@@ -20,7 +20,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testMatchTaxYearYes}
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import models.individual.business.AccountingMethodModel
+import models.common.AccountingMethodModel
 import models.individual.incomesource.RentUkPropertyModel
 import models.{Accruals, Cash, No, Yes}
 import play.api.http.Status._

@@ -26,8 +26,7 @@ import models.individual.business.enums.{AccountingPeriodViewType, RegistrationA
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.individual.KeystoreService
-import services.{AccountingPeriodService, AuthService}
+import services.{AccountingPeriodService, AuthService, KeystoreService}
 
 import scala.concurrent.{ExecutionContext, Future}
 

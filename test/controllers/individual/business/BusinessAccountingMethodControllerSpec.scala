@@ -20,14 +20,15 @@ import controllers.ControllerBaseSpec
 import config.featureswitch._
 import utilities.TestModels._
 import forms.individual.business.AccountingMethodForm
-import models.individual.business.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
+import models.common.AccountingMethodModel
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.incomesource.RentUkPropertyModel
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.{Cash, DateModel, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.individual.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future

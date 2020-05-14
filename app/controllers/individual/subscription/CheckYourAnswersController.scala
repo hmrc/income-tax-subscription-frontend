@@ -23,13 +23,13 @@ import models.individual.business.MatchTaxYearModel
 import models.individual.subscription._
 import models.{No, Yes}
 import play.api.Logger
-import play.api.mvc._
-import services.AuthService
-import services.individual.{KeystoreService, SubscriptionOrchestrationService}
+import play.api.mvc.{Action, AnyContent, Request, Result, _}
+import services.individual.SubscriptionOrchestrationService
+import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.ITSASessionKeys
-import utilities.individual.CacheUtil._
+import utilities.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,7 +54,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
             cache.getSummary(),
             isRegistration = request.isInState(Registration),
             controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
-            backUrl = backUrl(cache.getIncomeSourceType().get)
+            backUrl = backUrl(cache.getIncomeSourceType.get)
           ))
         )
   }
@@ -77,11 +77,11 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
     Authenticated.async { implicit request =>
       implicit user =>
         keystoreService.fetchAll().flatMap { cache =>
-          val isProperty = cache.getIncomeSourceType().contains(Property)
+          val isProperty = cache.getIncomeSourceType.contains(Property)
           if (isProperty) {
             processFunc(user)(request)(cache)
           } else {
-            (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
+            (cache.getMatchTaxYear, cache.getEnteredAccountingPeriodDate) match {
               case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
                 processFunc(user)(request)(cache)
               case (Some(MatchTaxYearModel(No)), _) =>

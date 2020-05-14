@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package services.agent
+package services
 
 import config.SessionCache
-import models.agent.BusinessNameModel
+import models.common.BusinessNameModel
 import org.scalatest.Matchers._
-import play.api.test.Helpers.OK
-import services.agent.mocks.MockKeystoreService
+import play.api.http.Status
+import play.api.test.Helpers._
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utilities.UnitTestTrait
-import utilities.agent.TestModels
+import utilities.{TestModels, UnitTestTrait}
 
 class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {
@@ -33,9 +33,10 @@ class KeystoreServiceSpec extends UnitTestTrait
     "be DIed with the correct session cache object" in {
       val cache = app.injector.instanceOf[SessionCache]
       val config = app.injector.instanceOf[ServicesConfig]
+
       cache.defaultSource shouldBe config.getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
       cache.baseUri shouldBe config.baseUrl("session-cache")
-      cache.domain shouldBe config.getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
+      cache.domain shouldBe config.getConfString("session-cache.domain", throw new Exception(s"Could not find core.config 'session-cache.domain'"))
     }
   }
 
@@ -46,42 +47,40 @@ class KeystoreServiceSpec extends UnitTestTrait
 
     "configure and verify fetch and save business name as specified" in {
       val testBusinessName = BusinessNameModel("my business name")
+      setupMockKeystoreSaveFunctions()
       mockFetchBusinessNameFromKeyStore(testBusinessName)
-      for {
-        businessName <- TestKeystore.keystoreService.fetchBusinessName()
-        _ <- TestKeystore.keystoreService.saveBusinessName(testBusinessName)
-      } yield {
-        businessName shouldBe testBusinessName
 
-        verifyKeystore(
-          fetchBusinessName = 1,
-          saveBusinessName = 1
-        )
-      }
+      val businessName = await(
+        for {
+          businessName <- TestKeystore.keystoreService.fetchBusinessName()
+          _ <- TestKeystore.keystoreService.saveBusinessName(testBusinessName)
+        } yield businessName
+      )
+
+      businessName shouldBe Some(testBusinessName)
+
+      verifyKeystore(
+        fetchBusinessName = 1,
+        saveBusinessName = 1
+      )
     }
 
     "configure and verify fetch all as specified" in {
       val testFetchAll = TestModels.emptyCacheMap
       mockFetchAllFromKeyStore(testFetchAll)
-      for {
-        fetched <- TestKeystore.keystoreService.fetchAll()
-      } yield {
-        fetched shouldBe testFetchAll
 
-        verifyKeystore(fetchAll = 1)
-      }
+      val fetched = await(TestKeystore.keystoreService.fetchAll())
+      fetched shouldBe testFetchAll
+
+      verifyKeystore(fetchAll = 1)
     }
 
     "configure and verify remove all as specified" in {
-      val testDeleteAll = HttpResponse(OK)
+      val testDeleteAll = HttpResponse(Status.OK)
       mockDeleteAllFromKeyStore(testDeleteAll)
-      for {
-        response <- TestKeystore.keystoreService.deleteAll()
-      } yield {
-        response shouldBe testDeleteAll
 
-        verifyKeystore(fetchAll = 1)
-      }
+      val response = await(TestKeystore.keystoreService.deleteAll())
+      verifyKeystore(deleteAll = 1)
     }
 
   }

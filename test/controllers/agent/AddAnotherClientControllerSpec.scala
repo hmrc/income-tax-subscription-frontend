@@ -19,7 +19,7 @@ package controllers.agent
 import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.agent.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future

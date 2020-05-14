@@ -21,7 +21,6 @@ import utilities.individual.TestConstants._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.PaperlessPreferenceTokenService
-import services.individual.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.MockTrait
 

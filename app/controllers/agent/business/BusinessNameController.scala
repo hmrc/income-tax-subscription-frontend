@@ -20,12 +20,12 @@ import auth.agent.{AuthenticatedController, UserMatchingController}
 import config.AppConfig
 import forms.agent.BusinessNameForm
 import javax.inject.{Inject, Singleton}
-import models.agent.BusinessNameModel
+import models.common.BusinessNameModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesActionBuilder, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
-import services.agent.KeystoreService
+import services.KeystoreService
 
 import scala.concurrent.{ExecutionContext, Future}
 

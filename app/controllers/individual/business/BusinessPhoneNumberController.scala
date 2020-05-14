@@ -24,8 +24,7 @@ import models.individual.business.BusinessPhoneNumberModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
-import services.individual.KeystoreService
+import services.{AuthService, KeystoreService}
 
 import scala.concurrent.{ExecutionContext, Future}
 

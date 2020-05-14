@@ -18,11 +18,11 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import controllers.utils.AgentAnswers._
-import controllers.utils.AgentRequireAnswer
+import controllers.utils.Answers._
+import controllers.utils.RequireAnswer
 import forms.agent.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
-import models.agent.AccountingMethodModel
+import models.common.AccountingMethodModel
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.{Both, Business, IncomeSourceType}
 import models.{No, Yes}
@@ -30,15 +30,14 @@ import play.api.data.Form
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
-import services.agent.KeystoreService
+import services.{AuthService, KeystoreService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessAccountingMethodController @Inject()(val authService: AuthService, val keystoreService: KeystoreService)
                                                   (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                                   appConfig: AppConfig) extends AuthenticatedController with AgentRequireAnswer {
+                                                   appConfig: AppConfig) extends AuthenticatedController with RequireAnswer {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {
     views.html.agent.business.accounting_method(

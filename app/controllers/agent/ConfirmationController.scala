@@ -21,9 +21,8 @@ import auth.agent.PostSubmissionController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
-import services.agent.KeystoreService
-import utilities.agent.CacheUtil._
+import services.{AuthService, KeystoreService}
+import utilities.CacheUtil._
 import views.html.agent.sign_up_complete
 
 import scala.concurrent.ExecutionContext
@@ -35,11 +34,11 @@ class ConfirmationController @Inject()(val authService: AuthService, keystoreSer
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
+
       val postAction = controllers.agent.routes.AddAnotherClientController.addAnother()
       val signOutAction = controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
-      keystoreService.fetchAll() map (_.get.getSummary()) map {
-        agentSummary => Ok(sign_up_complete(agentSummary, postAction, signOutAction))
+      keystoreService.fetchAll() map { cacheMap =>
+        Ok(sign_up_complete(cacheMap.getAgentSummary(), postAction, signOutAction))
       }
   }
-
 }

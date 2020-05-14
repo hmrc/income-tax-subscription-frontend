@@ -25,6 +25,7 @@ import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyMo
 import models.individual.subscription._
 import models.usermatching.{UserDetailsModel, UserMatchSuccessResponseModel}
 import models._
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap

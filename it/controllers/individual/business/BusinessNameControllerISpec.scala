@@ -20,7 +20,7 @@ import helpers.IntegrationTestConstants.{checkYourAnswersURI, matchTaxYearURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
-import models.individual.business.BusinessNameModel
+import models.common.BusinessNameModel
 import models.individual.subscription.Both
 import play.api.http.Status._
 import play.api.i18n.Messages

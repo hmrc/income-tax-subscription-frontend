@@ -21,7 +21,7 @@ import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.agent.ClientRelationshipService
-import services.agent.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 
 class NoClientRelationshipControllerSpec
   extends AgentControllerBaseSpec

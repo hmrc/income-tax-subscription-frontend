@@ -19,14 +19,14 @@ package controllers.agent.business
 import utilities.agent.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodForm
-import models.agent.AccountingMethodModel
+import models.common.AccountingMethodModel
 import models.individual.business
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.{Both, Business}
-import models.{Cash, No, Yes}
+import models.{Cash, No, Yes, common}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.agent.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
@@ -67,7 +67,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         mockFetchAllFromKeyStore(testCacheMap(
             incomeSource = Some(Business),
             matchTaxYear = Some(MatchTaxYearModel(Yes)),
-            accountingMethod = Some(business.AccountingMethodModel(Cash))
+            accountingMethod = Some(common.AccountingMethodModel(Cash))
           )
         )
 

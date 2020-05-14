@@ -20,12 +20,11 @@ import controllers.ControllerBaseSpec
 import config.featureswitch._
 import forms.individual.business.AccountingYearForm
 import models.Current
-import models.individual.business.AccountingYearModel
+import models.common.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.individual.mocks.MockKeystoreService
-import services.mocks.MockAccountingPeriodService
+import services.mocks.{MockAccountingPeriodService, MockKeystoreService}
 
 import scala.concurrent.Future
 

@@ -16,7 +16,7 @@
 
 package controllers.utils
 
-import models.agent.AccountingMethodModel
+import models.common.AccountingMethodModel
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.Both
 import models.{Cash, Yes}
@@ -26,10 +26,10 @@ import org.scalatest.{MustMatchers, WordSpecLike}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.functional.~
 import play.api.libs.json.Json
+import play.api.mvc.Result
 import play.api.mvc.Results._
-import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
-import services.agent.KeystoreService
+import services.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.agent.CacheConstants
@@ -56,9 +56,8 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
   }
   val testModel: AccountingMethodModel = AccountingMethodModel(Cash)
 
-  class Setup extends BaseRequireAnswer {
+  class Setup extends RequireAnswer {
     override val keystoreService: KeystoreService = mock[KeystoreService]
-    override val noDataRedirectLocation: Call = controllers.agent.business.routes.BusinessAccountingMethodController.show()
   }
 
   "SingleAnswer" must {
@@ -117,21 +116,10 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
   }
 
   "require" must {
-    "redirect to the no data redirect location" when {
-      "there is no data in keystore" in new Setup {
-        when(keystoreService.fetchAll()(any())) thenReturn Future.successful(None)
-        val result: Future[Result] = require(testSingleAnswer) { answer =>
-          Future.successful(Ok(Json.toJson(answer)))
-        }
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(noDataRedirectLocation.url)
-      }
-    }
     "return a result" when {
       "the required data is available" in new Setup {
         when(keystoreService.fetchAll()(any()))
-          .thenReturn(Future.successful(Some(CacheMap("testId", Map("testKey" -> Json.toJson(testModel))))))
+          .thenReturn(Future.successful(CacheMap("testId", Map("testKey" -> Json.toJson(testModel)))))
         val result: Future[Result] = require(testSingleAnswer) { answer =>
           Future.successful(Ok(Json.toJson(answer)))
         }
@@ -141,7 +129,7 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
       }
       "the required data is not available in the returned CacheMap" in new Setup {
         when(keystoreService.fetchAll()(any()))
-          .thenReturn(Future.successful(Some(CacheMap("testId", Map("testKey2" -> Json.toJson(testModel))))))
+          .thenReturn(Future.successful(CacheMap("testId", Map("testKey2" -> Json.toJson(testModel)))))
         val result: Future[Result] = require(testSingleAnswer) { answer =>
           Future.successful(Ok(Json.toJson(answer)))
         }
@@ -156,13 +144,13 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
     "return an income source type" when {
       "present in the cache map" in {
         val cacheMap: CacheMap = CacheMap("testId", Map(CacheConstants.IncomeSource -> Json.toJson(Both)))
-        AgentAnswers.incomeSourceTypeAnswer(cacheMap) mustBe Right(Both)
+        Answers.incomeSourceTypeAnswer(cacheMap) mustBe Right(Both)
       }
     }
     "return a redirect to the income source controller" when {
       "not present in the cache map" in {
         val cacheMap: CacheMap = CacheMap("testId", Map())
-        AgentAnswers.incomeSourceTypeAnswer(cacheMap) mustBe Left(Redirect(controllers.agent.routes.IncomeSourceController.show()))
+        Answers.incomeSourceTypeAnswer(cacheMap) mustBe Left(Redirect(controllers.agent.routes.IncomeSourceController.show()))
       }
     }
   }
@@ -171,13 +159,13 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
     "return a match tax year model" when {
       "present in the cache map" in {
         val cacheMap: CacheMap = CacheMap("testId", Map(CacheConstants.MatchTaxYear -> Json.toJson(MatchTaxYearModel(Yes))))
-        AgentAnswers.matchTaxYearAnswer(cacheMap) mustBe Right(MatchTaxYearModel(Yes))
+        Answers.matchTaxYearAnswer(cacheMap) mustBe Right(MatchTaxYearModel(Yes))
       }
     }
     "return a redirect to the match tax year controller" when {
       "not present in the cache map" in {
         val cacheMap: CacheMap = CacheMap("testId", Map())
-        AgentAnswers.matchTaxYearAnswer(cacheMap) mustBe Left(Redirect(controllers.agent.business.routes.MatchTaxYearController.show()))
+        Answers.matchTaxYearAnswer(cacheMap) mustBe Left(Redirect(controllers.agent.business.routes.MatchTaxYearController.show()))
       }
     }
   }
@@ -186,13 +174,13 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
     "return some accounting method model" when {
       "present in the cache map" in {
         val cacheMap: CacheMap = CacheMap("testId", Map(CacheConstants.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
-        AgentAnswers.optAccountingMethodAnswer(cacheMap) mustBe Right(Some(AccountingMethodModel(Cash)))
+        Answers.optAccountingMethodAnswer(cacheMap) mustBe Right(Some(AccountingMethodModel(Cash)))
       }
     }
     "return none" when {
       "not present in the cache map" in {
         val cacheMap: CacheMap = CacheMap("testId", Map())
-        AgentAnswers.optAccountingMethodAnswer(cacheMap) mustBe Right(None)
+        Answers.optAccountingMethodAnswer(cacheMap) mustBe Right(None)
       }
     }
   }

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package utilities.individual
+package utilities
 
 import config.featureswitch.FeatureSwitching
-import utilities.TestModels._
-import utilities.AccountingPeriodUtil.getCurrentTaxYear
-import models.individual.subscription.{Both, IndividualSummary}
+import models.individual.subscription.{AgentSummary, Both, IndividualSummary}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
-import utilities.UnitTestTrait
-import utilities.individual.CacheUtil._
+import utilities.AccountingPeriodUtil.getCurrentTaxYear
+import utilities.TestModels._
+import CacheUtil._
 
 class CacheUtilSpec extends UnitTestTrait
   with FeatureSwitching
@@ -32,36 +31,38 @@ class CacheUtilSpec extends UnitTestTrait
   "CacheUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
-      emptyCacheMap.getRentUkProperty() shouldBe None
-      emptyCacheMap.getAreYouSelfEmployed() shouldBe None
-      emptyCacheMap.getIncomeSourceType() shouldBe None
-      emptyCacheMap.getBusinessName() shouldBe None
-      emptyCacheMap.getBusinessPhoneNumber() shouldBe None
-      emptyCacheMap.getBusinessAddress() shouldBe None
-      emptyCacheMap.getBusinessStartDate() shouldBe None
-      emptyCacheMap.getMatchTaxYear() shouldBe None
-      emptyCacheMap.getEnteredAccountingPeriodDate() shouldBe None
-      emptyCacheMap.getAccountingPeriodDate() shouldBe None
-      emptyCacheMap.getSelectedTaxYear() shouldBe None
-      emptyCacheMap.getAccountingMethod() shouldBe None
-      emptyCacheMap.getPropertyAccountingMethod() shouldBe None
+      emptyCacheMap.getRentUkProperty shouldBe None
+      emptyCacheMap.getAreYouSelfEmployed shouldBe None
+      emptyCacheMap.getIncomeSourceType shouldBe None
+      emptyCacheMap.agentGetIncomeSource shouldBe None
+      emptyCacheMap.getBusinessName shouldBe None
+      emptyCacheMap.getBusinessPhoneNumber shouldBe None
+      emptyCacheMap.getBusinessAddress shouldBe None
+      emptyCacheMap.getBusinessStartDate shouldBe None
+      emptyCacheMap.getMatchTaxYear shouldBe None
+      emptyCacheMap.getEnteredAccountingPeriodDate shouldBe None
+      emptyCacheMap.getAccountingPeriodDate shouldBe None
+      emptyCacheMap.getSelectedTaxYear shouldBe None
+      emptyCacheMap.getAccountingMethod shouldBe None
+      emptyCacheMap.getPropertyAccountingMethod shouldBe None
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getRentUkProperty() shouldBe Some(testRentUkProperty_property_and_other)
-      testCacheMap.getAreYouSelfEmployed() shouldBe Some(testAreYouSelfEmployed_yes)
-      testCacheMap.getIncomeSourceType() shouldBe Some(Both)
-      testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
-      testCacheMap.getBusinessPhoneNumber() shouldBe Some(testBusinessPhoneNumber)
-      testCacheMap.getBusinessAddress() shouldBe Some(testAddress)
-      testCacheMap.getBusinessStartDate() shouldBe Some(testBusinessStartDate)
-      testCacheMap.getMatchTaxYear() shouldBe Some(testMatchTaxYearNo)
-      testCacheMap.getEnteredAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
-      testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
-      testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
-      testCacheMap.getSelectedTaxYear() shouldBe Some(testSelectedTaxYearNext)
-      testCacheMap.getPropertyAccountingMethod().contains(testAccountingMethodProperty) shouldBe true
-      testCacheMap.getPropertyAccountingMethod() shouldBe Some(testAccountingMethodProperty)
+      testCacheMap.getRentUkProperty shouldBe Some(testRentUkProperty_property_and_other)
+      testCacheMap.getAreYouSelfEmployed shouldBe Some(testAreYouSelfEmployed_yes)
+      testCacheMap.getIncomeSourceType shouldBe Some(Both)
+      testCacheMap.agentGetIncomeSource shouldBe Some(Both)
+      testCacheMap.getBusinessName shouldBe Some(testBusinessName)
+      testCacheMap.getBusinessPhoneNumber shouldBe Some(testBusinessPhoneNumber)
+      testCacheMap.getBusinessAddress shouldBe Some(testAddress)
+      testCacheMap.getBusinessStartDate shouldBe Some(testBusinessStartDate)
+      testCacheMap.getMatchTaxYear shouldBe Some(testMatchTaxYearNo)
+      testCacheMap.getEnteredAccountingPeriodDate shouldBe Some(testAccountingPeriod)
+      testCacheMap.getAccountingPeriodDate shouldBe Some(testAccountingPeriod)
+      testCacheMap.getAccountingMethod shouldBe Some(testAccountingMethod)
+      testCacheMap.getSelectedTaxYear shouldBe Some(testSelectedTaxYearNext)
+      testCacheMap.getPropertyAccountingMethod.contains(testAccountingMethodProperty) shouldBe true
+      testCacheMap.getPropertyAccountingMethod shouldBe Some(testAccountingMethodProperty)
     }
 
     "getAccountingPeriodDate" when {
@@ -70,7 +71,7 @@ class CacheUtilSpec extends UnitTestTrait
           testCacheMapCustom(
             rentUkProperty = testRentUkProperty_property_only,
             areYouSelfEmployed = None,
-            matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe None
+            matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate shouldBe None
         }
       }
 
@@ -78,22 +79,22 @@ class CacheUtilSpec extends UnitTestTrait
         "match tax year is yes" should {
           "return the accounting period of the current tax year" in {
             testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearYes)
-              .getAccountingPeriodDate()shouldBe Some(getCurrentTaxYear)
+              .getAccountingPeriodDate shouldBe Some(getCurrentTaxYear)
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
               areYouSelfEmployed = testAreYouSelfEmployed_yes,
-              matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
+              matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate shouldBe Some(getCurrentTaxYear)
           }
         }
 
         "match tax year is no" should {
           "return the entered accounting period" in {
             testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearNo)
-              .getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
+              .getAccountingPeriodDate shouldBe Some(testAccountingPeriod)
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
               areYouSelfEmployed = testAreYouSelfEmployed_yes,
-              matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
+              matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate shouldBe Some(testAccountingPeriod)
           }
         }
       }
@@ -140,6 +141,53 @@ class CacheUtilSpec extends UnitTestTrait
       }
       "income source is neither property or business" in {
         emptyCacheMap.getSummary() shouldBe IndividualSummary()
+      }
+    }
+
+    "The getAgentSummary should populate the Summary model correctly" when {
+      "the income type is property" in {
+        testCacheMapCustom(
+          incomeSource = Some(testIncomeSourceProperty)
+        ).getAgentSummary() shouldBe AgentSummary(
+          incomeSource = Some(testIncomeSourceProperty),
+          matchTaxYear = None,
+          accountingPeriodDate = None,
+          businessName = None,
+          accountingMethod = None,
+          accountingMethodProperty = Some(testAccountingMethodProperty)
+        )
+      }
+
+      "the income type is business" in {
+        testCacheMapCustom(
+          incomeSource = Some(testIncomeSourceBusiness)
+        ).getAgentSummary() shouldBe AgentSummary(
+          incomeSource = Some(testIncomeSourceBusiness),
+          matchTaxYear = Some(testMatchTaxYearNo),
+          selectedTaxYear = Some(testSelectedTaxYearNext),
+          accountingPeriodDate = Some(testAccountingPeriod),
+          businessName = Some(testBusinessName),
+          accountingMethod = Some(testAccountingMethod),
+          accountingMethodProperty = None
+        )
+      }
+
+      "the income type is both" in {
+        testCacheMapCustom(
+          incomeSource = Some(testIncomeSourceBoth)
+        ).getAgentSummary() shouldBe
+          AgentSummary(
+            incomeSource = testIncomeSourceBoth,
+            matchTaxYear = testMatchTaxYearNo,
+            accountingPeriodDate = testAccountingPeriod,
+            businessName = testBusinessName,
+            accountingMethod = testAccountingMethod,
+            accountingMethodProperty = testAccountingMethodProperty
+          )
+      }
+
+      "the income type is not set" in {
+        emptyCacheMap.getAgentSummary() shouldBe AgentSummary()
       }
     }
   }

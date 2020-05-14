@@ -21,7 +21,6 @@ import java.util.UUID
 import connectors.PaperlessPreferenceTokenConnector
 import javax.inject.Inject
 import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
-import services.individual.KeystoreService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -26,8 +26,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import play.twirl.api.Html
-import services.individual.KeystoreService
-import services.{AuthService, UserLockoutService}
+import services.{AuthService, KeystoreService, UserLockoutService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}

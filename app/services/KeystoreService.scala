@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package services.individual
+package services
 
 import javax.inject._
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utilities.agent.CacheConstants.WhatYearToSignUp
 import utilities.individual.CacheConstants
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,9 +39,7 @@ class KeystoreService @Inject()(val session: SessionCache)
 
   protected def fetch[T](location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): FO[T] = session.fetchAndGetEntry(location)
 
-  protected def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): FC = session.cache(location, obj) recoverWith {
-    case ex => Future.failed(new InternalServerException(ex.getMessage))
-  }
+  protected def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): FC = session.cache(location, obj)
 
   def fetchAll()(implicit hc: HeaderCarrier): Future[CacheMap] = session.fetch() map {
     case Some(cacheMap) => cacheMap
@@ -50,9 +50,11 @@ class KeystoreService @Inject()(val session: SessionCache)
 
   import CacheConstants._
 
+  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FO[IncomeSourceType] =
+    fetch[IncomeSourceType](IncomeSource)
 
-  def fetchAreYouSelfEmployed()(implicit hc: HeaderCarrier, reads: Reads[AreYouSelfEmployedModel]): FO[AreYouSelfEmployedModel] =
-    fetch[AreYouSelfEmployedModel](AreYouSelfEmployed)
+  def saveIncomeSource(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FC =
+    save[IncomeSourceType](IncomeSource, incomeSource)
 
   def saveAreYouSelfEmployed(areYouSelfEmployed: AreYouSelfEmployedModel)(implicit hc: HeaderCarrier, reads: Reads[AreYouSelfEmployedModel]): FC =
     save[AreYouSelfEmployedModel](AreYouSelfEmployed, areYouSelfEmployed)
@@ -92,6 +94,12 @@ class KeystoreService @Inject()(val session: SessionCache)
 
   def saveMatchTaxYear(accountingPeriod: MatchTaxYearModel)(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FC =
     save[MatchTaxYearModel](MatchTaxYear, accountingPeriod)
+
+  def fetchWhatYearToSignUp()(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FO[AccountingYearModel] =
+    fetch[AccountingYearModel](WhatYearToSignUp)
+
+  def saveWhatYearToSignUp(accountingPeriod: AccountingYearModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FC =
+    save[AccountingYearModel](WhatYearToSignUp, accountingPeriod)
 
   def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
     fetch[AccountingPeriodModel](AccountingPeriodDate)

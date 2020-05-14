@@ -25,9 +25,8 @@ import models.individual.subscription.{Both, Business, IncomeSourceType, Propert
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.AuthService
-import services.individual.KeystoreService
-import utilities.individual.CacheUtil._
+import services.{AuthService, KeystoreService}
+import utilities.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,10 +48,10 @@ class AreYouSelfEmployedController @Inject()(val authService: AuthService, keyst
       for {
         cache <- keystoreService.fetchAll()
       } yield
-        if (!cache.getRentUkProperty().needSecondPage)
+        if (!cache.getRentUkProperty.needSecondPage)
           Redirect(controllers.individual.incomesource.routes.RentUkPropertyController.show().url)
         else {
-          val cachedModel = cache.getAreYouSelfEmployed()
+          val cachedModel = cache.getAreYouSelfEmployed
           Ok(view(areYouSelfEmployedForm = AreYouSelfEmployedForm.areYouSelfEmployedForm.fill(cachedModel), isEditMode = isEditMode))
         }
   }
@@ -65,7 +64,7 @@ class AreYouSelfEmployedController @Inject()(val authService: AuthService, keyst
           for {
             cache <- keystoreService.fetchAll()
             _ <- keystoreService.saveAreYouSelfEmployed(areYouSelfEmployed)
-            rentUkProperty = cache.getRentUkProperty().get
+            rentUkProperty = cache.getRentUkProperty.get
           } yield {
             val incomeSourceType = IncomeSourceType(rentUkProperty, Some(areYouSelfEmployed))
             lazy val linearJourney: Result =
@@ -77,7 +76,7 @@ class AreYouSelfEmployedController @Inject()(val authService: AuthService, keyst
                 case _ =>
                   Redirect(controllers.individual.incomesource.routes.CannotSignUpController.show())
               }
-            cache.getIncomeSourceType() match {
+            cache.getIncomeSourceType match {
               case `incomeSourceType` if isEditMode => Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit())
               case _ => linearJourney
             }

@@ -21,7 +21,7 @@ import forms.submapping.AccountingMethodMapping
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Cash
-import models.individual.business.AccountingMethodModel
+import models.common.AccountingMethodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.data.FormError

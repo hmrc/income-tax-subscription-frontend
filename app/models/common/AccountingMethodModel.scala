@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models.individual.business
+package models.common
 
+import models.AccountingMethod
 import play.api.libs.json.{Json, OFormat}
 
-case class BusinessNameModel(businessName: String)
+case class AccountingMethodModel(accountingMethod: AccountingMethod)
 
-object BusinessNameModel {
-  implicit val format: OFormat[BusinessNameModel] = Json.format[BusinessNameModel]
+object AccountingMethodModel {
+  implicit val format: OFormat[AccountingMethodModel] = Json.format[AccountingMethodModel]
 }

@@ -16,19 +16,18 @@
 
 package controllers.agent.business
 
-import auth.agent.{AuthenticatedController, UserMatchingController}
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
-import models.agent.AccountingMethodPropertyModel
+import models.common.AccountingMethodPropertyModel
 import models.individual.subscription.{Both, Property}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
-import services.agent.KeystoreService
+import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.agent.CacheUtil.CacheMapUtil
+import utilities.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -75,8 +74,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
       Future.successful(controllers.agent.routes.CheckYourAnswersController.show().url)
     else {
       keystoreService.fetchAll() map {
-        case None => controllers.agent.routes.IncomeSourceController.show().url
-        case Some(cacheMap) => cacheMap.getIncomeSource() match {
+        case cacheMap => cacheMap.agentGetIncomeSource match {
           case Some(Property) => controllers.agent.routes.IncomeSourceController.show().url
           case Some(Both) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url
           case _ => controllers.agent.routes.IncomeSourceController.show().url

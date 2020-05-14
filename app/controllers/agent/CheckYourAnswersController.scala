@@ -24,10 +24,11 @@ import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc._
 import services.AuthService
-import services.agent.{KeystoreService, SubscriptionOrchestrationService}
+import services.agent.SubscriptionOrchestrationService
+import services.KeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.agent.CacheUtil._
+import utilities.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +45,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
       implicit user =>
         if (user.clientNino.isDefined && user.clientUtr.isDefined) {
           keystoreService.fetchAll().flatMap {
-            case Some(cache) => processFunc(user)(request)(cache)
+            case cache => processFunc(user)(request)(cache)
             case _ => error(noCacheMapErrMessage)
           }
         } else {

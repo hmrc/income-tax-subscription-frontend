@@ -22,9 +22,10 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
 import services.agent.mocks._
+import services.mocks._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.InternalServerException
-import utilities.agent.CacheUtil._
+import utilities.CacheUtil._
 import utilities.agent.TestConstants.{testNino, _}
 import utilities.agent.TestModels
 import utilities.agent.TestModels.testCacheMap

@@ -23,7 +23,8 @@ import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpPa
 import config.featureswitch.FeatureSwitching
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 import javax.inject.{Inject, Singleton}
-import models.individual.business.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
+import models.common.AccountingYearModel
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription._
 import models.{Next, Yes}
 import play.api.Logger

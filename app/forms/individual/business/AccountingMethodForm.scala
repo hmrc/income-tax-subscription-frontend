@@ -17,7 +17,7 @@
 package forms.individual.business
 
 import forms.submapping.AccountingMethodMapping
-import models.individual.business.AccountingMethodModel
+import models.common.AccountingMethodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid

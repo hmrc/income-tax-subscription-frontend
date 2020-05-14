@@ -21,11 +21,11 @@ import controllers.agent.AgentControllerBaseSpec
 import config.featureswitch._
 import forms.agent.AccountingMethodPropertyForm
 import models.Cash
-import models.agent.AccountingMethodPropertyModel
+import models.common.AccountingMethodPropertyModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.agent.mocks.MockKeystoreService
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
