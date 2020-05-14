@@ -26,7 +26,7 @@ import models.individual.business.BusinessPhoneNumberModel
 import models.individual.subscription.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.individual.CacheConstants
+import utilities.CacheConstants
 
 class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

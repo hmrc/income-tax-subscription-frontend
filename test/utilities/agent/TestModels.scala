@@ -16,19 +16,18 @@
 
 package utilities.agent
 
-import models._
+import models.{Cash, Current, DateModel, Next, No, Yes}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business._
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.Implicits
+import utilities.CacheConstants._
 
 object TestModels extends Implicits {
-
-  import CacheConstants._
 
   /*
    * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
@@ -92,11 +91,11 @@ object TestModels extends Implicits {
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
-      selectedTaxYear.fold(emptyMap)(model => Map(WhatYearToSignUp -> AccountingYearModel.format.writes(model))) ++
+      selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
-      accountingMethodProperty.fold(emptyMap)(model => Map(AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model)))
+      accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)))
     CacheMap("", map)
   }
 

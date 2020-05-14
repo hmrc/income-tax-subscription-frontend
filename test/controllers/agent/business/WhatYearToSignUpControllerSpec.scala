@@ -52,11 +52,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchWhatYearToSignUpFromKeyStore(Some(AccountingYearModel(Current)))
+        mockFetchSelectedTaxYearFromKeyStore(Some(AccountingYearModel(Current)))
 
         status(result) must be(Status.OK)
 
-        verifyKeystore(fetchWhatYearToSignUp = 1)
+        verifyKeystore(fetchSelectedTaxYear = 1)
 
       }
     }
@@ -66,11 +66,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchWhatYearToSignUpFromKeyStore(None)
+        mockFetchSelectedTaxYearFromKeyStore(None)
 
         status(result) must be(Status.OK)
 
-        verifyKeystore(fetchWhatYearToSignUp = 1)
+        verifyKeystore(fetchSelectedTaxYear = 1)
 
       }
     }
@@ -95,7 +95,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(saveWhatYearToSignUp = 1)
+        verifyKeystore(saveSelectedTaxYear = 1)
       }
 
       "redirect to business accounting period page" in {
@@ -106,7 +106,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifyKeystore(saveWhatYearToSignUp = 1)
+        verifyKeystore(saveSelectedTaxYear = 1)
       }
 
     }
@@ -120,7 +120,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(saveWhatYearToSignUp = 1)
+        verifyKeystore(saveSelectedTaxYear = 1)
       }
 
       "redirect to checkYourAnswer page" in {
@@ -131,7 +131,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(saveWhatYearToSignUp = 1)
+        verifyKeystore(saveSelectedTaxYear = 1)
 
       }
     }

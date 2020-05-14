@@ -24,7 +24,7 @@ import models.common.BusinessNameModel
 import models.individual.subscription.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.individual.CacheConstants
+import utilities.CacheConstants
 
 class BusinessNameControllerISpec extends ComponentSpecBase {
 

@@ -26,8 +26,7 @@ import models.common.AccountingYearModel
 import models.{Current, Next}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.AccountingPeriodUtil
-import utilities.individual.CacheConstants
+import utilities.{AccountingPeriodUtil, CacheConstants}
 
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 

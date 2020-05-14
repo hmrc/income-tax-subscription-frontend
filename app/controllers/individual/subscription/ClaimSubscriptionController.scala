@@ -27,7 +27,7 @@ import play.twirl.api.Html
 import services.{AuthService, KeystoreService}
 import services.individual.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.individual.CacheConstants.MtditId
+import utilities.CacheConstants.MtditId
 
 import scala.concurrent.{ExecutionContext, Future}
 

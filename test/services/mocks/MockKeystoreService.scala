@@ -27,14 +27,11 @@ import services.KeystoreService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import utilities.MockTrait
-import utilities.agent.CacheConstants.WhatYearToSignUp
-import utilities.individual.CacheConstants._
+import utilities.CacheConstants._
 
 import scala.concurrent.Future
 
 trait MockKeystoreService extends MockTrait {
-
-
 
   val returnedCacheMap: CacheMap = CacheMap("", Map())
 
@@ -114,10 +111,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[AccountingYearModel](SelectedTaxYear, fetchSelectedTaxYear)
   }
 
-  protected final def mockFetchWhatYearToSignUpFromKeyStore(fetchWhatYearToSignUp: MFO[AccountingYearModel]): Unit = {
-    mockFetchFromKeyStore[AccountingYearModel](WhatYearToSignUp, fetchWhatYearToSignUp)
-  }
-
   protected final def mockFetchPaperlessPreferenceToken(fetchPaperlessPreferenceToken: MFO[String]): Unit = {
     mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
   }
@@ -147,8 +140,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveBusinessAddress: Option[Int] = None,
                                       fetchMatchTaxYear: Option[Int] = None,
                                       saveMatchTaxYear: Option[Int] = None,
-                                      fetchWhatYearToSignUp: Option[Int] = None,
-                                      saveWhatYearToSignUp: Option[Int] = None,
                                       fetchSelectedTaxYear: Option[Int] = None,
                                       saveSelectedTaxYear: Option[Int] = None,
                                       fetchBusinessStartDate: Option[Int] = None,
@@ -182,8 +173,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(BusinessStartDate, saveBusinessStartDate)
     verifyKeystoreFetch(MatchTaxYear, fetchMatchTaxYear)
     verifyKeystoreSave(MatchTaxYear, saveMatchTaxYear)
-    verifyKeystoreFetch(WhatYearToSignUp, fetchWhatYearToSignUp)
-    verifyKeystoreSave(WhatYearToSignUp, saveWhatYearToSignUp)
     verifyKeystoreFetch(SelectedTaxYear, fetchSelectedTaxYear)
     verifyKeystoreSave(SelectedTaxYear, saveSelectedTaxYear)
     verifyKeystoreFetch(AccountingPeriodDate, fetchAccountingPeriodDate)

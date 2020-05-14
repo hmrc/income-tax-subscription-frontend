@@ -25,7 +25,7 @@ import models.individual.subscription._
 import models.{No, Yes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.AccountingPeriodUtil.getCurrentTaxYear
-import utilities.individual.CacheConstants._
+import CacheConstants._
 
 object CacheUtil {
 
@@ -43,13 +43,6 @@ object CacheUtil {
     def getMatchTaxYear: Option[MatchTaxYearModel] = cacheMap.getEntry[MatchTaxYearModel](MatchTaxYear)
 
     def getEnteredAccountingPeriodDate: Option[AccountingPeriodModel] = cacheMap.getEntry[AccountingPeriodModel](AccountingPeriodDate)
-
-    def getAccountingPeriodDate: Option[AccountingPeriodModel] =
-      (getIncomeSourceType, getMatchTaxYear) match {
-        case (Some(Business | Both), Some(MatchTaxYearModel(Yes))) => Some(getCurrentTaxYear)
-        case (Some(Business | Both), Some(MatchTaxYearModel(No))) => getEnteredAccountingPeriodDate
-        case _ => None
-      }
 
     def getBusinessName: Option[BusinessNameModel] = cacheMap.getEntry[BusinessNameModel](BusinessName)
 
@@ -114,7 +107,7 @@ object CacheUtil {
             incomeSource = agentGetIncomeSource,
             matchTaxYear = getMatchTaxYear,
             selectedTaxYear = getSelectedTaxYear,
-            accountingPeriodDate = getAccountingPeriodDate,
+            accountingPeriodDate = getEnteredAccountingPeriodDate,
             businessName = getBusinessName,
             accountingMethod = getAccountingMethod
           )
@@ -122,7 +115,7 @@ object CacheUtil {
           AgentSummary(
             incomeSource = agentGetIncomeSource,
             matchTaxYear = getMatchTaxYear,
-            accountingPeriodDate = getAccountingPeriodDate,
+            accountingPeriodDate = getEnteredAccountingPeriodDate,
             businessName = getBusinessName,
             accountingMethod = getAccountingMethod,
             accountingMethodProperty = getPropertyAccountingMethod

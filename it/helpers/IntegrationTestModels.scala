@@ -15,12 +15,12 @@ import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
-import utilities.individual.{CacheConstants, Constants}
+import utilities.individual.Constants
 
 
 object IntegrationTestModels {
 
-  import CacheConstants._
+  import utilities.CacheConstants._
 
   /*
    * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino

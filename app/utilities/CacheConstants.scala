@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utilities.individual
+package utilities
 
 object CacheConstants {
   // n.b. IncomeSource is still used on the agent flow

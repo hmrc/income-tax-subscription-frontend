@@ -25,7 +25,7 @@ import models.individual.subscription.IncomeSourceType
 import models.{No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.agent.CacheConstants
+import utilities.CacheConstants
 
 class MatchTaxYearControllerISpec extends ComponentSpecBase {
 

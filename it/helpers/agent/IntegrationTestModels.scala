@@ -1,17 +1,15 @@
 
 package helpers.agent
 
-import models._
+import models.{Cash, Current, DateModel, Next, Yes}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
-import utilities.agent.CacheConstants
+import utilities.CacheConstants
 
 object IntegrationTestModels {
-
-  import CacheConstants._
 
   val testStartDate: DateModel = helpers.IntegrationTestModels.testStartDate
   val testEndDate: DateModel = helpers.IntegrationTestModels.testEndDate
@@ -49,13 +47,13 @@ object IntegrationTestModels {
                     accountingMethod: Option[AccountingMethodModel] = None,
                     accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
-      accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
-      businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
-      accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      accountingMethodProperty.map(model => AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model)) ++
-      matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
-      selectedTaxYear.map(model => WhatYearToSignUp -> AccountingYearModel.format.writes(model))
+      incomeSource.map(model => CacheConstants.IncomeSource -> IncomeSourceType.format.writes(model)) ++
+      accountingPeriodDate.map(model => CacheConstants.AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
+      businessName.map(model => CacheConstants.BusinessName -> BusinessNameModel.format.writes(model)) ++
+      accountingMethod.map(model => CacheConstants.AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
+      accountingMethodProperty.map(model => CacheConstants.PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
+      matchTaxYear.map(model => CacheConstants.MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
+      selectedTaxYear.map(model => CacheConstants.SelectedTaxYear -> AccountingYearModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness: Business.type = Business

@@ -71,7 +71,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
           backLinkUrl = backUrl(incomeSource)
         } yield
           Ok(views.html.agent.check_your_answers(
-            cache.getSummary,
+            cache.getAgentSummary(),
             controllers.agent.routes.CheckYourAnswersController.submit(),
             backUrl = backLinkUrl
           ))
@@ -81,7 +81,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
                                       (implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {
-      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getSummary())(headerCarrier)
+      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary())(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- keystoreService.saveSubscriptionId(mtditid)

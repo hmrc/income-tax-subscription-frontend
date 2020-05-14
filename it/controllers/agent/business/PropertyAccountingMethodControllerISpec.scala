@@ -27,7 +27,7 @@ import models.individual.subscription.Both
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import utilities.agent.CacheConstants
+import utilities.CacheConstants
 
 class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -78,7 +78,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
+        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
         When("POST /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -95,7 +95,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
+        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
         When("POST /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -111,7 +111,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubEmptyKeystore()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, "")
+        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, "")
 
         When("POST /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, None)
@@ -139,7 +139,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
               accountingMethodProperty = Some(keystoreAccountingMethodProperty)
             )
           )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
+          KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
           When("POST /business/accounting-method-property is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))
@@ -166,7 +166,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
               accountingMethodProperty = Some(keystoreAccountingMethodProperty)
             )
           )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
+          KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
           When("POST /business/accounting-method-property is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))

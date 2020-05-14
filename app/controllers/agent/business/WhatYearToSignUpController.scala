@@ -53,7 +53,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchWhatYearToSignUp() map { accountingYear =>
+      keystoreService.fetchSelectedTaxYear() map { accountingYear =>
         Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYear),
           isEditMode = isEditMode))
       }
@@ -65,7 +65,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          Future.successful(keystoreService.saveWhatYearToSignUp(accountingYear)) map { _ =>
+          Future.successful(keystoreService.saveSelectedTaxYear(accountingYear)) map { _ =>
             if (isEditMode) {
               Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             } else {
