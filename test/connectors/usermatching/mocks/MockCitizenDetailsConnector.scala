@@ -17,7 +17,6 @@
 package connectors.usermatching.mocks
 
 import connectors.usermatching.CitizenDetailsConnector
-import utilities.individual.TestConstants.testException
 import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -26,12 +25,13 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utilities.{MockTrait, UnitTestTrait}
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants.testException
 
 import scala.concurrent.Future
 
 
-trait MockCitizenDetailsConnector extends MockTrait {
+trait MockCitizenDetailsConnector extends UnitTestTrait with MockitoSugar {
 
   val mockCitizenDetailsConnector: CitizenDetailsConnector = mock[CitizenDetailsConnector]
 

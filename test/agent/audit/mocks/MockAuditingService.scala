@@ -19,12 +19,13 @@ package agent.audit.mocks
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request
 import services.{AuditModel, AuditingService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
 
-trait MockAuditingService extends MockTrait with BeforeAndAfterEach {
+trait MockAuditingService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

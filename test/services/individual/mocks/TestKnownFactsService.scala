@@ -18,14 +18,16 @@ package services.individual.mocks
 
 import config.MockConfig
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
-import utilities.individual.Constants.GovernmentGateway._
-import utilities.individual.TestConstants._
 import models.individual.subscription.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import services.individual.KnownFactsService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.Constants.GovernmentGateway._
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
@@ -42,7 +44,7 @@ trait TestKnownFactsService extends MockTaxEnrolmentsConnector with MockConfig {
   ))
 }
 
-trait MockKnownFactsService extends MockTrait {
+trait MockKnownFactsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   val mockKnownFactsService = mock[KnownFactsService]
 
   override def beforeEach(): Unit = {

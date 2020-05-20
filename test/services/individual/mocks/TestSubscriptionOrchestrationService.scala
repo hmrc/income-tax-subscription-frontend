@@ -18,14 +18,15 @@ package services.individual.mocks
 
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import models.ConnectorError
-import utilities.individual.TestConstants._
 import models.individual.subscription.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar
 import services.individual.SubscriptionOrchestrationService
 import services.mocks.MockSubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
@@ -41,7 +42,7 @@ trait TestSubscriptionOrchestrationService extends MockSubscriptionService
 
 }
 
-trait MockSubscriptionOrchestrationService extends MockTrait {
+trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSugar {
   val mockSubscriptionOrchestrationService = mock[SubscriptionOrchestrationService]
 
   private def mockCreateSubscription(nino: String,

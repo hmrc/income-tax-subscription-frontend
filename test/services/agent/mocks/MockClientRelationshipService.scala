@@ -18,12 +18,14 @@ package services.agent.mocks
 
 import connectors.agent.mocks.MockAgentServicesConnector
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import services.agent.ClientRelationshipService
-import utilities.MockTrait
+import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockClientRelationshipService extends MockTrait {
+trait MockClientRelationshipService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   val mockClientRelationshipService: ClientRelationshipService = mock[ClientRelationshipService]
 
   override def beforeEach(): Unit = {

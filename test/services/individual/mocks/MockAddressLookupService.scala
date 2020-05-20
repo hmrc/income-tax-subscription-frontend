@@ -18,20 +18,22 @@ package services.individual.mocks
 
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
 import connectors.individual.business.mocks.MockAddressLookupConnector
-import utilities.individual.TestConstants.testException
 import models.individual.business.address._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.mockito.stubbing.OngoingStubbing
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import services.individual.AddressLookupService
-import utilities.MockTrait
 import utilities.TestModels.testReturnedAddress
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants.testException
 
 import scala.concurrent.Future
 
 
-trait MockAddressLookupService extends MockTrait {
+trait MockAddressLookupService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockAddressLookupService: AddressLookupService = mock[AddressLookupService]
 

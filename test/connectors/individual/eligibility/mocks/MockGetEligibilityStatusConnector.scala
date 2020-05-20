@@ -20,15 +20,16 @@ import auth.MockHttp
 import config.AppConfig
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import connectors.individual.eligibility.httpparsers.EligibilityStatus
-import utilities.HttpResult.HttpResult
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
-import utilities.MockTrait
+import utilities.HttpResult.HttpResult
+import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockGetEligibilityStatusConnector extends MockTrait {
+trait MockGetEligibilityStatusConnector extends UnitTestTrait with MockitoSugar {
 
   val mockGetEligibilityStatusConnector: GetEligibilityStatusConnector = mock[GetEligibilityStatusConnector]
 

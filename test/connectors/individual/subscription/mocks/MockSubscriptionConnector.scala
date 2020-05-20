@@ -21,18 +21,19 @@ import config.AppConfig
 import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import utilities.individual.TestConstants._
 import models.individual.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockSubscriptionConnector extends MockTrait {
+trait MockSubscriptionConnector extends UnitTestTrait with MockitoSugar {
   val mockSubscriptionConnector: SubscriptionConnector = mock[SubscriptionConnector]
 
   private def setupMockSubscribe(request: SubscriptionRequest)(result: Future[SubscriptionResponse]): Unit =

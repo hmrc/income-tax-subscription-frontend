@@ -18,15 +18,16 @@ package auth
 
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAuth extends MockTrait {
+trait MockAuth extends UnitTestTrait with MockitoSugar {
   val mockAuth = mock[AuthConnector]
 
   def mockAuthorise[T](predicate: Predicate, retrieval: Retrieval[T])(result: T): Unit =

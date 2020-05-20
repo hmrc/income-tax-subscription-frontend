@@ -17,16 +17,17 @@
 package services.mocks
 
 import connectors.individual.mocks.MockPaperlessPreferenceTokenConnector
-import utilities.individual.TestConstants._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar
 import services.PaperlessPreferenceTokenService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockPaperlessPreferenceTokenService extends MockTrait {
+trait MockPaperlessPreferenceTokenService extends UnitTestTrait with MockitoSugar {
   val mockPaperlessPreferenceTokenService = mock[PaperlessPreferenceTokenService]
 
   private def mockStoreNino(nino: String)(result: Future[String]) =

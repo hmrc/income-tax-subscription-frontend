@@ -17,18 +17,20 @@
 package services.mocks
 
 import connectors.individual.mocks.MockPreferenceFrontendConnector
-import utilities.individual.TestConstants._
 import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import services.PreferencesService
-import utilities.{MockTrait, UnitTestTrait}
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockPreferencesService extends MockTrait {
+trait MockPreferencesService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   val mockPreferencesService: PreferencesService = mock[PreferencesService]
 
   private def mockCheckPaperless(token: String)(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
