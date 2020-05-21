@@ -20,18 +20,19 @@ import models.audits.ClientMatchingAuditing._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import services.AuditingService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utilities.MockTrait
+import utilities.UnitTestTrait
 import utilities.agent.TestConstants._
 import utilities.agent.TestModels._
 
 import scala.concurrent.ExecutionContext
 
-class AuditingServiceSpec extends MockTrait with BeforeAndAfterEach {
+class AuditingServiceSpec extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockAuditConnector: AuditConnector = mock[AuditConnector]
 

@@ -18,15 +18,17 @@ package auth
 
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsString, JsValue}
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utilities.MockTrait
+import utilities.UnitTestTrait
 import utilities.individual.TestConstants.testErrorMessage
 
 import scala.concurrent.Future
 
-trait MockHttp extends MockTrait {
+trait MockHttp extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockHttp: HttpClient = mock[HttpClient]
 

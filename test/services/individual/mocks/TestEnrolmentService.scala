@@ -19,14 +19,16 @@ package services.individual.mocks
 import auth.MockAuth
 import config.MockConfig
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
-import utilities.individual.Constants.GovernmentGateway.{ggServiceName, _}
-import utilities.individual.TestConstants._
 import models.individual.subscription.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import services.individual.EnrolmentService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.Constants.GovernmentGateway.{ggServiceName, _}
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
@@ -48,7 +50,7 @@ trait TestEnrolmentService extends MockTaxEnrolmentsConnector with MockAuth {
   )
 }
 
-trait MockEnrolmentService extends MockTrait {
+trait MockEnrolmentService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   val mockEnrolmentService = mock[EnrolmentService]
 
   override def beforeEach(): Unit = {

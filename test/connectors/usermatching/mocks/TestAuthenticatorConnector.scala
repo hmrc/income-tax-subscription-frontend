@@ -18,16 +18,17 @@ package connectors.usermatching.mocks
 
 import auth.MockHttp
 import connectors.usermatching.AuthenticatorConnector
-import utilities.individual.TestConstants.testException
 import models.usermatching._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.TestModels._
+import utilities.UnitTestTrait
 import utilities.individual.TestConstants
-import utilities.{MockTrait, UnitTestTrait}
+import utilities.individual.TestConstants.testException
 
 import scala.concurrent.Future
 
@@ -57,7 +58,7 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
   val matchUserUnexpectedStatus: (Int, JsValue) = (NOT_FOUND, Json.obj())
 }
 
-trait MockAuthenticatiorConnector extends MockTrait {
+trait MockAuthenticatiorConnector extends UnitTestTrait with MockitoSugar {
 
   val mockAuthenticatiorConnector: AuthenticatorConnector = mock[AuthenticatorConnector]
 

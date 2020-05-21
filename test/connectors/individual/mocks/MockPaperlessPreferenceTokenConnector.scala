@@ -20,12 +20,14 @@ import connectors.PaperlessPreferenceTokenConnector
 import models.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenResult, PaperlessPreferenceTokenSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{verify, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockPaperlessPreferenceTokenConnector extends MockTrait {
+trait MockPaperlessPreferenceTokenConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   val mockPaperlessPreferenceTokenConnector: PaperlessPreferenceTokenConnector = mock[PaperlessPreferenceTokenConnector]
 
   private def mockStoreNino(nino: String)(result: Future[PaperlessPreferenceTokenResult]) =

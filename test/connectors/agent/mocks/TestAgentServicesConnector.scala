@@ -18,8 +18,10 @@ package connectors.agent.mocks
 
 import connectors.agent.AgentServicesConnector
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
-import utilities.MockTrait
+import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
@@ -31,7 +33,7 @@ trait TestAgentServicesConnector extends MockHttp {
     setupMockHttpGet(Some(TestAgentServicesConnector.agentClientURL(arn, nino)))(status, response)
 }
 
-trait MockAgentServicesConnector extends MockTrait {
+trait MockAgentServicesConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockAgentServicesConnector: AgentServicesConnector = mock[AgentServicesConnector]
 

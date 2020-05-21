@@ -17,13 +17,15 @@
 package services.mocks
 
 import connectors.usermatching.mocks.MockCitizenDetailsConnector
-import utilities.individual.TestConstants._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
 import services.individual.{CitizenDetailsService, OptionalIdentifiers}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
@@ -33,7 +35,7 @@ trait TestCitizenDetailsService extends MockCitizenDetailsConnector {
 
 }
 
-trait MockCitizenDetailsService extends MockTrait {
+trait MockCitizenDetailsService extends UnitTestTrait with MockitoSugar {
   val mockCitizenDetailsService: CitizenDetailsService = mock[CitizenDetailsService]
 
   private def mockLookupUtr(nino: String)(response: Future[Option[String]]) =

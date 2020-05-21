@@ -20,17 +20,19 @@ import auth.MockHttp
 import config.AppConfig
 import connectors.usermatching.UserLockoutConnector
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import utilities.individual.TestConstants._
 import models.usermatching.{LockoutStatusFailureResponse, NotLockedOut}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockUserLockoutConnector extends MockTrait {
+trait MockUserLockoutConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   val mockUserLockoutConnector: UserLockoutConnector = mock[UserLockoutConnector]
 
   private def setupLockoutUser(arn: String)(result: Future[LockoutStatusResponse]): Unit =
@@ -64,7 +66,7 @@ trait MockUserLockoutConnector extends MockTrait {
 
 }
 
-trait TestUserLockoutConnector extends MockTrait with MockHttp {
+trait TestUserLockoutConnector extends MockHttp {
 
   object TestUserLockoutConnector extends UserLockoutConnector(
     app.injector.instanceOf[AppConfig],

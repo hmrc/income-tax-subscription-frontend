@@ -23,15 +23,18 @@ import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyMo
 import models.individual.subscription.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import services.KeystoreService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import utilities.MockTrait
 import utilities.CacheConstants._
+import utilities.UnitTestTrait
+import utilities.TestModels.emptyCacheMap
 
 import scala.concurrent.Future
 
-trait MockKeystoreService extends MockTrait {
+trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val returnedCacheMap: CacheMap = CacheMap("", Map())
 
@@ -42,16 +45,16 @@ trait MockKeystoreService extends MockTrait {
     reset(MockKeystoreService.session)
   }
 
-  private final def mockFetchFromKeyStore[T](key: String, config: MFO[T]): Unit =
-    config ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetchAndGetEntry[T](ArgumentMatchers.eq(key))(
-      ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(dataToReturn))
+  private final def mockFetchFromKeyStore[T](key: String, config: Future[Option[T]]): Unit =
+    when(MockKeystoreService.session.fetchAndGetEntry[T](ArgumentMatchers.eq(key))(
+      ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(config)
 
   private final def verifyKeystoreFetch[T](key: String, someCount: Option[Int]): Unit =
-    someCount ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetchAndGetEntry[T](ArgumentMatchers.eq(key))(
+    someCount map (count => verify(MockKeystoreService.session, times(count)).fetchAndGetEntry[T](ArgumentMatchers.eq(key))(
       ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
 
   private final def verifyKeystoreSave[T](key: String, someCount: Option[Int]): Unit =
-    someCount ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).cache[T](ArgumentMatchers.eq(key), ArgumentMatchers.any())(
+    someCount map (count => verify(MockKeystoreService.session, times(count)).cache[T](ArgumentMatchers.eq(key), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
 
 
@@ -59,70 +62,70 @@ trait MockKeystoreService extends MockTrait {
     when(MockKeystoreService.session.cache(ArgumentMatchers.any(), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
-  protected final def mockFetchIncomeSourceFromKeyStore(fetchIncomeSource: MFO[IncomeSourceType]): Unit = {
+  protected final def mockFetchIncomeSourceFromKeyStore(fetchIncomeSource: Option[IncomeSourceType]): Unit = {
     mockFetchFromKeyStore[IncomeSourceType](IncomeSource, fetchIncomeSource)
   }
 
-  protected final def mockFetchRentUkPropertyFromKeyStore(fetchRentUkProperty: MFO[RentUkPropertyModel]): Unit = {
+  protected final def mockFetchRentUkPropertyFromKeyStore(fetchRentUkProperty: Option[RentUkPropertyModel]): Unit = {
     mockFetchFromKeyStore[RentUkPropertyModel](RentUkProperty, fetchRentUkProperty)
   }
 
-  protected final def mockFetchAreYouSelfEmployedFromKeyStore(fetchAreYouSelfEmployed: MFO[AreYouSelfEmployedModel]): Unit = {
+  protected final def mockFetchAreYouSelfEmployedFromKeyStore(fetchAreYouSelfEmployed: Option[AreYouSelfEmployedModel]): Unit = {
     mockFetchFromKeyStore[AreYouSelfEmployedModel](AreYouSelfEmployed, fetchAreYouSelfEmployed)
   }
 
-  protected final def mockFetchBusinessNameFromKeyStore(fetchBusinessName: MFO[BusinessNameModel]): Unit = {
+  protected final def mockFetchBusinessNameFromKeyStore(fetchBusinessName: Option[BusinessNameModel]): Unit = {
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
   }
 
-  protected final def mockFetchBusinessPhoneNumberFromKeyStore(fetchBusinessPhoneNumber: MFO[BusinessPhoneNumberModel]): Unit = {
+  protected final def mockFetchBusinessPhoneNumberFromKeyStore(fetchBusinessPhoneNumber: Option[BusinessPhoneNumberModel]): Unit = {
     mockFetchFromKeyStore[BusinessPhoneNumberModel](BusinessPhoneNumber, fetchBusinessPhoneNumber)
   }
 
-  protected final def mockFetchBusinessAddressFromKeyStore(fetchBusinessAddress: MFO[Address]): Unit = {
+  protected final def mockFetchBusinessAddressFromKeyStore(fetchBusinessAddress: Option[Address]): Unit = {
     mockFetchFromKeyStore[Address](BusinessAddress, fetchBusinessAddress)
   }
 
-  protected final def mockFetchBusinessStartDateFromKeyStore(fetchBusinessStartDate: MFO[BusinessStartDateModel]): Unit = {
+  protected final def mockFetchBusinessStartDateFromKeyStore(fetchBusinessStartDate: Option[BusinessStartDateModel]): Unit = {
     mockFetchFromKeyStore[BusinessStartDateModel](BusinessStartDate, fetchBusinessStartDate)
   }
 
-  protected final def mockFetchAccountingPeriodFromKeyStore(fetchAccountingPeriodDate: MFO[AccountingPeriodModel]): Unit = {
+  protected final def mockFetchAccountingPeriodFromKeyStore(fetchAccountingPeriodDate: Option[AccountingPeriodModel]): Unit = {
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
   }
 
-  protected final def mockFetchAccountingMethodFromKeyStore(fetchAccountingMethod: MFO[AccountingMethodModel]): Unit = {
+  protected final def mockFetchAccountingMethodFromKeyStore(fetchAccountingMethod: Option[AccountingMethodModel]): Unit = {
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
   }
 
-  protected final def mockFetchPropertyAccountingFromKeyStore(fetchPropertyAccountingMethod: MFO[AccountingMethodPropertyModel]): Unit = {
+  protected final def mockFetchPropertyAccountingFromKeyStore(fetchPropertyAccountingMethod: Option[AccountingMethodPropertyModel]): Unit = {
     mockFetchFromKeyStore[AccountingMethodPropertyModel](PropertyAccountingMethod, fetchPropertyAccountingMethod)
   }
 
-  protected final def mockFetchSubscriptionIdFromKeyStore(fetchSubscriptionId: MFO[String]): Unit = {
+  protected final def mockFetchSubscriptionIdFromKeyStore(fetchSubscriptionId: Option[String]): Unit = {
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
   }
 
-  protected final def mockFetchMatchTaxYearFromKeyStore(fetchMatchTaxYear: MFO[MatchTaxYearModel]): Unit = {
+  protected final def mockFetchMatchTaxYearFromKeyStore(fetchMatchTaxYear: Option[MatchTaxYearModel]): Unit = {
     mockFetchFromKeyStore[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
   }
 
-  protected final def mockFetchSelectedTaxYearFromKeyStore(fetchSelectedTaxYear: MFO[AccountingYearModel]): Unit = {
+  protected final def mockFetchSelectedTaxYearFromKeyStore(fetchSelectedTaxYear: Option[AccountingYearModel]): Unit = {
     mockFetchFromKeyStore[AccountingYearModel](SelectedTaxYear, fetchSelectedTaxYear)
   }
 
-  protected final def mockFetchPaperlessPreferenceToken(fetchPaperlessPreferenceToken: MFO[String]): Unit = {
+  protected final def mockFetchPaperlessPreferenceToken(fetchPaperlessPreferenceToken: Option[String]): Unit = {
     mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
   }
 
-  protected final def mockFetchAllFromKeyStore(fetchAll: MFO[CacheMap]): Unit = {
-    fetchAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetch()(
-      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(dataToReturn))
+  protected final def mockFetchAllFromKeyStore(fetchAll: Option[CacheMap]): Unit = {
+    when(MockKeystoreService.session.fetch()(
+      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(fetchAll.getOrElse(emptyCacheMap))
   }
 
-  protected final def mockDeleteAllFromKeyStore(deleteAll: MF[HttpResponse]): Unit = {
-    deleteAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.remove()(
-      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(dataToReturn))
+  protected final def mockDeleteAllFromKeyStore(deleteAll: HttpResponse): Unit = {
+    when(MockKeystoreService.session.remove()(
+      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(deleteAll)
   }
 
   protected final def verifyKeystore(
@@ -186,8 +189,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreFetch(PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
     verifyKeystoreSave(PaperlessPreferenceToken, savePaperlessPreferenceToken)
 
-    fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any(), ArgumentMatchers.any()))
-    deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any(), ArgumentMatchers.any()))
+    fetchAll map (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any(), ArgumentMatchers.any()))
+    deleteAll map (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any(), ArgumentMatchers.any()))
   }
 
 }

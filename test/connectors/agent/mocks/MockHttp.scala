@@ -16,17 +16,19 @@
 
 package connectors.agent.mocks
 
-import utilities.agent.TestConstants.testErrorMessage
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsString, JsValue}
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.agent.TestConstants.testErrorMessage
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockHttp extends MockTrait {
+trait MockHttp extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockHttp: HttpClient = mock[HttpClient]
 

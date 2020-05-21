@@ -18,15 +18,17 @@ package services.mocks
 
 import connectors.individual.eligibility.httpparsers.EligibilityStatus
 import connectors.individual.eligibility.mocks.MockGetEligibilityStatusConnector
-import utilities.HttpResult.HttpResult
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import services.GetEligibilityStatusService
-import utilities.MockTrait
+import utilities.HttpResult.HttpResult
+import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockGetEligibilityStatusService extends MockTrait {
+trait MockGetEligibilityStatusService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   val mockGetEligibilityStatusService = mock[GetEligibilityStatusService]
 
   override def beforeEach(): Unit = {

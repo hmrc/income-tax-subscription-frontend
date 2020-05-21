@@ -19,16 +19,17 @@ package connectors.individual.subscription.mocks
 import connectors.individual.subscription.TaxEnrolmentsConnector
 import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
-import utilities.individual.TestConstants.{testErrorMessage, testException}
 import models.individual.subscription._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants.{testErrorMessage, testException}
 
 import scala.concurrent.Future
 
-trait MockTaxEnrolmentsConnector extends MockTrait {
+trait MockTaxEnrolmentsConnector extends UnitTestTrait with MockitoSugar {
   val mockTaxEnrolmentsConnector: TaxEnrolmentsConnector = mock[TaxEnrolmentsConnector]
 
   private def mockUpsertEnrolment(enrolmentKey: EnrolmentKey,

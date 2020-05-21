@@ -18,19 +18,21 @@ package services.mocks
 
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import connectors.usermatching.mocks.MockUserLockoutConnector
-import utilities.individual.TestConstants.{testException, testLockoutResponse}
 import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.http.Status._
 import services.{LockoutUpdate, UserLockoutService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import utilities.{MockTrait, UserMatchingTestSupport}
+import utilities.individual.TestConstants.{testException, testLockoutResponse}
+import utilities.{UnitTestTrait, UserMatchingTestSupport}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockUserLockoutService extends MockTrait with UserMatchingTestSupport {
+trait MockUserLockoutService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach with UserMatchingTestSupport {
 
   val mockUserLockoutService: UserLockoutService = mock[UserLockoutService]
 

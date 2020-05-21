@@ -20,18 +20,20 @@ import config.MockConfig
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.mocks.MockSubscriptionConnector
-import utilities.individual.TestConstants._
 import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockSubscriptionService extends MockTrait {
+trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   
   val mockSubscriptionService: SubscriptionService = mock[SubscriptionService]
 

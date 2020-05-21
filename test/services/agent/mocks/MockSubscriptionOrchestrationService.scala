@@ -16,17 +16,19 @@
 
 package services.agent.mocks
 
-import utilities.agent.TestConstants._
 import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import services.agent.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.MockTrait
+import utilities.UnitTestTrait
+import utilities.agent.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockSubscriptionOrchestrationService extends MockTrait {
+trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockSubscriptionOrchestrationService: SubscriptionOrchestrationService = mock[SubscriptionOrchestrationService]
 
