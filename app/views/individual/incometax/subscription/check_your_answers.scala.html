@@ -122,25 +122,6 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@matchTaxYear(matchTaxYear: MatchTaxYearModel) = @{
-    val rowName = MatchTaxYearId
-    val rowQuestion = Messages("summary.match_tax_year")
-    val rowAnswer = matchTaxYear.matchTaxYear.toMessageString
-    val rowUrl = controllers.individual.business.routes.MatchTaxYearController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
-}
-
-@accountingPeriodDate(period: AccountingPeriodModel) = @{
-    val rowName = AccountingPeriodDateId
-    val rowQuestion =
-        if(isRegistration) Messages("summary.accounting_period.registration")
-        else Messages("summary.accounting_period")
-    val periodInMonth = period.startDate.diffInMonth(period.endDate)
-    val rowAnswer = Messages("base.date-to-date", period.startDate.toCheckYourAnswersDateFormat, period.endDate.toCheckYourAnswersDateFormat)
-    val rowUrl = controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
-}
-
 @selectedTaxYear(selectedTaxYear: AccountingYearModel) = @{
     val rowName = SelectedTaxYearId
     val rowQuestion = Messages("summary.selected_year")
@@ -181,11 +162,7 @@
         @summaryModel.businessPhoneNumber.map(businessPhoneNumber)
         @summaryModel.businessAddress.map(businessAddress)
         @summaryModel.businessStartDate.map(businessStartDate)
-        @summaryModel.matchTaxYear.map(matchTaxYear)
-        @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == No)) {
-            @summaryModel.accountingPeriodDate.map(accountingPeriodDate)
-        }
-        @if(summaryModel.rentUkProperty.exists(_.rentUkProperty == No) && summaryModel.matchTaxYear.exists(_.matchTaxYear == Yes)) {
+        @if(summaryModel.rentUkProperty.exists(_.rentUkProperty == No)) {
             @summaryModel.selectedTaxYear.map(selectedTaxYear)
         }
         @summaryModel.accountingMethod.map(accountingMethod)

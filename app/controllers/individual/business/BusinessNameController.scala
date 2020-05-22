@@ -20,11 +20,14 @@ import auth.individual.{Registration, SignUpController}
 import config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
+import models.{No, Yes}
 import models.common.BusinessNameModel
+import models.individual.subscription.Business
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuthService, KeystoreService}
+import utilities.CacheUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,14 +57,22 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessName =>
-          keystoreService.saveBusinessName(businessName) map (_ =>
-            if (isEditMode)
-              Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-            else if (request.isInState(Registration))
-              Redirect(controllers.individual.business.routes.BusinessPhoneNumberController.show())
-            else
-              Redirect(controllers.individual.business.routes.MatchTaxYearController.show())
-            )
+          keystoreService.saveBusinessName(businessName) flatMap { _ =>
+            if (isEditMode) {
+              Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
+            } else if (request.isInState(Registration)) {
+              Future.successful(Redirect(controllers.individual.business.routes.BusinessPhoneNumberController.show()))
+            } else {
+              for {
+                cacheMap <- keystoreService.fetchAll()
+              } yield cacheMap.getIncomeSourceType match {
+                case Some(Business) =>
+                  Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+                case _ =>
+                  Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())
+              }
+            }
+          }
       )
   }
 

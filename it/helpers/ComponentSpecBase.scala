@@ -194,10 +194,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       additionalCookies = sessionKeys
     )(Map.empty)
 
-    def matchTaxYear(): WSResponse = get("/business/match-to-tax-year")
-
-    def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
-
     def businessStartDate(): WSResponse = get("/business/start-date", Map(JourneyStateKey -> Registration.name))
 
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
@@ -223,14 +219,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     def maintenance(): WSResponse = get("/error/maintenance")
 
     def noSA(): WSResponse = get("/register-for-SA")
-
-    def submitMatchTaxYear(inEditMode: Boolean, request: Option[MatchTaxYearModel]): WSResponse = {
-      val uri = s"/business/match-to-tax-year?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => MatchTaxYearForm.matchTaxYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        ))
-    }
 
     def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
 
@@ -260,16 +248,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     }
 
     def confirmation(): WSResponse = get("/confirmation")
-
-    def submitAccountingPeriodDates(inEditMode: Boolean, request: Option[AccountingPeriodModel]): WSResponse = {
-      val uri = s"/business/accounting-period-dates?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingPeriodDateForm.accountingPeriodDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
       val uri = s"/business/name?editMode=$inEditMode"

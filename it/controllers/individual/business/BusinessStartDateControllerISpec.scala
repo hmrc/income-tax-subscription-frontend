@@ -18,14 +18,13 @@ package controllers.individual.business
 
 import config.featureswitch
 import config.featureswitch.FeatureSwitching
-import utilities.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status._
-import play.api.i18n.Messages
 import play.api.libs.json.Json
+import utilities.CacheConstants._
 
 class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -82,7 +81,7 @@ class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwi
       Then("Should return a SEE_OTHER with a redirect location of accounting period dates")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(matchTaxYearURI)
+        redirectURI(checkYourAnswersURI)
       )
     }
 

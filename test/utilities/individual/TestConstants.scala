@@ -26,6 +26,7 @@ import models.{Cash, DateModel}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.UserId
+import utilities.AccountingPeriodUtil
 import utilities.TestModels.{adjustedTestAccountingPeriod, testAccountingPeriod, testBusinessName}
 import utilities.individual.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
 import utilities.individual.Constants.mtdItsaEnrolmentName
@@ -73,7 +74,7 @@ object TestConstants {
   val testSubmissionRequest = SubscriptionRequest(
     nino = TestConstants.testNino,
     arn = None,
-    businessIncome = Some(BusinessIncomeModel(Some(testBusinessName.businessName),testAccountingPeriod, Cash)),
+    businessIncome = Some(BusinessIncomeModel(Some(testBusinessName.businessName), AccountingPeriodUtil.getCurrentTaxYear, Cash)),
     propertyIncome = Some(PropertyIncomeModel(Some(Cash)))
   )
 

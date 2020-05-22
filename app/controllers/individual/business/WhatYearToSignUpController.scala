@@ -73,7 +73,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
     if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
-      controllers.individual.business.routes.MatchTaxYearController.show().url
+      controllers.individual.business.routes.BusinessNameController.show().url
     }
   }
 }

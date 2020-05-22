@@ -18,10 +18,11 @@ package helpers.servicemocks
 
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
+import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.SubscriptionSuccess
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json, Writes}
-import utilities.{ITSASessionKeys}
+import utilities.{AccountingPeriodUtil, ITSASessionKeys}
 import utilities.JsonUtils._
 
 object SubscriptionStub extends WireMockMethods {
@@ -36,6 +37,13 @@ object SubscriptionStub extends WireMockMethods {
   def stubSuccessfulPostFailure(callingPageUri: String): Unit = {
     when(method = POST, uri = subscriptionURIPost(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
       .thenReturn(Status.BAD_REQUEST)
+  }
+
+  def stubIndividualSuccessfulSubscriptionPostWithBoth(callingPageUri: String): Unit = {
+    val nino = testNino
+    when(method = POST, uri = subscriptionURIPost(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),
+      body = successfulIndividualSubscriptionWithBodyBoth(nino = nino))
+      .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 
   def stubSuccessfulSubscriptionPostWithBoth(callingPageUri: String): Unit = {
@@ -114,6 +122,30 @@ object SubscriptionStub extends WireMockMethods {
     ),
     "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
   ) + ("arn" -> arn)
+
+  def successfulIndividualSubscriptionWithBodyBoth(arn: Option[String] = None, nino: String): JsObject = {
+    val accountingPeriod: AccountingPeriodModel = AccountingPeriodUtil.getCurrentTaxYear
+    Json.obj(
+      "nino" -> nino,
+      "businessIncome" -> Json.obj(
+        "tradingName" -> "test business",
+        "accountingPeriod" -> Json.obj(
+          "startDate" -> Json.obj(
+            "day" -> accountingPeriod.startDate.day,
+            "month" -> accountingPeriod.startDate.month,
+            "year" -> accountingPeriod.startDate.year
+          ),
+          "endDate" -> Json.obj(
+            "day" -> accountingPeriod.endDate.day,
+            "month" -> accountingPeriod.endDate.month,
+            "year" -> accountingPeriod.endDate.year
+          )
+        ),
+        "accountingMethod" -> "Cash"
+      ),
+      "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
+    ) + ("arn" -> arn)
+  }
 
   def successfulSubscriptionWithBodyProperty(arn: Option[String] = None, nino: String): JsObject = Json.obj(
     "nino" -> nino,

@@ -84,17 +84,9 @@ GET         /thank-you                    controllers.FeedbackController.thankyo
 
 ################## Business Routes
 
-#Match tax year Routes
-GET         /business/match-to-tax-year                      controllers.individual.business.MatchTaxYearController.show(editMode: Boolean ?= false)
-POST        /business/match-to-tax-year                      controllers.individual.business.MatchTaxYearController.submit(editMode: Boolean ?= false)
-
 #What Tax Year To Sign Up Routes
 GET         /business/what-year-to-sign-up                   controllers.individual.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                   controllers.individual.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
-
-#Accounting Period Routes
-GET         /business/accounting-period-dates                controllers.individual.business.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false, editMatch: Boolean?= false)
-POST        /business/accounting-period-dates                controllers.individual.business.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false, editMatch: Boolean?= false)
 
 #Business Name Routes
 GET         /business/name                                   controllers.individual.business.BusinessNameController.show(editMode: Boolean ?= false)
