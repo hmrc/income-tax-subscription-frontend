@@ -20,11 +20,10 @@ import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
+import models.Yes
 import models.common.AccountingMethodModel
-import models.individual.business.MatchTaxYearModel
 import models.individual.incomesource.RentUkPropertyModel
 import models.individual.subscription.Business
-import models.{No, Yes}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -84,13 +83,11 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     else {
       keystoreService.fetchAll() map { cacheMap =>
-        (cacheMap.getIncomeSourceType, cacheMap.getMatchTaxYear) match {
-          case (_, Some(MatchTaxYearModel(No))) =>
-            controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
-          case (Some(Business), _) =>
+        cacheMap.getIncomeSourceType match {
+          case Some(Business) =>
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
-          case (_, _) =>
-            controllers.individual.business.routes.MatchTaxYearController.show().url
+          case _ =>
+            controllers.individual.business.routes.BusinessNameController.show().url
         }
       }
     }

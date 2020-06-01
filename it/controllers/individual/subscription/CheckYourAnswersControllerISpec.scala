@@ -51,7 +51,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystoreBothPost()
-        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
+        SubscriptionStub.stubIndividualSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         KeystoreStub.stubPutMtditId()

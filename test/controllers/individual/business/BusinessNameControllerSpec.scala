@@ -19,15 +19,16 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import forms.individual.business.BusinessNameForm
 import models.common.BusinessNameModel
+import models.individual.subscription.Business
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class BusinessNameControllerSpec extends ControllerBaseSpec
-  with MockKeystoreService {
+class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreService {
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -55,7 +56,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submit action of the BusinessNameController with an authorised user on the sign up journey and valid submission" should {
+  "Calling the submit action of the BusinessNameController with an authorised user on the sign up journey and valid submission" when {
 
     def callShow(isEditMode: Boolean): Future[Result] =
       TestBusinessNameController.submit(isEditMode = isEditMode)(
@@ -63,21 +64,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
           .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )
 
-    "When it is not in edit mode" should {
-      s"return a redirect status (SEE_OTHER - 303) '${controllers.individual.business.routes.MatchTaxYearController.show().url}'" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.MatchTaxYearController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
-      }
-    }
-
-    "When it is in edit mode" should {
+    "it is in edit mode" should {
       s"return a redirect status (SEE_OTHER - 303) to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystoreSaveFunctions()
 
@@ -90,6 +77,24 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
     }
+
+    "it is not in edit mode" when {
+      "the user is business only" should {
+        s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
+          setupMockKeystoreSaveFunctions()
+          mockFetchAllFromKeyStore(testCacheMap(rentUkProperty = testRentUkProperty_no_property, areYouSelfEmployed = testAreYouSelfEmployed_yes))
+
+          val goodRequest = callShow(isEditMode = false)
+
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAll = 1, saveBusinessName = 1)
+        }
+      }
+    }
+
   }
 
   "Calling the submit action of the BusinessNameController with an authorised user on the registration journey and valid submission" should {

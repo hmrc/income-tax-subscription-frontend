@@ -16,11 +16,8 @@
 
 package controllers.individual.subscription
 
-import controllers.ControllerBaseSpec
 import config.featureswitch.FeatureSwitching
-import utilities.CacheUtil._
-import utilities.individual.TestConstants._
-import utilities.TestModels._
+import controllers.ControllerBaseSpec
 import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -28,6 +25,9 @@ import play.api.test.Helpers._
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.InternalServerException
+import utilities.CacheUtil._
+import utilities.TestModels._
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
@@ -121,33 +121,6 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
-    }
-
-    "When match tax year is no and the accounting date is not specified" should {
-      "redirect back to Accounting period dates" in {
-        mockFetchAllFromKeyStore(testCacheMapCustom(
-          matchTaxYear = testMatchTaxYearNo,
-          accountingPeriodDate = None
-        ))
-
-        val result = call
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) must
-          contain(controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url)
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
-      }
-    }
-
-    "When required answers by the user are not retrieved" in {
-      mockFetchAllFromKeyStore(testCacheMap())
-      //      mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
-
-      val result = call
-
-      intercept[InternalServerException](await(result)).getMessage mustBe "Required answers have not been answered by the user"
-
-      verifyKeystore(fetchAll = 1)
     }
 
   }

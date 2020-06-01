@@ -36,58 +36,114 @@ class SubscriptionServiceSpec extends TestSubscriptionService
   val testNino: String = TestConstants.testNino
 
 
-  "subscriptionService.buildRequestPost" should {
-    "convert the user's data into the correct format when they own a property and self employed" in {
-      val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryData, None)
+  "subscriptionService.buildRequestPost" when {
+    "an agent" should {
+      "covert the user's data into the correct format when they own a property and self employed" in {
+        val nino = TestModels.newNino
+        val request = TestSubscriptionService.buildRequestPost(nino, testAgentSummaryDataBoth, Some(testArn))
 
-      request.nino mustBe nino
-      request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
-      request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
-      request.businessIncome.get.accountingMethod mustBe Cash
-      request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
-      request.propertyIncome.isDefined mustBe true
-      request.isAgent mustBe false
+        request.nino mustBe nino
+        request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
+        request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
+        request.businessIncome.get.accountingMethod mustBe Cash
+        request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+        request.propertyIncome.isDefined mustBe true
+        request.isAgent mustBe true
+      }
+
+      "convert the user's data into the correct format when they own a property" in {
+        val nino = TestModels.newNino
+        val request = TestSubscriptionService.buildRequestPost(nino, testAgentSummaryDataProperty, Some(testArn))
+
+        request.nino mustBe nino
+        request.businessIncome.isDefined mustBe false
+        request.propertyIncome.get.accountingMethod.get mustBe Cash
+        request.isAgent mustBe true
+      }
+
+      "convert the user's data into the correct format when they are self employed" in {
+        val nino = TestModels.newNino
+        val request = TestSubscriptionService.buildRequestPost(nino, testAgentSummaryDataBusiness, Some(testArn))
+
+        request.nino mustBe nino
+        request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
+        request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
+        request.businessIncome.get.accountingMethod mustBe Cash
+        request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+        request.propertyIncome.isDefined mustBe false
+        request.isAgent mustBe true
+      }
+
+      "convert the user's data into the correct format when they are self employed and they are signing up in next Tax year" in {
+        val nino = TestModels.newNino
+        val request = TestSubscriptionService.buildRequestPost(nino, testAgentSummaryDataBusiness.copy(selectedTaxYear =
+          Some(testSelectedTaxYearNext)), Some(testArn))
+
+        request.nino mustBe nino
+        request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
+        request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
+        request.businessIncome.get.accountingMethod mustBe Cash
+        request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+        request.propertyIncome.isDefined mustBe false
+        request.isAgent mustBe true
+      }
     }
+    "an individual" should {
+      "convert the user's data into the correct format when they own a property and self employed" in {
+        val nino = TestModels.newNino
+        val request = TestSubscriptionService.buildRequestPost(nino, testSummaryData, None)
 
-    "convert the user's data into the correct format when they own a property" in {
-      val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataProperty, None)
+        val expectedTaxYear = AccountingPeriodUtil.getCurrentTaxYear
 
-      request.nino mustBe nino
-      request.businessIncome.isDefined mustBe false
-      request.propertyIncome.isDefined mustBe true
-      request.isAgent mustBe false
-    }
+        request.nino mustBe nino
+        request.businessIncome.get.accountingPeriod.startDate mustBe expectedTaxYear.startDate
+        request.businessIncome.get.accountingPeriod.endDate mustBe expectedTaxYear.endDate
+        request.businessIncome.get.accountingMethod mustBe Cash
+        request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+        request.propertyIncome.isDefined mustBe true
+        request.isAgent mustBe false
+      }
 
-    "convert the user's data into the correct format when they are self employed" in {
-      val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusiness, None)
+      "convert the user's data into the correct format when they own a property" in {
+        val nino = TestModels.newNino
+        val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataProperty, None)
 
-      request.nino mustBe nino
-      request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
-      request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
-      request.businessIncome.get.accountingMethod mustBe Cash
-      request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
-      request.propertyIncome.isDefined mustBe false
-      request.isAgent mustBe false
-    }
+        request.nino mustBe nino
+        request.businessIncome.isDefined mustBe false
+        request.propertyIncome.isDefined mustBe true
+        request.isAgent mustBe false
+      }
 
-    "convert the user's data into the correct format when they are self employed and they are signing up in next Tax year" in {
-      val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusinessMatchTaxYear.copy(selectedTaxYear =
-        Some(testSelectedTaxYearNext)), None)
+      "convert the user's data into the correct format when they are self employed" in {
+        val nino = TestModels.newNino
+        val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusiness, None)
 
-      val expectedTaxYear = AccountingPeriodUtil.getNextTaxYear
+        val expectedTaxYear = AccountingPeriodUtil.getCurrentTaxYear
 
-      request.nino mustBe nino
-      request.businessIncome.get.accountingPeriod.startDate mustBe expectedTaxYear.startDate
-      request.businessIncome.get.accountingPeriod.endDate mustBe expectedTaxYear.endDate
-      request.businessIncome.get.accountingMethod mustBe Cash
-      request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
-      request.propertyIncome.isDefined mustBe false
-      request.isAgent mustBe false
+        request.nino mustBe nino
+        request.businessIncome.get.accountingPeriod.startDate mustBe expectedTaxYear.startDate
+        request.businessIncome.get.accountingPeriod.endDate mustBe expectedTaxYear.endDate
+        request.businessIncome.get.accountingMethod mustBe Cash
+        request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+        request.propertyIncome.isDefined mustBe false
+        request.isAgent mustBe false
+      }
 
+      "convert the user's data into the correct format when they are self employed and they are signing up in next Tax year" in {
+        val nino = TestModels.newNino
+        val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusinessMatchTaxYear.copy(selectedTaxYear =
+          Some(testSelectedTaxYearNext)), None)
+
+        val expectedTaxYear = AccountingPeriodUtil.getNextTaxYear
+
+        request.nino mustBe nino
+        request.businessIncome.get.accountingPeriod.startDate mustBe expectedTaxYear.startDate
+        request.businessIncome.get.accountingPeriod.endDate mustBe expectedTaxYear.endDate
+        request.businessIncome.get.accountingMethod mustBe Cash
+        request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+        request.propertyIncome.isDefined mustBe false
+        request.isAgent mustBe false
+      }
     }
   }
 

@@ -26,7 +26,7 @@ import javax.inject.{Inject, Singleton}
 import models.common.AccountingYearModel
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription._
-import models.{Next, Yes}
+import models.{Current, Next, Yes}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -39,12 +39,20 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
 
 
   private[services] def getAccountingPeriod(incomeSourceType: IncomeSourceType,
-                                            summaryData: SummaryModel): Option[AccountingPeriodModel] = {
-    (incomeSourceType, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
-      case (Business, Some(MatchTaxYearModel(Yes)), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
-      case (Business | Both, Some(MatchTaxYearModel(Yes)), _) => Some(getCurrentTaxYear)
-      case (Business | Both, _, _) => summaryData.accountingPeriodDate
-      case _ => None
+                                            summaryData: SummaryModel, isAgent: Boolean): Option[AccountingPeriodModel] = {
+    if(isAgent) {
+      (incomeSourceType, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
+        case (Business, Some(MatchTaxYearModel(Yes)), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
+        case (Business | Both, Some(MatchTaxYearModel(Yes)), _) => Some(getCurrentTaxYear)
+        case (Business | Both, _, _) => summaryData.accountingPeriodDate
+        case _ => None
+      }
+    } else {
+      (incomeSourceType, summaryData.selectedTaxYear) match {
+        case (Business, Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
+        case (Business | Both, _) => Some(getCurrentTaxYear)
+        case _ => None
+      }
     }
   }
 
@@ -52,7 +60,7 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
     val businessSection = model.incomeSource.flatMap {
       case Business | Both =>
         for {
-          accountingPeriod <- getAccountingPeriod(model.incomeSource.get, model)
+          accountingPeriod <- getAccountingPeriod(model.incomeSource.get, model, arn.isDefined)
           accountingMethod <- model.accountingMethod map (_.accountingMethod)
           businessName = model.businessName map (_.businessName)
         } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)

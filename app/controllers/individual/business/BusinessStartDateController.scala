@@ -55,10 +55,7 @@ class BusinessStartDateController @Inject()(val authService: AuthService, keysto
           Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessStartDate =>
           keystoreService.saveBusinessStartDate(businessStartDate) map (_ =>
-            if (isEditMode)
               Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-            else
-              Redirect(controllers.individual.business.routes.MatchTaxYearController.show())
             )
       )
   }

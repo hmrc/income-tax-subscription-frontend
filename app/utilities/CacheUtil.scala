@@ -22,10 +22,8 @@ import models.individual.business.address.Address
 import models.individual.business.{AccountingPeriodModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.individual.subscription._
-import models.{No, Yes}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.AccountingPeriodUtil.getCurrentTaxYear
-import CacheConstants._
+import utilities.CacheConstants._
 
 object CacheUtil {
 
@@ -70,8 +68,6 @@ object CacheUtil {
           IndividualSummary(
             rentUkProperty = getRentUkProperty,
             areYouSelfEmployed = getAreYouSelfEmployed,
-            matchTaxYear = getMatchTaxYear,
-            accountingPeriodDate = getEnteredAccountingPeriodDate,
             businessName = getBusinessName,
             businessPhoneNumber = getBusinessPhoneNumber,
             businessAddress = getBusinessAddress,
@@ -83,8 +79,6 @@ object CacheUtil {
           IndividualSummary(
             rentUkProperty = getRentUkProperty,
             areYouSelfEmployed = getAreYouSelfEmployed,
-            matchTaxYear = getMatchTaxYear,
-            accountingPeriodDate = getEnteredAccountingPeriodDate,
             businessName = getBusinessName,
             businessPhoneNumber = getBusinessPhoneNumber,
             businessAddress = getBusinessAddress,

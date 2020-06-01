@@ -109,52 +109,10 @@ object MessageLookup {
 
   }
 
-  object Business {
-
-    object SoleTrader {
-      val title = "Are you a sole trader?"
-      val heading: String = title
-      val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business’s profits after you’ve paid tax on them. ‘Sole trader’ means you’re responsible for the business, not that you have to work alone."
-      val yes = "Yes - I’m a sole trader"
-      val no = "No - I am a different type of business"
-    }
-
-    object MatchTaxYear {
-
-      object SignUp {
-        val title = "Is your accounting period from 6 April to 5 April?"
-        val heading: String = "Is your accounting period from 6 April to 5 April?"
-        val line1 = "The tax year runs from 6 April to 5 April. Your accounting period is the same, unless you have previously chosen different dates."
-      }
-
-      object Registration {
-        val title = "Do you want to match your accounting period to the tax year?"
-        val heading: String = "Do you want to match your accounting period to the tax year?"
-        val line1 = "The tax year runs from 6 April to 5 April. Most sole traders match their accounting period to the tax year."
-        val line2 = "You can do this even if the tax year has already started."
-      }
-
-    }
-
-  }
-
   object BusinessStartDate {
     val title = "Business start date"
     val heading = "When did your business start trading?"
     val exampleStartDate = "For example, 1 4 2018"
-  }
-
-  object AccountingPeriod {
-    val title = "Business accounting period"
-    val heading_signup = "What accounting period are you signing up for?"
-    val heading_registration = "When is your current accounting period?"
-    val heading_editMode = "Change your accounting period dates"
-    val line_1_signup = "For example, if your accounting period is 1 August 2019 to 31 July 2020, you will be signing up for the 2020 to 2021 tax year."
-    val line_1_registration = "Your accounting period is usually 12 months. For example, 6 April 2017 to 5 April 2018"
-    val exampleStartDate_signup = "For example, 1 4 2018"
-    val exampleEndDate_signup = "For example, 31 3 2019"
-    val exampleStartDate_registration = "For example, 6 4 2017"
-    val exampleEndDate_registration = "For example, 5 4 2018"
   }
 
   object CannotReportYet {

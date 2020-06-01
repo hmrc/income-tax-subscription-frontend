@@ -112,16 +112,6 @@ business.address.edit.add_line_1                                = Address line 1
 business.address.edit.add_line_2                                = Address line 2
 business.address.edit.add_line_3                                = Address line 3
 
-# Match tax year
-business.match_tax_year.title.signup                            = Is your accounting period from 6 April to 5 April?
-business.match_tax_year.heading.signup                          = Is your accounting period from 6 April to 5 April?
-business.match_tax_year.line_1.signup                           = The tax year runs from 6 April to 5 April. Your accounting period is the same, unless you have previously chosen different dates.
-
-business.match_tax_year.title.registration                      = Do you want to match your accounting period to the tax year?
-business.match_tax_year.heading.registration                    = Do you want to match your accounting period to the tax year?
-business.match_tax_year.line_1.registration                     = The tax year runs from 6 April to 5 April. Most sole traders match their accounting period to the tax year.
-business.match_tax_year.line_2.registration                     = You can do this even if the tax year has already started.
-
 # What year to sign up
 business.what_year_to_sign_up.title.signup                      = What tax year do you want to sign up for?
 business.what_year_to_sign_up.heading.signup                    = What tax year do you want to sign up for?
@@ -135,18 +125,6 @@ business.what_year_to_sign_up.option_2.signup                   = Next tax year 
 business.start_date.title                                       = Business start date
 business.start_date.heading                                     = When did your business start trading?
 business.start_date.exampleStartDate                            = For example, 1 4 2018
-
-## Business Accounting Period page
-accounting_period.title                                         = Business accounting period
-accounting_period.heading                                       = Change your accounting period dates
-accounting_period.heading.signup                                = What accounting period are you signing up for?
-accounting_period.heading.registration                          = When is your current accounting period?
-accounting_period.line_1.signup                                 = For example, if your accounting period is 1 August 2019 to 31 July 2020, you will be signing up for the 2020 to 2021 tax year.
-accounting_period.line_1.registration                           = Your accounting period is usually 12 months. For example, 6 April 2017 to 5 April 2018.
-accounting_period.exampleStartDate.signup                       = For example, 1 4 2018
-accounting_period.exampleEndDate.signup                         = For example, 31 3 2019
-accounting_period.exampleStartDate.registration                 = For example, 6 4 2017
-accounting_period.exampleEndDate.registration                   = For example, 5 4 2018
 
 # Sole trader page
 business.sole_trader.title                                      = Are you a sole trader?
@@ -284,9 +262,6 @@ error.property.income.invalid                                   = You must selec
 error.date.empty                                                = You must enter a date
 error.date.invalid                                              = You must enter a valid date
 
-error.business.match_tax_year.empty                             = Select yes if your accounting period is from 6 April to 5 April
-error.business.match_tax_year.invalid                           = Select yes if your accounting period is from 6 April to 5 April
-
 error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
 
 error.business_name.empty                                       = You must enter your Business name
@@ -319,15 +294,6 @@ error.nino.empty                                                = Enter your Nat
 error.dob_date.empty                                            = Enter a date of birth
 error.dob_date.invalid_chars                                    = Enter a date of birth using numbers 0 to 9
 error.dob_date.invalid                                          = Enter a real date of birth
-
-error.start_date.empty                                          = Enter a start date
-error.start_date.invalid_chars                                  = Enter a start date using numbers 0 to 9
-error.start_date.invalid                                        = Enter a real start date
-
-error.end_date.empty                                            = Enter an end date
-error.end_date.invalid_chars                                    = Enter an end date using numbers 0 to 9
-error.end_date.invalid                                          = Enter a real end date
-
 
 error.not-eligible.empty                                        = You must select an option to continue
 error.not-eligible.invalid                                      = You must select an option to continue

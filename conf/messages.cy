@@ -111,16 +111,6 @@ business.address.edit.add_line_1                                = Cyfeiriad - ll
 business.address.edit.add_line_2                                = Cyfeiriad - llinell 2
 business.address.edit.add_line_3                                = Cyfeiriad - llinell 3
 
-# Match tax year
-business.match_tax_year.title.signup                            = A yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill?
-business.match_tax_year.heading.signup                          = A yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill?
-business.match_tax_year.line_1.signup                           = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae’ch cyfnod cyfrifyddu’r un peth oni bai eich bod eisoes wedi dewis gwahanol ddyddiadau.
-
-business.match_tax_year.title.registration                      = Ydych chi am baru’ch cyfnod cyfrifyddu â’r flwyddyn dreth?
-business.match_tax_year.heading.registration                    = Ydych chi am baru’ch cyfnod cyfrifyddu â’r flwyddyn dreth?
-business.match_tax_year.line_1.registration                     = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae’r rhan fwyaf o unig fasnachwyr yn paru eu cyfnod cyfrifyddu â’r flwyddyn dreth.
-business.match_tax_year.line_2.registration                     = Gallwch wneud hyn hyd yn oed os yw’r flwyddyn dreth eisoes wedi dechrau.
-
 # What year to sign up
 business.what_year_to_sign_up.title.signup                      = Pa flwyddyn dreth rydych am gofrestru ar ei chyfer?
 business.what_year_to_sign_up.heading.signup                    = Pa flwyddyn dreth rydych am gofrestru ar ei chyfer?
@@ -134,18 +124,6 @@ business.what_year_to_sign_up.option_2.signup                   = Y flwyddyn dre
 business.start_date.title                                       = Dyddiad dechrau’r busnes
 business.start_date.heading                                     = Pryd y dechreuodd eich busnes fasnachu?
 business.start_date.exampleStartDate                            = Er enghraifft, 1 4 2018
-
-## Business Accounting Period page
-accounting_period.title                                         = Cyfnod cyfrifyddu’r busnes
-accounting_period.heading                                       = Newidiwch ddyddiadau’ch cyfnod cyfrifyddu
-accounting_period.heading.signup                                = Am ba gyfnod cyfrifyddu rydych yn cofrestru ar ei chyfer?
-accounting_period.heading.registration                          = Pryd y mae’ch cyfnod cyfrifyddu presennol?
-accounting_period.line_1.signup                                 = Er enghraifft, os eich cyfnod cyfrifyddu yw 1 Awst 2019 i 31 Gorffennaf 2020, byddwch yn cofrestru ar gyfer y flwyddyn dreth 2020 i 2021.
-accounting_period.line_1.registration                           = Fel arfer, 12 mis yw’ch cyfnod cyfrifyddu. Er enghraifft, 6 Ebrill 2017 hyd at 5 Ebrill 2018.
-accounting_period.exampleStartDate.signup                       = Er enghraifft, 1 4 2018
-accounting_period.exampleEndDate.signup                         = Er enghraifft, 31 3 2019
-accounting_period.exampleStartDate.registration                 = Er enghraifft, 6 4 2017
-accounting_period.exampleEndDate.registration                   = Er enghraifft, 5 4 2018
 
 # Sole trader page
 business.sole_trader.title                                      = Ydych chi’n unig fasnachwr?
@@ -284,9 +262,6 @@ error.property.income.invalid                                   = Rhaid i chi dd
 error.date.empty                                                = Rhaid i chi nodi dyddiad
 error.date.invalid                                              = Rhaid i chi nodi dyddiad dilys
 
-error.business.match_tax_year.empty                             = Dewiswch ‘iawn’ os yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
-error.business.match_tax_year.invalid                           = Dewiswch ‘iawn’ os yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
-
 error.business_accounting_period.minStartDate                   = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
 error.business_accounting_period.maxEndDate                     = Rhaid i chi nodi dyddiad dod i ben nad yw’n fwy na 24 mis ar ôl eich dyddiad dechrau
 
@@ -320,16 +295,6 @@ error.nino.empty                                                = Nodwch eich rh
 error.dob_date.empty                                            = Nodwch ddyddiad geni
 error.dob_date.invalid_chars                                    = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
 error.dob_date.invalid                                          = Nodwch ddyddiad geni go iawn
-
-error.start_date.empty                                          = Nodwch ddyddiad dechrau
-error.start_date.invalid_chars                                  = Nodwch ddyddiad dechrau gan ddefnyddio’r rhifau 0 i 9
-error.start_date.invalid                                        = Nodwch ddyddiad dechrau go iawn
-
-error.end_date.empty                                            = Nodwch ddyddiad dod i ben
-error.end_date.invalid_chars                                    = Nodwch ddyddiad dod i ben gan ddefnyddio’r rhifau 0 i 9
-error.end_date.invalid                                          = Nodwch ddyddiad dod i ben go iawn
-error.end_date_past                                             = Nodwch ddyddiad dod i ben, sef dyddiad heddiw neu ddyddiad yn y dyfodol
-
 
 error.not-eligible.empty                                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.not-eligible.invalid                                      = Rhaid i chi ddewis opsiwn i fynd yn eich blaen

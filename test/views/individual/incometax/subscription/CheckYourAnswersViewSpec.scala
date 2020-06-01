@@ -36,8 +36,7 @@ import views.individual.helpers.SummaryIdConstants._
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 
-  val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
-  val testBusinessName = BusinessNameModel("test business name")
+  val testBusinessName: BusinessNameModel = BusinessNameModel("test business name")
   val testBusinessPhoneNumber: BusinessPhoneNumberModel = TestModels.testBusinessPhoneNumber
   val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
   val testBusinessAddress: Address = TestModels.testAddress
@@ -50,14 +49,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testSummary: IndividualSummary = customTestSummary()
 
   def customTestSummary(rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty,
-                        matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
-                        accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod,
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): IndividualSummary = IndividualSummary(
     rentUkProperty = rentUkProperty,
     areYouSelfEmployed = testAreYouSelfEmployed,
-    matchTaxYear = matchTaxYear,
-    accountingPeriodDate = accountingPeriod,
     businessName = testBusinessName,
     businessAddress = testBusinessAddress,
     businessStartDate = testBusinessStartDate,
@@ -151,63 +146,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         editLink.text() should include(MessageLookup.Base.change)
         editLink.select("span").text() shouldBe expectedQuestion
         editLink.select("span").hasClass("visuallyhidden") shouldBe true
-      }
-    }
-
-    "display match tax year" in {
-      val sectionId = MatchTaxYearId
-      val expectedQuestion = messages.match_tax_year
-      val expectedAnswer = MessageLookup.Base.no
-      val expectedEditLink = controllers.individual.business.routes.MatchTaxYearController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
-    }
-
-    "display the correct info for the accounting period date" when {
-      "do not display if the user is on the sign up journey and chose yes to match tax year" in {
-        val sectionId = AccountingPeriodDateId
-        val doc = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = None))
-        Option(doc.getElementById(sectionId)) mustBe None
-
-        val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod =
-          Some(testAccountingPeriod)))
-        Option(doc2.getElementById(sectionId)) mustBe None
-      }
-
-      "the user is on the sign up journey" in {
-        val sectionId = AccountingPeriodDateId
-        val expectedQuestion = messages.accounting_period
-        val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
-        val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-        val expectedEditLink = controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
-
-        sectionTest(
-          sectionId = sectionId,
-          expectedQuestion = expectedQuestion,
-          expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink
-        )
-      }
-
-      "the user is on the registration journey" in {
-        val sectionId = AccountingPeriodDateId
-        val expectedQuestion = messages.accounting_period_registration
-        val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
-        val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-        val expectedEditLink = controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
-
-        sectionTest(
-          sectionId = sectionId,
-          expectedQuestion = expectedQuestion,
-          expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
-          isRegistration = true
-        )
       }
     }
 
@@ -345,7 +283,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
           expectedEditLink = expectedEditLink,
           testSummaryModel = customTestSummary(
             rentUkProperty = TestModels.testRentUkProperty_no_property,
-            matchTaxYear = TestModels.testMatchTaxYearYes,
             selectedTaxYear = TestModels.testSelectedTaxYearCurrent
           )
         )
@@ -363,7 +300,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
           expectedEditLink = expectedEditLink,
           testSummaryModel = customTestSummary(
             rentUkProperty = TestModels.testRentUkProperty_no_property,
-            matchTaxYear = TestModels.testMatchTaxYearYes,
             selectedTaxYear = TestModels.testSelectedTaxYearNext
           )
         )
@@ -374,14 +310,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = SelectedTaxYearId
 
       val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_and_other))
-
-      Option(doc.getElementById(sectionId)) mustBe None
-    }
-
-    "do not display are you Selected Year if match Tax Year is answered with No" in {
-      val sectionId = SelectedTaxYearId
-
-      val doc = document(testSummaryModel = customTestSummary(matchTaxYear = TestModels.testMatchTaxYearNo))
 
       Option(doc.getElementById(sectionId)) mustBe None
     }

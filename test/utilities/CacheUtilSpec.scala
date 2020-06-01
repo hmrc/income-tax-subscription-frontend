@@ -77,8 +77,6 @@ class CacheUtilSpec extends UnitTestTrait
           IndividualSummary(
             rentUkProperty = testRentUkProperty_no_property,
             areYouSelfEmployed = testAreYouSelfEmployed_yes,
-            matchTaxYear = testMatchTaxYearNo,
-            accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,
             businessPhoneNumber = testBusinessPhoneNumber,
             businessAddress = testAddress,
@@ -92,8 +90,6 @@ class CacheUtilSpec extends UnitTestTrait
           IndividualSummary(
             rentUkProperty = testRentUkProperty_property_and_other,
             areYouSelfEmployed = testAreYouSelfEmployed_yes,
-            matchTaxYear = testMatchTaxYearNo,
-            accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,
             businessPhoneNumber = testBusinessPhoneNumber,
             businessAddress = testAddress,

@@ -16,14 +16,13 @@
 
 package controllers.individual.business
 
-import helpers.IntegrationTestConstants.{checkYourAnswersURI, matchTaxYearURI}
+import helpers.IntegrationTestConstants.{checkYourAnswersURI, accountingYearURI, businessAccountingMethodURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.common.BusinessNameModel
 import models.individual.subscription.Both
 import play.api.http.Status._
-import play.api.i18n.Messages
 import utilities.CacheConstants
 
 class BusinessNameControllerISpec extends ComponentSpecBase {
@@ -69,24 +68,48 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/name" when {
+    "not in edit mode" when {
+      "enter business name" should {
+        "redirect to the accounting year page when the user is business only" in {
+          val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
 
-    "not in edit mode" should {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(keystoreData(
+            rentUkProperty = Some(testRentUkProperty_no_property),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
+          ))
+          KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
 
-      "enter business name" in {
-        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
+          When("POST /business/name is called")
+          val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+          Then("Should return a SEE_OTHER with a redirect location of match tax year")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(accountingYearURI)
+          )
+        }
+        "redirect to business accounting method page when the user has business and property" in {
+          val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
 
-        When("POST /business/name is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(keystoreData(
+            rentUkProperty = Some(testRentUkProperty_property_and_other),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
+          ))
+          KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
 
-        Then("Should return a SEE_OTHER with a redirect location of match tax year")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(matchTaxYearURI)
-        )
+          When("POST /business/name is called")
+          val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of match tax year")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(businessAccountingMethodURI)
+          )
+        }
       }
 
       "do not enter business name" in {

@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import config.MockConfig
 import controllers.ControllerBaseSpec
-import utilities.TestModels.testBusinessStartDate
 import forms.individual.business.BusinessStartDateForm
 import forms.submapping.YesNoMapping.{option_no, option_yes}
 import org.jsoup.Jsoup
@@ -27,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
+import utilities.TestModels.testBusinessStartDate
 
 import scala.concurrent.Future
 
@@ -45,7 +45,7 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
       MockKeystoreService
     )(implicitly, new MockConfig {
       override val enableRegistration: Boolean = setEnableRegistration
-    },mockMessagesControllerComponents)
+    }, mockMessagesControllerComponents)
 
   lazy val TestBusinessStartDateController: BusinessStartDateController =
     createTestBusinessStartDateController(setEnableRegistration = true)
@@ -104,53 +104,17 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
             .post(BusinessStartDateForm.businessStartDateForm, testBusinessStartDate)
         )
 
-      "When it is not in edit mode" should {
-        "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystoreSaveFunctions()
+      "return a redirect status (SEE_OTHER - 303)" in {
+        setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callShow(isEditMode = true)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
-          await(goodRequest)
-          verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
-        }
-
-        s"redirect to '${controllers.individual.business.routes.MatchTaxYearController.show().url}'" in {
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callShow(isEditMode = false)
-
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.MatchTaxYearController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
-        }
+        verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
       }
 
-      "When it is in edit mode" should {
-        "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callShow(isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
-        }
-
-        s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callShow(isEditMode = true)
-
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
-        }
-      }
     }
 
     "Calling the submit action of the BusinessStartDateController with an authorised user and invalid submission" should {

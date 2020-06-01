@@ -16,10 +16,10 @@
 
 package forms.validation.testutils
 
-import forms.agent.IncomeSourceForm
+import forms.agent.{IncomeSourceForm, MatchTaxYearForm}
 import forms.individual.business.BusinessNameForm._
 import forms.individual.business.BusinessPhoneNumberForm._
-import forms.individual.business.{AccountingMethodForm, AccountingYearForm, MatchTaxYearForm}
+import forms.individual.business.{AccountingMethodForm, AccountingYearForm}
 import forms.individual.incomesource.{AreYouSelfEmployedForm, RentUkPropertyForm}
 import forms.submapping.DateMapping._
 import forms.validation.utils.ConstraintUtil._

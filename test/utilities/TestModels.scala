@@ -161,16 +161,12 @@ object TestModels extends Implicits {
 
   lazy val testSummaryDataProperty = IndividualSummary(
     rentUkProperty = testRentUkProperty_property_only,
-    matchTaxYear = testMatchTaxYearNo,
-    accountingPeriodDate = testAccountingPeriod,
-    businessName = testBusinessName,
-    accountingMethod = testAccountingMethod
+    accountingMethodProperty = testAccountingMethodProperty
   )
 
   lazy val testSummaryDataBusinessMatchTaxYear = IndividualSummary(
     rentUkProperty = testRentUkProperty_no_property,
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
-    matchTaxYear = testMatchTaxYearYes,
     businessName = testBusinessName,
     selectedTaxYear = testSelectedTaxYearCurrent,
     accountingMethod = testAccountingMethod
@@ -179,8 +175,6 @@ object TestModels extends Implicits {
   lazy val testSummaryDataBusiness = IndividualSummary(
     rentUkProperty = testRentUkProperty_no_property,
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
-    matchTaxYear = testMatchTaxYearNo,
-    accountingPeriodDate = testAccountingPeriod,
     businessName = testBusinessName,
     selectedTaxYear = None,
     accountingMethod = testAccountingMethod
@@ -189,14 +183,34 @@ object TestModels extends Implicits {
   lazy val testSummaryData = IndividualSummary(
     rentUkProperty = testRentUkProperty_property_and_other,
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
-    matchTaxYear = testMatchTaxYearNo,
-    accountingPeriodDate = testAccountingPeriod,
     businessName = testBusinessName,
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = Some(testAccountingMethodProperty)
   )
 
   lazy val testAgentSummaryData = AgentSummary(
+    incomeSource = Some(testIncomeSourceBoth),
+    matchTaxYear = Some(testMatchTaxYearNo),
+    accountingPeriodDate = testAccountingPeriod,
+    businessName = Some(testBusinessName),
+    accountingMethod = Some(testAccountingMethod),
+    accountingMethodProperty = Some(testAccountingMethodProperty)
+  )
+
+  lazy val testAgentSummaryDataBusiness = AgentSummary(
+    incomeSource = Some(testIncomeSourceBusiness),
+    matchTaxYear = Some(testMatchTaxYearNo),
+    accountingPeriodDate = testAccountingPeriod,
+    businessName = Some(testBusinessName),
+    accountingMethod = Some(testAccountingMethod)
+  )
+
+  lazy val testAgentSummaryDataProperty = AgentSummary(
+    incomeSource = Some(testIncomeSourceProperty),
+    accountingMethodProperty = Some(testAccountingMethodProperty)
+  )
+
+  lazy val testAgentSummaryDataBoth = AgentSummary(
     incomeSource = Some(testIncomeSourceBoth),
     matchTaxYear = Some(testMatchTaxYearNo),
     accountingPeriodDate = testAccountingPeriod,
