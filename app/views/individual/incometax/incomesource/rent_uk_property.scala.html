@@ -33,6 +33,18 @@
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/show-hide-content.js")"></script>
 }
+    @rentUkPropertyContent ={
+    <legend class="heading-medium "> @Messages("rent_uk_property.question") </legend>
+
+    @radioHelper(
+        field = rentUkPropertyForm(RentUkPropertyForm.onlySourceOfSelfEmployedIncome),
+        legend = Messages("rent_uk_property.question"),
+        inline = true,
+        options = Seq(
+            RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+            RadioOption(YesNoMapping.option_no, No.toMessageString)),
+        parentForm = rentUkPropertyForm
+    )}
 
 @main_template(title = Messages("rent_uk_property.title"), form = rentUkPropertyForm, scriptElem = scripts) {
 
@@ -50,30 +62,14 @@
         @radioHelper(
             field = rentUkPropertyForm(RentUkPropertyForm.rentUkProperty),
             legend = Messages("rent_uk_property.heading"),
-            inline = true,
             options = Seq(
-            RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+            RadioOption(YesNoMapping.option_yes, Yes.toMessageString, None, Some(rentUkPropertyContent)),
             RadioOption(YesNoMapping.option_no, No.toMessageString)),
-            parentForm = rentUkPropertyForm,
-            targetHostId = YesNoMapping.option_yes,
-            target = RentUkPropertyForm.onlySourceOfSelfEmployedIncome
+            parentForm = rentUkPropertyForm
         )
 
-        <div id="@RentUkPropertyForm.onlySourceOfSelfEmployedIncome" class="panel panel-indent panel-border-wide js-hidden">
 
-            <legend class="heading-medium "> @Messages("rent_uk_property.question") </legend>
 
-            @radioHelper(
-                field = rentUkPropertyForm(RentUkPropertyForm.onlySourceOfSelfEmployedIncome),
-                legend = Messages("rent_uk_property.question"),
-                inline = true,
-                options = Seq(
-                RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
-                RadioOption(YesNoMapping.option_no, No.toMessageString)),
-                parentForm = rentUkPropertyForm
-            )
-
-        </div>
 
          @if(isEditMode) {
             @continueButton(Messages("base.update"))

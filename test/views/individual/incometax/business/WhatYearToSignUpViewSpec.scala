@@ -56,9 +56,23 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
 
     "have content" in new Setup {
       val paragraphs: Elements = document.select(".content__body").select("p")
+      val uls: Elements = document.select(".content__body").select("ul").select("li")
       paragraphs.get(0).text() mustBe messages.line1
-      paragraphs.get(1).text() mustBe messages.example1((taxYearEnd - 1).toString, taxYearEnd.toString)
-      paragraphs.get(2).text() mustBe messages.example2(taxYearEnd.toString, (taxYearEnd + 1).toString)
+      paragraphs.get(1).text() mustBe messages.option1ConditionalExample1
+      paragraphs.get(2).text() mustBe messages.option1ConditionalExample2((taxYearEnd + 1).toString)
+      paragraphs.get(3).text() mustBe messages.option2ConditionalExample1
+      paragraphs.get(4).text() mustBe messages.option2ConditionalExample2(taxYearEnd.toString)
+
+      uls.get(0).text() mustBe messages.conditionalDate1((taxYearEnd - 1).toString)
+      uls.get(1).text() mustBe messages.conditionalDate2((taxYearEnd - 1).toString)
+      uls.get(2).text() mustBe messages.conditionalDate3(taxYearEnd.toString)
+      uls.get(3).text() mustBe messages.conditionalDate4(taxYearEnd.toString)
+
+      uls.get(4).text() mustBe messages.conditionalDate1(taxYearEnd.toString)
+      uls.get(5).text() mustBe messages.conditionalDate2(taxYearEnd.toString)
+      uls.get(6).text() mustBe messages.conditionalDate3((taxYearEnd + 1).toString)
+      uls.get(7).text() mustBe messages.conditionalDate4((taxYearEnd + 1).toString)
+
     }
 
     "have a form" which {
