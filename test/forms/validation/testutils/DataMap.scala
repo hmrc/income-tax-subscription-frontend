@@ -52,6 +52,10 @@ object DataMap {
 
     def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
+    def individualIncomeSource(business: String, ukProperty: String): DataMap =
+      Map(forms.individual.incomesource.IncomeSourceForm.business -> business,
+        forms.individual.incomesource.IncomeSourceForm.ukProperty -> ukProperty)
+
     def rentUkProperty(iType: String, onlySourceOfIncome: Option[String] = None): DataMap =
       onlySourceOfIncome.fold(Map(RentUkPropertyForm.rentUkProperty -> iType))(i =>
         Map(RentUkPropertyForm.rentUkProperty -> iType, RentUkPropertyForm.onlySourceOfSelfEmployedIncome -> i))

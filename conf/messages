@@ -65,6 +65,16 @@ are_you_selfemployed.title                                      = Are you self-e
 are_you_selfemployed.heading                                    = Are you self-employed?
 are_you_selfemployed.para1                                      = This does not include if your business is a limited company or partnership.
 
+## Individual income source page
+income_source.title                                             = How do you receive your income?
+income_source.heading                                           = How do you receive your income?
+income_source.para1                                             = Renting out a property in the UK includes using a letting agency.
+income_source.selfEmployed                                      = Self-employed
+income_source.rentUkProperty                                    = Rent out a property in the UK
+individual.error.income_source.invalid                          = Select if you receive your income from self employment, UK property or foreign property
+income_source.checkbox.hint                                     = Select all that apply
+
+
 ## Rent Uk Property page
 rent_uk_property.title                                          = Do you rent out a UK property?
 rent_uk_property.heading                                        = Do you rent out a UK property?

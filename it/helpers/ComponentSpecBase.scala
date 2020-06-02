@@ -22,13 +22,13 @@ import auth.individual.{JourneyState, Registration, SignUp, UserMatching}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
-import forms.individual.incomesource.{AreYouSelfEmployedForm, RentUkPropertyForm}
+import forms.individual.incomesource.{AreYouSelfEmployedForm, IncomeSourceForm, RentUkPropertyForm}
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
 import models.usermatching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -144,6 +144,8 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def income(): WSResponse = get("/income")
 
+    def incomeSource(): WSResponse = get("/details/income-receive")
+
     def rentUkProperty(): WSResponse = get("/rent-uk-property")
 
     def areYouSelfEmployed(): WSResponse = get("/are-you-self-employed")
@@ -235,6 +237,16 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     def claimSubscription(): WSResponse = {
       val uri = s"/claim-subscription"
       get(uri)
+    }
+
+    def submitIncomeSource(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
+      val uri = s"/details/income-receive?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
     }
 
     def submitRentUkProperty(inEditMode: Boolean, request: Option[RentUkPropertyModel]): WSResponse = {
