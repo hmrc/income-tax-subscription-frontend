@@ -59,7 +59,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, keystoreSer
             keystoreService.saveIndividualIncomeSource(incomeSource) map { _ =>
               incomeSource match {
                 case IncomeSourceModel(true, false) =>
-                  Redirect(controllers.individual.business.routes.BusinessNameController.show())
+                  Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
                 case IncomeSourceModel(false, true) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case IncomeSourceModel(true, true) =>

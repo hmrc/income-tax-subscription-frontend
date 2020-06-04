@@ -116,7 +116,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Then(s"Should return $SEE_OTHER with a redirect location of business name page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(businessNameURI)
+          redirectURI(accountingYearURI)
         )
       }
     }

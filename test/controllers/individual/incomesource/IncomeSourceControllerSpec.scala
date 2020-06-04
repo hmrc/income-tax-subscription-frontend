@@ -90,7 +90,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         val goodRequest = callSubmit(IncomeSourceModel(true, false), isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
+        redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchIndividualIncomeSource = 0, saveIndividualIncomeSource = 1)
