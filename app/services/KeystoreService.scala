@@ -20,7 +20,7 @@ import javax.inject._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.business.address.Address
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
 import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
@@ -54,6 +54,12 @@ class KeystoreService @Inject()(val session: SessionCache)
 
   def saveIncomeSource(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FC =
     save[IncomeSourceType](IncomeSource, incomeSource)
+
+  def fetchIndividualIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
+    fetch[IncomeSourceModel](IndividualIncomeSource)
+
+  def saveIndividualIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
+    save[IncomeSourceModel](IndividualIncomeSource, incomeSource)
 
   def saveAreYouSelfEmployed(areYouSelfEmployed: AreYouSelfEmployedModel)(implicit hc: HeaderCarrier, reads: Reads[AreYouSelfEmployedModel]): FC =
     save[AreYouSelfEmployedModel](AreYouSelfEmployed, areYouSelfEmployed)

@@ -339,6 +339,14 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveGoBackButton(): Unit = mustHaveSubmitButton(common.goBack)
 
+    def mustHaveCheckboxWithId(id: String, name: String, message: String): Unit =
+      s"${this.name} must have a checkbox for '$name' with label '$message'" in {
+        val checkbox: Element = element.getElementById(id)
+        checkbox.attr("type") mustBe "checkbox"
+        checkbox.attr("name") mustBe name
+        checkbox.parents().get(0).text() mustBe message
+      }
+
     def mustHaveCheckbox(name: String, message: String): Unit =
       s"${this.name} must have a checkbox for '$name' with label '$message'" in {
         import collection.JavaConversions._
@@ -371,6 +379,14 @@ trait ViewSpecTrait extends UnitTestTrait {
       date.mustHaveTextField(s"$id.dateDay", common.day, maxLength = 2, pattern = numericPattern, inputMode = inputMode)
       date.mustHaveTextField(s"$id.dateMonth", common.month, maxLength = 2, pattern = numericPattern, inputMode = inputMode)
       date.mustHaveTextField(s"$id.dateYear", common.year, maxLength = 4, pattern = numericPattern, inputMode = inputMode)
+    }
+
+    def mustHaveHrefValue(id: String, href: String): Unit = {
+      s"${this.name} have a href attribute value with id '$id' " in {
+        val ele = element.getElementById(id)
+        ele.attr("href") mustBe href
+      }
+
     }
   }
 

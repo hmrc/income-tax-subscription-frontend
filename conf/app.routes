@@ -14,6 +14,10 @@ GET         /callback                     controllers.individual.PreferencesCont
 GET         /paperless-error              controllers.individual.PreferencesController.show
 POST        /paperless-error              controllers.individual.PreferencesController.submit
 
+# Income Source Routes
+GET         /details/income-receive       controllers.individual.incomesource.IncomeSourceController.show(editMode: Boolean ?= false)
+POST        /details/income-receive       controllers.individual.incomesource.IncomeSourceController.submit(editMode: Boolean ?= false)
+
 # Rent Uk Property Routes
 GET         /rent-uk-property             controllers.individual.incomesource.RentUkPropertyController.show(editMode: Boolean ?= false)
 POST        /rent-uk-property             controllers.individual.incomesource.RentUkPropertyController.submit(editMode: Boolean ?= false)

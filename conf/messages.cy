@@ -64,6 +64,15 @@ are_you_selfemployed.title                                      = A ydych yn hun
 are_you_selfemployed.heading                                    = A ydych yn hunangyflogedig?
 are_you_selfemployed.para1                                      = Nid yw hyn yn cynnwys os yw’ch busnes yn gwmni cyfyngedig neu’n bartneriaeth.
 
+## Individual income source page
+income_source.title                                             = Sut rydych yn cael eich incwm?
+income_source.heading                                           = Sut rydych yn cael eich incwm?
+income_source.para1                                             = Mae rhoi eiddo ar osod yn y DU yn cynnwys defnyddio asiantaeth gosod.
+income_source.selfEmployed                                      = Hunangyflogedig
+income_source.rentUkProperty                                    = Rhoi eiddo ar osod yn y DU
+individual.error.income_source.invalid                          = Dewiswch os ydych yn cael eich incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
+income_source.checkbox.hint                                     = Dewiswch bob un sy’n gymwys
+
 ## Rent Uk Property page
 rent_uk_property.title                                          = Ydych chi’n gosod eiddo yn y DU?
 rent_uk_property.heading                                        = Ydych chi’n gosod eiddo yn y DU?

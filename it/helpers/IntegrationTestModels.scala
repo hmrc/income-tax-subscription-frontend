@@ -9,7 +9,7 @@ import models._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.business.address.{Address, Country, ReturnedAddress}
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
 import models.individual.subscription._
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
@@ -54,6 +54,7 @@ object IntegrationTestModels {
   lazy val fullKeystoreDataBothPost: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(Both),
+      individualIncomeSource = Some(IncomeSourceModel(true, true)),
       rentUkProperty = Some(testRentUkProperty_property_and_other),
       areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
       matchTaxYear = Some(testMatchTaxYearNo),
@@ -76,6 +77,7 @@ object IntegrationTestModels {
 
 
   def keystoreData(incomeSource: Option[IncomeSourceType] = None,
+                   individualIncomeSource: Option[IncomeSourceModel] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
                    areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
@@ -89,6 +91,7 @@ object IntegrationTestModels {
                   ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
+      individualIncomeSource.map(model => IndividualIncomeSource -> IncomeSourceModel.format.writes(model)) ++
       rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
       areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++

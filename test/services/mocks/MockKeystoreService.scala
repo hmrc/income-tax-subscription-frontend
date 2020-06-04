@@ -19,7 +19,7 @@ package services.mocks
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.address.Address
 import models.individual.business.{AccountingPeriodModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
 import models.individual.subscription.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -64,6 +64,10 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
 
   protected final def mockFetchIncomeSourceFromKeyStore(fetchIncomeSource: Option[IncomeSourceType]): Unit = {
     mockFetchFromKeyStore[IncomeSourceType](IncomeSource, fetchIncomeSource)
+  }
+
+  protected final def mockFetchIndividualIncomeSourceFromKeyStore(fetchIndividualIncomeSource: Option[IncomeSourceModel]): Unit = {
+    mockFetchFromKeyStore[IncomeSourceModel](IndividualIncomeSource, fetchIndividualIncomeSource)
   }
 
   protected final def mockFetchRentUkPropertyFromKeyStore(fetchRentUkProperty: Option[RentUkPropertyModel]): Unit = {
@@ -131,6 +135,8 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
   protected final def verifyKeystore(
                                       fetchIncomeSource: Option[Int] = None,
                                       saveIncomeSource: Option[Int] = None,
+                                      fetchIndividualIncomeSource: Option[Int] = None,
+                                      saveIndividualIncomeSource: Option[Int] = None,
                                       fetchRentUkProperty: Option[Int] = None,
                                       saveRentUkProperty: Option[Int] = None,
                                       fetchAreYouSelfEmployed: Option[Int] = None,
@@ -162,6 +168,8 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
                                     ): Unit = {
     verifyKeystoreFetch(IncomeSource, fetchIncomeSource)
     verifyKeystoreSave(IncomeSource, saveIncomeSource)
+    verifyKeystoreFetch(IndividualIncomeSource, fetchIndividualIncomeSource)
+    verifyKeystoreSave(IndividualIncomeSource, saveIndividualIncomeSource)
     verifyKeystoreFetch(RentUkProperty, fetchRentUkProperty)
     verifyKeystoreSave(RentUkProperty, saveRentUkProperty)
     verifyKeystoreFetch(AreYouSelfEmployed, fetchAreYouSelfEmployed)
