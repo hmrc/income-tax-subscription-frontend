@@ -16,7 +16,9 @@
 
 package views.helpers
 
-class RadioOption(val optionName: String, val message: String, val classes: Option[String]) extends Product with Serializable {
+import play.twirl.api.Html
+
+class RadioOption(val optionName: String, val message: String, val classes: Option[String], val conditionalContent :Option[Html]) extends Product with Serializable {
 
   override def toString: String = message
 
@@ -47,9 +49,9 @@ class RadioOption(val optionName: String, val message: String, val classes: Opti
 }
 
 object RadioOption {
-  def apply(optionName: String, message: String, classes: Option[String] = None): RadioOption = {
+  def apply(optionName: String, message: String, classes: Option[String] = None, conditionalContent: Option[Html] = None): RadioOption = {
     if (optionName.contains(" ")) throw new IllegalArgumentException(s"RadioName: the optionName parameter must not contain any spaces {$optionName}")
-    new RadioOption(optionName, message, classes)
+    new RadioOption(optionName, message, classes, conditionalContent)
   }
 
   def unapply(obj: RadioOption): Option[(String, String)] = Some((obj.optionName, obj.message))

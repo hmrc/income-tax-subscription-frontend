@@ -27,10 +27,35 @@
 
 @(accountingYearForm: Form[AccountingYearModel], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@scripts = {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/show-hide-content.js")"></script>
+}
+
 @question = @{messages("business.what_year_to_sign_up.heading.signup")}
 @pageTitle = @{messages("business.what_year_to_sign_up.title.signup")}
+@optionCurrentContent ={
+    <p> @messages("business.what_year_to_sign_up.conditional.1.line_1.signup") </p>
+    <ul>
+        <li>@messages("business.what_year_to_sign_up.quarterly.date_1",  (endYearOfCurrentTaxPeriod - 1).toString)</li>
+        <li>@messages("business.what_year_to_sign_up.quarterly.date_2",  (endYearOfCurrentTaxPeriod - 1).toString)</li>
+        <li>@messages("business.what_year_to_sign_up.quarterly.date_3",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("business.what_year_to_sign_up.quarterly.date_4",  endYearOfCurrentTaxPeriod.toString)</li>
+    </ul>
+    <p> @messages("business.what_year_to_sign_up.conditional.1.line_2.signup", (endYearOfCurrentTaxPeriod +1).toString) </p>
+}
+@optionNextContent ={
+    <p> @messages("business.what_year_to_sign_up.conditional.2.line_1.signup") </p>
+    <ul>
+        <li>@messages("business.what_year_to_sign_up.quarterly.date_1",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("business.what_year_to_sign_up.quarterly.date_2",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("business.what_year_to_sign_up.quarterly.date_3",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
+        <li>@messages("business.what_year_to_sign_up.quarterly.date_4",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
+    </ul>
+    <p> @messages("business.what_year_to_sign_up.conditional.2.line_2.signup", (endYearOfCurrentTaxPeriod).toString) </p>
+}
 
-@main_template(title = pageTitle, form = accountingYearForm) {
+
+@main_template(title = pageTitle, form = accountingYearForm, scriptElem = scripts) {
 
     @back_link(backUrl)
 
@@ -38,21 +63,28 @@
 
     <h1 class="heading-large">@question</h1>
     <p>@messages("business.what_year_to_sign_up.line_1.signup")</p>
-    <div class="panel panel-border-wide">
-        <p>@messages("business.what_year_to_sign_up.example_line_1.signup", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)</p>
-        <p>@messages("business.what_year_to_sign_up.example_line_2.signup", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)</p>
-    </div>
 
     @form(action = postAction) {
         @radioHelper(
             field = accountingYearForm(AccountingYearForm.accountingYear),
             legend = question,
             options = Seq(
-                RadioOption(AccountingYearMapping.option_current, messages("business.what_year_to_sign_up.option_1.signup", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
-                RadioOption(AccountingYearMapping.option_next, messages("business.what_year_to_sign_up.option_2.signup", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString))
+                RadioOption(
+                    AccountingYearMapping.option_current,
+                    messages("business.what_year_to_sign_up.option_1.signup", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString),
+                    None,
+                    Some(optionCurrentContent)
+                ),
+                RadioOption(
+                    AccountingYearMapping.option_next,
+                    messages("business.what_year_to_sign_up.option_2.signup", (endYearOfCurrentTaxPeriod).toString, (endYearOfCurrentTaxPeriod + 1).toString),
+                    None,
+                    Some(optionNextContent)
+                )
             ),
             parentForm = accountingYearForm
         )
+
         @if(isEditMode) {
             @continueButton(messages("base.update"))
         } else {

@@ -18,15 +18,14 @@
 @import play.api.data.Form
 @import views.helpers.RadioOption
 
+
 @(field: Field,
     legend: String,
     options: Seq[RadioOption],
     parentForm: Form[_],
     inline: Boolean = false,
     fieldSetClass: Option[String] = None,
-    useTextForValue: Boolean = false,
-    targetHostId: Option[String] = None,
-    target: Option[String] = None
+    useTextForValue: Boolean = false
 )(implicit messages: Messages)
 
 @hasError = @{
@@ -54,20 +53,12 @@
         case false => option.optionName
     }
 }
-
-@hasTarget = {
-    @target match {
-        case Some(t) => {data-target=@t}
-        case _ => {}
+    @dataTarget(radioOption: RadioOption) = {
+        @if(radioOption.conditionalContent.isDefined){
+            data-target = @radioOption.optionName
+        }
     }
-}
 
-@hasTargetHostId(id: String) = @{
-    targetHostId match {
-        case Some(hostId) => {if(id==hostId) hasTarget}
-        case _ => {}
-    }
-}
 
 <div class="form-group @if(hasError) { form-field--error}">
 
@@ -80,10 +71,15 @@
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
 
         @for(option <- options) {
-            <div class="multiple-choice" @hasTargetHostId(option.optionName)>
+            <div class="multiple-choice" @dataTarget(option)>
                 <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@valueAttr(option)" @isSelected(option.optionName)>
                 <label @option.classes.fold("")(x => s"""class="$x"""") for="@{field.name}-@option.optionName">@Html(option.message)</label>
             </div>
+            @option.conditionalContent.map{content =>
+                <div id="@option.optionName" class="panel panel-indent panel-border-narrow js-hidden">
+                @content
+                </div>
+            }
         }
     </fieldset>
 </div>

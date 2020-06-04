@@ -610,15 +610,26 @@ object MessageLookup {
   object WhatYearToSignUp {
     val title = "What tax year do you want to sign up for?"
     val heading: String = title
-    val line1 = "You can sign up for the current year or the next year."
+    val line1 = "You can sign up for the current tax year or the next tax year. It will not affect the amount of tax you will pay."
 
-    def example1(fromYear: String, toYear: String): String  = s"For example, if your accounting period runs from 6 April $fromYear to 5 April $toYear, you will sign up for the current year $fromYear to $toYear."
+    def option1ConditionalExample1: String = "You will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You need to send a quarterly update for:"
 
-    def example2(fromYear: String, toYear: String): String  = s"If your accounting period runs from 6 April $fromYear to 5 April $toYear, you will sign up for next year $fromYear to $toYear."
+    def option1ConditionalExample2(year: String): String = s"You need to send a final declaration by the 31 January $year."
 
-    def option1(fromYear: String, toYear: String): String  = s"Current tax year ($fromYear to $toYear)"
+    def option2ConditionalExample1: String = "You need to send a quarterly update for:"
 
-    def option2(fromYear: String, toYear: String): String = s"Next tax year ($fromYear to $toYear)"
+    def option2ConditionalExample2(year: String): String = s"You need to send a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
+
+    def option1(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
+
+    def option2(fromYear: String, toYear: String): String = s"Next tax year (6 April $fromYear to 5 April $toYear)"
+
+    def conditionalDate1(year: String): String = s"5 July $year"
+
+    def conditionalDate2(year: String): String = s"5 October $year"
+
+    def conditionalDate3(year: String): String = s"5 January $year"
+
+    def conditionalDate4(year: String): String = s"5 April $year"
   }
-
 }
