@@ -69,7 +69,7 @@ object IntegrationTestModels {
 
   lazy val fullKeystoreDataPropertyPost: Map[String, JsValue] =
     keystoreData(
-      incomeSource = Some(Property),
+      individualIncomeSource = Some(IncomeSourceModel(false, true)),
       rentUkProperty = Some(testRentUkProperty_property_only),
       areYouSelfEmployed = Some(testAreYouSelfEmployed_no),
       propertyAccountingMethod = Some(testAccountingMethodProperty)
@@ -109,6 +109,8 @@ object IntegrationTestModels {
   lazy val testIncomeSourceProperty: Property.type = Property
 
   lazy val testIncomeSourceBoth: Both.type = Both
+
+  lazy val testIncomeSourceIndivProperty: IncomeSourceModel = IncomeSourceModel(false, true)
 
   lazy val testRentUkProperty_no_property = RentUkPropertyModel(No, None)
   lazy val testRentUkProperty_property_only = RentUkPropertyModel(Yes, Some(Yes))

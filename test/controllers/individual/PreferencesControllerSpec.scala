@@ -53,12 +53,12 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
     def result: Future[Result] = TestPreferencesController.checkPreferences(request)
 
-    "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
+    "Redirect to income source page if paperless is activated and in SignUp journey" in {
       mockStoreNinoSuccess(testNino)
       mockCheckPaperlessActivated(testToken)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(controllers.individual.incomesource.routes.RentUkPropertyController.show().url)
+      redirectLocation(result).get must be(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
     }
 
     "Redirect to returned preferences service if paperless was previously unspecified" in {
@@ -82,7 +82,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
       mockCheckPaperlessActivated(testToken)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(controllers.individual.incomesource.routes.RentUkPropertyController.show().url)
+      redirectLocation(result).get must be(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
     }
 
     "Redirect to the preferences error page if paperless preferences was not selected" in {

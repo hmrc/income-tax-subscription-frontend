@@ -20,10 +20,8 @@ import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
-import models.Yes
 import models.common.AccountingMethodModel
-import models.individual.incomesource.RentUkPropertyModel
-import models.individual.subscription.Business
+import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -66,8 +64,8 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             } else {
-              keystoreService.fetchRentUkProperty() map {
-                case Some(RentUkPropertyModel(Yes, _)) =>
+              keystoreService.fetchIndividualIncomeSource() map {
+                case Some(IncomeSourceModel(_, true)) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
@@ -83,8 +81,8 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     else {
       keystoreService.fetchAll() map { cacheMap =>
-        cacheMap.getIncomeSourceType match {
-          case Some(Business) =>
+        cacheMap.getIncomeSourceModel match {
+          case Some(IncomeSourceModel(true, false)) =>
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
           case _ =>
             controllers.individual.business.routes.BusinessNameController.show().url

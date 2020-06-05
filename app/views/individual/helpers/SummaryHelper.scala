@@ -17,7 +17,7 @@
 package views.individual.helpers
 
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
-import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.individual.incomesource.IncomeSourceModel
 import models.{Accruals, Cash, Current, Next}
 import play.api.i18n.Messages
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
@@ -39,11 +39,10 @@ object SummaryHelper {
     case Accruals => Messages("summary.income_type.accruals")
   }
 
-
-  def incomeSourceText(src: IncomeSourceType)(implicit messages: Messages): String = src match {
-    case Business => Messages("summary.income_source.business")
-    case Property => Messages("summary.income_source.property")
-    case Both => Messages("summary.income_source.both")
+  def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = (src.selfEmployment, src.ukProperty) match {
+    case (true, false) => Messages("summary.income_source.business")
+    case (false, true) => Messages("summary.income_source.property")
+    case (true, true) => s"${Messages("summary.income_source.business")}<br>${Messages("summary.income_source.property")}"
+    case (false, false) => ""
   }
-
 }

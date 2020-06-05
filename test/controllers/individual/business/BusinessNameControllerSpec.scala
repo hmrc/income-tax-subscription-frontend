@@ -82,7 +82,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
       "the user is business only" should {
         s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
           setupMockKeystoreSaveFunctions()
-          mockFetchAllFromKeyStore(testCacheMap(rentUkProperty = testRentUkProperty_no_property, areYouSelfEmployed = testAreYouSelfEmployed_yes))
+          mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
 
           val goodRequest = callShow(isEditMode = false)
 
@@ -152,8 +152,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
       }
     }
     "not in edit mode" should {
-      s"redirect to ${controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url}" in {
-        TestBusinessNameController.backUrl(isEditMode = false) mustBe controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
+      s"redirect to ${controllers.individual.incomesource.routes.IncomeSourceController.show().url}" in {
+        TestBusinessNameController.backUrl(isEditMode = false) mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
       }
     }
   }

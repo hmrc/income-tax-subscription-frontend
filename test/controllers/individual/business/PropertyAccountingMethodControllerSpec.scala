@@ -22,6 +22,7 @@ import utilities.TestModels._
 import forms.individual.business.AccountingMethodPropertyForm
 import models.Cash
 import models.common.AccountingMethodPropertyModel
+import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -45,23 +46,16 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_only))
+  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceProperty)
 
-  def propertyOnlySelfEmNoIncomeSourceType: CacheMap = testCacheMap(
-    rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(testAreYouSelfEmployed_no)
-  )
-
-  def bothIncomeSourceType: CacheMap = testCacheMap(
-    rentUkProperty = Some(testRentUkProperty_property_and_other),
-    areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
-  )
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceBoth)
 
   "show" should {
     "display the property accounting method view and return OK (200)" in {
       lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchPropertyAccountingFromKeyStore(None)
-      mockFetchAllFromKeyStore(propertyOnlySelfEmNoIncomeSourceType) // for the back url
+      mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType) // for the back url
 
       status(result) must be(Status.OK)
       verifyKeystore(fetchPropertyAccountingMethod = 1, savePropertyAccountingMethod = 0, fetchAll = 1)
@@ -131,7 +125,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
 
-        mockFetchAllFromKeyStore(propertyOnlySelfEmNoIncomeSourceType)
+        mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
 
         val badRequest = callShowWithErrorForm(isEditMode = false)
 
@@ -144,10 +138,10 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "The back url is not in edit mode" when {
       "the user has rental property and it is the only income source" should {
-        "redirect to rent Uk property page" in {
+        "redirect to income source page" in {
           mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
-            controllers.individual.incomesource.routes.RentUkPropertyController.show().url
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }
       }
 
@@ -159,13 +153,6 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "the user has rental property and it is not the only income source and the user does not have a business" should {
-        "redirect to are you self employed page" in {
-          mockFetchAllFromKeyStore(fetchAll = propertyOnlySelfEmNoIncomeSourceType)
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
-            controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
-        }
-      }
     }
     "The back url is in edit mode" when {
       "the user click back url" should {

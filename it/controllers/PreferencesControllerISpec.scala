@@ -44,7 +44,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Then("Should return a SEE_OTHER with a re-direct location of the next page")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(rentUkPropertyURI)
+        redirectURI(incomeReceivedURI)
       )
     }
 
@@ -115,7 +115,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Then("Should return a SEE_OTHER with a re-direct location of the next page")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(rentUkPropertyURI)
+        redirectURI(incomeReceivedURI)
       )
     }
 

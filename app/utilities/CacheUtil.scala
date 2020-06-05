@@ -20,7 +20,7 @@ import config.AppConfig
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.address.Address
 import models.individual.business.{AccountingPeriodModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
 import models.individual.subscription._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.CacheConstants._
@@ -35,6 +35,8 @@ object CacheUtil {
 
     def getIncomeSourceType: Option[IncomeSourceType] =
       getRentUkProperty.flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getAreYouSelfEmployed))
+
+    def getIncomeSourceModel: Option[IncomeSourceModel] = cacheMap.getEntry[IncomeSourceModel](IndividualIncomeSource)
 
     def agentGetIncomeSource: Option[IncomeSourceType] = cacheMap.getEntry[IncomeSourceType](IncomeSource)
 
@@ -57,17 +59,15 @@ object CacheUtil {
     def getPropertyAccountingMethod: Option[AccountingMethodPropertyModel] = cacheMap.getEntry[AccountingMethodPropertyModel](PropertyAccountingMethod)
 
     def getSummary()(implicit appConfig: AppConfig): IndividualSummary =
-      getIncomeSourceType match {
-        case Some(Property) =>
+      getIncomeSourceModel match {
+        case Some(IncomeSourceModel(false, true)) =>
           IndividualSummary(
-            rentUkProperty = getRentUkProperty,
-            areYouSelfEmployed = getAreYouSelfEmployed,
+            incomeSourceIndiv = getIncomeSourceModel,
             accountingMethodProperty = getPropertyAccountingMethod
           )
-        case Some(Business) =>
+        case Some(IncomeSourceModel(true, false)) =>
           IndividualSummary(
-            rentUkProperty = getRentUkProperty,
-            areYouSelfEmployed = getAreYouSelfEmployed,
+            incomeSourceIndiv = getIncomeSourceModel,
             businessName = getBusinessName,
             businessPhoneNumber = getBusinessPhoneNumber,
             businessAddress = getBusinessAddress,
@@ -77,8 +77,7 @@ object CacheUtil {
           )
         case Some(_) =>
           IndividualSummary(
-            rentUkProperty = getRentUkProperty,
-            areYouSelfEmployed = getAreYouSelfEmployed,
+            incomeSourceIndiv = getIncomeSourceModel,
             businessName = getBusinessName,
             businessPhoneNumber = getBusinessPhoneNumber,
             businessAddress = getBusinessAddress,

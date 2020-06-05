@@ -242,11 +242,15 @@ object MessageLookup {
     val title = "Check your answers"
     val heading: String = title
     val heading_hidden = "before signing up"
-    val income_source = "Where does your income come from?"
-    val rentUkProperty = "You rent out UK property"
+    val income_source = "Income received from"
+    val selfEmployment = "Self employment"
+    val ukProperty = "UK property"
+    val accountingMethodProperty = "Accounting method for UK property income"
+
+    //can be deleted
     val onlySourceOfIncome = "You only receive income from self-employment"
     val areYouSelfEmployed = "You’re self-employed"
-    val accountingMethodProperty = "Your accounting method for your property income"
+    val rentUkProperty = "You rent out UK property"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -262,8 +266,8 @@ object MessageLookup {
     val business_phone_number = "What’s your business telephone number?"
     val business_address = "What’s your business address?"
     val business_start_date = "When did your business start trading?"
-    val selected_tax_year = "Year signed-up for"
-    val income_type = "Your accounting method for your self-employed business"
+    val selected_tax_year = "Tax year signed up for"
+    val income_type = "Accounting method for your self-employment income"
 
     object AccountingMethod {
       val cash = "Cash basis"

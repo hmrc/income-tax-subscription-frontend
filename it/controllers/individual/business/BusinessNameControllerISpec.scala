@@ -16,11 +16,12 @@
 
 package controllers.individual.business
 
-import helpers.IntegrationTestConstants.{checkYourAnswersURI, accountingYearURI, businessAccountingMethodURI}
+import helpers.IntegrationTestConstants.{accountingYearURI, businessAccountingMethodURI, checkYourAnswersURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.common.BusinessNameModel
+import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.Both
 import play.api.http.Status._
 import utilities.CacheConstants
@@ -76,8 +77,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(keystoreData(
-            rentUkProperty = Some(testRentUkProperty_no_property),
-            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
+            individualIncomeSource = Some(IncomeSourceModel(true, false))
           ))
           KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
 
