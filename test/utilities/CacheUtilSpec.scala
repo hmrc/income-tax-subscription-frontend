@@ -23,6 +23,7 @@ import org.scalatest.Matchers._
 import utilities.AccountingPeriodUtil.getCurrentTaxYear
 import utilities.TestModels._
 import CacheUtil._
+import models.individual.incomesource.IncomeSourceModel
 
 class CacheUtilSpec extends UnitTestTrait
   with FeatureSwitching
@@ -33,7 +34,7 @@ class CacheUtilSpec extends UnitTestTrait
     "In the respective get calls, return None if they are not in the cachemap" in {
       emptyCacheMap.getRentUkProperty shouldBe None
       emptyCacheMap.getAreYouSelfEmployed shouldBe None
-      emptyCacheMap.getIncomeSourceType shouldBe None
+      emptyCacheMap.getIncomeSourceModel shouldBe None
       emptyCacheMap.agentGetIncomeSource shouldBe None
       emptyCacheMap.getBusinessName shouldBe None
       emptyCacheMap.getBusinessPhoneNumber shouldBe None
@@ -47,9 +48,9 @@ class CacheUtilSpec extends UnitTestTrait
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getRentUkProperty shouldBe Some(testRentUkProperty_property_and_other)
-      testCacheMap.getAreYouSelfEmployed shouldBe Some(testAreYouSelfEmployed_yes)
-      testCacheMap.getIncomeSourceType shouldBe Some(Both)
+      testCacheMap.getRentUkProperty shouldBe None
+      testCacheMap.getAreYouSelfEmployed shouldBe None
+      testCacheMap.getIncomeSourceModel shouldBe Some(IncomeSourceModel(true,true))
       testCacheMap.agentGetIncomeSource shouldBe Some(Both)
       testCacheMap.getBusinessName shouldBe Some(testBusinessName)
       testCacheMap.getBusinessPhoneNumber shouldBe Some(testBusinessPhoneNumber)
@@ -65,18 +66,16 @@ class CacheUtilSpec extends UnitTestTrait
 
     "The getSummary should populate the Summary model correctly" when {
       "income source is just property" in {
-        testCacheMapCustom(rentUkProperty = testRentUkProperty_property_only, areYouSelfEmployed = None).getSummary() shouldBe
+        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceProperty).getSummary() shouldBe
           IndividualSummary(
-            rentUkProperty = testRentUkProperty_property_only,
-            areYouSelfEmployed = None,
+            incomeSourceIndiv = testIncomeSourceProperty,
             accountingMethodProperty = testAccountingMethodProperty
           )
       }
       "income source is just business" in {
-        testCacheMapCustom(rentUkProperty = testRentUkProperty_no_property, areYouSelfEmployed = testAreYouSelfEmployed_yes).getSummary() shouldBe
+        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceBusiness).getSummary() shouldBe
           IndividualSummary(
-            rentUkProperty = testRentUkProperty_no_property,
-            areYouSelfEmployed = testAreYouSelfEmployed_yes,
+            incomeSourceIndiv = testIncomeSourceBusiness,
             businessName = testBusinessName,
             businessPhoneNumber = testBusinessPhoneNumber,
             businessAddress = testAddress,
@@ -86,10 +85,9 @@ class CacheUtilSpec extends UnitTestTrait
           )
       }
       "income source is both property and business" in {
-        testCacheMapCustom(rentUkProperty = testRentUkProperty_property_and_other, areYouSelfEmployed = testAreYouSelfEmployed_yes).getSummary() shouldBe
+        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceBoth).getSummary() shouldBe
           IndividualSummary(
-            rentUkProperty = testRentUkProperty_property_and_other,
-            areYouSelfEmployed = testAreYouSelfEmployed_yes,
+            incomeSourceIndiv = testIncomeSourceBoth,
             businessName = testBusinessName,
             businessPhoneNumber = testBusinessPhoneNumber,
             businessAddress = testAddress,
@@ -106,9 +104,9 @@ class CacheUtilSpec extends UnitTestTrait
     "The getAgentSummary should populate the Summary model correctly" when {
       "the income type is property" in {
         testCacheMapCustom(
-          incomeSource = Some(testIncomeSourceProperty)
+          incomeSource = Some(testAgentIncomeSourceProperty)
         ).getAgentSummary() shouldBe AgentSummary(
-          incomeSource = Some(testIncomeSourceProperty),
+          incomeSource = Some(testAgentIncomeSourceProperty),
           matchTaxYear = None,
           accountingPeriodDate = None,
           businessName = None,
@@ -119,9 +117,9 @@ class CacheUtilSpec extends UnitTestTrait
 
       "the income type is business" in {
         testCacheMapCustom(
-          incomeSource = Some(testIncomeSourceBusiness)
+          incomeSource = Some(testAgentIncomeSourceBusiness)
         ).getAgentSummary() shouldBe AgentSummary(
-          incomeSource = Some(testIncomeSourceBusiness),
+          incomeSource = Some(testAgentIncomeSourceBusiness),
           matchTaxYear = Some(testMatchTaxYearNo),
           selectedTaxYear = Some(testSelectedTaxYearNext),
           accountingPeriodDate = Some(testAccountingPeriod),
@@ -133,10 +131,10 @@ class CacheUtilSpec extends UnitTestTrait
 
       "the income type is both" in {
         testCacheMapCustom(
-          incomeSource = Some(testIncomeSourceBoth)
+          incomeSource = Some(testAgentIncomeSourceBoth)
         ).getAgentSummary() shouldBe
           AgentSummary(
-            incomeSource = testIncomeSourceBoth,
+            incomeSource = testAgentIncomeSourceBoth,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,

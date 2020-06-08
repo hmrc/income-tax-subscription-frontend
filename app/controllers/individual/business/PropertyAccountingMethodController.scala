@@ -21,8 +21,7 @@ import config.AppConfig
 import forms.individual.business.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.common.AccountingMethodPropertyModel
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
-import models.{No, Yes}
+import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -77,16 +76,11 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     else {
       keystoreService.fetchAll() map { cacheMap =>
-        (cacheMap.getRentUkProperty, cacheMap.getAreYouSelfEmployed) match {
-          case (Some(RentUkPropertyModel(Yes, Some(Yes))), _) =>
-            controllers.individual.incomesource.routes.RentUkPropertyController.show().url
-          case (_, Some(AreYouSelfEmployedModel(Yes))) =>
-            controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-          case (_, Some(AreYouSelfEmployedModel(No))) =>
-            controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
+        cacheMap.getIncomeSourceModel match {
+          case Some(IncomeSourceModel(false, true)) =>
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
           case _ =>
-            controllers.individual.incomesource.routes.RentUkPropertyController.show().url
-
+            controllers.individual.business.routes.BusinessAccountingMethodController.show().url
         }
       }
     }

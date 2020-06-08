@@ -21,10 +21,9 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testMatchTaxYearYes}
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models.common.AccountingMethodModel
-import models.individual.incomesource.RentUkPropertyModel
+import models.individual.incomesource.{IncomeSourceModel, RentUkPropertyModel}
 import models.{Accruals, Cash, No, Yes}
 import play.api.http.Status._
-import play.api.i18n.Messages
 import utilities.CacheConstants
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
@@ -95,14 +94,15 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
           Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(RentUkPropertyModel(Yes, Some(Yes)))))
+          KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(IncomeSourceModel(true, true))))
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
 
           When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = Some(userInput))
 
           Then(s"Should return a $SEE_OTHER with a redirect location of ${
-                                                      controllers.individual.business.routes.PropertyAccountingMethodController.show().url}")
+            controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+          }")
           res should have(
             httpStatus(SEE_OTHER),
             redirectURI(accountingMethodPropertyURI)

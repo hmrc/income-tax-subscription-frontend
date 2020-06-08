@@ -43,7 +43,7 @@ class ConfirmationController @Inject()(val authService: AuthService, keystoreSer
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
 
       keystoreService.fetchAll() map (_.getSummary()) map { summary =>
-        summary.incomeSource match {
+        summary.incomeSourceIndiv match {
           case Some(_) =>
             Ok(sign_up_complete(journeyDuration, summary))
           case _ =>

@@ -18,7 +18,7 @@ package controllers.individual.subscription
 
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-import models.individual.subscription.{Both, Business, Property}
+import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -54,8 +54,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "return ok (200) for business journey" in {
       val testBusinessCacheMap = testCacheMapCustom(
-        rentUkProperty = testRentUkProperty_no_property,
-        areYouSelfEmployed = testAreYouSelfEmployed_yes
+        incomeSourceIndiv = testIncomeSourceBusiness
       )
       mockFetchAllFromKeyStore(testBusinessCacheMap)
 
@@ -64,18 +63,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "return ok (200) for property only journey)" in {
       val testPropertyCacheMap = testCacheMap(
-        rentUkProperty = testRentUkProperty_property_only,
-        areYouSelfEmployed = None
-      )
-      mockFetchAllFromKeyStore(testPropertyCacheMap)
-
-      status(result) must be(Status.OK)
-    }
-
-    "return ok (200) for property and other income but no sole trader journey" in {
-      val testPropertyCacheMap = testCacheMap(
-        rentUkProperty = testRentUkProperty_property_and_other,
-        areYouSelfEmployed = testAreYouSelfEmployed_no
+        incomeSourceIndiv = testIncomeSourceProperty
       )
       mockFetchAllFromKeyStore(testPropertyCacheMap)
 
@@ -127,17 +115,17 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "The back url" when {
     s"point to the ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url} when the income source is Business" in {
-      TestCheckYourAnswersController.backUrl(incomeSource = Business) mustBe
+      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(true, false)) mustBe
         controllers.individual.business.routes.BusinessAccountingMethodController.show().url
     }
 
     s"point to the ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url} when the income source is Both" in {
-      TestCheckYourAnswersController.backUrl(incomeSource = Both) mustBe
+      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(true, true)) mustBe
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }
 
     s"point to the ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url} when the income source is Property" in {
-      TestCheckYourAnswersController.backUrl(incomeSource = Property) mustBe
+      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(false, true)) mustBe
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }
   }

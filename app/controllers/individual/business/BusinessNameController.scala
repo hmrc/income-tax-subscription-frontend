@@ -20,9 +20,8 @@ import auth.individual.{Registration, SignUpController}
 import config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
-import models.{No, Yes}
 import models.common.BusinessNameModel
-import models.individual.subscription.Business
+import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -65,8 +64,8 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
             } else {
               for {
                 cacheMap <- keystoreService.fetchAll()
-              } yield cacheMap.getIncomeSourceType match {
-                case Some(Business) =>
+              } yield cacheMap.getIncomeSourceModel match {
+                case Some(IncomeSourceModel(true, false)) =>
                   Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
                 case _ =>
                   Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())
@@ -80,7 +79,7 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
     if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
-      controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
+      controllers.individual.incomesource.routes.IncomeSourceController.show().url
     }
   }
 

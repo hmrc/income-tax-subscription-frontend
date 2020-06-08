@@ -46,7 +46,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
-  val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
+  val testIncomeSource: IncomeSourceType = TestModels.testAgentIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
   val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
   val testSummary: AgentSummary = customTestSummary()

@@ -75,7 +75,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
     "When it is ineligible dates" should {
       s"return a redirect status (SEE_OTHER - 303) to kickout page" in {
-        mockFetchIncomeSourceFromKeyStore(Some(TestModels.testIncomeSourceBusiness))
+        mockFetchIncomeSourceFromKeyStore(Some(TestModels.testAgentIncomeSourceBusiness))
         mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
 
         mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
@@ -91,7 +91,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     "When it is not in edit mode and is eligible" when {
       "the tax year remained the same" should {
         s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
-          mockFetchIncomeSourceFromKeyStore(Some(TestModels.testIncomeSourceBusiness))
+          mockFetchIncomeSourceFromKeyStore(Some(TestModels.testAgentIncomeSourceBusiness))
           mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
           mockFetchAccountingPeriodFromKeyStore(testAccountingPeriodDates)
           setupMockKeystoreSaveFunctions()
@@ -108,7 +108,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
       }
       "the tax year changed" should {
         s"return a redirect status (SEE_OTHER - 303) and update terms" in {
-          mockFetchIncomeSourceFromKeyStore(Some(TestModels.testIncomeSourceBusiness))
+          mockFetchIncomeSourceFromKeyStore(Some(TestModels.testAgentIncomeSourceBusiness))
           mockFetchAllFromKeyStore(testCacheMap(
             accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)))
           setupMockKeystoreSaveFunctions()
@@ -126,7 +126,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     }
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        mockFetchIncomeSourceFromKeyStore(Some(TestModels.testIncomeSourceBusiness))
+        mockFetchIncomeSourceFromKeyStore(Some(TestModels.testAgentIncomeSourceBusiness))
         mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
         setupMockKeystoreSaveFunctions()
 

@@ -19,10 +19,13 @@ package models.individual.subscription
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.business.address.Address
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.incomesource.IncomeSourceModel
 
 
 sealed trait SummaryModel {
+  def incomeSourceIndiv: Option[IncomeSourceModel]
+
+  //  agent
   def incomeSource: Option[IncomeSourceType]
 
   def matchTaxYear: Option[MatchTaxYearModel]
@@ -46,8 +49,8 @@ sealed trait SummaryModel {
 }
 
 
-case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
-                             areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
+case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None,
+                             incomeSource: Option[IncomeSourceType] = None,
                              matchTaxYear: Option[MatchTaxYearModel] = None,
                              accountingPeriodDate: Option[AccountingPeriodModel] = None,
                              businessName: Option[BusinessNameModel] = None,
@@ -56,15 +59,11 @@ case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
                              businessStartDate: Option[BusinessStartDateModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
-                             accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel {
-
-  def incomeSource: Option[IncomeSourceType] =
-    rentUkProperty.flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, areYouSelfEmployed))
-
-}
+                             accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel
 
 
-case class AgentSummary(incomeSource: Option[IncomeSourceType] = None,
+case class AgentSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None,
+                        incomeSource: Option[IncomeSourceType] = None,
                         matchTaxYear: Option[MatchTaxYearModel] = None,
                         accountingPeriodDate: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,

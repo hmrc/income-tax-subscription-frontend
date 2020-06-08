@@ -17,18 +17,19 @@
 package services
 
 import config.AppConfig
+import config.featureswitch.FeatureSwitching
 import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import config.featureswitch.FeatureSwitching
-import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 import javax.inject.{Inject, Singleton}
 import models.common.AccountingYearModel
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
-import models.{Current, Next, Yes}
+import models.{Next, Yes}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
 import scala.concurrent.Future
 
@@ -38,43 +39,66 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
                                    ) extends FeatureSwitching {
 
 
-  private[services] def getAccountingPeriod(incomeSourceType: IncomeSourceType,
-                                            summaryData: SummaryModel, isAgent: Boolean): Option[AccountingPeriodModel] = {
-    if(isAgent) {
-      (incomeSourceType, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
+  private[services] def getAccountingPeriod(summaryData: SummaryModel, isAgent: Boolean): Option[AccountingPeriodModel] = {
+    if (isAgent) {
+      (summaryData.incomeSource.get, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
         case (Business, Some(MatchTaxYearModel(Yes)), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
         case (Business | Both, Some(MatchTaxYearModel(Yes)), _) => Some(getCurrentTaxYear)
         case (Business | Both, _, _) => summaryData.accountingPeriodDate
         case _ => None
       }
     } else {
-      (incomeSourceType, summaryData.selectedTaxYear) match {
-        case (Business, Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
-        case (Business | Both, _) => Some(getCurrentTaxYear)
+      (summaryData.incomeSourceIndiv.get, summaryData.selectedTaxYear) match {
+        case (IncomeSourceModel(true, false), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
+        case (IncomeSourceModel(true, _), _) => Some(getCurrentTaxYear)
         case _ => None
       }
     }
   }
 
   private[services] def buildRequestPost(nino: String, model: SummaryModel, arn: Option[String]): SubscriptionRequest = {
-    val businessSection = model.incomeSource.flatMap {
-      case Business | Both =>
-        for {
-          accountingPeriod <- getAccountingPeriod(model.incomeSource.get, model, arn.isDefined)
-          accountingMethod <- model.accountingMethod map (_.accountingMethod)
-          businessName = model.businessName map (_.businessName)
-        } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)
-      case _ => None
+    if (arn.isDefined) {
+      val businessSection = model.incomeSource.flatMap {
+        case Business | Both =>
+          for {
+            accountingPeriod <- getAccountingPeriod(model, arn.isDefined)
+            accountingMethod <- model.accountingMethod map (_.accountingMethod)
+            businessName = model.businessName map (_.businessName)
+          } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)
+        case _ => None
+      }
+
+      val propertySection = model.incomeSource flatMap {
+        case Property | Both =>
+          Some(PropertyIncomeModel(model.accountingMethodProperty.map(_.propertyAccountingMethod)))
+        case _ => None
+      }
+
+
+      SubscriptionRequest(nino, arn, businessSection, propertySection)
+    }
+    else {
+
+      val businessSection = model.incomeSourceIndiv.flatMap {
+        case IncomeSourceModel(true, _) =>
+          for {
+            accountingPeriod <- getAccountingPeriod(model, arn.isDefined)
+            accountingMethod <- model.accountingMethod map (_.accountingMethod)
+            businessName = model.businessName map (_.businessName)
+          } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)
+        case _ => None
+      }
+
+      val propertySection = model.incomeSourceIndiv flatMap {
+        case IncomeSourceModel(_, true) =>
+          Some(PropertyIncomeModel(model.accountingMethodProperty.map(_.propertyAccountingMethod)))
+        case _ => None
+      }
+
+
+      SubscriptionRequest(nino, arn, businessSection, propertySection)
     }
 
-    val propertySection = model.incomeSource flatMap {
-      case Property | Both =>
-        Some(PropertyIncomeModel(model.accountingMethodProperty.map(_.propertyAccountingMethod)))
-      case _ => None
-    }
-
-
-    SubscriptionRequest(nino, arn, businessSection, propertySection)
   }
 
   def submitSubscription(nino: String,

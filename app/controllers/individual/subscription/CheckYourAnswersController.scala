@@ -19,6 +19,7 @@ package controllers.individual.subscription
 import auth.individual.{IncomeTaxSAUser, Registration, SignUpController}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, Request, Result, _}
@@ -39,11 +40,11 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
                                            appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends SignUpController {
 
-  def backUrl(incomeSource: IncomeSourceType): String = {
+  def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
-      case Property | Both =>
+      case IncomeSourceModel(_, true) =>
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-      case Business =>
+      case IncomeSourceModel(true,false) =>
         controllers.individual.business.routes.BusinessAccountingMethodController.show().url
     }
   }
@@ -56,7 +57,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
             cache.getSummary(),
             isRegistration = request.isInState(Registration),
             controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
-            backUrl = backUrl(cache.getIncomeSourceType.get)
+            backUrl = backUrl(cache.getIncomeSourceModel.get)
           ))
         )
   }

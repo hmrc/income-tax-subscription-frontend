@@ -51,41 +51,12 @@
     </div>
 }
 
-@rentUkProperty(rentUkProperty: RentUkPropertyModel) = @{
-    val rowName = RentUkPropertyId
-    val rowQuestion = Messages("summary.rent_uk_property_1")
-    val rowAnswer = rentUkProperty.rentUkProperty match {
-        case Yes => Messages("base.yes")
-        case No => Messages("base.no")
-    }
-    val rowUrl = controllers.individual.incomesource.routes.RentUkPropertyController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
-}
-
-@onlySourceOfIncome(rentUkProperty: RentUkPropertyModel) = @{
-    rentUkProperty.onlySourceOfSelfEmployedIncome match {
-        case Some(rowAnswerStr) =>
-            val rowName = OnlySourceOfIncomeId
-            val rowQuestion = Messages("summary.rent_uk_property_2")
-            val rowUrl = controllers.individual.incomesource.routes.RentUkPropertyController.show(editMode = true).url
-            val rowAnswer = rowAnswerStr match {
-                case Yes => Messages("base.yes")
-                case No => Messages("base.no")
-            }
-            summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
-        case _ => Html("")
-    }
-}
-
-@AreYouSelfEmployed(areYouSelfEmployed: AreYouSelfEmployedModel) = @{
-    val rowName = AreYouSelfEmployedId
-    val rowQuestion = Messages("summary.are_you_selfemployed")
-    val rowAnswer = areYouSelfEmployed.areYouSelfEmployed match {
-        case Yes => Messages("base.yes")
-        case No => Messages("base.no")
-    }
-    val rowUrl = controllers.individual.incomesource.routes.AreYouSelfEmployedController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+@incomeReceivedFrom(incomeSourceModel: IncomeSourceModel) = @{
+    val rowName = IncomeSourceId
+    val rowQuestion = Messages("summary.income_source")
+    val rowAnswer = incomeSourceText(incomeSourceModel)
+    val rowUrl = controllers.individual.incomesource.routes.IncomeSourceController.show(editMode = true).url
+        summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, true)
 }
 
 @businessName(name: BusinessNameModel) = @{
@@ -153,16 +124,13 @@
     <h1 class="heading-large">@Messages("summary.heading") <span class="visuallyhidden">@Messages("summary.heading_hidden")</span></h1>
 
     <div class="form-group">
-        @summaryModel.rentUkProperty.map(rentUkProperty)
-        @summaryModel.rentUkProperty.map(onlySourceOfIncome)
-        @if(summaryModel.rentUkProperty.exists(_.needSecondPage)) {
-            @summaryModel.areYouSelfEmployed.map(AreYouSelfEmployed)
-        }
+
+        @summaryModel.incomeSourceIndiv.map(incomeReceivedFrom)
         @summaryModel.businessName.map(businessName)
         @summaryModel.businessPhoneNumber.map(businessPhoneNumber)
         @summaryModel.businessAddress.map(businessAddress)
         @summaryModel.businessStartDate.map(businessStartDate)
-        @if(summaryModel.rentUkProperty.exists(_.rentUkProperty == No)) {
+        @if(summaryModel.incomeSourceIndiv.exists(_.ukProperty == false)) {
             @summaryModel.selectedTaxYear.map(selectedTaxYear)
         }
         @summaryModel.accountingMethod.map(accountingMethod)

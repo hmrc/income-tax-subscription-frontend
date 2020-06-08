@@ -18,19 +18,17 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
-import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
-import models.DateModel
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.business.address.Address
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
-import models.individual.subscription.{IncomeSourceType, IndividualSummary}
+import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
+import models.individual.subscription.IndividualSummary
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
-
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.{TestModels, UnitTestTrait}
 import views.individual.helpers.SummaryIdConstants._
 
@@ -43,16 +41,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
-  val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
+  val testIncomeSourceBoth: IncomeSourceModel = TestModels.testIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
   val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
   val testSummary: IndividualSummary = customTestSummary()
 
-  def customTestSummary(rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty,
+  def customTestSummary(incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): IndividualSummary = IndividualSummary(
-    rentUkProperty = rentUkProperty,
-    areYouSelfEmployed = testAreYouSelfEmployed,
+    incomeSourceIndiv = incomeSource,
     businessName = testBusinessName,
     businessAddress = testBusinessAddress,
     businessStartDate = testBusinessStartDate,
@@ -94,7 +91,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   "Summary page view" should {
 
-    s"have a back buttong pointed to $backUrl" in {
+    s"have a back button pointed to $backUrl" in {
       val backLink = document().select("#back")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
@@ -149,65 +146,18 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       }
     }
 
-    "display the correct info for the rent uk property" in {
-      val sectionId = RentUkPropertyId
-      val expectedQuestion = messages.rentUkProperty
-      val expectedAnswer = testRentUkProperty.rentUkProperty
-      val expectedEditLink = controllers.individual.incomesource.routes.RentUkPropertyController.show(editMode = true).url
+    "display the correct info for the income source" in {
+      val sectionId = IncomeSourceId
+      val expectedQuestion = messages.income_source
+      val expectedAnswer = messages.selfEmployment + " " + messages.ukProperty
+      val expectedEditLink = controllers.individual.incomesource.routes.IncomeSourceController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer.toMessageString,
+        expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
       )
-    }
-
-    "display the correct info for the only source of income" in {
-      val sectionId = OnlySourceOfIncomeId
-      val expectedQuestion = messages.onlySourceOfIncome
-      val expectedAnswer = testRentUkProperty.onlySourceOfSelfEmployedIncome.get
-      val expectedEditLink = controllers.individual.incomesource.routes.RentUkPropertyController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer.toMessageString,
-        expectedEditLink = expectedEditLink
-      )
-    }
-
-    "do not display if the only source of income is not answered" in {
-      val sectionId = OnlySourceOfIncomeId
-      val expectedQuestion = messages.onlySourceOfIncome
-      val expectedAnswer = testRentUkProperty.onlySourceOfSelfEmployedIncome.get
-      val expectedEditLink = controllers.individual.incomesource.routes.RentUkPropertyController.show(editMode = true).url
-
-      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_no_property))
-
-      Option(doc.getElementById(sectionId)) mustBe None
-    }
-
-    "display the correct info for the are you self-employed" in {
-      val sectionId = AreYouSelfEmployedId
-      val expectedQuestion = messages.areYouSelfEmployed
-      val expectedAnswer = testAreYouSelfEmployed.areYouSelfEmployed
-      val expectedEditLink = controllers.individual.incomesource.routes.AreYouSelfEmployedController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer.toMessageString,
-        expectedEditLink = expectedEditLink
-      )
-    }
-
-    "do not display are you self-employed if rent uk property is answered with YES YES" in {
-      val sectionId = AreYouSelfEmployedId
-
-      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_only))
-
-      Option(doc.getElementById(sectionId)) mustBe None
     }
 
     "display the correct info for the business name" in {
@@ -282,7 +232,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
           testSummaryModel = customTestSummary(
-            rentUkProperty = TestModels.testRentUkProperty_no_property,
+            incomeSource = TestModels.testIncomeSourceBusiness,
             selectedTaxYear = TestModels.testSelectedTaxYearCurrent
           )
         )
@@ -299,17 +249,17 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
           testSummaryModel = customTestSummary(
-            rentUkProperty = TestModels.testRentUkProperty_no_property,
+            incomeSource = TestModels.testIncomeSourceBusiness,
             selectedTaxYear = TestModels.testSelectedTaxYearNext
           )
         )
       }
     }
 
-    "do not display are you Selected Year if rent uk property is answered with YES" in {
+    "do not display Selected Tax Year if ukProperty is selected" in {
       val sectionId = SelectedTaxYearId
 
-      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_and_other))
+      val doc = document(testSummaryModel = customTestSummary(incomeSource = TestModels.testIncomeSourceProperty))
 
       Option(doc.getElementById(sectionId)) mustBe None
     }

@@ -47,7 +47,6 @@ package object testutils {
 
     def isValidFor(data: Map[String, String]): Unit = {
       val validated = testForm.bind(data)
-      println(validated.errors)
       validated.hasErrors shouldBe false
       validated.hasGlobalErrors shouldBe false
     }

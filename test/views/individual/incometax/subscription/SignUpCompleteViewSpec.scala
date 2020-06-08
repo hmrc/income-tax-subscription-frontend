@@ -18,15 +18,14 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import controllers.SignOutController
-import utilities.TestModels.{testAreYouSelfEmployed_no, testSummaryData}
 import models.DateModel
-import models.individual.subscription.{Both, Business, IncomeSourceType}
+import models.individual.incomesource.IncomeSourceModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import utilities.TestModels.{testSummaryData, testSummaryDataProperty}
 import views.ViewSpecTrait
 
 class SignUpCompleteViewSpec extends ViewSpecTrait {
@@ -34,18 +33,19 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
   val submissionDateValue = DateModel("1", "1", "2016")
   val duration: Int = 0
   val action: Call = ViewSpecTrait.testCall
-  val incomeSource: Business.type = Business
+  val incomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false)
+  val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true)
   val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
-  def page(incomeSource: IncomeSourceType): Html = views.html.individual.incometax.subscription.sign_up_complete(
+  def page(incomeSource: IncomeSourceModel): Html = views.html.individual.incometax.subscription.sign_up_complete(
     journeyDuration = duration,
     summary = incomeSource match {
-      case Both => testSummaryData
-      case _ => testSummaryData.copy(areYouSelfEmployed = Some(testAreYouSelfEmployed_no))
+      case IncomeSourceModel(true, true) => testSummaryData
+      case _ => testSummaryDataProperty
     }
   )(request, implicitly, appConfig)
 
-  def document: Document = Jsoup.parse(page(incomeSource).body)
+  def document: Document = Jsoup.parse(page(incomeSourceBusiness).body)
 
   "The Confirmation view for Business income source" should {
 
@@ -106,7 +106,7 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
       }
 
       s"does have a paragraph stating information to appear '${MessageLookup.SignUpComplete.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must include (MessageLookup.SignUpComplete.whatHappensNext.para2)
+        document.select("#whatHappensNext p").text() must include(MessageLookup.SignUpComplete.whatHappensNext.para2)
       }
 
     }
@@ -122,7 +122,7 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
 
   "The Sign Up view for both income source" should {
     s"have a paragraph stating HMRC process '${MessageLookup.SignUpComplete.whatHappensNext.para2}'" in {
-      Jsoup.parse(page(Both).body).select("#whatHappensNext p").text() must include(MessageLookup.SignUpComplete.whatHappensNext.para2)
+      Jsoup.parse(page(incomeSourceBoth).body).select("#whatHappensNext p").text() must include(MessageLookup.SignUpComplete.whatHappensNext.para2)
     }
   }
 }

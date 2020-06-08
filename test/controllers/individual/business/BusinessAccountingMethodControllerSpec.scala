@@ -20,13 +20,11 @@ import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodForm
 import models.common.AccountingMethodModel
 import models.individual.incomesource.RentUkPropertyModel
-import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.{Cash, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.TestModels._
 
 import scala.concurrent.Future
@@ -44,28 +42,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
     MockKeystoreService
   )
 
-  private def fetchAllCacheMap(incomeSourceType: IncomeSourceType = Business): CacheMap =
-    testCacheMap(
-      incomeSource = incomeSourceType match {
-        case Business => testIncomeSourceBusiness
-        case Property => None
-        case Both => testIncomeSourceBoth
-      },
-      rentUkProperty = incomeSourceType match {
-        case Business => testRentUkProperty_no_property
-        case Property => None
-        case Both => testRentUkProperty_property_and_other
-      },
-      areYouSelfEmployed = testAreYouSelfEmployed_yes
-    )
-
   "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
 
     lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
       mockFetchAccountingMethodFromKeyStore(None)
-      mockFetchAllFromKeyStore(fetchAllCacheMap())
+      mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
 
       status(result) must be(Status.OK)
 
@@ -127,7 +110,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
     "return a bad request status (400)" in {
       // for the back url
-      mockFetchAllFromKeyStore(fetchAllCacheMap())
+      mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
 
       status(badRequest) must be(Status.BAD_REQUEST)
 
@@ -140,13 +123,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
     "not in edit mode" when {
       "income source type is business" should {
         s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-          mockFetchAllFromKeyStore(fetchAllCacheMap())
+          mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
         }
 
         s"point to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
-          mockFetchAllFromKeyStore(fetchAllCacheMap(incomeSourceType = Both))
+          mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBoth))
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.BusinessNameController.show().url
         }
