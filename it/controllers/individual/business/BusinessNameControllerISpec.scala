@@ -96,8 +96,6 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(keystoreData(
-            rentUkProperty = Some(testRentUkProperty_property_and_other),
-            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
           ))
           KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
 

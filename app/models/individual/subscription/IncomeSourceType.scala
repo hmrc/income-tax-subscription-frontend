@@ -16,7 +16,7 @@
 
 package models.individual.subscription
 
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.incomesource._
 import models.{No, Yes}
 
 sealed trait IncomeSourceType {
@@ -68,17 +68,6 @@ object IncomeSourceType {
     case `both` => Both
   }
 
-  def apply(rentUkPropertyModel: RentUkPropertyModel, areYouSelfEmployedModel: Option[AreYouSelfEmployedModel]): Option[IncomeSourceType] =
-    from(rentUkPropertyModel, areYouSelfEmployedModel)
-
-  def from(rentUkPropertyModel: RentUkPropertyModel, areYouSelfEmployedModel: Option[AreYouSelfEmployedModel]): Option[IncomeSourceType] =
-    (rentUkPropertyModel, areYouSelfEmployedModel) match {
-      case (RentUkPropertyModel(Yes, Some(Yes)), _) => Some(Property)
-      case (RentUkPropertyModel(Yes, Some(No)), Some(AreYouSelfEmployedModel(Yes))) => Some(Both)
-      case (RentUkPropertyModel(Yes, Some(No)), Some(AreYouSelfEmployedModel(No))) => Some(Property)
-      case (RentUkPropertyModel(No, _), Some(AreYouSelfEmployedModel(Yes))) => Some(Business)
-      case _ => None
-    }
 
   def unapply(incomeSourceType: IncomeSourceType): Option[String] = incomeSourceType match {
     case Business => Some(business)

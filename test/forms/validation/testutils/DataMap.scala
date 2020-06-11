@@ -20,7 +20,6 @@ import forms.agent.{IncomeSourceForm, MatchTaxYearForm}
 import forms.individual.business.BusinessNameForm._
 import forms.individual.business.BusinessPhoneNumberForm._
 import forms.individual.business.{AccountingMethodForm, AccountingYearForm}
-import forms.individual.incomesource.{AreYouSelfEmployedForm, RentUkPropertyForm}
 import forms.submapping.DateMapping._
 import forms.validation.utils.ConstraintUtil._
 import play.api.data.validation._
@@ -56,12 +55,6 @@ object DataMap {
       Map(forms.individual.incomesource.IncomeSourceForm.business -> business,
         forms.individual.incomesource.IncomeSourceForm.ukProperty -> ukProperty)
 
-    def rentUkProperty(iType: String, onlySourceOfIncome: Option[String] = None): DataMap =
-      onlySourceOfIncome.fold(Map(RentUkPropertyForm.rentUkProperty -> iType))(i =>
-        Map(RentUkPropertyForm.rentUkProperty -> iType, RentUkPropertyForm.onlySourceOfSelfEmployedIncome -> i))
-
-
-    def areYouSelfEmployed(iType: String): DataMap = Map(AreYouSelfEmployedForm.choice -> iType)
 
     val alwaysFailInvalid: Invalid = Invalid("always fail")
 

@@ -19,7 +19,7 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodForm
 import models.common.AccountingMethodModel
-import models.individual.incomesource.RentUkPropertyModel
+import models.individual.incomesource._
 import models.{Cash, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -65,7 +65,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
     "When it is not in edit mode" should {
       s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
-        mockFetchRentUkPropertyFromKeyStore(RentUkPropertyModel(No, None))
 
         val goodRequest = callSubmit(isEditMode = true)
 
@@ -81,7 +80,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystoreSaveFunctions()
-        mockFetchRentUkPropertyFromKeyStore(RentUkPropertyModel(No, None))
 
         val goodRequest = callSubmit(isEditMode = true)
 
@@ -93,7 +91,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
       s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
-        mockFetchRentUkPropertyFromKeyStore(RentUkPropertyModel(No, None))
 
         val goodRequest = callSubmit(isEditMode = true)
 

@@ -56,7 +56,7 @@
     val rowQuestion = Messages("summary.income_source")
     val rowAnswer = incomeSourceText(incomeSourceModel)
     val rowUrl = controllers.individual.incomesource.routes.IncomeSourceController.show(editMode = true).url
-        summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, true)
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, true)
 }
 
 @businessName(name: BusinessNameModel) = @{
@@ -99,7 +99,7 @@
     val rowAnswer = accountingYearText(selectedTaxYear)
     val rowUrl = controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
-    }
+}
 
 @accountingMethod(income: AccountingMethodModel) = @{
     val rowName = AccountingMethodId

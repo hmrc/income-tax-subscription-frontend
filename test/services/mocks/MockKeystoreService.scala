@@ -19,7 +19,7 @@ package services.mocks
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.address.Address
 import models.individual.business.{AccountingPeriodModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
-import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
+import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -70,13 +70,6 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
     mockFetchFromKeyStore[IncomeSourceModel](IndividualIncomeSource, fetchIndividualIncomeSource)
   }
 
-  protected final def mockFetchRentUkPropertyFromKeyStore(fetchRentUkProperty: Option[RentUkPropertyModel]): Unit = {
-    mockFetchFromKeyStore[RentUkPropertyModel](RentUkProperty, fetchRentUkProperty)
-  }
-
-  protected final def mockFetchAreYouSelfEmployedFromKeyStore(fetchAreYouSelfEmployed: Option[AreYouSelfEmployedModel]): Unit = {
-    mockFetchFromKeyStore[AreYouSelfEmployedModel](AreYouSelfEmployed, fetchAreYouSelfEmployed)
-  }
 
   protected final def mockFetchBusinessNameFromKeyStore(fetchBusinessName: Option[BusinessNameModel]): Unit = {
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
@@ -170,10 +163,6 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
     verifyKeystoreSave(IncomeSource, saveIncomeSource)
     verifyKeystoreFetch(IndividualIncomeSource, fetchIndividualIncomeSource)
     verifyKeystoreSave(IndividualIncomeSource, saveIndividualIncomeSource)
-    verifyKeystoreFetch(RentUkProperty, fetchRentUkProperty)
-    verifyKeystoreSave(RentUkProperty, saveRentUkProperty)
-    verifyKeystoreFetch(AreYouSelfEmployed, fetchAreYouSelfEmployed)
-    verifyKeystoreSave(AreYouSelfEmployed, saveAreYouSelfEmployed)
     verifyKeystoreFetch(BusinessName, fetchBusinessName)
     verifyKeystoreSave(BusinessName, saveBusinessName)
     verifyKeystoreFetch(BusinessPhoneNumber, fetchBusinessPhoneNumber)

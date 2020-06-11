@@ -21,12 +21,10 @@ import agent.assets.MessageLookup.{Summary => messages}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
 import models.individual.business._
 import models.individual.business.address.Address
-import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.individual.subscription.{AgentSummary, IncomeSourceType}
 import models.{Current, Next, Yes}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
-
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -47,8 +45,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
   val testIncomeSource: IncomeSourceType = TestModels.testAgentIncomeSourceBoth
-  val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
-  val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
   val testSummary: AgentSummary = customTestSummary()
 
   def customTestSummary(matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
@@ -157,7 +153,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         Option(doc.getElementById(sectionId)) mustBe None
 
         val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes),
-                                                                                                    accountingPeriod = Some(testAccountingPeriod)))
+          accountingPeriod = Some(testAccountingPeriod)))
         Option(doc2.getElementById(sectionId)) mustBe None
       }
       "the user chooses no to match tax year" in {

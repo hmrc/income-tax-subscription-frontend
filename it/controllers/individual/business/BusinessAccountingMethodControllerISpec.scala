@@ -21,7 +21,7 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testMatchTaxYearYes}
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models.common.AccountingMethodModel
-import models.individual.incomesource.{IncomeSourceModel, RentUkPropertyModel}
+import models.individual.incomesource.IncomeSourceModel
 import models.{Accruals, Cash, No, Yes}
 import play.api.http.Status._
 import utilities.CacheConstants
@@ -115,7 +115,6 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
           Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(RentUkPropertyModel(No, Some(Yes)))))
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
 
           When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
@@ -136,7 +135,6 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs and feature switches")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(RentUkPropertyModel(No, Some(Yes)))))
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
 
         When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
