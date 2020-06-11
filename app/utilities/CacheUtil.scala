@@ -20,7 +20,7 @@ import config.AppConfig
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.address.Address
 import models.individual.business.{AccountingPeriodModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
-import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
+import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.CacheConstants._
@@ -29,12 +29,6 @@ object CacheUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 
-    def getRentUkProperty: Option[RentUkPropertyModel] = cacheMap.getEntry[RentUkPropertyModel](RentUkProperty)
-
-    def getAreYouSelfEmployed: Option[AreYouSelfEmployedModel] = cacheMap.getEntry[AreYouSelfEmployedModel](AreYouSelfEmployed)
-
-    def getIncomeSourceType: Option[IncomeSourceType] =
-      getRentUkProperty.flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getAreYouSelfEmployed))
 
     def getIncomeSourceModel: Option[IncomeSourceModel] = cacheMap.getEntry[IncomeSourceModel](IndividualIncomeSource)
 

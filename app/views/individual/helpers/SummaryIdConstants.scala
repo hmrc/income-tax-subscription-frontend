@@ -18,10 +18,9 @@ package views.individual.helpers
 
 object SummaryIdConstants {
 
+
   val ReceiveEmail = "receiveEmail"
   val IncomeSourceId = "incomeSource"
-  val RentUkPropertyId = "rentUkProperty"
-  val AreYouSelfEmployedId = "AreYouSelfEmployed"
   val OnlySourceOfIncomeId = "onlySourceOfIncome"
   val BusinessNameId = "businessName"
   val BusinessPhoneNumberId = "businessPhoneNumber"

@@ -32,8 +32,6 @@ class CacheUtilSpec extends UnitTestTrait
   "CacheUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
-      emptyCacheMap.getRentUkProperty shouldBe None
-      emptyCacheMap.getAreYouSelfEmployed shouldBe None
       emptyCacheMap.getIncomeSourceModel shouldBe None
       emptyCacheMap.agentGetIncomeSource shouldBe None
       emptyCacheMap.getBusinessName shouldBe None
@@ -48,8 +46,6 @@ class CacheUtilSpec extends UnitTestTrait
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getRentUkProperty shouldBe None
-      testCacheMap.getAreYouSelfEmployed shouldBe None
       testCacheMap.getIncomeSourceModel shouldBe Some(IncomeSourceModel(true,true))
       testCacheMap.agentGetIncomeSource shouldBe Some(Both)
       testCacheMap.getBusinessName shouldBe Some(testBusinessName)

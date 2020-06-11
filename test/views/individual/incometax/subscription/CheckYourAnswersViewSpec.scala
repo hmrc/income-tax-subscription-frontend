@@ -21,7 +21,7 @@ import assets.MessageLookup.{Summary => messages}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.business.address.Address
-import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
+import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IndividualSummary
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -42,8 +42,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
   val testIncomeSourceBoth: IncomeSourceModel = TestModels.testIncomeSourceBoth
-  val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
-  val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
   val testSummary: IndividualSummary = customTestSummary()
 
   def customTestSummary(incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,

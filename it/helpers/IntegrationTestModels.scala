@@ -9,7 +9,7 @@ import models._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.business.address.{Address, Country, ReturnedAddress}
-import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
+import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
@@ -55,8 +55,6 @@ object IntegrationTestModels {
     keystoreData(
       incomeSource = Some(Both),
       individualIncomeSource = Some(IncomeSourceModel(true, true)),
-      rentUkProperty = Some(testRentUkProperty_property_and_other),
-      areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
       matchTaxYear = Some(testMatchTaxYearNo),
       selectedTaxYear = Some(testAccountingYearCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
@@ -70,16 +68,12 @@ object IntegrationTestModels {
   lazy val fullKeystoreDataPropertyPost: Map[String, JsValue] =
     keystoreData(
       individualIncomeSource = Some(IncomeSourceModel(false, true)),
-      rentUkProperty = Some(testRentUkProperty_property_only),
-      areYouSelfEmployed = Some(testAreYouSelfEmployed_no),
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
 
   def keystoreData(incomeSource: Option[IncomeSourceType] = None,
                    individualIncomeSource: Option[IncomeSourceModel] = None,
-                   rentUkProperty: Option[RentUkPropertyModel] = None,
-                   areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -92,8 +86,6 @@ object IntegrationTestModels {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       individualIncomeSource.map(model => IndividualIncomeSource -> IncomeSourceModel.format.writes(model)) ++
-      rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
-      areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
@@ -112,12 +104,6 @@ object IntegrationTestModels {
 
   lazy val testIncomeSourceIndivProperty: IncomeSourceModel = IncomeSourceModel(false, true)
 
-  lazy val testRentUkProperty_no_property = RentUkPropertyModel(No, None)
-  lazy val testRentUkProperty_property_only = RentUkPropertyModel(Yes, Some(Yes))
-  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel(Yes, Some(No))
-
-  lazy val testAreYouSelfEmployed_yes = AreYouSelfEmployedModel(Yes)
-  lazy val testAreYouSelfEmployed_no = AreYouSelfEmployedModel(No)
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
 

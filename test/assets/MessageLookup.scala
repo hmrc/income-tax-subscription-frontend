@@ -91,20 +91,6 @@ object MessageLookup {
     val property = "Rent out a property in the UK"
   }
 
-  object RentUkProperty {
-    val title = "Do you rent out a UK property?"
-    val heading: String = title
-    val line_1 = "This includes if you use a letting agency."
-    val question = "Is this your only source of self-employed income?"
-    val yes = "Yes"
-    val no = "No"
-  }
-
-  object AreYouSelfEmployed {
-    val title = "Are you self-employed?"
-    val heading = "Are you self-employed?"
-    val para1 = "This does not include if your business is a limited company or partnership."
-  }
 
   object Property {
 
@@ -128,7 +114,7 @@ object MessageLookup {
     val heading: String = title
     val linkText = "Self Assessment tax return"
 
-    def para1(startDate: DateModel): String  = s"You can sign up and use software to record your income and expenses, but you can’t send any reports until ${startDate.toOutputDateFormat}."
+    def para1(startDate: DateModel): String = s"You can sign up and use software to record your income and expenses, but you can’t send any reports until ${startDate.toOutputDateFormat}."
 
     val para2 = s"You need to send a $linkText instead."
   }
@@ -148,7 +134,7 @@ object MessageLookup {
     val para1 = "You can sign up and use software to record your income and expenses, but you won’t be able to submit a report for:"
     val bullet1 = "property income until 6 April 2018"
 
-    def bullet2(startDate: DateModel): String  = s"sole trader income until ${startDate.toOutputDateFormat}"
+    def bullet2(startDate: DateModel): String = s"sole trader income until ${startDate.toOutputDateFormat}"
 
     val para2 = s"You need to $linkText instead."
   }
@@ -247,10 +233,6 @@ object MessageLookup {
     val ukProperty = "UK property"
     val accountingMethodProperty = "Accounting method for UK property income"
 
-    //can be deleted
-    val onlySourceOfIncome = "You only receive income from self-employment"
-    val areYouSelfEmployed = "You’re self-employed"
-    val rentUkProperty = "You rent out UK property"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -275,7 +257,7 @@ object MessageLookup {
     }
 
     object SelectedTaxYear {
-      def current(staringYear: Int, endYear: Int): String  = s"Current tax year ($staringYear to $endYear)"
+      def current(staringYear: Int, endYear: Int): String = s"Current tax year ($staringYear to $endYear)"
 
       def next(staringYear: Int, endYear: Int): String = s"Next tax year ($staringYear to $endYear)"
     }
@@ -311,7 +293,7 @@ object MessageLookup {
     val title = "You’ve been locked out"
     val heading = "You’ve been locked out"
 
-    def line1(testTime: String): String  = s"To sign up for quarterly reporting, you’ll have to try again in $testTime."
+    def line1(testTime: String): String = s"To sign up for quarterly reporting, you’ll have to try again in $testTime."
   }
 
   object UserDetails {
@@ -511,17 +493,6 @@ object MessageLookup {
       val invalid = "You must select an option to continue"
     }
 
-    object AreYouSelfEmployed {
-      val empty = "You must select an option to continue"
-      val invalid = "You must select an option to continue"
-    }
-
-    object RentUkProperty {
-      val emptyRentUkProperty = "Select yes if you rent out a UK property"
-      val invalidRentUkProperty = "Select yes if you rent out a UK property"
-      val emptyOnlyIncomeSource = "Select yes if this is your only source of self-employed income"
-      val invalidOnlyIncomeSource = "Select yes if this is your only source of self-employed income"
-    }
 
     object UnauthroisedAgent {
 
@@ -636,4 +607,5 @@ object MessageLookup {
 
     def conditionalDate4(year: String): String = s"5 April $year"
   }
+
 }

@@ -22,13 +22,13 @@ import auth.individual.{JourneyState, Registration, SignUp, UserMatching}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
-import forms.individual.incomesource.{AreYouSelfEmployedForm, IncomeSourceForm, RentUkPropertyForm}
+import forms.individual.incomesource.IncomeSourceForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
-import models.individual.incomesource.{AreYouSelfEmployedModel, IncomeSourceModel, RentUkPropertyModel}
+import models.individual.incomesource.IncomeSourceModel
 import models.usermatching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -146,19 +146,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def incomeSource(): WSResponse = get("/details/income-receive")
 
-    def rentUkProperty(): WSResponse = get("/rent-uk-property")
-
-    def areYouSelfEmployed(): WSResponse = get("/are-you-self-employed")
-
-    def submitAreYouSelfEmployed(inEditMode: Boolean, request: Option[AreYouSelfEmployedModel]): WSResponse = {
-      val uri = s"/are-you-self-employed?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AreYouSelfEmployedForm.areYouSelfEmployedForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def thankYou(): WSResponse = get("/thank-you")
 
@@ -249,15 +236,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def submitRentUkProperty(inEditMode: Boolean, request: Option[RentUkPropertyModel]): WSResponse = {
-      val uri = s"/rent-uk-property?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            RentUkPropertyForm.rentUkPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def confirmation(): WSResponse = get("/confirmation")
 
