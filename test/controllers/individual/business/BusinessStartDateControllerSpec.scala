@@ -27,6 +27,7 @@ import play.api.test.Helpers.{contentAsString, _}
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels.testBusinessStartDate
+import utilities.CacheConstants.BusinessStartDate
 
 import scala.concurrent.Future
 
@@ -91,7 +92,8 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.OK)
 
         await(result)
-        verifyKeystore(fetchBusinessStartDate = 1, saveBusinessStartDate = 0)
+        verifyKeystoreFetch(BusinessStartDate, 1)
+        verifyKeystoreSave(BusinessStartDate, 0)
 
       }
     }
@@ -112,7 +114,8 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
-        verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
+        verifyKeystoreFetch(BusinessStartDate, 0)
+        verifyKeystoreSave(BusinessStartDate, 1)
       }
 
     }
@@ -124,7 +127,8 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 0)
+        verifyKeystoreFetch(BusinessStartDate, 0)
+        verifyKeystoreSave(BusinessStartDate, 0)
       }
     }
 

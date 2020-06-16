@@ -59,28 +59,28 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
       setupMockLockCreated(escapedUserId)
       call(appConfig.matchingAttempts - 2).right.value shouldBe LockoutUpdate(NotLockedOut, appConfig.matchingAttempts - 1)
 
-      verifyKeystore(deleteAll = 0)
+      verifyKeyStoreDeleteAll(0)
     }
 
     "when counter exceeds max should return locked out, keystore should be cleared" in {
       setupMockLockCreated(escapedUserId)
       call(appConfig.matchingAttempts - 1).right.value shouldBe LockoutUpdate(testLockoutResponse, None)
 
-      verifyKeystore(deleteAll = 1)
+      verifyKeyStoreDeleteAll(1)
     }
 
     "return the error if create lock fails on bad request, should not clear keystore" in {
       setupMockLockFailureResponse(escapedUserId)
       call(appConfig.matchingAttempts - 1).left.value shouldBe LockoutStatusFailureResponse(BAD_REQUEST)
 
-      verifyKeystore(deleteAll = 0)
+      verifyKeyStoreDeleteAll(0)
     }
 
     "return the error if create lock throws an exception, should not clear keystore" in {
       setupMockLockException(escapedUserId)
       intercept[Exception](call(appConfig.matchingAttempts - 1)) shouldBe testException
 
-      verifyKeystore(deleteAll = 0)
+      verifyKeyStoreDeleteAll(0)
 
     }
   }

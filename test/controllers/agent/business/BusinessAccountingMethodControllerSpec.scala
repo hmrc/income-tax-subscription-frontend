@@ -20,13 +20,13 @@ import utilities.agent.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodForm
 import models.common.AccountingMethodModel
-import models.individual.business
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.{Both, Business}
 import models.{Cash, No, Yes, common}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utilities.CacheConstants.AccountingMethod
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
@@ -61,7 +61,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe OK
 
-        verifyKeystore(fetchAll = 1)
+        verifyKeyStoreFetchAll(1)
       }
       "the user has entered the answer previously" in new Test {
         mockFetchAllFromKeyStore(testCacheMap(
@@ -75,7 +75,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe OK
 
-        verifyKeystore(fetchAll = 1)
+        verifyKeyStoreFetchAll(1)
       }
     }
   }
@@ -94,7 +94,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe BAD_REQUEST
 
-        verifyKeystore(fetchAll = 1, saveAccountingMethod = 0)
+        verifyKeyStoreFetchAll(1)
+        verifyKeystoreSave(AccountingMethod, 0)
       }
     }
 
@@ -115,7 +116,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.PropertyAccountingMethodController.show().url)
 
-          verifyKeystore(fetchAll = 1, saveAccountingMethod = 1)
+          verifyKeyStoreFetchAll(1)
+          verifyKeystoreSave(AccountingMethod, 1)
         }
       }
 
@@ -136,7 +138,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-          verifyKeystore(fetchAll = 1, saveAccountingMethod = 1)
+          verifyKeyStoreFetchAll(1)
+          verifyKeystoreSave(AccountingMethod, 1)
         }
       }
 
@@ -158,7 +161,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-        verifyKeystore(fetchAll = 1, saveAccountingMethod = 1)
+        verifyKeyStoreFetchAll(1)
+        verifyKeystoreSave(AccountingMethod, 1)
       }
 
     }

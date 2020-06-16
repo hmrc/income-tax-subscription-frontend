@@ -75,7 +75,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
       status(result) must be(Status.OK)
       await(result).verifyStoredUserDetailsIs(None)(r)
 
-      verifyKeystore(deleteAll = 0)
+      verifyKeyStoreDeleteAll(0)
 
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
@@ -113,7 +113,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
             // the submitted details is now stored in session
             await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
-            verifyKeystore(deleteAll = 0)
+            verifyKeyStoreDeleteAll(0)
           }
 
         }
@@ -134,7 +134,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.usermatching.routes.ConfirmUserController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
-            verifyKeystore(deleteAll = 1)
+            verifyKeyStoreDeleteAll(1)
           }
 
         }
@@ -153,7 +153,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.usermatching.routes.ConfirmUserController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
-            verifyKeystore(deleteAll = 0)
+            verifyKeyStoreDeleteAll(0)
           }
 
         }
@@ -180,7 +180,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
           status(badResult) must be(Status.BAD_REQUEST)
 
           await(badResult).verifyStoredUserDetailsIs(None)(testRequest)
-          verifyKeystore(deleteAll = 0)
+          verifyKeyStoreDeleteAll(0)
         }
 
         "return HTML" in {

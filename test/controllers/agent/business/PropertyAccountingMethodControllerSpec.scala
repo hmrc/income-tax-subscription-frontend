@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
+import utilities.CacheConstants.PropertyAccountingMethod
 
 import scala.concurrent.Future
 
@@ -60,8 +61,9 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
-        verifyKeystore(fetchPropertyAccountingMethod = 1, savePropertyAccountingMethod = 0, fetchAll = 1)
-
+        verifyKeystoreFetch(PropertyAccountingMethod, 1)
+        verifyKeystoreSave(PropertyAccountingMethod, 0)
+        verifyKeyStoreFetchAll(1)
       }
     }
 
@@ -73,7 +75,9 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
-        verifyKeystore(fetchPropertyAccountingMethod = 1, savePropertyAccountingMethod = 0, fetchAll = 1)
+        verifyKeystoreFetch(PropertyAccountingMethod, 1)
+        verifyKeystoreSave(PropertyAccountingMethod, 0)
+        verifyKeyStoreFetchAll(1)
 
       }
     }
@@ -98,7 +102,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
+        verifyKeystoreSave(PropertyAccountingMethod, 1)
+        verifyKeyStoreFetchAll(0)
       }
 
       "redirect to CheckYourAnswer page" in {
@@ -109,7 +114,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
+        verifyKeystoreSave(PropertyAccountingMethod, 1)
+        verifyKeyStoreFetchAll(0)
       }
     }
 
@@ -122,7 +128,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
+        verifyKeystoreSave(PropertyAccountingMethod, 1)
+        verifyKeyStoreFetchAll(0)
       }
 
       "redirect to CheckYourAnswer page" in {
@@ -133,8 +140,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
-
+        verifyKeystoreSave(PropertyAccountingMethod, 1)
+        verifyKeyStoreFetchAll(0)
       }
     }
 
@@ -147,7 +154,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyKeystore(savePropertyAccountingMethod = 0, fetchAll = 1)
+        verifyKeystoreSave(PropertyAccountingMethod, 0)
+        verifyKeyStoreFetchAll(1)
       }
     }
 

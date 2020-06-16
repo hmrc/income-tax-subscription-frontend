@@ -135,7 +135,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifyKeystore(deleteAll = 0)
+            verifyKeyStoreDeleteAll(0)
           }
 
         }
@@ -156,7 +156,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifyKeystore(deleteAll = 1)
+            verifyKeyStoreDeleteAll(1)
           }
 
         }
@@ -175,7 +175,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifyKeystore(deleteAll = 0)
+            verifyKeyStoreDeleteAll(0)
           }
 
         }
@@ -205,7 +205,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
           // bad requests do not trigger a save
           await(badResult).verifyStoredUserDetailsIs(None)(userMatchingRequest)
-          verifyKeystore(deleteAll = 0)
+          verifyKeyStoreDeleteAll(0)
         }
 
         "return HTML" in {

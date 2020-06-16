@@ -59,7 +59,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       result.session(request).get(ITSASessionKeys.UTR) mustBe None
       result.session(request).get(ITSASessionKeys.NINO) mustBe None
 
-      verifyKeystore(deleteAll = 1)
+      verifyKeyStoreDeleteAll(1)
     }
 
 

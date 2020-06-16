@@ -20,6 +20,7 @@ import utilities.individual.TestConstants._
 import play.api.test.Helpers._
 import services.mocks.TestPaperlessPreferenceTokenService
 import utilities.UnitTestTrait
+import utilities.CacheConstants.PaperlessPreferenceToken
 
 class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperlessPreferenceTokenService {
   "storeNino" should {
@@ -30,7 +31,7 @@ class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperle
       val res = TestPaperlessPreferenceTokenService.storeNino(testNino)
 
       await(res) mustBe a[String]
-      verifyKeystore(savePaperlessPreferenceToken = 1)
+      verifyKeystoreSave(PaperlessPreferenceToken, 1)
     }
 
     "do not store the token when it is already present in keystore" in {

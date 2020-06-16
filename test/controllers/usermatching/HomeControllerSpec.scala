@@ -28,6 +28,7 @@ import services.mocks.{MockCitizenDetailsService, MockGetEligibilityStatusServic
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants
+import utilities.CacheConstants.MtditId
 
 import scala.concurrent.Future
 
@@ -90,7 +91,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim().url
 
-          verifyKeystore(saveSubscriptionId = 1)
+          verifyKeystoreSave(MtditId, 1)
         }
       }
       "the user does not already have an MTDIT subscription on ETMP" when {
@@ -195,7 +196,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim().url
 
-          verifyKeystore(saveSubscriptionId = 1)
+          verifyKeystoreSave(MtditId, 1)
         }
       }
       "the user does not already have an MTDIT subscription on ETMP" when {

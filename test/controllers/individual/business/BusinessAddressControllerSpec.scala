@@ -29,6 +29,7 @@ import services.individual.mocks.MockAddressLookupService
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.ITSASessionKeys
+import utilities.CacheConstants.BusinessAddress
 
 import scala.concurrent.Future
 
@@ -102,7 +103,8 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
             redirectLocation(result) mustBe Some(controllers.individual.business.routes.BusinessAddressController.init().url)
 
             await(result)
-            verifyKeystore(fetchBusinessAddress = 1, saveBusinessAddress = 0)
+            verifyKeystoreFetch(BusinessAddress, 1)
+            verifyKeystoreSave(BusinessAddress, 0)
           }
 
           "There is an address in keystore" in {
@@ -112,7 +114,8 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
             status(result) mustBe OK
             await(result)
-            verifyKeystore(fetchBusinessAddress = 1, saveBusinessAddress = 0)
+            verifyKeystoreFetch(BusinessAddress, 1)
+            verifyKeystoreSave(BusinessAddress, 0)
           }
         }
       }
@@ -182,7 +185,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
               else
                 redirectLocation(result).get mustBe controllers.individual.business.routes.BusinessStartDateController.show().url
 
-              verifyKeystore(saveBusinessAddress = 1)
+              verifyKeystoreSave(BusinessAddress, 1)
             }
           }
         }
@@ -196,7 +199,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
           }
           ex.message mustBe s"BusinessAddressController.callBack failed unexpectedly, status=$BAD_REQUEST"
 
-          verifyKeystore(saveBusinessAddress = 0)
+          verifyKeystoreSave(BusinessAddress, 0)
         }
       }
 
@@ -209,7 +212,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
           status(result) mustBe NOT_IMPLEMENTED
 
-          verifyKeystore(saveBusinessAddress = 0)
+          verifyKeystoreSave(BusinessAddress, 0)
         }
       }
 

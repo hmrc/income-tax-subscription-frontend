@@ -25,6 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utilities.CacheConstants._
 import utilities.TestModels._
 
 import scala.concurrent.Future
@@ -53,7 +54,9 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchAccountingMethod = 1, saveAccountingMethod = 0, fetchAll = 1)
+      verifyKeystoreFetch(AccountingMethod, 1)
+      verifyKeystoreSave(AccountingMethod, 0)
+      verifyKeyStoreFetchAll(1)
     }
   }
 
@@ -72,7 +75,9 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchAll = 0, saveAccountingMethod = 1)
+
+        verifyKeystoreSave(AccountingMethod, 1)
+        verifyKeyStoreFetchAll(0)
       }
 
     }
@@ -86,7 +91,8 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchAll = 0, saveAccountingMethod = 1)
+        verifyKeystoreSave(AccountingMethod, 1)
+        verifyKeyStoreFetchAll(0)
       }
 
       s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
@@ -97,7 +103,8 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchAll = 0, saveAccountingMethod = 1)
+        verifyKeystoreSave(AccountingMethod, 1)
+        verifyKeyStoreFetchAll(0)
       }
     }
   }
@@ -112,7 +119,8 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(saveAccountingMethod = 0, fetchAll = 1)
+      verifyKeystoreSave(AccountingMethod, 0)
+      verifyKeyStoreFetchAll(1)
     }
   }
 
