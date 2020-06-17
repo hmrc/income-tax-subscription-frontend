@@ -229,7 +229,7 @@ object MessageLookup {
     val heading: String = title
     val heading_hidden = "before signing up"
     val income_source = "Income received from"
-    val selfEmployment = "Self employment"
+    val selfEmployment = "Self-employment"
     val ukProperty = "UK property"
     val accountingMethodProperty = "Accounting method for UK property income"
 
