@@ -29,6 +29,7 @@ import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 import utilities.ITSASessionKeys
+import utilities.CacheConstants.BusinessPhoneNumber
 
 import scala.concurrent.Future
 
@@ -91,7 +92,8 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.OK)
 
         await(result)
-        verifyKeystore(fetchBusinessPhoneNumber = 1, saveBusinessPhoneNumber = 0)
+        verifyKeystoreFetch(BusinessPhoneNumber, 1)
+        verifyKeystoreSave(BusinessPhoneNumber, 0)
 
       }
     }
@@ -113,7 +115,8 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
           status(goodRequest) must be(Status.SEE_OTHER)
 
           await(goodRequest)
-          verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+          verifyKeystoreFetch(BusinessPhoneNumber, 0)
+          verifyKeystoreSave(BusinessPhoneNumber, 1)
         }
 
         s"redirect to '${controllers.individual.business.routes.BusinessAddressController.show().url}'" in {
@@ -124,7 +127,8 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.BusinessAddressController.show().url)
 
           await(goodRequest)
-          verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+          verifyKeystoreFetch(BusinessPhoneNumber, 0)
+          verifyKeystoreSave(BusinessPhoneNumber, 1)
         }
       }
 
@@ -137,7 +141,8 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
           status(goodRequest) must be(Status.SEE_OTHER)
 
           await(goodRequest)
-          verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+          verifyKeystoreFetch(BusinessPhoneNumber, 0)
+          verifyKeystoreSave(BusinessPhoneNumber, 1)
         }
 
         s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
@@ -148,7 +153,8 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
           redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
           await(goodRequest)
-          verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+          verifyKeystoreFetch(BusinessPhoneNumber, 0)
+          verifyKeystoreSave(BusinessPhoneNumber, 1)
         }
       }
     }
@@ -160,7 +166,8 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 0)
+        verifyKeystoreFetch(BusinessPhoneNumber, 0)
+        verifyKeystoreSave(BusinessPhoneNumber, 0)
       }
     }
 

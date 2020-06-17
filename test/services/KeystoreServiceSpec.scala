@@ -24,6 +24,7 @@ import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import utilities.CacheConstants.BusinessName
 import utilities.{TestModels, UnitTestTrait}
 
 class KeystoreServiceSpec extends UnitTestTrait
@@ -59,10 +60,8 @@ class KeystoreServiceSpec extends UnitTestTrait
 
       businessName shouldBe Some(testBusinessName)
 
-      verifyKeystore(
-        fetchBusinessName = 1,
-        saveBusinessName = 1
-      )
+      verifyKeystoreFetch(BusinessName, 1)
+      verifyKeystoreSave(BusinessName, 1)
     }
 
     "configure and verify fetch all as specified" in {
@@ -72,7 +71,7 @@ class KeystoreServiceSpec extends UnitTestTrait
       val fetched = await(TestKeystore.keystoreService.fetchAll())
       fetched shouldBe testFetchAll
 
-      verifyKeystore(fetchAll = 1)
+      verifyKeyStoreFetchAll(1)
     }
 
     "configure and verify remove all as specified" in {
@@ -80,7 +79,7 @@ class KeystoreServiceSpec extends UnitTestTrait
       mockDeleteAllFromKeyStore(testDeleteAll)
 
       val response = await(TestKeystore.keystoreService.deleteAll())
-      verifyKeystore(deleteAll = 1)
+      verifyKeyStoreDeleteAll(1)
     }
 
   }

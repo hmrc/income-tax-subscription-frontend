@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import services.mocks.MockAccountingPeriodService
+import utilities.CacheConstants.SelectedTaxYear
 
 import scala.concurrent.Future
 
@@ -56,7 +57,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) must be(Status.OK)
 
-        verifyKeystore(fetchSelectedTaxYear = 1)
+        verifyKeystoreFetch(SelectedTaxYear, 1)
 
       }
     }
@@ -70,7 +71,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) must be(Status.OK)
 
-        verifyKeystore(fetchSelectedTaxYear = 1)
+        verifyKeystoreFetch(SelectedTaxYear, 1)
 
       }
     }
@@ -95,7 +96,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(saveSelectedTaxYear = 1)
+        verifyKeystoreSave(SelectedTaxYear, 1)
       }
 
       "redirect to business accounting period page" in {
@@ -106,7 +107,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifyKeystore(saveSelectedTaxYear = 1)
+        verifyKeystoreSave(SelectedTaxYear, 1)
       }
 
     }
@@ -120,7 +121,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(saveSelectedTaxYear = 1)
+        verifyKeystoreSave(SelectedTaxYear, 1)
       }
 
       "redirect to checkYourAnswer page" in {
@@ -131,7 +132,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(saveSelectedTaxYear = 1)
+        verifyKeystoreSave(SelectedTaxYear, 1)
 
       }
     }

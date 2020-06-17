@@ -19,12 +19,12 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import forms.individual.business.BusinessNameForm
 import models.common.BusinessNameModel
-import models.individual.subscription.Business
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utilities.TestModels._
+import utilities.CacheConstants.BusinessName
 
 import scala.concurrent.Future
 
@@ -51,7 +51,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchBusinessName = 1, saveBusinessName = 0)
+      verifyKeystoreFetch(BusinessName, 1)
+      verifyKeystoreSave(BusinessName, 0)
 
     }
   }
@@ -74,7 +75,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystoreFetch(BusinessName, 0)
+        verifyKeystoreSave(BusinessName, 1)
       }
     }
 
@@ -90,7 +92,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
 
           await(goodRequest)
-          verifyKeystore(fetchAll = 1, saveBusinessName = 1)
+          verifyKeyStoreFetchAll(1)
+          verifyKeystoreSave(BusinessName, 1)
         }
       }
     }
@@ -115,7 +118,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.BusinessPhoneNumberController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystoreFetch(BusinessName, 0)
+        verifyKeystoreSave(BusinessName, 1)
       }
     }
 
@@ -129,7 +133,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystoreFetch(BusinessName, 0)
+        verifyKeystoreSave(BusinessName, 1)
       }
     }
   }
@@ -141,7 +146,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchBusinessName = 0, saveBusinessName = 0)
+      verifyKeystoreFetch(BusinessName, 0)
+      verifyKeystoreSave(BusinessName, 0)
     }
   }
 

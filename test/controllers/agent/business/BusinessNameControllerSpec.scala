@@ -25,6 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utilities.CacheConstants.BusinessName
 
 import scala.concurrent.Future
 
@@ -65,7 +66,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchBusinessName = 1, saveBusinessName = 0)
+      verifyKeystoreSave(BusinessName, 0)
+      verifyKeystoreFetch(BusinessName, 1)
 
     }
   }
@@ -88,7 +90,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.MatchTaxYearController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystoreFetch(BusinessName, 0)
+        verifyKeystoreSave(BusinessName, 1)
       }
 
     }
@@ -102,7 +105,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystoreFetch(BusinessName, 0)
+        verifyKeystoreSave(BusinessName, 1)
       }
 
       s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}'" in {
@@ -113,7 +117,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystoreFetch(BusinessName, 0)
+        verifyKeystoreSave(BusinessName, 1)
       }
     }
   }

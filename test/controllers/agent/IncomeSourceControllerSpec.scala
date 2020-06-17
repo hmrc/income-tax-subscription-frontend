@@ -23,6 +23,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utilities.CacheConstants.IncomeSource
 import utilities.agent.TestModels
 
 import scala.concurrent.Future
@@ -51,7 +52,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
+      verifyKeystoreFetch(IncomeSource, 1)
+      verifyKeystoreSave(IncomeSource, 0)
     }
   }
 
@@ -72,7 +74,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+            verifyKeystoreFetch(IncomeSource, 0)
+            verifyKeystoreSave(IncomeSource, 1)
           }
           "the income source is both" in {
             setupMockKeystoreSaveFunctions()
@@ -82,7 +85,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+            verifyKeystoreFetch(IncomeSource, 0)
+            verifyKeystoreSave(IncomeSource, 1)
           }
         }
         "in edit mode" when {
@@ -95,7 +99,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
+            verifyKeystoreFetch(IncomeSource, 1)
+            verifyKeystoreSave(IncomeSource, 1)
           }
         }
       }
@@ -140,7 +145,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
             await(goodRequest)
-            verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+            verifyKeystoreFetch(IncomeSource, 0)
+            verifyKeystoreSave(IncomeSource, 1)
           }
         }
 
@@ -153,7 +159,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+          verifyKeystoreFetch(IncomeSource, 0)
+          verifyKeystoreSave(IncomeSource, 1)
         }
       }
 
@@ -167,7 +174,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
+          verifyKeystoreFetch(IncomeSource, 1)
+          verifyKeystoreSave(IncomeSource, 0)
         }
 
         s"return a SEE OTHER (303) for property and goto ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
@@ -179,7 +187,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
+          verifyKeystoreFetch(IncomeSource, 1)
+          verifyKeystoreSave(IncomeSource, 0)
         }
 
         s"return a SEE OTHER (303) for both and goto ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
@@ -191,7 +200,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
+          verifyKeystoreFetch(IncomeSource, 1)
+          verifyKeystoreSave(IncomeSource, 0)
         }
       }
 
@@ -206,7 +216,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
+          verifyKeystoreFetch(IncomeSource, 1)
+          verifyKeystoreSave(IncomeSource, 1)
         }
 
         s"return a SEE OTHER (303) for property and goto ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" in {
@@ -219,7 +230,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
+          verifyKeystoreFetch(IncomeSource, 1)
+          verifyKeystoreSave(IncomeSource, 1)
         }
 
         s"return a SEE OTHER (303) for both and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
@@ -232,7 +244,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
+          verifyKeystoreFetch(IncomeSource, 1)
+          verifyKeystoreSave(IncomeSource, 1)
         }
       }
     }
@@ -245,7 +258,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 0)
+      verifyKeystoreFetch(IncomeSource, 0)
+      verifyKeystoreSave(IncomeSource, 0)
     }
   }
 

@@ -25,6 +25,7 @@ import services.agent.mocks._
 import services.mocks._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.InternalServerException
+import utilities.CacheConstants.MtditId
 import utilities.CacheUtil._
 import utilities.agent.TestConstants.{testNino, _}
 import utilities.agent.TestModels
@@ -112,7 +113,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
-          verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
+          verifyKeystoreSave(MtditId, 1)
+          verifyKeyStoreFetchAll(1)
         }
 
         s"redirect to '${controllers.agent.routes.ConfirmationController.show().url}'" in {
@@ -133,7 +135,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
           ex.message mustBe "Successful response not received from submission"
-          verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+          verifyKeystoreSave(MtditId, 0)
+          verifyKeyStoreFetchAll(1)
         }
         "return a failure if create client relationship fails" ignore {
           val request = authorisedAgentRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
@@ -143,7 +146,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
           val ex = intercept[InternalServerException](await(call(request)))
           ex.message mustBe "Failed to create client relationship"
-          verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+          verifyKeystoreSave(MtditId, 0)
+          verifyKeyStoreFetchAll(1)
         }
       }
     }

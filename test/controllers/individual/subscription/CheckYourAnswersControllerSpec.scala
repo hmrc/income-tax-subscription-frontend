@@ -26,6 +26,7 @@ import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.CacheUtil._
+import utilities.CacheConstants.MtditId
 import utilities.TestModels._
 import utilities.individual.TestConstants._
 
@@ -92,7 +93,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
         status(result) must be(Status.SEE_OTHER)
         await(result)
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
+        verifyKeystoreSave(MtditId, 1)
+        verifyKeyStoreFetchAll(1)
       }
 
       s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
@@ -107,7 +109,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromKeyStore(testCacheMap)
         mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary())
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+        verifyKeyStoreFetchAll(1)
+        verifyKeystoreSave(MtditId, 0)
       }
     }
 

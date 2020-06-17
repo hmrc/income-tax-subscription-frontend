@@ -49,11 +49,11 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
     when(MockKeystoreService.session.fetchAndGetEntry[T](ArgumentMatchers.eq(key))(
       ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(config)
 
-  private final def verifyKeystoreFetch[T](key: String, someCount: Option[Int]): Unit =
+  protected final def verifyKeystoreFetch[T](key: String, someCount: Option[Int]): Unit =
     someCount map (count => verify(MockKeystoreService.session, times(count)).fetchAndGetEntry[T](ArgumentMatchers.eq(key))(
       ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
 
-  private final def verifyKeystoreSave[T](key: String, someCount: Option[Int]): Unit =
+  protected final def verifyKeystoreSave[T](key: String, someCount: Option[Int]): Unit =
     someCount map (count => verify(MockKeystoreService.session, times(count)).cache[T](ArgumentMatchers.eq(key), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
 
@@ -125,69 +125,11 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(deleteAll)
   }
 
-  protected final def verifyKeystore(
-                                      fetchIncomeSource: Option[Int] = None,
-                                      saveIncomeSource: Option[Int] = None,
-                                      fetchIndividualIncomeSource: Option[Int] = None,
-                                      saveIndividualIncomeSource: Option[Int] = None,
-                                      fetchRentUkProperty: Option[Int] = None,
-                                      saveRentUkProperty: Option[Int] = None,
-                                      fetchAreYouSelfEmployed: Option[Int] = None,
-                                      saveAreYouSelfEmployed: Option[Int] = None,
-                                      fetchBusinessName: Option[Int] = None,
-                                      saveBusinessName: Option[Int] = None,
-                                      fetchBusinessPhoneNumber: Option[Int] = None,
-                                      saveBusinessPhoneNumber: Option[Int] = None,
-                                      fetchBusinessAddress: Option[Int] = None,
-                                      saveBusinessAddress: Option[Int] = None,
-                                      fetchMatchTaxYear: Option[Int] = None,
-                                      saveMatchTaxYear: Option[Int] = None,
-                                      fetchSelectedTaxYear: Option[Int] = None,
-                                      saveSelectedTaxYear: Option[Int] = None,
-                                      fetchBusinessStartDate: Option[Int] = None,
-                                      saveBusinessStartDate: Option[Int] = None,
-                                      fetchAccountingPeriodDate: Option[Int] = None,
-                                      saveAccountingPeriodDate: Option[Int] = None,
-                                      fetchAccountingMethod: Option[Int] = None,
-                                      saveAccountingMethod: Option[Int] = None,
-                                      fetchPropertyAccountingMethod: Option[Int] = None,
-                                      savePropertyAccountingMethod: Option[Int] = None,
-                                      fetchSubscriptionId: Option[Int] = None,
-                                      saveSubscriptionId: Option[Int] = None,
-                                      fetchPaperlessPreferenceToken: Option[Int] = None,
-                                      savePaperlessPreferenceToken: Option[Int] = None,
-                                      fetchAll: Option[Int] = None,
-                                      deleteAll: Option[Int] = None
-                                    ): Unit = {
-    verifyKeystoreFetch(IncomeSource, fetchIncomeSource)
-    verifyKeystoreSave(IncomeSource, saveIncomeSource)
-    verifyKeystoreFetch(IndividualIncomeSource, fetchIndividualIncomeSource)
-    verifyKeystoreSave(IndividualIncomeSource, saveIndividualIncomeSource)
-    verifyKeystoreFetch(BusinessName, fetchBusinessName)
-    verifyKeystoreSave(BusinessName, saveBusinessName)
-    verifyKeystoreFetch(BusinessPhoneNumber, fetchBusinessPhoneNumber)
-    verifyKeystoreSave(BusinessPhoneNumber, saveBusinessPhoneNumber)
-    verifyKeystoreFetch(BusinessAddress, fetchBusinessAddress)
-    verifyKeystoreSave(BusinessAddress, saveBusinessAddress)
-    verifyKeystoreFetch(BusinessStartDate, fetchBusinessStartDate)
-    verifyKeystoreSave(BusinessStartDate, saveBusinessStartDate)
-    verifyKeystoreFetch(MatchTaxYear, fetchMatchTaxYear)
-    verifyKeystoreSave(MatchTaxYear, saveMatchTaxYear)
-    verifyKeystoreFetch(SelectedTaxYear, fetchSelectedTaxYear)
-    verifyKeystoreSave(SelectedTaxYear, saveSelectedTaxYear)
-    verifyKeystoreFetch(AccountingPeriodDate, fetchAccountingPeriodDate)
-    verifyKeystoreSave(AccountingPeriodDate, saveAccountingPeriodDate)
-    verifyKeystoreFetch(AccountingMethod, fetchAccountingMethod)
-    verifyKeystoreSave(AccountingMethod, saveAccountingMethod)
-    verifyKeystoreFetch(PropertyAccountingMethod, fetchPropertyAccountingMethod)
-    verifyKeystoreSave(PropertyAccountingMethod, savePropertyAccountingMethod)
-    verifyKeystoreFetch(MtditId, fetchSubscriptionId)
-    verifyKeystoreSave(MtditId, saveSubscriptionId)
-    verifyKeystoreFetch(PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
-    verifyKeystoreSave(PaperlessPreferenceToken, savePaperlessPreferenceToken)
-
+  protected final def verifyKeyStoreFetchAll(fetchAll: Option[Int]): Unit = {
     fetchAll map (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any(), ArgumentMatchers.any()))
-    deleteAll map (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any(), ArgumentMatchers.any()))
   }
 
+  protected final def verifyKeyStoreDeleteAll(deleteAll: Option[Int]): Unit = {
+    deleteAll map (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any(), ArgumentMatchers.any()))
+  }
 }

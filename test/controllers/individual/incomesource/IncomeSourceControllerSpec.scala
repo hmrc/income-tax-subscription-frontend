@@ -16,7 +16,6 @@
 
 package controllers.individual.incomesource
 
-import assets.MessageLookup.IndividualIncomeSource
 import config.MockConfig
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
@@ -27,6 +26,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utilities.CacheConstants.IndividualIncomeSource
 
 import scala.concurrent.Future
 
@@ -67,7 +67,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.OK)
 
         await(result)
-        verifyKeystore(fetchIndividualIncomeSource = 1, saveIndividualIncomeSource = 0)
+        verifyKeystoreFetch(IndividualIncomeSource, 1)
+        verifyKeystoreSave(IndividualIncomeSource, 0)
       }
     }
 
@@ -93,7 +94,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
 
         await(goodRequest)
-        verifyKeystore(fetchIndividualIncomeSource = 0, saveIndividualIncomeSource = 1)
+        verifyKeystoreFetch(IndividualIncomeSource, 0)
+        verifyKeystoreSave(IndividualIncomeSource, 1)
       }
 
       s"return a SEE_OTHER (303) when self-employed is NOT checked and rent uk propery is checked" in {
@@ -105,7 +107,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.PropertyAccountingMethodController.show().url
 
         await(goodRequest)
-        verifyKeystore(fetchIndividualIncomeSource = 0, saveIndividualIncomeSource = 1)
+        verifyKeystoreFetch(IndividualIncomeSource, 0)
+        verifyKeystoreSave(IndividualIncomeSource, 1)
       }
 
 
@@ -119,7 +122,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           redirectLocation(goodRequest).get must be(controllers.individual.business.routes.BusinessNameController.show().url)
 
           await(goodRequest)
-          verifyKeystore(fetchIndividualIncomeSource = 0, saveIndividualIncomeSource = 1)
+          verifyKeystoreFetch(IndividualIncomeSource, 0)
+          verifyKeystoreSave(IndividualIncomeSource, 1)
         }
       }
 
@@ -134,7 +138,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIndividualIncomeSource = 1, saveIndividualIncomeSource = 0)
+          verifyKeystoreFetch(IndividualIncomeSource, 1)
+          verifyKeystoreSave(IndividualIncomeSource, 0)
         }
       }
 
@@ -149,7 +154,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.PropertyAccountingMethodController.show().url
 
           await(goodRequest)
-          verifyKeystore(fetchIndividualIncomeSource = 1, saveIndividualIncomeSource = 1)
+          verifyKeystoreFetch(IndividualIncomeSource, 1)
+          verifyKeystoreSave(IndividualIncomeSource, 1)
         }
       }
     }
@@ -161,7 +167,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyKeystore(fetchIndividualIncomeSource = 0, saveIndividualIncomeSource = 0)
+        verifyKeystoreFetch(IndividualIncomeSource, 0)
+        verifyKeystoreSave(IndividualIncomeSource, 0)
       }
     }
 

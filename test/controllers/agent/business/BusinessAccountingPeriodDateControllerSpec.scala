@@ -29,6 +29,7 @@ import services.mocks.MockKeystoreService
 import services.mocks.MockAccountingPeriodService
 import utilities.{CurrentDateProvider, TestModels}
 import utilities.agent.TestConstants
+import utilities.CacheConstants.AccountingPeriodDate
 
 import scala.concurrent.Future
 
@@ -56,7 +57,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
       lazy val result = await(TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest))
 
       status(result) mustBe OK
-      verifyKeystore(fetchAccountingPeriodDate = 1)
+      verifyKeystoreFetch(AccountingPeriodDate, 1)
 
       val document = Jsoup.parse(contentAsString(result))
       document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading
@@ -103,7 +104,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
           status(goodRequest) mustBe SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
-          verifyKeystore(saveAccountingPeriodDate = 1)
+          verifyKeystoreSave(AccountingPeriodDate, 1)
         }
       }
       "the tax year changed" should {
@@ -120,7 +121,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
           status(goodRequest) mustBe SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
-          verifyKeystore(saveAccountingPeriodDate = 1)
+          verifyKeystoreSave(AccountingPeriodDate, 1)
         }
       }
     }
@@ -137,7 +138,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
-        verifyKeystore(saveAccountingPeriodDate = 1)
+        verifyKeystoreSave(AccountingPeriodDate, 1)
       }
     }
   }
@@ -150,7 +151,8 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
       mockFetchIncomeSourceFromKeyStore(testIncomeSourceBusiness)
 
       status(badrequest) mustBe BAD_REQUEST
-      verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
+      verifyKeystoreSave(AccountingPeriodDate, 0)
+      verifyKeystoreFetch(AccountingPeriodDate, 0)
     }
   }
 
