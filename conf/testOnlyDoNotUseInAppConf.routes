@@ -9,31 +9,31 @@
 
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                              testonly.controllers.individual.MatchingStubController.show
 
-# NOCSRF
++ nocsrf
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                              testonly.controllers.individual.MatchingStubController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts                        testonly.controllers.individual.KnownFactsController.show
 
-# NOCSRF
++ nocsrf
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts                        testonly.controllers.individual.KnownFactsController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences                      testonly.controllers.individual.ClearPreferencesController.clear
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences-for                  testonly.controllers.individual.ClearPreferencesController.show
-# NOCSRF
++ nocsrf
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences-for                  testonly.controllers.individual.ClearPreferencesController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/auth-update                            testonly.controllers.individual.AuthUpdateController.update
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-lockout                          testonly.controllers.individual.ResetUserLockoutController.resetLockout
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch                         testonly.controllers.FeatureSwitchController.show
 
-# NOCSRF
++ nocsrf
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch                         testonly.controllers.FeatureSwitchController.submit
 
-# NOCSRF
++ nocsrf
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/preferences-token                      testonly.controllers.individual.PreferenceTokenController.addToken()
 
 
 
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     testonly.controllers.agent.MatchingStubController.show
 
-# NOCSRF
++ nocsrf
 POST        /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     testonly.controllers.agent.MatchingStubController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-user                      testonly.controllers.agent.ResetUserController.resetUser
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-lockout                   testonly.controllers.agent.ResetAgentLockoutController.resetLockout
