@@ -16,8 +16,6 @@
 
 package controllers.usermatching
 
-import config.featureswitch
-import config.featureswitch.FeatureSwitching
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
@@ -181,69 +179,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       }
     }
   }
-
 }
 
-class HomeControllerRegEnabledISpec extends ComponentSpecBase with FeatureSwitching {
 
-  enable(featureswitch.RegistrationFeature)
 
-  "GET /report-quarterly/income-and-expenses/sign-up/index" when {
-    "the user both nino and utr enrolments" when {
-      "the user does not have a subscription" should {
-        "redirect to the preferences page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
-          SubscriptionStub.stubGetNoSubscription()
-          EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a SEE OTHER and re-direct to the preferences page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(preferencesURI)
-          )
-        }
-      }
-      "the subscription call fails" should {
-        "return an internal server error" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
-          SubscriptionStub.stubGetSubscriptionFail()
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
-            httpStatus(INTERNAL_SERVER_ERROR)
-          )
-        }
-      }
-    }
-    "the user only has a nino in enrolment" when {
-      "the user does not have a subscription" should {
-        "redirect to the preferences page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthNoUtr()
-          SubscriptionStub.stubGetNoSubscription()
-          CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
-          EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a SEE OTHER and re-direct to the preferences page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(preferencesURI)
-          )
-        }
-      }
-    }
-  }
-}

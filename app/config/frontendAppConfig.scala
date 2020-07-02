@@ -61,8 +61,6 @@ trait AppConfig extends FeatureSwitching {
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
 
-  def enableRegistration: Boolean
-
   def storeNinoUrl(token: String): String
 
   def getAllocatedEnrolmentUrl(utr: String): String
@@ -202,8 +200,6 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val matchingLockOutSeconds: Int = config.getString("lockout.lockOutSeconds").toInt
 
   override lazy val authenticatorUrl: String = config.baseUrl("authenticator")
-
-  override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
 
   override lazy val addressLookupFrontendURL: String = config.baseUrl("address-lookup-frontend")
 

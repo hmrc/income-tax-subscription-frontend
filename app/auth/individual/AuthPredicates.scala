@@ -66,17 +66,13 @@ trait AuthPredicates extends Results {
       case _ => Left(Future.successful(wrongAffinity))
     }
 
-  val registrationJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.session.isInState(Registration)) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
   val signUpJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.session.isInState(Registration) || request.session.isInState(SignUp))
+    if (request.session.isInState(SignUp))
       Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   val preferencesJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.session.isInState(Registration) || request.session.isInState(SignUp)
+    if (request.session.isInState(SignUp)
       || request.session.isInState(ConfirmAgentSubscription))
       Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
@@ -88,12 +84,6 @@ trait AuthPredicates extends Results {
   val administratorRolePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (!user.isAssistant) Right(AuthPredicateSuccess)
     else Left(Future.successful(cannotUseServiceRoute))
-
-  lazy val goToIv: Result = Redirect(controllers.individual.routes.IdentityVerificationController.gotoIV())
-
-  val ivPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
-    else Right(AuthPredicateSuccess)
 
   val confirmedAgentPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)
@@ -107,15 +97,12 @@ trait AuthPredicates extends Results {
     timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate
 
   val subscriptionPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
-    defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| ivPredicate
-
-  val registrationPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
-    defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
+    defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
 
   val enrolledPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate
 
   val preferencesPredicate: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
-    defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate |+| ivPredicate
+    defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate
 
 }
 

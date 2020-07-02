@@ -100,45 +100,6 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
 
   }
 
-  "Calling the submit action of the BusinessNameController with an authorised user on the registration journey and valid submission" should {
-
-    def callShow(isEditMode: Boolean): Future[Result] =
-      TestBusinessNameController.submit(isEditMode = isEditMode)(
-        registrationRequest
-          .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
-      )
-
-    "When it is not in edit mode" should {
-      s"return a redirect status (SEE_OTHER - 303) redirect to '${controllers.individual.business.routes.BusinessPhoneNumberController.show().url}'" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.BusinessPhoneNumberController.show().url)
-
-        await(goodRequest)
-        verifyKeystoreFetch(BusinessName, 0)
-        verifyKeystoreSave(BusinessName, 1)
-      }
-    }
-
-    "When it is in edit mode" should {
-      s"return a redirect status (SEE_OTHER - 303) redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-
-        await(goodRequest)
-        verifyKeystoreFetch(BusinessName, 0)
-        verifyKeystoreSave(BusinessName, 1)
-      }
-    }
-  }
-
   "Calling the submit action of the BusinessNameController with an authorised user and invalid submission" should {
     lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
 

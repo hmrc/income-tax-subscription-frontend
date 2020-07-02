@@ -40,10 +40,6 @@ object SignUp extends JourneyState {
   override val name: String = "signUp"
 }
 
-object Registration extends JourneyState {
-  override val name: String = "registration"
-}
-
 object UserMatched extends JourneyState {
   override val name: String = "userMatched"
 }

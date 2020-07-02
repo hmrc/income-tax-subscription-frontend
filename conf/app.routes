@@ -37,14 +37,9 @@ GET         /register-for-SA                            controllers.usermatching
 # Affinity Group Error
 GET         /error/affinity-group                       controllers.usermatching.AffinityGroupErrorController.show
 
-# IV Error
-GET         /error/iv-failed                            controllers.individual.IdentityVerificationController.ivFailed
-
 # Claim Subscription
 GET         /claim-subscription                         controllers.individual.subscription.ClaimSubscriptionController.claim
 
-# IV
-GET         /iv                                         controllers.individual.IdentityVerificationController.gotoIV
 
 # User Matching
 GET         /user-details                               controllers.usermatching.UserDetailsController.show(editMode: Boolean ?= false)
@@ -85,23 +80,9 @@ POST        /business/what-year-to-sign-up              controllers.individual.b
 GET         /business/name                              controllers.individual.business.BusinessNameController.show(editMode: Boolean ?= false)
 POST        /business/name                              controllers.individual.business.BusinessNameController.submit(editMode: Boolean ?= false)
 
-#Phone Number Routes
-GET         /business/phone-number                      controllers.individual.business.BusinessPhoneNumberController.show(editMode: Boolean ?= false)
-POST        /business/phone-number                      controllers.individual.business.BusinessPhoneNumberController.submit(editMode: Boolean ?= false)
-
-#Start Date Routes
-GET         /business/start-date                        controllers.individual.business.BusinessStartDateController.show(editMode: Boolean ?= false)
-POST        /business/start-date                        controllers.individual.business.BusinessStartDateController.submit(editMode: Boolean ?= false)
-
 #Income Type Routes
 GET         /business/accounting-method                 controllers.individual.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/accounting-method                 controllers.individual.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
 
 GET         /business/accounting-method-property        controllers.individual.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/accounting-method-property        controllers.individual.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
-
-GET         /business/address                           controllers.individual.business.BusinessAddressController.show(editMode: Boolean ?= false)
-POST        /business/address                           controllers.individual.business.BusinessAddressController.submit(editMode: Boolean ?= false)
-GET         /business/address/init                      controllers.individual.business.BusinessAddressController.init(editMode: Boolean ?= false)
-GET         /business/address/callback                  controllers.individual.business.BusinessAddressController.callBack(editMode: Boolean = false, id: String)
-GET         /business/address/callback/edit             controllers.individual.business.BusinessAddressController.callBack(editMode: Boolean = true, id: String)

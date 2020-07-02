@@ -18,7 +18,6 @@ package models.individual.subscription
 
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
-import models.individual.business.address.Address
 import models.individual.incomesource.IncomeSourceModel
 
 
@@ -34,12 +33,6 @@ sealed trait SummaryModel {
 
   def businessName: Option[BusinessNameModel]
 
-  def businessPhoneNumber: Option[BusinessPhoneNumberModel]
-
-  def businessAddress: Option[Address]
-
-  def businessStartDate: Option[BusinessStartDateModel]
-
   def selectedTaxYear: Option[AccountingYearModel]
 
   def accountingMethod: Option[AccountingMethodModel]
@@ -54,9 +47,6 @@ case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None
                              matchTaxYear: Option[MatchTaxYearModel] = None,
                              accountingPeriodDate: Option[AccountingPeriodModel] = None,
                              businessName: Option[BusinessNameModel] = None,
-                             businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
-                             businessAddress: Option[Address] = None,
-                             businessStartDate: Option[BusinessStartDateModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
                              accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel
@@ -67,9 +57,6 @@ case class AgentSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None,
                         matchTaxYear: Option[MatchTaxYearModel] = None,
                         accountingPeriodDate: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
-                        businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
-                        businessAddress: Option[Address] = None,
-                        businessStartDate: Option[BusinessStartDateModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel

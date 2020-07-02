@@ -51,12 +51,8 @@ object AuthPredicates extends Results {
     }
     else Right(AuthPredicateSuccess)
 
-  val registrationJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
-    if (request.session.isInState(AgentRegistration)) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
   val signUpJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
-    if (request.session.isInState(AgentRegistration) || request.session.isInState(AgentSignUp)) Right(AuthPredicateSuccess)
+    if (request.session.isInState(AgentSignUp)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>

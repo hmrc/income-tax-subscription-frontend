@@ -19,7 +19,6 @@ package services
 import javax.inject._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
-import models.individual.business.address.Address
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
@@ -67,24 +66,6 @@ class KeystoreService @Inject()(val session: SessionCache)
 
   def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FC =
     save[BusinessNameModel](BusinessName, businessName)
-
-  def fetchBusinessPhoneNumber()(implicit hc: HeaderCarrier, reads: Reads[BusinessPhoneNumberModel]): FO[BusinessPhoneNumberModel] =
-    fetch[BusinessPhoneNumberModel](BusinessPhoneNumber)
-
-  def saveBusinessPhoneNumber(businessPhoneNumber: BusinessPhoneNumberModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessPhoneNumberModel]): FC =
-    save[BusinessPhoneNumberModel](BusinessPhoneNumber, businessPhoneNumber)
-
-  def fetchBusinessAddress()(implicit hc: HeaderCarrier, reads: Reads[Address]): FO[Address] =
-    fetch[Address](BusinessAddress)
-
-  def saveBusinessAddress(address: Address)(implicit hc: HeaderCarrier, reads: Reads[Address]): FC =
-    save[Address](BusinessAddress, address)
-
-  def fetchBusinessStartDate()(implicit hc: HeaderCarrier, reads: Reads[BusinessStartDateModel]): FO[BusinessStartDateModel] =
-    fetch[BusinessStartDateModel](BusinessStartDate)
-
-  def saveBusinessStartDate(businessStartDate: BusinessStartDateModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessStartDateModel]): FC =
-    save[BusinessStartDateModel](BusinessStartDate, businessStartDate)
 
   def fetchMatchTaxYear()(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FO[MatchTaxYearModel] =
     fetch[MatchTaxYearModel](MatchTaxYear)

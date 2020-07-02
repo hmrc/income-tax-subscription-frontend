@@ -18,7 +18,7 @@ package helpers
 
 import java.util.UUID
 
-import auth.individual.{JourneyState, Registration, SignUp, UserMatching}
+import auth.individual.{JourneyState, SignUp, UserMatching}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
@@ -27,7 +27,6 @@ import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import models.usermatching.UserDetailsModel
 import org.scalatest._
@@ -183,8 +182,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       additionalCookies = sessionKeys
     )(Map.empty)
 
-    def businessStartDate(): WSResponse = get("/business/start-date", Map(JourneyStateKey -> Registration.name))
-
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
     def propertyAccountingMethod(): WSResponse = get("/business/accounting-method-property")
@@ -202,8 +199,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       val url = s"/business/address/callback${if (editMode) "/edit" else ""}?id=$testId"
       get(url, Map(JourneyStateKey -> state.name))
     }
-
-    def businessPhoneNumber(): WSResponse = get("/business/phone-number", Map(JourneyStateKey -> Registration.name))
 
     def maintenance(): WSResponse = get("/error/maintenance")
 
@@ -236,7 +231,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-
     def confirmation(): WSResponse = get("/confirmation")
 
     def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
@@ -245,26 +239,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             BusinessNameForm.businessNameValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def submitBusinessPhoneNumber(inEditMode: Boolean, request: Option[BusinessPhoneNumberModel]): WSResponse = {
-      val uri = s"/business/phone-number?editMode=$inEditMode"
-      post(uri, Map(JourneyStateKey -> Registration.name))(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            BusinessPhoneNumberForm.businessPhoneNumberValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def submitBusinessStartDate(inEditMode: Boolean, request: Option[BusinessStartDateModel]): WSResponse = {
-      val uri = s"/business/start-date?editMode=$inEditMode"
-      post(uri, Map(JourneyStateKey -> Registration.name))(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            BusinessStartDateForm.businessStartDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

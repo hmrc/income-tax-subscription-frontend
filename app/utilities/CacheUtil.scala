@@ -18,8 +18,7 @@ package utilities
 
 import config.AppConfig
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.address.Address
-import models.individual.business.{AccountingPeriodModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -40,12 +39,6 @@ object CacheUtil {
 
     def getBusinessName: Option[BusinessNameModel] = cacheMap.getEntry[BusinessNameModel](BusinessName)
 
-    def getBusinessPhoneNumber: Option[BusinessPhoneNumberModel] = cacheMap.getEntry[BusinessPhoneNumberModel](BusinessPhoneNumber)
-
-    def getBusinessAddress: Option[Address] = cacheMap.getEntry[Address](BusinessAddress)
-
-    def getBusinessStartDate: Option[BusinessStartDateModel] = cacheMap.getEntry[BusinessStartDateModel](BusinessStartDate)
-
     def getSelectedTaxYear: Option[AccountingYearModel] = cacheMap.getEntry[AccountingYearModel](SelectedTaxYear)
 
     def getAccountingMethod: Option[AccountingMethodModel] = cacheMap.getEntry[AccountingMethodModel](AccountingMethod)
@@ -63,9 +56,6 @@ object CacheUtil {
           IndividualSummary(
             incomeSourceIndiv = getIncomeSourceModel,
             businessName = getBusinessName,
-            businessPhoneNumber = getBusinessPhoneNumber,
-            businessAddress = getBusinessAddress,
-            businessStartDate = getBusinessStartDate,
             selectedTaxYear = getSelectedTaxYear,
             accountingMethod = getAccountingMethod
           )
@@ -73,9 +63,6 @@ object CacheUtil {
           IndividualSummary(
             incomeSourceIndiv = getIncomeSourceModel,
             businessName = getBusinessName,
-            businessPhoneNumber = getBusinessPhoneNumber,
-            businessAddress = getBusinessAddress,
-            businessStartDate = getBusinessStartDate,
             accountingMethod = getAccountingMethod,
             accountingMethodProperty = getPropertyAccountingMethod
           )

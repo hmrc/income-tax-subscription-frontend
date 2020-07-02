@@ -98,28 +98,6 @@ cannot-use-service.title                                        = Ni allwch ddef
 cannot-use-service.heading                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
 
-# business address pages
-business.address.title                                          = Cyfeiriad y busnes
-business.address.heading                                        = Cyfeiriad eich busnes
-business.address.edit                                           = Golygwch y cyfeiriad
-
-business.address.lookup.heading                                 = Beth yw cyfeiriad eich busnes?
-business.address.lookup.name_or_number                          = Enw neu rif y tŷ
-business.address.lookup.submit                                  = Chwiliwch am y cyfeiriad
-business.address.lookup.enter_manually                          = Nodwch y cyfeiriad yn y DU â llaw
-
-business.address.select.title                                   = Dewiswch gyfeiriad
-business.address.select.heading                                 = Dewiswch gyfeiriad
-business.address.select.edit                                    = Golygwch y cyfeiriad
-
-business.address.confirm.heading                                = Beth yw cyfeiriad eich busnes?
-business.address.confirm.change                                 = Newid
-
-business.address.edit.heading                                   = Nodwch eich cyfeiriad
-business.address.edit.add_line_1                                = Cyfeiriad - llinell 1
-business.address.edit.add_line_2                                = Cyfeiriad - llinell 2
-business.address.edit.add_line_3                                = Cyfeiriad - llinell 3
-
 # What year to sign up
 business.what_year_to_sign_up.title.signup                      = Pa flwyddyn dreth rydych am gofrestru ar ei chyfer?
 business.what_year_to_sign_up.heading.signup                    = Pa flwyddyn dreth rydych am gofrestru ar ei chyfer?
@@ -134,11 +112,6 @@ business.what_year_to_sign_up.quarterly.date_1                  = 5 Gorffennaf {
 business.what_year_to_sign_up.quarterly.date_2                  = 5 Hydref {0}
 business.what_year_to_sign_up.quarterly.date_3                  = 5 Ionawr {0}
 business.what_year_to_sign_up.quarterly.date_4                  = 5 Ebrill {0}
-
-# Business start date
-business.start_date.title                                       = Dyddiad dechrau’r busnes
-business.start_date.heading                                     = Pryd y dechreuodd eich busnes fasnachu?
-business.start_date.exampleStartDate                            = Er enghraifft, 1 4 2018
 
 # Sole trader page
 business.sole_trader.title                                      = Ydych chi’n unig fasnachwr?
@@ -173,11 +146,7 @@ property.accounting_method.radio.accruals.detail                = Rydych yn cofn
 business.name.title                                             = Enw’r busnes
 business.name.heading                                           = Beth yw enw’ch busnes?
 business.name.signup.line_1                                     = Dyma enw’r busnes a ddefnyddioch i gofrestru ar gyfer Hunanasesiad. Os nad oes enw ar eich busnes, nodwch eich enw’ch hun.
-business.name.registration.line_1                               = Os nad oes enw ar eich busnes, nodwch eich enw’ch hun.
 
-## Business Phone number
-business.phone_number.title                                     = Rhif ffôn y busnes
-business.phone_number.heading                                   = Beth yw rhif ffôn eich busnes?
 
 ## Contact Email Address page ##
 contact_email.title                                             = Nodwch eich cyfeiriad e-bost
@@ -222,9 +191,6 @@ summary.match_tax_year                                          = Mae’ch cyfno
 summary.accounting_period                                       = Dyddiadau’ch cyfnod cyfrifyddu
 summary.accounting_period.registration                          = Pryd y mae’ch cyfnod cyfrifyddu presennol?
 summary.business_name                                           = Enw eich busnes
-summary.business_phone                                          = Beth yw rhif ffôn eich busnes?
-summary.business_address                                        = Beth yw cyfeiriad eich busnes?
-summary.business_start_date                                     = Pryd y dechreuodd eich busnes fasnachu?
 summary.income_type                                             = Dull cyfrifyddu ar gyfer eich incwm o hunangyflogaeth
 summary.income_type.cash                                        = Sail arian parod
 summary.income_type.accruals                                    = Sail croniadau
@@ -287,9 +253,6 @@ error.business_name.empty                                       = Rhaid i chi no
 error.business_name.maxLength                                   = Ni allwch nodi mwy na 105 o gymeriadau ar gyfer enw’ch busnes
 error.business_name.invalid                                     = Mae enw’r busnes yn cynnwys cymeriadau annilys
 
-error.business_phone_number.empty                               = Rhaid i chi nodi rhif ffôn eich busnes
-error.business_phone_number.maxLength                           = Ni allwch nodi mwy na 24 o gymeriadau ar gyfer rhif ffôn eich busnes
-error.business_phone_number.invalid                             = Mae rhif ffôn y busnes yn cynnwys cymeriadau annilys
 
 error.contact_email.empty                                       = Nodwch e-bost cyswllt
 error.contact_email.maxLength                                   = Mae’r e-bost yn rhy hir
@@ -409,13 +372,6 @@ affinity-group-error.heading                                    = Ni allwch ddef
 affinity-group-error.line1                                      = Gallwch ond defnyddio’r gwasanaeth hwn os oes gennych gyfrif Porth y Llywodraeth fel unigolyn.
 affinity-group-error.line2                                      = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a id="sign-out" href="{0}">fewngofnodi gan ddefnyddio math gwahanol o gyfrif.</a>
 affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant.</a>
-
-## IV Error
-iv-error.title                                                  = Ni allwn gadarnhau pwy ydych chi
-iv-error.heading                                                = Ni allwn gadarnhau pwy ydych chi
-iv-error.line1                                                  = Er mwyn helpu i ddiogelu’ch data, gallwch ond cofrestru i roi gwybod am eich incwm a’ch treuliau bob chwarter ar ôl i ni gadarnhau pwy ydych chi.
-iv-error.line2                                                  = Os na allwch gadarnhau pwy ydych chi, ac mae gennych gwestiwn, gallwch gysylltu â <a id="contact-hmrc" href="{0}" target="_blank">Chyllid a Thollau EM (yn agor ffenestr newydd)</a> i gael help.
-iv-error.try_again                                              = <a id="try-again" href="{0}"> Ceisiwch gadarnhau pwy ydych chi eto.</a>
 
 ## Base ##
 agent.base.service_name                                         = Cofrestru’ch cleient ar gyfer hysbysu chwarterol

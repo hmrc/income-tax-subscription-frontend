@@ -17,8 +17,7 @@
 package services.mocks
 
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.address.Address
-import models.individual.business.{AccountingPeriodModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
 import org.mockito.ArgumentMatchers
@@ -73,18 +72,6 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
 
   protected final def mockFetchBusinessNameFromKeyStore(fetchBusinessName: Option[BusinessNameModel]): Unit = {
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
-  }
-
-  protected final def mockFetchBusinessPhoneNumberFromKeyStore(fetchBusinessPhoneNumber: Option[BusinessPhoneNumberModel]): Unit = {
-    mockFetchFromKeyStore[BusinessPhoneNumberModel](BusinessPhoneNumber, fetchBusinessPhoneNumber)
-  }
-
-  protected final def mockFetchBusinessAddressFromKeyStore(fetchBusinessAddress: Option[Address]): Unit = {
-    mockFetchFromKeyStore[Address](BusinessAddress, fetchBusinessAddress)
-  }
-
-  protected final def mockFetchBusinessStartDateFromKeyStore(fetchBusinessStartDate: Option[BusinessStartDateModel]): Unit = {
-    mockFetchFromKeyStore[BusinessStartDateModel](BusinessStartDate, fetchBusinessStartDate)
   }
 
   protected final def mockFetchAccountingPeriodFromKeyStore(fetchAccountingPeriodDate: Option[AccountingPeriodModel]): Unit = {

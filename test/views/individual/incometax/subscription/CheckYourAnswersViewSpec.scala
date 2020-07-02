@@ -19,8 +19,6 @@ package views.individual.incometax.subscription
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business._
-import models.individual.business.address.Address
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IndividualSummary
 import org.jsoup.nodes.{Document, Element}
@@ -35,9 +33,6 @@ import views.individual.helpers.SummaryIdConstants._
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   val testBusinessName: BusinessNameModel = BusinessNameModel("test business name")
-  val testBusinessPhoneNumber: BusinessPhoneNumberModel = TestModels.testBusinessPhoneNumber
-  val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
-  val testBusinessAddress: Address = TestModels.testAddress
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
@@ -49,9 +44,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): IndividualSummary = IndividualSummary(
     incomeSourceIndiv = incomeSource,
     businessName = testBusinessName,
-    businessAddress = testBusinessAddress,
-    businessStartDate = testBusinessStartDate,
-    businessPhoneNumber = testBusinessPhoneNumber,
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = accountingMethodProperty
@@ -60,16 +52,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
-  def page(isRegistration: Boolean, testSummaryModel: IndividualSummary): HtmlFormat.Appendable =
+  def page(testSummaryModel: IndividualSummary): HtmlFormat.Appendable =
     views.html.individual.incometax.subscription.check_your_answers(
       summaryModel = testSummaryModel,
-      isRegistration = isRegistration,
       postAction = postAction,
       backUrl = backUrl
     )(FakeRequest(), implicitly, appConfig)
 
-  def document(isRegistration: Boolean = false, testSummaryModel: IndividualSummary = testSummary): Document =
-    page(isRegistration = isRegistration, testSummaryModel).doc
+  def document(testSummaryModel: IndividualSummary = testSummary): Document =
+    page(testSummaryModel).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -123,8 +114,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
-                    isRegistration: Boolean = false, testSummaryModel: IndividualSummary = testSummary): Unit = {
-      val doc = document(isRegistration, testSummaryModel)
+                    testSummaryModel: IndividualSummary = testSummary): Unit = {
+      val doc = document(testSummaryModel)
       val section = doc.getElementById(sectionId)
       val question = doc.getElementById(questionId(sectionId))
       val answer = doc.getElementById(answerId(sectionId))
@@ -163,51 +154,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val expectedQuestion = messages.business_name
       val expectedAnswer = testBusinessName.businessName
       val expectedEditLink = controllers.individual.business.routes.BusinessNameController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
-    }
-
-    "display the correct info for the business telephone" in {
-      val sectionId = BusinessPhoneNumberId
-      val expectedQuestion = messages.business_phone_number
-      val expectedAnswer = testBusinessPhoneNumber.phoneNumber
-      val expectedEditLink = controllers.individual.business.routes.BusinessPhoneNumberController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
-    }
-
-    "display the correct info for the business address" in {
-      val sectionId = BusinessAddressId
-      val expectedQuestion = messages.business_address
-      val expectedAnswer = testBusinessAddress.lines.get
-        .:+(testBusinessAddress.postcode.get)
-        .:+(testBusinessAddress.country.map(_.name).get)
-        .mkString(" ")
-      val expectedEditLink = controllers.individual.business.routes.BusinessAddressController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
-    }
-
-    "display the correct info for the business start date" in {
-      val sectionId = BusinessStartDateId
-      val expectedQuestion = messages.business_start_date
-      val expectedAnswer = testBusinessStartDate.startDate.toCheckYourAnswersDateFormat
-      val expectedEditLink = controllers.individual.business.routes.BusinessStartDateController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

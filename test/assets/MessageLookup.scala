@@ -103,12 +103,6 @@ object MessageLookup {
 
   }
 
-  object BusinessStartDate {
-    val title = "Business start date"
-    val heading = "When did your business start trading?"
-    val exampleStartDate = "For example, 1 4 2018"
-  }
-
   object CannotReportYet {
     val title = "You can’t use software to report your Income Tax yet"
     val heading: String = title
@@ -159,46 +153,8 @@ object MessageLookup {
       val line_1 = "This is the business name you used to register for Self Assessment. If your business doesn’t have a name, enter your own name."
     }
 
-    object Registration {
-      val line_1 = "If your business doesn’t have a name, enter your own name."
-    }
-
   }
 
-  object BusinessPhoneNumber {
-    val title = "Business phone number"
-    val heading: String = "What’s your business telephone number?"
-  }
-
-  object BusinessAddress {
-
-    object Lookup {
-      val heading = "What’s your business address?"
-      val nameOrNimber = "House name or number"
-      val submit = "Search address"
-      val enterManually = "Enter UK address manually"
-    }
-
-    object Select {
-      val title = "Choose an address"
-      val heading = "Choose an address"
-      val edit = "Edit address"
-
-    }
-
-    object Confirm {
-      val heading = "What’s your business address?"
-      val change = "Change"
-    }
-
-    object Edit {
-      val heading = "Enter your address"
-      val addLine1 = "Address line 1"
-      val addLine2 = "Address line 2"
-      val addLine3 = "Address line 3"
-    }
-
-  }
 
   object AccountingMethod {
     val title = "How do you record your income and expenses for your self-employed business?"
@@ -240,14 +196,7 @@ object MessageLookup {
       val both = "Sole trader business and property"
     }
 
-    val match_tax_year = "Your accounting period matches the tax year"
-    val accounting_period = s"Your accounting period dates"
-    val accounting_period_registration = s"When’s your current accounting period?"
-    val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Your business name"
-    val business_phone_number = "What’s your business telephone number?"
-    val business_address = "What’s your business address?"
-    val business_start_date = "When did your business start trading?"
     val selected_tax_year = "Tax year signed up for"
     val income_type = "Accounting method for your self-employment income"
 
@@ -466,12 +415,6 @@ object MessageLookup {
       val invalid = "The business name contains invalid characters"
     }
 
-    object BusinessPhoneNumber {
-      val empty = "You must enter your business phone number"
-      val maxLength = "You can’t enter more than 24 characters for your business phone number"
-      val invalid = "The business phone number contains invalid characters"
-    }
-
     object ContactEmail {
       val empty = "Please enter a contact email"
       val maxLength = "The email is too long"
@@ -544,15 +487,6 @@ object MessageLookup {
     val gotoGovUk = "Go to the GOV.UK page"
   }
 
-  object IvFailed {
-    val title = "We’re unable to confirm your identity"
-    val heading: String = title
-    val line_1 = "To help protect your data, you can only sign up to report your income and expenses quarterly once we’ve confirmed who you are."
-    val hmrcLink = "HM Revenue and Customs (opens in new window)"
-    val line_2 = s"If you can’t confirm your identity and you have a query you can contact $hmrcLink to get help."
-    val tryAgainLink = "Try to confirm your identity again."
-  }
-
   object CannotSignUp {
     val title = "You can’t use this service"
     val heading: String = title
@@ -606,6 +540,7 @@ object MessageLookup {
     def conditionalDate3(year: String): String = s"5 January $year"
 
     def conditionalDate4(year: String): String = s"5 April $year"
+
   }
 
 }
