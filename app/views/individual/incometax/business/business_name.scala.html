@@ -22,7 +22,7 @@
 @import views.html.helpers._
 @import views.individual.helpers._
 
-@(businessNameForm: Form[BusinessNameModel], postAction: Call, isRegistration: Boolean, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(businessNameForm: Form[BusinessNameModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("business.name.title"), form = businessNameForm) {
     @back_link(backUrl)
@@ -31,7 +31,7 @@
 
     <h1 class="heading-large">@Messages("business.name.heading")</h1>
 
-    <p>@if(isRegistration){ @Messages("business.name.registration.line_1") }else{ @Messages("business.name.signup.line_1") }</p>
+    <p>@Messages("business.name.signup.line_1")</p>
 
     @form(action = postAction) {
 

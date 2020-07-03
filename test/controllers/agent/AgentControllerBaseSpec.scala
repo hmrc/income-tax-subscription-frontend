@@ -16,10 +16,9 @@
 
 package controllers.agent
 
-import auth.agent.{AgentRegistration, AgentSignUp, AgentUserMatched}
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import auth.agent.{AgentRegistration, AgentSignUp, AgentUserMatched, AgentUserMatching}
+import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
@@ -114,8 +113,4 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
     ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
-  lazy val registrationRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentRegistration.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino
-  )
 }

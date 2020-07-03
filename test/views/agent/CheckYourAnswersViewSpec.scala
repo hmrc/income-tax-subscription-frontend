@@ -20,7 +20,6 @@ import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
 import models.individual.business._
-import models.individual.business.address.Address
 import models.individual.subscription.{AgentSummary, IncomeSourceType}
 import models.{Current, Next, Yes}
 import org.jsoup.nodes.{Document, Element}
@@ -38,9 +37,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.agent.routes.IncomeSourceController.show().url
 
-  val testBusinessPhoneNumber: BusinessPhoneNumberModel = TestModels.testBusinessPhoneNumber
-  val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
-  val testBusinessAddress: Address = TestModels.testAddress
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
@@ -54,9 +50,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     matchTaxYear = matchTaxYear,
     accountingPeriodDate = accountingPeriod,
     businessName = testBusinessName,
-    businessAddress = testBusinessAddress,
-    businessStartDate = testBusinessStartDate,
-    businessPhoneNumber = testBusinessPhoneNumber,
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = accountingMethodProperty

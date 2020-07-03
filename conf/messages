@@ -91,28 +91,6 @@ cannot-use-service.title                                        = You cannot use
 cannot-use-service.heading                                      = You cannot use this service
 cannot-use-service.line1                                        = You can only sign up if you are an administrator.
 
-# business address pages
-business.address.title                                          = Business address
-business.address.heading                                        = Your business address
-business.address.edit                                           = Edit address
-
-business.address.lookup.heading                                 = What’s your business address?
-business.address.lookup.name_or_number                          = House name or number
-business.address.lookup.submit                                  = Search address
-business.address.lookup.enter_manually                          = Enter UK address manually
-
-business.address.select.title                                   = Choose an address
-business.address.select.heading                                 = Choose an address
-business.address.select.edit                                    = Edit address
-
-business.address.confirm.heading                                = What’s your business address?
-business.address.confirm.change                                 = Change
-
-business.address.edit.heading                                   = Enter your address
-business.address.edit.add_line_1                                = Address line 1
-business.address.edit.add_line_2                                = Address line 2
-business.address.edit.add_line_3                                = Address line 3
-
 # What year to sign up
 business.what_year_to_sign_up.title.signup                      = What tax year do you want to sign up for?
 business.what_year_to_sign_up.heading.signup                    = What tax year do you want to sign up for?
@@ -127,11 +105,6 @@ business.what_year_to_sign_up.quarterly.date_1                  = 5 July {0}
 business.what_year_to_sign_up.quarterly.date_2                  = 5 October {0}
 business.what_year_to_sign_up.quarterly.date_3                  = 5 January {0}
 business.what_year_to_sign_up.quarterly.date_4                  = 5 April {0}
-
-# Business start date
-business.start_date.title                                       = Business start date
-business.start_date.heading                                     = When did your business start trading?
-business.start_date.exampleStartDate                            = For example, 1 4 2018
 
 # Sole trader page
 business.sole_trader.title                                      = Are you a sole trader?
@@ -166,11 +139,6 @@ property.accounting_method.radio.accruals.detail                = You record on 
 business.name.title                                             = Business name
 business.name.heading                                           = What’s the name of your business?
 business.name.signup.line_1                                     = This is the business name you used to register for Self Assessment. If your business doesn’t have a name, enter your own name.
-business.name.registration.line_1                               = If your business doesn’t have a name, enter your own name.
-
-## Business Phone number
-business.phone_number.title                                     = Business phone number
-business.phone_number.heading                                   = What’s your business telephone number?
 
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
@@ -213,9 +181,6 @@ summary.match_tax_year                                          = Your accountin
 summary.accounting_period                                       = Your accounting period dates
 summary.accounting_period.registration                          = When’s your current accounting period?
 summary.business_name                                           = Your business name
-summary.business_phone                                          = What’s your business telephone number?
-summary.business_address                                        = What’s your business address?
-summary.business_start_date                                     = When did your business start trading?
 summary.income_type                                             = Accounting method for your self-employment income
 summary.income_type.cash                                        = Cash basis
 summary.income_type.accruals                                    = Accruals basis
@@ -275,10 +240,6 @@ error.business_accounting_period.minStartDate                   = The start date
 error.business_name.empty                                       = You must enter your Business name
 error.business_name.maxLength                                   = You can’t enter more than 105 characters for your Business name
 error.business_name.invalid                                     = The business name contains invalid characters
-
-error.business_phone_number.empty                               = You must enter your business phone number
-error.business_phone_number.maxLength                           = You can’t enter more than 24 characters for your business phone number
-error.business_phone_number.invalid                             = The business phone number contains invalid characters
 
 error.contact_email.empty                                       = Please enter a contact email
 error.contact_email.maxLength                                   = The email is too long
@@ -398,12 +359,6 @@ affinity-group-error.line1                                      = You can only u
 affinity-group-error.line2                                      = To sign up for quarterly reporting, you’ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
 affinity-group-error.agent.line1                                = To sign up for quarterly reporting with these sign in details, you need to <a id="agent-service" href="{0}">use our agent service.</a>
 
-## IV Error
-iv-error.title                                                  = We’re unable to confirm your identity
-iv-error.heading                                                = We’re unable to confirm your identity
-iv-error.line1                                                  = To help protect your data, you can only sign up to report your income and expenses quarterly once we’ve confirmed who you are.
-iv-error.line2                                                  = If you can’t confirm your identity and you have a query you can contact <a id="contact-hmrc" href="{0}" target="_blank"> HM Revenue and Customs (opens in new window)</a> to get help.
-iv-error.try_again                                              = <a id="try-again" href="{0}"> Try to confirm your identity again.</a>
 
 ## Base ##
 agent.base.service_name                                         = Sign up your client for quarterly reporting

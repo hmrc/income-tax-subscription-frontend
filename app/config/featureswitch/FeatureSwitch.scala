@@ -27,7 +27,7 @@ object FeatureSwitch {
   val prefix = "feature-switch"
 
   val switches: Set[FeatureSwitch]  = Set(
-    RegistrationFeature
+
   )
 
   def apply(str: String): FeatureSwitch =
@@ -40,7 +40,5 @@ object FeatureSwitch {
 
 }
 
-case object RegistrationFeature extends FeatureSwitch {
-  override val name = s"$prefix.enable-registration"
-  override val displayText = "Registration journey"
-}
+
+

@@ -17,7 +17,7 @@
 package controllers.usermatching
 
 import auth.individual.JourneyState._
-import auth.individual.{Registration, SignUp, StatelessController, UserMatching}
+import auth.individual.{SignUp, StatelessController, UserMatching}
 import config.AppConfig
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
@@ -65,7 +65,8 @@ class HomeController @Inject()(val authService: AuthService, citizenDetailsServi
                 }
             }
           case OptionalIdentifiers(Some(_), None) =>
-            goToRegistration(timestamp)
+            Redirect(routes.NoSAController.show())
+              .removingFromSession(JourneyStateKey)
           case _ =>
             Future.successful(goToUserMatching withJourneyState UserMatching)
         }
@@ -86,15 +87,6 @@ class HomeController @Inject()(val authService: AuthService, citizenDetailsServi
       .addingToSession(StartTime -> timestamp)
       .withJourneyState(SignUp)
 
-  private def goToRegistration(timestamp: String)(implicit request: Request[AnyContent]): Result =
-    if (appConfig.enableRegistration) {
-      goToPreferences
-        .addingToSession(StartTime -> timestamp)
-        .withJourneyState(Registration)
-    } else {
-      Redirect(routes.NoSAController.show())
-        .removingFromSession(JourneyStateKey)
-    }
 
   private def claimSubscription(mtditId: String)(implicit request: Request[AnyContent]): Future[Result] =
     keystoreService.saveSubscriptionId(mtditId) map { _ =>

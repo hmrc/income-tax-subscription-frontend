@@ -16,7 +16,7 @@
 
 package controllers.individual.business
 
-import auth.individual.{Registration, SignUpController}
+import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
@@ -38,7 +38,6 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
     views.html.individual.incometax.business.business_name(
       businessNameForm = businessNameForm,
       postAction = controllers.individual.business.routes.BusinessNameController.submit(editMode = isEditMode),
-      isRegistration = request.isInState(Registration),
       isEditMode,
       backUrl = backUrl(isEditMode)
     )
@@ -59,9 +58,7 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
           keystoreService.saveBusinessName(businessName) flatMap { _ =>
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
-            } else if (request.isInState(Registration)) {
-              Future.successful(Redirect(controllers.individual.business.routes.BusinessPhoneNumberController.show()))
-            } else {
+            }else {
               for {
                 cacheMap <- keystoreService.fetchAll()
               } yield cacheMap.getIncomeSourceModel match {

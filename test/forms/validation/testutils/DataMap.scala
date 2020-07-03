@@ -18,7 +18,6 @@ package forms.validation.testutils
 
 import forms.agent.{IncomeSourceForm, MatchTaxYearForm}
 import forms.individual.business.BusinessNameForm._
-import forms.individual.business.BusinessPhoneNumberForm._
 import forms.individual.business.{AccountingMethodForm, AccountingYearForm}
 import forms.submapping.DateMapping._
 import forms.validation.utils.ConstraintUtil._
@@ -40,8 +39,6 @@ object DataMap {
     val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
 
     def busName(name: String): DataMap = Map(businessName -> name)
-
-    def busPhoneNumber(number: String): DataMap = Map(phoneNumber -> number)
 
     def matchTaxYear(iType: String): DataMap = Map(MatchTaxYearForm.matchTaxYear -> iType)
 

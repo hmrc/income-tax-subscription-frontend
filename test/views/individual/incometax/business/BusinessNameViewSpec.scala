@@ -29,30 +29,27 @@ class BusinessNameViewSpec extends ViewSpecTrait {
   val backUrl: String = ViewSpecTrait.testBackUrl
   val action: Call = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, isRegistration: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable =
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable =
     views.html.individual.incometax.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm.form.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
-    isRegistration = isRegistration,
     isEditMode = isEditMode
   )(FakeRequest(), implicitly, appConfig)
 
-  def documentCore(isEditMode: Boolean, isRegistration: Boolean): TestView = TestView(
-    name = s"Business Name View for ${if (isRegistration) "registration" else "sign up"}",
+  def documentCore(isEditMode: Boolean): TestView = TestView(
+    name = s"Business Name View for sign up",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode, isRegistration = isRegistration, addFormErrors = false)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Business Name view" should {
-    for (isRegistration <- List(false, true)) {
-      val testPage = documentCore(isEditMode = false, isRegistration = isRegistration)
+      val testPage = documentCore(isEditMode = false)
 
       testPage.mustHaveBackLinkTo(backUrl)
 
-      if (isRegistration) testPage.mustHavePara(messages.Registration.line_1)
-      else testPage.mustHavePara(messages.SignUp.line_1)
+      testPage.mustHavePara(messages.SignUp.line_1)
 
       val form = testPage.getForm("Business Name form")(actionCall = action)
 
@@ -63,23 +60,22 @@ class BusinessNameViewSpec extends ViewSpecTrait {
 
       form.mustHaveContinueButton()
     }
-  }
+
 
   "The Business Name view in edit mode" should {
-    for (isRegistration <- List(false, true)) {
 
-      val editModePage = documentCore(isEditMode = true, isRegistration = isRegistration)
+      val editModePage = documentCore(isEditMode = true)
 
       editModePage.mustHaveUpdateButton()
     }
-  }
+
 
   "Append Error to the page title if the form has error" should {
     def documentCore(): TestView = TestView(
       name = s"Business Name View for sign up",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
-      page = page(isEditMode = false, isRegistration = false, addFormErrors = true)
+      page = page(isEditMode = false, addFormErrors = true)
     )
 
     val testPage = documentCore()

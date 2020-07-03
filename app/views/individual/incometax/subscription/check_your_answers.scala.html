@@ -17,7 +17,6 @@
 @import config.AppConfig
 @import views.html.helpers._
 @import views.html.templates.main_template
-@import models.individual.business.address.Address
 @import models.individual.business._
 @import models.individual.incomesource._
 @import models.common._
@@ -28,7 +27,7 @@
 @import views.individual.helpers.SummaryHelper._
 @import views.individual.helpers.SummaryIdConstants._
 
-@(summaryModel: IndividualSummary, isRegistration: Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summaryModel: IndividualSummary, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
     <div class="tabular-data__entry divider--bottom" id="@field-row">
@@ -67,32 +66,6 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@businessPhoneNumber(phoneNumber: BusinessPhoneNumberModel) = @{
-    val rowName = BusinessPhoneNumberId
-    val rowQuestion = Messages("summary.business_phone")
-    val rowAnswer = phoneNumber.phoneNumber
-    val rowUrl = controllers.individual.business.routes.BusinessPhoneNumberController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
-}
-
-@businessAddress(address: Address) = @{
-    val rowName = BusinessAddressId
-    val rowQuestion = Messages("summary.business_address")
-    val rowAnswer = address.lines.fold("")(_.map(l => s"</p>$l</p>").mkString("")) +
-            address.postcode.fold("")(l => s"</p>$l</p>") +
-            address.country.fold("")(l => s"</p>${l.name}</p>")
-    val rowUrl = controllers.individual.business.routes.BusinessAddressController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
-}
-
-@businessStartDate(startDate: BusinessStartDateModel) = @{
-    val rowName = BusinessStartDateId
-    val rowQuestion = Messages("summary.business_start_date")
-    val rowAnswer = startDate.startDate.toCheckYourAnswersDateFormat
-    val rowUrl = controllers.individual.business.routes.BusinessStartDateController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
-}
-
 @selectedTaxYear(selectedTaxYear: AccountingYearModel) = @{
     val rowName = SelectedTaxYearId
     val rowQuestion = Messages("summary.selected_year")
@@ -127,9 +100,6 @@
 
         @summaryModel.incomeSourceIndiv.map(incomeReceivedFrom)
         @summaryModel.businessName.map(businessName)
-        @summaryModel.businessPhoneNumber.map(businessPhoneNumber)
-        @summaryModel.businessAddress.map(businessAddress)
-        @summaryModel.businessStartDate.map(businessStartDate)
         @if(summaryModel.incomeSourceIndiv.exists(_.ukProperty == false)) {
             @summaryModel.selectedTaxYear.map(selectedTaxYear)
         }

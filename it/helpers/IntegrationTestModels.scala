@@ -8,7 +8,6 @@ import helpers.IntegrationTestConstants._
 import models._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
-import models.individual.business.address.{Address, Country, ReturnedAddress}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import models.usermatching.UserDetailsModel
@@ -43,13 +42,8 @@ object IntegrationTestModels {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testBusinessPhoneNumber = BusinessPhoneNumberModel("01234567890")
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
-
-  val testBusinessStartDate = BusinessStartDateModel(testStartDate)
-
-  lazy val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
 
   lazy val fullKeystoreDataBothPost: Map[String, JsValue] =
     keystoreData(
@@ -59,8 +53,6 @@ object IntegrationTestModels {
       selectedTaxYear = Some(testAccountingYearCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
-      businessPhoneNumber = Some(testBusinessPhoneNumber),
-      businessAddress = Some(testAddress),
       accountingMethod = Some(testAccountingMethod),
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
@@ -78,8 +70,6 @@ object IntegrationTestModels {
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
-                   businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
-                   businessAddress: Option[Address] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
                    propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None
                   ): Map[String, JsValue] = {
@@ -90,8 +80,6 @@ object IntegrationTestModels {
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
-      businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
-      businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))
   }
@@ -106,8 +94,6 @@ object IntegrationTestModels {
 
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
-
-  lazy val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
 
   lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMtdId)
 

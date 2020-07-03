@@ -16,7 +16,6 @@
 
 package controllers.usermatching
 
-import auth.individual.Registration
 import config.MockConfig
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.ControllerBaseSpec
@@ -51,15 +50,13 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockNinoRetrieval()
   }
 
-  def testHomeController(showStartPage: Boolean = true, registrationFeature: Boolean = false): HomeController = new HomeController(
+  def testHomeController(showStartPage: Boolean = true): HomeController = new HomeController(
     mockAuthService,
     mockCitizenDetailsService,
     mockGetEligibilityStatusService,
     MockKeystoreService,
     mockSubscriptionService
-  )(implicitly, new MockConfig {
-    override val enableRegistration: Boolean = registrationFeature
-  }, mockMessagesControllerComponents)
+  )(implicitly, MockConfig, mockMessagesControllerComponents)
 
   val testNino: String = TestConstants.testNino
   val testUtr: String = TestConstants.testUtr
@@ -125,38 +122,23 @@ class HomeControllerSpec extends ControllerBaseSpec
                 session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
               }
 
-              "the user does not have a matching utr in CID" when {
-                "the registration feature flag is on" should {
-                  "redirect to the registration journey" in {
-                    mockNinoRetrieval()
-                    mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
-                    setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+              "the user does not have a matching utr in CID" should {
 
-                    val result = testHomeController(registrationFeature = true).index()(registrationRequest)
-
-                    status(result) mustBe SEE_OTHER
-                    redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
-                    await(result).session(registrationRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
-                  }
-                }
-                "the registration feature flag is off" should {
                   "redirect to the no SA page" in {
                     mockNinoRetrieval()
                     mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
                     setupMockGetSubscriptionNotFound(testNino)
                     mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
-                    val result = testHomeController(registrationFeature = false).index()(registrationRequest)
+                    val result = testHomeController().index()(userMatchingRequest)
 
                     status(result) mustBe SEE_OTHER
                     redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show().url
 
-                    await(result).session(registrationRequest).get(ITSASessionKeys.UTR) mustBe None
+                    await(result).session(userMatchingRequest).get(ITSASessionKeys.UTR) mustBe None
                   }
                 }
               }
-            }
           }
         }
         "the user is not eligible" should {

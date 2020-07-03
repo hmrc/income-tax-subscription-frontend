@@ -21,7 +21,6 @@ import java.time.LocalDate
 import models._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
-import models.individual.business.address.{Address, Country, ReturnedAddress}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import models.usermatching.{UserDetailsModel, UserMatchSuccessResponseModel}
@@ -57,10 +56,6 @@ object TestModels extends Implicits {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testBusinessPhoneNumber = BusinessPhoneNumberModel("0")
-  val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
-  val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
-  val testBusinessStartDate = BusinessStartDateModel(testStartDate)
   val testSelectedTaxYearCurrent = AccountingYearModel(Current)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
@@ -75,9 +70,6 @@ object TestModels extends Implicits {
       matchTaxYear = testMatchTaxYearNo,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
-      businessPhoneNumber = testBusinessPhoneNumber,
-      businessAddress = testAddress,
-      businessStartDate = testBusinessStartDate,
       selectedTaxYear = testSelectedTaxYearNext,
       accountingMethod = testAccountingMethod,
       accountingMethodProperty = testAccountingMethodProperty
@@ -88,9 +80,6 @@ object TestModels extends Implicits {
                          matchTaxYear: Option[MatchTaxYearModel] = testMatchTaxYearNo,
                          accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                          businessName: Option[BusinessNameModel] = testBusinessName,
-                         businessPhoneNumber: Option[BusinessPhoneNumberModel] = testBusinessPhoneNumber,
-                         businessAddress: Option[Address] = testAddress,
-                         businessStartDate: Option[BusinessStartDateModel] = testBusinessStartDate,
                          selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty): CacheMap =
@@ -100,9 +89,6 @@ object TestModels extends Implicits {
       matchTaxYear = matchTaxYear,
       accountingPeriodDate = accountingPeriodDate,
       businessName = businessName,
-      businessPhoneNumber = businessPhoneNumber,
-      businessAddress = businessAddress,
-      businessStartDate = businessStartDate,
       selectedTaxYear = selectedTaxYear,
       accountingMethod = accountingMethod,
       accountingMethodProperty = accountingMethodProperty)
@@ -112,9 +98,6 @@ object TestModels extends Implicits {
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
-                   businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
-                   businessAddress: Option[Address] = None,
-                   businessStartDate: Option[BusinessStartDateModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): CacheMap = {
@@ -125,9 +108,6 @@ object TestModels extends Implicits {
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
-      businessPhoneNumber.fold(emptyMap)(model => Map(BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model))) ++
-      businessAddress.fold(emptyMap)(model => Map(BusinessAddress -> Address.format.writes(model))) ++
-      businessStartDate.fold(emptyMap)(model => Map(BusinessStartDate -> BusinessStartDateModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
       accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)))

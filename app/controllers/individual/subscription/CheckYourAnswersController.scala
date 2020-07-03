@@ -16,7 +16,7 @@
 
 package controllers.individual.subscription
 
-import auth.individual.{IncomeTaxSAUser, Registration, SignUpController}
+import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.incomesource.IncomeSourceModel
@@ -55,7 +55,6 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
         Future.successful(
           Ok(views.html.individual.incometax.subscription.check_your_answers(
             cache.getSummary(),
-            isRegistration = request.isInState(Registration),
             controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl(cache.getIncomeSourceModel.get)
           ))

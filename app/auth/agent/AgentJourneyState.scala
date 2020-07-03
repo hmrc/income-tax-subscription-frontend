@@ -35,10 +35,6 @@ object AgentSignUp extends AgentJourneyState {
   override val name: String = "signUp"
 }
 
-object AgentRegistration extends AgentJourneyState {
-  override val name: String = "registration"
-}
-
 object AgentJourneyState {
 
   implicit class SessionFunctions(session: Session) {

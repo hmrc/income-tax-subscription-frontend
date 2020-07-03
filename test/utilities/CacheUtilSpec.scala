@@ -35,9 +35,6 @@ class CacheUtilSpec extends UnitTestTrait
       emptyCacheMap.getIncomeSourceModel shouldBe None
       emptyCacheMap.agentGetIncomeSource shouldBe None
       emptyCacheMap.getBusinessName shouldBe None
-      emptyCacheMap.getBusinessPhoneNumber shouldBe None
-      emptyCacheMap.getBusinessAddress shouldBe None
-      emptyCacheMap.getBusinessStartDate shouldBe None
       emptyCacheMap.getMatchTaxYear shouldBe None
       emptyCacheMap.getEnteredAccountingPeriodDate shouldBe None
       emptyCacheMap.getSelectedTaxYear shouldBe None
@@ -49,9 +46,6 @@ class CacheUtilSpec extends UnitTestTrait
       testCacheMap.getIncomeSourceModel shouldBe Some(IncomeSourceModel(true,true))
       testCacheMap.agentGetIncomeSource shouldBe Some(Both)
       testCacheMap.getBusinessName shouldBe Some(testBusinessName)
-      testCacheMap.getBusinessPhoneNumber shouldBe Some(testBusinessPhoneNumber)
-      testCacheMap.getBusinessAddress shouldBe Some(testAddress)
-      testCacheMap.getBusinessStartDate shouldBe Some(testBusinessStartDate)
       testCacheMap.getMatchTaxYear shouldBe Some(testMatchTaxYearNo)
       testCacheMap.getEnteredAccountingPeriodDate shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod shouldBe Some(testAccountingMethod)
@@ -73,9 +67,6 @@ class CacheUtilSpec extends UnitTestTrait
           IndividualSummary(
             incomeSourceIndiv = testIncomeSourceBusiness,
             businessName = testBusinessName,
-            businessPhoneNumber = testBusinessPhoneNumber,
-            businessAddress = testAddress,
-            businessStartDate = testBusinessStartDate,
             selectedTaxYear = testSelectedTaxYearNext,
             accountingMethod = testAccountingMethod
           )
@@ -85,9 +76,6 @@ class CacheUtilSpec extends UnitTestTrait
           IndividualSummary(
             incomeSourceIndiv = testIncomeSourceBoth,
             businessName = testBusinessName,
-            businessPhoneNumber = testBusinessPhoneNumber,
-            businessAddress = testAddress,
-            businessStartDate = testBusinessStartDate,
             accountingMethod = testAccountingMethod,
             accountingMethodProperty = testAccountingMethodProperty
           )

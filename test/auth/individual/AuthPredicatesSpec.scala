@@ -66,8 +66,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   )
   lazy val homelessAuthorisedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(authToken -> "", lastRequestTimestamp -> "")
 
-  lazy val registrationRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
-
   lazy val signUpRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> SignUp.name)
 
   lazy val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> UserMatching.name)
@@ -213,15 +211,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
   }
 
-  "registrationJourneyPredicate" should {
-    "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
-      registrationJourneyPredicate(registrationRequest)(blankUser).right.value mustBe AuthPredicateSuccess
-    }
-
-    "return the index page for any other state" in {
-      await(registrationJourneyPredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
-    }
-  }
 
   "signUpJourneyPredicate" should {
     "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
@@ -240,20 +229,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
     "return the index page for any other state" in {
       await(userMatchingJourneyPredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
-    }
-  }
-
-  "ivPredicate" should {
-    "return an AuthPredicateSuccess where a user has the Registration journey state and a confidence level of 200 or greater" in {
-      ivPredicate(registrationRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
-    }
-
-    "return an AuthPredicateSuccess where a user does not have the Registration journey state" in {
-      ivPredicate(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
-    }
-
-    "return the goToIv page where a user has the Registration journey state and a confidence level less than 200" in {
-      await(ivPredicate(registrationRequest)(blankUser).left.value) mustBe goToIv
     }
   }
 
