@@ -32,7 +32,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
 
       When("I call GET /add-another")
       val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = true)
-      val expectedRedirect: String = s"$mockUrl/report-quarterly/income-and-expenses/sign-up/eligibility/client/other-income"
+      val expectedRedirect: String = s"$mockUrl/report-quarterly/income-and-expenses/sign-up/eligibility/client/covid-19"
 
       Then(s"The result should have a status of SEE_OTHER and redirect to '$expectedRedirect'")
       res should have(
