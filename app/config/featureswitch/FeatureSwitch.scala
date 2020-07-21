@@ -16,8 +16,6 @@
 
 package config.featureswitch
 
-import config.featureswitch.FeatureSwitch.prefix
-
 sealed trait FeatureSwitch {
   val name: String
   val displayText: String
@@ -27,7 +25,7 @@ object FeatureSwitch {
   val prefix = "feature-switch"
 
   val switches: Set[FeatureSwitch]  = Set(
-
+    ReleaseFour
   )
 
   def apply(str: String): FeatureSwitch =
@@ -38,6 +36,10 @@ object FeatureSwitch {
 
   def get(str: String): Option[FeatureSwitch] = switches find (_.name == str)
 
+  case object ReleaseFour extends FeatureSwitch {
+    override val name = s"$prefix.enable-release-four"
+    override val displayText = "Release four"
+  }
 }
 
 
