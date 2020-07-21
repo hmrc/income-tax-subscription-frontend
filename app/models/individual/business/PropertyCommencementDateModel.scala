@@ -14,29 +14,14 @@
  * limitations under the License.
  */
 
-package forms.submapping
+package models.individual.business
 
-import forms.validation.utils.MappingUtil._
+
 import models.DateModel
-import play.api.data.Forms.{mapping, tuple}
-import play.api.data.Mapping
+import play.api.libs.json.{Json, OFormat}
 
-object DateMapping {
+case class PropertyCommencementDateModel(startDate: DateModel)
 
-  val dateDay = "dateDay"
-  val dateMonth = "dateMonth"
-  val dateYear = "dateYear"
-
-  val dateMapping: Mapping[DateModel] = mapping(
-    dateDay -> oText.toText,
-    dateMonth -> oText.toText,
-    dateYear -> oText.toText
-  )(DateModel.apply)(DateModel.unapply)
-
-  val optDateMapping: Mapping[(Option[String], Option[String], Option[String])] = tuple(
-    dateDay -> oText,
-    dateMonth -> oText,
-    dateYear -> oText
-  )
-
+object PropertyCommencementDateModel {
+  implicit val format: OFormat[PropertyCommencementDateModel] = Json.format[PropertyCommencementDateModel]
 }
