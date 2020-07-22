@@ -18,7 +18,7 @@ package utilities
 
 import config.AppConfig
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, PropertyCommencementDateModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -44,6 +44,8 @@ object CacheUtil {
     def getAccountingMethod: Option[AccountingMethodModel] = cacheMap.getEntry[AccountingMethodModel](AccountingMethod)
 
     def getPropertyAccountingMethod: Option[AccountingMethodPropertyModel] = cacheMap.getEntry[AccountingMethodPropertyModel](PropertyAccountingMethod)
+
+    def getPropertyCommencementDate: Option[PropertyCommencementDateModel] = cacheMap.getEntry[PropertyCommencementDateModel](PropertyCommencementDate)
 
     def getSummary()(implicit appConfig: AppConfig): IndividualSummary =
       getIncomeSourceModel match {

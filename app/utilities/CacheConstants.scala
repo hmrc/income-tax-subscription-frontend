@@ -33,4 +33,5 @@ object CacheConstants {
   val PropertyAccountingMethod = "PropertyAccountingMethod"
   val MtditId = "MtditId"
   val PaperlessPreferenceToken = "PaperlessPreferenceKey"
+  val PropertyCommencementDate = "PropertyStartDate"
 }
