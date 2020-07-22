@@ -277,6 +277,8 @@ error.survey-feedback.maxLength                                 = You can’t en
 error.confirm-agent.empty                                       = You must select an option to continue
 error.confirm-agent.invalid                                     = You must select an option to continue
 
+error.property_accounting_period.minStartDate                   = The date your UK property business started trading must be the same as or before {0}
+
 ## Eligible page ##
 eligible.title                                                  = You can send digital updates
 eligible.heading                                                = You can send digital updates

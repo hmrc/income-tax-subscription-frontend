@@ -290,6 +290,8 @@ error.survey-feedback.maxLength                                 = Ni allwch nodi
 error.confirm-agent.empty                                       = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.confirm-agent.invalid                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
+error.property_accounting_period.minStartDate                   = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+
 ## Eligible page ##
 eligible.title                                                  = Gallwch anfon diweddariadau digidol
 eligible.heading                                                = Gallwch anfon diweddariadau digidol
