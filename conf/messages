@@ -140,6 +140,22 @@ business.name.title                                             = Business name
 business.name.heading                                           = What’s the name of your business?
 business.name.signup.line_1                                     = This is the business name you used to register for Self Assessment. If your business doesn’t have a name, enter your own name.
 
+## Property Commencement Date Date
+business.property.name.title                                    = When did your UK property business start trading?
+business.property.name.heading                                  = When did your UK property business start trading?
+business.property.line_1                                        = This is the date that letting or renting out any property first started.
+business.property.start_date.exampleStartDate                   = For example, 1 8 2014
+
+# Property Commencement Date errors
+property.error.date.empty                                       = Enter the date your business started trading
+property.error.day.empty                                        = The date must include a day
+property.error.month.empty                                      = The date must include a month
+property.error.year.empty                                       = The date must include a year
+property.error.day.month.empty                                  = The date must include a day and a month
+property.error.day.year.empty                                   = The date must include a day and a year
+property.error.month.year.empty                                 = The date must include a month and a year
+property.error.property_accounting_period.minStartDate          = The date your business started trading must be the same as or before {0}
+
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
 contact_email.heading                                           = Enter your email address

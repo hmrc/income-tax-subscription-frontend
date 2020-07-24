@@ -147,6 +147,21 @@ business.name.title                                             = Enw’r busnes
 business.name.heading                                           = Beth yw enw’ch busnes?
 business.name.signup.line_1                                     = Dyma enw’r busnes a ddefnyddioch i gofrestru ar gyfer Hunanasesiad. Os nad oes enw ar eich busnes, nodwch eich enw’ch hun.
 
+## Property Commencement Date Date
+business.property.name.title                                    = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
+business.property.name.heading                                  = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
+business.property.line_1                                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
+business.property.start_date.exampleStartDate                   = Er enghraifft, 1 8 2014
+
+# Property Commencement Date errors
+property.error.date.empty                                       = Nodwch y dyddiad y gwnaeth eich busnes ddechrau masnachu
+property.error.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+property.error.month.empty                                      = Mae’n rhaid i’r dyddiad gynnwys mis
+property.error.year.empty                                       = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+property.error.day.month.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+property.error.day.year.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+property.error.month.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+property.error.property_accounting_period.minStartDate          = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
 
 ## Contact Email Address page ##
 contact_email.title                                             = Nodwch eich cyfeiriad e-bost

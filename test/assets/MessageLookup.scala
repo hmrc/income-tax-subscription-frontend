@@ -155,6 +155,15 @@ object MessageLookup {
 
   }
 
+  object PropertyCommencementDateMessages {
+    val title = "When did your UK property business start trading?"
+    val heading: String = title
+    val exampleStartDate = "For example, 1 4 2018"
+    val continue = "Continue"
+    val backLink = "Back"
+    val update = "Update"
+  }
+
 
   object AccountingMethod {
     val title = "How do you record your income and expenses for your self-employed business?"
