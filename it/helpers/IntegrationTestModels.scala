@@ -44,6 +44,10 @@ object IntegrationTestModels {
   val testBusinessName = BusinessNameModel("test business")
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
+  val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
+  val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
+  val testPropertyCommencementDate = PropertyCommencementDateModel(testValidStartDate)
+  val testInvalidCommencementDate = PropertyCommencementDateModel(testInvalidStartDate)
 
   lazy val fullKeystoreDataBothPost: Map[String, JsValue] =
     keystoreData(
@@ -54,6 +58,7 @@ object IntegrationTestModels {
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
+      propertyCommencementDate = Some(testPropertyCommencementDate),
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
@@ -71,6 +76,7 @@ object IntegrationTestModels {
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
+                   propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
                    propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None
                   ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
@@ -81,6 +87,7 @@ object IntegrationTestModels {
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
+      propertyCommencementDate.map(model => PropertyCommencementDate -> PropertyCommencementDateModel.format.writes(model)) ++
       propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))
   }
 

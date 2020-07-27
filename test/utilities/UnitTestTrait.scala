@@ -27,6 +27,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import play.api.i18n.I18nSupport
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.language.LanguageUtils
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
@@ -35,6 +36,8 @@ trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits 
   implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  val mockLanguageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
 
   implicit def futureWrapperUtil[T](value: T): Future[T] = Future.successful(value)
 

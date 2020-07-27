@@ -16,50 +16,64 @@
 
 package controllers.individual.business
 
+import java.time.LocalDate
+
 import controllers.ControllerBaseSpec
-import config.featureswitch._
-import utilities.TestModels._
-import forms.individual.business.AccountingMethodPropertyForm
-import models.Cash
-import models.common.AccountingMethodPropertyModel
+import forms.individual.business.PropertyCommencementDateForm
+import models.DateModel
+import models.individual.business.PropertyCommencementDateModel
+import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.CacheConstants.PropertyAccountingMethod
+import utilities.CacheConstants.PropertyCommencementDate
+import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceProperty}
 
 import scala.concurrent.Future
 
-class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
-  with MockKeystoreService
-  with FeatureSwitching {
+class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with MockKeystoreService {
 
-  override val controllerName: String = "PropertyAccountingMethod"
+  override val controllerName: String = "PropertyCommencementDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestPropertyAccountingMethodController.show(isEditMode = false),
-    "submit" -> TestPropertyAccountingMethodController.submit(isEditMode = false)
+    "show" -> TestPropertyCommencementDateController.show(isEditMode = false),
+    "submit" -> TestPropertyCommencementDateController.submit(isEditMode = false)
   )
 
-  object TestPropertyAccountingMethodController extends PropertyAccountingMethodController(
+  object TestPropertyCommencementDateController extends PropertyCommencementDateController(
     mockAuthService,
-    MockKeystoreService
+    MockKeystoreService,
+    mockLanguageUtils
   )
+
+  trait Test {
+    val controller = new PropertyCommencementDateController(
+      mockAuthService,
+      MockKeystoreService,
+      mockLanguageUtils
+    )
+  }
+
+  val incomeSourcePropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true)
+
+  val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true)
 
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceProperty)
 
   def bothIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceBoth)
 
-  "show" should {
-    "display the property accounting method view and return OK (200)" in {
-      lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
-      mockFetchPropertyAccountingFromKeyStore(None)
-      mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType) // for the back url
+  "show" should {
+    "display the property accounting method view and return OK (200)" in new Test {
+      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+
+      mockFetchAllFromKeyStore(testCacheMap(
+        incomeSourceIndiv = Some(incomeSourceBoth)
+      ))
 
       status(result) must be(Status.OK)
-      verifyKeystoreFetch(PropertyAccountingMethod, 1)
-      verifyKeystoreSave(PropertyAccountingMethod, 0)
+      verifyKeystoreSave(PropertyCommencementDate, 0)
       verifyKeyStoreFetchAll(1)
 
     }
@@ -67,11 +81,14 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "submit" should {
 
-    def callShow(isEditMode: Boolean): Future[Result] = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, AccountingMethodPropertyModel(Cash))
+    val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
+    val testPropertyCommencementDateModel: PropertyCommencementDateModel = PropertyCommencementDateModel(testValidStartDate)
+
+    def callShow(isEditMode: Boolean): Future[Result] = TestPropertyCommencementDateController.submit(isEditMode = isEditMode)(
+      subscriptionRequest.post(PropertyCommencementDateForm.propertyCommencementDateForm(testValidStartDate.toString), testPropertyCommencementDateModel)
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyCommencementDateController.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
@@ -83,19 +100,19 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 1)
+        verifyKeystoreSave(PropertyCommencementDate, 1)
         verifyKeyStoreFetchAll(0)
       }
 
-      "redirect to checkYourAnswer page" in {
+      "redirect to businessAccountingMethod page" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 1)
+        verifyKeystoreSave(PropertyCommencementDate, 1)
         verifyKeyStoreFetchAll(0)
       }
 
@@ -110,7 +127,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 1)
+        verifyKeystoreSave(PropertyCommencementDate, 1)
         verifyKeyStoreFetchAll(0)
       }
 
@@ -122,7 +139,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 1)
+        verifyKeystoreSave(PropertyCommencementDate, 1)
         verifyKeyStoreFetchAll(0)
 
       }
@@ -138,47 +155,32 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 0)
+        verifyKeystoreSave(PropertyCommencementDate, 0)
         verifyKeyStoreFetchAll(1)
       }
     }
 
     "The back url is not in edit mode" when {
       "the user has rental property and it is the only income source" should {
-        "redirect to income source page" in {
-          mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
+        "redirect to income source page" in new Test {
+          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
             controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }
       }
 
-      "the user has rental property and it is not the only income source and the user has a business" should {
-        "redirect to business accounting method page" in {
-          mockFetchAllFromKeyStore(bothIncomeSourceType)
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
-            controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+      "the user has rental property and has a business" should {
+        "redirect to business accounting method page" in new Test {
+          controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
+            appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
         }
       }
 
     }
     "The back url is in edit mode" when {
       "the user click back url" should {
-        "redirect to check your answer page" in {
-          setupMockKeystoreSaveFunctions()
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = true)) mustBe
+        "redirect to check your answer page" in new Test {
+          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
             controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-        }
-      }
-    }
-    "The back URL with Release Four enabled" when {
-      FeatureSwitch.switches foreach { switch =>
-        "the user clicks the back url" should {
-          "redirect to the Property Commencement Date page" in {
-            enable(switch)
-            mockFetchAllFromKeyStore(bothIncomeSourceType)
-            await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
-              controllers.individual.business.routes.PropertyCommencementDateController.show().url
-          }
         }
       }
     }

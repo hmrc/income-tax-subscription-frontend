@@ -89,6 +89,8 @@ trait AppConfig extends FeatureSwitching {
 
   def incomeTaxEligibilityFrontendUrl: String
 
+  def incomeTaxSelfEmploymentsFrontendUrl: String
+
   val eligibilityFeatureSwitchUrl: String
 
   def languageMap: Map[String, Lang] = Map(
@@ -214,6 +216,10 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   override val incomeTaxEligibilityFrontendUrl: String = {
     s"${config.getString("income-tax-subscription-eligibility-frontend.url")}/report-quarterly/income-and-expenses/sign-up/eligibility"
+  }
+
+  override val incomeTaxSelfEmploymentsFrontendUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments"
   }
 
   override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"

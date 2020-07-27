@@ -18,6 +18,8 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.common.AccountingMethodPropertyModel
@@ -34,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PropertyAccountingMethodController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
                                                   (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                                   mcc: MessagesControllerComponents) extends SignUpController {
+                                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
     for {
@@ -72,9 +74,11 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
   }
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] =
-    if (isEditMode)
+    if (isEditMode) {
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-    else {
+    } else if (isEnabled(ReleaseFour)) {
+      Future.successful(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
+    } else {
       keystoreService.fetchAll() map { cacheMap =>
         cacheMap.getIncomeSourceModel match {
           case Some(IncomeSourceModel(false, true)) =>
@@ -84,5 +88,4 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
         }
       }
     }
-
 }

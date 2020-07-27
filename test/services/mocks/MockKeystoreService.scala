@@ -17,7 +17,7 @@
 package services.mocks
 
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, PropertyCommencementDateModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
 import org.mockito.ArgumentMatchers
@@ -84,6 +84,10 @@ trait MockKeystoreService extends UnitTestTrait with MockitoSugar with BeforeAnd
 
   protected final def mockFetchPropertyAccountingFromKeyStore(fetchPropertyAccountingMethod: Option[AccountingMethodPropertyModel]): Unit = {
     mockFetchFromKeyStore[AccountingMethodPropertyModel](PropertyAccountingMethod, fetchPropertyAccountingMethod)
+  }
+
+  protected final def mockFetchPropertyCommencementDateFromKeyStore(fetchPropertyCommencementDateMethod: Option[PropertyCommencementDateModel]): Unit = {
+    mockFetchFromKeyStore[PropertyCommencementDateModel](PropertyCommencementDate, fetchPropertyCommencementDateMethod)
   }
 
   protected final def mockFetchSubscriptionIdFromKeyStore(fetchSubscriptionId: Option[String]): Unit = {

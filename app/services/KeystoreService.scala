@@ -107,5 +107,12 @@ class KeystoreService @Inject()(val session: SessionCache)
 
   def savePaperlessPreferenceToken(token: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC =
     save[String](PaperlessPreferenceToken, token)
+
+  def fetchPropertyCommencementDate()(implicit hc: HeaderCarrier, reads: Reads[PropertyCommencementDateModel]): FO[PropertyCommencementDateModel] =
+    fetch[PropertyCommencementDateModel](PropertyCommencementDate)
+
+  def savePropertyCommencementDate(propertyCommencementDate: PropertyCommencementDateModel)
+                                  (implicit hc: HeaderCarrier, reads: Reads[PropertyCommencementDateModel]): FC =
+    save[PropertyCommencementDateModel](PropertyCommencementDate, propertyCommencementDate)
 }
 
