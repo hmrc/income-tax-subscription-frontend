@@ -24,7 +24,7 @@
 }
 
 @errMsg(err: FormError) = {
-    <li><a href="#@err.key">@{Messages(s"${err.message}")}</a></li>
+    <li><a href="#@err.key">@{Messages(err.message, err.args: _*)}</a></li>
 }
 
 @if(form.hasErrors) {
