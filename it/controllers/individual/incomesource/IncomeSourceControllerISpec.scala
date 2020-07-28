@@ -21,7 +21,6 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models.individual.incomesource.IncomeSourceModel
-import models.{No, Yes}
 import play.api.http.Status._
 import utilities.CacheConstants
 
@@ -88,23 +87,23 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         )
       }
       "the user rents a uk property and doesn't have other income" in {
-          val userInput: IncomeSourceModel = IncomeSourceModel(false, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(false, true)
 
-          Given("I setup the wiremock stubs and feature switch")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.IndividualIncomeSource, userInput)
+        Given("I setup the wiremock stubs and feature switch")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.IndividualIncomeSource, userInput)
 
-          When("POST /details/income-receive is called")
-          val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
+        When("POST /details/income-receive is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-          Then(s"Should return $SEE_OTHER with a redirect location of property accounting method")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(accountingMethodPropertyURI)
-          )
+        Then(s"Should return $SEE_OTHER with a redirect location of property accounting method")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingMethodPropertyURI)
+        )
       }
       "the user does not rent a uk property but have other income" in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(true,false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(true, false)
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()

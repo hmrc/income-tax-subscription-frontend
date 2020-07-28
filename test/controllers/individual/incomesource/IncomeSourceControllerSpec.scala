@@ -17,7 +17,7 @@
 package controllers.individual.incomesource
 
 import config.MockConfig
-import config.featureswitch.FeatureSwitching
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import controllers.ControllerBaseSpec
 import forms.individual.incomesource.IncomeSourceForm
 import models.individual.incomesource.IncomeSourceModel
@@ -77,7 +77,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
   "Calling the submit action of the IncomeSource controller with an authorised user and valid submission" should {
 
     def callSubmit(incomeSourceModel: IncomeSourceModel,
-                    isEditMode: Boolean
+                   isEditMode: Boolean
                   ): Future[Result] = {
       new TestIncomeSourceController().submit(isEditMode = isEditMode)(
         subscriptionRequest.post(IncomeSourceForm.incomeSourceForm, incomeSourceModel)
@@ -109,6 +109,46 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         await(goodRequest)
         verifyKeystoreFetch(IndividualIncomeSource, 0)
         verifyKeystoreSave(IndividualIncomeSource, 1)
+      }
+
+      "The redirect to Property Accounting page with Release Four disabled" when {
+        FeatureSwitch.switches foreach { switch =>
+          "Property Commencement date feature switch is disabled" should {
+            "redirect to the Property Accounting page" in {
+              disable(switch)
+              setupMockKeystoreSaveFunctions()
+
+              val goodRequest = callSubmit(IncomeSourceModel(false, true), isEditMode = false)
+
+              status(goodRequest) must be(Status.SEE_OTHER)
+              redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
+
+              await(goodRequest)
+              verifyKeystoreFetch(IndividualIncomeSource, 0)
+              verifyKeystoreSave(IndividualIncomeSource, 1)
+            }
+          }
+        }
+      }
+
+      "The redirect to Property Commencement Date page with Release Four enabled" when {
+        FeatureSwitch.switches foreach { switch =>
+          "Property Commencement date feature switch is disabled" should {
+            "redirect to the Property Commencement Date page" in {
+              enable(switch)
+              setupMockKeystoreSaveFunctions()
+
+              val goodRequest = callSubmit(IncomeSourceModel(false, true), isEditMode = false)
+
+              status(goodRequest) must be(Status.SEE_OTHER)
+              redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
+
+              await(goodRequest)
+              verifyKeystoreFetch(IndividualIncomeSource, 0)
+              verifyKeystoreSave(IndividualIncomeSource, 1)
+            }
+          }
+        }
       }
 
 
@@ -143,42 +183,28 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "When it is in edit mode and user's selection has changed" should {
-        s"return an SEE OTHER (303) and goto ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}" in {
-          setupMockKeystoreSaveFunctions()
-          mockFetchIndividualIncomeSourceFromKeyStore(IncomeSourceModel(true, true))
 
-          val goodRequest = callSubmit(IncomeSourceModel(false, true), isEditMode = true)
+      "Calling the submit action of the IncomeSource controller with an authorised user and invalid submission" should {
+        lazy val badRequest = new TestIncomeSourceController().submit(isEditMode = true)(subscriptionRequest)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+        "return a bad request status (400)" in {
+          status(badRequest) must be(Status.BAD_REQUEST)
 
-          await(goodRequest)
-          verifyKeystoreFetch(IndividualIncomeSource, 1)
-          verifyKeystoreSave(IndividualIncomeSource, 1)
+          await(badRequest)
+          verifyKeystoreFetch(IndividualIncomeSource, 0)
+          verifyKeystoreSave(IndividualIncomeSource, 0)
         }
       }
-    }
 
-    "Calling the submit action of the IncomeSource controller with an authorised user and invalid submission" should {
-      lazy val badRequest = new TestIncomeSourceController().submit(isEditMode = true)(subscriptionRequest)
 
-      "return a bad request status (400)" in {
-        status(badRequest) must be(Status.BAD_REQUEST)
-
-        await(badRequest)
-        verifyKeystoreFetch(IndividualIncomeSource, 0)
-        verifyKeystoreSave(IndividualIncomeSource, 0)
+      "The back url" should {
+        s"point to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url} on income source page" in {
+          new TestIncomeSourceController().backUrl mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        }
       }
+
+      authorisationTests()
+
     }
-
-    "The back url" should {
-      s"point to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url} on income source page" in {
-        new TestIncomeSourceController().backUrl mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-      }
-    }
-
-    authorisationTests()
-
   }
 }

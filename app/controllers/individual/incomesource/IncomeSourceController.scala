@@ -18,6 +18,8 @@ package controllers.individual.incomesource
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
 import forms.individual.incomesource.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
 import models.individual.incomesource._
@@ -31,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class IncomeSourceController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends SignUpController {
+                                       mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.incometax.incomesource.income_source(
@@ -51,6 +53,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, keystoreSer
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
+
       IncomeSourceForm.incomeSourceForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
@@ -58,6 +61,8 @@ class IncomeSourceController @Inject()(val authService: AuthService, keystoreSer
           lazy val linearJourney: Future[Result] =
             keystoreService.saveIndividualIncomeSource(incomeSource) map { _ =>
               incomeSource match {
+                case IncomeSourceModel(false, true) if isEnabled(ReleaseFour) =>
+                  Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
                 case IncomeSourceModel(true, false) =>
                   Redirect(controllers.individual.business.routes.BusinessNameController.show())
                 case IncomeSourceModel(false, true) =>
@@ -68,17 +73,19 @@ class IncomeSourceController @Inject()(val authService: AuthService, keystoreSer
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
               }
             }
-            if (!isEditMode) {
-              linearJourney
-            } else {
-              keystoreService.fetchIndividualIncomeSource() flatMap {
-                case Some(`incomeSource`) => Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
-                case _ => linearJourney
-              }
+
+          if (!isEditMode) {
+            linearJourney
+          } else {
+            keystoreService.fetchIndividualIncomeSource() flatMap {
+              case Some(`incomeSource`) => Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
+              case _ => linearJourney
             }
           }
+        }
       )
   }
+
 
   lazy val backUrl: String =
     controllers.individual.subscription.routes.CheckYourAnswersController.show().url

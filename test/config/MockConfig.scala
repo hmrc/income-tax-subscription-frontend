@@ -100,6 +100,7 @@ trait MockConfig extends AppConfig {
   override def allocateEnrolmentEnrolmentStoreUrl(groupId: String, enrolmentKey: String): String = ???
 
   override def assignEnrolmentUrl(userId: String, enrolmentKey: String): String = ???
+
 }
 
 object MockConfig extends MockConfig
