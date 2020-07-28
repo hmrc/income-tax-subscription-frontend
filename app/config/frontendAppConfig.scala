@@ -110,6 +110,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   val appName: String = config.getString("appName")
 
+
   // AutoEnrolment links
   def usersGroupsSearchUrl: String = config.baseUrl("users-groups-search")
 
@@ -251,6 +252,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   override lazy val betaFeedbackUnauthenticatedUrl: String =
     s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+
 
 }
 

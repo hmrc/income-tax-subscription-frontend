@@ -19,7 +19,7 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.common.AccountingMethodPropertyModel
