@@ -17,7 +17,8 @@
 package controllers.individual.incomesource
 
 import config.MockConfig
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.incomesource.IncomeSourceForm
 import models.individual.incomesource.IncomeSourceModel
@@ -39,6 +40,11 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     mockAuthService,
     MockKeystoreService
   )
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "IncomeSourceController"
 
@@ -112,41 +118,36 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "The redirect to Property Accounting page with Release Four disabled" when {
-        FeatureSwitch.switches foreach { switch =>
-          "Property Commencement date feature switch is disabled" should {
-            "redirect to the Property Accounting page" in {
-              disable(switch)
-              setupMockKeystoreSaveFunctions()
+        "Property Commencement date feature switch is disabled" should {
+          "redirect to the Property Accounting page" in {
+            setupMockKeystoreSaveFunctions()
 
-              val goodRequest = callSubmit(IncomeSourceModel(false, true), isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(false, true), isEditMode = false)
 
-              status(goodRequest) must be(Status.SEE_OTHER)
-              redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
-              await(goodRequest)
-              verifyKeystoreFetch(IndividualIncomeSource, 0)
-              verifyKeystoreSave(IndividualIncomeSource, 1)
-            }
+            await(goodRequest)
+            verifyKeystoreFetch(IndividualIncomeSource, 0)
+            verifyKeystoreSave(IndividualIncomeSource, 1)
           }
         }
       }
 
       "The redirect to Property Commencement Date page with Release Four enabled" when {
-        FeatureSwitch.switches foreach { switch =>
-          "Property Commencement date feature switch is disabled" should {
-            "redirect to the Property Commencement Date page" in {
-              enable(switch)
-              setupMockKeystoreSaveFunctions()
+        "Property Commencement date feature switch is disabled" should {
+          "redirect to the Property Commencement Date page" in {
+            enable(ReleaseFour)
+            setupMockKeystoreSaveFunctions()
 
-              val goodRequest = callSubmit(IncomeSourceModel(false, true), isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(false, true), isEditMode = false)
 
-              status(goodRequest) must be(Status.SEE_OTHER)
-              redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
 
-              await(goodRequest)
-              verifyKeystoreFetch(IndividualIncomeSource, 0)
-              verifyKeystoreSave(IndividualIncomeSource, 1)
-            }
+            await(goodRequest)
+            verifyKeystoreFetch(IndividualIncomeSource, 0)
+            verifyKeystoreSave(IndividualIncomeSource, 1)
           }
         }
       }
