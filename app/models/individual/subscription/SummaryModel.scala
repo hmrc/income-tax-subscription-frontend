@@ -49,7 +49,8 @@ case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None
                              businessName: Option[BusinessNameModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
-                             accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel
+                             accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                             selfEmployments: Option[List[SelfEmploymentData]] = None) extends SummaryModel
 
 
 case class AgentSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None,
