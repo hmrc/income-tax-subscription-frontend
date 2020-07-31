@@ -19,6 +19,7 @@ package views.individual.incometax.subscription
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IndividualSummary
 import org.jsoup.nodes.{Document, Element}
@@ -29,24 +30,33 @@ import play.twirl.api.HtmlFormat
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.{TestModels, UnitTestTrait}
 import views.individual.helpers.SummaryIdConstants._
+import utilities.individual.{ImplicitDateFormatter, ImplicitDateFormatterImpl}
+import uk.gov.hmrc.play.language.LanguageUtils
 
-class CheckYourAnswersViewSpec extends UnitTestTrait {
+
+class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter {
+
+  override val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
 
   val testBusinessName: BusinessNameModel = BusinessNameModel("test business name")
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
   val testIncomeSourceBoth: IncomeSourceModel = TestModels.testIncomeSourceBoth
+  val testPropertyCommencement: PropertyCommencementDateModel = TestModels.testPropertyCommencementDateModel
   val testSummary: IndividualSummary = customTestSummary()
+  val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   def customTestSummary(incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): IndividualSummary = IndividualSummary(
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                        propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencement): IndividualSummary = IndividualSummary(
     incomeSourceIndiv = incomeSource,
     businessName = testBusinessName,
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
-    accountingMethodProperty = accountingMethodProperty
+    accountingMethodProperty = accountingMethodProperty,
+    propertyCommencementDate = testPropertyCommencement
   )
 
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
@@ -56,8 +66,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     views.html.individual.incometax.subscription.check_your_answers(
       summaryModel = testSummaryModel,
       postAction = postAction,
-      backUrl = backUrl
-    )(FakeRequest(), implicitly, appConfig)
+      backUrl = backUrl,
+      dateFormatter)(FakeRequest(), implicitly, appConfig)
 
   def document(testSummaryModel: IndividualSummary = testSummary): Document =
     page(testSummaryModel).doc
@@ -238,6 +248,21 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       )
     }
 
+
+    "display the correct info for the Property Business Commencement" in {
+      val sectionId = PropertyCommencementId
+      val expectedQuestion = messages.propertyCommencement
+      val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
+      val expectedEditLink = controllers.individual.business.routes.PropertyCommencementDateController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink,
+        testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
+      )
+    }
   }
 
 }

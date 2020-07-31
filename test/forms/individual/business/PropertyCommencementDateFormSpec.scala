@@ -20,9 +20,9 @@ import java.time.LocalDate
 
 import forms.submapping.DateMapping._
 import models.DateModel
+import forms.individual.business.PropertyCommencementDateForm.{propertyCommencementDateForm, startDate}
+import forms.validation.testutils.DataMap.DataMap
 import models.individual.business.PropertyCommencementDateModel
-import forms.individual.business.PropertyCommencementDateForm.{startDate, propertyCommencementDateForm}
-import forms.validation.testutils.DataMap.{DataMap}
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

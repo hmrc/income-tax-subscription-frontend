@@ -29,5 +29,6 @@ object SummaryIdConstants {
   val SelectedTaxYearId = "selectedTaxYear"
   val AccountingMethodId = "accountingMethod"
   val AccountingMethodPropertyId = "accountingMethodProperty"
+  val PropertyCommencementId = "propertyCommencement"
 
 }

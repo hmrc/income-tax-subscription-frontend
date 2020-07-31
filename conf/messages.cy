@@ -213,6 +213,7 @@ summary.accounting_method_property                              = Dull cyfrifydd
 summary.selected_year                                           = Y flwyddyn dreth yr ydych wedi cofrestru ar ei chyfer
 summary.selected_year.current                                   = Y flwyddyn dreth bresennol ({0} i {1})
 summary.selected_year.next                                      = Y flwyddyn dreth nesaf ({0} i {1})
+summary.property_commencement_date                              = Dyddiad dechrau masnachu’ch busnes eiddo yn y DU
 
 ## Confirmation page ##
 confirmation.title                                              = Tudalen gadarnhau

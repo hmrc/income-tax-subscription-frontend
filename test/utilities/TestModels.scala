@@ -188,6 +188,6 @@ object TestModels extends Implicits {
     accountingMethodProperty = Some(testAccountingMethodProperty)
   )
 
-  val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(3))
+  val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
   val testPropertyCommencementDateModel: PropertyCommencementDateModel = PropertyCommencementDateModel(testValidStartDate)
 }

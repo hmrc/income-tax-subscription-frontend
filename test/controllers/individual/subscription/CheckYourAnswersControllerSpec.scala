@@ -25,17 +25,21 @@ import play.api.test.Helpers._
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.InternalServerException
-import utilities.CacheUtil._
 import utilities.CacheConstants.MtditId
+import utilities.CacheUtil._
 import utilities.TestModels._
+import utilities.individual.{ImplicitDateFormatterImpl}
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
+
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
   with MockSubscriptionOrchestrationService
   with FeatureSwitching {
+
+  implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -46,7 +50,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   object TestCheckYourAnswersController extends CheckYourAnswersController(
     mockAuthService,
     MockKeystoreService,
-    mockSubscriptionOrchestrationService
+    mockSubscriptionOrchestrationService,
+    mockImplicitDateFormatter
   )
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {
