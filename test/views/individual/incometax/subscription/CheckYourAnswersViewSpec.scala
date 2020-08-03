@@ -67,15 +67,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val editLinkId: String => String = (sectionId: String) => s"$sectionId-edit"
 
   def questionStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__heading tabular-data__heading--label column-one-third"
+    section.attr("class") shouldBe "govuk-summary-list__key"
   }
 
   def answerStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__data-1 column-one-third"
+    section.attr("class") shouldBe "govuk-summary-list__value"
   }
 
   def editLinkStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__data-2 column-one-third"
+    section.attr("class") shouldBe "govuk-summary-list__actions"
   }
 
   "Summary page view" should {
