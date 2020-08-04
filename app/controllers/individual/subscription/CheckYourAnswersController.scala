@@ -29,22 +29,27 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.CacheUtil._
 import utilities.ITSASessionKeys
+import utilities.individual.{ImplicitDateFormatterImpl}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersController @Inject()(val authService: AuthService,
                                            keystoreService: KeystoreService,
-                                           subscriptionService: SubscriptionOrchestrationService)
+                                           subscriptionService: SubscriptionOrchestrationService,
+                                           implicitDateFormatter: ImplicitDateFormatterImpl
+                                          )
                                           (implicit val ec: ExecutionContext,
                                            appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController {
+                                           mcc: MessagesControllerComponents
+                                          ) extends SignUpController {
+
 
   def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
       case IncomeSourceModel(_, true) =>
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-      case IncomeSourceModel(true,false) =>
+      case IncomeSourceModel(true, false) =>
         controllers.individual.business.routes.BusinessAccountingMethodController.show().url
     }
   }
@@ -56,7 +61,8 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
           Ok(views.html.individual.incometax.subscription.check_your_answers(
             cache.getSummary(),
             controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
-            backUrl = backUrl(cache.getIncomeSourceModel.get)
+            backUrl = backUrl(cache.getIncomeSourceModel.get),
+            implicitDateFormatter
           ))
         )
   }

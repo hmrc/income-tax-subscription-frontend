@@ -18,6 +18,7 @@ package models.individual.subscription
 
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
+import  models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
 
 
@@ -37,8 +38,9 @@ sealed trait SummaryModel {
 
   def accountingMethod: Option[AccountingMethodModel]
 
-  def accountingMethodProperty: Option[AccountingMethodPropertyModel]
+  def propertyCommencementDate: Option[PropertyCommencementDateModel]
 
+  def accountingMethodProperty: Option[AccountingMethodPropertyModel]
 }
 
 
@@ -49,8 +51,10 @@ case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None
                              businessName: Option[BusinessNameModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
+                             propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
                              accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                              selfEmployments: Option[List[SelfEmploymentData]] = None) extends SummaryModel
+
 
 
 case class AgentSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None,
@@ -60,4 +64,5 @@ case class AgentSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                        propertyCommencementDate: Option[PropertyCommencementDateModel] = None) extends SummaryModel

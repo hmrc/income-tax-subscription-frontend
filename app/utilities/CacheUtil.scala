@@ -52,6 +52,7 @@ object CacheUtil {
         case Some(IncomeSourceModel(false, true)) =>
           IndividualSummary(
             incomeSourceIndiv = getIncomeSourceModel,
+            propertyCommencementDate = getPropertyCommencementDate,
             accountingMethodProperty = getPropertyAccountingMethod
           )
         case Some(IncomeSourceModel(true, false)) =>
@@ -59,6 +60,7 @@ object CacheUtil {
             incomeSourceIndiv = getIncomeSourceModel,
             businessName = getBusinessName,
             selectedTaxYear = getSelectedTaxYear,
+            propertyCommencementDate = getPropertyCommencementDate,
             accountingMethod = getAccountingMethod
           )
         case Some(_) =>
@@ -66,6 +68,7 @@ object CacheUtil {
             incomeSourceIndiv = getIncomeSourceModel,
             businessName = getBusinessName,
             accountingMethod = getAccountingMethod,
+            propertyCommencementDate = getPropertyCommencementDate,
             accountingMethodProperty = getPropertyAccountingMethod
           )
         case _ => IndividualSummary()
