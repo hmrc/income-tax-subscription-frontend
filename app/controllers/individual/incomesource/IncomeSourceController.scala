@@ -61,13 +61,13 @@ class IncomeSourceController @Inject()(val authService: AuthService, keystoreSer
           lazy val linearJourney: Future[Result] =
             keystoreService.saveIndividualIncomeSource(incomeSource) map { _ =>
               incomeSource match {
-                case IncomeSourceModel(false, true) if isEnabled(ReleaseFour) =>
+                case IncomeSourceModel(false, true, _) if isEnabled(ReleaseFour) =>
                   Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
-                case IncomeSourceModel(true, false) =>
+                case IncomeSourceModel(true, false, _) =>
                   Redirect(controllers.individual.business.routes.BusinessNameController.show())
-                case IncomeSourceModel(false, true) =>
+                case IncomeSourceModel(false, true, _) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-                case IncomeSourceModel(true, true) =>
+                case IncomeSourceModel(true, true, _) =>
                   Redirect(controllers.individual.business.routes.BusinessNameController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())

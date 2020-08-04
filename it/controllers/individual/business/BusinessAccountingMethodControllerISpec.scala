@@ -94,7 +94,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
           Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(IncomeSourceModel(true, true))))
+          KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
 
           When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")

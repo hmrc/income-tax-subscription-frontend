@@ -49,8 +49,8 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
       }
     } else {
       (summaryData.incomeSourceIndiv.get, summaryData.selectedTaxYear) match {
-        case (IncomeSourceModel(true, false), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
-        case (IncomeSourceModel(true, _), _) => Some(getCurrentTaxYear)
+        case (IncomeSourceModel(true, false, _), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
+        case (IncomeSourceModel(true, _, _), _) => Some(getCurrentTaxYear)
         case _ => None
       }
     }
@@ -80,7 +80,7 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
     else {
 
       val businessSection = model.incomeSourceIndiv.flatMap {
-        case IncomeSourceModel(true, _) =>
+        case IncomeSourceModel(true, _, _) =>
           for {
             accountingPeriod <- getAccountingPeriod(model, arn.isDefined)
             accountingMethod <- model.accountingMethod map (_.accountingMethod)
@@ -90,7 +90,7 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
       }
 
       val propertySection = model.incomeSourceIndiv flatMap {
-        case IncomeSourceModel(_, true) =>
+        case IncomeSourceModel(_, true, _) =>
           Some(PropertyIncomeModel(model.accountingMethodProperty.map(_.propertyAccountingMethod)))
         case _ => None
       }

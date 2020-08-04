@@ -81,7 +81,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
     } else {
       keystoreService.fetchAll() map { cacheMap =>
         cacheMap.getIncomeSourceModel match {
-          case Some(IncomeSourceModel(false, true)) =>
+          case Some(IncomeSourceModel(false, true, _)) =>
             controllers.individual.incomesource.routes.IncomeSourceController.show().url
           case _ =>
             controllers.individual.business.routes.BusinessAccountingMethodController.show().url

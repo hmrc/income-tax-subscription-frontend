@@ -29,7 +29,7 @@ class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
     "transform the request to the form case class when both checked values are bound to income source" in {
 
       val testInput = Map(business -> "true", ukProperty -> "true")
-      val expected = IncomeSourceModel(true, true)
+      val expected = IncomeSourceModel(true, true, false)
       val actual = incomeSourceForm.bind(testInput).value
 
       actual shouldBe Some(expected)
@@ -37,7 +37,7 @@ class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
 
     "transform the request to the form case class when self-employed is checked and rent uk property in not checked" in {
       val testInput = Map(business -> "true", ukProperty -> "false")
-      val expected = IncomeSourceModel(true, false)
+      val expected = IncomeSourceModel(true, false, false)
       val actual = incomeSourceForm.bind(testInput).value
 
       actual shouldBe Some(expected)
@@ -45,7 +45,7 @@ class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
 
     "transform the request to the form case class when when self-employed is not checked and rent uk property in checked" in {
       val testInput = Map(business -> "false", ukProperty -> "true")
-      val expected = IncomeSourceModel(false, true)
+      val expected = IncomeSourceModel(false, true, false)
       val actual = incomeSourceForm.bind(testInput).value
 
       actual shouldBe Some(expected)

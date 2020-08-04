@@ -62,7 +62,7 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
               for {
                 cacheMap <- keystoreService.fetchAll()
               } yield cacheMap.getIncomeSourceModel match {
-                case Some(IncomeSourceModel(true, false)) =>
+                case Some(IncomeSourceModel(true, false, _)) =>
                   Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
                 case _ =>
                   Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())
