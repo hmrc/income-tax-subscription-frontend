@@ -19,8 +19,9 @@
 @import views.html.helpers._
 @import views.individual.helpers._
 @import models.IndividualSummary
+@import models.common.AccountingYearModel
 
-@(journeyDuration: Int, summary: IndividualSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(journeyDuration: Int, summary: IndividualSummary, declarationYear: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @incomeSource = @{
     summary.incomeSourceIndiv.get
@@ -39,32 +40,34 @@
     @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod.toString))
 
     <div class="form-group" data-metrics="itsa:journey duration:@incomeSource:@journeyDuration">
-        <section id="confirmation-heading" class="transaction-banner--complete">
-            <h1 class="transaction-banner__heading" style="color: #fff">@Messages("sign-up-complete.heading")</h1>
+        <section id="confirmation-heading" class="govuk-panel--confirmation">
+            <h1 class="transaction-banner__heading" style="color: #fff; font-size:42px">@Messages("sign-up-complete.heading")</h1>
         </section>
     </div>
 
-    <section class="form-group" id="whatHappensNext">
-        <h2>@Messages("sign-up-complete.whatHappensNext.heading")</h2>
+    <section class="form-group" id="whatHappensNow">
+        <h2>@Messages("sign-up-complete.whatHappensNow.heading")</h2>
 
         <ol id="actionList" class="list list-number">
-                <li>@Html(Messages("sign-up-complete.whatHappensNext.number1", appConfig.softwareUrl))</li>
-                <li>@Messages("sign-up-complete.whatHappensNext.number2")</li>
-                <li>@Messages("sign-up-complete.whatHappensNext.number3")</li>
-                <li>@Messages("sign-up-complete.whatHappensNext.number4")</li>
-                <li>@Messages("sign-up-complete.whatHappensNext.number5")</li>
-                <li>@Messages("sign-up-complete.whatHappensNext.number6")</li>
+                <li>@Html(Messages("sign-up-complete.whatHappensNow.number1", appConfig.softwareUrl))</li>
+                <li>@Messages("sign-up-complete.whatHappensNow.number2")</li>
+                @if(summary.selectedTaxYear.exists(_.accountingYear == Next)) {
+                    <li>@Html(Messages("sign-up-complete.whatHappensNow.number7", appConfig.btaUrl))</li>
+                    <li>@Messages("sign-up-complete.whatHappensNow.number6", declarationYear)</li>
+                } else {
+                    <li>@Messages("sign-up-complete.whatHappensNow.number3")</li>
+                    <li>@Messages("sign-up-complete.whatHappensNow.number4")</li>
+                    <li>@Messages("sign-up-complete.whatHappensNow.number5")</li>
+                    <li>@Messages("sign-up-complete.whatHappensNow.number6", declarationYear)</li>
+                }
+
         </ol>
 
-        <p>@Messages("sign-up-complete.whatHappensNext.para1")</p>
+        <p>@Html(Messages("sign-up-complete.whatHappensNow.para1", appConfig.btaUrl))</p>
 
-        <ul class="bullets">
-            <li>@Messages("sign-up-complete.whatHappensNext.bullet1")</li>
-            <li>@Html(Messages("sign-up-complete.whatHappensNext.bullet2", appConfig.btaUrl))</li>
-        </ul>
-            <p>@Messages("sign-up-complete.whatHappensNext.para2")</p>
+        <p>@Messages("sign-up-complete.whatHappensNow.para2")</p>
     </section>
 
-    @signOutButton()
+    @signOutButton(Messages("sign-up-complete.whatHappensNow.signOut"))
 
 }

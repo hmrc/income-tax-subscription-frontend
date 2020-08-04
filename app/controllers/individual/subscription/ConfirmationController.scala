@@ -21,11 +21,13 @@ import java.time.temporal.ChronoUnit
 import auth.individual.PostSubmissionController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.Next
+import models.common.AccountingYearModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataUtil._
-import utilities.ITSASessionKeys
+import utilities.{AccountingPeriodUtil, ITSASessionKeys}
 import views.html.individual.incometax.subscription.sign_up_complete
 
 import scala.concurrent.ExecutionContext
@@ -41,11 +43,20 @@ class ConfirmationController @Inject()(val authService: AuthService, subscriptio
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
+      val declarationCurrentYear = (AccountingPeriodUtil.getCurrentTaxYear.taxEndYear + 1).toString
+      val declarationNextYear = (AccountingPeriodUtil.getNextTaxYear.taxEndYear + 1).toString
+
 
       subscriptionDetailsService.fetchAll() map (_.getSummary()) map { summary =>
         summary.incomeSourceIndiv match {
-          case Some(_) =>
-            Ok(sign_up_complete(journeyDuration, summary))
+          case Some(_) => {
+            summary.selectedTaxYear match {
+              case Some(AccountingYearModel(Next)) =>
+                Ok(sign_up_complete(journeyDuration, summary, declarationNextYear))
+              case _ =>
+                Ok(sign_up_complete(journeyDuration, summary, declarationCurrentYear))
+            }
+          }
           case _ =>
             throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
         }

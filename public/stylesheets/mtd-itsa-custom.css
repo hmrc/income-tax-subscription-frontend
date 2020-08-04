@@ -15,3 +15,11 @@ input[type=radio]
     width: 1px !important;
     overflow: hidden;
 }
+
+.govuk-panel--confirmation {
+    text-align: center;
+    color: #FFFFFF;
+    background: #00703C;
+    padding: 35px;
+    margin: 0 0 15px;
+}

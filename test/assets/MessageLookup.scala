@@ -296,21 +296,23 @@ object MessageLookup {
 
   object SignUpComplete {
     val title = "Sign up complete"
-    val heading: String = title
+    val heading = "You have signed up to use software to send Income Tax updates"
 
-    object whatHappensNext {
-      val heading = "What happens next"
-      val linkText = "Make sure you have"
-      val number1 = s"$linkText compatible software (opens in a new tab)."
-      val number2 = "Sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
+    object whatHappensNow {
+      val heading = "What happens now"
+      val linkText = "find software that’s compatible with Making Tax Digital for Income Tax (opens in a new window or tab)."
+      val number1 = s"If you have not already, $linkText"
+      val number2 = "Allow your software to interact with HMRC."
       val number3 = "Add any income and expenses you have already received or paid out from the start of your tax year into your software."
-      val number4 = "Record all income and expenses in your software from now on."
-      val number5 = "Send HMRC a report every 3 months."
-      val number6 = "Add any other income sources and send this as a final report to HMRC by 31 January."
-      val para1 = "After you have sent a report you will get an Income Tax estimate. You can view your estimate and report deadlines in your:"
-      val bullet1 = "accounting software"
-      val bullet2 = "HMRC online account"
-      val para2 = "It may take a few hours for your information to appear."
+      val number4 = "Send any outstanding updates to HMRC."
+      val number5 = "Use your software to send HMRC an update every 3 months."
+      val declarationYear = "2022"
+      val number6 = s"Send HMRC a final declaration by 31 January $declarationYear."
+      val btaLinkText = "Business Tax account (opens in a new tab)"
+      val number7 = s"Log in to your $btaLinkText to find out when your first update is due."
+      val para1 = s"After you have sent an update you will get an Income Tax estimate. You can view your estimates and submission dates in your software or your $btaLinkText."
+      val para2 = "It may take a few hours before new information is displayed."
+      val signOut = "Finish and sign out"
     }
 
   }

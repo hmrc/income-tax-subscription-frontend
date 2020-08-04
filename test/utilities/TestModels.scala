@@ -143,6 +143,13 @@ object TestModels extends Implicits {
     accountingMethod = testAccountingMethod
   )
 
+  lazy val testSummaryDataBusinessNextTaxYear = IndividualSummary(
+    incomeSourceIndiv = testIncomeSourceBusiness,
+    businessName = testBusinessName,
+    selectedTaxYear = testSelectedTaxYearNext,
+    accountingMethod = testAccountingMethod
+  )
+
   lazy val testSummaryDataBusiness = IndividualSummary(
     incomeSourceIndiv = testIncomeSourceBusiness,
     businessName = testBusinessName,
