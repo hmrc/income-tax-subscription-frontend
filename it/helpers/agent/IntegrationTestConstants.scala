@@ -12,6 +12,7 @@ object IntegrationTestConstants {
   lazy val testNino: String = helpers.IntegrationTestConstants.testNino
   lazy val testUtr: String = helpers.IntegrationTestConstants.testUtr
   lazy val testMTDID: String = helpers.IntegrationTestConstants.testMtdId
+  lazy val testSubscriptionID: String = helpers.IntegrationTestConstants.testSubscriptionId
   lazy val startDate: DateModel = helpers.IntegrationTestConstants.startDate
   lazy val endDate: DateModel = helpers.IntegrationTestConstants.endDate
 

@@ -24,13 +24,13 @@ import models.common.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAccountingPeriodService, MockKeystoreService}
-import utilities.CacheConstants.SelectedTaxYear
+import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
+import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 import scala.concurrent.Future
 
 class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with FeatureSwitching {
 
@@ -43,7 +43,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
     mockAuthService,
     mockAccountingPeriodService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
   "show" should {
@@ -52,11 +52,11 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromKeyStore(Some(AccountingYearModel(Current)))
+        mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
 
         status(result) must be(Status.OK)
 
-        verifyKeystoreFetch(SelectedTaxYear, 1)
+        verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
 
       }
     }
@@ -66,11 +66,11 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromKeyStore(None)
+        mockFetchSelectedTaxYearFromSubscriptionDetails(None)
 
         status(result) must be(Status.OK)
 
-        verifyKeystoreFetch(SelectedTaxYear, 1)
+        verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
 
       }
     }
@@ -89,49 +89,49 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(SelectedTaxYear, 1)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
       "redirect to business accounting period page" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.BusinessAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(SelectedTaxYear, 1)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
     }
 
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(SelectedTaxYear, 1)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
       "redirect to checkYourAnswer page" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(SelectedTaxYear, 1)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
 
       }
     }

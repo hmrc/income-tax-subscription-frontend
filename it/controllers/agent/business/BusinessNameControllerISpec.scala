@@ -16,15 +16,15 @@
 
 package controllers.agent.business
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.common.BusinessNameModel
 import models.individual.subscription.Both
 import play.api.http.Status._
-import play.api.i18n.Messages
-import utilities.CacheConstants
+import utilities.SubscriptionDataKeys
 
 class BusinessNameControllerISpec extends ComponentSpecBase {
 
@@ -34,7 +34,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       "show the business name page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
         When("GET /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.businessName()
@@ -52,7 +52,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       "show the business name page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBoth)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(testIncomeSourceBoth)))
 
         When("GET /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.businessName()
@@ -77,8 +77,8 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBusiness)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(testIncomeSourceBusiness)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
         When("POST /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
@@ -93,8 +93,8 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       "do not enter business name" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBusiness)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, "")
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(testIncomeSourceBusiness)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, "")
 
         When("POST /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, None)
@@ -111,8 +111,8 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBusiness)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(testIncomeSourceBusiness)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
         When("POST /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
@@ -132,7 +132,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
         When("POST /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = true, Some(userInput))
@@ -151,13 +151,13 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+          subscriptionData(
             incomeSource = Some(keystoreIncomeSource),
             businessName = Some(keystoreBusinessName)
           )
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
         When("POST /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = true, Some(userInput))

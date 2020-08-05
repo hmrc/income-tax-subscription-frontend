@@ -25,14 +25,14 @@ import models.individual.subscription.{Both, Property}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.CacheUtil._
+import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+class PropertyAccountingMethodController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                                    appConfig: AppConfig) extends AuthenticatedController {
 
@@ -50,7 +50,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchAccountingMethodProperty() flatMap { accountingMethodProperty =>
+      subscriptionDetailsService.fetchAccountingMethodProperty() flatMap { accountingMethodProperty =>
         view(accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm
           .fill(accountingMethodProperty), isEditMode = isEditMode).map(view => Ok(view))
       }
@@ -62,7 +62,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
         formWithErrors =>
           view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
         accountingMethodProperty => {
-          keystoreService.saveAccountingMethodProperty(accountingMethodProperty) map { _ =>
+          subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) map { _ =>
             Redirect(controllers.agent.routes.CheckYourAnswersController.show())
           }
         }
@@ -73,7 +73,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
     if (isEditMode)
       Future.successful(controllers.agent.routes.CheckYourAnswersController.show().url)
     else {
-      keystoreService.fetchAll() map {
+      subscriptionDetailsService.fetchAll() map {
         case cacheMap => cacheMap.agentGetIncomeSource match {
           case Some(Property) => controllers.agent.routes.IncomeSourceController.show().url
           case Some(Both) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url

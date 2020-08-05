@@ -17,8 +17,9 @@
 package controllers.agent
 
 import config.featureswitch.FeatureSwitching
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status.SEE_OTHER
 
 
@@ -28,7 +29,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
     s"clear the keystore and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
       Given("I setup the wiremock stubs and feature switch is enabled")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreDelete()
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionDelete()
 
       When("I call GET /add-another")
       val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = true)
@@ -44,7 +45,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       cookie.keys should not contain ITSASessionKeys.MTDITID
       cookie.keys should not contain ITSASessionKeys.JourneyStateKey
 
-      KeystoreStub.verifyKeyStoreDelete(Some(1))
+      IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
     }
   }
 

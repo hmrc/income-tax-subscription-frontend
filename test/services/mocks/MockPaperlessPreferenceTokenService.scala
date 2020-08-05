@@ -40,6 +40,6 @@ trait MockPaperlessPreferenceTokenService extends UnitTestTrait with MockitoSuga
     .storeNino(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier])
 }
 
-trait TestPaperlessPreferenceTokenService extends MockPaperlessPreferenceTokenConnector with MockKeystoreService {
-  object TestPaperlessPreferenceTokenService extends PaperlessPreferenceTokenService(MockKeystoreService, mockPaperlessPreferenceTokenConnector)
+trait TestPaperlessPreferenceTokenService extends MockPaperlessPreferenceTokenConnector with MockSubscriptionDetailsService {
+  object TestPaperlessPreferenceTokenService extends PaperlessPreferenceTokenService(MockSubscriptionDetailsService, mockPaperlessPreferenceTokenConnector)
 }

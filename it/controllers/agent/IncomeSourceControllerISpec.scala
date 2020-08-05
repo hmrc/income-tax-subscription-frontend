@@ -16,14 +16,14 @@
 
 package controllers.agent
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.servicemocks.AuthStub
 import models.individual.subscription._
 import play.api.http.Status._
-import play.api.i18n.Messages
-import utilities.CacheConstants
+import utilities.SubscriptionDataKeys
 
 class IncomeSourceControllerISpec extends ComponentSpecBase {
 
@@ -33,7 +33,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       "show the income source page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
         When("GET /income is called")
         val res = IncomeTaxSubscriptionFrontend.income()
@@ -51,7 +51,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       "show the income source page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
 
         When("GET /income is called")
         val res = IncomeTaxSubscriptionFrontend.income()
@@ -76,7 +76,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When(s"POST ${routes.IncomeSourceController.submit()} is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
@@ -93,7 +93,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When(s"POST ${routes.IncomeSourceController.submit()} is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
@@ -111,7 +111,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs and enable feature switches")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When(s"POST ${routes.IncomeSourceController.submit()} is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
@@ -133,8 +133,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(previousInput)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(previousInput)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When(s"POST ${routes.IncomeSourceController.submit()} is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
@@ -153,8 +153,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs and enable feature switches")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(previousInput)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(previousInput)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When(s"POST ${routes.IncomeSourceController.submit()} is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))

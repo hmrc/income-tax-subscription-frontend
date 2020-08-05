@@ -25,12 +25,12 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesActionBuilder, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.AuthService
-import services.KeystoreService
+import services.SubscriptionDetailsService
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessNameController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+class BusinessNameController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                        appConfig: AppConfig) extends AuthenticatedController {
 
@@ -46,7 +46,7 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
-        businessName <- keystoreService.fetchBusinessName()
+        businessName <- subscriptionDetailsService.fetchBusinessName()
       } yield Ok(view(
         BusinessNameForm.businessNameForm.form.fill(businessName),
         isEditMode = isEditMode
@@ -59,7 +59,7 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessName => {
-          keystoreService.saveBusinessName(businessName) map (_ =>
+          subscriptionDetailsService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
               Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             else

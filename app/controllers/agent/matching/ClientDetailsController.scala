@@ -24,14 +24,14 @@ import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.KeystoreService
+import services.SubscriptionDetailsService
 import services.{AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientDetailsController @Inject()(val authService: AuthService, keystoreService: KeystoreService, lockOutService: UserLockoutService)
+class ClientDetailsController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService, lockOutService: UserLockoutService)
                                        (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                         appConfig: AppConfig) extends UserMatchingController {
 
@@ -65,7 +65,7 @@ class ClientDetailsController @Inject()(val authService: AuthService, keystoreSe
           clientDetails => {
             val continue = Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails)
 
-            if (request.fetchUserDetails.fold(false)(_ != clientDetails)) keystoreService.deleteAll().map(_ => continue)
+            if (request.fetchUserDetails.fold(false)(_ != clientDetails)) subscriptionDetailsService.deleteAll().map(_ => continue)
             else Future.successful(continue)
           }
         )

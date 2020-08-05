@@ -16,6 +16,7 @@
 
 package controllers.usermatching
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
@@ -44,7 +45,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           AuthStub.stubAuthSuccess()
           CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
           SubscriptionStub.stubGetSubscriptionFound()
-          KeystoreStub.stubPutMtditId()
+          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()

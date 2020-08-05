@@ -82,17 +82,17 @@ trait MockUserLockoutService extends UnitTestTrait with MockitoSugar with Before
 
 
 trait TestUserLockoutService extends MockUserLockoutConnector
-  with MockKeystoreService {
+  with MockSubscriptionDetailsService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    mockDeleteAllFromKeyStore(HttpResponse(Status.OK))
+    mockDeleteAllFromSubscriptionDetails(HttpResponse(Status.OK))
   }
 
   object TestUserLockoutService extends UserLockoutService(
     appConfig,
     mockUserLockoutConnector,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
 }

@@ -23,7 +23,7 @@ import models.individual.subscription.IncomeSourceType
 import play.api.libs.functional.~
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import services.KeystoreService
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -53,7 +53,7 @@ trait Answer[A] {
 
 object Answers {
 
-  import utilities.CacheUtil._
+  import utilities.SubscriptionDataUtil._
 
   val incomeSourceTypeAnswer: Answer[IncomeSourceType] = SingleAnswer[IncomeSourceType](
     retrieveAnswer = _.agentGetIncomeSource,
@@ -82,10 +82,10 @@ object Answers {
 
 trait RequireAnswer {
 
-  val keystoreService: KeystoreService
+  val subscriptionDetailsService: SubscriptionDetailsService
 
   def require[A](answer: Answer[A])(f: A => Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Result] = {
-    keystoreService.fetchAll() flatMap {
+    subscriptionDetailsService.fetchAll() flatMap {
       cacheMap => answer(cacheMap) match {
         case Right(answers) => f(answers)
         case Left(result) => Future.successful(result)

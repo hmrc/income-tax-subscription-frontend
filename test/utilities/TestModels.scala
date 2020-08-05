@@ -32,7 +32,7 @@ import utilities.individual.TestConstants.{testFirstName, testLastName, testNino
 
 object TestModels extends Implicits {
 
-  import CacheConstants._
+  import SubscriptionDataKeys._
 
   /*
    * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino

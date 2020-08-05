@@ -25,8 +25,8 @@ import services.agent.mocks._
 import services.mocks._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.InternalServerException
-import utilities.CacheConstants.MtditId
-import utilities.CacheUtil._
+import utilities.SubscriptionDataKeys.MtditId
+import utilities.SubscriptionDataUtil._
 import utilities.agent.TestConstants.{testNino, _}
 import utilities.agent.TestModels
 import utilities.agent.TestModels.testCacheMap
@@ -34,7 +34,7 @@ import utilities.agent.TestModels.testCacheMap
 import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with MockClientRelationshipService
   with MockSubscriptionOrchestrationService {
 
@@ -46,7 +46,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   object TestCheckYourAnswersController extends CheckYourAnswersController(
     mockAuthService,
-    MockKeystoreService,
+    MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService
   )
 
@@ -56,8 +56,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "There are both a matched nino and terms in keystore" should {
       "return ok (200)" in {
-        mockFetchIncomeSourceFromKeyStore(Business)
-        mockFetchAllFromKeyStore(TestModels.testCacheMap)
+        mockFetchIncomeSourceFromSubscriptionDetails(Business)
+        mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
 
         status(call()) must be(Status.OK)
       }
@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "There are no a matched nino in session" should {
       s"return redirect ${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
-        mockFetchAllFromKeyStore(TestModels.testCacheMap)
+        mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
 
         val result = call(subscriptionRequest.removeFromSession(ITSASessionKeys.NINO))
 
@@ -84,7 +84,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       s"return redirect ${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
         val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN).removeFromSession(ITSASessionKeys.NINO)
 
-        mockFetchAllFromKeyStore(TestModels.testCacheMap)
+        mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
         val result = call(request)
 
         status(result) must be(Status.SEE_OTHER)
@@ -106,15 +106,15 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         lazy val result = call(authorisedAgentRequest)
 
         "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystoreSaveFunctions
-          mockFetchAllFromKeyStore(testSummary)
+          setupMockSubscriptionDetailsSaveFunctions
+          mockFetchAllFromSubscriptionDetails(testSummary)
 
           mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary())
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
-          verifyKeystoreSave(MtditId, 1)
-          verifyKeyStoreFetchAll(1)
+          verifySubscriptionDetailsSave(MtditId, 1)
+          verifySubscriptionDetailsFetchAll(1)
         }
 
         s"redirect to '${controllers.agent.routes.ConfirmationController.show().url}'" in {
@@ -130,24 +130,24 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         )
 
         "return a failure if subscription fails" in {
-          mockFetchAllFromKeyStore(TestModels.testCacheMap)
+          mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
           mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getAgentSummary())
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
           ex.message mustBe "Successful response not received from submission"
-          verifyKeystoreSave(MtditId, 0)
-          verifyKeyStoreFetchAll(1)
+          verifySubscriptionDetailsSave(MtditId, 0)
+          verifySubscriptionDetailsFetchAll(1)
         }
         "return a failure if create client relationship fails" ignore {
           val request = authorisedAgentRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
 
-          mockFetchAllFromKeyStore(TestModels.testCacheMap)
+          mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
           mockCreateSubscriptionSuccess(testARN, testNino, testUtr, testCacheMap.getAgentSummary())
 
           val ex = intercept[InternalServerException](await(call(request)))
           ex.message mustBe "Failed to create client relationship"
-          verifyKeystoreSave(MtditId, 0)
-          verifyKeyStoreFetchAll(1)
+          verifySubscriptionDetailsSave(MtditId, 0)
+          verifySubscriptionDetailsFetchAll(1)
         }
       }
     }

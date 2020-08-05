@@ -16,13 +16,14 @@
 
 package controllers.individual.incomesource
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
-import helpers.servicemocks.{AuthStub, KeystoreStub}
+import helpers.servicemocks.AuthStub
 import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status._
-import utilities.CacheConstants
+import utilities.SubscriptionDataKeys
 
 class IncomeSourceControllerISpec extends ComponentSpecBase {
 
@@ -32,7 +33,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       "show the income source page with the options selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
         When("GET /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.incomeSource()
@@ -51,7 +52,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       "show the rent uk property page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
 
         When("GET /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.incomeSource()
@@ -75,7 +76,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -91,7 +92,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs and feature switch")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -107,7 +108,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -126,8 +127,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
-        KeystoreStub.stubKeystoreSave(CacheConstants.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -143,8 +144,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(userInput)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(userInput)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))

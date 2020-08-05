@@ -28,6 +28,7 @@ object IntegrationTestConstants {
   lazy val staticTestNino = "AA111111A"
   lazy val testUtr: String = new Generator().nextAtedUtr.utr
   lazy val testMtdId = "XE0001234567890"
+  lazy val testSubscriptionId = "sessionId"
   lazy val startDate: DateModel = DateModel("05", "04", "2017")
   lazy val endDate: DateModel = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"

@@ -41,6 +41,7 @@ trait AppConfig extends FeatureSwitching {
   val preferencesUrl: String
   val baseUrl: String
   val ggUrl: String
+  val microServiceUrl: String
 
   def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
 
@@ -152,13 +153,13 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   // protected microservice
-  protected lazy val protectedMicroServiceUrl: String = config.baseUrl("subscription-service")
-  override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
-  override lazy val subscriptionUrlPost = s"$protectedMicroServiceUrl/income-tax-subscription/subscription-v2"
-  override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
-  override lazy val clientMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
+  override lazy val microServiceUrl: String = config.baseUrl("subscription-service")
+  override lazy val subscriptionUrl = s"$microServiceUrl/income-tax-subscription/subscription"
+  override lazy val subscriptionUrlPost = s"$microServiceUrl/income-tax-subscription/subscription-v2"
+  override lazy val userMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
+  override lazy val clientMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
 
-  override def storeNinoUrl(token: String): String = s"$protectedMicroServiceUrl/income-tax-subscription/identifier-mapping/$token"
+  override def storeNinoUrl(token: String): String = s"$microServiceUrl/income-tax-subscription/identifier-mapping/$token"
 
   //agent frontend
   protected lazy val agentFrontendUrl: String = config.getString("income-tax-subscription-agent-frontend.url")
@@ -211,7 +212,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val sendSAReturnLink: String = config.getString("sa-return.url")
 
   override lazy val backendFeatureSwitchUrl: String =
-    s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
+    s"$microServiceUrl/income-tax-subscription/test-only/feature-switch"
 
   override lazy val incomeTaxEligibilityUrl: String = s"${config.baseUrl("income-tax-subscription-eligibility")}/income-tax-subscription-eligibility"
 

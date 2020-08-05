@@ -3,15 +3,16 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
-import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, cannotSignUpURI, checkYourAnswersURI}
-import helpers.IntegrationTestModels.{keystoreData, testPropertyCommencementDate}
-import helpers.servicemocks.{AuthStub, KeystoreStub}
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, checkYourAnswersURI}
+import helpers.IntegrationTestModels.{subscriptionData, testPropertyCommencementDate}
+import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
 import models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import utilities.CacheConstants
+import utilities.SubscriptionDataKeys
 
 class PropertyCommencementDateISpec extends ComponentSpecBase {
 
@@ -21,7 +22,7 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
       "show the property commencement date page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.propertyCommencementDate()
@@ -41,7 +42,7 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
         val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
           foreignProperty = true)
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(incomeSourceModel)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(incomeSourceModel)))
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.propertyCommencementDate()
@@ -64,8 +65,8 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(keystoreData())
-          KeystoreStub.stubKeystoreSave(CacheConstants.PropertyCommencementDate, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyCommencementDate, userInput)
 
           When("POST /property-commencement-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitpropertyCommencementDate(inEditMode = false, Some(userInput))
@@ -83,8 +84,8 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
         val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
           foreignProperty = false)
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(incomeSourceModel)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyCommencementDate, "")
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(incomeSourceModel)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyCommencementDate, "")
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitpropertyCommencementDate(inEditMode = false, None)
@@ -103,8 +104,8 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(incomeSourceModel)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(incomeSourceModel)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitpropertyCommencementDate(inEditMode = false, Some(userInput))
@@ -124,7 +125,7 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyCommencementDate, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyCommencementDate, userInput)
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitpropertyCommencementDate(inEditMode = true, Some(userInput))
@@ -143,12 +144,12 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+          subscriptionData(
             propertyCommencementDate = Some(keystorePropertyCommencementDate)
           )
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyCommencementDate, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyCommencementDate, userInput)
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitpropertyCommencementDate(inEditMode = true, Some(userInput))

@@ -17,12 +17,12 @@
 package controllers.usermatching
 
 import config.featureswitch.FeatureSwitching
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, KeystoreStub, UserLockoutStub}
+import helpers.servicemocks.{AuthStub, UserLockoutStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import play.api.i18n.Messages
 import play.api.libs.ws.WSResponse
 
 class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching with UserMatchingIntegrationResultSupport {
@@ -31,7 +31,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
     def fixture(agentLocked: Boolean): WSResponse = {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystoreBothPost()
+      IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
       if (agentLocked) UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
       else UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
@@ -70,7 +70,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
     "the user is locked out" should {
       "show the user lock out page" in {
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
         UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
 
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
@@ -87,7 +87,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
       "show the user details page with validation errors" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
@@ -99,7 +99,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           pageTitle("Error: " + messages("user-details.title"))
         )
         res.verifyStoredUserDetailsIs(None)
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -108,7 +108,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
@@ -121,7 +121,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         )
 
         res.verifyStoredUserDetailsIs(Some(userDetails))
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -142,7 +142,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         )
 
         res.verifyStoredUserDetailsIs(Some(userDetails))
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -151,7 +151,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails = IntegrationTestModels.testUserDetails
-        KeystoreStub.stubKeystoreDelete()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionDelete()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
@@ -164,7 +164,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           redirectURI(routes.ConfirmUserController.show().url)
         )
 
-        KeystoreStub.verifyKeyStoreDelete(Some(1))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
       }
     }

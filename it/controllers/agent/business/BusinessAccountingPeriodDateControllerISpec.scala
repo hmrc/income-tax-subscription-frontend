@@ -20,15 +20,16 @@ import java.time.LocalDate
 
 import config.featureswitch.FeatureSwitching
 import helpers.agent.IntegrationTestConstants._
-import helpers.agent.IntegrationTestModels.{keystoreData, _}
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.IntegrationTestModels.{subscriptionData, _}
+import helpers.agent.servicemocks.AuthStub
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.{Both, Business}
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.{AccountingPeriodUtil, CacheConstants}
+import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -38,7 +39,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       "show accounting period dates page with date values entered" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
         When("GET /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodDates()
@@ -60,8 +61,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+          subscriptionData(
             incomeSource = Some(keystoreIncomeSource)
           )
         )
@@ -91,8 +92,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(fullKeystoreData)
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(fullSubscriptionData)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
@@ -110,8 +111,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(fullKeystoreData)
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(fullSubscriptionData)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
@@ -130,8 +131,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(fullKeystoreData.updated(CacheConstants.IncomeSource, Json.toJson(Business)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(fullSubscriptionData.updated(SubscriptionDataKeys.IncomeSource, Json.toJson(Business)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
@@ -146,7 +147,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       "enter no accounting period dates on the accounting period page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, "")
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingPeriodDate, "")
 
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, None)
@@ -163,7 +164,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
@@ -189,13 +190,13 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+          subscriptionData(
             incomeSource = Some(keystoreIncomeSource),
             accountingPeriodDate = Some(keystoreAccountingPeriodDates)
           )
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))

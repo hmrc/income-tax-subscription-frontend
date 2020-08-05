@@ -22,16 +22,16 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.NotFoundException
 import utilities.agent.TestModels._
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService {
+  with MockSubscriptionDetailsService {
 
   object TestConfirmationController extends ConfirmationController(
     mockAuthService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )(executionContext, appConfig, mockMessagesControllerComponents)
 
   implicit val request: Request[_] = FakeRequest()
@@ -53,7 +53,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session" should {
       "return OK" in {
-        mockFetchAllFromKeyStore(testCacheMap)
+        mockFetchAllFromSubscriptionDetails(testCacheMap)
 
         val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
         status(result) shouldBe OK
@@ -62,7 +62,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session and new Confirmation content applies" should {
       "return OK" in {
-        mockFetchAllFromKeyStore(testCacheMap)
+        mockFetchAllFromSubscriptionDetails(testCacheMap)
 
         val result = TestConfirmationController.show(
           subscriptionRequest

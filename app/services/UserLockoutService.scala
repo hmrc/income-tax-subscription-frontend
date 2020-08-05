@@ -33,7 +33,7 @@ case class LockoutUpdate(status: LockoutStatus, updatedCount: Option[Int])
 @Singleton
 class UserLockoutService @Inject()(appConfig: AppConfig,
                                    userLockoutConnector: UserLockoutConnector,
-                                   keystoreService: KeystoreService) {
+                                   subscriptionDetailsService: SubscriptionDetailsService) {
 
   private def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)
@@ -58,7 +58,7 @@ class UserLockoutService @Inject()(appConfig: AppConfig,
       Future.successful(Right(LockoutUpdate(NotLockedOut, Some(incrementedFailedMatches))))
     } else {
       userLockoutConnector.lockoutUser(encodedToken) flatMap {
-        case Right(status) => keystoreService.deleteAll().map(_ => Right(LockoutUpdate(status, None)))
+        case Right(status) => subscriptionDetailsService.deleteAll().map(_ => Right(LockoutUpdate(status, None)))
         case Left(failure) => Future.successful(Left(failure))
       }
     }

@@ -17,15 +17,15 @@
 package utilities
 
 import config.featureswitch.FeatureSwitching
-import models.individual.subscription.{AgentSummary, Both, IndividualSummary}
+import models.individual.incomesource.IncomeSourceModel
+import models.individual.subscription.Both
+import models.{AgentSummary, IndividualSummary}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
-import utilities.AccountingPeriodUtil.getCurrentTaxYear
+import utilities.SubscriptionDataUtil._
 import utilities.TestModels._
-import CacheUtil._
-import models.individual.incomesource.IncomeSourceModel
 
-class CacheUtilSpec extends UnitTestTrait
+class SubscriptionDataUtilSpec extends UnitTestTrait
   with FeatureSwitching
   with BeforeAndAfterEach {
 

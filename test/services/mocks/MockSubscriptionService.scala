@@ -20,7 +20,8 @@ import config.MockConfig
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.mocks.MockSubscriptionConnector
-import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
+import models.SummaryModel
+import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach

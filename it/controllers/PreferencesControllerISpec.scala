@@ -17,14 +17,14 @@
 package controllers
 
 import config.featureswitch.FeatureSwitching
-import utilities.CacheConstants._
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, KeystoreStub, PreferencesStub, PreferencesTokenStub}
+import helpers.servicemocks.{AuthStub, PreferencesStub, PreferencesTokenStub}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
-import play.api.i18n.Messages
 import play.api.libs.json.JsString
 import utilities.ITSASessionKeys
+import utilities.SubscriptionDataKeys._
 
 class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -34,8 +34,8 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
-      KeystoreStub.stubEmptyKeystore()
-      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
+      IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessActivated()
 
       When("GET /preferences is called")
@@ -52,8 +52,8 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
-      KeystoreStub.stubEmptyKeystore()
-      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
+      IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessInactiveWithUri()
 
       When("GET /preferences is called")
@@ -70,8 +70,8 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
-      KeystoreStub.stubEmptyKeystore()
-      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
+      IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessPreconditionFail()
 
       When("GET /preferences is called")
@@ -88,8 +88,8 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
-      KeystoreStub.stubEmptyKeystore()
-      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
+      IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessError()
 
       When("GET /preferences is called")
@@ -105,8 +105,8 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubEmptyKeystore()
-      KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
+      IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
       PreferencesStub.newStubPaperlessActivated()
 
       When("GET /preferences is called")
@@ -127,8 +127,8 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
-      KeystoreStub.stubEmptyKeystore()
-      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
+      IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessInactiveWithUri()
 
       When("GET /callback is called")

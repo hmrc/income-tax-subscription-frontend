@@ -20,8 +20,8 @@ import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
 import models.individual.business._
-import models.individual.subscription.{AgentSummary, IncomeSourceType}
-import models.{Current, Next, Yes}
+import models.individual.subscription.IncomeSourceType
+import models.{AgentSummary, Current, Next, Yes}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.mvc.Call

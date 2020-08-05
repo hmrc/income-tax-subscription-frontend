@@ -26,7 +26,7 @@ import models.common.AccountingYearModel
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
-import models.{Next, Yes}
+import models.{Next, SummaryModel, Yes}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}

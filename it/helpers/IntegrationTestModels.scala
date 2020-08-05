@@ -19,7 +19,7 @@ import utilities.individual.Constants
 
 object IntegrationTestModels {
 
-  import utilities.CacheConstants._
+  import utilities.SubscriptionDataKeys._
 
   /*
    * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
@@ -49,8 +49,8 @@ object IntegrationTestModels {
   val testPropertyCommencementDate = PropertyCommencementDateModel(testValidStartDate)
   val testInvalidCommencementDate = PropertyCommencementDateModel(testInvalidStartDate)
 
-  lazy val fullKeystoreDataBothPost: Map[String, JsValue] =
-    keystoreData(
+  lazy val fullIndivSubscriptionDataBothPost: Map[String, JsValue] =
+    subscriptionData(
       incomeSource = Some(Both),
       individualIncomeSource = Some(IncomeSourceModel(true, true, false)),
       matchTaxYear = Some(testMatchTaxYearNo),
@@ -62,22 +62,22 @@ object IntegrationTestModels {
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
-  lazy val fullKeystoreDataPropertyPost: Map[String, JsValue] =
-    keystoreData(
+  lazy val fullIndivSubscriptionDataPropertyPost: Map[String, JsValue] =
+    subscriptionData(
       individualIncomeSource = Some(IncomeSourceModel(false, true, false)),
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
 
-  def keystoreData(incomeSource: Option[IncomeSourceType] = None,
-                   individualIncomeSource: Option[IncomeSourceModel] = None,
-                   matchTaxYear: Option[MatchTaxYearModel] = None,
-                   selectedTaxYear: Option[AccountingYearModel] = None,
-                   accountingPeriodDate: Option[AccountingPeriodModel] = None,
-                   businessName: Option[BusinessNameModel] = None,
-                   accountingMethod: Option[AccountingMethodModel] = None,
-                   propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
-                   propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None
+  def subscriptionData(incomeSource: Option[IncomeSourceType] = None,
+                       individualIncomeSource: Option[IncomeSourceModel] = None,
+                       matchTaxYear: Option[MatchTaxYearModel] = None,
+                       selectedTaxYear: Option[AccountingYearModel] = None,
+                       accountingPeriodDate: Option[AccountingPeriodModel] = None,
+                       businessName: Option[BusinessNameModel] = None,
+                       accountingMethod: Option[AccountingMethodModel] = None,
+                       propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
+                       propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None
                   ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++

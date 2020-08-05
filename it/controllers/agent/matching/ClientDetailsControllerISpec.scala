@@ -16,13 +16,13 @@
 
 package controllers.agent.matching
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.IntegrationTestConstants.{agentLockedOutURI, testARN}
-import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub, KeystoreStub}
+import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import play.api.i18n.Messages
 import play.api.libs.ws.WSResponse
 
 
@@ -32,7 +32,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     def fixture(agentLocked: Boolean): WSResponse = {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystore()
+      IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
       if (agentLocked) AgentLockoutStub.stubAgentIsLocked(testARN)
       else AgentLockoutStub.stubAgentIsNotLocked(testARN)
@@ -71,7 +71,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     "the agent is locked out" should {
       "show the agent lock out page" in {
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         AgentLockoutStub.stubAgentIsLocked(testARN)
 
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
@@ -88,7 +88,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
       "show the client details page with validation errors" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
 
         When("I call POST /client-details")
@@ -101,7 +101,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(None)
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -111,7 +111,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = None)
@@ -123,7 +123,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(Some(clientDetails))
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -144,7 +144,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(Some(clientDetails))
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -154,7 +154,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
         val clientDetails = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
-        KeystoreStub.stubKeystoreDelete()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionDelete()
 
         When("I call POST /client-details")
         val submittedUserDetails = clientDetails.copy(firstName = "NotMatching")
@@ -166,7 +166,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           redirectURI(routes.ConfirmClientController.show().url)
         )
 
-        KeystoreStub.verifyKeyStoreDelete(Some(1))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
 
       }

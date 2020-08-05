@@ -17,8 +17,7 @@
 package services.individual.mocks
 
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import models.ConnectorError
-import models.individual.subscription.SummaryModel
+import models.{ConnectorError, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models
 
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import  models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
+import models.individual.subscription.IncomeSourceType
 
 
 sealed trait SummaryModel {

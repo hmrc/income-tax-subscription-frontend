@@ -7,7 +7,7 @@ import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
-import utilities.CacheConstants
+import utilities.SubscriptionDataKeys
 
 object IntegrationTestModels {
 
@@ -27,8 +27,8 @@ object IntegrationTestModels {
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testPropertyAccountingMethod = AccountingMethodPropertyModel(Cash)
 
-  val fullKeystoreData: Map[String, JsValue] =
-    keystoreData(
+  val fullSubscriptionData: Map[String, JsValue] =
+    subscriptionData(
       incomeSource = Some(testIncomeSourceBoth),
       matchTaxYear = Some(testMatchTaxYearYes),
       selectedTaxYear = Some(testAccountingYearCurrent),
@@ -38,7 +38,7 @@ object IntegrationTestModels {
       accountingMethodProperty = Some(testPropertyAccountingMethod)
     )
 
-  def keystoreData(
+  def subscriptionData(
                     incomeSource: Option[IncomeSourceType] = None,
                     matchTaxYear: Option[MatchTaxYearModel] = None,
                     selectedTaxYear: Option[AccountingYearModel] = None,
@@ -47,13 +47,13 @@ object IntegrationTestModels {
                     accountingMethod: Option[AccountingMethodModel] = None,
                     accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => CacheConstants.IncomeSource -> IncomeSourceType.format.writes(model)) ++
-      accountingPeriodDate.map(model => CacheConstants.AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
-      businessName.map(model => CacheConstants.BusinessName -> BusinessNameModel.format.writes(model)) ++
-      accountingMethod.map(model => CacheConstants.AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      accountingMethodProperty.map(model => CacheConstants.PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
-      matchTaxYear.map(model => CacheConstants.MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
-      selectedTaxYear.map(model => CacheConstants.SelectedTaxYear -> AccountingYearModel.format.writes(model))
+      incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceType.format.writes(model)) ++
+      accountingPeriodDate.map(model => SubscriptionDataKeys.AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
+      businessName.map(model => SubscriptionDataKeys.BusinessName -> BusinessNameModel.format.writes(model)) ++
+      accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
+      accountingMethodProperty.map(model => SubscriptionDataKeys.PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
+      matchTaxYear.map(model => SubscriptionDataKeys.MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
+      selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness: Business.type = Business

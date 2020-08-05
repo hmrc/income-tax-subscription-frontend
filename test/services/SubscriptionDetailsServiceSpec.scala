@@ -21,16 +21,16 @@ import models.common.BusinessNameModel
 import org.scalatest.Matchers._
 import play.api.http.Status
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utilities.CacheConstants.BusinessName
+import utilities.SubscriptionDataKeys.BusinessName
 import utilities.{TestModels, UnitTestTrait}
 
-class KeystoreServiceSpec extends UnitTestTrait
-  with MockKeystoreService {
+class SubscriptionDetailsServiceSpec extends UnitTestTrait
+  with MockSubscriptionDetailsService {
 
-  "Keystore service" should {
+  "SubscriptionDetails service" should {
     "be DIed with the correct session cache object" in {
       val cache = app.injector.instanceOf[SessionCache]
       val config = app.injector.instanceOf[ServicesConfig]
@@ -42,44 +42,44 @@ class KeystoreServiceSpec extends UnitTestTrait
   }
 
   "mock keystore service" should {
-    object TestKeystore {
-      val keystoreService: KeystoreService = MockKeystoreService
+    object TestSubscriptionDetails {
+      val subscriptionDetailsService: SubscriptionDetailsService = MockSubscriptionDetailsService
     }
 
     "configure and verify fetch and save business name as specified" in {
       val testBusinessName = BusinessNameModel("my business name")
-      setupMockKeystoreSaveFunctions()
-      mockFetchBusinessNameFromKeyStore(testBusinessName)
+      setupMockSubscriptionDetailsSaveFunctions()
+      mockFetchBusinessNameFromSubscriptionDetails(testBusinessName)
 
       val businessName = await(
         for {
-          businessName <- TestKeystore.keystoreService.fetchBusinessName()
-          _ <- TestKeystore.keystoreService.saveBusinessName(testBusinessName)
+          businessName <- TestSubscriptionDetails.subscriptionDetailsService.fetchBusinessName()
+          _ <- TestSubscriptionDetails.subscriptionDetailsService.saveBusinessName(testBusinessName)
         } yield businessName
       )
 
       businessName shouldBe Some(testBusinessName)
 
-      verifyKeystoreFetch(BusinessName, 1)
-      verifyKeystoreSave(BusinessName, 1)
+      verifySubscriptionDetailsFetch(BusinessName, 1)
+      verifySubscriptionDetailsSave(BusinessName, 1)
     }
 
     "configure and verify fetch all as specified" in {
       val testFetchAll = TestModels.emptyCacheMap
-      mockFetchAllFromKeyStore(testFetchAll)
+      mockFetchAllFromSubscriptionDetails(testFetchAll)
 
-      val fetched = await(TestKeystore.keystoreService.fetchAll())
+      val fetched = await(TestSubscriptionDetails.subscriptionDetailsService.fetchAll())
       fetched shouldBe testFetchAll
 
-      verifyKeyStoreFetchAll(1)
+      verifySubscriptionDetailsFetchAll(1)
     }
 
     "configure and verify remove all as specified" in {
       val testDeleteAll = HttpResponse(Status.OK)
-      mockDeleteAllFromKeyStore(testDeleteAll)
+      mockDeleteAllFromSubscriptionDetails(testDeleteAll)
 
-      val response = await(TestKeystore.keystoreService.deleteAll())
-      verifyKeyStoreDeleteAll(1)
+      val response = await(TestSubscriptionDetails.subscriptionDetailsService.deleteAll())
+      verifySubscriptionDetailsDeleteAll(1)
     }
 
   }

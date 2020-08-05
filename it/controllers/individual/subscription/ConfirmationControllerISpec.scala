@@ -16,14 +16,14 @@
 
 package controllers.individual.subscription
 
-import utilities.CacheConstants._
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.testMtdId
+import helpers.IntegrationTestConstants.testSubscriptionId
 import helpers.IntegrationTestModels.testIncomeSourceIndivProperty
-import helpers.servicemocks.{AuthStub, KeystoreStub}
+import helpers.servicemocks.AuthStub
 import play.api.http.Status._
-import play.api.i18n.Messages
 import play.api.libs.json.{JsString, Json}
+import utilities.SubscriptionDataKeys._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
@@ -31,9 +31,9 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
     "return the confirmation page when the user is enrolled" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubEnrolled()
-      KeystoreStub.stubKeystoreData(Map(
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(Map(
         IndividualIncomeSource -> Json.toJson(testIncomeSourceIndivProperty),
-        MtditId -> JsString(testMtdId)
+        MtditId -> JsString(testSubscriptionId)
       ))
 
       When("GET /confirmation is called")

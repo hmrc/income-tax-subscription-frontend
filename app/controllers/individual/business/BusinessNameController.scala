@@ -25,13 +25,13 @@ import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
-import utilities.CacheUtil._
+import services.{AuthService, SubscriptionDetailsService}
+import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessNameController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+class BusinessNameController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig, mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
@@ -46,7 +46,7 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
-        businessName <- keystoreService.fetchBusinessName()
+        businessName <- subscriptionDetailsService.fetchBusinessName()
       } yield Ok(view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode))
   }
 
@@ -55,12 +55,12 @@ class BusinessNameController @Inject()(val authService: AuthService, keystoreSer
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessName =>
-          keystoreService.saveBusinessName(businessName) flatMap { _ =>
+          subscriptionDetailsService.saveBusinessName(businessName) flatMap { _ =>
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             }else {
               for {
-                cacheMap <- keystoreService.fetchAll()
+                cacheMap <- subscriptionDetailsService.fetchAll()
               } yield cacheMap.getIncomeSourceModel match {
                 case Some(IncomeSourceModel(true, false, _)) =>
                   Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())

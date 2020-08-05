@@ -21,14 +21,14 @@ import auth.agent.PostSubmissionController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuthService, KeystoreService}
-import utilities.CacheUtil._
+import services.{AuthService, SubscriptionDetailsService}
+import utilities.SubscriptionDataUtil._
 import views.html.agent.sign_up_complete
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+class ConfirmationController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController {
 
@@ -37,7 +37,7 @@ class ConfirmationController @Inject()(val authService: AuthService, keystoreSer
 
       val postAction = controllers.agent.routes.AddAnotherClientController.addAnother()
       val signOutAction = controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
-      keystoreService.fetchAll() map { cacheMap =>
+      subscriptionDetailsService.fetchAll() map { cacheMap =>
         Ok(sign_up_complete(cacheMap.getAgentSummary(), postAction, signOutAction))
       }
   }
