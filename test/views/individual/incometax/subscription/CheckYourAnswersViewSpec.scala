@@ -56,22 +56,28 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
+  val testOverseasAccountingPropertyModel: OverseasAccountingMethodPropertyModel = TestModels.testAccountingMethodOverseasProperty
   val testIncomeSourceBoth: IncomeSourceModel = TestModels.testIncomeSourceBoth
   val testPropertyCommencement: PropertyCommencementDateModel = TestModels.testPropertyCommencementDateModel
+  val testForeignPropertyCommencement: OverseasPropertyCommencementDateModel = TestModels.testForeignPropertyCommencementDateModel
   val testSummary: IndividualSummary = customTestSummary()
   val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   def customTestSummary(incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                        propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencement): IndividualSummary = IndividualSummary(
+                        propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencement,
+                        overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = testOverseasAccountingPropertyModel,
+                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testForeignPropertyCommencement): IndividualSummary = IndividualSummary(
     incomeSourceIndiv = incomeSource,
     businessName = testBusinessName,
     selfEmployments = testSelfEmployments,
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = accountingMethodProperty,
-    propertyCommencementDate = testPropertyCommencement
+    propertyCommencementDate = testPropertyCommencement,
+    overseasAccountingMethodPropertyModel = overseasAccountingMethodProperty,
+    overseasPropertyCommencementDateModel = testForeignPropertyCommencement
   )
 
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
@@ -305,5 +311,50 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
 
     }
 
+    "display the correct info for the Property Business Commencement" in {
+      val sectionId = PropertyCommencementId
+      val expectedQuestion = messages.propertyCommencement
+      val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
+      val expectedEditLink = controllers.individual.business.routes.PropertyCommencementDateController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink,
+        testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
+      )
+    }
+
+
+    "display the correct info for the Foreign Property Business Commencement" in {
+      val sectionId = ForeignPropertyCommencementId
+      val expectedQuestion = messages.foreignPropertyCommencement
+      val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
+      val expectedEditLink = controllers.individual.business.routes.OverseasPropertyCommencementDateController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink,
+        testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
+      )
+    }
+
+    "display the correct info for the accounting method Foreign Property " in {
+      val sectionId = AccountingMethodForeignPropertyId
+      val expectedQuestion = messages.accountingMethodForeignProperty
+      val expectedAnswer = messages.AccountingMethod.cash
+      val expectedEditLink = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink,
+        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
+      )
+    }
   }
 }

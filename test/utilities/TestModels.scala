@@ -19,7 +19,7 @@ package utilities
 import java.time.LocalDate
 
 import models._
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.common._
 import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
@@ -60,6 +60,7 @@ object TestModels extends Implicits {
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
+  val testAccountingMethodOverseasProperty = OverseasAccountingMethodPropertyModel(Cash)
 
   val emptyCacheMap = CacheMap("", Map())
 
@@ -82,7 +83,8 @@ object TestModels extends Implicits {
                          businessName: Option[BusinessNameModel] = testBusinessName,
                          selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
-                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty): CacheMap =
+                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty,
+                         overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = testAccountingMethodOverseasProperty): CacheMap =
     testCacheMap(
       incomeSourceIndiv = incomeSourceIndiv,
       incomeSource = incomeSource,
@@ -91,7 +93,8 @@ object TestModels extends Implicits {
       businessName = businessName,
       selectedTaxYear = selectedTaxYear,
       accountingMethod = accountingMethod,
-      accountingMethodProperty = accountingMethodProperty)
+      accountingMethodProperty = accountingMethodProperty,
+      overseasPropertyAccountingMethod = overseasPropertyAccountingMethod)
 
   def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
                    incomeSourceIndiv: Option[IncomeSourceModel] = None,
@@ -100,7 +103,8 @@ object TestModels extends Implicits {
                    businessName: Option[BusinessNameModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): CacheMap = {
+                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                   overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
@@ -110,7 +114,8 @@ object TestModels extends Implicits {
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
-      accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)))
+      accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))) ++
+      overseasPropertyAccountingMethod.fold(emptyMap)(model => Map(OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)))
     CacheMap("", map)
   }
 
@@ -119,6 +124,7 @@ object TestModels extends Implicits {
   lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
   lazy val testIncomeSourceOverseasProperty: IncomeSourceModel = IncomeSourceModel(false, false, true)
   lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
+  lazy val testIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(true, true, true)
 
   //agent
   lazy val testAgentIncomeSourceBusiness: IncomeSourceType = Business
@@ -198,4 +204,5 @@ object TestModels extends Implicits {
 
   val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
   val testPropertyCommencementDateModel: PropertyCommencementDateModel = PropertyCommencementDateModel(testValidStartDate)
+  val testForeignPropertyCommencementDateModel: OverseasPropertyCommencementDateModel = OverseasPropertyCommencementDateModel(testValidStartDate)
 }

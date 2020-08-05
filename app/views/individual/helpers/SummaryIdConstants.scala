@@ -31,5 +31,7 @@ object SummaryIdConstants {
   val AccountingMethodPropertyId = "accountingMethodProperty"
   val PropertyCommencementId = "propertyCommencement"
   val SelfEmploymentsId = "selfEmployments"
+  val ForeignPropertyCommencementId = "foreignPropertyCommencement"
+  val AccountingMethodForeignPropertyId = "accountingMethodForeignProperty"
 
 }

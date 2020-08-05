@@ -244,6 +244,8 @@ summary.selected_year.current                                   = Y flwyddyn dre
 summary.selected_year.next                                      = Y flwyddyn dreth nesaf ({0} i {1})
 summary.property_commencement_date                              = Dyddiad dechrau masnachu’ch busnes eiddo yn y DU
 summary.self_employments                                        = Nifer y busnesau sydd wedi’u cofrestru
+summary.foreign_property_commencement_date                      = Dyddiad dechrau masnachu’ch busnes eiddo tramor
+summary.accounting_method_foreign_property                      = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
 
 ## Confirmation page ##
 confirmation.title                                              = Tudalen gadarnhau
