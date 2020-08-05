@@ -26,8 +26,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.{await, _}
 import services.agent._
 import services.agent.mocks.MockAgentQualificationService
-import services.mocks. MockKeystoreService
-import services.mocks.{MockGetEligibilityStatusService, MockUserLockoutService}
+import services.mocks.{MockGetEligibilityStatusService, MockSubscriptionDetailsService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.agent.{TestConstants, TestModels}
 
@@ -36,7 +35,7 @@ import scala.concurrent.Future
 class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockAgentQualificationService
   with MockUserLockoutService
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with MockGetEligibilityStatusService {
 
   override val controllerName: String = "ConfirmClientController"
@@ -311,7 +310,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       def fixture(): Unit = {
         setupMockNotLockedOut(arn)
         setupIncrementLockedOut(arn, prevFailedAttempts)
-        mockDeleteAllFromKeyStore(HttpResponse(OK))
+        mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
         mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
       }
 

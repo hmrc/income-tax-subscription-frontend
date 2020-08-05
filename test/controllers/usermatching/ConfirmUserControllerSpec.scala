@@ -24,7 +24,7 @@ import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
-import services.mocks.{MockKeystoreService, MockUserLockoutService, MockUserMatchingService}
+import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService, MockUserMatchingService}
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants._
@@ -33,7 +33,7 @@ import utilities.{ITSASessionKeys, TestModels}
 import scala.concurrent.Future
 
 class ConfirmUserControllerSpec extends ControllerBaseSpec
-  with MockUserLockoutService with MockUserMatchingService with MockKeystoreService
+  with MockUserLockoutService with MockUserMatchingService with MockSubscriptionDetailsService
   with OptionValues {
 
   override val controllerName: String = "ConfirmUserController"
@@ -102,7 +102,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submit action of the confirmUserController with no keystore data" should {
+  "Calling the submit action of the confirmUserController with no Subscription Details  data" should {
     def callSubmit(request: Request[AnyContent]): Future[Result] = TestConfirmUserController.submit()(request)
 
     "return the user details page" in {
@@ -188,7 +188,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           mockUserMatchNotFound(userDetails)
           setupMockNotLockedOut(testUserId.value)
           setupIncrementLockedOut(testUserId.value, currentFailedMatches)
-          mockDeleteAllFromKeyStore(HttpResponse(Status.OK))
+          mockDeleteAllFromSubscriptionDetails(HttpResponse(Status.OK))
 
           val r = requestWithLockout.buildRequest(userDetails)
 

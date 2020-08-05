@@ -16,103 +16,112 @@
 
 package services
 
+import connectors.IncomeTaxSubscriptionConnector
 import javax.inject._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
-import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import play.api.libs.json.{Json, Reads, Writes}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import utilities.CacheConstants
+import utilities.SubscriptionDataKeys._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class KeystoreService @Inject()(val session: SessionCache)
-                               (implicit ec: ExecutionContext) {
+class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: IncomeTaxSubscriptionConnector)
+                                          (implicit ec: ExecutionContext) {
 
   type FO[T] = Future[Option[T]]
-  type FC = Future[CacheMap]
+  type FA = Future[Any]
 
-  protected def fetch[T](location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): FO[T] = session.fetchAndGetEntry(location)
+  private[services] def fetch[T](location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): FO[T] =
+    subscriptionDetailsSession.getSubscriptionDetails[CacheMap](subscriptionId).map(_.flatMap(cache => cache.getEntry(location)))
 
-  protected def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): FC = session.cache(location, obj)
+  private[services] def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): FA = {
+    subscriptionDetailsSession.getSubscriptionDetails[CacheMap](subscriptionId).map { optCache =>
+      val newCache = optCache match {
+        case None => CacheMap("", Map(location -> Json.toJson(obj)))
+        case Some(cache) => CacheMap("", cache.data.updated(location, Json.toJson(obj)))
+      }
+      subscriptionDetailsSession.saveSubscriptionDetails(subscriptionId, newCache)
+    }
+  }
 
-  def fetchAll()(implicit hc: HeaderCarrier): Future[CacheMap] = session.fetch() map {
+  def fetchAll()(implicit hc: HeaderCarrier): Future[CacheMap] = subscriptionDetailsSession.getSubscriptionDetails[CacheMap](subscriptionId) map {
     case Some(cacheMap) => cacheMap
     case None => CacheMap("", Map.empty)
   }
 
-  def deleteAll()(implicit hc: HeaderCarrier): Future[HttpResponse] = session.remove()
-
-  import CacheConstants._
+  def deleteAll()(implicit hc: HeaderCarrier): Future[HttpResponse] = subscriptionDetailsSession.deleteAll()
 
   def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FO[IncomeSourceType] =
     fetch[IncomeSourceType](IncomeSource)
 
-  def saveIncomeSource(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FC =
+  def saveIncomeSource(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FA =
     save[IncomeSourceType](IncomeSource, incomeSource)
 
   def fetchIndividualIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
     fetch[IncomeSourceModel](IndividualIncomeSource)
 
-  def saveIndividualIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
+  def saveIndividualIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FA =
     save[IncomeSourceModel](IndividualIncomeSource, incomeSource)
 
 
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
 
-  def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FC =
+  def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FA =
     save[BusinessNameModel](BusinessName, businessName)
 
   def fetchMatchTaxYear()(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FO[MatchTaxYearModel] =
     fetch[MatchTaxYearModel](MatchTaxYear)
 
-  def saveMatchTaxYear(accountingPeriod: MatchTaxYearModel)(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FC =
+  def saveMatchTaxYear(accountingPeriod: MatchTaxYearModel)(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FA =
     save[MatchTaxYearModel](MatchTaxYear, accountingPeriod)
 
   def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
     fetch[AccountingPeriodModel](AccountingPeriodDate)
 
-  def saveAccountingPeriodDate(accountingPeriod: AccountingPeriodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FC =
+  def saveAccountingPeriodDate(accountingPeriod: AccountingPeriodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FA =
     save[AccountingPeriodModel](AccountingPeriodDate, accountingPeriod)
 
   def fetchAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FO[AccountingMethodModel] =
     fetch[AccountingMethodModel](AccountingMethod)
 
-  def saveAccountingMethod(accountingMethod: AccountingMethodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FC =
+  def saveAccountingMethod(accountingMethod: AccountingMethodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FA =
     save[AccountingMethodModel](AccountingMethod, accountingMethod)
 
   def fetchAccountingMethodProperty()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FO[AccountingMethodPropertyModel] =
     fetch[AccountingMethodPropertyModel](PropertyAccountingMethod)
 
   def saveAccountingMethodProperty(accountingMethodProperty: AccountingMethodPropertyModel)
-                                  (implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FC = save[AccountingMethodPropertyModel](
+                                  (implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FA = save[AccountingMethodPropertyModel](
     PropertyAccountingMethod, accountingMethodProperty)
 
   def fetchSelectedTaxYear()(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FO[AccountingYearModel] =
     fetch[AccountingYearModel](SelectedTaxYear)
 
-  def saveSelectedTaxYear(selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FC =
+  def saveSelectedTaxYear(selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FA =
     save[AccountingYearModel](SelectedTaxYear, selectedTaxYear)
 
   def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
 
-  def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](MtditId, mtditId)
+  def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FA = save[String](MtditId, mtditId)
 
-  def fetchPaperlessPreferenceToken()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] =
+  def fetchPaperlessPreferenceToken()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = {
     fetch[String](PaperlessPreferenceToken)
+  }
 
-  def savePaperlessPreferenceToken(token: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC =
+  def savePaperlessPreferenceToken(token: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FA =
     save[String](PaperlessPreferenceToken, token)
 
   def fetchPropertyCommencementDate()(implicit hc: HeaderCarrier, reads: Reads[PropertyCommencementDateModel]): FO[PropertyCommencementDateModel] =
     fetch[PropertyCommencementDateModel](PropertyCommencementDate)
 
   def savePropertyCommencementDate(propertyCommencementDate: PropertyCommencementDateModel)
-                                  (implicit hc: HeaderCarrier, reads: Reads[PropertyCommencementDateModel]): FC =
+                                  (implicit hc: HeaderCarrier, reads: Reads[PropertyCommencementDateModel]): FA =
     save[PropertyCommencementDateModel](PropertyCommencementDate, propertyCommencementDate)
 }
 

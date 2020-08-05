@@ -16,6 +16,7 @@
 
 package controllers.individual.subscription
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks._
@@ -25,11 +26,11 @@ import play.api.http.Status._
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
 
   "GET /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
-    "keystore returns all data" should {
+    "the Subscription Details Connector returns all data" should {
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
@@ -50,11 +51,11 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
         SubscriptionStub.stubIndividualSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
-        KeystoreStub.stubPutMtditId()
+        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
         When("POST /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -71,11 +72,11 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystorePropertyPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionPropertyPost()
         SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
-        KeystoreStub.stubPutMtditId()
+        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
         When("POST /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -93,7 +94,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionFailure()
         SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
@@ -112,7 +113,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionFailure()
         SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, BAD_REQUEST)
@@ -131,7 +132,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionFailure()
         SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, FORBIDDEN)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
@@ -150,7 +151,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionFailure()
         SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
@@ -169,7 +170,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionFailure()
         SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
@@ -187,7 +188,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
     "return an INTERNAL_SERVER_ERROR when the backend service returns a NOT_FOUND" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreFailure()
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionFailure()
       SubscriptionStub.stubCreateSubscriptionNotFound(checkYourAnswersURI)
 
       When("POST /check-your-answers is called")

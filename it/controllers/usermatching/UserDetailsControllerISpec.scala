@@ -17,12 +17,12 @@
 package controllers.usermatching
 
 import config.featureswitch.FeatureSwitching
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, KeystoreStub, UserLockoutStub}
+import helpers.servicemocks.{AuthStub, UserLockoutStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import play.api.i18n.Messages
 import play.api.libs.ws.WSResponse
 
 class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching with UserMatchingIntegrationResultSupport {
@@ -31,7 +31,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
     def fixture(agentLocked: Boolean): WSResponse = {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystoreBothPost()
+      IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
       if (agentLocked) UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
       else UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
@@ -70,7 +70,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
     "the user is locked out" should {
       "show the user lock out page" in {
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
         UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
 
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
@@ -87,7 +87,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
       "show the user details page with validation errors" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
@@ -99,16 +99,16 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           pageTitle("Error: " + messages("user-details.title"))
         )
         res.verifyStoredUserDetailsIs(None)
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
-    "A valid form is submitted and there are no previous user details in keystore" should {
-      "redirects to confirm user and saves the user details to keystore" in {
+    "A valid form is submitted and there are no previous user details in Subscription Details" should {
+      "redirects to confirm user and saves the user details to Subscription Details" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
@@ -121,12 +121,12 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         )
 
         res.verifyStoredUserDetailsIs(Some(userDetails))
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
-    "A valid form is submitted and there there is already a user details in keystore which matches the new submission" should {
-      "redirects to confirm user but do not modify the keystore" in {
+    "A valid form is submitted and there there is already a user details in Subscription Details which matches the new submission" should {
+      "redirects to confirm user but do not modify the Subscription Details" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
@@ -142,16 +142,16 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         )
 
         res.verifyStoredUserDetailsIs(Some(userDetails))
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
-    "A valid form is submitted and there there is already a user details in keystore which does not match the new submission" should {
-      "redirects to confirm user and wipe all previous keystore entries before saving the new user details" in {
+    "A valid form is submitted and there there is already a user details in Subscription Details  which does not match the new submission" should {
+      "redirects to confirm user and wipe all previous Subscription Details  entries before saving the new user details" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails = IntegrationTestModels.testUserDetails
-        KeystoreStub.stubKeystoreDelete()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
@@ -164,7 +164,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           redirectURI(routes.ConfirmUserController.show().url)
         )
 
-        KeystoreStub.verifyKeyStoreDelete(Some(1))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
       }
     }

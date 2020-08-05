@@ -17,14 +17,15 @@
 package utilities
 
 import config.AppConfig
+import models.{AgentSummary, IndividualSummary}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, PropertyCommencementDateModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.CacheConstants._
+import utilities.SubscriptionDataKeys._
 
-object CacheUtil {
+object SubscriptionDataUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 

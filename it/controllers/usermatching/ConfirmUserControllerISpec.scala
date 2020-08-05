@@ -17,6 +17,7 @@
 package controllers.usermatching
 
 import config.featureswitch.FeatureSwitching
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
@@ -32,7 +33,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
       "show error page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
         AuthenticatorStub.stubMatchFailure()
         // n.b. failure is expected as the additional methods are not mocked
@@ -52,7 +53,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
       "redirects to user details page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /confirm-user")
@@ -71,7 +72,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         "redirect the user to user details error page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystoreBothPost()
+          IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
           UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
           AuthenticatorStub.stubMatchNotFound()
 
@@ -93,8 +94,8 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         "redirect the user to agent locked out page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystoreBothPost()
-          KeystoreStub.stubKeystoreDelete()
+          IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
           UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
           UserLockoutStub.stubLockAgent(testUserIdEncoded)
           AuthenticatorStub.stubMatchNotFound()
@@ -111,7 +112,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
           val cookie = getSessionMap(res)
           cookie.keys should not contain ITSASessionKeys.FailedUserMatching
 
-          KeystoreStub.verifyKeyStoreDelete(Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         }
       }
     }
@@ -120,7 +121,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
       "redirect to income source page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
         AuthenticatorStub.stubMatchFound(testNino)
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
         SubscriptionStub.stubGetNoSubscription()

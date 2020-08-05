@@ -24,16 +24,19 @@ import javax.inject.{Inject, Singleton}
 import models.ConnectorError
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import services.{AuthService, SubscriptionDetailsService}
 import services.individual.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.CacheConstants.MtditId
+import utilities.SubscriptionDataKeys.MtditId
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClaimSubscriptionController @Inject()(val authService: AuthService, keystoreService: KeystoreService, subscriptionOrchestrationService: SubscriptionOrchestrationService)
-                                           (implicit val ec: ExecutionContext, appConfig: AppConfig, mcc: MessagesControllerComponents) extends SignUpController {
+class ClaimSubscriptionController @Inject()(val authService: AuthService,
+                                            subscriptionDetailsService: SubscriptionDetailsService,
+                                            subscriptionOrchestrationService: SubscriptionOrchestrationService)
+                                           (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                            mcc: MessagesControllerComponents) extends SignUpController {
 
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>
@@ -48,13 +51,13 @@ class ClaimSubscriptionController @Inject()(val authService: AuthService, keysto
   }
 
   private def getMtditId()(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
-    keystoreService.fetchSubscriptionId() map (_.toRight(left = KeystoreMissingError(MtditId)))
+    subscriptionDetailsService.fetchSubscriptionId() map (_.toRight(left = SubscriptionDetailsMissingError(MtditId)))
   }
 
   private def confirmationPage(id: String)(implicit request: Request[AnyContent]): Html = {
     views.html.individual.incometax.subscription.enrolled.claim_subscription()
   }
 
-  case class KeystoreMissingError(key: String) extends ConnectorError
+  case class SubscriptionDetailsMissingError(key: String) extends ConnectorError
 }
 

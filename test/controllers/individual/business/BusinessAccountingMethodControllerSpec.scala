@@ -24,13 +24,13 @@ import models.{Cash, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
-import utilities.CacheConstants._
+import services.mocks.MockSubscriptionDetailsService
+import utilities.SubscriptionDataKeys._
 import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,7 +40,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
     mockAuthService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
   "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
@@ -48,15 +48,14 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
     lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      mockFetchAccountingMethodFromKeyStore(None)
-      mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
+      mockFetchAccountingMethodFromSubscriptionDetails(None)
+      mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystoreFetch(AccountingMethod, 1)
-      verifyKeystoreSave(AccountingMethod, 0)
-      verifyKeyStoreFetchAll(1)
+      verifySubscriptionDetailsSave(AccountingMethod, 0)
+      verifySubscriptionDetailsFetchAll(2)
     }
   }
 
@@ -67,7 +66,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
     "When it is not in edit mode" should {
       s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = true)
 
@@ -76,35 +75,35 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
         await(goodRequest)
 
-        verifyKeystoreSave(AccountingMethod, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(AccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
     }
 
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(AccountingMethod, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(AccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(AccountingMethod, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(AccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
   }
@@ -114,13 +113,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
     "return a bad request status (400)" in {
       // for the back url
-      mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
+      mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
 
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystoreSave(AccountingMethod, 0)
-      verifyKeyStoreFetchAll(1)
+      verifySubscriptionDetailsSave(AccountingMethod, 0)
+      verifySubscriptionDetailsFetchAll(1)
     }
   }
 
@@ -128,13 +127,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
     "not in edit mode" when {
       "income source type is business" should {
         s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-          mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
         }
 
         s"point to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
-          mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBoth))
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBoth))
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.BusinessNameController.show().url
         }

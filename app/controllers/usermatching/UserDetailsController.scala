@@ -26,13 +26,13 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService, UserLockoutService}
+import services.{AuthService, SubscriptionDetailsService, UserLockoutService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserDetailsController @Inject()(val authService: AuthService, keystoreService: KeystoreService, lockOutService: UserLockoutService)
+class UserDetailsController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService, lockOutService: UserLockoutService)
                                      (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                       mcc: MessagesControllerComponents) extends UserMatchingController {
 
@@ -68,7 +68,7 @@ class UserDetailsController @Inject()(val authService: AuthService, keystoreServ
           userDetails => {
             val continue = Redirect(controllers.usermatching.routes.ConfirmUserController.show()).saveUserDetails(userDetails)
 
-            if (request.fetchUserDetails.fold(false)(_ != userDetails)) keystoreService.deleteAll().map(_ => continue)
+            if (request.fetchUserDetails.fold(false)(_ != userDetails)) subscriptionDetailsService.deleteAll().map(_ => continue)
             else Future.successful(continue)
           }
         )

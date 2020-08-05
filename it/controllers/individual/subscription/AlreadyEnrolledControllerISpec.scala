@@ -25,7 +25,7 @@ class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/already-enrolled" when {
 
-    "keystore not applicable" should {
+    "the Subscription Details Connector is not applicable" should {
       "show the already enrolled page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubEnrolled()

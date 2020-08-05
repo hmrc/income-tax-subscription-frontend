@@ -26,8 +26,7 @@ import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
-import services.mocks.MockKeystoreService
-import services.mocks.MockUserLockoutService
+import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.agent.TestConstants
 
@@ -35,7 +34,7 @@ import scala.concurrent.Future
 
 
 class ClientDetailsControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with MockUserLockoutService {
 
   override val controllerName: String = "ClientDetailsController"
@@ -46,7 +45,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
   object TestClientDetailsController extends ClientDetailsController(
     mockAuthService,
-    MockKeystoreService,
+    MockSubscriptionDetailsService,
     mockUserLockoutService
   )
 
@@ -124,7 +123,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         "there are no stored data" should {
 
           s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
-            mockDeleteAllFromKeyStore(HttpResponse(OK))
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
             lazy val r = userMatchingRequest.buildRequest(None)
@@ -135,15 +134,15 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifyKeyStoreDeleteAll(0)
+            verifySubscriptionDetailsDeleteAll(0)
           }
 
         }
 
         "stored user details is different to the new user details" should {
 
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} and deleted all pre-existing entries in keystore" in {
-            mockDeleteAllFromKeyStore(HttpResponse(OK))
+          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} and deleted all pre-existing entries in Subscription Details " in {
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
             val newUserDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT")
@@ -156,15 +155,15 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifyKeyStoreDeleteAll(1)
+            verifySubscriptionDetailsDeleteAll(1)
           }
 
         }
 
         "stored user details is the same as the new user details" should {
 
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} but do not delete keystore" in {
-            mockDeleteAllFromKeyStore(HttpResponse(OK))
+          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} but do not delete Subscription Details " in {
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
             lazy val r = userMatchingRequest.buildRequest(testClientDetails)
@@ -175,7 +174,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifyKeyStoreDeleteAll(0)
+            verifySubscriptionDetailsDeleteAll(0)
           }
 
         }
@@ -196,7 +195,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
           )
 
         "return a redirect status (BAD_REQUEST - 400)" in {
-          setupMockKeystoreSaveFunctions()
+          setupMockSubscriptionDetailsSaveFunctions()
           setupMockNotLockedOut(testARN)
 
           val badResult = callSubmit(isEditMode = editMode)
@@ -205,7 +204,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
           // bad requests do not trigger a save
           await(badResult).verifyStoredUserDetailsIs(None)(userMatchingRequest)
-          verifyKeyStoreDeleteAll(0)
+          verifySubscriptionDetailsDeleteAll(0)
         }
 
         "return HTML" in {

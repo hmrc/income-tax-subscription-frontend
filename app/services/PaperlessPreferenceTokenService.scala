@@ -25,19 +25,22 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PaperlessPreferenceTokenService @Inject()(keystoreService: KeystoreService,
+class PaperlessPreferenceTokenService @Inject()(subscriptionDetailsService: SubscriptionDetailsService,
                                                 paperlessPreferenceTokenConnector: PaperlessPreferenceTokenConnector)
                                                (implicit ec: ExecutionContext) {
-  def storeNino(nino: String)(implicit hc: HeaderCarrier): Future[String] =
-    keystoreService.fetchPaperlessPreferenceToken() flatMap {
+  def storeNino(nino: String)(implicit hc: HeaderCarrier): Future[String] = {
+
+
+    subscriptionDetailsService.fetchPaperlessPreferenceToken() flatMap {
       case Some(token) => Future.successful(token)
       case None =>
         val token = s"${UUID.randomUUID()}"
         paperlessPreferenceTokenConnector.storeNino(token, nino) flatMap {
           case Right(PaperlessPreferenceTokenSuccess) =>
-            keystoreService.savePaperlessPreferenceToken(token) map (_ => token)
+            subscriptionDetailsService.savePaperlessPreferenceToken(token) map (_ => token)
           case _ =>
             Future.failed(new InternalServerException("Failed to store paperless preferences token"))
         }
     }
+  }
 }

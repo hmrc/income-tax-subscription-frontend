@@ -17,7 +17,8 @@
 package services.agent
 
 import javax.inject.{Inject, Singleton}
-import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess, SummaryModel}
+import models.SummaryModel
+import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess}
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 

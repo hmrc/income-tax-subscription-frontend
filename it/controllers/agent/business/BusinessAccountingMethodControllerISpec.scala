@@ -17,25 +17,28 @@
 package controllers.agent.business
 
 import config.featureswitch.FeatureSwitching
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.servicemocks.AuthStub
 import models.common.AccountingMethodModel
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
-import models.individual.subscription.Both
+import models.individual.subscription.{Both, IncomeSourceType}
 import models.{Accruals, Cash, Yes}
 import play.api.http.Status._
-import utilities.CacheConstants
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.cache.client.CacheMap
+import utilities.SubscriptionDataKeys
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /business/accounting-method" when {
-    "keystore returns all data" should {
+    "the Subscription Details Connector returns all data" should {
       "show the accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
@@ -51,11 +54,12 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       }
     }
 
-    "keystore returns no data" should {
+    "the Subscription Details Connector returns no data" should {
       "show the accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(Both),
+          matchTaxYear = Some(MatchTaxYearModel(Yes))))
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
@@ -76,10 +80,16 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         "redirect the user to the property accounting method page" in {
           val userInput = AccountingMethodModel(Cash)
 
+          val expectedCacheMap = CacheMap("", Map(
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (Yes)),
+            SubscriptionDataKeys.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
+
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(Both),
+            matchTaxYear = Some(MatchTaxYearModel(Yes))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
           When("POST /business/accounting-method is called")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
@@ -90,7 +100,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
             redirectURI(propertyAccountingMethodURI)
           )
 
-          KeystoreStub.verifyKeyStoreSave(CacheConstants.AccountingMethod, userInput, Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.AccountingMethod, expectedCacheMap, Some(1))
         }
       }
     }
@@ -100,8 +110,9 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(Both),
+          matchTaxYear = Some(MatchTaxYearModel(Yes))))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
@@ -118,8 +129,9 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(Both),
+          matchTaxYear = Some(MatchTaxYearModel(Yes))))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
@@ -135,8 +147,8 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
     "not select an option on the accounting method page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
-      KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, "")
 
       When("POST /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, None)
@@ -150,22 +162,22 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
     "in edit mode" should {
       "changing to the Accruals radio button on the accounting method page" in {
-        val keystoreIncomeSource = Both
-        val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
-        val keystoreAccountingMethod = AccountingMethodModel(Cash)
+        val SubscriptionDetailsIncomeSource = Both
+        val SubscriptionDetailsAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
+        val SubscriptionDetailsAccountingMethod = AccountingMethodModel(Cash)
         val userInput = AccountingMethodModel(Accruals)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-            accountingMethod = Some(keystoreAccountingMethod),
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+          subscriptionData(
+            incomeSource = Some(SubscriptionDetailsIncomeSource),
+            accountingPeriodDate = Some(SubscriptionDetailsAccountingPeriodDates),
+            accountingMethod = Some(SubscriptionDetailsAccountingMethod),
             matchTaxYear = Some(MatchTaxYearModel(Yes))
           )
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
@@ -178,22 +190,21 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       }
 
       "simulate not changing accounting method when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = Both
-        val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
-        val keystoreAccountingMethod = AccountingMethodModel(Cash)
+        val SubscriptionDetailsIncomeSource = Both
+        val SubscriptionDetailsAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
+        val SubscriptionDetailsAccountingMethod = AccountingMethodModel(Cash)
         val userInput = AccountingMethodModel(Accruals)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-            accountingMethod = Some(keystoreAccountingMethod),
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+            incomeSource = Some(SubscriptionDetailsIncomeSource),
+            accountingPeriodDate = Some(SubscriptionDetailsAccountingPeriodDates),
+            accountingMethod = Some(SubscriptionDetailsAccountingMethod),
             matchTaxYear = Some(MatchTaxYearModel(Yes))
           )
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))

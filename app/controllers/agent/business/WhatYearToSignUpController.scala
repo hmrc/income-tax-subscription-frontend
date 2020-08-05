@@ -24,12 +24,14 @@ import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AccountingPeriodService, AuthService, KeystoreService}
+import services.{AccountingPeriodService, AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatYearToSignUpController @Inject()(val authService: AuthService, accountingPeriodService: AccountingPeriodService, keystoreService: KeystoreService)
+class WhatYearToSignUpController @Inject()(val authService: AuthService,
+                                           accountingPeriodService: AccountingPeriodService,
+                                           subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                            appConfig: AppConfig) extends AuthenticatedController {
 
@@ -53,7 +55,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchSelectedTaxYear() map { accountingYear =>
+      subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYear =>
         Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYear),
           isEditMode = isEditMode))
       }
@@ -65,7 +67,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          Future.successful(keystoreService.saveSelectedTaxYear(accountingYear)) map { _ =>
+          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(accountingYear)) map { _ =>
             if (isEditMode) {
               Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             } else {

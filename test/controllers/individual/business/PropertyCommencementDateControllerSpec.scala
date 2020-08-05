@@ -26,14 +26,14 @@ import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.CacheConstants.PropertyCommencementDate
+import utilities.SubscriptionDataKeys.PropertyCommencementDate
 import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceProperty}
 
 import scala.concurrent.Future
 
-class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
 
   override val controllerName: String = "PropertyCommencementDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -43,14 +43,14 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
 
   object TestPropertyCommencementDateController extends PropertyCommencementDateController(
     mockAuthService,
-    MockKeystoreService,
+    MockSubscriptionDetailsService,
     mockLanguageUtils
   )
 
   trait Test {
     val controller = new PropertyCommencementDateController(
       mockAuthService,
-      MockKeystoreService,
+      MockSubscriptionDetailsService,
       mockLanguageUtils
     )
   }
@@ -70,13 +70,13 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
     "display the property accounting method view and return OK (200)" in new Test {
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-      mockFetchAllFromKeyStore(testCacheMap(
+      mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSourceIndiv = Some(incomeSourceBoth)
       ))
 
       status(result) must be(Status.OK)
-      verifyKeystoreSave(PropertyCommencementDate, 0)
-      verifyKeyStoreFetchAll(1)
+      verifySubscriptionDetailsSave(PropertyCommencementDate, 0)
+      verifySubscriptionDetailsFetchAll(1)
 
     }
   }
@@ -96,53 +96,53 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyCommencementDate, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to businessAccountingMethod page" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyCommencementDate, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
     }
 
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyCommencementDate, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to checkYourAnswer page" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyCommencementDate, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
+        verifySubscriptionDetailsFetchAll(1)
 
       }
     }
@@ -150,15 +150,15 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
 
-        mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
+        mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
         val badRequest = callShowWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyKeystoreSave(PropertyCommencementDate, 0)
-        verifyKeyStoreFetchAll(1)
+        verifySubscriptionDetailsSave(PropertyCommencementDate, 0)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
 

@@ -23,19 +23,18 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
-import utilities.CacheConstants.MtditId
-import utilities.CacheUtil._
+import utilities.SubscriptionDataUtil._
+import utilities.SubscriptionDataKeys.MtditId
 import utilities.TestModels._
-import utilities.individual.{ImplicitDateFormatterImpl}
+import utilities.individual.ImplicitDateFormatterImpl
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
   with FeatureSwitching {
 
@@ -49,7 +48,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   object TestCheckYourAnswersController extends CheckYourAnswersController(
     mockAuthService,
-    MockKeystoreService,
+    MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
     mockImplicitDateFormatter
   )
@@ -62,7 +61,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       val testBusinessCacheMap = testCacheMapCustom(
         incomeSourceIndiv = testIncomeSourceBusiness
       )
-      mockFetchAllFromKeyStore(testBusinessCacheMap)
+      mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
 
       status(result) must be(Status.OK)
     }
@@ -71,13 +70,13 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       val testPropertyCacheMap = testCacheMap(
         incomeSourceIndiv = testIncomeSourceProperty
       )
-      mockFetchAllFromKeyStore(testPropertyCacheMap)
+      mockFetchAllFromSubscriptionDetails(testPropertyCacheMap)
 
       status(result) must be(Status.OK)
     }
 
     "return ok (200) for both journey" in {
-      mockFetchAllFromKeyStore(testCacheMap)
+      mockFetchAllFromSubscriptionDetails(testCacheMap)
 
       status(result) must be(Status.OK)
     }
@@ -93,13 +92,13 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
-        mockFetchAllFromKeyStore(testCacheMap)
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
         status(result) must be(Status.SEE_OTHER)
         await(result)
-        verifyKeystoreSave(MtditId, 1)
-        verifyKeyStoreFetchAll(1)
+        verifySubscriptionDetailsSave(MtditId, 1)
+        verifySubscriptionDetailsFetchAll(2)
       }
 
       s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
@@ -111,11 +110,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a internalServer error" in {
-        mockFetchAllFromKeyStore(testCacheMap)
+        mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary())
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
-        verifyKeyStoreFetchAll(1)
-        verifyKeystoreSave(MtditId, 0)
+        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsSave(MtditId, 0)
       }
     }
 

@@ -24,14 +24,14 @@ import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AccountingPeriodService, AuthService, KeystoreService}
+import services.{AccountingPeriodService, AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatYearToSignUpController @Inject()(val authService: AuthService, accountingPeriodService: AccountingPeriodService,
-                                           keystoreService: KeystoreService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController {
+                                           subscriptionDetailsService: SubscriptionDetailsService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                                                                       mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.individual.incometax.business.what_year_to_sign_up(
@@ -45,7 +45,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchSelectedTaxYear() map { accountingYear =>
+      subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYear =>
         Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm
           .fill(accountingYear), isEditMode = isEditMode))
       }
@@ -57,7 +57,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          Future.successful(keystoreService.saveSelectedTaxYear(accountingYear)) map { _ =>
+          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(accountingYear)) map { _ =>
             if (isEditMode) {
               Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
             }

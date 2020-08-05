@@ -27,14 +27,14 @@ import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
-import services.KeystoreService
+import services.SubscriptionDetailsService
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MatchTaxYearController @Inject()(val authService: AuthService,
 
-                                       keystoreService: KeystoreService)
+                                       subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                        appConfig: AppConfig) extends AuthenticatedController {
 
@@ -50,15 +50,15 @@ class MatchTaxYearController @Inject()(val authService: AuthService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchMatchTaxYear() map { matchTaxYear =>
+      subscriptionDetailsService.fetchMatchTaxYear() map { matchTaxYear =>
         Ok(view(MatchTaxYearForm.matchTaxYearForm.fill(matchTaxYear), isEditMode))
       }
   }
 
   private def redirectLocation(currentAnswer: MatchTaxYearModel, isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
     for {
-      matchTaxYear <- keystoreService.fetchMatchTaxYear
-      incomeSources <- keystoreService.fetchIncomeSource
+      matchTaxYear <- subscriptionDetailsService.fetchMatchTaxYear
+      incomeSources <- subscriptionDetailsService.fetchIncomeSource
     } yield {
       (currentAnswer, incomeSources) match {
         case (_, None) =>
@@ -81,7 +81,7 @@ class MatchTaxYearController @Inject()(val authService: AuthService,
         formWithErrors => Future.successful(BadRequest(view(matchTaxYearForm = formWithErrors, isEditMode = isEditMode))),
         matchTaxYear => for {
           redirect <- redirectLocation(matchTaxYear, isEditMode)
-          _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
+          _ <- subscriptionDetailsService.saveMatchTaxYear(matchTaxYear)
         } yield redirect
       )
   }

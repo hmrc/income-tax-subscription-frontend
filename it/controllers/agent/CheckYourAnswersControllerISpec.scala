@@ -17,11 +17,11 @@
 package controllers.agent
 
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
-import connectors.stubs.UsersGroupsSearchStub
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants.{testCredentialId, testCredentialId2, testGroupId, testUtr}
-import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.agent.IntegrationTestConstants._
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.servicemocks.AuthStub
+import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub}
 import play.api.http.Status._
@@ -30,12 +30,12 @@ import play.api.test.Helpers.OK
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
 
   "GET /check-your-answers" when {
-    "keystore returns all data" should {
+    "the Subscription Details Connector returns all data" should {
       "show the check your answers page" in {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
@@ -56,7 +56,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       "subscription was not successful" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         SubscriptionStub.stubSuccessfulPostFailure(checkYourAnswersURI)
 
         When("I call POST /check-your-answers")
@@ -74,18 +74,18 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-        KeystoreStub.stubPutMtditId()
+        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
         And("The wiremock stubs for auto enrolment")
         EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
         UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-        EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
-        EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(CREATED)
-        EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId)(CREATED)
-        EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId2)(CREATED)
+        EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+        EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+        EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+        EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
 
         When("I call POST /check-your-answers")
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -105,9 +105,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "getting the group id the enrolment is allocated was not successful" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          KeystoreStub.stubPutMtditId()
+          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(NO_CONTENT)
@@ -127,9 +127,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "getting the users assigned to the enrolment was not successful" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          KeystoreStub.stubPutMtditId()
+          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
@@ -150,9 +150,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "getting the admin in a group was not successful" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          KeystoreStub.stubPutMtditId()
+          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
@@ -174,15 +174,15 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "upserting the known facts was not successful" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          KeystoreStub.stubPutMtditId()
+          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
           UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NOT_FOUND)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NOT_FOUND)
 
           When("I call POST /check-your-answers")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -199,16 +199,16 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "allocating the enrolment to a group was not successful" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          KeystoreStub.stubPutMtditId()
+          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
           UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(NOT_FOUND)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(NOT_FOUND)
 
           When("I call POST /check-your-answers")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -225,18 +225,18 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "assigning all the users to the enrolment was not successful" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          KeystoreStub.stubPutMtditId()
+          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
           UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId2)(NOT_FOUND)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(NOT_FOUND)
 
           When("I call POST /check-your-answers")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()

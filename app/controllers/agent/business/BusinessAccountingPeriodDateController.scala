@@ -25,18 +25,21 @@ import models.individual.subscription.{Both, IncomeSourceType}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.SubscriptionDetailsService
 import services.{AccountingPeriodService, AuthService}
 import utilities.AccountingPeriodUtil
 import utilities.Implicits._
-import utilities.CacheUtil._
+import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class BusinessAccountingPeriodDateController @Inject()(val authService: AuthService, accountingPeriodService: AccountingPeriodService,
-                                                       keystoreService: KeystoreService)(implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                                                                         appConfig: AppConfig) extends AuthenticatedController {
+class BusinessAccountingPeriodDateController @Inject()(val authService: AuthService,
+                                                       accountingPeriodService: AccountingPeriodService,
+                                                       subscriptionDetailsService: SubscriptionDetailsService)(
+                                                       implicit val ec: ExecutionContext,
+                                                       mcc: MessagesControllerComponents,
+                                                       appConfig: AppConfig) extends AuthenticatedController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.agent.business.accounting_period_date(
@@ -51,7 +54,7 @@ class BusinessAccountingPeriodDateController @Inject()(val authService: AuthServ
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
-        accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
+        accountingPeriod <- subscriptionDetailsService.fetchAccountingPeriodDate()
       } yield
         Ok(view(
           AccountingPeriodDateForm.accountingPeriodDateForm.fill(accountingPeriod),
@@ -69,13 +72,13 @@ class BusinessAccountingPeriodDateController @Inject()(val authService: AuthServ
           isEditMode = isEditMode
         )),
         accountingPeriod =>
-          keystoreService.fetchIncomeSource() flatMap { incomeSources =>
+          subscriptionDetailsService.fetchIncomeSource() flatMap { incomeSources =>
             if (accountingPeriodService.checkEligibleAccountingPeriod(accountingPeriod.startDate.toLocalDate,
               accountingPeriod.endDate.toLocalDate, incomeSources.contains(Both))) {
               for {
-                cache <- keystoreService.fetchAll() map (_.get)
+                cache <- subscriptionDetailsService.fetchAll() map (_.get)
                 _ = cache.agentGetIncomeSource map (source => IncomeSourceType(source.source))
-                _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
+                _ <- subscriptionDetailsService.saveAccountingPeriodDate(accountingPeriod)
               } yield {
                 if (isEditMode) {
                   Redirect(controllers.agent.routes.CheckYourAnswersController.show())

@@ -25,16 +25,15 @@ import models.individual.business.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
-import services.mocks.MockAccountingPeriodService
+import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
 import utilities.{CurrentDateProvider, TestModels}
 import utilities.agent.TestConstants
-import utilities.CacheConstants.AccountingPeriodDate
+import utilities.SubscriptionDataKeys.AccountingPeriodDate
 
 import scala.concurrent.Future
 
 class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService with MockAccountingPeriodService {
+  with MockSubscriptionDetailsService with MockAccountingPeriodService {
 
   override val controllerName: String = "BusinessAccountingPeriodDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -48,16 +47,16 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     mockAuthService,
 
     mockAccountingPeriodService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
   "show" should {
     "return the correct view" in {
-      mockFetchAccountingPeriodFromKeyStore(None)
+      mockFetchAccountingPeriodFromSubscriptionDetails(None)
       lazy val result = await(TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest))
 
       status(result) mustBe OK
-      verifyKeystoreFetch(AccountingPeriodDate, 1)
+      verifySubscriptionDetailsFetch(AccountingPeriodDate, 1)
 
       val document = Jsoup.parse(contentAsString(result))
       document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading
@@ -76,8 +75,8 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
     "When it is ineligible dates" should {
       s"return a redirect status (SEE_OTHER - 303) to kickout page" in {
-        mockFetchIncomeSourceFromKeyStore(Some(TestModels.testAgentIncomeSourceBusiness))
-        mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
+        mockFetchIncomeSourceFromSubscriptionDetails(Some(TestModels.testAgentIncomeSourceBusiness))
+        mockFetchAllFromSubscriptionDetails(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
 
         mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
           hasPropertyIncomeSource = false)(eligible = false)
@@ -92,10 +91,10 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     "When it is not in edit mode and is eligible" when {
       "the tax year remained the same" should {
         s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
-          mockFetchIncomeSourceFromKeyStore(Some(TestModels.testAgentIncomeSourceBusiness))
-          mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
-          mockFetchAccountingPeriodFromKeyStore(testAccountingPeriodDates)
-          setupMockKeystoreSaveFunctions()
+          mockFetchIncomeSourceFromSubscriptionDetails(Some(TestModels.testAgentIncomeSourceBusiness))
+          mockFetchAllFromSubscriptionDetails(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
+          mockFetchAccountingPeriodFromSubscriptionDetails(testAccountingPeriodDates)
+          setupMockSubscriptionDetailsSaveFunctions()
 
           mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
             hasPropertyIncomeSource = false)(eligible = true)
@@ -104,15 +103,15 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
           status(goodRequest) mustBe SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
-          verifyKeystoreSave(AccountingPeriodDate, 1)
+          verifySubscriptionDetailsSave(AccountingPeriodDate, 1)
         }
       }
       "the tax year changed" should {
         s"return a redirect status (SEE_OTHER - 303) and update terms" in {
-          mockFetchIncomeSourceFromKeyStore(Some(TestModels.testAgentIncomeSourceBusiness))
-          mockFetchAllFromKeyStore(testCacheMap(
+          mockFetchIncomeSourceFromSubscriptionDetails(Some(TestModels.testAgentIncomeSourceBusiness))
+          mockFetchAllFromSubscriptionDetails(testCacheMap(
             accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)))
-          setupMockKeystoreSaveFunctions()
+          setupMockSubscriptionDetailsSaveFunctions()
 
           mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
             hasPropertyIncomeSource = false)(eligible = true)
@@ -121,15 +120,15 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
           status(goodRequest) mustBe SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
-          verifyKeystoreSave(AccountingPeriodDate, 1)
+          verifySubscriptionDetailsSave(AccountingPeriodDate, 1)
         }
       }
     }
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        mockFetchIncomeSourceFromKeyStore(Some(TestModels.testAgentIncomeSourceBusiness))
-        mockFetchAllFromKeyStore(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
-        setupMockKeystoreSaveFunctions()
+        mockFetchIncomeSourceFromSubscriptionDetails(Some(TestModels.testAgentIncomeSourceBusiness))
+        mockFetchAllFromSubscriptionDetails(testCacheMap(accountingPeriodDate = Some(testAccountingPeriodDates)))
+        setupMockSubscriptionDetailsSaveFunctions()
 
         mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), hasPropertyIncomeSource = false)(eligible = true)
 
@@ -138,7 +137,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
-        verifyKeystoreSave(AccountingPeriodDate, 1)
+        verifySubscriptionDetailsSave(AccountingPeriodDate, 1)
       }
     }
   }
@@ -148,11 +147,11 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
     "return a bad request status (400)" in {
       // required for backurl
-      mockFetchIncomeSourceFromKeyStore(testIncomeSourceBusiness)
+      mockFetchIncomeSourceFromSubscriptionDetails(testIncomeSourceBusiness)
 
       status(badrequest) mustBe BAD_REQUEST
-      verifyKeystoreSave(AccountingPeriodDate, 0)
-      verifyKeystoreFetch(AccountingPeriodDate, 0)
+      verifySubscriptionDetailsSave(AccountingPeriodDate, 0)
+      verifySubscriptionDetailsFetch(AccountingPeriodDate, 0)
     }
   }
 

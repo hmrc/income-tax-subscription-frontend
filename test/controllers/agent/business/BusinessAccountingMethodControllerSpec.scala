@@ -25,11 +25,11 @@ import models.individual.subscription.{Both, Business}
 import models.{Cash, No, Yes, common}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
-import utilities.CacheConstants.AccountingMethod
+import services.mocks.MockSubscriptionDetailsService
+import utilities.SubscriptionDataKeys.AccountingMethod
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService {
+  with MockSubscriptionDetailsService {
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -39,20 +39,20 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
     mockAuthService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
   trait Test {
     val controller = new BusinessAccountingMethodController(
       mockAuthService,
-      MockKeystoreService
+      MockSubscriptionDetailsService
     )
   }
 
   "show" must {
     s"return $OK" when {
       "the user has not entered an answer previously" in new Test {
-        mockFetchAllFromKeyStore(testCacheMap(
+        mockFetchAllFromSubscriptionDetails(testCacheMap(
           incomeSource = Some(Business),
           matchTaxYear = Some(MatchTaxYearModel(Yes))
         ))
@@ -61,10 +61,10 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe OK
 
-        verifyKeyStoreFetchAll(1)
+        verifySubscriptionDetailsFetchAll(1)
       }
       "the user has entered the answer previously" in new Test {
-        mockFetchAllFromKeyStore(testCacheMap(
+        mockFetchAllFromSubscriptionDetails(testCacheMap(
             incomeSource = Some(Business),
             matchTaxYear = Some(MatchTaxYearModel(Yes)),
             accountingMethod = Some(common.AccountingMethodModel(Cash))
@@ -75,7 +75,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe OK
 
-        verifyKeyStoreFetchAll(1)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
   }
@@ -84,7 +84,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "the users submission is invalid" must {
       s"return $BAD_REQUEST" in new Test {
-        mockFetchAllFromKeyStore(testCacheMap(
+        mockFetchAllFromSubscriptionDetails(testCacheMap(
             incomeSource = Some(Business),
             matchTaxYear = Some(MatchTaxYearModel(Yes))
           )
@@ -94,16 +94,16 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe BAD_REQUEST
 
-        verifyKeyStoreFetchAll(1)
-        verifyKeystoreSave(AccountingMethod, 0)
+        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsSave(AccountingMethod, 0)
       }
     }
 
     "not in edit mode" should {
       s"redirect to ${routes.PropertyAccountingMethodController.show().url}" when {
         "the user has both business and property income" in new Test {
-          setupMockKeystoreSaveFunctions()
-          mockFetchAllFromKeyStore(testCacheMap(
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllFromSubscriptionDetails(testCacheMap(
               incomeSource = Some(Both),
               matchTaxYear = Some(MatchTaxYearModel(Yes))
             )
@@ -116,16 +116,16 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.PropertyAccountingMethodController.show().url)
 
-          verifyKeyStoreFetchAll(1)
-          verifyKeystoreSave(AccountingMethod, 1)
+          verifySubscriptionDetailsFetchAll(2)
+          verifySubscriptionDetailsSave(AccountingMethod, 1)
         }
       }
 
       s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}'" when {
 
         "the user has business only income" in new Test {
-          setupMockKeystoreSaveFunctions()
-          mockFetchAllFromKeyStore(testCacheMap(
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllFromSubscriptionDetails(testCacheMap(
               incomeSource = Some(Business),
               matchTaxYear = Some(MatchTaxYearModel(Yes))
             )
@@ -138,8 +138,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-          verifyKeyStoreFetchAll(1)
-          verifyKeystoreSave(AccountingMethod, 1)
+          verifySubscriptionDetailsFetchAll(2)
+          verifySubscriptionDetailsSave(AccountingMethod, 1)
         }
       }
 
@@ -148,8 +148,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     "in edit mode" should {
 
       s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}'" in new Test {
-        setupMockKeystoreSaveFunctions()
-        mockFetchAllFromKeyStore(testCacheMap(
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchAllFromSubscriptionDetails(testCacheMap(
           incomeSource = Some(Business),
           matchTaxYear = MatchTaxYearModel(Yes)
         ))
@@ -161,8 +161,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-        verifyKeyStoreFetchAll(1)
-        verifyKeystoreSave(AccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(2)
+        verifySubscriptionDetailsSave(AccountingMethod, 1)
       }
 
     }

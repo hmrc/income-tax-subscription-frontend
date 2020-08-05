@@ -25,13 +25,13 @@ import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.AuthService
-import services.KeystoreService
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeSourceController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+class IncomeSourceController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends AuthenticatedController {
 
@@ -45,7 +45,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, keystoreSer
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchIncomeSource() map {
+      subscriptionDetailsService.fetchIncomeSource() map {
         incomeSource => Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
       }
   }
@@ -59,7 +59,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, keystoreSer
           if (!isEditMode) {
             saveIncomeSourceAndContinue(incomeSource)
           } else {
-            keystoreService.fetchIncomeSource().flatMap { oldIncomeSource =>
+            subscriptionDetailsService.fetchIncomeSource().flatMap { oldIncomeSource =>
               if (oldIncomeSource.contains(incomeSource)) {
                 Future.successful(Redirect(routes.CheckYourAnswersController.show()))
               } else {
@@ -72,7 +72,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, keystoreSer
   }
 
   private def saveIncomeSourceAndContinue(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier): Future[Result] = {
-    keystoreService.saveIncomeSource(incomeSource) map { _ =>
+    subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
       incomeSource match {
         case Business | Both =>
           Redirect(business.routes.BusinessNameController.show())

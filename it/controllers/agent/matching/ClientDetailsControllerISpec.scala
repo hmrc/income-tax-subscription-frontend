@@ -16,13 +16,13 @@
 
 package controllers.agent.matching
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.IntegrationTestConstants.{agentLockedOutURI, testARN}
-import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub, KeystoreStub}
+import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import play.api.i18n.Messages
 import play.api.libs.ws.WSResponse
 
 
@@ -32,7 +32,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     def fixture(agentLocked: Boolean): WSResponse = {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystore()
+      IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
       if (agentLocked) AgentLockoutStub.stubAgentIsLocked(testARN)
       else AgentLockoutStub.stubAgentIsNotLocked(testARN)
@@ -71,7 +71,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     "the agent is locked out" should {
       "show the agent lock out page" in {
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         AgentLockoutStub.stubAgentIsLocked(testARN)
 
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
@@ -88,7 +88,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
       "show the client details page with validation errors" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
 
         When("I call POST /client-details")
@@ -101,17 +101,17 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(None)
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
-    "A valid form is submitted and there are no previous user details in keystore" should {
-      "redirects to confirm client and saves the client details to keystore" in {
+    "A valid form is submitted and there are no previous user details in Subscription Details" should {
+      "redirects to confirm client and saves the client details to Subscription Details" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = None)
@@ -123,12 +123,12 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(Some(clientDetails))
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
-    "A valid form is submitted and there there is already a user details in keystore which matches the new submission" should {
-      "redirects to confirm client but do not modify the keystore" in {
+    "A valid form is submitted and there there is already a user details in Subscription Details which matches the new submission" should {
+      "redirects to confirm client but do not modify the Subscription Details" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
@@ -144,17 +144,17 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(Some(clientDetails))
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
-    "A valid form is submitted and there there is already a user details in keystore which does not match the new submission" should {
-      "redirects to confirm client and wipe all previous keystore entries before saving the new client details" in {
+    "A valid form is submitted and there there is already a user details in Subscription Details which does not match the new submission" should {
+      "redirects to confirm client and wipe all previous Subscription Details entries before saving the new client details" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val clientDetails = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
-        KeystoreStub.stubKeystoreDelete()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
 
         When("I call POST /client-details")
         val submittedUserDetails = clientDetails.copy(firstName = "NotMatching")
@@ -166,7 +166,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           redirectURI(routes.ConfirmClientController.show().url)
         )
 
-        KeystoreStub.verifyKeyStoreDelete(Some(1))
+        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
 
       }

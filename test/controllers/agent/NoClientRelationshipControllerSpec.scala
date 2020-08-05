@@ -21,11 +21,11 @@ import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.agent.ClientRelationshipService
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 
 class NoClientRelationshipControllerSpec
   extends AgentControllerBaseSpec
-    with MockKeystoreService {
+    with MockSubscriptionDetailsService {
 
   override lazy val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestNoClientRelationshipController.show,

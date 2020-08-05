@@ -29,10 +29,10 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results._
 import play.api.test.Helpers._
-import services.KeystoreService
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.CacheConstants
+import utilities.SubscriptionDataKeys
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -57,7 +57,7 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
   val testModel: AccountingMethodModel = AccountingMethodModel(Cash)
 
   class Setup extends RequireAnswer {
-    override val keystoreService: KeystoreService = mock[KeystoreService]
+    override val subscriptionDetailsService: SubscriptionDetailsService = mock[SubscriptionDetailsService]
   }
 
   "SingleAnswer" must {
@@ -118,7 +118,7 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
   "require" must {
     "return a result" when {
       "the required data is available" in new Setup {
-        when(keystoreService.fetchAll()(any()))
+        when(subscriptionDetailsService.fetchAll()(any()))
           .thenReturn(Future.successful(CacheMap("testId", Map("testKey" -> Json.toJson(testModel)))))
         val result: Future[Result] = require(testSingleAnswer) { answer =>
           Future.successful(Ok(Json.toJson(answer)))
@@ -128,7 +128,7 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
         contentAsJson(result) mustBe Json.toJson(testModel)
       }
       "the required data is not available in the returned CacheMap" in new Setup {
-        when(keystoreService.fetchAll()(any()))
+        when(subscriptionDetailsService.fetchAll()(any()))
           .thenReturn(Future.successful(CacheMap("testId", Map("testKey2" -> Json.toJson(testModel)))))
         val result: Future[Result] = require(testSingleAnswer) { answer =>
           Future.successful(Ok(Json.toJson(answer)))
@@ -143,7 +143,7 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
   "Agent - incomeSourceTypeAnswer" must {
     "return an income source type" when {
       "present in the cache map" in {
-        val cacheMap: CacheMap = CacheMap("testId", Map(CacheConstants.IncomeSource -> Json.toJson(Both)))
+        val cacheMap: CacheMap = CacheMap("testId", Map(SubscriptionDataKeys.IncomeSource -> Json.toJson(Both)))
         Answers.incomeSourceTypeAnswer(cacheMap) mustBe Right(Both)
       }
     }
@@ -158,7 +158,7 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
   "Agent - matchTaxYearAnswer" must {
     "return a match tax year model" when {
       "present in the cache map" in {
-        val cacheMap: CacheMap = CacheMap("testId", Map(CacheConstants.MatchTaxYear -> Json.toJson(MatchTaxYearModel(Yes))))
+        val cacheMap: CacheMap = CacheMap("testId", Map(SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel(Yes))))
         Answers.matchTaxYearAnswer(cacheMap) mustBe Right(MatchTaxYearModel(Yes))
       }
     }
@@ -173,7 +173,7 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
   "Agent - optAccountingMethodAnswer" must {
     "return some accounting method model" when {
       "present in the cache map" in {
-        val cacheMap: CacheMap = CacheMap("testId", Map(CacheConstants.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
+        val cacheMap: CacheMap = CacheMap("testId", Map(SubscriptionDataKeys.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
         Answers.optAccountingMethodAnswer(cacheMap) mustBe Right(Some(AccountingMethodModel(Cash)))
       }
     }

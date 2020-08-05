@@ -24,11 +24,11 @@ import models.individual.subscription.IncomeSourceType
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
-import utilities.CacheConstants.IncomeSource
-import utilities.CacheConstants.MatchTaxYear
+import services.mocks.MockSubscriptionDetailsService
+import utilities.SubscriptionDataKeys.IncomeSource
+import utilities.SubscriptionDataKeys.MatchTaxYear
 
-class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
+class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscriptionDetailsService {
 
   override val controllerName: String = "MatchTaxYearController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -42,12 +42,12 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
 
     val controller = new MatchTaxYearController(
       mockAuthService,
-      MockKeystoreService
+      MockSubscriptionDetailsService
     )
 
-    mockFetchMatchTaxYearFromKeyStore(fetchMatchTaxYear)
-    mockFetchIncomeSourceFromKeyStore(fetchIncomeSource)
-    setupMockKeystoreSaveFunctions()
+    mockFetchMatchTaxYearFromSubscriptionDetails(fetchMatchTaxYear)
+    mockFetchIncomeSourceFromSubscriptionDetails(fetchIncomeSource)
+    setupMockSubscriptionDetailsSaveFunctions()
   }
 
   "backUrl" when {
@@ -75,9 +75,8 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-          verifyKeystoreFetch(MatchTaxYear, 1)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(MatchTaxYear, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
+          verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
 
@@ -91,9 +90,8 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingMethodController.show(true).url)
 
-          verifyKeystoreFetch(MatchTaxYear, 1)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(MatchTaxYear, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
+          verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
 
@@ -107,9 +105,8 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show(true).url)
 
-          verifyKeystoreFetch(MatchTaxYear, 1)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(MatchTaxYear, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
+          verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
     }
@@ -125,9 +122,8 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingMethodController.show().url)
 
-          verifyKeystoreFetch(MatchTaxYear, 1)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(MatchTaxYear, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
+          verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
 
         s"redirect to ${routes.WhatYearToSignUpController.show().url} when they have selected only business income sources" in new Test(
@@ -139,9 +135,8 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.WhatYearToSignUpController.show().url)
 
-          verifyKeystoreFetch(MatchTaxYear, 1)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(MatchTaxYear, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
+          verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
 
@@ -155,9 +150,8 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show().url)
 
-          verifyKeystoreFetch(MatchTaxYear, 1)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(MatchTaxYear, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
+          verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
 
         s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url} when they have selected only business income sources" in new Test(
@@ -169,9 +163,8 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show().url)
 
-          verifyKeystoreFetch(MatchTaxYear, 1)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(MatchTaxYear, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
+          verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
 
@@ -183,9 +176,8 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
 
-          verifyKeystoreFetch(MatchTaxYear, 1)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(MatchTaxYear, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
+          verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
     }
