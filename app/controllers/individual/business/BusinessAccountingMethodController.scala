@@ -65,7 +65,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             } else {
               keystoreService.fetchIndividualIncomeSource() map {
-                case Some(IncomeSourceModel(_, true)) =>
+                case Some(IncomeSourceModel(_, true, _)) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
@@ -82,7 +82,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
     else {
       keystoreService.fetchAll() map { cacheMap =>
         cacheMap.getIncomeSourceModel match {
-          case Some(IncomeSourceModel(true, false)) =>
+          case Some(IncomeSourceModel(true, false, _)) =>
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
           case _ =>
             controllers.individual.business.routes.BusinessNameController.show().url

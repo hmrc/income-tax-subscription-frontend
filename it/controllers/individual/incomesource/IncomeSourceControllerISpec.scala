@@ -71,7 +71,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
   "POST /report-quarterly/income-and-expenses/sign-up/details/income-receive" when {
     "not in edit mode" when {
       "the user rents a uk property and has other income" in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -87,7 +87,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         )
       }
       "the user rents a uk property and doesn't have other income" in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
         Given("I setup the wiremock stubs and feature switch")
         AuthStub.stubAuthSuccess()
@@ -103,7 +103,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         )
       }
       "the user does not rent a uk property but have other income" in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -122,11 +122,11 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
     "in edit mode" when {
       "the user selects a different answer" in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(IncomeSourceModel(true, true))))
+        KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
         KeystoreStub.stubKeystoreSave(CacheConstants.IndividualIncomeSource, userInput)
 
         When("POST /details/income-receive is called")
@@ -139,7 +139,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         )
       }
       "the user selects the same answer" in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()

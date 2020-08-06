@@ -49,13 +49,13 @@ object CacheUtil {
 
     def getSummary()(implicit appConfig: AppConfig): IndividualSummary =
       getIncomeSourceModel match {
-        case Some(IncomeSourceModel(false, true)) =>
+        case Some(IncomeSourceModel(false, true, _)) =>
           IndividualSummary(
             incomeSourceIndiv = getIncomeSourceModel,
             propertyCommencementDate = getPropertyCommencementDate,
             accountingMethodProperty = getPropertyAccountingMethod
           )
-        case Some(IncomeSourceModel(true, false)) =>
+        case Some(IncomeSourceModel(true, false, _)) =>
           IndividualSummary(
             incomeSourceIndiv = getIncomeSourceModel,
             businessName = getBusinessName,

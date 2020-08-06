@@ -24,11 +24,13 @@ object IncomeSourceForm {
 
   val business = "Business"
   val ukProperty = "UkProperty"
+  val foreignProperty = "ForeignProperty"
 
   val incomeSourceForm: Form[IncomeSourceModel] = Form(
     mapping(
       business -> boolean,
-      ukProperty -> boolean
+      ukProperty -> boolean,
+      foreignProperty -> boolean
     )(IncomeSourceModel.apply)(IncomeSourceModel.unapply)
       .verifying("individual.error.income_source.invalid", _.hasAtLeastOneSelected)
   )

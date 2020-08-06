@@ -33,14 +33,14 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
   val submissionDateValue = DateModel("1", "1", "2016")
   val duration: Int = 0
   val action: Call = ViewSpecTrait.testCall
-  val incomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false)
-  val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true)
+  val incomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
+  val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
   val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
   def page(incomeSource: IncomeSourceModel): Html = views.html.individual.incometax.subscription.sign_up_complete(
     journeyDuration = duration,
     summary = incomeSource match {
-      case IncomeSourceModel(true, true) => testSummaryData
+      case IncomeSourceModel(true, true, true) => testSummaryData
       case _ => testSummaryDataProperty
     }
   )(request, implicitly, appConfig)

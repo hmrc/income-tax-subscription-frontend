@@ -38,7 +38,8 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
     "keystore returns no data" should {
       "show the property commencement date page" in {
         Given("I setup the Wiremock stubs")
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true)
+        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
+          foreignProperty = true)
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(incomeSourceModel)))
 
@@ -79,7 +80,8 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
 
       "do not enter commencement date" in {
         Given("I setup the Wiremock stubs")
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true)
+        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
+          foreignProperty = false)
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(incomeSourceModel)))
         KeystoreStub.stubKeystoreSave(CacheConstants.PropertyCommencementDate, "")
@@ -96,7 +98,8 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
 
       "select commencement date within 12 months" in {
         val userInput: PropertyCommencementDateModel = IntegrationTestModels.testInvalidCommencementDate
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true)
+        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
+          foreignProperty = false)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

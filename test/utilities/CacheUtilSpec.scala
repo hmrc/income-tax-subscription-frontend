@@ -43,7 +43,7 @@ class CacheUtilSpec extends UnitTestTrait
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getIncomeSourceModel shouldBe Some(IncomeSourceModel(true,true))
+      testCacheMap.getIncomeSourceModel shouldBe Some(IncomeSourceModel(true,true,false))
       testCacheMap.agentGetIncomeSource shouldBe Some(Both)
       testCacheMap.getBusinessName shouldBe Some(testBusinessName)
       testCacheMap.getMatchTaxYear shouldBe Some(testMatchTaxYearNo)
