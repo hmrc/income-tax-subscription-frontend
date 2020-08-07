@@ -95,3 +95,7 @@ POST        /business/overseas-property-accounting-method        controllers.ind
 #Property Commencement Date Routes
 GET         /business/property-commencement-date        controllers.individual.business.PropertyCommencementDateController.show(editMode: Boolean ?= false)
 POST        /business/property-commencement-date        controllers.individual.business.PropertyCommencementDateController.submit(editMode: Boolean ?= false)
+
+#Foreign Property Commencement Date Routes
+GET         /business/overseas-property-start-date      controllers.individual.business.OverseasPropertyCommencementDateController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-start-date      controllers.individual.business.OverseasPropertyCommencementDateController.submit(editMode: Boolean ?= false)

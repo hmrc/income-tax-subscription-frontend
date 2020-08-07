@@ -12,7 +12,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.{BusinessesKey, subscriptionId}
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
-import helpers.IntegrationTestModels.{fullIndivSubscriptionDataBothPost, fullIndivSubscriptionDataPropertyPost}
+import helpers.IntegrationTestModels._
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
@@ -37,6 +37,8 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     when(method = POST, uri = postUri(id))
       .thenReturn(Status.OK, CacheMap(SessionId, fullIndivSubscriptionDataBothPost))
   }
+
+  def stubIndivFullSubscriptionAllPost(): Unit = stubSubscriptionData(fullIndivSubscriptionDataAllPost)
 
   def stubIndivFullSubscriptionBothPost(): Unit = stubSubscriptionData(fullIndivSubscriptionDataBothPost)
 

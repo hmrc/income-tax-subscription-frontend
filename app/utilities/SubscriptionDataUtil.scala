@@ -17,11 +17,11 @@
 package utilities
 
 import config.AppConfig
-import models.{AgentSummary, IndividualSummary}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, PropertyCommencementDateModel, SelfEmploymentData}
+import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
+import models.{AgentSummary, IndividualSummary}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys._
 
@@ -48,8 +48,10 @@ object SubscriptionDataUtil {
 
     def getPropertyCommencementDate: Option[PropertyCommencementDateModel] = cacheMap.getEntry[PropertyCommencementDateModel](PropertyCommencementDate)
 
+    def getForeignPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = cacheMap.getEntry[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate)
+
     def getSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
-                  selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None
+                   selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None
                   )(implicit appConfig: AppConfig): IndividualSummary =
       getIncomeSourceModel match {
         case Some(IncomeSourceModel(false, true, _)) =>

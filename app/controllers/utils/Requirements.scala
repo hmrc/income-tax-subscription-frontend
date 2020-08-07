@@ -17,7 +17,7 @@
 package controllers.utils
 
 import models.common.AccountingMethodModel
-import models.individual.business.{MatchTaxYearModel, PropertyCommencementDateModel}
+import models.individual.business.{OverseasPropertyCommencementDateModel, MatchTaxYearModel, PropertyCommencementDateModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
 import play.api.libs.functional.~
@@ -78,6 +78,10 @@ object Answers {
     retrieveAnswer = _.getPropertyCommencementDate
   )
 
+   val optForeignPropertyCommencementDateAnswer: Answer[Option[OverseasPropertyCommencementDateModel]] = OptionalAnswer(
+    retrieveAnswer = _.getForeignPropertyCommencementDate
+  )
+
 }
 
 trait RequireAnswer {
@@ -86,9 +90,14 @@ trait RequireAnswer {
 
   def require[A](answer: Answer[A])(f: A => Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Result] = {
     subscriptionDetailsService.fetchAll() flatMap {
-      cacheMap => answer(cacheMap) match {
-        case Right(answers) => f(answers)
-        case Left(result) => Future.successful(result)
+      cacheMap => {
+        println("\n\n\n##############################################################\n" +
+          s"CACHEMAP: $cacheMap" +
+          "\n#############################################################\n")
+        answer(cacheMap) match {
+          case Right(answers) => f(answers)
+          case Left(result) => Future.successful(result)
+        }
       }
     }
   }

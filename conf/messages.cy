@@ -175,6 +175,22 @@ property.error.day.year.empty                                   = Mae’n rhaid 
 property.error.month.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
 property.error.property_accounting_period.minStartDate          = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
 
+## Foreign Property Commencement Date
+foreign.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
+foreign.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
+foreign.property.line_1                                         = Dyma’r dyddiad y dechreuoch roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
+foreign.property.start_date.exampleStartDate                    = Er enghraifft, 1 8 2014
+
+# Foreign Property Commencement Date errors
+foreign.property.error.date.empty                                       = Nodwch y dyddiad y gwnaeth eich busnes ddechrau masnachu
+foreign.property.error.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+foreign.property.error.month.empty                                      = Mae’n rhaid i’r dyddiad gynnwys mis
+foreign.property.error.year.empty                                       = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+foreign.property.error.day.month.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+foreign.property.error.day.year.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+foreign.property.error.month.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+foreign.property.error.property_commencement_date.minStartDate          = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+
 ## Contact Email Address page ##
 contact_email.title                                             = Nodwch eich cyfeiriad e-bost
 contact_email.heading                                           = Nodwch eich cyfeiriad e-bost
