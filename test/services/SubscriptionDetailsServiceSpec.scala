@@ -16,30 +16,17 @@
 
 package services
 
-import config.SessionCache
 import models.common.BusinessNameModel
 import org.scalatest.Matchers._
 import play.api.http.Status
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utilities.SubscriptionDataKeys.BusinessName
 import utilities.{TestModels, UnitTestTrait}
 
 class SubscriptionDetailsServiceSpec extends UnitTestTrait
   with MockSubscriptionDetailsService {
-
-  "SubscriptionDetails service" should {
-    "be DIed with the correct session cache object" in {
-      val cache = app.injector.instanceOf[SessionCache]
-      val config = app.injector.instanceOf[ServicesConfig]
-
-      cache.defaultSource shouldBe config.getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
-      cache.baseUri shouldBe config.baseUrl("session-cache")
-      cache.domain shouldBe config.getConfString("session-cache.domain", throw new Exception(s"Could not find core.config 'session-cache.domain'"))
-    }
-  }
 
   "mock keystore service" should {
     object TestSubscriptionDetails {
@@ -60,7 +47,7 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
 
       businessName shouldBe Some(testBusinessName)
 
-      verifySubscriptionDetailsFetch(BusinessName, 1)
+      verifySubscriptionDetailsFetch(BusinessName, 2)
       verifySubscriptionDetailsSave(BusinessName, 1)
     }
 

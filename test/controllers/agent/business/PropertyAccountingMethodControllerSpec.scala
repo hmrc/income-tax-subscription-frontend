@@ -61,9 +61,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
-        verifySubscriptionDetailsFetch(PropertyAccountingMethod, 1)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 0)
-        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsFetchAll(2)
       }
     }
 
@@ -75,9 +74,8 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
-        verifySubscriptionDetailsFetch(PropertyAccountingMethod, 1)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 0)
-        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsFetchAll(2)
 
       }
     }
@@ -103,7 +101,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to CheckYourAnswer page" in {
@@ -115,7 +113,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
 
@@ -129,7 +127,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to CheckYourAnswer page" in {
@@ -141,7 +139,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
 

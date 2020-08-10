@@ -54,9 +54,8 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
       status(result) must be(Status.OK)
 
       await(result)
-      verifySubscriptionDetailsFetch(AccountingMethod, 1)
       verifySubscriptionDetailsSave(AccountingMethod, 0)
-      verifySubscriptionDetailsFetchAll(1)
+      verifySubscriptionDetailsFetchAll(2)
     }
   }
 
@@ -77,7 +76,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
         await(goodRequest)
 
         verifySubscriptionDetailsSave(AccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
     }
@@ -92,7 +91,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
         await(goodRequest)
         verifySubscriptionDetailsSave(AccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
@@ -104,7 +103,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
         await(goodRequest)
         verifySubscriptionDetailsSave(AccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
   }

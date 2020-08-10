@@ -75,8 +75,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-          verifySubscriptionDetailsFetch(MatchTaxYear, 1)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
           verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
@@ -91,8 +90,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingMethodController.show(true).url)
 
-          verifySubscriptionDetailsFetch(MatchTaxYear, 1)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
           verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
@@ -107,8 +105,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show(true).url)
 
-          verifySubscriptionDetailsFetch(MatchTaxYear, 1)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
           verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
@@ -125,8 +122,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingMethodController.show().url)
 
-          verifySubscriptionDetailsFetch(MatchTaxYear, 1)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
           verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
 
@@ -139,8 +135,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.WhatYearToSignUpController.show().url)
 
-          verifySubscriptionDetailsFetch(MatchTaxYear, 1)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
           verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
@@ -155,8 +150,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show().url)
 
-          verifySubscriptionDetailsFetch(MatchTaxYear, 1)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
           verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
 
@@ -169,8 +163,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show().url)
 
-          verifySubscriptionDetailsFetch(MatchTaxYear, 1)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
           verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }
@@ -183,8 +176,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
 
-          verifySubscriptionDetailsFetch(MatchTaxYear, 1)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(MatchTaxYear, 3)
           verifySubscriptionDetailsSave(MatchTaxYear, 1)
         }
       }

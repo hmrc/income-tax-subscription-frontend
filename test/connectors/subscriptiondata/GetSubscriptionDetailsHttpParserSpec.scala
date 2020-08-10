@@ -17,8 +17,7 @@
 package connectors.subscriptiondata
 
 import connectors.httpparser.GetSubscriptionDetailsHttpParser._
-import play.api.libs.json.JsResult.Exception
-import play.api.libs.json.{JsError, Json, OFormat}
+import play.api.libs.json.{Json, OFormat}
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK}
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
@@ -39,14 +38,14 @@ class GetSubscriptionDetailsHttpParserSpec extends UnitTestTrait {
       "parse a correctly formatted OK response and return the data in a model" in {
         val httpResponse = HttpResponse(OK, Some(Json.obj("body" -> "Test Body")))
 
-        val res = getSubscriptionDetailsHttpReads[DummyModel].read(testHttpVerb, testUri, httpResponse)
+        lazy val res = getSubscriptionDetailsHttpReads[DummyModel].read(testHttpVerb, testUri, httpResponse)
 
-        res mustBe Right(Some(DummyModel(body = "Test Body")))
+        res mustBe Some(DummyModel(body = "Test Body"))
       }
       "parse an incorrectly formatted Ok response as an invalid Json" in {
         val httpResponse = HttpResponse(OK, Some(Json.obj()))
 
-        val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
+        lazy val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
         the[Exception] thrownBy res must have message "Invalid Json reading saved data"
       }
@@ -54,18 +53,18 @@ class GetSubscriptionDetailsHttpParserSpec extends UnitTestTrait {
       "parse an no content response as None" in {
         val httpResponse = HttpResponse(NO_CONTENT)
 
-        val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
+        lazy val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
 
-        res mustBe Right(None)
+        res mustBe None
       }
 
       "parse any other http status as a UnexpectedStatusFailure" in {
         val httpResponse = HttpResponse(INTERNAL_SERVER_ERROR)
 
-        val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
+        lazy val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        the[Exception] thrownBy res must have message "Invalid status: $status"
+        the[Exception] thrownBy res must have message s"Invalid status: $INTERNAL_SERVER_ERROR"
 
       }
     }

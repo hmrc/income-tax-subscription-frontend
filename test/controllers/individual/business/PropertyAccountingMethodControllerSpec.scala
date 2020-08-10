@@ -58,9 +58,8 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType) // for the back url
 
       status(result) must be(Status.OK)
-      verifySubscriptionDetailsFetch(PropertyAccountingMethod, 1)
       verifySubscriptionDetailsSave(PropertyAccountingMethod, 0)
-      verifySubscriptionDetailsFetchAll(1)
+      verifySubscriptionDetailsFetchAll(2)
 
     }
   }
@@ -84,7 +83,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to checkYourAnswer page" in {
@@ -96,7 +95,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
     }
@@ -111,7 +110,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to checkYourAnswer page" in {
@@ -123,7 +122,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
 
       }
     }

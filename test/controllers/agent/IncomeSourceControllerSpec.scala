@@ -74,7 +74,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifySubscriptionDetailsFetch(IncomeSource, 0)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
           "the income source is both" in {
@@ -85,7 +85,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifySubscriptionDetailsFetch(IncomeSource, 0)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
@@ -99,7 +99,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 2)
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
@@ -145,7 +145,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 0)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
@@ -159,7 +159,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 0)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -216,7 +216,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 2)
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
 
@@ -230,7 +230,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 2)
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
 
@@ -244,7 +244,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 2)
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }

@@ -116,7 +116,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.PropertyAccountingMethodController.show().url)
 
-          verifySubscriptionDetailsFetchAll(1)
+          verifySubscriptionDetailsFetchAll(2)
           verifySubscriptionDetailsSave(AccountingMethod, 1)
         }
       }
@@ -138,7 +138,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-          verifySubscriptionDetailsFetchAll(1)
+          verifySubscriptionDetailsFetchAll(2)
           verifySubscriptionDetailsSave(AccountingMethod, 1)
         }
       }
@@ -161,7 +161,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsFetchAll(2)
         verifySubscriptionDetailsSave(AccountingMethod, 1)
       }
 

@@ -90,7 +90,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.MatchTaxYearController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetch(BusinessName, 0)
+        verifySubscriptionDetailsFetch(BusinessName, 1)
         verifySubscriptionDetailsSave(BusinessName, 1)
       }
 
@@ -105,7 +105,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetch(BusinessName, 0)
+        verifySubscriptionDetailsFetch(BusinessName, 1)
         verifySubscriptionDetailsSave(BusinessName, 1)
       }
 
@@ -117,7 +117,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetch(BusinessName, 0)
+        verifySubscriptionDetailsFetch(BusinessName, 1)
         verifySubscriptionDetailsSave(BusinessName, 1)
       }
     }

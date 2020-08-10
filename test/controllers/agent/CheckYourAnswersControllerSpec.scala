@@ -114,7 +114,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           status(result) must be(Status.SEE_OTHER)
           await(result)
           verifySubscriptionDetailsSave(MtditId, 1)
-          verifySubscriptionDetailsFetchAll(1)
+          verifySubscriptionDetailsFetchAll(2)
         }
 
         s"redirect to '${controllers.agent.routes.ConfirmationController.show().url}'" in {

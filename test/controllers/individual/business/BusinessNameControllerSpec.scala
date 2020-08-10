@@ -68,6 +68,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptio
     "it is in edit mode" should {
       s"return a redirect status (SEE_OTHER - 303) to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchBusinessNameFromSubscriptionDetails(None)
 
         val goodRequest = callShow(isEditMode = true)
 
@@ -75,7 +76,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptio
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetch(BusinessName, 0)
+        verifySubscriptionDetailsFetch(BusinessName, 1)
         verifySubscriptionDetailsSave(BusinessName, 1)
       }
     }
@@ -92,7 +93,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptio
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
 
           await(goodRequest)
-          verifySubscriptionDetailsFetchAll(1)
+          verifySubscriptionDetailsFetchAll(2)
           verifySubscriptionDetailsSave(BusinessName, 1)
         }
       }

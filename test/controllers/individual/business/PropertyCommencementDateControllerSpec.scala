@@ -103,7 +103,7 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to businessAccountingMethod page" in {
@@ -115,7 +115,7 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
     }
@@ -130,7 +130,7 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to checkYourAnswer page" in {
@@ -142,7 +142,7 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(1)
 
       }
     }

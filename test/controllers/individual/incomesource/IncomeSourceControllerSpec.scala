@@ -100,7 +100,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
 
         await(goodRequest)
-        verifySubscriptionDetailsFetch(IndividualIncomeSource, 0)
+        verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
         verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
       }
 
@@ -113,7 +113,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.PropertyAccountingMethodController.show().url
 
         await(goodRequest)
-        verifySubscriptionDetailsFetch(IndividualIncomeSource, 0)
+        verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
         verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
       }
 
@@ -128,7 +128,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IndividualIncomeSource, 0)
+            verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
             verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
           }
         }
@@ -146,7 +146,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IndividualIncomeSource, 0)
+            verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
             verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
           }
         }
@@ -163,7 +163,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           redirectLocation(goodRequest).get must be(controllers.individual.business.routes.BusinessNameController.show().url)
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IndividualIncomeSource, 0)
+          verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
           verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
         }
       }
