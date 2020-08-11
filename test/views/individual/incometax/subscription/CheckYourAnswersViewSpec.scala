@@ -18,10 +18,10 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
+import models.IndividualSummary
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
-import models.individual.subscription.IndividualSummary
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.mvc.Call

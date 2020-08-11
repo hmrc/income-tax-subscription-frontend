@@ -16,25 +16,26 @@
 
 package controllers.individual.business
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{keystoreData, testMatchTaxYearYes}
-import helpers.servicemocks.{AuthStub, KeystoreStub}
+import helpers.IntegrationTestModels.{subscriptionData, testMatchTaxYearYes}
+import helpers.servicemocks.AuthStub
 import models.common.AccountingMethodModel
 import models.individual.incomesource.IncomeSourceModel
-import models.{Accruals, Cash, No, Yes}
+import models.{Accruals, Cash}
 import play.api.http.Status._
-import utilities.CacheConstants
+import utilities.SubscriptionDataKeys
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-method" when {
 
-    "keystore returns all data" should {
+    "the Subscription Details Connector returns all data" should {
       "show the accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
@@ -50,11 +51,11 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "keystore returns no data" should {
+    "the Subscription Details Connector returns no data" should {
       "show the accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(testMatchTaxYearYes)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(matchTaxYear = Some(testMatchTaxYearYes)))
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
@@ -75,7 +76,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     "the user does not select an answer" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystoreBothPost()
+      IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
       When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = None)
@@ -94,8 +95,9 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
           Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(keystoreData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
+
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod)
 
           When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = Some(userInput))
@@ -115,7 +117,8 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
           Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
+          IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod)
 
           When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = Some(userInput))
@@ -135,7 +138,8 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs and feature switches")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod)
 
         When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, request = Some(userInput))

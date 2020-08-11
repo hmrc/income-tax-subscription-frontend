@@ -16,7 +16,7 @@
 
 package utilities
 
-object CacheConstants {
+object SubscriptionDataKeys {
   // n.b. IncomeSource is still used on the agent flow
   val IncomeSource = "IncomeSource"
   val IndividualIncomeSource = "IndividualIncomeSource"
@@ -34,4 +34,6 @@ object CacheConstants {
   val MtditId = "MtditId"
   val PaperlessPreferenceToken = "PaperlessPreferenceKey"
   val PropertyCommencementDate = "PropertyStartDate"
+
+  val subscriptionId = "subscriptionId"
 }

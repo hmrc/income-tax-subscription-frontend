@@ -30,12 +30,12 @@ import play.api.data.Form
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import services.{AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAccountingMethodController @Inject()(val authService: AuthService, val keystoreService: KeystoreService)
+class BusinessAccountingMethodController @Inject()(val authService: AuthService, val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                                    appConfig: AppConfig) extends AuthenticatedController with RequireAnswer {
 
@@ -69,7 +69,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
             backUrl = backUrl(isEditMode, incomeSourceType, matchTaxYear)
           ))),
           accountingMethod => {
-            keystoreService.saveAccountingMethod(accountingMethod) map { _ =>
+            subscriptionDetailsService.saveAccountingMethod(accountingMethod) map { _ =>
               if (isEditMode || incomeSourceType != Both) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show())
               } else {

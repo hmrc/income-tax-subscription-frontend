@@ -25,7 +25,7 @@ class SignOutControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/logout" when {
 
-    "keystore not applicable" should {
+    "the Subscription Details Connector not applicable" should {
       "show the logout page" in {
         Given("I setup the Wiremock stubs")
         val testOrigin = "/origin"

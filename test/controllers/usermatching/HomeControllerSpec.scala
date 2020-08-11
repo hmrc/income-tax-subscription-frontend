@@ -23,18 +23,18 @@ import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
-import services.mocks.{MockCitizenDetailsService, MockGetEligibilityStatusService, MockKeystoreService, MockSubscriptionService}
+import services.mocks.{MockCitizenDetailsService, MockGetEligibilityStatusService, MockSubscriptionDetailsService, MockSubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants
-import utilities.CacheConstants.MtditId
+import utilities.SubscriptionDataKeys.MtditId
 
 import scala.concurrent.Future
 
 
 class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionService
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with MockCitizenDetailsService
   with MockGetEligibilityStatusService {
 
@@ -54,7 +54,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockCitizenDetailsService,
     mockGetEligibilityStatusService,
-    MockKeystoreService,
+    MockSubscriptionDetailsService,
     mockSubscriptionService
   )(implicitly, MockConfig, mockMessagesControllerComponents)
 
@@ -81,14 +81,14 @@ class HomeControllerSpec extends ControllerBaseSpec
           mockNinoAndUtrRetrieval()
           mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
           setupMockGetSubscriptionFound(testNino)
-          setupMockKeystoreSaveFunctions()
+          setupMockSubscriptionDetailsSaveFunctions()
 
           val result = testHomeController().index(fakeRequest)
 
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim().url
 
-          verifyKeystoreSave(MtditId, 1)
+          verifySubscriptionDetailsSave(MtditId, 1)
         }
       }
       "the user does not already have an MTDIT subscription on ETMP" when {
@@ -171,14 +171,14 @@ class HomeControllerSpec extends ControllerBaseSpec
           mockUtrRetrieval()
           mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
           setupMockGetSubscriptionFound(testNino)
-          setupMockKeystoreSaveFunctions()
+          setupMockSubscriptionDetailsSaveFunctions()
 
           val result = testHomeController().index(fakeRequest)
 
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim().url
 
-          verifyKeystoreSave(MtditId, 1)
+          verifySubscriptionDetailsSave(MtditId, 1)
         }
       }
       "the user does not already have an MTDIT subscription on ETMP" when {

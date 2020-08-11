@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess
 import play.api.mvc._
 import services.individual._
-import services.{AuthService, GetEligibilityStatusService, KeystoreService, SubscriptionService}
+import services.{AuthService, GetEligibilityStatusService, SubscriptionDetailsService, SubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys._
 import utilities.Implicits._
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HomeController @Inject()(val authService: AuthService, citizenDetailsService: CitizenDetailsService,
-                               getEligibilityStatusService: GetEligibilityStatusService, keystoreService: KeystoreService,
+                               getEligibilityStatusService: GetEligibilityStatusService, subscriptionDetailsService: SubscriptionDetailsService,
                                subscriptionService: SubscriptionService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
                                mcc: MessagesControllerComponents) extends StatelessController {
 
@@ -89,7 +89,7 @@ class HomeController @Inject()(val authService: AuthService, citizenDetailsServi
 
 
   private def claimSubscription(mtditId: String)(implicit request: Request[AnyContent]): Future[Result] =
-    keystoreService.saveSubscriptionId(mtditId) map { _ =>
+    subscriptionDetailsService.saveSubscriptionId(mtditId) map { _ =>
       Redirect(controllers.individual.subscription.routes.ClaimSubscriptionController.claim())
         .withJourneyState(SignUp)
     }

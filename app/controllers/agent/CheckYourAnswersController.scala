@@ -25,15 +25,15 @@ import play.api.Logger
 import play.api.mvc._
 import services.AuthService
 import services.agent.SubscriptionOrchestrationService
-import services.KeystoreService
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.CacheUtil._
+import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(val authService: AuthService, keystoreService: KeystoreService,
+class CheckYourAnswersController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService)
                                           (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends AuthenticatedController {
@@ -44,7 +44,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
     Authenticated.async { implicit request =>
       implicit user =>
         if (user.clientNino.isDefined && user.clientUtr.isDefined) {
-          keystoreService.fetchAll().flatMap {
+          subscriptionDetailsService.fetchAll().flatMap {
             case cache => processFunc(user)(request)(cache)
             case _ => error(noCacheMapErrMessage)
           }
@@ -59,7 +59,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
         controllers.agent.business.routes.BusinessAccountingMethodController.show().url
       case Some(_) =>
         controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-      case None => throw new InternalServerException("User is missing income source type in keystore")
+      case None => throw new InternalServerException("User is missing income source type in Subscription Details")
     }
   }
 
@@ -67,7 +67,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
     implicit request =>
       cache =>
         for {
-          incomeSource <- keystoreService.fetchIncomeSource()
+          incomeSource <- subscriptionDetailsService.fetchIncomeSource()
           backLinkUrl = backUrl(incomeSource)
         } yield
           Ok(views.html.agent.check_your_answers(
@@ -75,7 +75,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
             controllers.agent.routes.CheckYourAnswersController.submit(),
             backUrl = backLinkUrl
           ))
-  }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any keystore cached data")
+  }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
 
   private def submitForAuthorisedAgent(arn: String, nino: String, utr: String)
                                       (implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap): Future[Result] = {
@@ -84,8 +84,8 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
       mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary())(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }
-      _ <- keystoreService.saveSubscriptionId(mtditid)
-        .recoverWith { case _ => error("Failed to save to keystore") }
+      _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)
+        .recoverWith { case _ => error("Failed to save to Subscription Details ") }
     } yield Redirect(controllers.agent.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }
 
@@ -103,7 +103,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, keystor
         )
         submitForAuthorisedAgent(arn = arn, nino = nino, utr = utr)
 
-  }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
+  }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any Subscription Details  cached data")
 
   def error(message: String): Future[Nothing] = {
     Logger.warn(message)

@@ -25,14 +25,14 @@ import models.common.AccountingMethodPropertyModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.CacheConstants.PropertyAccountingMethod
+import utilities.SubscriptionDataKeys.PropertyAccountingMethod
 
 import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with FeatureSwitching {
 
   override val controllerName: String = "PropertyAccountingMethod"
@@ -43,7 +43,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
   object TestPropertyAccountingMethodController extends PropertyAccountingMethodController(
     mockAuthService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceProperty))
@@ -57,13 +57,12 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "display the property accounting method view and return OK (200)" in {
         lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchPropertyAccountingFromKeyStore(None)
-        mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
+        mockFetchPropertyAccountingFromSubscriptionDetails(None)
+        mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
-        verifyKeystoreFetch(PropertyAccountingMethod, 1)
-        verifyKeystoreSave(PropertyAccountingMethod, 0)
-        verifyKeyStoreFetchAll(1)
+        verifySubscriptionDetailsSave(PropertyAccountingMethod, 0)
+        verifySubscriptionDetailsFetchAll(2)
       }
     }
 
@@ -71,13 +70,12 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "display the property accounting method view with the previous selected answer CASH and return OK (200)" in {
         lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchPropertyAccountingFromKeyStore(AccountingMethodPropertyModel(Cash))
-        mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
+        mockFetchPropertyAccountingFromSubscriptionDetails(AccountingMethodPropertyModel(Cash))
+        mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
-        verifyKeystoreFetch(PropertyAccountingMethod, 1)
-        verifyKeystoreSave(PropertyAccountingMethod, 0)
-        verifyKeyStoreFetchAll(1)
+        verifySubscriptionDetailsSave(PropertyAccountingMethod, 0)
+        verifySubscriptionDetailsFetchAll(2)
 
       }
     }
@@ -95,67 +93,67 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "When it is not in edit mode" when {
       "turn a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to CheckYourAnswer page" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
 
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
 
       "redirect to CheckYourAnswer page" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 1)
-        verifyKeyStoreFetchAll(0)
+        verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
-        mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
+        mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
         val badRequest = callShowWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyKeystoreSave(PropertyAccountingMethod, 0)
-        verifyKeyStoreFetchAll(1)
+        verifySubscriptionDetailsSave(PropertyAccountingMethod, 0)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
 
@@ -163,14 +161,14 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
       "the user has rental property" should {
         s"return ${controllers.agent.routes.IncomeSourceController.show().url}" in {
-          mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
+          mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe controllers.agent.routes.IncomeSourceController.show().url
         }
       }
 
       "the user has both rental property and business" should {
         "redirect to Business Accounting Method page" in {
-          mockFetchAllFromKeyStore(bothPropertyAndBusinessIncomeSource)
+          mockFetchAllFromSubscriptionDetails(bothPropertyAndBusinessIncomeSource)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.agent.business.routes.BusinessAccountingMethodController.show().url
         }
@@ -179,7 +177,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     "The back url is in edit mode" when {
       "the user click back url" should {
         "redirect to Check Your Answer page" in {
-          mockFetchAllFromKeyStore(propertyOnlyIncomeSourceType)
+          mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = true)) mustBe
             controllers.agent.routes.CheckYourAnswersController.show().url
         }

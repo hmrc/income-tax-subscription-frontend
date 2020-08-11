@@ -20,21 +20,21 @@ import utilities.individual.TestConstants._
 import play.api.test.Helpers._
 import services.mocks.TestPaperlessPreferenceTokenService
 import utilities.UnitTestTrait
-import utilities.CacheConstants.PaperlessPreferenceToken
+import utilities.SubscriptionDataKeys.PaperlessPreferenceToken
 
 class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperlessPreferenceTokenService {
   "storeNino" should {
-    "store the NINO against a generated token when there is not already a token in keystore" in {
-      setupMockKeystoreSaveFunctions()
+    "store the NINO against a generated token when there is not already a token in Subscription Details " in {
+      setupMockSubscriptionDetailsSaveFunctions()
       mockFetchPaperlessPreferenceToken(None)
       mockStoreNinoSuccess(testNino)
       val res = TestPaperlessPreferenceTokenService.storeNino(testNino)
 
       await(res) mustBe a[String]
-      verifyKeystoreSave(PaperlessPreferenceToken, 1)
+      verifySubscriptionDetailsSave(PaperlessPreferenceToken, 1)
     }
 
-    "do not store the token when it is already present in keystore" in {
+    "do not store the token when it is already present in Subscription Details " in {
       mockFetchPaperlessPreferenceToken(testToken)
 
       val res = TestPaperlessPreferenceTokenService.storeNino(testNino)

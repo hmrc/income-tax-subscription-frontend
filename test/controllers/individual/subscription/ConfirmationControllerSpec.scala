@@ -26,19 +26,19 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.{ITSASessionKeys, TestModels}
 
 import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with FeatureSwitching {
 
   object TestConfirmationController extends ConfirmationController(
     mockAuthService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
   implicit val request: Request[_] = FakeRequest()
@@ -57,9 +57,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   "ConfirmationController" when {
     val startTime: LocalDateTime = LocalDateTime.now()
     "the user is in confirmation journey state" should {
-      "get the ID from keystore if the user is enrolled" in {
+      "get the ID from Subscription Details  if the user is enrolled" in {
         mockAuthEnrolled()
-        mockFetchAllFromKeyStore(TestModels.testCacheMap)
+        mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
         val result: Future[Result] = TestConfirmationController.show(
           subscriptionRequest.addStartTime(startTime)
         )
@@ -72,7 +72,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
       "fail if no income source is stored" in {
         mockAuthEnrolled()
-        mockFetchAllFromKeyStore(TestModels.emptyCacheMap)
+        mockFetchAllFromSubscriptionDetails(TestModels.emptyCacheMap)
         val result: Future[Result] = TestConfirmationController.show(
           subscriptionRequest.addStartTime(startTime)
         )
@@ -81,7 +81,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       }
 
       "return not found if the user is not enrolled" in {
-        mockFetchSubscriptionIdFromKeyStore("testId")
+        mockFetchSubscriptionIdFromSubscriptionDetails("testId")
         val result = TestConfirmationController.show(subscriptionRequest)
 
         intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"

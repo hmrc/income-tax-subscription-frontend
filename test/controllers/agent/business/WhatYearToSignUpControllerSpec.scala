@@ -24,14 +24,13 @@ import models.common.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
-import services.mocks.MockAccountingPeriodService
-import utilities.CacheConstants.SelectedTaxYear
+import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
+import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 import scala.concurrent.Future
 
 class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with FeatureSwitching {
 
@@ -44,34 +43,34 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
     mockAuthService,
     mockAccountingPeriodService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
-      "there is a pre-saved tax year option in keystore" in {
+      "there is a pre-saved tax year option in Subscription Details " in {
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromKeyStore(Some(AccountingYearModel(Current)))
+        mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
 
         status(result) must be(Status.OK)
 
-        verifyKeystoreFetch(SelectedTaxYear, 1)
+        verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
 
       }
     }
 
     "display the What Year To Sign Up view with empty form and return OK (200)" when {
-      "there is a no pre-saved tax year option in keystore" in {
+      "there is a no pre-saved tax year option in Subscription Details " in {
 
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromKeyStore(None)
+        mockFetchSelectedTaxYearFromSubscriptionDetails(None)
 
         status(result) must be(Status.OK)
 
-        verifyKeystoreFetch(SelectedTaxYear, 1)
+        verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
 
       }
     }
@@ -90,49 +89,49 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(SelectedTaxYear, 1)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
       "redirect to business accounting period page" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(SelectedTaxYear, 1)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
     }
 
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystoreSave(SelectedTaxYear, 1)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
       "redirect to checkYourAnswer page" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystoreSave(SelectedTaxYear, 1)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
 
       }
     }

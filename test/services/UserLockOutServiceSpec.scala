@@ -55,32 +55,32 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
     def call(counter: Int): Either[LockoutStatusFailure, LockoutUpdate] = await(TestUserLockoutService.incrementLockout(token = testUserId.value, counter))
 
-    "when counter is under the limit should return not locked out and updated new counter, should not clear keystore" in {
+    "when counter is under the limit should return not locked out and updated new counter, should not clear Subscription Details " in {
       setupMockLockCreated(escapedUserId)
       call(appConfig.matchingAttempts - 2).right.value shouldBe LockoutUpdate(NotLockedOut, appConfig.matchingAttempts - 1)
 
-      verifyKeyStoreDeleteAll(0)
+      verifySubscriptionDetailsDeleteAll(0)
     }
 
-    "when counter exceeds max should return locked out, keystore should be cleared" in {
+    "when counter exceeds max should return locked out, Subscription Details  should be cleared" in {
       setupMockLockCreated(escapedUserId)
       call(appConfig.matchingAttempts - 1).right.value shouldBe LockoutUpdate(testLockoutResponse, None)
 
-      verifyKeyStoreDeleteAll(1)
+      verifySubscriptionDetailsDeleteAll(1)
     }
 
-    "return the error if create lock fails on bad request, should not clear keystore" in {
+    "return the error if create lock fails on bad request, should not clear Subscription Details " in {
       setupMockLockFailureResponse(escapedUserId)
       call(appConfig.matchingAttempts - 1).left.value shouldBe LockoutStatusFailureResponse(BAD_REQUEST)
 
-      verifyKeyStoreDeleteAll(0)
+      verifySubscriptionDetailsDeleteAll(0)
     }
 
-    "return the error if create lock throws an exception, should not clear keystore" in {
+    "return the error if create lock throws an exception, should not clear Subscription Details " in {
       setupMockLockException(escapedUserId)
       intercept[Exception](call(appConfig.matchingAttempts - 1)) shouldBe testException
 
-      verifyKeyStoreDeleteAll(0)
+      verifySubscriptionDetailsDeleteAll(0)
 
     }
   }

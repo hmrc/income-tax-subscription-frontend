@@ -28,7 +28,7 @@ import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.individual.ImplicitDateFormatter
@@ -37,9 +37,12 @@ import play.api.libs.functional.~
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyCommencementDateController @Inject()(val authService: AuthService, val keystoreService: KeystoreService, val languageUtils: LanguageUtils)
+class PropertyCommencementDateController @Inject()(val authService: AuthService,
+                                                   val subscriptionDetailsService: SubscriptionDetailsService,
+                                                   val languageUtils: LanguageUtils)
                                                   (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                                   mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter with RequireAnswer {
+                                                   mcc: MessagesControllerComponents) extends SignUpController
+                                                  with ImplicitDateFormatter with RequireAnswer {
 
   def view(propertyCommencementDateForm: Form[PropertyCommencementDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
@@ -72,7 +75,7 @@ class PropertyCommencementDateController @Inject()(val authService: AuthService,
               Future.successful(BadRequest(view(propertyCommencementDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
           },
         startDate =>
-          keystoreService.savePropertyCommencementDate(startDate) flatMap { _ =>
+          subscriptionDetailsService.savePropertyCommencementDate(startDate) flatMap { _ =>
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             } else {

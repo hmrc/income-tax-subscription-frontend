@@ -16,25 +16,28 @@
 
 package controllers.agent.business
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.servicemocks.AuthStub
+import models.common.AccountingMethodModel
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.IncomeSourceType
-import models.{No, Yes}
+import models.{Cash, No, Yes}
 import play.api.http.Status._
-import play.api.i18n.Messages
-import utilities.CacheConstants
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.cache.client.CacheMap
+import utilities.SubscriptionDataKeys
 
 class MatchTaxYearControllerISpec extends ComponentSpecBase {
 
   s"GET ${routes.MatchTaxYearController.show().url}" when {
-    "keystore has no data" should {
+    "the Subscription Details Connector has no data" should {
       "show the match tax year page with no radio option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
 
         When(s"GET ${routes.MatchTaxYearController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()
@@ -47,11 +50,11 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         )
       }
     }
-    "keystore returns data" should {
+    "Data returned from mongo" should {
       "show the match tax year page with the option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
         When(s"GET ${routes.MatchTaxYearController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()
@@ -72,10 +75,15 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           val userInput: MatchTaxYearModel = MatchTaxYearModel(Yes)
 
+          val expectedCacheMap = CacheMap("", Map(
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (Yes))))
+
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(userInput),
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(matchTaxYear = Some(userInput),
             incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
@@ -90,7 +98,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
             redirectURI(checkYourAnswersURI)
           )
 
-          KeystoreStub.verifyKeyStoreSave(CacheConstants.MatchTaxYear, userInput, Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.MatchTaxYear, expectedCacheMap, Some(1))
         }
       }
       s"the answer the user has given has changed to '$Yes'" should {
@@ -98,10 +106,14 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           val previousAnswer: MatchTaxYearModel = MatchTaxYearModel(No)
           val userInput: MatchTaxYearModel = MatchTaxYearModel(Yes)
 
+          val expectedCacheMap = CacheMap("", Map(
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (Yes))))
+
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(previousAnswer),
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(matchTaxYear = Some(previousAnswer),
             incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
@@ -116,7 +128,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
             redirectURI(businessAccountingMethodURI)
           )
 
-          KeystoreStub.verifyKeyStoreSave(CacheConstants.MatchTaxYear, userInput, Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.MatchTaxYear, expectedCacheMap, Some(1))
         }
       }
       s"the answer the user has given has changed to '$No'" should {
@@ -124,10 +136,14 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           val previousAnswer: MatchTaxYearModel = MatchTaxYearModel(Yes)
           val userInput: MatchTaxYearModel = MatchTaxYearModel(No)
 
+          val expectedCacheMap = CacheMap("", Map(
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (No))))
+
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(previousAnswer),
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(matchTaxYear = Some(previousAnswer),
             incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
@@ -142,7 +158,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
             redirectURI(accountingPeriodDatesURI)
           )
 
-          KeystoreStub.verifyKeyStoreSave(CacheConstants.MatchTaxYear, userInput, Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.MatchTaxYear, expectedCacheMap, Some(1))
         }
       }
     }
@@ -150,11 +166,14 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
       s"the user answers '$Yes'" should {
         s"redirect to ${routes.BusinessAccountingMethodController.show().url}" in {
           val userInput: MatchTaxYearModel = MatchTaxYearModel(Yes)
+          val expectedCacheMap = CacheMap("", Map(
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (Yes))))
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -168,17 +187,21 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
             redirectURI(businessAccountingMethodURI)
           )
 
-          KeystoreStub.verifyKeyStoreSave(CacheConstants.MatchTaxYear, userInput, Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.MatchTaxYear, expectedCacheMap , Some(1))
         }
       }
       s"the user answers '$No'" should {
         s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url}" in {
           val userInput: MatchTaxYearModel = MatchTaxYearModel(No)
 
+          val expectedCacheMap = CacheMap("", Map(
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel(No))))
+
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -192,7 +215,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
             redirectURI(accountingPeriodDatesURI)
           )
 
-          KeystoreStub.verifyKeyStoreSave(CacheConstants.MatchTaxYear, userInput, Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.MatchTaxYear, expectedCacheMap, Some(1))
         }
       }
       "the user does not select an answer" should {

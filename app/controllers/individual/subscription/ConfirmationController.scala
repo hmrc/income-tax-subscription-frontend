@@ -22,16 +22,16 @@ import auth.individual.PostSubmissionController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuthService, KeystoreService}
+import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.CacheUtil._
+import utilities.SubscriptionDataUtil._
 import utilities.ITSASessionKeys
 import views.html.individual.incometax.subscription.sign_up_complete
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+class ConfirmationController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController {
 
@@ -42,7 +42,7 @@ class ConfirmationController @Inject()(val authService: AuthService, keystoreSer
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
 
-      keystoreService.fetchAll() map (_.getSummary()) map { summary =>
+      subscriptionDetailsService.fetchAll() map (_.getSummary()) map { summary =>
         summary.incomeSourceIndiv match {
           case Some(_) =>
             Ok(sign_up_complete(journeyDuration, summary))

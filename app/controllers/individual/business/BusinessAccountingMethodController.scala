@@ -25,14 +25,14 @@ import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.CacheUtil.CacheMapUtil
+import utilities.SubscriptionDataUtil.CacheMapUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAccountingMethodController @Inject()(val authService: AuthService, keystoreService: KeystoreService)
+class BusinessAccountingMethodController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController {
 
@@ -50,7 +50,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchAccountingMethod() flatMap { accountingMethod =>
+      subscriptionDetailsService.fetchAccountingMethod() flatMap { accountingMethod =>
         view(accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(accountingMethod), isEditMode = isEditMode).map(view => Ok(view))
       }
   }
@@ -60,11 +60,11 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
       AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
         formWithErrors => view(accountingMethodForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
         accountingMethod => {
-          keystoreService.saveAccountingMethod(accountingMethod) flatMap { _ =>
+          subscriptionDetailsService.saveAccountingMethod(accountingMethod) flatMap { _ =>
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             } else {
-              keystoreService.fetchIndividualIncomeSource() map {
+              subscriptionDetailsService.fetchIndividualIncomeSource() map {
                 case Some(IncomeSourceModel(_, true, _)) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case _ =>
@@ -80,7 +80,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
     if (isEditMode)
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     else {
-      keystoreService.fetchAll() map { cacheMap =>
+      subscriptionDetailsService.fetchAll() map { cacheMap =>
         cacheMap.getIncomeSourceModel match {
           case Some(IncomeSourceModel(true, false, _)) =>
             controllers.individual.business.routes.WhatYearToSignUpController.show().url

@@ -19,14 +19,14 @@ package controllers.agent
 import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService with FeatureSwitching {
+  with MockSubscriptionDetailsService with FeatureSwitching {
 
   override val controllerName: String = "addAnotherClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -36,7 +36,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
   object TestAddAnotherClientController extends AddAnotherClientController(
     mockAuthService,
     appConfig,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )(executionContext, mockMessagesControllerComponents)
 
   "AddAnotherClientController.addAnother" should {
@@ -46,8 +46,8 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     def call: Future[Result] = TestAddAnotherClientController.addAnother()(request)
 
 
-    "redirect to the agent eligibility frontend terms page, clearing keystore and session values" in {
-      mockDeleteAllFromKeyStore(HttpResponse(OK))
+    "redirect to the agent eligibility frontend terms page, clearing Subscription Details  and session values" in {
+      mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
 
       val result: Result = await(call)
 
@@ -59,7 +59,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       result.session(request).get(ITSASessionKeys.UTR) mustBe None
       result.session(request).get(ITSASessionKeys.NINO) mustBe None
 
-      verifyKeyStoreDeleteAll(1)
+      verifySubscriptionDetailsDeleteAll(1)
     }
 
 

@@ -22,14 +22,14 @@ import models.individual.subscription.{Both, Business, IncomeSourceType, Propert
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
-import utilities.CacheConstants.IncomeSource
+import services.mocks.MockSubscriptionDetailsService
+import utilities.SubscriptionDataKeys.IncomeSource
 import utilities.agent.TestModels
 
 import scala.concurrent.Future
 
 class IncomeSourceControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService with FeatureSwitching {
+  with MockSubscriptionDetailsService with FeatureSwitching {
 
   override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -39,7 +39,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
   object TestIncomeSourceController extends IncomeSourceController(
     mockAuthService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )(executionContext, appConfig, mockMessagesControllerComponents)
 
   "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" should {
@@ -47,13 +47,13 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
     lazy val result = TestIncomeSourceController.show(isEditMode = true)(subscriptionRequest)
 
     "return ok (200)" in {
-      mockFetchIncomeSourceFromKeyStore(None)
+      mockFetchIncomeSourceFromSubscriptionDetails(None)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystoreFetch(IncomeSource, 1)
-      verifyKeystoreSave(IncomeSource, 0)
+      verifySubscriptionDetailsFetch(IncomeSource, 1)
+      verifySubscriptionDetailsSave(IncomeSource, 0)
     }
   }
 
@@ -67,40 +67,40 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"redirect to ${business.routes.MatchTaxYearController.show().url}" when {
         "not in edit mode" when {
           "the income source is business" in {
-            setupMockKeystoreSaveFunctions()
+            setupMockSubscriptionDetailsSaveFunctions()
 
             val result = await(callSubmit(Business, isEditMode = false))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifyKeystoreFetch(IncomeSource, 0)
-            verifyKeystoreSave(IncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
           "the income source is both" in {
-            setupMockKeystoreSaveFunctions()
+            setupMockSubscriptionDetailsSaveFunctions()
 
             val result = await(callSubmit(Both, isEditMode = false))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifyKeystoreFetch(IncomeSource, 0)
-            verifyKeystoreSave(IncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
         "in edit mode" when {
           "income source has changed" in {
-            setupMockKeystoreSaveFunctions()
-            mockFetchIncomeSourceFromKeyStore(Business)
+            setupMockSubscriptionDetailsSaveFunctions()
+            mockFetchIncomeSourceFromSubscriptionDetails(Business)
 
             val result = await(callSubmit(Both, isEditMode = true))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
 
-            verifyKeystoreFetch(IncomeSource, 1)
-            verifyKeystoreSave(IncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 2)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
       }
@@ -108,7 +108,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         "not in edit mode" when {
           "income source is property" in {
 
-            setupMockKeystoreSaveFunctions()
+            setupMockSubscriptionDetailsSaveFunctions()
 
             val result = await(callSubmit(Property, isEditMode = false))
 
@@ -119,8 +119,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         "in edit mode" when {
           "income source has changed to property" in {
 
-            setupMockKeystoreSaveFunctions()
-            mockFetchIncomeSourceFromKeyStore(Business)
+            setupMockSubscriptionDetailsSaveFunctions()
+            mockFetchIncomeSourceFromSubscriptionDetails(Business)
 
             val result = await(callSubmit(Property, isEditMode = true))
 
@@ -137,7 +137,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       "it is not edit mode" when {
         "the income source is business" should {
           s"return a SEE_OTHER with a redirect location of ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-            setupMockKeystoreSaveFunctions()
+            setupMockSubscriptionDetailsSaveFunctions()
 
             val goodRequest = callSubmit(Both, isEditMode = false)
 
@@ -145,13 +145,13 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
             await(goodRequest)
-            verifyKeystoreFetch(IncomeSource, 0)
-            verifyKeystoreSave(IncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
 
         s"return a SEE OTHER (303) for both and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-          setupMockKeystoreSaveFunctions()
+          setupMockSubscriptionDetailsSaveFunctions()
 
           val goodRequest = callSubmit(Both, isEditMode = false)
 
@@ -159,14 +159,14 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifyKeystoreFetch(IncomeSource, 0)
-          verifyKeystoreSave(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
 
       "it is in edit mode and user's selection has not changed" should {
         s"return an SEE OTHER (303) for business and goto ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBusiness)
+          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBusiness)
 
           val goodRequest = callSubmit(Business, isEditMode = true)
 
@@ -174,12 +174,12 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
 
           await(goodRequest)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(IncomeSource, 0)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 0)
         }
 
         s"return a SEE OTHER (303) for property and goto ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
-          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceProperty)
+          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceProperty)
 
           val goodRequest = callSubmit(Property, isEditMode = true)
 
@@ -187,12 +187,12 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
 
           await(goodRequest)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(IncomeSource, 0)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 0)
         }
 
         s"return a SEE OTHER (303) for both and goto ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBoth)
+          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBoth)
 
           val goodRequest = callSubmit(Both, isEditMode = true)
 
@@ -200,15 +200,15 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
 
           await(goodRequest)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(IncomeSource, 0)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 0)
         }
       }
 
       "it is in edit mode and user's selection has changed" should {
         s"return an SEE OTHER (303) for business and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBoth)
-          setupMockKeystoreSaveFunctions()
+          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBoth)
+          setupMockSubscriptionDetailsSaveFunctions()
 
           val goodRequest = callSubmit(Business, isEditMode = true)
 
@@ -216,13 +216,13 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 2)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
         }
 
         s"return a SEE OTHER (303) for property and goto ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" in {
-          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBoth)
-          setupMockKeystoreSaveFunctions()
+          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBoth)
+          setupMockSubscriptionDetailsSaveFunctions()
 
           val goodRequest = callSubmit(Property, isEditMode = true)
 
@@ -230,13 +230,13 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
 
           await(goodRequest)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 2)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
         }
 
         s"return a SEE OTHER (303) for both and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-          mockFetchIncomeSourceFromKeyStore(TestModels.testIncomeSourceBusiness)
-          setupMockKeystoreSaveFunctions()
+          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBusiness)
+          setupMockSubscriptionDetailsSaveFunctions()
 
           val goodRequest = callSubmit(Both, isEditMode = true)
 
@@ -244,8 +244,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
 
           await(goodRequest)
-          verifyKeystoreFetch(IncomeSource, 1)
-          verifyKeystoreSave(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 2)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
     }
@@ -258,8 +258,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystoreFetch(IncomeSource, 0)
-      verifyKeystoreSave(IncomeSource, 0)
+      verifySubscriptionDetailsFetch(IncomeSource, 0)
+      verifySubscriptionDetailsSave(IncomeSource, 0)
     }
   }
 

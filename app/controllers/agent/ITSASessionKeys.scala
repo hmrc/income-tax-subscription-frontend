@@ -26,6 +26,8 @@ object ITSASessionKeys {
   val NINO = "NINO"
   val UTR = "UTR"
 
+  val sessionId = "sessionId"
+
   val clientData: Seq[String] = Seq(MTDITID, NINO, UTR)
 
 }

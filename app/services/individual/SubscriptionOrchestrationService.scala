@@ -19,8 +19,8 @@ package services.individual
 import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
-import models.ConnectorError
-import models.individual.subscription.{SubscriptionSuccess, SummaryModel}
+import models.{ConnectorError, SummaryModel}
+import models.individual.subscription.SubscriptionSuccess
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 

@@ -18,25 +18,25 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.keystoreData
-import helpers.servicemocks.{AuthStub, KeystoreStub}
+import helpers.IntegrationTestModels.subscriptionData
+import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.common.AccountingYearModel
 import models.{Current, Next}
 import play.api.http.Status._
-import play.api.i18n.Messages
-import utilities.{AccountingPeriodUtil, CacheConstants}
+import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
-    "keystore returns some data" should {
+    "the Subscription Details Connector returns some data" should {
       "show the What Tax Year To Sign Up with an option current tax year selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
         When("GET /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -56,11 +56,11 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "keystore returns no data" should {
+    "the Subscription Details Connector returns no data" should {
       "show the What Year To Sign Up page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(selectedTaxYear = None))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
 
         When("GET /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -86,7 +86,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
@@ -103,7 +103,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
@@ -119,7 +119,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     "not select an option on the accounting year page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, "")
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, "")
 
       When("POST /business/what-year-to-sign-up is called")
 
@@ -137,16 +137,16 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       "changing from the Current radio button to Next on the accounting method page" in {
 
 
-        val keystoreAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-        val keystoreAccountingYearNext: AccountingYearModel = IntegrationTestModels.testAccountingYearNext
-        val userInput = keystoreAccountingYearNext
+        val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
+        val SubscriptionDetailsAccountingYearNext: AccountingYearModel = IntegrationTestModels.testAccountingYearNext
+        val userInput = SubscriptionDetailsAccountingYearNext
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(selectedTaxYear = Some(keystoreAccountingYearCurrent))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+          subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent))
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
@@ -161,17 +161,17 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       "simulate not changing accounting year when calling page from Check Your Answers" in {
 
 
-        val keystoreAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-        val userInput = keystoreAccountingYearCurrent
+        val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
+        val userInput = SubscriptionDetailsAccountingYearCurrent
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            selectedTaxYear = Some(keystoreAccountingYearCurrent)
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+          subscriptionData(
+            selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent)
           )
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))

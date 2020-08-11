@@ -25,7 +25,7 @@ class NoSAControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/register-for-SA" when {
 
-    "keystore not applicable" should {
+    "the Subscription Details Connector is not applicable" should {
       "show the error maintenance page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

@@ -26,14 +26,14 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockPaperlessPreferenceTokenService, MockPreferencesService}
+import services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService, MockSubscriptionDetailsService}
 import utilities.ITSASessionKeys
 
 import scala.concurrent.Future
 
 class PreferencesControllerSpec extends ControllerBaseSpec
   with MockPreferencesService
-  with MockKeystoreService
+  with MockSubscriptionDetailsService
   with MockPaperlessPreferenceTokenService
   with FeatureSwitching {
 

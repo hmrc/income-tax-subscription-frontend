@@ -31,7 +31,7 @@ class TestOnlyAppConfig @Inject()(config: ServicesConfig) extends FrontendAppCon
 
   lazy val preferencesURL: String = config.baseUrl("preferences")
 
-  lazy val protectedMicroServiceTestOnlyUrl = s"$protectedMicroServiceUrl/income-tax-subscription/test-only"
+  lazy val protectedMicroServiceTestOnlyUrl = s"$microServiceUrl/income-tax-subscription/test-only"
 
   lazy val matchingStubsURL: String = config.baseUrl("matching-stubs")
 

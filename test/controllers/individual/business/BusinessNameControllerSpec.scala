@@ -22,13 +22,13 @@ import models.common.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionDetailsService
 import utilities.TestModels._
-import utilities.CacheConstants.BusinessName
+import utilities.SubscriptionDataKeys.BusinessName
 
 import scala.concurrent.Future
 
-class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -38,7 +38,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
 
   object TestBusinessNameController extends BusinessNameController(
     mockAuthService,
-    MockKeystoreService
+    MockSubscriptionDetailsService
   )
 
   "Calling the show action of the BusinessNameController with an authorised user" should {
@@ -46,13 +46,13 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
     lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      mockFetchBusinessNameFromKeyStore(None)
+      mockFetchBusinessNameFromSubscriptionDetails(None)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystoreFetch(BusinessName, 1)
-      verifyKeystoreSave(BusinessName, 0)
+      verifySubscriptionDetailsFetch(BusinessName, 1)
+      verifySubscriptionDetailsSave(BusinessName, 0)
 
     }
   }
@@ -67,7 +67,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
 
     "it is in edit mode" should {
       s"return a redirect status (SEE_OTHER - 303) to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchBusinessNameFromSubscriptionDetails(None)
 
         val goodRequest = callShow(isEditMode = true)
 
@@ -75,16 +76,16 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystoreFetch(BusinessName, 0)
-        verifyKeystoreSave(BusinessName, 1)
+        verifySubscriptionDetailsFetch(BusinessName, 1)
+        verifySubscriptionDetailsSave(BusinessName, 1)
       }
     }
 
     "it is not in edit mode" when {
       "the user is business only" should {
         s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-          setupMockKeystoreSaveFunctions()
-          mockFetchAllFromKeyStore(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
 
           val goodRequest = callShow(isEditMode = false)
 
@@ -92,8 +93,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
 
           await(goodRequest)
-          verifyKeyStoreFetchAll(1)
-          verifyKeystoreSave(BusinessName, 1)
+          verifySubscriptionDetailsFetchAll(2)
+          verifySubscriptionDetailsSave(BusinessName, 1)
         }
       }
     }
@@ -107,8 +108,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockKeystoreSer
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystoreFetch(BusinessName, 0)
-      verifyKeystoreSave(BusinessName, 0)
+      verifySubscriptionDetailsFetch(BusinessName, 0)
+      verifySubscriptionDetailsSave(BusinessName, 0)
     }
   }
 

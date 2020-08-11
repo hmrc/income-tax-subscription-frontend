@@ -24,26 +24,24 @@ import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, Request, Result, _}
 import services.individual.SubscriptionOrchestrationService
-import services.{AuthService, KeystoreService}
+import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.CacheUtil._
+import utilities.SubscriptionDataUtil._
 import utilities.ITSASessionKeys
-import utilities.individual.{ImplicitDateFormatterImpl}
+import utilities.individual.ImplicitDateFormatterImpl
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersController @Inject()(val authService: AuthService,
-                                           keystoreService: KeystoreService,
+                                           subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
                                            implicitDateFormatter: ImplicitDateFormatterImpl
                                           )
                                           (implicit val ec: ExecutionContext,
                                            appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents
-                                          ) extends SignUpController {
-
+                                           mcc: MessagesControllerComponents) extends SignUpController {
 
   def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
@@ -74,7 +72,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
         subscriptionService.createSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
           case Right(SubscriptionSuccess(id)) =>
-            keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
+            subscriptionDetailsService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
           case Left(failure) =>
             error("Successful response not received from submission: \n" + failure.toString)
         }
@@ -83,7 +81,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        keystoreService.fetchAll().flatMap { cache =>
+        subscriptionDetailsService.fetchAll().flatMap { cache =>
           processFunc(user)(request)(cache)
         }
     }

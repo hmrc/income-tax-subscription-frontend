@@ -25,7 +25,7 @@ import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.Implicits
-import utilities.CacheConstants._
+import utilities.SubscriptionDataKeys._
 
 object TestModels extends Implicits {
 

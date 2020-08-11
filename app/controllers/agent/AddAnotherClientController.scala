@@ -22,19 +22,21 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
-import services.KeystoreService
+import services.SubscriptionDetailsService
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AddAnotherClientController @Inject()(val authService: AuthService, appConfig: AppConfig, keystore: KeystoreService)(
-  implicit val ec: ExecutionContext, mcc: MessagesControllerComponents) extends StatelessController {
+class AddAnotherClientController @Inject()(val authService: AuthService, appConfig: AppConfig,
+                                           subscriptionDetailsService: SubscriptionDetailsService)(
+                                          implicit val ec: ExecutionContext,
+                                          mcc: MessagesControllerComponents) extends StatelessController {
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = AuthPredicates.defaultPredicates
 
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystore.deleteAll() map { _ =>
+      subscriptionDetailsService.deleteAll() map { _ =>
         Redirect(s"${appConfig.incomeTaxEligibilityFrontendUrl}/client/covid-19")
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
           .removingFromSession(ITSASessionKeys.clientData: _*)

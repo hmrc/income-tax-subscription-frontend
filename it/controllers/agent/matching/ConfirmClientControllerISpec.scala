@@ -17,12 +17,13 @@
 package controllers.agent.matching
 
 import auth.agent.AgentUserMatched
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import controllers.agent.ITSASessionKeys
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
-import helpers.agent.servicemocks.{AgentServicesStub, AuthStub, KeystoreStub}
-import helpers.servicemocks.{AuthStub => _, KeystoreStub => _, _}
+import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
+import helpers.servicemocks.{AuthStub => _, _}
 import play.api.http.Status._
 
 
@@ -35,7 +36,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "show error page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         UserLockoutStub.stubUserIsNotLocked(testARN)
         AuthenticatorStub.stubMatchFailure()
         // n.b. failure is expected as the additional methods are not mocked
@@ -55,7 +56,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirects to client details page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         UserLockoutStub.stubUserIsNotLocked(testARN)
         AuthenticatorStub.stubMatchNotFound()
 
@@ -75,7 +76,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         "redirect the user to client details error page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchNotFound()
 
@@ -97,8 +98,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         "redirect the user to agent locked out page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
-          KeystoreStub.stubKeystoreDelete()
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           UserLockoutStub.stubLockAgent(testARN)
           AuthenticatorStub.stubMatchNotFound()
@@ -115,7 +115,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           val cookie = getSessionMap(res)
           cookie.keys should not contain ITSASessionKeys.FailedClientMatching
 
-          KeystoreStub.verifyKeyStoreDelete(Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         }
       }
     }
@@ -124,7 +124,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirect the user to client already subscribed page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         SubscriptionStub.stubGetSubscriptionFound()
@@ -146,7 +146,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirects to no agent client relationship page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
         SubscriptionStub.stubGetNoSubscription()
@@ -171,7 +171,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirects to the sign up to self assessment page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         AuthenticatorStub.stubMatchFound(testNino, None)
         SubscriptionStub.stubGetNoSubscription()
@@ -201,7 +201,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         "redirect to the home page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
           SubscriptionStub.stubGetNoSubscription()
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
@@ -230,7 +230,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         "redirect to the ineligible page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
           SubscriptionStub.stubGetNoSubscription()
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
