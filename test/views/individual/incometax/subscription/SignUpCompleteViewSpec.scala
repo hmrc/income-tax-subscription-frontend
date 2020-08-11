@@ -25,7 +25,7 @@ import org.jsoup.nodes.Document
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import utilities.TestModels.{testSummaryData, testSummaryDataProperty}
+import utilities.TestModels.{testSummaryData, testSummaryDataBusinessNextTaxYear}
 import views.ViewSpecTrait
 
 class SignUpCompleteViewSpec extends ViewSpecTrait {
@@ -33,35 +33,39 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
   val submissionDateValue = DateModel("1", "1", "2016")
   val duration: Int = 0
   val action: Call = ViewSpecTrait.testCall
-  val incomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
+  val incomeSourceBusinessNextTaxYear: IncomeSourceModel = IncomeSourceModel(true, false, false)
   val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
   val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
+  val declarationDate = "2022"
 
   def page(incomeSource: IncomeSourceModel): Html = views.html.individual.incometax.subscription.sign_up_complete(
     journeyDuration = duration,
     summary = incomeSource match {
-      case IncomeSourceModel(true, true, true) => testSummaryData
-      case _ => testSummaryDataProperty
-    }
+      case IncomeSourceModel(true, false, false) => testSummaryDataBusinessNextTaxYear
+      case _ => testSummaryData
+    },
+    declarationYear = declarationDate
   )(request, implicitly, appConfig)
 
-  def document: Document = Jsoup.parse(page(incomeSourceBusiness).body)
+  def documentCurrentTaxYear: Document = Jsoup.parse(page(incomeSourceBoth).body)
 
-  "The Confirmation view for Business income source" should {
+  def documentNextTaxYear: Document = Jsoup.parse(page(incomeSourceBusinessNextTaxYear).body)
+
+  "The Sign up confirmation page" should {
 
     s"have the title '${MessageLookup.SignUpComplete.title}'" in {
-      document.title() must be(MessageLookup.SignUpComplete.title)
+      documentCurrentTaxYear.title() must be(MessageLookup.SignUpComplete.title)
     }
 
     "have a successful transaction confirmation banner" which {
 
-      "has a turquoise background" in {
-        document.select("#confirmation-heading").hasClass("transaction-banner--complete") mustBe true
+      "has a green background" in {
+        documentCurrentTaxYear.select("#confirmation-heading").hasClass("govuk-panel--confirmation") mustBe true
       }
 
       s"has a heading (H1)" which {
 
-        lazy val heading = document.select("H1")
+        lazy val heading = documentCurrentTaxYear.select("H1")
 
         s"has the text '${MessageLookup.SignUpComplete.heading}'" in {
           heading.text() mustBe MessageLookup.SignUpComplete.heading
@@ -73,56 +77,50 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
       }
     }
 
-    "have a 'What happens next' section" which {
+    "have a 'What happens now' section" which {
 
-      s"has the section heading '${MessageLookup.SignUpComplete.whatHappensNext.heading}'" in {
-        document.select("#whatHappensNext h2").text() mustBe MessageLookup.SignUpComplete.whatHappensNext.heading
+      s"has the section heading '${MessageLookup.SignUpComplete.whatHappensNow.heading}'" in {
+        documentCurrentTaxYear.select("#whatHappensNow h2").text() mustBe MessageLookup.SignUpComplete.whatHappensNow.heading
       }
 
-      s"has a numeric list of actions for the Individual to perform" in {
-        val list = document.select("#actionList li")
-        list.get(0).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number1
+      s"has a numeric list of actions for the Individual to perform if selected current tax year" in {
+        val list = documentCurrentTaxYear.select("#actionList li")
+        list.get(0).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number1
         list.get(0).select("a").attr("href") mustBe appConfig.softwareUrl
-        list.get(1).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number2
-        list.get(2).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number3
-        list.get(3).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number4
-        list.get(4).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number5
-        list.get(5).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number6
+        list.get(1).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number2
+        list.get(2).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number3
+        list.get(3).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number4
+        list.get(4).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number5
+        list.get(5).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number6
       }
 
-      s"has a paragraph referring to Income Tax Estimate '${MessageLookup.SignUpComplete.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.SignUpComplete.whatHappensNext.para1)
+      s"has a numeric list of actions for the Individual to perform if selected next tax year" in {
+        val list = documentNextTaxYear.select("#actionList li")
+        list.get(0).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number1
+        list.get(0).select("a").attr("href") mustBe appConfig.softwareUrl
+        list.get(1).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number2
+        list.get(2).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number7
+        list.get(2).select("a").attr("href") mustBe appConfig.btaUrl
+        list.get(3).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number6
       }
 
-      s"has a bullet point '${MessageLookup.SignUpComplete.whatHappensNext.bullet1}'" in {
-        val softwareBullet = document.select("#whatHappensNext ul li").first()
-        softwareBullet.text() mustBe MessageLookup.SignUpComplete.whatHappensNext.bullet1
+      s"has a paragraph referring to Income Tax Estimate and link to BTA" in {
+        val para1 = documentCurrentTaxYear.select("#whatHappensNow p").get(0)
+        para1.text() must include(MessageLookup.SignUpComplete.whatHappensNow.para1)
+        para1.select("a").attr("href") mustBe appConfig.btaUrl
       }
 
-      s"has a bullet point to BTA '${MessageLookup.SignUpComplete.whatHappensNext.bullet2}'" in {
-        val bul2 = document.select("#whatHappensNext ul li").get(1)
-        bul2.text() mustBe MessageLookup.SignUpComplete.whatHappensNext.bullet2
-        bul2.select("a").attr("href") mustBe appConfig.btaUrl
+      s"does have a paragraph stating information to appear '${MessageLookup.SignUpComplete.whatHappensNow.para2}'" in {
+        documentCurrentTaxYear.select("#whatHappensNow p").get(1).text() must include(MessageLookup.SignUpComplete.whatHappensNow.para2)
       }
-
-      s"does have a paragraph stating information to appear '${MessageLookup.SignUpComplete.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.SignUpComplete.whatHappensNext.para2)
-      }
-
     }
 
     "have a sign out button" in {
-      val actionSignOut = document.getElementById("sign-out-button")
+      val actionSignOut = documentCurrentTaxYear.getElementById("sign-out-button")
       actionSignOut.attr("role") mustBe "button"
-      actionSignOut.text() mustBe MessageLookup.Base.signOut
+      actionSignOut.text() mustBe MessageLookup.SignUpComplete.whatHappensNow.signOut
       actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
     }
 
-  }
-
-  "The Sign Up view for both income source" should {
-    s"have a paragraph stating HMRC process '${MessageLookup.SignUpComplete.whatHappensNext.para2}'" in {
-      Jsoup.parse(page(incomeSourceBoth).body).select("#whatHappensNext p").text() must include(MessageLookup.SignUpComplete.whatHappensNext.para2)
-    }
   }
 }
