@@ -10,15 +10,18 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import controllers.agent.ITSASessionKeys
 import forms.agent._
-import helpers.UserMatchingIntegrationRequestSupport
+import helpers.{UserMatchingIntegrationRequestSupport, ViewSpec}
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
+import models.YesNo
 import models.common._
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.IncomeSourceType
 import models.usermatching.UserDetailsModel
+import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -35,6 +38,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.test.UnitSpec
+import scala.collection.JavaConversions._
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
@@ -146,6 +150,16 @@ trait ComponentSpecBase extends UnitSpec
     def indexPage(journeySate: Option[AgentJourneyState] = None, sessionMap: Map[String, String] = Map.empty[String, String]): WSResponse = {
       get("/index", journeySate.fold(sessionMap)(state => sessionMap.+(ITSASessionKeys.JourneyStateKey -> state.name)))
     }
+
+    def showOtherSourcesOfIncome: WSResponse = get("/eligibility/income-sources")
+
+    def submitOtherSourcesOfIncome(request: Option[YesNo]): WSResponse = post("/eligibility/income-sources")(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => OtherSourcesOfIncomeForm.otherSourcesOfIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
+
+    def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
 
     def income(): WSResponse = get("/income")
 
@@ -322,5 +336,123 @@ trait ComponentSpecBase extends UnitSpec
 
   def removeHtmlMarkup(stringWithMarkup: String): String =
     stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim
+
+  implicit class CustomSelectors(element: Element) {
+
+    def firstOf(selector: String): Element = {
+      element.select(selector).headOption match {
+        case Some(element) => element
+        case None => fail(s"No elements returned for selector: $selector")
+      }
+    }
+
+    def content: Element = element.firstOf("article")
+
+    def getParagraphs: Elements = element.getElementsByTag("p")
+
+    def getNthParagraph(nth: Int): Element = element.firstOf(s"p:nth-of-type($nth)")
+
+    def getNthUnorderedList(nth: Int): Element = element.firstOf(s"ul:nth-of-type($nth)")
+
+    def getNthListItem(nth: Int): Element = element.firstOf(s"li:nth-of-type($nth)")
+
+    def getBulletPoints: Elements = element.getElementsByTag("li")
+
+    def getH1Element: Element = element.firstOf("h1")
+
+    def getH2Elements: Elements = element.getElementsByTag("h2")
+
+    def getFormElements: Elements = element.getElementsByClass("form-field-group")
+
+    def getErrorSummaryMessage: Elements = element.select("#error-summary-display ul")
+
+    def getErrorSummary: Elements = element.select("#error-summary-display")
+
+    def getSubmitButton: Element = element.firstOf("button[type=submit]")
+
+    def getHintText: String = element.select(s"""[class=form-hint]""").text()
+
+    def getForm: Element = element.firstOf("form")
+
+    def getFieldset: Element = element.firstOf("fieldset")
+
+    def getBackLink: Element = element.firstOf(s"a[class=back-link]")
+
+    def getParagraphNth(index: Int = 0): String = {
+      element.select("p").get(index).text()
+    }
+
+    def getRadioButtonByIndex(index: Int = 0): Element = element.select("div .multiple-choice").get(index)
+
+    def getSpan(id: String): Elements = element.select(s"""span[id=$id]""")
+
+    def getLink(id: String): Element = element.firstOf(s"""a[id=$id]""")
+
+    def getTextFieldInput(id: String): Elements = element.select(s"""input[id=$id]""")
+
+    def getFieldErrorMessage(id: String): Elements = element.select(s"""a[id=$id-error-summary]""")
+
+    //Check your answers selectors
+    def getSummaryList: Element = element.firstOf("dl.govuk-summary-list")
+
+    def getSummaryListRow(nth: Int): Element = {
+      element.firstOf(s"div.govuk-summary-list__row:nth-of-type($nth)")
+    }
+
+    def getSummaryListKey: Element = element.firstOf("dt.govuk-summary-list__key")
+
+    def getSummaryListValue: Element = element.firstOf("dd.govuk-summary-list__value")
+
+    def getSummaryListActions: Element = element.firstOf("dd.govuk-summary-list__actions")
+
+  }
+
+  implicit class ElementTests(element: Element) {
+
+    def mustHaveTextField(name: String, label: String): Assertion = {
+      val eles = element.select(s"input[name=$name]")
+      if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
+      if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
+      val ele = eles.head
+      ele.attr("type") shouldBe "text"
+      element.select(s"label[for=$name]").text() shouldBe label
+    }
+
+    def listErrorMessages(errors: List[String]): Assertion = {
+      errors.zipWithIndex.map {
+        case (error, index) => element.select(s"span.error-notification:nth-child(${index + 1})").text shouldBe error
+      } forall (_ == succeed) shouldBe true
+    }
+
+    def mustHaveDateField(id: String, legend: String, exampleDate: String, error: Option[String] = None): Assertion = {
+      val ele = element.getElementById(id)
+      ele.select("span.form-label-bold").text() shouldBe legend
+      ele.select("span.form-hint").text() shouldBe exampleDate
+      ele.tag().toString shouldBe "fieldset"
+      mustHaveTextField(s"$id.dateDay", "Day")
+      mustHaveTextField(s"$id.dateMonth", "Month")
+      mustHaveTextField(s"$id.dateYear", "Year")
+      error.map { message =>
+        ele.select("legend").select(".error-notification").attr("role") shouldBe "tooltip"
+        ele.select("legend").select(".error-notification").text shouldBe message
+      }.getOrElse(succeed)
+    }
+
+    def mustHavePara(paragraph: String): Assertion = {
+      element.getElementsByTag("p").text() should include(paragraph)
+    }
+
+    def mustHaveErrorSummary(errors: List[String]): Assertion = {
+      element.getErrorSummary.attr("class") shouldBe "flash error-summary error-summary--show"
+      element.getErrorSummary.attr("role") shouldBe "alert"
+      element.getErrorSummary.attr("aria-labelledby") shouldBe "error-summary-heading"
+      element.getErrorSummary.attr("tabindex") shouldBe "-1"
+      element.getErrorSummary.select("h2").attr("id") shouldBe "error-summary-heading"
+      element.getErrorSummary.select("h2").text shouldBe "There’s a problem"
+      element.getErrorSummary.select("ul > li").text shouldBe errors.mkString(" ")
+    }
+
+
+  }
 
 }

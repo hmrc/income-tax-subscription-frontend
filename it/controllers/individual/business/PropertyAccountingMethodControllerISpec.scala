@@ -44,7 +44,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(messages("property.accounting_method.title")),
-          radioButtonSet(id = "accountingMethodProperty-Cash", selectedRadioButton = Some(expected))
+          radioButtonSet(id = "accountingMethodProperty", selectedRadioButton = Some(expected))
         )
       }
     }

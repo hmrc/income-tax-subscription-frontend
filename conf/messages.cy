@@ -434,6 +434,38 @@ agent.frontpage.para_6                                          = I ddefnyddio�
 agent.frontpage.bullet_9                                        = rhaid i chi <a href="{0}">greu cyfrif Gwasanaethau’r Asiant</a>
 agent.frontpage.bullet_10                                       = rhaid i’ch cleient <a href="{0}">eich awdurdodi chi fel ei asiant</a>
 
+# Agent other sources of income page
+agent.other_sources_of_income.title                             = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau eraill o incwm?
+agent.other_sources_of_income.heading                           = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau eraill o incwm?
+agent.other_sources_of_income.include                           = Gallai hyn gynnwys:
+agent.other_sources_of_income.includePoint1                     = incwm fel cyflogai
+agent.other_sources_of_income.includePoint2                     = pensiynau neu flwydd-daliadau’r DU
+agent.other_sources_of_income.includePoint3                     = buddsoddiadau y tu allan i’r DU
+agent.other_sources_of_income.includePoint4                     = enillion cyfalaf
+agent.other_sources_of_income.includePoint5                     = budd-daliadau trethadwy’r Wladwriaeth
+agent.other_sources_of_income.notInclude                        = Nid yw hyn yn cynnwys:
+agent.other_sources_of_income.notIncludePoint1                  = llog banc neu gymdeithas adeiladu
+agent.other_sources_of_income.notIncludePoint2                  = difidendau
+agent.other_sources_of_income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
+
+# Agent cannot take part page
+agent.cannot_take_part.title                                    = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
+agent.cannot_take_part.heading                                  = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
+agent.cannot_take_part.income                                   = Ni allwch gofrestru’ch cleient ar gyfer y cynllun peilot hwn os yw’n cael incwm o’r canlynol:
+agent.cannot_take_part.income.point1                            = gweithio fel cyflogai
+agent.cannot_take_part.income.point2                            = pensiynau neu flwydd-daliadau’r DU
+agent.cannot_take_part.income.point3                            = buddsoddiadau y tu allan i’r DU
+agent.cannot_take_part.income.point4                            = enillion cyfalaf
+agent.cannot_take_part.income.point5                            = budd-daliadau trethadwy’r Wladwriaeth
+agent.cannot_take_part.other                                    = Hefyd, ni all eich cleient gymryd rhan os yw’r canlynol yn wir:
+agent.cannot_take_part.other.point1                             = nid yw ei flwyddyn dreth yn cyd-fynd â’r flwyddyn dreth safonol
+agent.cannot_take_part.other.point2                             = dechreuodd ei fusnes fel unig fasnachwr o fewn y ddwy flynedd ddiwethaf
+agent.cannot_take_part.other.point3                             = dechreuodd ei fusnes eiddo o fewn y flwyddyn ddiwethaf
+agent.cannot_take_part.other.point4                             = nid yw ei gyfnod cyfrifyddu yn cyd-fynd â’r flwyddyn dreth safonol
+agent.cannot_take_part.alternative                              = Bydd yn rhaid i’ch cleient anfon {0} yn lle hynny. Mae’n bosibl y gallwch ddefnyddio’r gwasanaeth ‘Defnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient’ ar gyfer eich cleient yn y dyfodol.
+agent.cannot_take_part.alternative.link                         = Ffurflen Dreth Hunanasesiad
+agent.cannot_take_part.sign_up_another                          = Cofrestru cleient arall
+
 # Client details page
 agent.client-details-error.title                                = Mae problem wedi codi
 agent.client-details-error.heading                              = Mae problem wedi codi

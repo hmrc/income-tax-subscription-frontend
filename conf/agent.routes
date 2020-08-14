@@ -2,6 +2,13 @@
 GET         /                                       controllers.agent.HomeController.home
 GET         /index                                  controllers.agent.HomeController.index
 
+# Other sources of income
+GET         /eligibility/income-sources             controllers.agent.eligibility.OtherSourcesOfIncomeController.show
+POST        /eligibility/income-sources             controllers.agent.eligibility.OtherSourcesOfIncomeController.submit
+
+# Cannot sign up page
+GET         /error/cannot-sign-up                   controllers.agent.eligibility.CannotTakePartController.show
+
 # Income Source Routes
 GET         /income                                 controllers.agent.IncomeSourceController.show(editMode: Boolean ?= false)
 POST        /income                                 controllers.agent.IncomeSourceController.submit(editMode: Boolean ?= false)

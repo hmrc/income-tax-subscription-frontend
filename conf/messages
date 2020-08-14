@@ -423,6 +423,38 @@ agent.frontpage.para_6                                          = To use this se
 agent.frontpage.bullet_9                                        = you need to <a href="{0}">create an Agent Services account</a>
 agent.frontpage.bullet_10                                       = your client needs to <a href="{0}">authorise you as their agent</a>
 
+# Agent other sources of income page
+agent.other_sources_of_income.title                             = Apart from self employment or renting out property, does your client have any other sources of income?
+agent.other_sources_of_income.heading                           = Apart from self employment or renting out property, does your client have any other sources of income?
+agent.other_sources_of_income.include                           = This could include:
+agent.other_sources_of_income.includePoint1                     = as an employee
+agent.other_sources_of_income.includePoint2                     = UK pensions or annuities
+agent.other_sources_of_income.includePoint3                     = investments from outside the UK
+agent.other_sources_of_income.includePoint4                     = capital gains
+agent.other_sources_of_income.includePoint5                     = taxable state benefits
+agent.other_sources_of_income.notInclude                        = This does not include:
+agent.other_sources_of_income.notIncludePoint1                  = bank and building society interest
+agent.other_sources_of_income.notIncludePoint2                  = dividends
+agent.other_sources_of_income.invalid                           = Select yes if your client has sources of income other than self employment or property income
+
+# Agent cannot take part page
+agent.cannot_take_part.title                                    = Your client cannot take part in this pilot
+agent.cannot_take_part.heading                                  = Your client cannot take part in this pilot
+agent.cannot_take_part.income                                   = You will not be able to sign up your client for this pilot if they receive income from:
+agent.cannot_take_part.income.point1                            = being employed by another business
+agent.cannot_take_part.income.point2                            = UK pensions or annuities
+agent.cannot_take_part.income.point3                            = investments from outside the UK
+agent.cannot_take_part.income.point4                            = capital gains
+agent.cannot_take_part.income.point5                            = taxable state benefits
+agent.cannot_take_part.other                                    = Your client also cannot take part if your client’s:
+agent.cannot_take_part.other.point1                             = tax year does not align with the standard tax year
+agent.cannot_take_part.other.point2                             = sole trader business began within the last two years
+agent.cannot_take_part.other.point3                             = property business began within the last year
+agent.cannot_take_part.other.point4                             = accounting period does not align with the standard tax year
+agent.cannot_take_part.alternative                              = Your client will need to send a {0} instead. You may be able to ‘Use software to report your client’s Income Tax’ service for your client in the future.
+agent.cannot_take_part.alternative.link                         = self assessment tax return
+agent.cannot_take_part.sign_up_another                          = Sign up another client
+
 # Client details page
 agent.client-details-error.title                                = There’s a problem
 agent.client-details-error.heading                              = There’s a problem

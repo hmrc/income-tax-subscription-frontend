@@ -50,8 +50,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(200),
           pageTitle(messages("agent.business.what_year_to_sign_up.heading")),
-          radioButtonSet(id = "accountingYear-CurrentYear", selectedRadioButton = Some(expectedText)),
-          radioButtonSet(id = "accountingYear-NextYear", selectedRadioButton = None)
+          radioButtonSet(id = "accountingYear", selectedRadioButton = Some(expectedText)),
+          radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )
       }
     }
@@ -69,8 +69,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(200),
           pageTitle(messages("agent.business.what_year_to_sign_up.heading")),
-          radioButtonSet(id = "accountingYear-CurrentYear", selectedRadioButton = None),
-          radioButtonSet(id = "accountingYear-NextYear", selectedRadioButton = None)
+          radioButtonSet(id = "accountingYear", selectedRadioButton = None),
+          radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )
       }
     }

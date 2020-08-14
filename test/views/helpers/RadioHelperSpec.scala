@@ -87,17 +87,19 @@ class RadioHelperSpec extends UnitTestTrait {
       inputs.size() shouldBe 2
       inputs.get(0).attr("name") shouldBe radioName
       inputs.get(0).attr("value") shouldBe yesOption.optionName
-      inputs.get(0).attr("id") shouldBe s"$radioName-${yesOption.optionName}"
+      inputs.get(0).attr("id") shouldBe radioName
       inputs.get(0).attr("type") shouldBe "radio"
       inputs.get(1).attr("name") shouldBe radioName
       inputs.get(1).attr("value") shouldBe noOption.optionName
-      inputs.get(1).attr("id") shouldBe s"$radioName-${noOption.optionName}"
+      inputs.get(1).attr("id") shouldBe s"$radioName-2"
       inputs.get(1).attr("type") shouldBe "radio"
 
       val lablesForInputs = doc.getElementsByTag("label")
       lablesForInputs.size() shouldBe 2
       lablesForInputs.get(0).text() shouldBe yesOption.message
+      lablesForInputs.get(0).attr("for") shouldBe radioName
       lablesForInputs.get(1).text() shouldBe noOption.message
+      lablesForInputs.get(1).attr("for") shouldBe s"$radioName-2"
     }
 
     "if the form is populated, then select the correct radio button" in {
