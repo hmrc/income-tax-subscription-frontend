@@ -165,21 +165,22 @@ trait ViewSpecTrait extends UnitTestTrait {
       s"$name must have a radio fieldset for $legend" which {
 
         s"has a legend with the text '$legend'" in {
-          element.select(s"fieldset legend[id=$radioName]").text() mustBe legend
+          element.select(s"fieldset legend").text() mustBe legend
         }
 
-        for ((o, text) <- options.toTuples) {
-          s"has a radio option for '$radioName-$o'" in {
-            val radioButton = element.select(s"#$radioName-$o")
+        for ((radio, index) <- options.zip(1 to options.length)) {
+          val ignoredFirstIndex = if(index == 1) "" else s"-$index"
+          s"has a radio option for '$radioName-$index'" in {
+            val radioButton = element.select(s"#$radioName$ignoredFirstIndex")
             radioButton.attr("type") mustBe "radio"
             radioButton.attr("name") mustBe s"$radioName"
             useTextForValue match {
-              case true => radioButton.attr("value") mustBe text
-              case false => radioButton.attr("value") mustBe o
+              case true => radioButton.attr("value") mustBe radio.text
+              case false => radioButton.attr("value") mustBe radio.name
             }
-            val label = element.getElementsByAttributeValue("for", s"$radioName-$o")
+            val label = element.getElementsByAttributeValue("for", s"$radioName$ignoredFirstIndex")
             label.size() mustBe 1
-            label.get(0).text() mustBe text
+            label.get(0).text() mustBe radio.text
           }
         }
 

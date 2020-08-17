@@ -24,6 +24,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import views.helpers.RadioOption
 
 import scala.collection.JavaConversions._
 
@@ -47,13 +48,19 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       }
     }
 
-    def content: Element = element.getElementsByTag("article").head
+    def content: Element = element.selectFirst("article")
 
     def getParagraphs: Elements = element.getElementsByTag("p")
 
+    def getNthParagraph(nth: Int): Element = element.selectFirst(s"p:nth-of-type($nth)")
+
+    def getNthUnorderedList(nth: Int): Element = element.selectFirst(s"ul:nth-of-type($nth)")
+
+    def getNthListItem(nth: Int): Element = element.selectFirst(s"li:nth-of-type($nth)")
+
     def getBulletPoints: Elements = element.getElementsByTag("li")
 
-    def getH1Element: Elements = element.getElementsByTag("h1")
+    def getH1Element: Element = element.selectFirst("h1")
 
     def getH2Elements: Elements = element.getElementsByTag("h2")
 
@@ -63,11 +70,13 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
     def getErrorSummary: Elements = element.select("#error-summary-display")
 
-    def getSubmitButton: Elements = element.select("button[type=submit]")
+    def getSubmitButton: Element = element.selectFirst("button[type=submit]")
 
     def getHintText: String = element.select(s"""[class=form-hint]""").text()
 
-    def getForm: Elements = element.select("form")
+    def getForm: Element = element.selectFirst("form")
+
+    def getFieldset: Element = element.selectFirst("fieldset")
 
     def getBackLink: Elements = element.select(s"a[class=back-link]")
 
@@ -75,13 +84,11 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       element.select("p").get(index).text()
     }
 
-    def getBulletPointNth(index: Int = 0): String = element.select("ul[class=bullets] li").get(index).text()
-
     def getRadioButtonByIndex(index: Int = 0): Element = element.select("div .multiple-choice").get(index)
 
     def getSpan(id: String): Elements = element.select(s"""span[id=$id]""")
 
-    def getLink(id: String): Elements = element.select(s"""a[id=$id]""")
+    def getLink(id: String): Element = element.selectFirst(s"""a[id=$id]""")
 
     def getTextFieldInput(id: String): Elements = element.select(s"""input[id=$id]""")
 

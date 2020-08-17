@@ -1,0 +1,67 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.mvc.Request
+@import play.api.i18n.Messages
+@import config.AppConfig
+@import views.html.templates.main_template
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helpers.continueButton
+@import views.html.helpers.signOutLink
+@import views.html.helpers.back_link
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = messages("agent.cannot_take_part.title")) {
+
+    <a id="back-link" class="back-link" href="javascript:history.back()">@messages("base.back")</a>
+
+    <h1>@messages("agent.cannot_take_part.heading")</h1>
+
+    <p>@messages("agent.cannot_take_part.income")</p>
+
+    <ul class="list list-bullet">
+        <li>@messages("agent.cannot_take_part.income.point1")</li>
+        <li>@messages("agent.cannot_take_part.income.point2")</li>
+        <li>@messages("agent.cannot_take_part.income.point3")</li>
+        <li>@messages("agent.cannot_take_part.income.point4")</li>
+        <li>@messages("agent.cannot_take_part.income.point5")</li>
+    </ul>
+
+    <p>@messages("agent.cannot_take_part.other")</p>
+
+    <ul class="list list-bullet">
+        <li>@messages("agent.cannot_take_part.other.point1")</li>
+        <li>@messages("agent.cannot_take_part.other.point2")</li>
+        <li>@messages("agent.cannot_take_part.other.point3")</li>
+        <li>@messages("agent.cannot_take_part.other.point4")</li>
+    </ul>
+
+    <p>
+        @Html(messages(
+            "agent.cannot_take_part.alternative",
+            <a href="https://www.gov.uk/self-assessment-tax-returns/sending-return">{messages("agent.cannot_take_part.alternative.link")}</a>
+        ))
+    </p>
+
+    @form(action = controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show()) {
+        <div class="form-group">
+            @continueButton(Some(messages("agent.cannot_take_part.sign_up_another")))
+        </div>
+    }
+
+    @signOutLink()
+
+}

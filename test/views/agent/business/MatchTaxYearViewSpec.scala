@@ -94,22 +94,22 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
       "has a yes option" which {
 
         "has the correct label" in {
-          radioset.select("""[for="matchToTaxYear-Yes"]""").text() mustBe MessageLookup.Business.MatchTaxYear.yes
+          radioset.select("""[for="matchToTaxYear"]""").text() mustBe MessageLookup.Business.MatchTaxYear.yes
         }
 
         "has the correct value" in {
-          radioset.select("#matchToTaxYear-Yes").attr("value") mustBe "Yes"
+          radioset.select("#matchToTaxYear").attr("value") mustBe "Yes"
         }
       }
 
       "has a no option" which {
 
         "has the correct label" in {
-          radioset.select("""[for="matchToTaxYear-No"]""").text() mustBe MessageLookup.Business.MatchTaxYear.no
+          radioset.select("""[for="matchToTaxYear-2"]""").text() mustBe MessageLookup.Business.MatchTaxYear.no
         }
 
         "has the correct value" in {
-          radioset.select("#matchToTaxYear-No").attr("value") mustBe "No"
+          radioset.select("#matchToTaxYear-2").attr("value") mustBe "No"
         }
       }
     }
