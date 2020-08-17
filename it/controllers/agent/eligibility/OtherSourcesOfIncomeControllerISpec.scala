@@ -115,11 +115,13 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
       val secondRadioButton: Element = secondRadioWithLabel.selectFirst("input")
 
       firstRadioLabel.attr("for") shouldBe OtherSourcesOfIncomeForm.fieldName
+      firstRadioLabel.text shouldBe OtherSourcesOfIncomeMessages.yes
       firstRadioButton.attr("id") shouldBe OtherSourcesOfIncomeForm.fieldName
       firstRadioButton.attr("name") shouldBe OtherSourcesOfIncomeForm.fieldName
       firstRadioButton.attr("value") shouldBe "Yes"
 
       secondRadioLabel.attr("for") shouldBe OtherSourcesOfIncomeForm.fieldName + "-2"
+      secondRadioLabel.text shouldBe OtherSourcesOfIncomeMessages.no
       secondRadioButton.attr("id") shouldBe OtherSourcesOfIncomeForm.fieldName + "-2"
       secondRadioButton.attr("name") shouldBe OtherSourcesOfIncomeForm.fieldName
       secondRadioButton.attr("value") shouldBe "No"
