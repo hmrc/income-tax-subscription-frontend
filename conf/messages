@@ -497,6 +497,12 @@ agent.accounting_period_check.title                             = Are all of you
 agent.accounting_period_check.heading                           = Are all of your client’s business accounting periods from 6 April to 5 April?
 agent.accounting_period_check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
 
+# Agent property trading after date page
+agent.property_trading_after.title                              = Does your client own a property business that began trading on or after {0}?
+agent.property_trading_after.heading                            = Does your client own a property business that began trading on or after {0}?
+agent.property_trading_after.line                               = This includes being a landlord and letting holiday properties
+agent.property_trading_after.error.summary                      = Select yes if your client owns a property business that began trading on or after {0}
+
 # Client details page
 agent.client-details-error.title                                = There’s a problem
 agent.client-details-error.heading                              = There’s a problem
