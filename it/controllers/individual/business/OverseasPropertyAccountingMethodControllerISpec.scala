@@ -32,7 +32,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         res should have(
           httpStatus(OK),
           pageTitle(messages("overseas.property.accounting_method.title")),
-          radioButtonSet(id = "accountingMethodOverseasProperty-Cash", selectedRadioButton = Some(expected))
+          radioButtonSet(id = "accountingMethodOverseasProperty", selectedRadioButton = Some(expected))
         )
       }
     }
