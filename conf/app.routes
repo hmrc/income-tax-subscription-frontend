@@ -88,6 +88,10 @@ POST        /business/accounting-method                 controllers.individual.b
 GET         /business/accounting-method-property        controllers.individual.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/accounting-method-property        controllers.individual.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
+#Foreign Property Accounting Method Routes
+GET         /business/overseas-property-accounting-method        controllers.individual.business.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-accounting-method        controllers.individual.business.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+
 #Property Commencement Date Routes
 GET         /business/property-commencement-date        controllers.individual.business.PropertyCommencementDateController.show(editMode: Boolean ?= false)
 POST        /business/property-commencement-date        controllers.individual.business.PropertyCommencementDateController.submit(editMode: Boolean ?= false)

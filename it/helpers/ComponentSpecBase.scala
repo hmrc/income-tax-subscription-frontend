@@ -29,7 +29,7 @@ import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.DateModel
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
 import models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
 import models.usermatching.UserDetailsModel
@@ -192,6 +192,8 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def propertyAccountingMethod(): WSResponse = get("/business/accounting-method-property")
 
+    def foreignPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
+
     def businessName(): WSResponse = get("/business/name")
 
     def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(JourneyStateKey -> state.name))
@@ -265,6 +267,16 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def submitForeignPropertyAccountingMethod(inEditMode: Boolean, request: Option[OverseasAccountingMethodPropertyModel]): WSResponse = {
+      val uri = s"/business/overseas-property-accounting-method?editMode-=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

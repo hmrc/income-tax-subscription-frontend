@@ -18,7 +18,7 @@ package services
 
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject._
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
 import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
@@ -90,6 +90,9 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
   def fetchAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FO[AccountingMethodModel] =
     fetch[AccountingMethodModel](AccountingMethod)
 
+  def fetchOverseasPropertyAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[OverseasAccountingMethodPropertyModel]): FO[OverseasAccountingMethodPropertyModel] =
+    fetch[OverseasAccountingMethodPropertyModel](OverseasPropertyAccountingMethod)
+
   def saveAccountingMethod(accountingMethod: AccountingMethodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FA =
     save[AccountingMethodModel](AccountingMethod, accountingMethod)
 
@@ -99,6 +102,10 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
   def saveAccountingMethodProperty(accountingMethodProperty: AccountingMethodPropertyModel)
                                   (implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FA = save[AccountingMethodPropertyModel](
     PropertyAccountingMethod, accountingMethodProperty)
+
+  def saveOverseasAccountingMethodProperty(overseasPropertyAccountingMethod: OverseasAccountingMethodPropertyModel)
+                                  (implicit hc: HeaderCarrier, reads: Reads[OverseasAccountingMethodPropertyModel]): FA = save[OverseasAccountingMethodPropertyModel](
+    OverseasPropertyAccountingMethod, overseasPropertyAccountingMethod)
 
   def fetchSelectedTaxYear()(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FO[AccountingYearModel] =
     fetch[AccountingYearModel](SelectedTaxYear)
