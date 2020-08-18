@@ -82,8 +82,8 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
 
       "has a cash radio button" in new Setup {
         val radioWithLabel: Elements = document.select("form div fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingMethodOverseasProperty-Cash]").`val` mustBe "Cash"
-        radioWithLabel.select("label[for=accountingMethodOverseasProperty-Cash]").text mustBe Seq(
+        radioWithLabel.select("input[id=accountingMethodOverseasProperty]").`val` mustBe "Cash"
+        radioWithLabel.select("label[for=accountingMethodOverseasProperty]").text mustBe Seq(
           messages.radioCash,
           messages.radioCashDetail
         ).mkString(" ")
@@ -91,8 +91,8 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
 
       "has a accruals radio button" in new Setup {
         val radioWithLabel: Elements = document.select("form div fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingMethodOverseasProperty-Accruals]").`val` mustBe "Accruals"
-        radioWithLabel.select("label[for=accountingMethodOverseasProperty-Accruals]").text mustBe Seq(
+        radioWithLabel.select("input[id=accountingMethodOverseasProperty-2]").`val` mustBe "Accruals"
+        radioWithLabel.select("label[for=accountingMethodOverseasProperty-2]").text mustBe Seq(
           messages.radioAccruals,
           messages.radioAccrualsDetail
         ).mkString(" ")
