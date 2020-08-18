@@ -18,12 +18,14 @@ package controllers.individual.subscription
 
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
+import models.common.AccountingMethodModel
+import models.individual.business.SelfEmploymentData
 import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataUtil._
 import utilities.SubscriptionDataKeys.MtditId
@@ -36,6 +38,7 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
+  with MockIncomeTaxSubscriptionConnector
   with FeatureSwitching {
 
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
@@ -50,6 +53,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     mockAuthService,
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
+    mockIncomeTaxSubscriptionConnector,
     mockImplicitDateFormatter
   )
 
@@ -62,7 +66,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         incomeSourceIndiv = testIncomeSourceBusiness
       )
       mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
-
+      mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+      mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       status(result) must be(Status.OK)
     }
 
@@ -71,12 +76,16 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         incomeSourceIndiv = testIncomeSourceProperty
       )
       mockFetchAllFromSubscriptionDetails(testPropertyCacheMap)
+      mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+      mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
 
       status(result) must be(Status.OK)
     }
 
     "return ok (200) for both journey" in {
       mockFetchAllFromSubscriptionDetails(testCacheMap)
+      mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+      mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
 
       status(result) must be(Status.OK)
     }

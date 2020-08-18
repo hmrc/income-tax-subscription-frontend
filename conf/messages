@@ -217,6 +217,7 @@ summary.selected_year                                           = Tax year signe
 summary.selected_year.current                                   = Current tax year ({0} to {1})
 summary.selected_year.next                                      = Next tax year ({0} to {1})
 summary.property_commencement_date                              = Trading start date of your UK property business
+summary.self_employments                                        = Number of businesses signed up
 
 
 ## Confirmation page ##

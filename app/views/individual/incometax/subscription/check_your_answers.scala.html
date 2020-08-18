@@ -29,27 +29,24 @@
 @import utilities.individual.ImplicitDateFormatter
 @import models.individual.business.PropertyCommencementDateModel
 
-@(summaryModel: IndividualSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summaryModel: IndividualSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter, releaseFour: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
-    <div class="tabular-data__entry divider--bottom" id="@field-row">
-        <span class="tabular-data__heading tabular-data__heading--label column-one-third" id="@field-question">
-        @question
-        </span>
-        <div class="tabular-data__data-1 column-one-third" id="@field-answer">
+<div class="govuk-summary-list__row" id="@field-row">
+    <dt class="govuk-summary-list__key" id="@field-question">@question</dt>
+    <dd class="govuk-summary-list__value" id="@field-answer">
         @if(enableHtml) {@Html(answer)} else {
-            @answer
+        @answer
         }
-        </div>
-        @changeUrl match {
-            case Some(url) => {
-                <a class="tabular-data__data-2 column-one-third" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
-            }
-            case _ => {
-                <div class="tabular-data__data-2 column-one-third"></div>
-            }
+    </dd>
+    <dd class="govuk-summary-list__actions" id="@field-edit">
+        @changeUrl.map { url =>
+        <a data-journey-click="itsa:changeLink:@field" href="@url" >@Messages("base.change") <span
+                class="visuallyhidden">@question</span> </a>
         }
-    </div>
+    </dd>
+
+</div>
 }
 
 @incomeReceivedFrom(incomeSourceModel: IncomeSourceModel) = @{
@@ -60,6 +57,14 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, true)
 }
 
+@selfEmployments(businesses:Seq[SelfEmploymentData]) = @{
+    val rowName = SelfEmploymentsId
+    val rowQuestion = Messages("summary.self_employments")
+    val rowAnswer = businesses.count(_.isComplete).toString
+    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list"
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
 @businessName(name: BusinessNameModel) = @{
     val rowName = BusinessNameId
     val rowQuestion = Messages("summary.business_name")
@@ -68,11 +73,15 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@selectedTaxYear(selectedTaxYear: AccountingYearModel) = @{
+@selectedTaxYear(selectedTaxYear: Option[AccountingYearModel]) = @{
     val rowName = SelectedTaxYearId
     val rowQuestion = Messages("summary.selected_year")
-    val rowAnswer = accountingYearText(selectedTaxYear)
-    val rowUrl = controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
+    val rowAnswer = accountingYearText(selectedTaxYear.fold(AccountingYearModel(Current))(identity))
+    val rowUrl = if(summaryModel.incomeSourceIndiv.exists(_.ukProperty == false)) {
+        Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url)
+    } else {
+        None
+    }
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -103,25 +112,31 @@
 
 @main_template(title = Messages("summary.title")) {
 
-    @back_link(backUrl)
+@back_link(backUrl)
 
-    <h1 class="heading-large">@Messages("summary.heading") <span class="visuallyhidden">@Messages("summary.heading_hidden")</span></h1>
+<h1 class="heading-large">@Messages("summary.heading") <span
+        class="visuallyhidden">@Messages("summary.heading_hidden")</span></h1>
 
-    <div class="form-group">
+<br>
 
+<div class="form-group">
+
+    <dl class="govuk-summary-list">
+        @selectedTaxYear(summaryModel.selectedTaxYear)
         @summaryModel.incomeSourceIndiv.map(incomeReceivedFrom)
-        @summaryModel.businessName.map(businessName)
-        @if(summaryModel.incomeSourceIndiv.exists(_.ukProperty == false)) {
-            @summaryModel.selectedTaxYear.map(selectedTaxYear)
+        @if(releaseFour) {
+            @summaryModel.selfEmployments.map(selfEmployments)
+        } else {
+            @summaryModel.businessName.map(businessName)
         }
         @summaryModel.accountingMethod.map(accountingMethod)
         @summaryModel.propertyCommencementDate.map(propertyCommencement)
         @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
+    </dl>
+</div>
 
-    </div>
-
-    @form(action = postAction) {
-        @continueButton(Messages("summary.confirm_and_sign_up"))
-    }
+@form(action = postAction) {
+@continueButton(Messages("summary.confirm_and_sign_up"))
+}
 
 }
