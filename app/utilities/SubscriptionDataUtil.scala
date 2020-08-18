@@ -19,7 +19,7 @@ package utilities
 import config.AppConfig
 import models.{AgentSummary, IndividualSummary}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, PropertyCommencementDateModel}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, PropertyCommencementDateModel, SelfEmploymentData}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -48,7 +48,9 @@ object SubscriptionDataUtil {
 
     def getPropertyCommencementDate: Option[PropertyCommencementDateModel] = cacheMap.getEntry[PropertyCommencementDateModel](PropertyCommencementDate)
 
-    def getSummary()(implicit appConfig: AppConfig): IndividualSummary =
+    def getSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+                  selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None
+                  )(implicit appConfig: AppConfig): IndividualSummary =
       getIncomeSourceModel match {
         case Some(IncomeSourceModel(false, true, _)) =>
           IndividualSummary(
@@ -57,22 +59,46 @@ object SubscriptionDataUtil {
             accountingMethodProperty = getPropertyAccountingMethod
           )
         case Some(IncomeSourceModel(true, false, _)) =>
-          IndividualSummary(
-            incomeSourceIndiv = getIncomeSourceModel,
-            businessName = getBusinessName,
-            selectedTaxYear = getSelectedTaxYear,
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethod = getAccountingMethod
-          )
+          if (selfEmploymentsAccountingMethod.isDefined) {
+            IndividualSummary(
+              incomeSourceIndiv = getIncomeSourceModel,
+              businessName = getBusinessName,
+              selectedTaxYear = getSelectedTaxYear,
+              accountingMethod = selfEmploymentsAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          } else {
+            IndividualSummary(
+              incomeSourceIndiv = getIncomeSourceModel,
+              businessName = getBusinessName,
+              selectedTaxYear = getSelectedTaxYear,
+              accountingMethod = getAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          }
         case Some(_) =>
-          IndividualSummary(
-            incomeSourceIndiv = getIncomeSourceModel,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod,
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod
-          )
+          if (selfEmploymentsAccountingMethod.isDefined) {
+            IndividualSummary(
+              incomeSourceIndiv = getIncomeSourceModel,
+              businessName = getBusinessName,
+              accountingMethod = selfEmploymentsAccountingMethod,
+              propertyCommencementDate = getPropertyCommencementDate,
+              accountingMethodProperty = getPropertyAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          } else {
+            IndividualSummary(
+              incomeSourceIndiv = getIncomeSourceModel,
+              businessName = getBusinessName,
+              accountingMethod = getAccountingMethod,
+              propertyCommencementDate = getPropertyCommencementDate,
+              accountingMethodProperty = getPropertyAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          }
+
         case _ => IndividualSummary()
+
       }
 
     def getAgentSummary()(implicit appConfig: AppConfig): AgentSummary = {

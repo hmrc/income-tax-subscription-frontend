@@ -18,7 +18,12 @@ package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
+import models.common.AccountingMethodModel
+import models.individual.business.SelfEmploymentData
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import play.api.Logger
@@ -29,6 +34,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataUtil._
 import utilities.ITSASessionKeys
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.individual.ImplicitDateFormatterImpl
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,11 +43,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersController @Inject()(val authService: AuthService,
                                            subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
+                                           incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            implicitDateFormatter: ImplicitDateFormatterImpl
                                           )
                                           (implicit val ec: ExecutionContext,
                                            appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController {
+                                           mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
@@ -55,14 +62,23 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        Future.successful(
+        for {
+          businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
+          businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+        } yield {
+          val summaryModel = if (isEnabled(ReleaseFour)) {
+            cache.getSummary(businesses, businessAccountingMethod)
+          } else {
+            cache.getSummary()
+          }
           Ok(views.html.individual.incometax.subscription.check_your_answers(
-            cache.getSummary(),
+            summaryModel,
             controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl(cache.getIncomeSourceModel.get),
-            implicitDateFormatter
+            implicitDateFormatter,
+            isEnabled(ReleaseFour)
           ))
-        )
+        }
   }
 
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>

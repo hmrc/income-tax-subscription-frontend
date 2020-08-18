@@ -54,7 +54,7 @@ case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None
                              accountingMethod: Option[AccountingMethodModel] = None,
                              propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
                              accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                             selfEmployments: Option[List[SelfEmploymentData]] = None) extends SummaryModel
+                             selfEmployments: Option[Seq[SelfEmploymentData]] = None) extends SummaryModel
 
 
 

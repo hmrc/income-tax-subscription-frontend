@@ -35,6 +35,11 @@ object SubscriptionDataKeys {
   val MtditId = "MtditId"
   val PaperlessPreferenceToken = "PaperlessPreferenceKey"
   val PropertyCommencementDate = "PropertyStartDate"
+  val SelfEmployments = "SelfEmployments"
+  val BusinessAccountingMethod = "BusinessAccountingMethod"
+
 
   val subscriptionId = "subscriptionId"
+
+  val BusinessesKey = "Businesses"
 }

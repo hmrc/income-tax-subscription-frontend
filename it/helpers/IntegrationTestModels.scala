@@ -3,7 +3,6 @@ package helpers
 
 import java.time.LocalDate
 
-import utilities.individual.Constants.GovernmentGateway._
 import helpers.IntegrationTestConstants._
 import models._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
@@ -13,8 +12,9 @@ import models.individual.subscription._
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
-import utilities.AccountingPeriodUtil
 import utilities.individual.Constants
+import utilities.individual.Constants.GovernmentGateway._
+import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 
 object IntegrationTestModels {
@@ -49,6 +49,7 @@ object IntegrationTestModels {
   val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
   val testPropertyCommencementDate = PropertyCommencementDateModel(testValidStartDate)
   val testInvalidCommencementDate = PropertyCommencementDateModel(testInvalidStartDate)
+  val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData("businessId", businessName = Some(testBusinessName)))
 
   lazy val fullIndivSubscriptionDataBothPost: Map[String, JsValue] =
     subscriptionData(

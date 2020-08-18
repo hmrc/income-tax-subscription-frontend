@@ -3,7 +3,7 @@ package helpers.agent
 
 import models.{Cash, Current, DateModel, Next, Yes}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, SelfEmploymentData}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
@@ -27,6 +27,7 @@ object IntegrationTestModels {
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testPropertyAccountingMethod = AccountingMethodPropertyModel(Cash)
 
+
   val fullSubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceBoth),
@@ -45,7 +46,8 @@ object IntegrationTestModels {
                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
                     businessName: Option[BusinessNameModel] = None,
                     accountingMethod: Option[AccountingMethodModel] = None,
-                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): Map[String, JsValue] = {
+                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None)
+                    : Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceType.format.writes(model)) ++
       accountingPeriodDate.map(model => SubscriptionDataKeys.AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
@@ -54,6 +56,8 @@ object IntegrationTestModels {
       accountingMethodProperty.map(model => SubscriptionDataKeys.PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
       matchTaxYear.map(model => SubscriptionDataKeys.MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model))
+
+
   }
 
   lazy val testIncomeSourceBusiness: Business.type = Business

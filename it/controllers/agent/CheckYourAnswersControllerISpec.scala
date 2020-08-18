@@ -32,7 +32,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
   "GET /check-your-answers" when {
     "the Subscription Details Connector returns all data" should {
       "show the check your answers page" in {
-
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()

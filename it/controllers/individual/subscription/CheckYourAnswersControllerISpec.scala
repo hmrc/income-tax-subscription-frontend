@@ -16,12 +16,14 @@
 
 package controllers.individual.subscription
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
+import helpers._
 import helpers.servicemocks._
-import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
+import play.api.libs.json.Json
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
 
@@ -30,8 +32,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
-
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
 

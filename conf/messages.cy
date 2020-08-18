@@ -226,6 +226,7 @@ summary.selected_year                                           = Y flwyddyn dre
 summary.selected_year.current                                   = Y flwyddyn dreth bresennol ({0} i {1})
 summary.selected_year.next                                      = Y flwyddyn dreth nesaf ({0} i {1})
 summary.property_commencement_date                              = Dyddiad dechrau masnachu’ch busnes eiddo yn y DU
+summary.self_employments                                        = Nifer y busnesau sydd wedi’u cofrestru
 
 ## Confirmation page ##
 confirmation.title                                              = Tudalen gadarnhau

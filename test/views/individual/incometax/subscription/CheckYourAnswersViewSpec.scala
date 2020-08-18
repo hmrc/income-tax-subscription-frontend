@@ -18,9 +18,11 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
-import models.IndividualSummary
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.PropertyCommencementDateModel
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import models.{DateModel, IndividualSummary}
+import models.common._
+import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -32,13 +34,25 @@ import utilities.{TestModels, UnitTestTrait}
 import views.individual.helpers.SummaryIdConstants._
 import utilities.individual.{ImplicitDateFormatter, ImplicitDateFormatterImpl}
 import uk.gov.hmrc.play.language.LanguageUtils
+import connectors.IncomeTaxSubscriptionConnector
+import utilities.SubscriptionDataKeys.BusinessesKey
 
 
-class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter {
+class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter with FeatureSwitching {
 
   override val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
 
+  def selfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(
+    id = id,
+    businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "2018"))),
+    businessName = Some(BusinessNameModel(s"ABC Limited $id")),
+    businessTradeName = Some(BusinessTradeNameModel(s"Plumbing $id"))
+  )
+
   val testBusinessName: BusinessNameModel = BusinessNameModel("test business name")
+  val testSelfEmployments: Seq[SelfEmploymentData] = Seq(selfEmploymentData("1"), selfEmploymentData("2"))
+
+
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
@@ -53,6 +67,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
                         propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencement): IndividualSummary = IndividualSummary(
     incomeSourceIndiv = incomeSource,
     businessName = testBusinessName,
+    selfEmployments = testSelfEmployments,
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = accountingMethodProperty,
@@ -62,30 +77,32 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
-  def page(testSummaryModel: IndividualSummary): HtmlFormat.Appendable =
+  def page(testSummaryModel: IndividualSummary, releaseFour: Boolean = false): HtmlFormat.Appendable =
     views.html.individual.incometax.subscription.check_your_answers(
       summaryModel = testSummaryModel,
       postAction = postAction,
       backUrl = backUrl,
-      dateFormatter)(FakeRequest(), implicitly, appConfig)
+      dateFormatter,
+      releaseFour = releaseFour
+    )(FakeRequest(), implicitly, appConfig)
 
-  def document(testSummaryModel: IndividualSummary = testSummary): Document =
-    page(testSummaryModel).doc
+  def document(testSummaryModel: IndividualSummary = testSummary, releaseFour: Boolean = false): Document =
+    page(testSummaryModel, releaseFour).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
   val editLinkId: String => String = (sectionId: String) => s"$sectionId-edit"
 
   def questionStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__heading tabular-data__heading--label column-one-third"
+    section.attr("class") shouldBe "govuk-summary-list__key"
   }
 
   def answerStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__data-1 column-one-third"
+    section.attr("class") shouldBe "govuk-summary-list__value"
   }
 
   def editLinkStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__data-2 column-one-third"
+    section.attr("class") shouldBe "govuk-summary-list__actions"
   }
 
   "Summary page view" should {
@@ -124,8 +141,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     }
 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
-                    testSummaryModel: IndividualSummary = testSummary): Unit = {
-      val doc = document(testSummaryModel)
+                    testSummaryModel: IndividualSummary = testSummary, releaseFour: Boolean = false): Unit = {
+      val doc = document(testSummaryModel, releaseFour)
       val section = doc.getElementById(sectionId)
       val question = doc.getElementById(questionId(sectionId))
       val answer = doc.getElementById(answerId(sectionId))
@@ -138,10 +155,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       question.text() shouldBe expectedQuestion
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
-        editLink.attr("href") shouldBe expectedEditLink.get
-        editLink.text() should include(MessageLookup.Base.change)
-        editLink.select("span").text() shouldBe expectedQuestion
-        editLink.select("span").hasClass("visuallyhidden") shouldBe true
+        val link = editLink.select("a")
+        link.attr("href") shouldBe expectedEditLink.get
+        link.text() should include(MessageLookup.Base.change)
+        link.select("span").text() shouldBe expectedQuestion
+        link.select("span").hasClass("visuallyhidden") shouldBe true
       }
     }
 
@@ -159,110 +177,133 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       )
     }
 
-    "display the correct info for the business name" in {
-      val sectionId = BusinessNameId
-      val expectedQuestion = messages.business_name
-      val expectedAnswer = testBusinessName.businessName
-      val expectedEditLink = controllers.individual.business.routes.BusinessNameController.show(editMode = true).url
+    "display the correct info" should {
+      "release four is disabled" when {
+        "business name is displayed" in {
+          val sectionId = BusinessNameId
+          val expectedQuestion = messages.business_name
+          val expectedAnswer = testBusinessName.businessName
+          val expectedEditLink = controllers.individual.business.routes.BusinessNameController.show(editMode = true).url
 
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
-    }
+          sectionTest(
+            sectionId = sectionId,
+            expectedQuestion = expectedQuestion,
+            expectedAnswer = expectedAnswer,
+            expectedEditLink = expectedEditLink
+          )
+        }
+      }
+      "release four is enabled" when {
+        "Self Employments is displayed" in {
+          val sectionId = SelfEmploymentsId
+          val expectedQuestion = messages.selfEmployments
+          val expectedAnswer = "2"
+          val expectedEditLink = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list"
 
-    "display the correct info for the Selected Year" when {
-      "selected year is current" in {
+          sectionTest(
+            sectionId = sectionId,
+            releaseFour = true,
+            expectedQuestion = expectedQuestion,
+            expectedAnswer = expectedAnswer,
+            expectedEditLink = expectedEditLink
+          )
+        }
+      }
+
+
+      "display the correct info for the Selected Year" when {
+        "selected year is current" in {
+          val sectionId = SelectedTaxYearId
+          val expectedQuestion = messages.selected_tax_year
+          val expectedAnswer = messages.SelectedTaxYear.current(getCurrentTaxEndYear - 1, getCurrentTaxEndYear)
+          val expectedEditLink = controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+          sectionTest(
+            sectionId = sectionId,
+            expectedQuestion = expectedQuestion,
+            expectedAnswer = expectedAnswer,
+            expectedEditLink = expectedEditLink,
+            testSummaryModel = customTestSummary(
+              incomeSource = TestModels.testIncomeSourceBusiness,
+              selectedTaxYear = TestModels.testSelectedTaxYearCurrent
+            )
+          )
+        }
+        "selected year is next" in {
+          val sectionId = SelectedTaxYearId
+          val expectedQuestion = messages.selected_tax_year
+          val expectedAnswer = messages.SelectedTaxYear.next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
+          val expectedEditLink = controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+          sectionTest(
+            sectionId = sectionId,
+            expectedQuestion = expectedQuestion,
+            expectedAnswer = expectedAnswer,
+            expectedEditLink = expectedEditLink,
+            testSummaryModel = customTestSummary(
+              incomeSource = TestModels.testIncomeSourceBusiness,
+              selectedTaxYear = TestModels.testSelectedTaxYearNext
+            )
+          )
+        }
+      }
+
+      "do not display Selected Tax Year if ukProperty is selected" in {
         val sectionId = SelectedTaxYearId
-        val expectedQuestion = messages.selected_tax_year
-        val expectedAnswer = messages.SelectedTaxYear.current(getCurrentTaxEndYear - 1, getCurrentTaxEndYear)
-        val expectedEditLink = controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+        val doc = document(testSummaryModel = customTestSummary(incomeSource = TestModels.testIncomeSourceProperty))
+
+        Option(doc.getElementById(sectionId)) mustBe None
+      }
+
+      "display the correct info for the accounting method" in {
+        val sectionId = AccountingMethodId
+        val expectedQuestion = messages.income_type
+        val expectedAnswer = messages.AccountingMethod.cash
+        val expectedEditLink = controllers.individual.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink
+        )
+      }
+
+
+      "display the correct info for the accounting method Property " in {
+        val sectionId = AccountingMethodPropertyId
+        val expectedQuestion = messages.accountingMethodProperty
+        val expectedAnswer = messages.AccountingMethod.cash
+        val expectedEditLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
-          testSummaryModel = customTestSummary(
-            incomeSource = TestModels.testIncomeSourceBusiness,
-            selectedTaxYear = TestModels.testSelectedTaxYearCurrent
-          )
+          testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
         )
       }
-      "selected year is next" in {
-        val sectionId = SelectedTaxYearId
-        val expectedQuestion = messages.selected_tax_year
-        val expectedAnswer = messages.SelectedTaxYear.next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
-        val expectedEditLink = controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+
+      "display the correct info for the Property Business Commencement" in {
+        val sectionId = PropertyCommencementId
+        val expectedQuestion = messages.propertyCommencement
+        val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
+        val expectedEditLink = controllers.individual.business.routes.PropertyCommencementDateController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
-          testSummaryModel = customTestSummary(
-            incomeSource = TestModels.testIncomeSourceBusiness,
-            selectedTaxYear = TestModels.testSelectedTaxYearNext
-          )
+          testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
         )
       }
+
+
     }
 
-    "do not display Selected Tax Year if ukProperty is selected" in {
-      val sectionId = SelectedTaxYearId
-
-      val doc = document(testSummaryModel = customTestSummary(incomeSource = TestModels.testIncomeSourceProperty))
-
-      Option(doc.getElementById(sectionId)) mustBe None
-    }
-
-    "display the correct info for the accounting method" in {
-      val sectionId = AccountingMethodId
-      val expectedQuestion = messages.income_type
-      val expectedAnswer = messages.AccountingMethod.cash
-      val expectedEditLink = controllers.individual.business.routes.BusinessAccountingMethodController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
-    }
-
-
-    "display the correct info for the accounting method Property " in {
-      val sectionId = AccountingMethodPropertyId
-      val expectedQuestion = messages.accountingMethodProperty
-      val expectedAnswer = messages.AccountingMethod.cash
-      val expectedEditLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
-      )
-    }
-
-
-    "display the correct info for the Property Business Commencement" in {
-      val sectionId = PropertyCommencementId
-      val expectedQuestion = messages.propertyCommencement
-      val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
-      val expectedEditLink = controllers.individual.business.routes.PropertyCommencementDateController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
-      )
-    }
   }
-
 }
