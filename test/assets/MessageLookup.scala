@@ -189,6 +189,19 @@ object MessageLookup {
     val radioAccrualsDetail = "You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’."
   }
 
+  object OverseasPropertyAccountingMethod {
+    val title = "How do you record your income and expenses for your foreign property business?"
+    val heading = "How do you record your income and expenses for your foreign property business?"
+    val accordionSummary = "Show me an example"
+    val accordionContentPara = "You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:"
+    val accordionContentBullet1 = "May 2017, you use ‘cash accounting’"
+    val accordionContentBullet2 = "March 2017, you use ‘standard accounting’"
+    val radioCash = "Cash accounting"
+    val radioCashDetail = "You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method."
+    val radioAccruals = "Standard accounting"
+    val radioAccrualsDetail = "You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’."
+  }
+
   object Summary {
     val title = "Check your answers"
     val heading: String = title

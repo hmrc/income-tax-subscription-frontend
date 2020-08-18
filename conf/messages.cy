@@ -142,6 +142,18 @@ property.accounting_method.radio.cash.detail                    = Rydych yn cofn
 property.accounting_method.radio.accruals                       = Sail croniadau
 property.accounting_method.radio.accruals.detail                = Rydych yn cofnodi ar y dyddiad rydych yn anfon anfoneb i’ch tenant neu’n gofyn am daliad oddi wrtho, hyd yn oed os nad ydych yn cael unrhyw arian. Rydych yn cofnodi ar y dyddiad rydych yn cael anfoneb am atgyweiriadau neu waith cynnal a chadw.
 
+#Overseas Property accounting method Page
+overseas.property.accounting_method.title                        = Sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo tramor?
+overseas.property.accounting_method.heading                      = Sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo tramor?
+overseas.property.accounting_method.accordion.summary            = Rhowch enghraifft i mi
+overseas.property.accounting_method.accordion.content.para       = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
+overseas.property.accounting_method.accordion.content.bullet1    = mis Mai 2017, rydych yn defnyddio ‘cyfrifyddu arian parod’
+overseas.property.accounting_method.accordion.content.bullet2    = mis Mawrth 2017, rydych yn defnyddio ‘cyfrifyddu safonol’
+overseas.property.accounting_method.radio.cash                   = Cyfrifyddu arian parod
+overseas.property.accounting_method.radio.cash.detail            = Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
+overseas.property.accounting_method.radio.standard               = Cyfrifyddu safonol
+overseas.property.accounting_method.radio.standard.detail        = Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
+
 ## Business Name
 business.name.title                                             = Enw’r busnes
 business.name.heading                                           = Beth yw enw’ch busnes?
@@ -278,6 +290,10 @@ error.accounting-method.empty                                   = Dewiswch sut r
 error.accounting-method-property.empty                          = Dewiswch sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo
 error.accounting-method.invalid                                 = Dewiswch sut rydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes hunangyflogedig
 error.accounting-method-property.invalid                        = Dewiswch sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo
+
+#Overseas Property accounting method errors
+error.overseas_property_accounting_method.invalid               = Dewiswch os ydych yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
+error.overseas_property_accounting_method.empty                 = Dewiswch os ydych yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
 
 error.user_details.first_name.empty                             = Nodwch eich enw cyntaf
 error.user_details.last_name.empty                              = Nodwch eich enw olaf

@@ -96,6 +96,10 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     mockFetchFromSubscriptionDetails[AccountingMethodPropertyModel](PropertyAccountingMethod, fetchPropertyAccountingMethod)
   }
 
+  protected final def mockFetchForeignPropertyAccountingFromSubscriptionDetails(fetchForeignPropertyAccountingMethod: Option[AccountingMethodPropertyModel]): Unit = {
+    mockFetchFromSubscriptionDetails[AccountingMethodPropertyModel](OverseasPropertyAccountingMethod, fetchForeignPropertyAccountingMethod)
+  }
+
   protected final def mockFetchPropertyCommencementDateFromSubscriptionDetails(fetchPropertyCommencementDateMethod:
                                                                                Option[PropertyCommencementDateModel]): Unit = {
     mockFetchFromSubscriptionDetails[PropertyCommencementDateModel](PropertyCommencementDate, fetchPropertyCommencementDateMethod)
