@@ -61,7 +61,7 @@
     val rowName = SelfEmploymentsId
     val rowQuestion = Messages("summary.self_employments")
     val rowAnswer = businesses.count(_.isComplete).toString
-    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list"
+    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list?isEditMode=true"
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
