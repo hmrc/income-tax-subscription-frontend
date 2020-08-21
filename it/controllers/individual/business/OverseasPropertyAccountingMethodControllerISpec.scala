@@ -24,7 +24,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionPropertyPost()
 
         When("GET /business/overseas-property-accounting-method is called")
-        val res = IncomeTaxSubscriptionFrontend.foreignPropertyAccountingMethod()
+        val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
 
         val expected = s"${messages("overseas.property.accounting_method.radio.cash")} ${messages("overseas.property.accounting_method.radio.cash.detail")}"
 
@@ -44,7 +44,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)))
 
         When("GET /business/overseas-property-accounting-method is called")
-        val res = IncomeTaxSubscriptionFrontend.foreignPropertyAccountingMethod()
+        val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
 
         Then("Should return a OK with the foreign property accounting method page")
         res should have(

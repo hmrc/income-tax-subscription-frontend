@@ -48,8 +48,10 @@ object IntegrationTestModels {
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
   val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
   val testPropertyCommencementDate = PropertyCommencementDateModel(testValidStartDate)
+  val testForeignPropertyCommencementDate = OverseasPropertyCommencementDateModel(testValidStartDate)
   val testInvalidCommencementDate = PropertyCommencementDateModel(testInvalidStartDate)
   val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData("businessId", businessName = Some(testBusinessName)))
+  val testInvalidForeignPropertyCommencementDate = OverseasPropertyCommencementDateModel(testInvalidStartDate)
 
   lazy val fullIndivSubscriptionDataBothPost: Map[String, JsValue] =
     subscriptionData(
@@ -61,6 +63,20 @@ object IntegrationTestModels {
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
       propertyCommencementDate = Some(testPropertyCommencementDate),
+      propertyAccountingMethod = Some(testAccountingMethodProperty)
+    )
+
+  lazy val fullIndivSubscriptionDataAllPost: Map[String, JsValue] =
+    subscriptionData(
+      incomeSource = Some(Both),
+      individualIncomeSource = Some(IncomeSourceModel(true, true, true)),
+      matchTaxYear = Some(testMatchTaxYearNo),
+      selectedTaxYear = Some(testAccountingYearCurrent),
+      accountingPeriodDate = Some(testAccountingPeriod),
+      businessName = Some(testBusinessName),
+      accountingMethod = Some(testAccountingMethod),
+      propertyCommencementDate = Some(testPropertyCommencementDate),
+      overseasPropertyCommencementDate = Some(testForeignPropertyCommencementDate),
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
@@ -82,8 +98,9 @@ object IntegrationTestModels {
                        accountingMethod: Option[AccountingMethodModel] = None,
                        propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
                        propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None,
-                       overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None
-                      ): Map[String, JsValue] = {
+                       overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None,
+                       overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None
+                  ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       individualIncomeSource.map(model => IndividualIncomeSource -> IncomeSourceModel.format.writes(model)) ++
@@ -94,8 +111,8 @@ object IntegrationTestModels {
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       propertyCommencementDate.map(model => PropertyCommencementDate -> PropertyCommencementDateModel.format.writes(model)) ++
       propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
-      overseasPropertyAccountingMethod.map(model => OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model))
-
+      overseasPropertyAccountingMethod.map(model => OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)) ++
+      overseasPropertyCommencementDate.map(model => OverseasPropertyCommencementDate -> OverseasPropertyCommencementDateModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness: Business.type = Business

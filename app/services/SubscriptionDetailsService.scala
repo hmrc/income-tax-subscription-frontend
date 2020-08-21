@@ -117,9 +117,8 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
 
   def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FA = save[String](MtditId, mtditId)
 
-  def fetchPaperlessPreferenceToken()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = {
+  def fetchPaperlessPreferenceToken()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] =
     fetch[String](PaperlessPreferenceToken)
-  }
 
   def savePaperlessPreferenceToken(token: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FA =
     save[String](PaperlessPreferenceToken, token)
@@ -130,5 +129,12 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
   def savePropertyCommencementDate(propertyCommencementDate: PropertyCommencementDateModel)
                                   (implicit hc: HeaderCarrier, reads: Reads[PropertyCommencementDateModel]): FA =
     save[PropertyCommencementDateModel](PropertyCommencementDate, propertyCommencementDate)
+
+  def fetchOverseasPropertyCommencementDate()(implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyCommencementDateModel]):
+    FO[OverseasPropertyCommencementDateModel] = fetch[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate)
+
+  def saveOverseasPropertyCommencementDate(foreignPropertyCommencementDate: OverseasPropertyCommencementDateModel)
+                                          (implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyCommencementDateModel]): FA =
+    save[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate, foreignPropertyCommencementDate)
 }
 

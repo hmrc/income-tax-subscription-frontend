@@ -37,6 +37,9 @@ import scala.concurrent.Future
 
 trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
+
+  val mockSubscriptionDetailsService: SubscriptionDetailsService = mock[SubscriptionDetailsService]
+
   val returnedCacheMap: CacheMap = CacheMap("", Map())
   val mockConnector = mock[IncomeTaxSubscriptionConnector]
   var testData: CacheMap = CacheMap("", Map.empty)
