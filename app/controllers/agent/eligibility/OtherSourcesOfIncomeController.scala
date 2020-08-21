@@ -33,7 +33,7 @@ class OtherSourcesOfIncomeController @Inject()(val authService: AuthService)
                                                mcc: MessagesControllerComponents,
                                                val ec: ExecutionContext) extends StatelessController {
 
-  def backUrl: String = routes.OtherSourcesOfIncomeController.show().url
+  def backUrl: String = routes.Covid19ClaimCheckController.show().url
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>

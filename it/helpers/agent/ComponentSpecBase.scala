@@ -161,6 +161,16 @@ trait ComponentSpecBase extends UnitSpec
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
 
+    def showCovid19ClaimCheck(): WSResponse = get("/eligibility/covid-19")
+
+    def submitCovid19ClaimCheck(request: Option[YesNo]): WSResponse = post("/eligibility/covid-19")(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => Covid19ClaimCheckForm.covid19ClaimCheckForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
+
+    def showCovidCannotSignUp(): WSResponse = get("/error/covid-cannot-sign-up")
+
     def income(): WSResponse = get("/income")
 
     def mainIncomeError(): WSResponse = get("/error/main-income")

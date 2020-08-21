@@ -738,3 +738,23 @@ not_eligible_for_income_tax.para1                               = Mae hwn yn was
 agent_not_eligible_for_income_tax.title                         = Ni allwch ddefnyddio’r gwasanaeth hwn eto
 agent_not_eligible_for_income_tax.heading                       = Ni allwch ddefnyddio’r gwasanaeth hwn eto
 agent_not_eligible_for_income_tax.para1                         = Mae hwn yn wasanaeth sy’n cael ei brofi. Efallai y bydd modd i chi ddefnyddio’r gwasanaeth ‘Rhoi gwybod am eich incwm a’ch treuliau bob chwarter’ ar gyfer eich cleientiaid yn y dyfodol.
+
+# Agent Covid-19 page
+agent.covid_19_claim_check.title                                = A yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu a yw’n bwriadu gwneud hynny yn y dyfodol?
+agent.covid_19_claim_check.heading                              = A yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu a yw’n bwriadu gwneud hynny yn y dyfodol?
+agent.covid_19_claim_check.join_pilot                           = Ni allwch gofrestru’ch cleient ar gyfer y cynllun peilot hwn os:
+agent.covid_19_claim_check.join_pilot_point1                    = wedi hawlio trwy'r {0} ar gyfer unig fasnachwyr
+agent.covid_19_claim_check.join_pilot_point1.link               = Cynllun Cymorth Hunangyflogaeth (yn agor mewn tab newydd)
+agent.covid_19_claim_check.join_pilot_point2                    = yw’n gyflogwr a’i fod wedi rhoi un neu fwy o’i gyflogeion ar ffyrlo gan ddefnyddio’r {0}
+agent.covid_19_claim_check.join_pilot_point2.link               = Cynllun Cadw Swyddi yn sgil Coronafeirws (yn agor mewn tab newydd)
+agent.covid_19_claim_check.claim_sick_pay                       = Os yw’ch cleient wedi hawlio ad-daliad trwy’r {0}, ac nad yw wedi cyflwyno hawliad – nac yn mynd i gyflwyno hawliad – ar gyfer y Cynllun Cymhorthdal Hunangyflogaeth na’r Cynllun Cadw Swyddi yn sgil Coronafeirws, gallwch ei gofrestru ar gyfer y cynllun peilot hwn o hyd.
+agent.covid_19_claim_check.claim_sick_pay.link                  = Cynllun Ad-dalu Tâl Salwch Statudol Coronafeirws (yn agor mewn tab newydd)
+agent.covid_19_claim_check.error                                = Dewiswch ‘Iawn’ os yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu’n bwriadu gwneud hynny
+
+# Covid Cannot Sign Up page
+agent.covid_cannot_sign_up.title                                = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
+agent.covid_cannot_sign_up.heading                              = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
+agent.covid_cannot_sign_up.line1                                = Ni fyddwch yn gallu cymryd rhan yn y cynllun peilot hwn ar ran eich cleient os yw erioed wedi hawlio grant coronafeirws (COVID-19) neu’n bwriadu gwneud hynny yn y dyfodol.
+agent.covid_cannot_sign_up.line2                                = Bydd angen i chi anfon {0} yn lle hynny, ac efallai y bydd modd i chi gofrestru’ch cleient yn y dyfodol.
+agent.covid_cannot_sign_up.line2.link                           = Ffurflen Dreth Hunanasesiad
+agent.covid_cannot_sign_up.button                               = Cofrestru cleient arall
