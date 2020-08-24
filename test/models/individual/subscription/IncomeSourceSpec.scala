@@ -32,11 +32,11 @@ class IncomeSourceSpec extends UnitSpec {
     }
 
     "Provide the correct reader and writer for Property" in {
-      val property: JsValue = Json.toJson(Property)
-      val expected = JsString(IncomeSourceType.property)
+      val property: JsValue = Json.toJson(UkProperty)
+      val expected = JsString(IncomeSourceType.ukProperty)
       property shouldBe expected
       val readBack = Json.fromJson[IncomeSourceType](property).get
-      readBack shouldBe Property
+      readBack shouldBe UkProperty
     }
 
     "Provide the correct reader and writer for Both" in {

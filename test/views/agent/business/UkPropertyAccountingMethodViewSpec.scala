@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
-class PropertyAccountingMethodViewSpec extends ViewSpecTrait {
+class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 

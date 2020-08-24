@@ -14,7 +14,7 @@ import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import utilities.SubscriptionDataKeys
 
-class PropertyCommencementDateISpec extends ComponentSpecBase {
+class UkPropertyCommencementDateISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/property-commencement-date" when {
 

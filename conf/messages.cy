@@ -70,6 +70,7 @@ income_source.heading                                           = Sut rydych yn 
 income_source.para1                                             = Mae rhoi eiddo ar osod yn y DU yn cynnwys defnyddio asiantaeth gosod.
 income_source.selfEmployed                                      = Hunangyflogedig
 income_source.rentUkProperty                                    = Rhoi eiddo ar osod yn y DU
+income_source.foreignProperty                                   = Rhoi eiddo tramor ar osod y tu allan i’r DU
 individual.error.income_source.invalid                          = Dewiswch os ydych yn cael eich incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
 income_source.checkbox.hint                                     = Dewiswch bob un sy’n gymwys
 

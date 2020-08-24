@@ -89,6 +89,4 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
         }
       }
     }
-
-
 }

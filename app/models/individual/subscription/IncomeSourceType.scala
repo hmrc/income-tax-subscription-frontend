@@ -16,8 +16,6 @@
 
 package models.individual.subscription
 
-import models.individual.incomesource._
-import models.{No, Yes}
 
 sealed trait IncomeSourceType {
   val source: String
@@ -27,8 +25,12 @@ case object Business extends IncomeSourceType {
   override val source: String = IncomeSourceType.business
 }
 
-case object Property extends IncomeSourceType {
-  override val source: String = IncomeSourceType.property
+case object UkProperty extends IncomeSourceType {
+  override val source: String = IncomeSourceType.ukProperty
+}
+
+case object ForeignProperty extends IncomeSourceType {
+  override val source: String = IncomeSourceType.foreignProperty
 }
 
 case object Both extends IncomeSourceType {
@@ -43,19 +45,22 @@ object IncomeSourceType {
   import play.api.libs.json._
 
   val business = "Business"
-  val property = "Property"
+  val ukProperty = "UkProperty"
+  val foreignProperty = "ForeignProperty"
   val both = "Both"
 
   private val reader: Reads[IncomeSourceType] = __.read[String].map {
     case `business` => Business
-    case `property` => Property
+    case `ukProperty` => UkProperty
+    case `foreignProperty` => ForeignProperty
     case `both` => Both
   }
 
   private val writer: Writes[IncomeSourceType] = Writes[IncomeSourceType](incomeSourceType =>
     JsString(incomeSourceType match {
       case Business => business
-      case Property => property
+      case UkProperty => ukProperty
+      case ForeignProperty => foreignProperty
       case Both => both
     })
   )
@@ -64,16 +69,17 @@ object IncomeSourceType {
 
   def apply(incomeSource: String): IncomeSourceType = incomeSource match {
     case `business` => Business
-    case `property` => Property
+    case `ukProperty` => UkProperty
+    case `foreignProperty` => ForeignProperty
     case `both` => Both
   }
 
 
   def unapply(incomeSourceType: IncomeSourceType): Option[String] = incomeSourceType match {
     case Business => Some(business)
-    case Property => Some(property)
+    case UkProperty => Some(ukProperty)
+    case ForeignProperty => Some(foreignProperty)
     case Both => Some(both)
-
   }
 
 }

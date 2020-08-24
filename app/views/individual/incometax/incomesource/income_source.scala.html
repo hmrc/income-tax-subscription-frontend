@@ -72,6 +72,11 @@
                     label = Messages("income_source.rentUkProperty"),
                     parentForm = incomeSourceForm
                 )
+                @checkboxHelper(
+                    field = incomeSourceForm(IncomeSourceForm.foreignProperty),
+                    label = Messages("income_source.foreignProperty"),
+                    parentForm = incomeSourceForm
+                )
         </div>
 
         @if(isEditMode) {

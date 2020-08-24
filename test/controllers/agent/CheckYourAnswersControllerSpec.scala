@@ -17,7 +17,7 @@
 package controllers.agent
 
 
-import models.individual.subscription.{Both, Business, Property}
+import models.individual.subscription.{Both, Business, UkProperty}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
@@ -156,7 +156,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   "The back url" should {
     s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" when {
       "on the property only journey" in {
-        TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+        TestCheckYourAnswersController.backUrl(Some(UkProperty))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
       }
       "on the property and business journey" in {
         TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
@@ -171,7 +171,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     }
 
     s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url} on the property journey" in {
-      TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
+      TestCheckYourAnswersController.backUrl(Some(UkProperty))(fakeRequest) mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
     }
 
   }

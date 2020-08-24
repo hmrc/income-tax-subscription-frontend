@@ -21,7 +21,7 @@ import config.AppConfig
 import forms.agent.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.common.AccountingMethodPropertyModel
-import models.individual.subscription.{Both, Property}
+import models.individual.subscription.{Both, UkProperty}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -75,7 +75,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
     else {
       subscriptionDetailsService.fetchAll() map {
         case cacheMap => cacheMap.agentGetIncomeSource match {
-          case Some(Property) => controllers.agent.routes.IncomeSourceController.show().url
+          case Some(UkProperty) => controllers.agent.routes.IncomeSourceController.show().url
           case Some(Both) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url
           case _ => controllers.agent.routes.IncomeSourceController.show().url
         }

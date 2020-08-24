@@ -117,7 +117,7 @@ object IntegrationTestModels {
 
   lazy val testIncomeSourceBusiness: Business.type = Business
 
-  lazy val testIncomeSourceProperty: Property.type = Property
+  lazy val testIncomeSourceProperty: UkProperty.type = UkProperty
 
   lazy val testIncomeSourceBoth: Both.type = Both
 

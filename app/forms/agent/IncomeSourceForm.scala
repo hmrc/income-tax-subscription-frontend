@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import play.api.data.Forms.{of, single}
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError}
@@ -25,7 +25,7 @@ object IncomeSourceForm {
 
   val incomeSource = "incomeSource"
   val option_business: String = IncomeSourceType.business
-  val option_property: String = IncomeSourceType.property
+  val option_property: String = IncomeSourceType.ukProperty
   val option_both: String = IncomeSourceType.both
 
   val incomeSourceError: Seq[FormError] = Seq(FormError(incomeSource, "agent.error.income_source.invalid"))
@@ -37,7 +37,7 @@ object IncomeSourceForm {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], IncomeSourceType] = {
       data.get(key) match {
         case Some(`business`) => Right(Business)
-        case Some(`property`) => Right(Property)
+        case Some(`ukProperty`) => Right(UkProperty)
         case Some(`both`) => Right(Both)
         case _ => Left(incomeSourceError)
       }
@@ -46,7 +46,7 @@ object IncomeSourceForm {
     override def unbind(key: String, value: IncomeSourceType): Map[String, String] = {
       val stringValue = value match {
         case Business => business
-        case Property => property
+        case UkProperty => ukProperty
         case Both => both
       }
 

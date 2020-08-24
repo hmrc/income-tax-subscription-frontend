@@ -32,8 +32,7 @@ import utilities.SubscriptionDataKeys.PropertyAccountingMethod
 import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService
-  with FeatureSwitching {
+  with MockSubscriptionDetailsService with FeatureSwitching {
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
