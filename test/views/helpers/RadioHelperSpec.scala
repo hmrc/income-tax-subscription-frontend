@@ -80,9 +80,10 @@ class RadioHelperSpec extends UnitTestTrait {
   "RadioHelper" should {
     "populate the relevent content in the correct positions" in {
       val testField = testForm(radioName)
-      val doc = radioHelper(testField, testLegend, testOptions, testForm).doc
+      val doc = radioHelper(testField, testLegend, isPageHeading = false, testOptions, testForm).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("legend").text() shouldBe testLegend
+      doc.getElementsByTag("legend").attr("class") shouldBe "visuallyhidden"
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 2
       inputs.get(0).attr("name") shouldBe radioName
@@ -106,7 +107,7 @@ class RadioHelperSpec extends UnitTestTrait {
 
       val filledForm = testForm.fill(TestData(noOption.optionName))
       val testField = filledForm(radioName)
-      val doc = radioHelper(testField, testLegend, testOptions, filledForm).doc
+      val doc = radioHelper(testField, testLegend, isPageHeading = false, testOptions, filledForm).doc
 
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 2
@@ -118,15 +119,24 @@ class RadioHelperSpec extends UnitTestTrait {
 
     "when there is error on the field, the errors needs to be displayed, but not otherwise" in {
       val testField = testForm(radioName)
-      val doc = radioHelper(testField, testLegend, testOptions, testForm).doc
+      val doc = radioHelper(testField, testLegend, isPageHeading = false, testOptions, testForm).doc
       doc.getElementsByTag("div").hasClass("form-field--error") shouldBe false
       doc.getElementsByClass("error-notification").isEmpty shouldBe true
 
       val errorForm = testForm.bind(DataMap.EmptyMap)
       val errorField = errorForm(radioName)
-      val errDoc = radioHelper(errorField, testLegend, testOptions, errorForm).doc
+      val errDoc = radioHelper(errorField, testLegend, isPageHeading = false, testOptions, errorForm).doc
       errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
       errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
+    }
+
+    "when isPageHeading is true, the legend should act as the heading of the page" in {
+      val testField = testForm(radioName)
+      val doc = radioHelper(testField, testLegend, isPageHeading = true, testOptions, testForm).doc
+
+      val legend = doc.select("fieldset > legend")
+      legend.hasClass("visuallyhidden") shouldBe false
+      legend.select("h1").text shouldBe testLegend
     }
   }
 

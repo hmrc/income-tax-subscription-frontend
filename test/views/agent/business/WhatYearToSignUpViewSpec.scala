@@ -69,7 +69,7 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
       }
 
       "has a current tax year radio button" in new Setup {
-        val radioWithLabel: Elements = document.select("form div fieldset div.multiple-choice")
+        val radioWithLabel: Elements = document.select("form fieldset div div.multiple-choice")
         radioWithLabel.select("input[id=accountingYear]").`val` mustBe "CurrentYear"
         radioWithLabel.select("label[for=accountingYear]").text mustBe Seq(
           MessageLookup.Business.WhatYearToSignUp.option1((taxYearEnd - 1).toString, taxYearEnd.toString)
@@ -77,7 +77,7 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
       }
 
       "has a next tax year radio button" in new Setup {
-        val radioWithLabel: Elements = document.select("form div fieldset div.multiple-choice")
+        val radioWithLabel: Elements = document.select("form fieldset div div.multiple-choice")
         radioWithLabel.select("input[id=accountingYear-2]").`val` mustBe "NextYear"
         radioWithLabel.select("label[for=accountingYear-2]").text mustBe Seq(
           MessageLookup.Business.WhatYearToSignUp.option2(taxYearEnd.toString, (taxYearEnd + 1).toString)
