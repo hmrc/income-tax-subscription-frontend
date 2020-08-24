@@ -1,11 +1,11 @@
 
 package helpers.agent
 
-import models.{Cash, Current, DateModel, Next, Yes}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, SelfEmploymentData}
-import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import models.usermatching.UserDetailsModel
+import models._
 import play.api.libs.json.JsValue
 import utilities.SubscriptionDataKeys
 
@@ -62,7 +62,7 @@ object IntegrationTestModels {
 
   lazy val testIncomeSourceBusiness: Business.type = Business
 
-  lazy val testIncomeSourceProperty: Property.type = Property
+  lazy val testIncomeSourceProperty: UkProperty.type = UkProperty
 
   lazy val testIncomeSourceBoth: Both.type = Both
 

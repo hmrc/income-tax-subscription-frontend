@@ -18,7 +18,7 @@ package controllers.individual.incomesource
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.individual.incomesource.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
@@ -60,14 +60,16 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           lazy val linearJourney: Future[Result] =
             subscriptionDetailsService.saveIndividualIncomeSource(incomeSource) map { _ =>
               incomeSource match {
-                case IncomeSourceModel(false, true, _) if isEnabled(ReleaseFour) =>
-                  Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
-                case IncomeSourceModel(true, false, _) =>
+                case IncomeSourceModel(true, _, _) =>
                   Redirect(controllers.individual.business.routes.BusinessNameController.show())
-                case IncomeSourceModel(false, true, _) =>
-                  Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-                case IncomeSourceModel(true, true, _) =>
-                  Redirect(controllers.individual.business.routes.BusinessNameController.show())
+                case IncomeSourceModel(_, true, _) =>
+                  if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+                  else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+                case IncomeSourceModel(_, _, true) =>
+                  if (isEnabled(ForeignProperty))
+                    Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+                  else
+                    Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
               }

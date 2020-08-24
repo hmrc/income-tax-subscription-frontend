@@ -105,7 +105,7 @@ object SubscriptionDataUtil {
 
     def getAgentSummary()(implicit appConfig: AppConfig): AgentSummary = {
       agentGetIncomeSource match {
-        case Some(Property) =>
+        case Some(UkProperty) =>
           AgentSummary(
             incomeSource = agentGetIncomeSource,
             accountingMethodProperty = getPropertyAccountingMethod

@@ -88,7 +88,8 @@ object MessageLookup {
     val heading: String = title
     val line_1: String = "Renting out a property in the UK includes using a letting agency."
     val business = "Self-employed"
-    val property = "Rent out a property in the UK"
+    val ukProperty = "Rent out a property in the UK"
+    val foreignProperty = "Rent out a foreign property outside the UK"
   }
 
 

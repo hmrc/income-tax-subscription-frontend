@@ -18,7 +18,7 @@ package controllers.agent
 
 import config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
-import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -110,7 +110,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
             setupMockSubscriptionDetailsSaveFunctions()
 
-            val result = await(callSubmit(Property, isEditMode = false))
+            val result = await(callSubmit(UkProperty, isEditMode = false))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
@@ -122,7 +122,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             setupMockSubscriptionDetailsSaveFunctions()
             mockFetchIncomeSourceFromSubscriptionDetails(Business)
 
-            val result = await(callSubmit(Property, isEditMode = true))
+            val result = await(callSubmit(UkProperty, isEditMode = true))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
@@ -181,7 +181,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         s"return a SEE OTHER (303) for property and goto ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceProperty)
 
-          val goodRequest = callSubmit(Property, isEditMode = true)
+          val goodRequest = callSubmit(UkProperty, isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
@@ -224,7 +224,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBoth)
           setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(Property, isEditMode = true)
+          val goodRequest = callSubmit(UkProperty, isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url

@@ -17,7 +17,7 @@
 package views.agent.helpers
 
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
-import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import models.{Accruals, Cash, Current, Next}
 import play.api.i18n.Messages
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
@@ -36,7 +36,7 @@ object SummaryHelper {
 
   def incomeSourceText(src: IncomeSourceType)(implicit messages: Messages): String = src match {
     case Business => Messages("agent.summary.income_source.business")
-    case Property => Messages("agent.summary.income_source.property")
+    case UkProperty => Messages("agent.summary.income_source.property")
     case Both => Messages("agent.summary.income_source.both")
   }
 

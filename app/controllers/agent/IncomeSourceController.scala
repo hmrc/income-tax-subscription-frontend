@@ -20,7 +20,7 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
-import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
@@ -76,7 +76,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
       incomeSource match {
         case Business | Both =>
           Redirect(business.routes.BusinessNameController.show())
-        case Property =>
+        case UkProperty =>
           Redirect(business.routes.PropertyAccountingMethodController.show())
       }
     }

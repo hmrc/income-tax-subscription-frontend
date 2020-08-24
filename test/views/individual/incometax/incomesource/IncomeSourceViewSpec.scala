@@ -58,9 +58,13 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
     form.mustHaveCheckboxWithId(
       id = "UkProperty",
       name = "UkProperty",
-      message = messages.property
+      message = messages.ukProperty
     )
-
+    form.mustHaveCheckboxWithId(
+      id = "ForeignProperty",
+      name = "ForeignProperty",
+      message = messages.foreignProperty
+    )
     form.mustHaveContinueButton()
 
   }

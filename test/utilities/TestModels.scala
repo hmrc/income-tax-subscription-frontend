@@ -122,7 +122,7 @@ object TestModels extends Implicits {
 
   //agent
   lazy val testAgentIncomeSourceBusiness: IncomeSourceType = Business
-  lazy val testAgentIncomeSourceProperty: IncomeSourceType = Property
+  lazy val testAgentIncomeSourceProperty: IncomeSourceType = UkProperty
   lazy val testAgentIncomeSourceBoth: IncomeSourceType = Both
 
 

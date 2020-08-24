@@ -31,7 +31,7 @@ import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 
 
-class PropertyCommencementDateViewSpec extends ViewSpec  {
+class UkPropertyCommencementDateViewSpec extends ViewSpec  {
 
   object PropertyCommencementDateMessages {
     val title = "When did your UK property business start trading?"

@@ -19,7 +19,7 @@ package utilities.agent
 import models.{Cash, Current, DateModel, Next, No, Yes}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
-import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
@@ -101,7 +101,7 @@ object TestModels extends Implicits {
 
   lazy val testIncomeSourceBusiness: IncomeSourceType = Business
 
-  lazy val testIncomeSourceProperty: IncomeSourceType = Property
+  lazy val testIncomeSourceProperty: IncomeSourceType = UkProperty
 
   lazy val testIncomeSourceBoth: IncomeSourceType = Both
 

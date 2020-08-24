@@ -17,7 +17,7 @@
 package controllers.individual.incomesource
 
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.incomesource.IncomeSourceForm
@@ -43,6 +43,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
+    disable(ForeignProperty)
     super.beforeEach()
   }
 
@@ -91,37 +92,24 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     }
 
     "When it is not edit mode" should {
-      s"return a SEE_OTHER (303) when self-employed is checked and rent uk property is NOT checked" in {
-        setupMockSubscriptionDetailsSaveFunctions()
+      "self-employed is checked and rent UK property and foreign property are NOT checked" when {
+        "redirect to BusinessName page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
 
-        val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
-
-        await(goodRequest)
-        verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-        verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
+          verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+        }
       }
 
-      s"return a SEE_OTHER (303) when self-employed is NOT checked and rent uk propery is checked" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-
-        await(goodRequest)
-        verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-        verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
-      }
-
-      "The redirect to Property Accounting page with Release Four disabled" when {
-        "Property Commencement date feature switch is disabled" should {
-          "redirect to the Property Accounting page" in {
+      "Rent UK property is checked and self-employed, foreign property are NOT checked" should {
+        "Release Four feature switch is disabled" when {
+          "redirect to the PropertyAccounting method page" in {
             setupMockSubscriptionDetailsSaveFunctions()
-
             val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
@@ -132,14 +120,10 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
           }
         }
-      }
-
-      "The redirect to Property Commencement Date page with Release Four enabled" when {
-        "Property Commencement date feature switch is disabled" should {
-          "redirect to the Property Commencement Date page" in {
+        "Release Four feature switch is enabled" when {
+          "redirect to the PropertyCommencementDate page" in {
             enable(ReleaseFour)
             setupMockSubscriptionDetailsSaveFunctions()
-
             val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
@@ -152,12 +136,43 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         }
       }
 
+      "Foreign property is checked and self-employed, UK property are NOT checked" should {
+        "Release Four feature switch is disabled" when {
+          "redirect to the PropertyAccounting method page" in {
+            setupMockSubscriptionDetailsSaveFunctions()
 
-      s"return a SEE_OTHER (303) when both self-employed and rent uk property are checked" when {
-        "property cash or accruals feature switch is enabled" in {
+            val goodRequest = callSubmit(IncomeSourceModel(false, false, true), isEditMode = false)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
+
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
+            verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+          }
+        }
+        "Release Four feature switch is enabled" when {
+          "redirect to the PropertyAccounting method page" in {
+            enable(ForeignProperty)
+            setupMockSubscriptionDetailsSaveFunctions()
+
+            val goodRequest = callSubmit(IncomeSourceModel(false, false, true), isEditMode = false)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url)
+
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
+            verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+          }
+        }
+      }
+
+      "All self-employed, rent UK property and foreign property are checked" when {
+        "redirect to BusinessName page" in {
           setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
+          val goodRequest = callSubmit(IncomeSourceModel(true, true, true), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get must be(controllers.individual.business.routes.BusinessNameController.show().url)
@@ -169,7 +184,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "When it is in edit mode and user's selection has not changed" should {
-        s"return an SEE OTHER (303) when self-employed is checked and rent uk property is NOT checked" +
+        s"return an SEE OTHER (303) when self-employed is checked and rent uk property and foreign property are NOT checked" +
           s"${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
           mockFetchIndividualIncomeSourceFromSubscriptionDetails(IncomeSourceModel(true, false, false))
 

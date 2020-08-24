@@ -69,7 +69,7 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
       }
 
       val propertySection = model.incomeSource flatMap {
-        case Property | Both =>
+        case UkProperty | Both =>
           Some(PropertyIncomeModel(model.accountingMethodProperty.map(_.propertyAccountingMethod)))
         case _ => None
       }

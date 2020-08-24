@@ -29,7 +29,7 @@ import models.{Accruals, Cash}
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 
-class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class UkPropertyAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /business/accounting-method-property" when {
     "the Subscription Details Connector returns all data" should {

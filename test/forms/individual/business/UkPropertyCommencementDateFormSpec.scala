@@ -29,7 +29,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
 
 
-class PropertyCommencementDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
+class UkPropertyCommencementDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   def form: Form[PropertyCommencementDateModel] = {
     propertyCommencementDateForm(PropertyCommencementDateForm.propertyStartDate.toString)

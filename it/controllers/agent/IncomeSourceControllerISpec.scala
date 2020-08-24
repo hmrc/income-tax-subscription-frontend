@@ -109,7 +109,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
       "the user selects the Property income source option" in {
 
-        val userInput: IncomeSourceType = Property
+        val userInput: IncomeSourceType = UkProperty
 
         Given("I setup the wiremock stubs and enable feature switches")
         AuthStub.stubAuthSuccess()
@@ -151,7 +151,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       "the user changes their income to Property" in {
 
         val previousInput: IncomeSourceType = Both
-        val userInput: IncomeSourceType = Property
+        val userInput: IncomeSourceType = UkProperty
 
         Given("I setup the wiremock stubs and enable feature switches")
         AuthStub.stubAuthSuccess()
