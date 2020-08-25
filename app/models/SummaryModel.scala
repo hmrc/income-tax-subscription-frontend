@@ -16,9 +16,9 @@
 
 package models
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.common._
 import models.individual.business._
-import  models.individual.business.PropertyCommencementDateModel
+import models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
 
@@ -54,7 +54,9 @@ case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None
                              accountingMethod: Option[AccountingMethodModel] = None,
                              propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
                              accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                             selfEmployments: Option[Seq[SelfEmploymentData]] = None) extends SummaryModel
+                             selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+                             overseasPropertyCommencementDateModel: Option[OverseasPropertyCommencementDateModel] = None,
+                             overseasAccountingMethodPropertyModel: Option[OverseasAccountingMethodPropertyModel] = None) extends SummaryModel
 
 
 

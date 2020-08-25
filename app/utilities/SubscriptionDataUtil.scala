@@ -17,7 +17,7 @@
 package utilities
 
 import config.AppConfig
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
 import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
@@ -48,60 +48,27 @@ object SubscriptionDataUtil {
 
     def getPropertyCommencementDate: Option[PropertyCommencementDateModel] = cacheMap.getEntry[PropertyCommencementDateModel](PropertyCommencementDate)
 
-    def getForeignPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = cacheMap.getEntry[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate)
+    def getOverseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] =
+      cacheMap.getEntry[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate)
+
+    def getOverseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] =
+      cacheMap.getEntry[OverseasAccountingMethodPropertyModel](OverseasPropertyAccountingMethod)
 
     def getSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                    selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None
-                  )(implicit appConfig: AppConfig): IndividualSummary =
+                  )(implicit appConfig: AppConfig): IndividualSummary = {
       getIncomeSourceModel match {
-        case Some(IncomeSourceModel(false, true, _)) =>
-          IndividualSummary(
-            incomeSourceIndiv = getIncomeSourceModel,
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod
+        case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
+          applyForeignPropertyData(
+            applyPropertyData(
+              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment),
+              hasProperty
+            ),
+            hasForeignProperty
           )
-        case Some(IncomeSourceModel(true, false, _)) =>
-          if (selfEmploymentsAccountingMethod.isDefined) {
-            IndividualSummary(
-              incomeSourceIndiv = getIncomeSourceModel,
-              businessName = getBusinessName,
-              selectedTaxYear = getSelectedTaxYear,
-              accountingMethod = selfEmploymentsAccountingMethod,
-              selfEmployments = selfEmployments
-            )
-          } else {
-            IndividualSummary(
-              incomeSourceIndiv = getIncomeSourceModel,
-              businessName = getBusinessName,
-              selectedTaxYear = getSelectedTaxYear,
-              accountingMethod = getAccountingMethod,
-              selfEmployments = selfEmployments
-            )
-          }
-        case Some(_) =>
-          if (selfEmploymentsAccountingMethod.isDefined) {
-            IndividualSummary(
-              incomeSourceIndiv = getIncomeSourceModel,
-              businessName = getBusinessName,
-              accountingMethod = selfEmploymentsAccountingMethod,
-              propertyCommencementDate = getPropertyCommencementDate,
-              accountingMethodProperty = getPropertyAccountingMethod,
-              selfEmployments = selfEmployments
-            )
-          } else {
-            IndividualSummary(
-              incomeSourceIndiv = getIncomeSourceModel,
-              businessName = getBusinessName,
-              accountingMethod = getAccountingMethod,
-              propertyCommencementDate = getPropertyCommencementDate,
-              accountingMethodProperty = getPropertyAccountingMethod,
-              selfEmployments = selfEmployments
-            )
-          }
-
         case _ => IndividualSummary()
-
       }
+    }
 
     def getAgentSummary()(implicit appConfig: AppConfig): AgentSummary = {
       agentGetIncomeSource match {
@@ -132,6 +99,53 @@ object SubscriptionDataUtil {
       }
 
     }
-  }
 
+    private def applySelfEmploymentsData(selfEmployments: Option[Seq[SelfEmploymentData]],
+                                         selfEmploymentsAccountingMethod: Option[AccountingMethodModel],
+                                         hasSelfEmployments: Boolean) = {
+      if (hasSelfEmployments) {
+        if (selfEmploymentsAccountingMethod.isDefined) {
+          IndividualSummary(
+            incomeSourceIndiv = getIncomeSourceModel,
+            businessName = getBusinessName,
+            selectedTaxYear = getSelectedTaxYear,
+            accountingMethod = selfEmploymentsAccountingMethod,
+            selfEmployments = selfEmployments
+          )
+        } else {
+          IndividualSummary(
+            incomeSourceIndiv = getIncomeSourceModel,
+            businessName = getBusinessName,
+            selectedTaxYear = getSelectedTaxYear,
+            accountingMethod = getAccountingMethod,
+            selfEmployments = selfEmployments
+          )
+        }
+      } else IndividualSummary(
+        incomeSourceIndiv = getIncomeSourceModel
+      )
+    }
+
+    private def applyPropertyData(individualSummary: IndividualSummary,
+                                  hasProperty: Boolean) = {
+      if (hasProperty) {
+        individualSummary.copy(
+          propertyCommencementDate = getPropertyCommencementDate,
+          accountingMethodProperty = getPropertyAccountingMethod,
+          selectedTaxYear = None
+        )
+      } else individualSummary
+    }
+
+    private def applyForeignPropertyData(individualSummary: IndividualSummary,
+                                  hasForeignProperty: Boolean) = {
+      if (hasForeignProperty) {
+        individualSummary.copy(
+          overseasPropertyCommencementDateModel = getOverseasPropertyCommencementDate,
+          overseasAccountingMethodPropertyModel = getOverseasPropertyAccountingMethod,
+          selectedTaxYear = None
+        )
+      } else individualSummary
+    }
+  }
 }

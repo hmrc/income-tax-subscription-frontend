@@ -79,7 +79,7 @@ object Answers {
   )
 
    val optForeignPropertyCommencementDateAnswer: Answer[Option[OverseasPropertyCommencementDateModel]] = OptionalAnswer(
-    retrieveAnswer = _.getForeignPropertyCommencementDate
+    retrieveAnswer = _.getOverseasPropertyCommencementDate
   )
 
 }
@@ -90,15 +90,11 @@ trait RequireAnswer {
 
   def require[A](answer: Answer[A])(f: A => Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Result] = {
     subscriptionDetailsService.fetchAll() flatMap {
-      cacheMap => {
-        println("\n\n\n##############################################################\n" +
-          s"CACHEMAP: $cacheMap" +
-          "\n#############################################################\n")
+      cacheMap =>
         answer(cacheMap) match {
           case Right(answers) => f(answers)
           case Left(result) => Future.successful(result)
         }
-      }
     }
   }
 

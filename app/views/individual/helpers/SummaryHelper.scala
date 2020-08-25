@@ -16,7 +16,7 @@
 
 package views.individual.helpers
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, OverseasAccountingMethodPropertyModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.{Accruals, Cash, Current, Next}
 import play.api.i18n.Messages
@@ -35,6 +35,11 @@ object SummaryHelper {
   }
 
   def accountingMethodText(src: AccountingMethodPropertyModel)(implicit messages: Messages): String = src.propertyAccountingMethod match {
+    case Cash => Messages("summary.income_type.cash")
+    case Accruals => Messages("summary.income_type.accruals")
+  }
+
+  def accountingMethodText(src: OverseasAccountingMethodPropertyModel)(implicit messages: Messages): String = src.overseasPropertyAccountingMethod match {
     case Cash => Messages("summary.income_type.cash")
     case Accruals => Messages("summary.income_type.accruals")
   }

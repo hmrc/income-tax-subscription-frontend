@@ -71,13 +71,21 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
             accountingMethod = testAccountingMethod
           )
       }
-      "income source is both property and business" in {
-        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceBoth).getSummary() shouldBe
+      "income source is only foreign property" in {
+        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceOverseasProperty).getSummary() shouldBe
           IndividualSummary(
-            incomeSourceIndiv = testIncomeSourceBoth,
+            incomeSourceIndiv = testIncomeSourceOverseasProperty,
+            overseasAccountingMethodPropertyModel = testAccountingMethodOverseasProperty
+          )
+      }
+      "income source is all property and business" in {
+        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceAll).getSummary() shouldBe
+          IndividualSummary(
+            incomeSourceIndiv = testIncomeSourceAll,
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod,
-            accountingMethodProperty = testAccountingMethodProperty
+            accountingMethodProperty = testAccountingMethodProperty,
+            overseasAccountingMethodPropertyModel = testAccountingMethodOverseasProperty
           )
       }
       "income source is neither property or business" in {
