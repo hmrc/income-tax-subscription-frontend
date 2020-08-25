@@ -10,7 +10,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import controllers.agent.ITSASessionKeys
 import forms.agent._
-import helpers.{UserMatchingIntegrationRequestSupport, ViewSpec}
+import helpers.UserMatchingIntegrationRequestSupport
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
@@ -156,6 +156,14 @@ trait ComponentSpecBase extends UnitSpec
     def submitOtherSourcesOfIncome(request: Option[YesNo]): WSResponse = post("/eligibility/income-sources")(
       request.fold(Map.empty[String, Seq[String]])(
         model => OtherSourcesOfIncomeForm.otherSourcesOfIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
+
+    def showPropertyTradingStartAfter: WSResponse = get("/eligibility/property-start-date")
+
+    def submitPropertyTradingStartAfter(request: Option[YesNo]): WSResponse = post("/eligibility/property-start-date")(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => PropertyTradingStartDateForm.propertyTradingStartDateForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 

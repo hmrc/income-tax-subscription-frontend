@@ -507,6 +507,12 @@ agent.accounting_period_check.title                             = A yw holl gyfn
 agent.accounting_period_check.heading                           = A yw holl gyfnodau cyfrifyddu busnes eich cleient rhwng 6 Ebrill a 5 Ebrill?
 agent.accounting_period_check.invalid                           = Dewiswch ‘Iawn’ os yw holl gyfnodau cyfrifyddu busnes eich cleient o 6 Ebrill i 5 Ebrill
 
+# Agent property trading after date page
+agent.property_trading_after.title                              = A yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ôl {0}?
+agent.property_trading_after.heading                            = A yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ôl {0}?
+agent.property_trading_after.line                               = Mae hyn yn cynnwys bod yn landlord ac yn rhoi llety gwyliau ar osod
+agent.property_trading_after.error.summary                      = Dewiswch ‘Iawn’ os yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ar ôl {0}
+
 # Client details page
 agent.client-details-error.title                                = Mae problem wedi codi
 agent.client-details-error.heading                              = Mae problem wedi codi

@@ -49,6 +49,6 @@ class AccountingPeriodCheckController @Inject()(val authService: AuthService)
       )
   }
 
-  def backLink: String = routes.AccountingPeriodCheckController.show().url
+  def backLink: String = routes.PropertyTradingStartAfterController.show().url
 
 }
