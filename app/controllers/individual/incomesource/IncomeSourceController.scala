@@ -40,7 +40,8 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
       incomeSourceForm = incomeSourceForm,
       postAction = controllers.individual.incomesource.routes.IncomeSourceController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl
+      backUrl = backUrl,
+      foreignProperty = isEnabled(ForeignProperty)
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -66,24 +67,22 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
                   if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
                   else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case IncomeSourceModel(_, _, true) =>
-                  if (isEnabled(ForeignProperty))
-                    Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
-                  else
-                    Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+                  if (isEnabled(ForeignProperty)) Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+                  else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
               }
             }
 
-            if (!isEditMode) {
-              linearJourney
-            } else {
-              subscriptionDetailsService.fetchIndividualIncomeSource() flatMap {
-                case Some(`incomeSource`) => Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
-                case _ => linearJourney
-              }
+          if (!isEditMode) {
+            linearJourney
+          } else {
+            subscriptionDetailsService.fetchIndividualIncomeSource() flatMap {
+              case Some(`incomeSource`) => Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
+              case _ => linearJourney
             }
           }
+        }
       )
   }
 

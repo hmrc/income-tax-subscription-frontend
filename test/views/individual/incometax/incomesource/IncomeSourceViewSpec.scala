@@ -35,7 +35,8 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
     incomeSourceForm = IncomeSourceForm.incomeSourceForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
-    isEditMode = isEditMode
+    isEditMode = isEditMode,
+    foreignProperty = true
   )(FakeRequest(), implicitly, appConfig)
 
   "The Income Source view" should {

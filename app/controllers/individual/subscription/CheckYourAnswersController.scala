@@ -52,9 +52,11 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
 
   def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
+      case IncomeSourceModel(_, _, true) =>
+        controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url
       case IncomeSourceModel(_, true, _) =>
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-      case IncomeSourceModel(true, false, _) =>
+      case IncomeSourceModel(true, _, _) =>
         controllers.individual.business.routes.BusinessAccountingMethodController.show().url
     }
   }

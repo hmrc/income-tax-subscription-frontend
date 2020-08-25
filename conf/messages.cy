@@ -230,6 +230,7 @@ summary.income_source.business                                  = Hunangyflogaet
 summary.income_source.property                                  = Eiddo yn y DU
 summary.income_source.business                                  = Hunangyflogaeth
 summary.income_source.property                                  = Eiddo
+summary.income_source.foreign_property                          = Eiddo tramor
 summary.income_source.both                                      = Busnes fel unig fasnachwr ac eiddo
 summary.match_tax_year                                          = Mae’ch cyfnod cyfrifyddu yn paru â’r flwyddyn dreth
 summary.accounting_period                                       = Dyddiadau’ch cyfnod cyfrifyddu
