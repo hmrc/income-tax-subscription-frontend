@@ -153,7 +153,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec 
         "redirect to income source page" in {
           mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
           TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
-            controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url
+            controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url
         }
       }
 

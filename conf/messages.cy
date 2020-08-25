@@ -500,11 +500,6 @@ agent.cannot_take_part.alternative                              = Bydd yn rhaid 
 agent.cannot_take_part.alternative.link                         = Ffurflen Dreth Hunanasesiad
 agent.cannot_take_part.sign_up_another                          = Cofrestru cleient arall
 
-# Agent accounting period check page
-agent.accounting_period_check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient rhwng 6 Ebrill a 5 Ebrill?
-agent.accounting_period_check.heading                           = A yw holl gyfnodau cyfrifyddu busnes eich cleient rhwng 6 Ebrill a 5 Ebrill?
-agent.accounting_period_check.invalid                           = Dewiswch ‘Iawn’ os yw holl gyfnodau cyfrifyddu busnes eich cleient o 6 Ebrill i 5 Ebrill
-
 # Client details page
 agent.client-details-error.title                                = Mae problem wedi codi
 agent.client-details-error.heading                              = Mae problem wedi codi

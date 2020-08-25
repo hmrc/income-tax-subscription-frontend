@@ -22,7 +22,7 @@
 @import forms.individual.incomesource.IncomeSourceForm
 @import views.html.templates.main_template
 
-@(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, foreignProperty: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("income_source.title"), form = incomeSourceForm) {
     @if(isEditMode) {
@@ -72,11 +72,14 @@
                     label = Messages("income_source.rentUkProperty"),
                     parentForm = incomeSourceForm
                 )
-                @checkboxHelper(
-                    field = incomeSourceForm(IncomeSourceForm.foreignProperty),
-                    label = Messages("income_source.foreignProperty"),
-                    parentForm = incomeSourceForm
-                )
+                @{if(foreignProperty){
+                    checkboxHelper(
+                        field = incomeSourceForm(IncomeSourceForm.foreignProperty),
+                        label = Messages("income_source.foreignProperty"),
+                        parentForm = incomeSourceForm
+                    )
+                }}
+
         </div>
 
         @if(isEditMode) {

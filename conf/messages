@@ -490,11 +490,6 @@ agent.cannot_take_part.alternative                              = Your client wi
 agent.cannot_take_part.alternative.link                         = self assessment tax return
 agent.cannot_take_part.sign_up_another                          = Sign up another client
 
-# Agent accounting period check page
-agent.accounting_period_check.title                             = Are all of your client’s business accounting periods from 6 April to 5 April?
-agent.accounting_period_check.heading                           = Are all of your client’s business accounting periods from 6 April to 5 April?
-agent.accounting_period_check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
-
 # Client details page
 agent.client-details-error.title                                = There’s a problem
 agent.client-details-error.heading                              = There’s a problem

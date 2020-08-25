@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
@@ -66,8 +66,17 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
         formWithErrors =>
           view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
         accountingMethodProperty => {
-          subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) map { _ =>
-            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+          subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) flatMap { _ =>
+            if (isEditMode) {
+              Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
+            } else {
+              subscriptionDetailsService.fetchIndividualIncomeSource() map {
+                case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
+                  Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+                case _ =>
+                  Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+              }
+            }
           }
         }
       )
