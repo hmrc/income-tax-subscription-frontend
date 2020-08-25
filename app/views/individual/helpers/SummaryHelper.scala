@@ -44,10 +44,13 @@ object SummaryHelper {
     case Accruals => Messages("summary.income_type.accruals")
   }
 
-  def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = (src.selfEmployment, src.ukProperty) match {
-    case (true, false) => Messages("summary.income_source.business")
-    case (false, true) => Messages("summary.income_source.property")
-    case (true, true) => s"${Messages("summary.income_source.business")}<br>${Messages("summary.income_source.property")}"
-    case (false, false) => ""
+  def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = {
+    def messageOrNone(message: String, condition: Boolean): Option[String] = {
+      if (condition) Some(Messages(message)) else None
+    }
+    Seq(messageOrNone(Messages("summary.income_source.business"), src.selfEmployment),
+      messageOrNone(Messages("summary.income_source.property"), src.ukProperty),
+      messageOrNone(Messages("summary.income_source.foreign_property"), src.foreignProperty)
+    ).flatten.mkString("<br>")
   }
 }

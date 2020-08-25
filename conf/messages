@@ -222,6 +222,7 @@ summary.income_source                                           = Income receive
 summary.are_you_selfemployed                                    = You’re self-employed
 summary.income_source.business                                  = Self-employment
 summary.income_source.property                                  = UK property
+summary.income_source.foreign_property                          = Foreign property
 summary.income_source.both                                      = Sole trader business and property
 summary.match_tax_year                                          = Your accounting period matches the tax year
 summary.accounting_period                                       = Your accounting period dates

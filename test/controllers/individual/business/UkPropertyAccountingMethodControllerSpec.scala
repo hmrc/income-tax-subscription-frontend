@@ -82,7 +82,7 @@ class UkPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsFetchAll(2)
       }
 
       "redirect to checkYourAnswer page" in {
@@ -94,7 +94,7 @@ class UkPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         await(goodRequest)
         verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsFetchAll(2)
       }
 
     }

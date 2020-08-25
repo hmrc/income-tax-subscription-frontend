@@ -22,68 +22,70 @@
 @import forms.individual.incomesource.IncomeSourceForm
 @import views.html.templates.main_template
 
-@(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, foreignProperty: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("income_source.title"), form = incomeSourceForm) {
-    @if(isEditMode) {
-        @back_link(backUrl)
-    }
-
-    @if(incomeSourceForm.hasErrors) {
-
-    <div class="flash error-summary error-summary--show"
-         id="error-summary-display"
-         role="alert"
-         aria-labelledby="error-summary-heading"
-         tabindex="-1">
-        <h2 id="error-summary-heading" class="h3-heading">@Messages("base.error_heading")</h2>
-        <ul>
-            <li>
-                <a id="error-summary-heading-href" href="#@IncomeSourceForm.business">@{Messages("individual.error.income_source.invalid")}</a>
-            </li>
-        </ul>
-    </div>
-
-    }
-
-    <h1 class="heading-large">@Messages("income_source.heading")</h1>
-
-    <div class="incomeSource-info">
-        <p>@Messages("income_source.para1")</p>
-    </div>
-
-    @form(action = postAction) {
-        @if(incomeSourceForm.hasErrors){
-            <div class="form-group form-field-group--error">
-                <span class="error-notification bold">@messages("individual.error.income_source.invalid")</span>
-        } else {
-            <div class="form-group">
-        }
-                <p id="checkbox-hint" class="form-hint">
-                    @messages("income_source.checkbox.hint")
-                </p>
-                @checkboxHelper(
-                    field = incomeSourceForm(IncomeSourceForm.business),
-                    label = Messages("income_source.selfEmployed"),
-                    parentForm = incomeSourceForm
-                )
-                @checkboxHelper(
-                    field = incomeSourceForm(IncomeSourceForm.ukProperty),
-                    label = Messages("income_source.rentUkProperty"),
-                    parentForm = incomeSourceForm
-                )
-                @checkboxHelper(
-                    field = incomeSourceForm(IncomeSourceForm.foreignProperty),
-                    label = Messages("income_source.foreignProperty"),
-                    parentForm = incomeSourceForm
-                )
-        </div>
-
-        @if(isEditMode) {
-            @continueButton(Messages("base.update"))
-        } else {
-            @continueButton()
-        }
-
-    }
+@if(isEditMode) {
+@back_link(backUrl)
 }
+
+@if(incomeSourceForm.hasErrors) {
+
+<div class="flash error-summary error-summary--show"
+     id="error-summary-display"
+     role="alert"
+     aria-labelledby="error-summary-heading"
+     tabindex="-1">
+    <h2 id="error-summary-heading" class="h3-heading">@Messages("base.error_heading")</h2>
+    <ul>
+        <li>
+            <a id="error-summary-heading-href" href="#@IncomeSourceForm.business">@{Messages("individual.error.income_source.invalid")}</a>
+        </li>
+    </ul>
+</div>
+
+}
+
+<h1 class="heading-large">@Messages("income_source.heading")</h1>
+
+<div class="incomeSource-info">
+    <p>@Messages("income_source.para1")</p>
+</div>
+
+@form(action = postAction) {
+@if(incomeSourceForm.hasErrors){
+<div class="form-group form-field-group--error">
+    <span class="error-notification bold">@messages("individual.error.income_source.invalid")</span>
+    } else {
+    <div class="form-group">
+        }
+        <p id="checkbox-hint" class="form-hint">
+            @messages("income_source.checkbox.hint")
+        </p>
+        @checkboxHelper(
+            field = incomeSourceForm(IncomeSourceForm.business),
+            label = Messages("income_source.selfEmployed"),
+        parentForm = incomeSourceForm
+        )
+        @checkboxHelper(
+            field = incomeSourceForm(IncomeSourceForm.ukProperty),
+            label = Messages("income_source.rentUkProperty"),
+        parentForm = incomeSourceForm
+        )
+        @{if(foreignProperty){
+            checkboxHelper(
+                field = incomeSourceForm(IncomeSourceForm.foreignProperty),
+                label = Messages("income_source.foreignProperty"),
+                parentForm = incomeSourceForm
+            )
+        }}
+
+    </div>
+
+    @if(isEditMode) {
+        @continueButton(Messages("base.update"))
+    } else {
+        @continueButton()
+    }
+    }
+    }

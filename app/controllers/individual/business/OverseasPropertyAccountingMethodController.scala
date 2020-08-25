@@ -39,12 +39,12 @@ class OverseasPropertyAccountingMethodController @Inject()(val authService: Auth
 
   def view(overseasPropertyAccountingMethodForm: Form[OverseasAccountingMethodPropertyModel], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
-      views.html.individual.incometax.business.overseas_property_accounting_method(
-        overseasPropertyAccountingMethodForm = overseasPropertyAccountingMethodForm,
-        postAction = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
-        isEditMode = isEditMode,
-        backUrl = backUrl(isEditMode)
-      )
+    views.html.individual.incometax.business.overseas_property_accounting_method(
+      overseasPropertyAccountingMethodForm = overseasPropertyAccountingMethodForm,
+      postAction = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
+      isEditMode = isEditMode,
+      backUrl = backUrl(isEditMode)
+    )
   }
 
 
@@ -75,7 +75,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val authService: Auth
     if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
-      controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url
+      controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url
     }
 
   }
