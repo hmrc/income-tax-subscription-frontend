@@ -16,23 +16,23 @@
 
 package connectors.individual.subscription.httpparsers
 
-import models.individual.subscription.{BadlyFormattedSignUpResponse, MultipleIncomeSourcesSignUpFailure}
-import models.individual.subscription.{MultipleIncomeSourcesSignUpFailureResponse, MultipleIncomeSourcesSignUpSuccess}
+import models.individual.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailure}
+import models.individual.subscription.{SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object MultipleIncomeSourcesSignUpResponseHttpParser {
-  type PostMultipleIncomeSourceSignUpResponse = Either[MultipleIncomeSourcesSignUpFailure, MultipleIncomeSourcesSignUpSuccess]
+object SignUpIncomeSourcesResponseHttpParser {
+  type PostSignUpIncomeSourcesResponse = Either[SignUpIncomeSourcesFailure, SignUpIncomeSourcesSuccess]
 
-  implicit object PostMultipleIncomeSourcesSignUpResponseHttpReads extends HttpReads[PostMultipleIncomeSourceSignUpResponse] {
-    override def read(method: String, url: String, response: HttpResponse): PostMultipleIncomeSourceSignUpResponse = {
+  implicit object PostMultipleIncomeSourcesSignUpResponseHttpReads extends HttpReads[PostSignUpIncomeSourcesResponse] {
+    override def read(method: String, url: String, response: HttpResponse): PostSignUpIncomeSourcesResponse = {
       response.status match {
         case OK =>
-          response.json.asOpt[MultipleIncomeSourcesSignUpSuccess] match {
+          response.json.asOpt[SignUpIncomeSourcesSuccess] match {
             case Some(successResponse) => Right(successResponse)
-            case _ => Left(BadlyFormattedSignUpResponse)
+            case _ => Left(BadlyFormattedSignUpIncomeSourcesResponse)
           }
-        case status => Left(MultipleIncomeSourcesSignUpFailureResponse(status))
+        case status => Left(SignUpIncomeSourcesFailureResponse(status))
       }
     }
   }
