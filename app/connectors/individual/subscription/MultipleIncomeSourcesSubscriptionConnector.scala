@@ -17,8 +17,10 @@
 package connectors.individual.subscription
 
 import config.AppConfig
-import connectors.individual.subscription.httpparsers.MultipleIncomeSourcesSignUpResponseHttpParser._
+import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser._
+import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser._
 import javax.inject.{Inject, Singleton}
+import models.individual.business.BusinessSubscriptionDetailsModel
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -30,14 +32,20 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
                                                           (implicit ec: ExecutionContext) {
 
   def signUpUrl(nino: String): String = appConfig.subscriptionUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino)
+  def createIncomeSourcesUrl(nino: String): String = appConfig.subscriptionUrl + MultipleIncomeSourcesSubscriptionConnector.createIncomeSourcesUri(nino)
 
-  def signUp(nino: String)(implicit hc: HeaderCarrier): Future[PostMultipleIncomeSourceSignUpResponse] =
-    http.POSTEmpty[PostMultipleIncomeSourceSignUpResponse](signUpUrl(nino))
+  def signUp(nino: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] =
+    http.POSTEmpty[PostSignUpIncomeSourcesResponse](signUpUrl(nino))
+
+  def createIncomeSources(nino: String, request: BusinessSubscriptionDetailsModel)
+                         (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] =
+    http.POST[BusinessSubscriptionDetailsModel, PostCreateIncomeSourceResponse](createIncomeSourcesUrl(nino), request)
 
 }
 
 object MultipleIncomeSourcesSubscriptionConnector {
 
   def signUpUri(nino: String): String = "/mis/sign-up/" + nino
+  def createIncomeSourcesUri(nino: String): String = "/mis/create/" + nino
 
 }

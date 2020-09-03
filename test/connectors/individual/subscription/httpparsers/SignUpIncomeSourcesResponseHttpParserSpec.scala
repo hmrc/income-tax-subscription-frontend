@@ -16,9 +16,9 @@
 
 package connectors.individual.subscription.httpparsers
 
-import connectors.individual.subscription.httpparsers.MultipleIncomeSourcesSignUpResponseHttpParser.PostMultipleIncomeSourcesSignUpResponseHttpReads
-import models.individual.subscription.{BadlyFormattedSignUpResponse, MultipleIncomeSourcesSignUpFailure}
-import models.individual.subscription.{MultipleIncomeSourcesSignUpFailureResponse, MultipleIncomeSourcesSignUpSuccess}
+import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostMultipleIncomeSourcesSignUpResponseHttpReads
+import models.individual.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailure}
+import models.individual.subscription.{SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -26,34 +26,34 @@ import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants._
 
-class MultipleIncomeSourcesSignUpResponseHttpParserSpec extends UnitTestTrait with EitherValues {
+class SignUpIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"
   val testUri = "/"
 
   "MultipleIncomeSourcesSignUpResponseHttpReads" when {
     "read" should {
-      "parse a correctly formatted OK response as a MultipleIncomeSourcesSignUpSuccess" in {
-        val httpResponse = HttpResponse(OK, Json.toJson(MultipleIncomeSourcesSignUpSuccess(testMTDID)))
+      "parse a correctly formatted OK response as a SignUpIncomeSourcesSuccess" in {
+        val httpResponse = HttpResponse(OK, Json.toJson(SignUpIncomeSourcesSuccess(testMTDID)))
 
         val res = PostMultipleIncomeSourcesSignUpResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe MultipleIncomeSourcesSignUpSuccess(testMTDID)
+        res.right.value mustBe SignUpIncomeSourcesSuccess(testMTDID)
       }
 
-      "parse an incorrectly formatted OK response as a BadlyFormattedSignUpResponse" in {
+      "parse an incorrectly formatted OK response as a BadlyFormattedSignUpIncomeSourcesResponse" in {
         val httpResponse = HttpResponse(OK, Json.obj())
 
         val res = PostMultipleIncomeSourcesSignUpResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.left.value mustBe BadlyFormattedSignUpResponse
+        res.left.value mustBe BadlyFormattedSignUpIncomeSourcesResponse
       }
 
-      "parse any other http status as a MultipleIncomeSourcesSignUpFailureResponse" in {
+      "parse any other http status as a SignUpIncomeSourcesFailureResponse" in {
         val httpResponse = HttpResponse(BAD_REQUEST)
 
         val res = PostMultipleIncomeSourcesSignUpResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.left.value mustBe MultipleIncomeSourcesSignUpFailureResponse(BAD_REQUEST)
+        res.left.value mustBe SignUpIncomeSourcesFailureResponse(BAD_REQUEST)
       }
     }
   }
