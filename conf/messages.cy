@@ -764,11 +764,6 @@ not_eligible_for_income_tax.title                               = Ni allwch ddef
 not_eligible_for_income_tax.heading                             = Ni allwch ddefnyddio’r gwasanaeth hwn eto
 not_eligible_for_income_tax.para1                               = Mae hwn yn wasanaeth sy’n cael ei brofi. Efallai y gallwch ddefnyddio’r gwasanaeth ‘Rhoi gwybod am eich incwm a’ch treuliau bob chwarter’ yn y dyfodol.
 
-# Not eligible for income tax (agent)
-agent_not_eligible_for_income_tax.title                         = Ni allwch ddefnyddio’r gwasanaeth hwn eto
-agent_not_eligible_for_income_tax.heading                       = Ni allwch ddefnyddio’r gwasanaeth hwn eto
-agent_not_eligible_for_income_tax.para1                         = Mae hwn yn wasanaeth sy’n cael ei brofi. Efallai y bydd modd i chi ddefnyddio’r gwasanaeth ‘Rhoi gwybod am eich incwm a’ch treuliau bob chwarter’ ar gyfer eich cleientiaid yn y dyfodol.
-
 # Agent Covid-19 page
 agent.covid_19_claim_check.title                                = A yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu a yw’n bwriadu gwneud hynny yn y dyfodol?
 agent.covid_19_claim_check.heading                              = A yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu a yw’n bwriadu gwneud hynny yn y dyfodol?

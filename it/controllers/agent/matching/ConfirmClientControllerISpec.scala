@@ -240,10 +240,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-          Then("The result should have a status of SEE_OTHER and redirect to ineligible")
+          Then("The result should have a status of SEE_OTHER and redirect to cannot take part")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(ineligibleURI)
+            redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
           )
 
           Then("The client matching request should have been audited")

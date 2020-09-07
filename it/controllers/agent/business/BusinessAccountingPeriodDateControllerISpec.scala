@@ -98,10 +98,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of cannot-use-service-yet")
+        Then("Should return a SEE_OTHER with a redirect location of cannot take part")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(ineligibleURI)
+          redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
         )
       }
 
@@ -117,10 +117,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of cannot-use-service-yet")
+        Then("Should return a SEE_OTHER with a redirect location of cannot take part")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(ineligibleURI)
+          redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
         )
       }
     }

@@ -754,11 +754,6 @@ not_eligible_for_income_tax.title                               = You cannot use
 not_eligible_for_income_tax.heading                             = You cannot use this service yet
 not_eligible_for_income_tax.para1                               = This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service in the future.
 
-# Not eligible for income tax (agents)
-agent_not_eligible_for_income_tax.title                         = You cannot use this service yet
-agent_not_eligible_for_income_tax.heading                       = You cannot use this service yet
-agent_not_eligible_for_income_tax.para1                         = This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service for your clients in the future.
-
 # Agent Covid-19 page
 agent.covid_19_claim_check.title                                = Has your client ever claimed a coronavirus (COVID‑19) grant or intend to do so in the future?
 agent.covid_19_claim_check.heading                              = Has your client ever claimed a coronavirus (COVID‑19) grant or intend to do so in the future?

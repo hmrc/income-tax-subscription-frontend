@@ -63,9 +63,6 @@ GET         /add-another                            controllers.agent.AddAnother
 # No NINO Routes
 GET         /register-for-SA                        controllers.agent.matching.NoSAController.show
 
-# Cannot use service because not eligible
-GET         /cannot-use-service-yet                 controllers.agent.eligibility.NotEligibleForIncomeTaxController.show()
-
 #Language
 GET         /language/:lang                         controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
 

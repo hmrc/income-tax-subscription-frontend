@@ -200,7 +200,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           }
         }
         "the client is ineligible" should {
-          s"redirect user to ${controllers.agent.eligibility.routes.NotEligibleForIncomeTaxController.show().url}" in {
+          s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show().url}" in {
             mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
             mockGetEligibilityStatus(utr)(Future.successful(Ineligible))
             setupMockNotLockedOut(arn)
@@ -208,7 +208,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             val fresult = callSubmit()
 
             status(fresult) mustBe SEE_OTHER
-            redirectLocation(fresult) mustBe Some(controllers.agent.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
+            redirectLocation(fresult) mustBe Some(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
 
             val result = await(fresult)
             val session = result.session(request)
