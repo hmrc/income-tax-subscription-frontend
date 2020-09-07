@@ -22,7 +22,6 @@ import utilities.individual.TestConstants._
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

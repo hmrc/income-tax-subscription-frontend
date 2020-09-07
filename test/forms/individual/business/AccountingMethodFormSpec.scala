@@ -16,7 +16,6 @@
 
 package forms.individual.business
 
-import assets.MessageLookup
 import forms.submapping.AccountingMethodMapping
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
@@ -25,8 +24,6 @@ import models.common.AccountingMethodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.data.FormError
-import play.api.data.validation.Invalid
-import play.api.i18n.Messages.Implicits._
 
 class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
 

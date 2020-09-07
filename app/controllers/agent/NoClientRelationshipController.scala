@@ -35,6 +35,6 @@ class NoClientRelationshipController @Inject()(val authService: AuthService)(imp
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
+      Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show()))
   }
 }

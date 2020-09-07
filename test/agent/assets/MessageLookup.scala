@@ -210,12 +210,6 @@ object MessageLookup {
     val para1 = "This client’s details are already in use."
   }
 
-  object NoClientRelationship {
-    val title = "You’re not authorised for this client"
-    val heading = "You’re not authorised for this client"
-    val para1 = "To send quarterly reports, your client must authorise you as their agent."
-  }
-
   object Confirmation {
     val title = "Sign up complete"
     val heading: String = title

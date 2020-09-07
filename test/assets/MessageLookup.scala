@@ -538,12 +538,6 @@ object MessageLookup {
     val para1 = "This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service in the future."
   }
 
-  object AgentNotEligibleForIncomeTax {
-    val title = "You cannot use this service yet"
-    val heading: String = "You cannot use this service yet"
-    val para1 = "This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service for your clients in the future."
-  }
-
   object WhatYearToSignUp {
     val title = "What tax year do you want to sign up for?"
     val heading: String = title

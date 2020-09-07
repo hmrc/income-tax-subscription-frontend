@@ -17,7 +17,6 @@
 package views.agent
 
 import agent.assets.MessageLookup.{Base => commonMessages, ClientDetailsError => messages}
-import play.api.i18n.Messages.Implicits._
 import views.ViewSpecTrait
 
 class ClientDetailsErrorViewSpec extends ViewSpecTrait {

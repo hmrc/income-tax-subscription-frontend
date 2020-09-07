@@ -19,7 +19,7 @@ package views.agent.business
 import agent.assets.MessageLookup.{PropertyAccountingMethod => messages}
 import forms.agent.AccountingMethodPropertyForm
 import forms.submapping.AccountingMethodMapping
-import play.api.i18n.Messages.Implicits._
+
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait

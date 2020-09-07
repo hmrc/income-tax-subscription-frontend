@@ -17,7 +17,7 @@
 package views.individual.usermatching
 
 import assets.MessageLookup.{AffinityGroup => messages}
-import play.api.i18n.Messages.Implicits._
+
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import views.ViewSpecTrait

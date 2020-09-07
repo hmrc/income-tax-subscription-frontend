@@ -17,7 +17,6 @@
 package views.individual.usermatching
 
 import assets.MessageLookup.{Base => common, NoSA => messages}
-import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

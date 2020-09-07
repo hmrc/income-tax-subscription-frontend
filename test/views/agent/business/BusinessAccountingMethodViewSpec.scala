@@ -19,7 +19,7 @@ package views.agent.business
 import agent.assets.MessageLookup.{AccountingMethod => messages}
 import forms.agent.AccountingMethodForm
 import forms.submapping.AccountingMethodMapping
-import play.api.i18n.Messages.Implicits._
+
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

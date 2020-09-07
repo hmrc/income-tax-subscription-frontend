@@ -18,9 +18,7 @@ package views.individual.usermatching
 
 import assets.MessageLookup.{Base => common, UserDetails => messages}
 import forms.usermatching.UserDetailsForm
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
