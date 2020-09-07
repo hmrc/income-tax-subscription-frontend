@@ -87,7 +87,7 @@ class BusinessAccountingPeriodDateController @Inject()(val authService: AuthServ
                 }
               }
             } else {
-              Redirect(controllers.agent.eligibility.routes.NotEligibleForIncomeTaxController.show())
+              Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
             }
           }
       )

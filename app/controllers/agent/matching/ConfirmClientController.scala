@@ -111,7 +111,7 @@ class ConfirmClientController @Inject()(val authService: AuthService, agentQuali
                   .removingFromSession(FailedClientMatching)
                   .clearUserDetails
               case Right(Ineligible) =>
-                Redirect(controllers.agent.eligibility.routes.NotEligibleForIncomeTaxController.show())
+                Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
                   .removingFromSession(FailedClientMatching)
                   .clearUserDetails
               case Left(error) =>

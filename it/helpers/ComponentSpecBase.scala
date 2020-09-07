@@ -162,8 +162,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def notEligibleForIncomeTax(): WSResponse = get("/cannot-use-service-yet")
 
-    def agentNotEligibleForIncomeTax(): WSResponse = get("/cannot-use-service-yet")
-
     def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
 
     def submitCannotReportYet(editMode: Boolean): WSResponse =

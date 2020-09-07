@@ -43,7 +43,6 @@ object IntegrationTestConstants {
   val matchTaxYearURI = s"$baseURI/business/match-to-tax-year"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
-  val ineligibleURI = s"$baseURI/cannot-use-service-yet"
   val ggSignOutURI = s"/gg/sign-out"
   val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
 

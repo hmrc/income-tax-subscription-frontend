@@ -84,7 +84,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
       }
     }
 
