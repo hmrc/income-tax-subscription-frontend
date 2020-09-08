@@ -17,13 +17,11 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourcesResponseHttpReads
-import models.individual.subscription.{BadlyFormattedCreateIncomeSourcesResponse, IncomeSourceId, CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess}
+import models.individual.subscription.{CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
-import utilities.individual.TestConstants._
 
 class CreateIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"
@@ -32,19 +30,11 @@ class CreateIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with Eithe
   "CreateIncomeSourcesResponseHttpReads" when {
     "read" should {
       "parse a correctly formatted OK response as a CreateIncomeSourcesSuccess" in {
-        val httpResponse = HttpResponse(OK, Json.parse(s"""[{"incomeSourceId":"$testMTDID"}, {"incomeSourceId":"$testMTDID2"}]"""))
+        val httpResponse = HttpResponse(NO_CONTENT)
 
         val res = PostCreateIncomeSourcesResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe CreateIncomeSourcesSuccess(List(IncomeSourceId(testMTDID), IncomeSourceId(testMTDID2)))
-      }
-
-      "parse an incorrectly formatted OK response as a BadlyFormattedCreateIncomeSourcesResponse" in {
-        val httpResponse = HttpResponse(OK, Json.obj())
-
-        val res = PostCreateIncomeSourcesResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
-
-        res.left.value mustBe BadlyFormattedCreateIncomeSourcesResponse
+        res.right.value mustBe CreateIncomeSourcesSuccess()
       }
 
       "parse any other http status as a CreateIncomeSourcesFailureResponse" in {
