@@ -21,7 +21,7 @@ import forms.individual.business.AccountingMethodPropertyForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import play.api.i18n.Messages.Implicits._
+
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

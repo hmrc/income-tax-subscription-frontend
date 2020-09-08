@@ -19,7 +19,6 @@ package views.agent
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Base => common, FrontPage => messages}
 import org.jsoup.Jsoup
-import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
 

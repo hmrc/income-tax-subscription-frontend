@@ -17,7 +17,7 @@
 package views.individual.usermatching
 
 import assets.MessageLookup.{Base => commonMessages, UserDetailsLockout => messages}
-import play.api.i18n.Messages.Implicits._
+
 import views.ViewSpecTrait
 
 class UserDetailsLockoutViewSpec extends ViewSpecTrait {

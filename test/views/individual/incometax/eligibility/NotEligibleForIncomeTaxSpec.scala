@@ -17,7 +17,7 @@
 package views.individual.incometax.eligibility
 
 import assets.MessageLookup.{Base => common, NotEligibleForIncomeTax => messages}
-import play.api.i18n.Messages.Implicits._
+
 import views.ViewSpecTrait
 
 class NotEligibleForIncomeTaxSpec extends ViewSpecTrait {

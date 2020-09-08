@@ -423,6 +423,7 @@ agent.base.service_name                                         = Sign up your c
 agent.base.back                                                 = Back
 agent.base.continue                                             = Continue
 agent.base.update                                               = Update
+agent.base.sign_up_another_client                               = Sign up another client
 agent.base.sign-out                                             = Sign out
 agent.base.sign-up                                              = Sign up
 agent.base.start-now                                            = Start now
@@ -491,7 +492,6 @@ agent.cannot_take_part.other.point3                             = property busin
 agent.cannot_take_part.other.point4                             = accounting period does not align with the standard tax year
 agent.cannot_take_part.alternative                              = Your client will need to send a {0} instead. You may be able to ‘Use software to report your client’s Income Tax’ service for your client in the future.
 agent.cannot_take_part.alternative.link                         = self assessment tax return
-agent.cannot_take_part.sign_up_another                          = Sign up another client
 
 # Agent accounting period check page
 agent.accounting_period_check.title                             = Are all of your client’s business accounting periods from 6 April to 5 April?
@@ -603,7 +603,8 @@ agent.client-already-subscribed.para1                           = This client’
 ## No client relationship page ##
 agent.no-client-relationship.title                              = You’re not authorised for this client
 agent.no-client-relationship.heading                            = You’re not authorised for this client
-agent.no-client-relationship.para1                              = To send quarterly reports, your client must authorise you as their agent.
+agent.no-client-relationship.para1                              = To authorise you as their agent, your client needs to {0} using their own Government Gateway details. Once they have done this, you can come back to sign up your client.
+agent.no-client-relationship.link                               = sign into this service (opens in new tab)
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = You can’t use software to report your client’s property income yet
@@ -649,7 +650,6 @@ agent.sign-up-complete.whatNext.number3                         = Add all income
 agent.sign-up-complete.whatNext.number4                         = Continue to record your client’s income and expenses using software and send a quarterly report to HMRC.
 agent.sign-up-complete.whatNext.number5                         = Send your client’s final report by 31 January after the end of the tax year you’re signing them up for.
 agent.sign-up-complete.whatNext.para2                           = After you’ve sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report.
-agent.sign-up-complete.add_another                              = Sign up another client
 
 ## Errors ##
 agent.error.back_to_preferences.empty                           = You must select an option to continue
@@ -774,4 +774,3 @@ agent.covid_cannot_sign_up.heading                              = Your client ca
 agent.covid_cannot_sign_up.line1                                = You will not be able to take part in this pilot on your client’s behalf if they have ever claimed a coronavirus (COVID-19) grant, or intended to do so in future.
 agent.covid_cannot_sign_up.line2                                = You will need to send a {0} instead and you may be able to sign your client up in future.
 agent.covid_cannot_sign_up.line2.link                           = Self Assessment tax return
-agent.covid_cannot_sign_up.button                               = Sign up another client

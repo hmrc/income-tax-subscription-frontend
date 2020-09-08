@@ -19,7 +19,7 @@ package views.individual.incometax.business
 import assets.MessageLookup.{AccountingMethod => messages}
 import forms.individual.business.AccountingMethodForm
 import forms.submapping.AccountingMethodMapping
-import play.api.i18n.Messages.Implicits._
+
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

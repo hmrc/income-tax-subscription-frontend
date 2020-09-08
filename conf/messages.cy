@@ -432,6 +432,7 @@ affinity-group-error.agent.line1                                = I gofrestru ar
 agent.base.service_name                                         = Cofrestru’ch cleient ar gyfer hysbysu chwarterol
 agent.base.back                                                 = Yn ôl
 agent.base.continue                                             = Yn eich blaen
+agent.base.sign_up_another_client                               = Cofrestru cleient arall
 agent.base.update                                               = Diweddaru
 agent.base.sign-out                                             = Allgofnodi
 agent.base.sign-up                                              = Cofrestru
@@ -501,7 +502,6 @@ agent.cannot_take_part.other.point3                             = dechreuodd ei 
 agent.cannot_take_part.other.point4                             = nid yw ei gyfnod cyfrifyddu yn cyd-fynd â’r flwyddyn dreth safonol
 agent.cannot_take_part.alternative                              = Bydd yn rhaid i’ch cleient anfon {0} yn lle hynny. Mae’n bosibl y gallwch ddefnyddio’r gwasanaeth ‘Defnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient’ ar gyfer eich cleient yn y dyfodol.
 agent.cannot_take_part.alternative.link                         = Ffurflen Dreth Hunanasesiad
-agent.cannot_take_part.sign_up_another                          = Cofrestru cleient arall
 
 # Agent accounting period check page
 agent.accounting_period_check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient rhwng 6 Ebrill a 5 Ebrill?
@@ -612,7 +612,8 @@ agent.client-already-subscribed.para1                           = Mae manylion y
 ## No client relationship page ##
 agent.no-client-relationship.title                              = Nid ydych wedi’ch awdurdodi ar gyfer y cleient hwn
 agent.no-client-relationship.heading                            = Nid ydych wedi’ch awdurdodi ar gyfer y cleient hwn
-agent.no-client-relationship.para1                              = I anfon adroddiadau chwarterol, rhaid i’ch cleient eich awdurdodi chi fel ei asiant.
+agent.no-client-relationship.para1                              = Er mwyn eich awdurdodi fel ei asiant, mae angen i’ch cleient {0} gan ddefnyddio ei fanylion Porth Llywodraeth ei hun. Ar ôl iddo wneud hyn, gallwch ddod yn ôl i gofrestru’ch cleient.
+agent.no-client-relationship.link                               = fewngofnodi i’r gwasanaeth hwn (yn agor tab newydd)
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd
@@ -658,7 +659,6 @@ agent.sign-up-complete.whatNext.number3                         = Ychwanegwch ho
 agent.sign-up-complete.whatNext.number4                         = Parhewch i gofnodi incwm a threuliau’ch cleient drwy ddefnyddio meddalwedd, ac anfonwch adroddiad chwarterol i CThEM.
 agent.sign-up-complete.whatNext.number5                         = Anfonwch adroddiad terfynol eich cleient erbyn 31 Ionawr ar ôl diwedd y flwyddyn dreth yr ydych yn ei gofrestru ar ei chyfer.
 agent.sign-up-complete.whatNext.para2                           = Wedi i chi anfon adroddiad, bydd eich cleient yn cael amcangyfrif o Dreth Incwm. Bydd yn gallu gweld yr hyn sy’n ddyledus ganddo ar gyfer y flwyddyn dreth wedi i chi anfon ei adroddiad terfynol.
-agent.sign-up-complete.add_another                              = Cofrestru cleient arall
 
 ## Errors ##
 agent.error.back_to_preferences.empty                           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -783,4 +783,3 @@ agent.covid_cannot_sign_up.heading                              = Ni all eich cl
 agent.covid_cannot_sign_up.line1                                = Ni fyddwch yn gallu cymryd rhan yn y cynllun peilot hwn ar ran eich cleient os yw erioed wedi hawlio grant coronafeirws (COVID-19) neu’n bwriadu gwneud hynny yn y dyfodol.
 agent.covid_cannot_sign_up.line2                                = Bydd angen i chi anfon {0} yn lle hynny, ac efallai y bydd modd i chi gofrestru’ch cleient yn y dyfodol.
 agent.covid_cannot_sign_up.line2.link                           = Ffurflen Dreth Hunanasesiad
-agent.covid_cannot_sign_up.button                               = Cofrestru cleient arall

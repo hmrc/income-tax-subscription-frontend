@@ -23,12 +23,7 @@ import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid
-import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Request
-import play.api.test.FakeRequest
 import utilities.UnitTestTrait
-
-import scala.collection.JavaConversions._
 
 class SummaryErrorHelperSpec extends UnitTestTrait {
 

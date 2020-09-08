@@ -18,7 +18,7 @@ package views.agent.business
 
 import agent.assets.MessageLookup.{BusinessName => messages}
 import forms.agent.BusinessNameForm
-import play.api.i18n.Messages.Implicits._
+
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}

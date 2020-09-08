@@ -20,7 +20,7 @@ import assets.MessageLookup
 import controllers.SignOutController
 import models.DateModel
 import org.jsoup.Jsoup
-import play.api.i18n.Messages.Implicits._
+
 import views.ViewSpecTrait
 
 class ClaimSubscriptionViewSpec extends ViewSpecTrait {

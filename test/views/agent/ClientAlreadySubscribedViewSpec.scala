@@ -17,7 +17,6 @@
 package views.agent
 
 import agent.assets.MessageLookup.{Base => common, ClientAlreadySubscribed => messages}
-import play.api.i18n.Messages.Implicits._
 import views.ViewSpecTrait
 
 class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {

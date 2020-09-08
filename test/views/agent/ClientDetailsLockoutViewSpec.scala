@@ -17,7 +17,6 @@
 package views.agent
 
 import agent.assets.MessageLookup.{Base => commonMessages, ClientDetailsLockout => messages}
-import play.api.i18n.Messages.Implicits._
 import views.ViewSpecTrait
 
 class ClientDetailsLockoutViewSpec extends ViewSpecTrait {

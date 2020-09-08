@@ -20,7 +20,6 @@ import agent.assets.MessageLookup
 import utilities.TestModels.testAgentSummaryData
 import models.DateModel
 import org.jsoup.Jsoup
-import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import utilities.UnitTestTrait
 import views.ViewSpecTrait

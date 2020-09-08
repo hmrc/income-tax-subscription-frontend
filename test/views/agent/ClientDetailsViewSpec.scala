@@ -18,7 +18,6 @@ package views.agent
 
 import agent.assets.MessageLookup.{Base => common, ClientDetails => messages}
 import forms.agent.ClientDetailsForm
-import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
