@@ -17,6 +17,10 @@ POST        /eligibility/accounting-period-check    controllers.agent.eligibilit
 GET         /eligibility/property-start-date        controllers.agent.eligibility.PropertyTradingStartAfterController.show
 POST        /eligibility/property-start-date        controllers.agent.eligibility.PropertyTradingStartAfterController.submit
 
+# Sole Trader Page
+GET         /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.show
+POST        /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.submit
+
 # Income Source Routes
 GET         /income                                 controllers.agent.IncomeSourceController.show(editMode: Boolean ?= false)
 POST        /income                                 controllers.agent.IncomeSourceController.submit(editMode: Boolean ?= false)

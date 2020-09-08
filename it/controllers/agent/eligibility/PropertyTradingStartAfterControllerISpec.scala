@@ -76,7 +76,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
     "have a view with a back link" in new GetSetup {
       val backLink: Element = doc.getBackLink
-      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show().url
+      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.SoleTraderController.show().url
       backLink.text shouldBe PropertyStartAfterMessage.back
     }
 

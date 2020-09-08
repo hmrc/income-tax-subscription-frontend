@@ -557,12 +557,8 @@ agent.accounting_period.exampleEndDate.current                  = For example, 3
 agent.accounting_period.exampleStartDate.next                   = For example, 1 4 {0}
 agent.accounting_period.exampleEndDate.next                     = For example, 31 3 {0}
 
-# Sole trader page
-agent.business.sole_trader.title                                = Are you a sole trader?
-agent.business.sole_trader.heading                              = Are you a sole trader?
-agent.business.sole_trader.line_1                               = As a sole trader, you run your own business as an individual. You can keep all your business’s profits after you’ve paid tax on them. ‘Sole trader’ means you’re responsible for the business, not that you have to work alone.
-agent.business.sole_trader.yes                                  = Yes - I’m a sole trader
-agent.business.sole_trader.no                                   = No - I am a different type of business
+# Agent Sole trader page
+agent.eligibility.sole_trader.heading                              = Is your client a sole trader that began trading on or after {0}?
 
 ## Business Income page
 agent.business.accounting_method.title                          = What accounting method does your client use for their self-employed business?
@@ -661,8 +657,7 @@ agent.error.dob_date.invalid                                    = Enter a real d
 agent.error.income_source.empty                                 = Select an income type
 agent.error.income_source.invalid                               = Select an income type
 
-agent.error.business.sole_trader.empty                          = You must select an option to continue
-agent.error.business.sole_trader.invalid                        = You must select an option to continue
+agent.error.eligibility.sole_trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?
 
 agent.error.match_tax_year.empty                                = Select yes if your client’s accounting period matches the tax year
 agent.error.match_tax_year.invalid                              = Select yes if your client’s accounting period matches the tax year
