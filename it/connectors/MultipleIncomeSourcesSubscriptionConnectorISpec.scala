@@ -56,7 +56,7 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
         businessAddress = Some(BusinessAddressModel("12345", Address(Seq("line1", "line2", "line3", "line4"), "TF3 4NT")))
       )),
       accountingMethod = AccountingMethodModel(Cash),
-      incomeSource = IncomeSourceModel(true, true, true),
+      incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
       propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("6", "7", "2018"))),
       propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
       overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("6", "8", "2018"))),
@@ -65,19 +65,11 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
     "return CreateIncomeSourcesSuccess when valid response is returned" in {
 
-      stubPostSubscription(testNino, businessDetailsModel)(OK)
+      stubPostSubscription(testNino, businessDetailsModel)(NO_CONTENT)
 
       val res = TestMisSubscriptionConnector.createIncomeSources(testNino, businessDetailsModel)
 
-      await(res) shouldBe Right(CreateIncomeSourcesSuccess(List(IncomeSourceId(testMtdId), IncomeSourceId(testMtdId2))))
-    }
-
-    "return BadlyFormattedCreateIncomeSourcesResponse when the response is malformed" in {
-      stubPostSubscription(testNino, businessDetailsModel)(OK, Json.obj("not" -> "correct"))
-
-      val res = TestMisSubscriptionConnector.createIncomeSources(testNino, businessDetailsModel)
-
-      await(res) shouldBe Left(BadlyFormattedCreateIncomeSourcesResponse)
+      await(res) shouldBe Right(CreateIncomeSourcesSuccess())
     }
 
     "return CreateIncomeSourcesFailureResponse if the request fails" in {

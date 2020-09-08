@@ -17,8 +17,7 @@
 package connectors.individual.subscription.httpparsers
 
 import models.individual.subscription._
-import play.api.http.Status.OK
-import play.api.libs.json.JsSuccess
+import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object CreateIncomeSourcesResponseHttpParser {
@@ -27,11 +26,7 @@ object CreateIncomeSourcesResponseHttpParser {
   implicit object PostCreateIncomeSourcesResponseHttpReads extends HttpReads[PostCreateIncomeSourceResponse] {
     override def read(method: String, url: String, response: HttpResponse): PostCreateIncomeSourceResponse = {
       response.status match {
-        case OK =>
-          response.json.validate[List[IncomeSourceId]] match {
-            case JsSuccess(successResponse, _) => Right(CreateIncomeSourcesSuccess(successResponse))
-            case _ => Left(BadlyFormattedCreateIncomeSourcesResponse)
-          }
+        case NO_CONTENT => Right(CreateIncomeSourcesSuccess())
         case status => Left(CreateIncomeSourcesFailureResponse(status))
       }
     }

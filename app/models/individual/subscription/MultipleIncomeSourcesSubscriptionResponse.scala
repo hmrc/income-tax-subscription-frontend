@@ -19,17 +19,7 @@ package models.individual.subscription
 import models.ConnectorError
 import play.api.libs.json.{Json, OFormat}
 
-case class IncomeSourceId(incomeSourceId: String)
-
-object IncomeSourceId {
-  implicit val format: OFormat[IncomeSourceId] = Json.format[IncomeSourceId]
-}
-
-case class CreateIncomeSourcesSuccess(incomeSourceIds: List[IncomeSourceId])
-
-object CreateIncomeSourcesSuccess {
-  implicit val format: OFormat[CreateIncomeSourcesSuccess] = Json.format[CreateIncomeSourcesSuccess]
-}
+case class CreateIncomeSourcesSuccess()
 
 sealed trait CreateIncomeSourcesFailure extends ConnectorError
 
