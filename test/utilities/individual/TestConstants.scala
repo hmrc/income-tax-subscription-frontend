@@ -20,14 +20,17 @@ import java.net.URLEncoder
 import java.time.OffsetDateTime
 import java.util.UUID
 
+import models.common.{AccountingMethodModel, AccountingYearModel}
+import models.individual.business.{AccountingPeriodModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
-import models.{Cash, DateModel}
+import models.{Cash, Current, DateModel, IndividualSummary}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.UserId
 import utilities.AccountingPeriodUtil
-import utilities.TestModels.{adjustedTestAccountingPeriod, testAccountingPeriod, testBusinessName}
+import utilities.TestModels.{adjustedTestAccountingPeriod, testBusinessName}
 import utilities.individual.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
 import utilities.individual.Constants.mtdItsaEnrolmentName
 
@@ -121,5 +124,22 @@ object TestConstants {
   val testEnrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)
 
   val testEnrolmentRequest = EmacEnrolmentRequest(testCredId, testNino)
+
+  val testSignUpIncomeSourcesSuccess = Right(SignUpIncomeSourcesSuccess(testMTDID))
+
+  val testSignUpIncomeSourcesFailure = Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+
+  val testCreateIncomeSourcesSuccess = Right(CreateIncomeSourcesSuccess())
+
+  val testCreateIncomeSourcesFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+
+  val testIndividualSummary: IndividualSummary = IndividualSummary(
+    incomeSourceIndiv = Some(IncomeSourceModel(true, false, false)),
+    accountingPeriodDate = Some(AccountingPeriodModel(startDate, endDate)),
+    selfEmployments = Some(Seq(SelfEmploymentData("1", Some(BusinessStartDate(startDate)), Some(testBusinessName),
+      Some(BusinessTradeNameModel("plumbing"))))),
+    accountingMethod = Some(AccountingMethodModel(Cash)),
+    selectedTaxYear = Some(AccountingYearModel(Current))
+  )
 
 }

@@ -16,12 +16,13 @@
 
 package services.mocks
 
-import config.MockConfig
+import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import connectors.individual.subscription.mocks.MockSubscriptionConnector
-import models.SummaryModel
+import connectors.individual.subscription.mocks.{MockSubscriptionConnector, MockMisSubscriptionConnector}
 import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
+import models.{IndividualSummary, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -51,6 +52,36 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
     )(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
+  private def mockSignUpIncomeSources(nino: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
+    when(mockSubscriptionService.signUpIncomeSources(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
+
+  private def mockCreateIncomeSources(mtdbsa: String, individualSummary: IndividualSummary)
+                                     (result: Future[PostCreateIncomeSourceResponse]): Unit =
+    when(mockSubscriptionService.createIncomeSources(
+      ArgumentMatchers.eq(mtdbsa),
+      ArgumentMatchers.eq(individualSummary)
+    )(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
+
+  def mockSignUpIncomeSourcesSuccess(nino: String): Unit =
+    mockSignUpIncomeSources(nino)(Future.successful(testSignUpIncomeSourcesSuccess))
+
+  def mockSignUpIncomeSourcesFailure(nino: String): Unit =
+    mockSignUpIncomeSources(nino)(Future.successful(testSignUpIncomeSourcesFailure))
+
+  def mockSignUpIncomeSourcesException(nino: String): Unit =
+    mockSignUpIncomeSources(nino)(Future.failed(testException))
+
+  def mockCreateIncomeSourcesSuccess(mtdbsa: String, individualSummary: IndividualSummary): Unit =
+    mockCreateIncomeSources(mtdbsa, individualSummary)(Future.successful(testCreateIncomeSourcesSuccess))
+
+  def mockCreateIncomeSourcesFailure(mtdbsa: String, individualSummary: IndividualSummary): Unit =
+    mockCreateIncomeSources(mtdbsa, individualSummary)(Future.successful(testCreateIncomeSourcesFailure))
+
+  def mockCreateIncomeSourcesException(mtdbsa: String, individualSummary: IndividualSummary): Unit =
+    mockCreateIncomeSources(mtdbsa, individualSummary)(Future.failed(testException))
+
   def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, arn: Option[String]): Unit =
     mockCreateSubscription(nino, summaryModel, arn)(Future.successful(testSubscriptionSuccess))
 
@@ -77,11 +108,11 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
     mockGetSubscription(nino)(Future.failed(testException))
 }
 
-trait TestSubscriptionService extends MockSubscriptionConnector {
+trait TestSubscriptionService extends MockSubscriptionConnector with MockMisSubscriptionConnector {
 
   object TestSubscriptionService extends SubscriptionService(
-    appConfig = MockConfig,
-    subscriptionConnector = mockSubscriptionConnector
+    subscriptionConnector = mockSubscriptionConnector,
+    multipleIncomeSourcesSubscriptionConnector = mockMisSubscriptionConnector
   )
 
 }

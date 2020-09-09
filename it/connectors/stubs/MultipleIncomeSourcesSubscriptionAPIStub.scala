@@ -9,8 +9,8 @@ import play.api.libs.json.{JsValue, Json}
 
 object MultipleIncomeSourcesSubscriptionAPIStub extends WireMockMethods {
 
-  private def signUpUri(nino: String): String = s"/income-tax-subscription/subscription/mis/sign-up/$nino"
-  private def createIncomeSourcesUri(nino: String): String = s"/income-tax-subscription/subscription/mis/create/$nino"
+  private def signUpUri(nino: String): String = s"/income-tax-subscription/mis/sign-up/$nino"
+  private def createIncomeSourcesUri(mtdbsa: String): String = s"/income-tax-subscription/mis/create/$mtdbsa"
 
   def stubPostSignUp(nino: String)(responseCode: Int, response: JsValue = Json.obj("mtdbsa" -> testMtdId)): StubMapping = {
     when (
@@ -22,12 +22,12 @@ object MultipleIncomeSourcesSubscriptionAPIStub extends WireMockMethods {
     )
   }
 
-  def stubPostSubscription(nino: String, request: BusinessSubscriptionDetailsModel)
+  def stubPostSubscription(mtdbsa: String, request: BusinessSubscriptionDetailsModel)
                           (responseCode: Int,
                            response: JsValue = Json.parse("{}")): StubMapping = {
     when (
       method = POST,
-      uri = createIncomeSourcesUri(nino),
+      uri = createIncomeSourcesUri(mtdbsa),
       body = Json.toJson(request)
     ) thenReturn (
       status = responseCode,

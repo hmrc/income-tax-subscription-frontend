@@ -17,7 +17,7 @@
 package services.individual.mocks
 
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import models.{ConnectorError, SummaryModel}
+import models.{ConnectorError, IndividualSummary, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
@@ -45,21 +45,22 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
   val mockSubscriptionOrchestrationService = mock[SubscriptionOrchestrationService]
 
   private def mockCreateSubscription(nino: String,
-                                     summaryModel: SummaryModel
+                                     summaryModel: SummaryModel,
+                                     isReleaseFourEnabled: Boolean = false
                                     )(result: Future[SubscriptionResponse]): Unit =
     when(mockSubscriptionOrchestrationService
-      .createSubscription(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel)
+      .createSubscription(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel), ArgumentMatchers.eq(isReleaseFourEnabled)
       )(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel): Unit =
-    mockCreateSubscription(nino, summaryModel)(Future.successful(testSubscriptionSuccess))
+  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
+    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.successful(testSubscriptionSuccess))
 
-  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel): Unit =
-    mockCreateSubscription(nino, summaryModel)(Future.successful(testSubscriptionFailure))
+  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
+    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.successful(testSubscriptionFailure))
 
-  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel): Unit =
-    mockCreateSubscription(nino, summaryModel)(Future.failed(testException))
+  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
+    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.failed(testException))
 
   private def mockEnrolAndRefresh(mtditId: String, nino: String)(result: Future[Either[ConnectorError, String]]): Unit =
     when(

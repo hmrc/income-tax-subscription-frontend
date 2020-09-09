@@ -16,17 +16,18 @@
 
 package services
 
-import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import connectors.individual.subscription.SubscriptionConnector
+import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
+import connectors.individual.subscription.{MultipleIncomeSourcesSubscriptionConnector, SubscriptionConnector}
 import javax.inject.{Inject, Singleton}
 import models.common.AccountingYearModel
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.business.{AccountingPeriodModel, BusinessSubscriptionDetailsModel, MatchTaxYearModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
-import models.{Next, SummaryModel, Yes}
+import models.{IndividualSummary, Next, SummaryModel, Yes}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
@@ -34,7 +35,7 @@ import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 import scala.concurrent.Future
 
 @Singleton
-class SubscriptionService @Inject()(appConfig: AppConfig,
+class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: MultipleIncomeSourcesSubscriptionConnector,
                                     subscriptionConnector: SubscriptionConnector
                                    ) extends FeatureSwitching {
 
@@ -101,6 +102,7 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
 
   }
 
+
   def submitSubscription(nino: String,
                          summaryData: SummaryModel,
                          arn: Option[String]
@@ -116,4 +118,18 @@ class SubscriptionService @Inject()(appConfig: AppConfig,
     subscriptionConnector.getSubscription(nino)
   }
 
+  def signUpIncomeSources(nino: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] = {
+    Logger.debug(s"SignUp IncomeSources request for nino:$nino")
+    multipleIncomeSourcesSubscriptionConnector.signUp(nino)
+  }
+
+  def createIncomeSources(mtdbsa: String, individualSummary: IndividualSummary)
+                         (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
+    Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
+    val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel =
+      individualSummary.copy(
+        accountingPeriodDate = getAccountingPeriod(individualSummary, false)).toBusinessSubscriptionDetailsModel
+
+    multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
+  }
 }

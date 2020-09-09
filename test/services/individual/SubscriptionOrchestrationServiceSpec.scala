@@ -17,19 +17,19 @@
 package services.individual
 
 import models.ConnectorError
-import utilities.individual.TestConstants._
-import utilities.TestModels._
 import models.individual.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures
 import services.individual.mocks.TestSubscriptionOrchestrationService
+import utilities.TestModels._
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
 class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutures
   with TestSubscriptionOrchestrationService {
 
-  "createSubscription" should {
+  "createSubscription when ReleaseFour is disable" should {
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
       TestSubscriptionOrchestrationService.createSubscription(testNino, testSummaryData)
 
@@ -63,6 +63,64 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
       "add known facts returns an exception" in {
         mockCreateSubscriptionSuccess(testNino, testSummaryData, None)
+        mockAddKnownFactsException(testMTDID, testNino)
+
+        whenReady(res.failed)(_ mustBe testException)
+      }
+    }
+  }
+
+  "createSubscription when ReleaseFour is enabled" should {
+    def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
+      TestSubscriptionOrchestrationService.createSubscription(testNino, testIndividualSummary, true)
+
+    "return a success when all incometax.business.services succeed" in {
+      mockSignUpIncomeSourcesSuccess(testNino)
+      mockCreateIncomeSourcesSuccess(testMTDID, testIndividualSummary)
+      mockAddKnownFactsSuccess(testMTDID, testNino)
+      mockEnrolSuccess(testMTDID, testNino)
+
+      whenReady(res)(_ mustBe testSubscriptionSuccess)
+    }
+
+    "return a failure" when {
+      "create income sources returns an error when sign up income sources request fail" in {
+        mockSignUpIncomeSourcesFailure(testNino)
+
+        whenReady(res)(_ mustBe testSignUpIncomeSourcesFailure)
+      }
+
+      "create income sources returns an error when create income sources request fail" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesFailure(testMTDID, testIndividualSummary)
+
+        whenReady(res)(_ mustBe testCreateIncomeSourcesFailure)
+      }
+
+      "create income sources returns an exception when sign up income sources throws an exception" in {
+        mockSignUpIncomeSourcesException(testNino)
+
+        whenReady(res.failed)(_ mustBe testException)
+      }
+
+      "create income sources returns an exception when create income sources throws an exception" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesException(testMTDID, testIndividualSummary)
+
+        whenReady(res.failed)(_ mustBe testException)
+      }
+
+      "add known facts returns an error" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesSuccess(testMTDID, testIndividualSummary)
+        mockAddKnownFactsFailure(testMTDID, testNino)
+
+        whenReady(res)(_ mustBe testKnownFactsFailure)
+      }
+
+      "add known facts returns an exception" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesSuccess(testMTDID, testIndividualSummary)
         mockAddKnownFactsException(testMTDID, testNino)
 
         whenReady(res.failed)(_ mustBe testException)

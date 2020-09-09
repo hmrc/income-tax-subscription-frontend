@@ -22,6 +22,7 @@ import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
+import models.IndividualSummary
 import models.common.AccountingMethodModel
 import models.individual.business.SelfEmploymentData
 import models.individual.incomesource.IncomeSourceModel
@@ -64,22 +65,15 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        for {
-          businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
-          businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
-        } yield {
-          val summaryModel = if (isEnabled(ReleaseFour)) {
-            cache.getSummary(businesses, businessAccountingMethod)
-          } else {
-            cache.getSummary()
-          }
-          Ok(views.html.individual.incometax.subscription.check_your_answers(
-            summaryModel,
-            controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
-            backUrl = backUrl(cache.getIncomeSourceModel.get),
-            implicitDateFormatter,
-            isEnabled(ReleaseFour)
-          ))
+        getSummaryModel(cache).map {
+          summaryModel =>
+            Ok(views.html.individual.incometax.subscription.check_your_answers(
+              summaryModel,
+              controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
+              backUrl = backUrl(cache.getIncomeSourceModel.get),
+              implicitDateFormatter,
+              isEnabled(ReleaseFour)
+            ))
         }
   }
 
@@ -88,12 +82,27 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
       cache =>
         val nino = user.nino.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
-        subscriptionService.createSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
-          case Right(SubscriptionSuccess(id)) =>
-            subscriptionDetailsService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
-          case Left(failure) =>
-            error("Successful response not received from submission: \n" + failure.toString)
+        getSummaryModel(cache).flatMap { summaryModel =>
+          subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour))(headerCarrier).flatMap {
+            case Right(SubscriptionSuccess(id)) =>
+              subscriptionDetailsService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
+            case Left(failure) =>
+              error("Successful response not received from submission: \n" + failure.toString)
+          }
         }
+  }
+
+  private def getSummaryModel(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[IndividualSummary] = {
+    for {
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
+      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+    } yield {
+      if (isEnabled(ReleaseFour)) {
+        cacheMap.getSummary(businesses, businessAccountingMethod)
+      } else {
+        cacheMap.getSummary()
+      }
+    }
   }
 
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result]): Action[AnyContent] =

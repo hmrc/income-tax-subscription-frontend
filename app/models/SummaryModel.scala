@@ -21,7 +21,7 @@ import models.individual.business._
 import models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
-
+import utilities.AccountingPeriodUtil._
 
 sealed trait SummaryModel {
   def incomeSourceIndiv: Option[IncomeSourceModel]
@@ -56,7 +56,40 @@ case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None
                              accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                              selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                              overseasPropertyCommencementDateModel: Option[OverseasPropertyCommencementDateModel] = None,
-                             overseasAccountingMethodPropertyModel: Option[OverseasAccountingMethodPropertyModel] = None) extends SummaryModel
+                             overseasAccountingMethodPropertyModel: Option[OverseasAccountingMethodPropertyModel] = None) extends SummaryModel {
+
+  lazy val toBusinessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = {
+    val useSelfEmployments = incomeSourceIndiv.exists(_.selfEmployment)
+    val useUkProperty = incomeSourceIndiv.exists(_.ukProperty)
+    val useForeignProperty = incomeSourceIndiv.exists(_.foreignProperty)
+
+    val hasValidProperty: Boolean = if (useUkProperty) propertyCommencementDate.isDefined && accountingMethodProperty.isDefined else true
+
+    val hasValidForeignProperty: Boolean = if (useForeignProperty) overseasPropertyCommencementDateModel.isDefined && overseasAccountingMethodPropertyModel.isDefined else true
+
+    val hasValidSelfEmployments: Boolean = if (useSelfEmployments) selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined else true
+
+    if (!hasValidProperty) throw new Exception("Missing data items for valid property submission")
+    if (!hasValidForeignProperty) throw new Exception("Missing data items for valid foreign property submission")
+    if (!hasValidSelfEmployments) throw new Exception("Missing data items for valid self employments submission")
+
+    val accountingPeriodVal: Option[AccountingPeriodModel] =
+      if (incomeSourceIndiv.exists(sources => sources.ukProperty || sources.foreignProperty)) Some(getCurrentTaxYear)
+      else accountingPeriodDate
+
+    BusinessSubscriptionDetailsModel(
+      accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),
+      if(useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
+      if(useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
+      incomeSourceIndiv.getOrElse(throw new Exception("IncomeSource model not defined for BusinessSubscriptionDetailsModel")),
+      if(useUkProperty) propertyCommencementDate else None,
+      if(useUkProperty) accountingMethodProperty else None,
+      if(useForeignProperty) overseasPropertyCommencementDateModel else None,
+      if(useForeignProperty) overseasAccountingMethodPropertyModel else None
+    )
+  }
+
+}
 
 
 

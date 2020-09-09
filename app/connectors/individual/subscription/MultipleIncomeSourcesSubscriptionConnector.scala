@@ -31,21 +31,22 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
                                                            val http: HttpClient)
                                                           (implicit ec: ExecutionContext) {
 
-  def signUpUrl(nino: String): String = appConfig.subscriptionUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino)
-  def createIncomeSourcesUrl(nino: String): String = appConfig.subscriptionUrl + MultipleIncomeSourcesSubscriptionConnector.createIncomeSourcesUri(nino)
+  def signUpUrl(nino: String): String = appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino)
+  def createIncomeSourcesUrl(mtdbsa: String): String = appConfig.createIncomeSourcesUrl +
+    MultipleIncomeSourcesSubscriptionConnector.createIncomeSourcesUri(mtdbsa)
 
   def signUp(nino: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] =
     http.POSTEmpty[PostSignUpIncomeSourcesResponse](signUpUrl(nino))
 
-  def createIncomeSources(nino: String, request: BusinessSubscriptionDetailsModel)
+  def createIncomeSources(mtdbsa: String, request: BusinessSubscriptionDetailsModel)
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] =
-    http.POST[BusinessSubscriptionDetailsModel, PostCreateIncomeSourceResponse](createIncomeSourcesUrl(nino), request)
+    http.POST[BusinessSubscriptionDetailsModel, PostCreateIncomeSourceResponse](createIncomeSourcesUrl(mtdbsa), request)
 
 }
 
 object MultipleIncomeSourcesSubscriptionConnector {
 
-  def signUpUri(nino: String): String = "/mis/sign-up/" + nino
-  def createIncomeSourcesUri(nino: String): String = "/mis/create/" + nino
+  def signUpUri(nino: String): String = s"/$nino"
+  def createIncomeSourcesUri(mtdbsa: String): String = s"/$mtdbsa"
 
 }
