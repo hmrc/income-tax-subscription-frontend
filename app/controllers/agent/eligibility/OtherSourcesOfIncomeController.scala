@@ -46,7 +46,7 @@ class OtherSourcesOfIncomeController @Inject()(val authService: AuthService)
         formWithErrors => BadRequest(other_sources_of_income(formWithErrors, routes.OtherSourcesOfIncomeController.show(), backUrl)),
         {
           case Yes => Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
-          case No => Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+          case No => Redirect(controllers.agent.eligibility.routes.SoleTraderController.show())
         }
       )
   }

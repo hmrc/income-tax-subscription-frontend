@@ -41,7 +41,7 @@ class PropertyTradingStartAfterController @Inject()(val authService: AuthService
 
   private def startDateLimit: LocalDate = LocalDate.now.minusYears(1)
 
-  def backUrl: String = routes.PropertyTradingStartAfterController.show().url
+  def backUrl: String = routes.SoleTraderController.show().url
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>

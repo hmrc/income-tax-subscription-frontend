@@ -177,6 +177,15 @@ trait ComponentSpecBase extends UnitSpec
       )
     )
 
+    def showSoleTrader(): WSResponse = get("/eligibility/sole-trader-start-date")
+
+    def submitSoleTraderForm(request: Option[YesNo]): WSResponse = post("/eligibility/sole-trader-start-date")(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => SoleTraderForm.soleTraderForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
+
+
     def showCovidCannotSignUp(): WSResponse = get("/error/covid-cannot-sign-up")
 
     def showAccountingPeriodCheck: WSResponse = get("/eligibility/accounting-period-check")

@@ -569,11 +569,7 @@ agent.accounting_period.exampleStartDate.next                   = Er enghraifft,
 agent.accounting_period.exampleEndDate.next                     = Er enghraifft, 31 3 {0}
 
 # Sole trader page
-agent.business.sole_trader.title                                = Ydych chi’n unig fasnachwr?
-agent.business.sole_trader.heading                              = Ydych chi’n unig fasnachwr?
-agent.business.sole_trader.line_1                               = Fel unig fasnachwr, rydych yn rhedeg eich busnes eich hun fel unigolyn. Gallwch gadw holl elw’ch busnes ar ôl i chi dalu treth arno. Mae ‘unig fasnachwr’ yn golygu mai chi sy’n gyfrifol am y busnes, nid bo rhaid i chi weithio ar eich pen eich hun.
-agent.business.sole_trader.yes                                  = Iawn - rwy’n unig fasnachwr
-agent.business.sole_trader.no                                   = Na - rwy’n fath gwahanol o fusnes
+agent.eligibility.sole_trader.heading                           = A ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}?
 
 ## Business Income page
 agent.business.accounting_method.title                          = Pa ddull cyfrifyddu mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
@@ -783,3 +779,7 @@ agent.covid_cannot_sign_up.heading                              = Ni all eich cl
 agent.covid_cannot_sign_up.line1                                = Ni fyddwch yn gallu cymryd rhan yn y cynllun peilot hwn ar ran eich cleient os yw erioed wedi hawlio grant coronafeirws (COVID-19) neu’n bwriadu gwneud hynny yn y dyfodol.
 agent.covid_cannot_sign_up.line2                                = Bydd angen i chi anfon {0} yn lle hynny, ac efallai y bydd modd i chi gofrestru’ch cleient yn y dyfodol.
 agent.covid_cannot_sign_up.line2.link                           = Ffurflen Dreth Hunanasesiad
+agent.covid_cannot_sign_up.button                               = Cofrestru cleient arall
+
+# Sole Trader Eligibility
+agent.error.eligibility.sole_trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
