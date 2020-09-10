@@ -70,6 +70,9 @@ GET         /feedback                                   controllers.FeedbackCont
 POST        /feedback                                   controllers.FeedbackController.submit
 GET         /thank-you                                  controllers.FeedbackController.thankyou
 
+# Accessibility Statement
+GET         /accessibility-statement                    controllers.AccessibilityStatementController.show
+
 ################## Business Routes
 
 #What Tax Year To Sign Up Routes

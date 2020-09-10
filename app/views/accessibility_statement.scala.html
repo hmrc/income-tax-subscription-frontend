@@ -1,0 +1,169 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.templates.main_template
+@import config.AppConfig
+
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(messages("accessibility-statement.heading")) {
+
+    <h1>@messages("accessibility-statement.heading")</h1>
+
+    <p>@messages("accessibility-statement.intro.p1")</p>
+    <p>
+        @Html(messages("accessibility-statement.intro.p2",
+          <a id="govUkAccessibilityStatement" href="https://www.gov.uk/help/accessibility">{messages("accessibility-statement.intro.p2.link")}</a>
+        ))
+    </p>
+    <p>
+        @Html(messages("accessibility-statement.intro.p3",
+        <a id="signUpForMtd" href="https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax">{messages("accessibility-statement.intro.p3.link")}</a>
+        ))
+    </p>
+
+    <h2>@messages("accessibility-statement.using-this-service.h2")</h2>
+    <p>@messages("accessibility-statement.using-this-service.p1")</p>
+    <p>@messages("accessibility-statement.using-this-service.p2")</p>
+    <ul class="list list-bullet">
+        <li>@messages("accessibility-statement.using-this-service.li1")</li>
+        <li>@messages("accessibility-statement.using-this-service.li2")</li>
+        <li>@messages("accessibility-statement.using-this-service.li3")</li>
+        <li>@messages("accessibility-statement.using-this-service.li4")</li>
+        <li>@messages("accessibility-statement.using-this-service.li5")</li>
+    </ul>
+    <p>@messages("accessibility-statement.using-this-service.p3")</p>
+    <p>
+        @Html(messages("accessibility-statement.using-this-service.p4",
+        <a id="abilityNet" href="https://mcmw.abilitynet.org.uk/">{messages("accessibility-statement.using-this-service.p4.link")}</a>
+        ))
+    </p>
+
+    <h2>@messages("accessibility-statement.how-accessible.h2")</h2>
+    <p>
+        @Html(messages("accessibility-statement.how-accessible.p1",
+        <a id="wcag21" href="https://www.w3.org/TR/WCAG21/">{messages("accessibility-statement.how-accessible.p1.link")}</a>
+        ))
+    </p>
+
+    <h2>@messages("accessibility-statement.reporting-problems.h2")</h2>
+    <p>
+        @Html(messages("accessibility-statement.reporting-problems.p1",
+        <a>{messages("accessibility-statement.reporting-problems.p1.link")}</a>
+        ))
+    </p>
+
+    <h2>@messages("accessibility-statement.not-happy.h2")</h2>
+    <p>
+        @Html(messages("accessibility-statement.not-happy.p1",
+        <a id="eass" href="https://www.equalityadvisoryservice.com/">{messages("accessibility-statement.not-happy.p1.link1")}</a>,
+        <a id="ecni" href="https://www.equalityni.org/Home">{messages("accessibility-statement.not-happy.p1.link2")}</a>
+        ))
+    </p>
+
+    <h2>@messages("accessibility-statement.contact-us.h2")</h2>
+    <p>@messages("accessibility-statement.contact-us.p1")</p>
+    <p>@messages("accessibility-statement.contact-us.p2")</p>
+    <p>@Html(messages("accessibility-statement.contact-us.p3",
+        <a id="getHelpHMRC" href="https://www.gov.uk/get-help-hmrc-extra-support">{messages("accessibility-statement.contact-us.p3.link")}</a>
+        ))
+    </p>
+
+    <h2>@messages("accessibility-statement.technical-info.h2")</h2>
+    <p>@messages("accessibility-statement.technical-info.p1")</p>
+    <p>@Html(messages("accessibility-statement.technical-info.p2",
+        <a id="wcag21-technical-info" href="https://www.w3.org/TR/WCAG21/">{messages("accessibility-statement.technical-info.p2.link")}</a>
+        ))
+    </p>
+
+    <h2>@messages("accessibility-statement.non-accessible.h2")</h2>
+    <p>@messages("accessibility-statement.non-accessible.p1")</p>
+
+    <h2>@messages("accessibility-statement.non-compliance.h2")</h2>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point1")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p1")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point2")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p2")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point3")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p3")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point4")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p4")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point5")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p5")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point6")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p6")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point7")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p7")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point8")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p8")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point9")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p9")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point10")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p10")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point11")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p11")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point12")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p12")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point13")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p13")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point14")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p14")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point15")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p15")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point16")</li></ul>
+    <ul class="list">
+        <li>@messages("accessibility-statement.non-compliance.bullet-point16.li1")</li>
+        <li>@messages("accessibility-statement.non-compliance.bullet-point16.li2")</li>
+        <li>@messages("accessibility-statement.non-compliance.bullet-point16.li3")</li>
+        <li>@messages("accessibility-statement.non-compliance.bullet-point16.li4")</li>
+        <li>@messages("accessibility-statement.non-compliance.bullet-point16.li5")</li>
+    </ul>
+    <p>@messages("accessibility-statement.non-compliance.p16")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point17")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p17")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point18")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p18")</p>
+
+    <ul class="list list-bullet"><li>@messages("accessibility-statement.non-compliance.bullet-point19")</li></ul>
+    <p>@messages("accessibility-statement.non-compliance.p19")</p>
+
+    <h2>@messages("accessibility-statement.how-we-tested.h2")</h2>
+    <p>@messages("accessibility-statement.how-we-tested.p1")</p>
+    <p>@Html(messages("accessibility-statement.how-we-tested.p2",
+        <a id="dac" href="http://www.digitalaccessibilitycentre.org/">{messages("accessibility-statement.how-we-tested.p2.link")}</a>
+        ))
+    </p>
+    <p>@messages("accessibility-statement.how-we-tested.p3")</p>
+
+}
