@@ -52,7 +52,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       val result: Result = await(call)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(s"${appConfig.incomeTaxEligibilityFrontendUrl}/client/covid-19")
+      redirectLocation(result) mustBe Some(eligibility.routes.Covid19ClaimCheckController.show().url)
 
       result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
       result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
