@@ -20,8 +20,6 @@ import connectors.IncomeTaxSubscriptionConnector
 import javax.inject._
 import models.common._
 import models.individual.business._
-import models.individual.incomesource.IncomeSourceModel
-import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Json, Reads, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -56,18 +54,11 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
 
   def deleteAll()(implicit hc: HeaderCarrier): Future[HttpResponse] = subscriptionDetailsSession.deleteAll()
 
-  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FO[IncomeSourceType] =
-    fetch[IncomeSourceType](IncomeSource)
+  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
+    fetch[IncomeSourceModel](IncomeSource)
 
-  def saveIncomeSource(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FA =
-    save[IncomeSourceType](IncomeSource, incomeSource)
-
-  def fetchIndividualIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
-    fetch[IncomeSourceModel](IndividualIncomeSource)
-
-  def saveIndividualIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FA =
-    save[IncomeSourceModel](IndividualIncomeSource, incomeSource)
-
+  def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FA =
+    save[IncomeSourceModel](IncomeSource, incomeSource)
 
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
@@ -104,7 +95,7 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
     PropertyAccountingMethod, accountingMethodProperty)
 
   def saveOverseasAccountingMethodProperty(overseasPropertyAccountingMethod: OverseasAccountingMethodPropertyModel)
-                                  (implicit hc: HeaderCarrier, reads: Reads[OverseasAccountingMethodPropertyModel]): FA = save[OverseasAccountingMethodPropertyModel](
+                                          (implicit hc: HeaderCarrier, reads: Reads[OverseasAccountingMethodPropertyModel]): FA = save[OverseasAccountingMethodPropertyModel](
     OverseasPropertyAccountingMethod, overseasPropertyAccountingMethod)
 
   def fetchSelectedTaxYear()(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FO[AccountingYearModel] =
@@ -131,7 +122,7 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
     save[PropertyCommencementDateModel](PropertyCommencementDate, propertyCommencementDate)
 
   def fetchOverseasPropertyCommencementDate()(implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyCommencementDateModel]):
-    FO[OverseasPropertyCommencementDateModel] = fetch[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate)
+  FO[OverseasPropertyCommencementDateModel] = fetch[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate)
 
   def saveOverseasPropertyCommencementDate(foreignPropertyCommencementDate: OverseasPropertyCommencementDateModel)
                                           (implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyCommencementDateModel]): FA =

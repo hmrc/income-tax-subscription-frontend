@@ -16,17 +16,15 @@
 
 package models
 
-import models.common._
+
+import models.common.{IncomeSourceModel, _}
 import models.individual.business.{PropertyCommencementDateModel, _}
-import models.individual.incomesource.IncomeSourceModel
-import models.individual.subscription.IncomeSourceType
 import utilities.AccountingPeriodUtil._
 
-sealed trait SummaryModel {
-  def incomeSourceIndiv: Option[IncomeSourceModel]
 
-  //  agent
-  def incomeSource: Option[IncomeSourceType]
+sealed trait SummaryModel {
+
+  def incomeSource: Option[IncomeSourceModel]
 
   def matchTaxYear: Option[MatchTaxYearModel]
 
@@ -44,8 +42,7 @@ sealed trait SummaryModel {
 }
 
 
-case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None,
-                             incomeSource: Option[IncomeSourceType] = None,
+case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
                              matchTaxYear: Option[MatchTaxYearModel] = None,
                              accountingPeriodDate: Option[AccountingPeriodModel] = None,
                              businessName: Option[BusinessNameModel] = None,
@@ -58,9 +55,9 @@ case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None
                              overseasAccountingMethodPropertyModel: Option[OverseasAccountingMethodPropertyModel] = None) extends SummaryModel {
 
   lazy val toBusinessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = {
-    val useSelfEmployments = incomeSourceIndiv.exists(_.selfEmployment)
-    val useUkProperty = incomeSourceIndiv.exists(_.ukProperty)
-    val useForeignProperty = incomeSourceIndiv.exists(_.foreignProperty)
+    val useSelfEmployments = incomeSource.exists(_.selfEmployment)
+    val useUkProperty = incomeSource.exists(_.ukProperty)
+    val useForeignProperty = incomeSource.exists(_.foreignProperty)
 
     val hasValidProperty: Boolean = if (useUkProperty) propertyCommencementDate.isDefined && accountingMethodProperty.isDefined else true
 
@@ -73,27 +70,25 @@ case class IndividualSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None
     if (!hasValidSelfEmployments) throw new Exception("Missing data items for valid self employments submission")
 
     val accountingPeriodVal: Option[AccountingPeriodModel] =
-      if (incomeSourceIndiv.exists(sources => sources.ukProperty || sources.foreignProperty)) Some(getCurrentTaxYear)
+      if (incomeSource.exists(sources => sources.ukProperty || sources.foreignProperty)) Some(getCurrentTaxYear)
       else accountingPeriodDate
 
     BusinessSubscriptionDetailsModel(
       accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),
-      if(useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
-      if(useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
-      incomeSourceIndiv.getOrElse(throw new Exception("IncomeSource model not defined for BusinessSubscriptionDetailsModel")),
-      if(useUkProperty) propertyCommencementDate else None,
-      if(useUkProperty) accountingMethodProperty else None,
-      if(useForeignProperty) overseasPropertyCommencementDateModel else None,
-      if(useForeignProperty) overseasAccountingMethodPropertyModel else None
+      if (useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
+      if (useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
+      incomeSource.getOrElse(throw new Exception("IncomeSource model not defined for BusinessSubscriptionDetailsModel")),
+      if (useUkProperty) propertyCommencementDate else None,
+      if (useUkProperty) accountingMethodProperty else None,
+      if (useForeignProperty) overseasPropertyCommencementDateModel else None,
+      if (useForeignProperty) overseasAccountingMethodPropertyModel else None
     )
   }
 
 }
 
 
-
-case class AgentSummary(incomeSourceIndiv: Option[IncomeSourceModel] = None,
-                        incomeSource: Option[IncomeSourceType] = None,
+case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
                         matchTaxYear: Option[MatchTaxYearModel] = None,
                         accountingPeriodDate: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,

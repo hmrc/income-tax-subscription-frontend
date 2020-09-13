@@ -9,8 +9,8 @@ import helpers.IntegrationTestModels.{subscriptionData, testPropertyCommencement
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
+import models.common.IncomeSourceModel
 import models.individual.business.OverseasPropertyCommencementDateModel
-import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 

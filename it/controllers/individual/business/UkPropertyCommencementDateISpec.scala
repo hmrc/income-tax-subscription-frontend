@@ -24,8 +24,8 @@ import helpers.IntegrationTestModels.{subscriptionData, testPropertyCommencement
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
+import models.common.IncomeSourceModel
 import models.individual.business.PropertyCommencementDateModel
-import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import utilities.SubscriptionDataKeys
 

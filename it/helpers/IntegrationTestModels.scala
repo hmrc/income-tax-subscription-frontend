@@ -7,7 +7,6 @@ import helpers.IntegrationTestConstants._
 import models._
 import models.common._
 import models.individual.business._
-import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
@@ -17,7 +16,7 @@ import utilities.individual.Constants
 import utilities.individual.Constants.GovernmentGateway._
 
 
-object IntegrationTestModels {
+  object IntegrationTestModels {
 
   import utilities.SubscriptionDataKeys._
 
@@ -55,7 +54,7 @@ object IntegrationTestModels {
 
   lazy val fullIndivSubscriptionDataBothPost: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(Both),
+      incomeSource = Some(IncomeSourceModel(true, true, false)),
       individualIncomeSource = Some(IncomeSourceModel(true, true, false)),
       matchTaxYear = Some(testMatchTaxYearNo),
       selectedTaxYear = Some(testAccountingYearCurrent),
@@ -68,7 +67,7 @@ object IntegrationTestModels {
 
   lazy val fullIndivSubscriptionDataAllPost: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(Both),
+      incomeSource = Some(IncomeSourceModel(true, true, false)),
       individualIncomeSource = Some(IncomeSourceModel(true, true, true)),
       matchTaxYear = Some(testMatchTaxYearNo),
       selectedTaxYear = Some(testAccountingYearCurrent),
@@ -89,7 +88,7 @@ object IntegrationTestModels {
     )
 
 
-  def subscriptionData(incomeSource: Option[IncomeSourceType] = None,
+  def subscriptionData(incomeSource: Option[IncomeSourceModel] = None,
                        individualIncomeSource: Option[IncomeSourceModel] = None,
                        matchTaxYear: Option[MatchTaxYearModel] = None,
                        selectedTaxYear: Option[AccountingYearModel] = None,
@@ -100,10 +99,10 @@ object IntegrationTestModels {
                        propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None,
                        overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None,
                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None
-                  ): Map[String, JsValue] = {
+                      ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
-      individualIncomeSource.map(model => IndividualIncomeSource -> IncomeSourceModel.format.writes(model)) ++
+      incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
+      individualIncomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
@@ -115,14 +114,13 @@ object IntegrationTestModels {
       overseasPropertyCommencementDate.map(model => OverseasPropertyCommencementDate -> OverseasPropertyCommencementDateModel.format.writes(model))
   }
 
-  lazy val testIncomeSourceBusiness: Business.type = Business
+  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
 
-  lazy val testIncomeSourceProperty: UkProperty.type = UkProperty
+  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
-  lazy val testIncomeSourceBoth: Both.type = Both
+  lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
 
   lazy val testIncomeSourceIndivProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
-
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
 

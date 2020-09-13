@@ -24,7 +24,7 @@
 @(journeyDuration: Int, summary: IndividualSummary, declarationYear: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @incomeSource = @{
-    summary.incomeSourceIndiv.get
+    summary.incomeSource.get
 }
 
 @dataHelper(metricId:String, optFieldValue:Option[String]) = {
@@ -35,8 +35,8 @@
 
 @main_template(title = Messages("sign-up-complete.title")) {
 
-    @dataHelper("self-employment", summary.incomeSourceIndiv.map(_.selfEmployment.toString))
-    @dataHelper("uk-property", summary.incomeSourceIndiv.map(_.ukProperty.toString))
+    @dataHelper("self-employment", summary.incomeSource.map(_.selfEmployment.toString))
+    @dataHelper("uk-property", summary.incomeSource.map(_.ukProperty.toString))
     @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod.toString))
 
     <div class="form-group" data-metrics="itsa:journey duration:@incomeSource:@journeyDuration">

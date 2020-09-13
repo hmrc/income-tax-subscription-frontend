@@ -22,12 +22,11 @@ import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.individual.incomesource.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
-import models.individual.incomesource._
+import models.common.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -46,7 +45,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchIndividualIncomeSource() map { incomeSource =>
+      subscriptionDetailsService.fetchIncomeSource() map { incomeSource =>
         Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm
           .fill(incomeSource), isEditMode = isEditMode))
       }
@@ -59,7 +58,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource => {
           lazy val linearJourney: Future[Result] =
-            subscriptionDetailsService.saveIndividualIncomeSource(incomeSource) map { _ =>
+            subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
               incomeSource match {
                 case IncomeSourceModel(true, _, _) =>
                   Redirect(controllers.individual.business.routes.BusinessNameController.show())
@@ -77,7 +76,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           if (!isEditMode) {
             linearJourney
           } else {
-            subscriptionDetailsService.fetchIndividualIncomeSource() flatMap {
+            subscriptionDetailsService.fetchIncomeSource() flatMap {
               case Some(`incomeSource`) => Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
               case _ => linearJourney
             }

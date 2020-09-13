@@ -19,8 +19,7 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import models.Cash
-import models.common.{AccountingMethodPropertyModel, OverseasAccountingMethodPropertyModel}
-import models.individual.incomesource.IncomeSourceModel
+import models.common.{AccountingMethodPropertyModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -52,9 +51,9 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec 
 
   val incomeSourceForeignPropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
 
-  def overseasPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceOverseasProperty)
+  def overseasPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceOverseasProperty)
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
   "show" should {
     "display the foreign property accounting method view and return OK (200)" in {

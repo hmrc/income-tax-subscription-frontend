@@ -19,7 +19,7 @@ package forms.individual.incomesource
 import forms.individual.incomesource.IncomeSourceForm._
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import models.individual.incomesource.IncomeSourceModel
+import models.common.IncomeSourceModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 

@@ -16,9 +16,9 @@
 
 package utilities.agent
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel, _}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
-import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import models.usermatching.UserDetailsModel
 import models.{AccountingMethod => _, _}
 import play.api.libs.json.JsValue
@@ -55,7 +55,7 @@ object TestModels extends Implicits {
 
   val testCacheMap: CacheMap =
     testCacheMap(
-      incomeSource = testIncomeSourceBoth,
+      incomeSource = testIncomeSourceBusinessAndUkProperty,
       matchTaxYear = testMatchTaxYearNo,
       selectedTaxYear = testSelectedTaxYearNext,
       accountingPeriodDate = testAccountingPeriod,
@@ -64,7 +64,7 @@ object TestModels extends Implicits {
       accountingMethodProperty = testAccountingMethodProperty)
 
   def testCacheMapCustom(
-                          incomeSource: Option[IncomeSourceType] = testIncomeSourceBoth,
+                          incomeSource: Option[IncomeSourceModel] = testIncomeSourceBusinessAndUkProperty,
                           matchTaxYear: MatchTaxYearModel = testMatchTaxYearNo,
                           selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
@@ -80,7 +80,7 @@ object TestModels extends Implicits {
       accountingMethod = accountingMethod,
       accountingMethodProperty = accountingMethodProperty)
 
-  def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
+  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -89,7 +89,7 @@ object TestModels extends Implicits {
                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
-      incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
+      incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
@@ -99,11 +99,13 @@ object TestModels extends Implicits {
     CacheMap("", map)
   }
 
-  lazy val testIncomeSourceBusiness: IncomeSourceType = Business
+  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
 
-  lazy val testIncomeSourceProperty: IncomeSourceType = UkProperty
+  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
-  lazy val testIncomeSourceBoth: IncomeSourceType = Both
+  lazy val testIncomeSourceUkProperty: IncomeSourceModel = IncomeSourceModel(false, false, true)
+
+  lazy val testIncomeSourceBusinessAndUkProperty: IncomeSourceModel = IncomeSourceModel(true, true, false)
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   // TODO change when consolidating models

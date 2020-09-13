@@ -19,41 +19,55 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers._
 @import config.AppConfig
-@import models.individual.subscription.IncomeSourceType
 @import views.html.templates.main_template
 @import views.agent.helpers._
-@import views.helpers.RadioOption
+@import models.common.IncomeSourceModel
 
-@(incomeSourceForm: Form[IncomeSourceType], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, foreignProperty: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@question = @{
-    Messages("agent.income_source.heading")
-}
+@main_template(title = Messages("agent.income_source.heading"), form = incomeSourceForm) {
 
-@main_template(title = Messages("agent.income_source.title"), form = incomeSourceForm) {
     @if(isEditMode) {
         @back_link(backUrl)
     }
 
     @summaryErrorHelper(incomeSourceForm)
 
-    <h1 class="heading-large">@question</h1>
+    <h1 class="heading-large">@Messages("agent.income_source.heading")</h1>
 
     @form(action = postAction) {
-
-        @radioHelper(
-            field = incomeSourceForm(IncomeSourceForm.incomeSource),
-            legend = question,
-            options = Seq(
-                RadioOption(IncomeSourceForm.option_business, Messages("agent.income_source.business")),
-                RadioOption(IncomeSourceForm.option_property, Messages("agent.income_source.property")),
-                RadioOption(IncomeSourceForm.option_both, Messages("agent.income_source.both"))
-            ),
-            parentForm = incomeSourceForm
-        )
-
-        @continueButton()
-
+        @if(incomeSourceForm.hasErrors){
+            <span class="error-notification bold">@messages("agent.error.income_source.invalid")</span>
+        } else {
+        <div class="form-group">
+            <p id="checkbox-hint" class="form-hint">
+                @messages("agent.income_source.checkbox.hint")
+            </p>
+            @checkboxHelper(
+                field = incomeSourceForm(IncomeSourceForm.business),
+                label = Messages("agent.income_source.selfEmployed"),
+                parentForm = incomeSourceForm
+            )
+            @checkboxHelper(
+                field = incomeSourceForm(IncomeSourceForm.ukProperty),
+                label = Messages("agent.income_source.rentUkProperty"),
+                parentForm = incomeSourceForm
+            )
+            @{if(foreignProperty){
+                checkboxHelper(
+                    field = incomeSourceForm(IncomeSourceForm.foreignProperty),
+                    label = Messages("agent.income_source.foreignProperty"),
+                    parentForm = incomeSourceForm
+                )
+            }
+        }
+        </div>
     }
 
+    @if(isEditMode) {
+        @continueButton(Messages("base.update"))
+    } else {
+        @continueButton()
+    }
+}
 }

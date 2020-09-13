@@ -25,8 +25,8 @@ import helpers.agent.IntegrationTestModels.{subscriptionData, _}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
+import models.common.IncomeSourceModel
 import models.individual.business.AccountingPeriodModel
-import models.individual.subscription.{Both, Business}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
@@ -57,7 +57,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
     "the Subscription Details Connector returns no data" should {
       "show accounting period dates page without date values entered" in {
-        val SubscriptionDetailsIncomeSource = Both
+        val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -131,7 +131,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(fullSubscriptionData.updated(SubscriptionDataKeys.IncomeSource, Json.toJson(Business)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(fullSubscriptionData.updated(SubscriptionDataKeys.IncomeSource, Json.toJson(IncomeSourceModel(true, false, false))))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
@@ -180,13 +180,13 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
     "in edit mode" should {
 
       "simulate changing accounting period dates when calling page from Check Your Answers" in {
-        val SubscriptionDetailsIncomeSource = Business
+        val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, false, false)
         val startCurrenttestYear = AccountingPeriodUtil.getTaxEndYear(LocalDate.now().plusYears(-1))
         val endCurrenttestYear = startCurrenttestYear + 1
         val SubscriptionDetailsAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString),
-                                                                                                    DateModel("04", "04", endCurrenttestYear.toString))
+          DateModel("04", "04", endCurrenttestYear.toString))
         val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString),
-                                                                                                    DateModel("05", "04", endCurrenttestYear.toString))
+          DateModel("05", "04", endCurrenttestYear.toString))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

@@ -16,10 +16,9 @@
 
 package controllers.utils
 
-import models.common.AccountingMethodModel
+
+import models.common.{AccountingMethodModel, IncomeSourceModel}
 import models.individual.business.{MatchTaxYearModel, OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
-import models.individual.incomesource.IncomeSourceModel
-import models.individual.subscription.IncomeSourceType
 import play.api.libs.functional.~
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
@@ -55,13 +54,8 @@ object Answers {
 
   import utilities.SubscriptionDataUtil._
 
-  val incomeSourceTypeAnswer: Answer[IncomeSourceType] = SingleAnswer[IncomeSourceType](
-    retrieveAnswer = _.agentGetIncomeSource,
-    ifEmpty = Redirect(controllers.agent.routes.IncomeSourceController.show().url)
-  )
-
   val incomeSourceModelAnswer: Answer[IncomeSourceModel] = SingleAnswer[IncomeSourceModel](
-    retrieveAnswer = _.getIncomeSourceModel,
+    retrieveAnswer = _.getIncomeSource,
     ifEmpty = Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
   )
 
@@ -78,7 +72,7 @@ object Answers {
     retrieveAnswer = _.getPropertyCommencementDate
   )
 
-   val optForeignPropertyCommencementDateAnswer: Answer[Option[OverseasPropertyCommencementDateModel]] = OptionalAnswer(
+  val optForeignPropertyCommencementDateAnswer: Answer[Option[OverseasPropertyCommencementDateModel]] = OptionalAnswer(
     retrieveAnswer = _.getOverseasPropertyCommencementDate
   )
 

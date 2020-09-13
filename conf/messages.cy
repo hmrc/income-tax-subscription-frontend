@@ -533,13 +533,14 @@ agent.client-details.summary.last_name                          = Enw olaf
 agent.client-details.summary.nino                               = Rhif Yswiriant Gwladol
 agent.client-details.summary.dob                                = Dyddiad geni
 
-## Income source page
-agent.income_source.title                                       = Dewiswch fath o incwm eich cleient
-agent.income_source.heading                                     = Dewiswch fath o incwm eich cleient
-agent.income_source.business                                    = Busnes fel unig fasnachwr
-agent.income_source.property                                    = Gosod eiddo yn y DU
-agent.income_source.both                                        = Ei fusnes fel unig fasnachwr a gosod eiddo yn y DU
-
+## agent income source page
+agent.income_source.heading                                     = Sut mae’ch cleient yn cael ei incwm?
+agent.income_source.checkbox.hint                               = Dewiswch bob un sy’n gymwys
+agent.income_source.selfEmployed                                = Hunangyflogedig
+agent.income_source.rentUkProperty                              = Rhoi eiddo ar osod yn y DU
+agent.income_source.foreignProperty                             = Rhoi eiddo tramor ar osod y tu allan i’r DU
+agent.error.income_source.invalid                               = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
+agent.error.income_source.empty                                 = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
 
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?
@@ -663,12 +664,6 @@ agent.error.dob_date.empty                                      = Nodwch ddyddia
 agent.error.dob_date.invalid_chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
 agent.error.dob_date.invalid                                    = Nodwch ddyddiad geni go iawn
 
-agent.error.income_source.empty                                 = Dewiswch fath o incwm
-agent.error.income_source.invalid                               = Dewiswch fath o incwm
-
-agent.error.business.sole_trader.empty                          = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-agent.error.business.sole_trader.invalid                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-
 agent.error.match_tax_year.empty                                = Dewiswch ‘iawn’ os yw cyfnod cyfrifyddu eich cleient yn paru â’r flwyddyn dreth
 agent.error.match_tax_year.invalid                              = Dewiswch ‘iawn’ os yw cyfnod cyfrifyddu eich cleient yn paru â’r flwyddyn dreth
 
@@ -781,5 +776,5 @@ agent.covid_cannot_sign_up.line2                                = Bydd angen i c
 agent.covid_cannot_sign_up.line2.link                           = Ffurflen Dreth Hunanasesiad
 agent.covid_cannot_sign_up.button                               = Cofrestru cleient arall
 
-# Sole Trader Eligibility
+# Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}

@@ -16,133 +16,102 @@
 
 package controllers.agent
 
+import config.MockConfig
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
-import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
+import models.common.IncomeSourceModel
 import play.api.http.Status
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.IncomeSource
-import utilities.agent.TestModels
-
 import scala.concurrent.Future
 
 class IncomeSourceControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching {
+  with MockSubscriptionDetailsService
+  with MockConfig
+  with FeatureSwitching {
 
-  override val controllerName: String = "IncomeSourceController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestIncomeSourceController.show(isEditMode = true),
-    "submit" -> TestIncomeSourceController.submit(isEditMode = true)
-  )
-
-  object TestIncomeSourceController extends IncomeSourceController(
+  class TestIncomeSourceController extends IncomeSourceController(
     mockAuthService,
     MockSubscriptionDetailsService
-  )(executionContext, appConfig, mockMessagesControllerComponents)
+  )
 
-  "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" should {
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    disable(ForeignProperty)
+    super.beforeEach()
+  }
 
-    lazy val result = TestIncomeSourceController.show(isEditMode = true)(subscriptionRequest)
+  override val controllerName: String = "IncomeSourceController"
 
-    "return ok (200)" in {
-      mockFetchIncomeSourceFromSubscriptionDetails(None)
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "show" -> new TestIncomeSourceController().show(isEditMode = true),
+    "submit" -> new TestIncomeSourceController().submit(isEditMode = true)
+  )
 
-      status(result) must be(Status.OK)
-
-      await(result)
-      verifySubscriptionDetailsFetch(IncomeSource, 1)
-      verifySubscriptionDetailsSave(IncomeSource, 0)
+  "test" should {
+    "en" in {
+      val m: Messages = messagesApi.preferred(subscriptionRequest)
+      m must not be None
+      m.apply("base.back") must be("Back")
     }
   }
 
-  "Calling the submitIncomeSource action of the IncomeSource controller with an authorised user and valid submission" when {
+  "Calling the show action of the IncomeSourceController with an authorised user" when {
 
-    def callSubmit(option: IncomeSourceType, isEditMode: Boolean): Future[Result] = TestIncomeSourceController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(IncomeSourceForm.incomeSourceForm, option)
-    )
+    def call: Future[Result] = new TestIncomeSourceController().show(isEditMode = true)(subscriptionRequest)
 
-    "the eligibility pages feature switch is enabled" should {
-      s"redirect to ${business.routes.MatchTaxYearController.show().url}" when {
-        "not in edit mode" when {
-          "the income source is business" in {
-            setupMockSubscriptionDetailsSaveFunctions()
+    "the new income source flow" should {
+      "return ok (200)" in {
+        mockFetchIncomeSourceFromSubscriptionDetails(None)
 
-            val result = await(callSubmit(Business, isEditMode = false))
+        val result = call
+        status(result) must be(Status.OK)
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
-
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-          "the income source is both" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-
-            val result = await(callSubmit(Both, isEditMode = false))
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
-
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-        "in edit mode" when {
-          "income source has changed" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            mockFetchIncomeSourceFromSubscriptionDetails(Business)
-
-            val result = await(callSubmit(Both, isEditMode = true))
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(business.routes.BusinessNameController.show().url)
-
-            verifySubscriptionDetailsFetch(IncomeSource, 2)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-      }
-      s"redirect to ${business.routes.PropertyAccountingMethodController.show().url}" when {
-        "not in edit mode" when {
-          "income source is property" in {
-
-            setupMockSubscriptionDetailsSaveFunctions()
-
-            val result = await(callSubmit(UkProperty, isEditMode = false))
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
-          }
-        }
-        "in edit mode" when {
-          "income source has changed to property" in {
-
-            setupMockSubscriptionDetailsSaveFunctions()
-            mockFetchIncomeSourceFromSubscriptionDetails(Business)
-
-            val result = await(callSubmit(UkProperty, isEditMode = true))
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
-          }
-        }
-
+        await(result)
+        verifySubscriptionDetailsFetch(IncomeSource, 1)
+        verifySubscriptionDetailsSave(IncomeSource, 0)
       }
     }
 
-    "the eligibility pages feature switch is disabled" when {
+  }
 
-      "it is not edit mode" when {
-        "the income source is business" should {
-          s"return a SEE_OTHER with a redirect location of ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
+  "Calling the submit action of the IncomeSource controller with an authorised user and valid submission" should {
+
+    def callSubmit(incomeSourceModel: IncomeSourceModel,
+                   isEditMode: Boolean
+                  ): Future[Result] = {
+      new TestIncomeSourceController().submit(isEditMode = isEditMode)(
+        subscriptionRequest.post(IncomeSourceForm.incomeSourceForm, incomeSourceModel)
+      )
+    }
+
+    "When it is not edit mode" should {
+      "self-employed is checked and rent UK property and foreign property are NOT checked" when {
+        "redirect to BusinessName page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+
+          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
+        }
+      }
+
+      "Rent UK property is checked and self-employed, foreign property are NOT checked" should {
+        "Release Four feature switch is disabled" when {
+          "redirect to the PropertyAccounting method page" in {
             setupMockSubscriptionDetailsSaveFunctions()
-
-            val goodRequest = callSubmit(Both, isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
+            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -150,125 +119,61 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           }
         }
 
-        s"return a SEE OTHER (303) for both and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-          setupMockSubscriptionDetailsSaveFunctions()
+        "Self-employed, rent UK property are checked" when {
+          "redirect to BusinessName page" in {
+            setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(Both, isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.BusinessNameController.show().url)
 
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-      }
-
-      "it is in edit mode and user's selection has not changed" should {
-        s"return an SEE OTHER (303) for business and goto ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBusiness)
-
-          val goodRequest = callSubmit(Business, isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
-
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 0)
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
+          }
         }
 
-        s"return a SEE OTHER (303) for property and goto ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
-          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceProperty)
+        "When it is in edit mode and user's selection has not changed" should {
+          s"return an SEE OTHER (303) when self-employed is checked and rent uk property and foreign property are NOT checked" +
+            s"${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
+            mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(true, false, false))
 
-          val goodRequest = callSubmit(UkProperty, isEditMode = true)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+            val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = true)
 
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 0)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 0)
+          }
         }
 
-        s"return a SEE OTHER (303) for both and goto ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBoth)
 
-          val goodRequest = callSubmit(Both, isEditMode = true)
+        "Calling the submit action of the IncomeSource controller with an authorised user and invalid submission" should {
+          lazy val badRequest = new TestIncomeSourceController().submit(isEditMode = true)(subscriptionRequest)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+          "return a bad request status (400)" in {
+            status(badRequest) must be(Status.BAD_REQUEST)
 
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 0)
-        }
-      }
-
-      "it is in edit mode and user's selection has changed" should {
-        s"return an SEE OTHER (303) for business and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBoth)
-          setupMockSubscriptionDetailsSaveFunctions()
-
-          val goodRequest = callSubmit(Business, isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
-
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 2)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
+            await(badRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 0)
+            verifySubscriptionDetailsSave(IncomeSource, 0)
+          }
         }
 
-        s"return a SEE OTHER (303) for property and goto ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" in {
-          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBoth)
-          setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(UkProperty, isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 2)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
+        "The back url" should {
+          s"point to ${controllers.agent.routes.CheckYourAnswersController.show().url} on income source page" in {
+            new TestIncomeSourceController().backUrl mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+          }
         }
 
-        s"return a SEE OTHER (303) for both and goto ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-          mockFetchIncomeSourceFromSubscriptionDetails(TestModels.testIncomeSourceBusiness)
-          setupMockSubscriptionDetailsSaveFunctions()
+        authorisationTests()
 
-          val goodRequest = callSubmit(Both, isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
-
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 2)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
       }
     }
   }
-
-  "Calling the submitIncomeSource action of the IncomeSource controller with an authorised user and invalid submission" should {
-    lazy val badRequest = TestIncomeSourceController.submit(isEditMode = true)(subscriptionRequest)
-
-    "return a bad request status (400)" in {
-      status(badRequest) must be(Status.BAD_REQUEST)
-
-      await(badRequest)
-      verifySubscriptionDetailsFetch(IncomeSource, 0)
-      verifySubscriptionDetailsSave(IncomeSource, 0)
-    }
-  }
-
-  "The back url" should {
-    s"point to ${controllers.agent.routes.CheckYourAnswersController.show().url} on income source page" in {
-      TestIncomeSourceController.backUrl mustBe controllers.agent.routes.CheckYourAnswersController.show().url
-    }
-  }
-
-  authorisationTests()
-
 }

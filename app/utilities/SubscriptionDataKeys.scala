@@ -19,7 +19,6 @@ package utilities
 object SubscriptionDataKeys {
   // n.b. IncomeSource is still used on the agent flow
   val IncomeSource = "IncomeSource"
-  val IndividualIncomeSource = "IndividualIncomeSource"
   val PropertyIncome = "PropertyIncome"
   val SoleTrader = "SoleTrader"
   val MatchTaxYear = "MatchTaxYear"

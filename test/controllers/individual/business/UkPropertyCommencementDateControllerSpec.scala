@@ -21,8 +21,8 @@ import java.time.LocalDate
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyCommencementDateForm
 import models.DateModel
+import models.common.IncomeSourceModel
 import models.individual.business.PropertyCommencementDateModel
-import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -61,9 +61,9 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
   val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
     foreignProperty = false)
 
-  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceProperty)
+  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceProperty)
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
 
   "show" should {
@@ -71,7 +71,7 @@ class PropertyCommencementDateControllerSpec extends ControllerBaseSpec with Moc
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchAllFromSubscriptionDetails(testCacheMap(
-        incomeSourceIndiv = Some(incomeSourceBoth)
+        incomeSource = Some(incomeSourceBoth)
       ))
 
       status(result) must be(Status.OK)

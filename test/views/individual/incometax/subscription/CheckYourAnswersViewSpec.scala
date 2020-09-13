@@ -19,9 +19,8 @@ package views.individual.incometax.subscription
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import config.featureswitch.FeatureSwitching
-import models.common._
+import models.common.{IncomeSourceModel, _}
 import models.individual.business._
-import models.individual.incomesource.IncomeSourceModel
 import models.{DateModel, IndividualSummary}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -66,7 +65,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
                         propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencement,
                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = testOverseasAccountingPropertyModel,
                         overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testForeignPropertyCommencement): IndividualSummary = IndividualSummary(
-    incomeSourceIndiv = incomeSource,
+    incomeSource = incomeSource,
     businessName = testBusinessName,
     selfEmployments = testSelfEmployments,
     selectedTaxYear = selectedTaxYear,

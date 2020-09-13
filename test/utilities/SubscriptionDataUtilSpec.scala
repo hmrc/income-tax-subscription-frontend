@@ -17,8 +17,7 @@
 package utilities
 
 import config.featureswitch.FeatureSwitching
-import models.individual.incomesource.IncomeSourceModel
-import models.individual.subscription.Both
+import models.common.IncomeSourceModel
 import models.{AgentSummary, IndividualSummary}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
@@ -32,8 +31,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
   "CacheUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
-      emptyCacheMap.getIncomeSourceModel shouldBe None
-      emptyCacheMap.agentGetIncomeSource shouldBe None
+      emptyCacheMap.getIncomeSource shouldBe None
+      emptyCacheMap.getIncomeSource shouldBe None
       emptyCacheMap.getBusinessName shouldBe None
       emptyCacheMap.getMatchTaxYear shouldBe None
       emptyCacheMap.getEnteredAccountingPeriodDate shouldBe None
@@ -43,8 +42,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getIncomeSourceModel shouldBe Some(IncomeSourceModel(true,true,false))
-      testCacheMap.agentGetIncomeSource shouldBe Some(Both)
+      testCacheMap.getIncomeSource shouldBe Some(IncomeSourceModel(true, true, false))
       testCacheMap.getBusinessName shouldBe Some(testBusinessName)
       testCacheMap.getMatchTaxYear shouldBe Some(testMatchTaxYearNo)
       testCacheMap.getEnteredAccountingPeriodDate shouldBe Some(testAccountingPeriod)
@@ -55,33 +53,33 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
     }
 
     "The getSummary should populate the Summary model correctly" when {
-      "income source is just property" in {
-        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceProperty).getSummary() shouldBe
+      "income source is just uk property" in {
+        testCacheMapCustom(incomeSource = testIncomeSourceProperty).getSummary() shouldBe
           IndividualSummary(
-            incomeSourceIndiv = testIncomeSourceProperty,
+            incomeSource = testIncomeSourceProperty,
             accountingMethodProperty = testAccountingMethodProperty
           )
       }
       "income source is just business" in {
-        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceBusiness).getSummary() shouldBe
+        testCacheMapCustom(incomeSource = testIncomeSourceBusiness).getSummary() shouldBe
           IndividualSummary(
-            incomeSourceIndiv = testIncomeSourceBusiness,
+            incomeSource = testIncomeSourceBusiness,
             businessName = testBusinessName,
             selectedTaxYear = testSelectedTaxYearNext,
             accountingMethod = testAccountingMethod
           )
       }
       "income source is only foreign property" in {
-        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceOverseasProperty).getSummary() shouldBe
+        testCacheMapCustom(incomeSource = testIncomeSourceOverseasProperty).getSummary() shouldBe
           IndividualSummary(
-            incomeSourceIndiv = testIncomeSourceOverseasProperty,
+            incomeSource = testIncomeSourceOverseasProperty,
             overseasAccountingMethodPropertyModel = testAccountingMethodOverseasProperty
           )
       }
       "income source is all property and business" in {
-        testCacheMapCustom(incomeSourceIndiv = testIncomeSourceAll).getSummary() shouldBe
+        testCacheMapCustom(incomeSource = testIncomeSourceAll).getSummary() shouldBe
           IndividualSummary(
-            incomeSourceIndiv = testIncomeSourceAll,
+            incomeSource = testIncomeSourceAll,
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod,
             accountingMethodProperty = testAccountingMethodProperty,

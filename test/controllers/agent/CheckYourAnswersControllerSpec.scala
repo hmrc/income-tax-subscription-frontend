@@ -17,7 +17,7 @@
 package controllers.agent
 
 
-import models.individual.subscription.{Both, Business, UkProperty}
+import models.common.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
@@ -56,7 +56,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "There are both a matched nino and terms in Subscription Details " should {
       "return ok (200)" in {
-        mockFetchIncomeSourceFromSubscriptionDetails(Business)
+        mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(true, false, false))
         mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
 
         status(call()) must be(Status.OK)
@@ -156,22 +156,22 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   "The back url" should {
     s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" when {
       "on the property only journey" in {
-        TestCheckYourAnswersController.backUrl(Some(UkProperty))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+        TestCheckYourAnswersController.backUrl(Some(IncomeSourceModel(false, true, false)))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
       }
       "on the property and business journey" in {
-        TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+        TestCheckYourAnswersController.backUrl(Some(IncomeSourceModel(true, true, false)))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
       }
     }
 
     s"point to ${controllers.agent.business.routes.BusinessAccountingMethodController.show().url}" when {
       "on the business only journey" in {
-        TestCheckYourAnswersController.backUrl(Some(Business))(fakeRequest) mustBe
+        TestCheckYourAnswersController.backUrl((IncomeSourceModel(true, false, false)))(fakeRequest) mustBe
           controllers.agent.business.routes.BusinessAccountingMethodController.show().url
       }
     }
 
     s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url} on the property journey" in {
-      TestCheckYourAnswersController.backUrl(Some(UkProperty))(fakeRequest) mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
+      TestCheckYourAnswersController.backUrl((IncomeSourceModel(false, true, false)))(fakeRequest) mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
     }
 
   }

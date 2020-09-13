@@ -17,7 +17,6 @@
 @import models.individual.business._
 @import models.common._
 @import models.SummaryModel
-@import models.individual.subscription.IncomeSourceType
 @import config.AppConfig
 @import models.{No, Yes}
 @import views.html.helpers._
@@ -50,7 +49,7 @@
     </div>
 }
 
-@incomeSource(source: IncomeSourceType) = @{
+@incomeSource(source: IncomeSourceModel) = @{
     val rowName = IncomeSourceId
     val rowQuestion = Messages("agent.summary.income_source")
     val rowAnswer = incomeSourceText(source)

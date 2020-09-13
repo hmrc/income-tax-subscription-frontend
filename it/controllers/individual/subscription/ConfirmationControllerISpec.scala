@@ -32,7 +32,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubEnrolled()
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(Map(
-        IndividualIncomeSource -> Json.toJson(testIncomeSourceIndivProperty),
+        IncomeSource -> Json.toJson(testIncomeSourceIndivProperty),
         MtditId -> JsString(testSubscriptionId)
       ))
 

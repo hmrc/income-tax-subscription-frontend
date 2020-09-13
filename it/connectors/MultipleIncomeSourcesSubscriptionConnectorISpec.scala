@@ -5,9 +5,8 @@ import connectors.individual.subscription.MultipleIncomeSourcesSubscriptionConne
 import connectors.stubs.MultipleIncomeSourcesSubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
-import models.common.{AccountingMethodPropertyModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
+import models.common.{AccountingMethodPropertyModel, BusinessNameModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel}
 import models.individual.business._
-import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import models.{Accruals, Cash, DateModel}
 import org.scalatest.Matchers
@@ -23,11 +22,11 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
   "MultipleIncomeSourcesSubscription signup" should {
     "return SignUpIncomeSourcesSuccess when valid response is returned" in {
-        stubPostSignUp(testNino)(OK)
+      stubPostSignUp(testNino)(OK)
 
-        val res = TestMisSubscriptionConnector.signUp(testNino)
+      val res = TestMisSubscriptionConnector.signUp(testNino)
 
-        await(res) shouldBe Right(SignUpIncomeSourcesSuccess(testMtdId))
+      await(res) shouldBe Right(SignUpIncomeSourcesSuccess(testMtdId))
     }
     "return BadlyFormattedSignUpIncomeSourcesResponse when the response is malformed" in {
       stubPostSignUp(testNino)(OK, Json.obj("not" -> "correct"))

@@ -23,9 +23,8 @@ import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
 import models.IndividualSummary
-import models.common.AccountingMethodModel
+import models.common.{AccountingMethodModel, IncomeSourceModel}
 import models.individual.business.SelfEmploymentData
-import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, Request, Result, _}
@@ -70,7 +69,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
             Ok(views.html.individual.incometax.subscription.check_your_answers(
               summaryModel,
               controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
-              backUrl = backUrl(cache.getIncomeSourceModel.get),
+              backUrl = backUrl(cache.getIncomeSource.get),
               implicitDateFormatter,
               isEnabled(ReleaseFour)
             ))

@@ -16,54 +16,73 @@
 
 package forms.agent
 
+import forms.agent.IncomeSourceForm._
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import models.individual.subscription.Business
+import models.common.IncomeSourceModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api.data.FormError
+
 
 class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
 
-  import forms.agent.IncomeSourceForm._
+  "The IncomeSource Form" should {
+    "transform the request to the form case class when both checked values are bound to income source" in {
 
-  "The IncomeSourceForm" should {
-    "transform the request to the form case class" in {
-      val testIncomeSource = option_business
-      val testInput = Map(incomeSource -> testIncomeSource)
-      val expected = Business
+      val testInput = Map(business -> "true", ukProperty -> "true")
+      val expected = IncomeSourceModel(true, true, false)
       val actual = incomeSourceForm.bind(testInput).value
 
       actual shouldBe Some(expected)
     }
 
-    "validate income type correctly" should {
-      val empty = "agent.error.income_source.invalid"
-      val invalid = "agent.error.income_source.invalid"
+    "transform the request to the form case class when only self-employed is checked" in {
+      val testInput = Map(business -> "true", ukProperty -> "false", foreignProperty -> "false")
+      val expected = IncomeSourceModel(true, false, false)
+      val actual = incomeSourceForm.bind(testInput).value
 
-      "fail when nothing has been entered in the view" in {
-        val res = incomeSourceForm.bind(Map.empty[String, String])
-        res.errors should contain(FormError(incomeSource, empty))
+      actual shouldBe Some(expected)
+    }
+
+    "transform the request to the form case class when when only uk property is checked" in {
+      val testInput = Map(business -> "false", ukProperty -> "true", foreignProperty -> "false")
+      val expected = IncomeSourceModel(false, true, false)
+      val actual = incomeSourceForm.bind(testInput).value
+
+      actual shouldBe Some(expected)
+    }
+
+     "transform the request to the form case class when when only foreign property is checked" in {
+      val testInput = Map(business -> "false", ukProperty -> "false", foreignProperty -> "true")
+      val expected = IncomeSourceModel(false, false, true)
+      val actual = incomeSourceForm.bind(testInput).value
+
+      actual shouldBe Some(expected)
+    }
+
+    "validate income source with incorrect data" when {
+      val agentIncomeSourceMessage = "agent.error.income_source.invalid"
+
+      "show an error when the map is empty" in {
+        val emptyInput0 = DataMap.EmptyMap
+        val emptyTest0 = incomeSourceForm.bind(emptyInput0)
+        emptyTest0.hasErrors shouldBe true
       }
 
-      "fail when it is not an expected value in the view" in {
-        val res = incomeSourceForm.bind(Map(incomeSource -> "invalid"))
-        res.errors should contain(FormError(incomeSource, invalid))
+      "show an error when the both values are not checked" in {
+        val bothFalseData = DataMap.IncomeSource("false", "false")
+        val bothFalseActualResponse = incomeSourceForm.bind(bothFalseData)
+        bothFalseActualResponse.hasErrors shouldBe true
+        bothFalseActualResponse.errors.size shouldBe 1
+        bothFalseActualResponse.errors.head.message shouldBe agentIncomeSourceMessage
       }
     }
+    "The following submission should be valid" in {
+      val testBothTrue = DataMap.individualIncomeSource("true", "true")
+      incomeSourceForm isValidFor testBothTrue
+      val testsOneTrue = DataMap.individualIncomeSource("false", "true")
+      incomeSourceForm isValidFor testsOneTrue
+    }
 
-    "The Business submission should be valid" in {
-      val testBusiness = DataMap.incomeSource(option_business)
-      incomeSourceForm isValidFor testBusiness
-    }
-    "The Property submission should be valid" in {
-      val testProperty = DataMap.incomeSource(option_property)
-      incomeSourceForm isValidFor testProperty
-    }
-    "The Both business and property submission should be valid" in {
-      val testBoth = DataMap.incomeSource(option_both)
-      incomeSourceForm isValidFor testBoth
-    }
   }
-
 }

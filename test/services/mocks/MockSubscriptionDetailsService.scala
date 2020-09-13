@@ -18,10 +18,8 @@ package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.common._
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, PropertyCommencementDateModel}
-import models.individual.incomesource.IncomeSourceModel
-import models.individual.subscription.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -72,15 +70,16 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
 
   protected final def setupMockSubscriptionDetailsSaveFunctions(): Unit =
     mockFetchFromSubscriptionDetails[String]("fakeKey", None)
-    when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.any())(
-      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
 
-  protected final def mockFetchIncomeSourceFromSubscriptionDetails(fetchIncomeSource: Option[IncomeSourceType]): Unit = {
-    mockFetchFromSubscriptionDetails[IncomeSourceType](IncomeSource, fetchIncomeSource)
+  when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.any())(
+    ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
+
+  protected final def mockFetchIncomeSourceFromSubscriptionDetails(fetchIncomeSource: Option[IncomeSourceModel]): Unit = {
+    mockFetchFromSubscriptionDetails[IncomeSourceModel](IncomeSource, fetchIncomeSource)
   }
 
   protected final def mockFetchIndividualIncomeSourceFromSubscriptionDetails(fetchIndividualIncomeSource: Option[IncomeSourceModel]): Unit = {
-    mockFetchFromSubscriptionDetails[IncomeSourceModel](IndividualIncomeSource, fetchIndividualIncomeSource)
+    mockFetchFromSubscriptionDetails[IncomeSourceModel](IncomeSource, fetchIndividualIncomeSource)
   }
 
   protected final def mockFetchBusinessNameFromSubscriptionDetails(fetchBusinessName: Option[BusinessNameModel]): Unit = {

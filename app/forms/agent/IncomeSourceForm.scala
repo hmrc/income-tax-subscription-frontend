@@ -16,48 +16,23 @@
 
 package forms.agent
 
-import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
-import play.api.data.Forms.{of, single}
-import play.api.data.format.Formatter
-import play.api.data.{Form, FormError}
+import models.common.IncomeSourceModel
+import play.api.data.Form
+import play.api.data.Forms.{mapping, _}
 
 object IncomeSourceForm {
 
-  val incomeSource = "incomeSource"
-  val option_business: String = IncomeSourceType.business
-  val option_property: String = IncomeSourceType.ukProperty
-  val option_both: String = IncomeSourceType.both
+  val business = "Business"
+  val ukProperty = "UkProperty"
+  val foreignProperty = "ForeignProperty"
 
-  val incomeSourceError: Seq[FormError] = Seq(FormError(incomeSource, "agent.error.income_source.invalid"))
-
-  private val formatter: Formatter[IncomeSourceType] = new Formatter[IncomeSourceType] {
-
-    import IncomeSourceType._
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], IncomeSourceType] = {
-      data.get(key) match {
-        case Some(`business`) => Right(Business)
-        case Some(`ukProperty`) => Right(UkProperty)
-        case Some(`both`) => Right(Both)
-        case _ => Left(incomeSourceError)
-      }
-    }
-
-    override def unbind(key: String, value: IncomeSourceType): Map[String, String] = {
-      val stringValue = value match {
-        case Business => business
-        case UkProperty => ukProperty
-        case Both => both
-      }
-
-      Map(key -> stringValue)
-    }
-  }
-
-  val incomeSourceForm: Form[IncomeSourceType] = Form(
-    single(
-      incomeSource -> of(formatter)
-    )
+  val incomeSourceForm: Form[IncomeSourceModel] = Form(
+    mapping(
+      business -> boolean,
+      ukProperty -> boolean,
+      foreignProperty -> boolean
+    )(IncomeSourceModel.apply)(IncomeSourceModel.unapply)
+      .verifying("agent.error.income_source.invalid", _.hasAtLeastOneSelected)
   )
 
 }

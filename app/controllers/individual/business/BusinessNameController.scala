@@ -20,8 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
-import models.common.BusinessNameModel
-import models.individual.incomesource.IncomeSourceModel
+import models.common.{BusinessNameModel, IncomeSourceModel}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -61,7 +60,7 @@ class BusinessNameController @Inject()(val authService: AuthService, subscriptio
             }else {
               for {
                 cacheMap <- subscriptionDetailsService.fetchAll()
-              } yield cacheMap.getIncomeSourceModel match {
+              } yield cacheMap.getIncomeSource match {
                 case Some(IncomeSourceModel(true, false, _)) =>
                   Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
                 case _ =>

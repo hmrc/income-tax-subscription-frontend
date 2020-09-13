@@ -19,8 +19,6 @@ package utilities
 import config.AppConfig
 import models.common._
 import models.individual.business._
-import models.individual.incomesource.IncomeSourceModel
-import models.individual.subscription._
 import models.{AgentSummary, IndividualSummary}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys._
@@ -29,10 +27,7 @@ object SubscriptionDataUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 
-
-    def getIncomeSourceModel: Option[IncomeSourceModel] = cacheMap.getEntry[IncomeSourceModel](IndividualIncomeSource)
-
-    def agentGetIncomeSource: Option[IncomeSourceType] = cacheMap.getEntry[IncomeSourceType](IncomeSource)
+    def getIncomeSource: Option[IncomeSourceModel] = cacheMap.getEntry[IncomeSourceModel](IncomeSource)
 
     def getMatchTaxYear: Option[MatchTaxYearModel] = cacheMap.getEntry[MatchTaxYearModel](MatchTaxYear)
 
@@ -57,7 +52,7 @@ object SubscriptionDataUtil {
     def getSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                    selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None
                   )(implicit appConfig: AppConfig): IndividualSummary = {
-      getIncomeSourceModel match {
+      getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
             applyPropertyData(
@@ -71,24 +66,24 @@ object SubscriptionDataUtil {
     }
 
     def getAgentSummary()(implicit appConfig: AppConfig): AgentSummary = {
-      agentGetIncomeSource match {
-        case Some(UkProperty) =>
+      getIncomeSource match {
+        case Some(IncomeSourceModel(false, true, false)) =>
           AgentSummary(
-            incomeSource = agentGetIncomeSource,
+            incomeSource = getIncomeSource,
             accountingMethodProperty = getPropertyAccountingMethod
           )
-        case Some(Business) =>
+        case Some(IncomeSourceModel(true, false, false)) =>
           AgentSummary(
-            incomeSource = agentGetIncomeSource,
+            incomeSource = getIncomeSource,
             matchTaxYear = getMatchTaxYear,
             selectedTaxYear = getSelectedTaxYear,
             accountingPeriodDate = getEnteredAccountingPeriodDate,
             businessName = getBusinessName,
             accountingMethod = getAccountingMethod
           )
-        case Some(Both) =>
+        case Some(IncomeSourceModel(true, true, false)) =>
           AgentSummary(
-            incomeSource = agentGetIncomeSource,
+            incomeSource = getIncomeSource,
             matchTaxYear = getMatchTaxYear,
             accountingPeriodDate = getEnteredAccountingPeriodDate,
             businessName = getBusinessName,
@@ -106,7 +101,7 @@ object SubscriptionDataUtil {
       if (hasSelfEmployments) {
         if (selfEmploymentsAccountingMethod.isDefined) {
           IndividualSummary(
-            incomeSourceIndiv = getIncomeSourceModel,
+            incomeSource = getIncomeSource,
             businessName = getBusinessName,
             selectedTaxYear = getSelectedTaxYear,
             accountingMethod = selfEmploymentsAccountingMethod,
@@ -114,7 +109,7 @@ object SubscriptionDataUtil {
           )
         } else {
           IndividualSummary(
-            incomeSourceIndiv = getIncomeSourceModel,
+            incomeSource = getIncomeSource,
             businessName = getBusinessName,
             selectedTaxYear = getSelectedTaxYear,
             accountingMethod = getAccountingMethod,
@@ -122,7 +117,7 @@ object SubscriptionDataUtil {
           )
         }
       } else IndividualSummary(
-        incomeSourceIndiv = getIncomeSourceModel
+        incomeSource = getIncomeSource
       )
     }
 
@@ -138,7 +133,7 @@ object SubscriptionDataUtil {
     }
 
     private def applyForeignPropertyData(individualSummary: IndividualSummary,
-                                  hasForeignProperty: Boolean) = {
+                                         hasForeignProperty: Boolean) = {
       if (hasForeignProperty) {
         individualSummary.copy(
           overseasPropertyCommencementDateModel = getOverseasPropertyCommencementDate,
@@ -148,4 +143,5 @@ object SubscriptionDataUtil {
       } else individualSummary
     }
   }
+
 }

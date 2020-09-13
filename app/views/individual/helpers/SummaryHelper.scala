@@ -16,8 +16,7 @@
 
 package views.individual.helpers
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, OverseasAccountingMethodPropertyModel}
-import models.individual.incomesource.IncomeSourceModel
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel}
 import models.{Accruals, Cash, Current, Next}
 import play.api.i18n.Messages
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear

@@ -19,7 +19,7 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodForm
 import models.common.AccountingMethodModel
-import models.individual.incomesource._
+import models.common.IncomeSourceModel
 import models.{Cash, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -49,7 +49,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
     "return ok (200)" in {
       mockFetchAccountingMethodFromSubscriptionDetails(None)
-      mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
+      mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
 
       status(result) must be(Status.OK)
 
@@ -113,7 +113,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
     "return a bad request status (400)" in {
       // for the back url
-      mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
+      mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
 
       status(badRequest) must be(Status.BAD_REQUEST)
 
@@ -127,13 +127,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
     "not in edit mode" when {
       "income source type is business" should {
         s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
         }
 
         s"point to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
-          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBoth))
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBoth))
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.BusinessNameController.show().url
         }

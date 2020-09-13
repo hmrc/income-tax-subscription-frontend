@@ -38,15 +38,13 @@ import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
-import models.common.AccountingMethodPropertyModel
-import models.individual.incomesource.IncomeSourceModel
+import models.common.{AccountingMethodPropertyModel, IncomeSourceModel}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.SubscriptionDataUtil._
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -86,7 +84,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             } else {
-              subscriptionDetailsService.fetchIndividualIncomeSource() map {
+              subscriptionDetailsService.fetchIncomeSource() map {
                 case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
                   Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
                 case _ =>
@@ -105,7 +103,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
       Future.successful(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
     } else {
       subscriptionDetailsService.fetchAll() map { cacheMap =>
-        cacheMap.getIncomeSourceModel match {
+        cacheMap.getIncomeSource match {
           case Some(IncomeSourceModel(false, true, _)) =>
             controllers.individual.incomesource.routes.IncomeSourceController.show().url
           case _ =>

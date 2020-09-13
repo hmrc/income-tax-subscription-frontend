@@ -23,8 +23,8 @@ import controllers.utils.RequireAnswer
 import forms.individual.business.OverseasPropertyCommencementDateForm
 import forms.individual.business.OverseasPropertyCommencementDateForm._
 import javax.inject.{Inject, Singleton}
+import models.common.IncomeSourceModel
 import models.individual.business.OverseasPropertyCommencementDateModel
-import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}

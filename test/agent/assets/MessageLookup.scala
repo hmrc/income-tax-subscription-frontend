@@ -77,11 +77,11 @@ object MessageLookup {
   }
 
   object IncomeSource {
-    val title = "Select your client’s income type"
+    val title = "How does your client receive their income?"
     val heading: String = title
-    val business = "Sole trader business"
-    val property = "Renting out a UK property"
-    val both = "Their sole trader business and renting out a UK property"
+    val business = "Self-employed"
+    val ukProperty = "Rent out a property in the UK"
+    val foreignProperty = "Rent out a foreign property outside the UK"
   }
 
   object Property {

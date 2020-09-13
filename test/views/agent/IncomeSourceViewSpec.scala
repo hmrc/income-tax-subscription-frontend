@@ -33,32 +33,43 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
     incomeSourceForm = IncomeSourceForm.incomeSourceForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
-    isEditMode = isEditMode
+    isEditMode = isEditMode,
+    foreignProperty = true
   )(FakeRequest(), implicitly, appConfig)
 
-  "The Income source view" should {
-    val testPage: TestView = TestView(
-      name = "Income source View",
+  "The Income Source view" should {
+    val testPage = TestView(
+      name = "Income Source View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = false, addFormErrors = false)
+      page = page(isEditMode = false,
+        addFormErrors = false
+      )
     )
 
-    val form = testPage.getForm("Income source form")(actionCall = action)
-    form.mustHaveRadioSet(
-      legend = messages.heading,
-      radioName = IncomeSourceForm.incomeSource
-    )(
-      IncomeSourceForm.option_business -> messages.business,
-      IncomeSourceForm.option_property -> messages.property,
-      IncomeSourceForm.option_both -> messages.both
+    val form = testPage.getForm("Income Source form")(actionCall = action)
+
+    form.mustHaveCheckboxWithId(
+      id = "Business",
+      name = "Business",
+      message = messages.business
+    )
+    form.mustHaveCheckboxWithId(
+      id = "UkProperty",
+      name = "UkProperty",
+      message = messages.ukProperty
+    )
+    form.mustHaveCheckboxWithId(
+      id = "ForeignProperty",
+      name = "ForeignProperty",
+      message = messages.foreignProperty
     )
     form.mustHaveContinueButton()
 
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore():TestView = TestView(
+    def documentCore(): TestView = TestView(
       name = "Income source View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

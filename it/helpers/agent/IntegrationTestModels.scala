@@ -1,10 +1,10 @@
 
 package helpers.agent
 
+
 import models._
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.common._
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
-import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import utilities.SubscriptionDataKeys
@@ -30,7 +30,7 @@ object IntegrationTestModels {
 
   val fullSubscriptionData: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(testIncomeSourceBoth),
+      incomeSource = Some(testIncomeSourceAll),
       matchTaxYear = Some(testMatchTaxYearYes),
       selectedTaxYear = Some(testAccountingYearCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
@@ -40,16 +40,16 @@ object IntegrationTestModels {
     )
 
   def subscriptionData(
-                    incomeSource: Option[IncomeSourceType] = None,
-                    matchTaxYear: Option[MatchTaxYearModel] = None,
-                    selectedTaxYear: Option[AccountingYearModel] = None,
-                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
-                    businessName: Option[BusinessNameModel] = None,
-                    accountingMethod: Option[AccountingMethodModel] = None,
-                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None)
-                    : Map[String, JsValue] = {
+                        incomeSource: Option[IncomeSourceModel] = None,
+                        matchTaxYear: Option[MatchTaxYearModel] = None,
+                        selectedTaxYear: Option[AccountingYearModel] = None,
+                        accountingPeriodDate: Option[AccountingPeriodModel] = None,
+                        businessName: Option[BusinessNameModel] = None,
+                        accountingMethod: Option[AccountingMethodModel] = None,
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None)
+  : Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceType.format.writes(model)) ++
+      incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       accountingPeriodDate.map(model => SubscriptionDataKeys.AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => SubscriptionDataKeys.BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
@@ -60,11 +60,13 @@ object IntegrationTestModels {
 
   }
 
-  lazy val testIncomeSourceBusiness: Business.type = Business
+  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
 
-  lazy val testIncomeSourceProperty: UkProperty.type = UkProperty
+  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
 
-  lazy val testIncomeSourceBoth: Both.type = Both
+  lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
+
+  lazy val testIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   lazy val testClientDetails: UserDetailsModel = helpers.IntegrationTestModels.testUserDetails

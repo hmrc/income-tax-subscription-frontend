@@ -22,8 +22,8 @@ import services.mocks.MockSubscriptionDetailsService
 import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyCommencementDateForm
 import models.DateModel
+import models.common.IncomeSourceModel
 import models.individual.business.OverseasPropertyCommencementDateModel
-import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -65,9 +65,9 @@ class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec 
   val incomeSourceOverseasPropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
 
 
-  def foreignPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceOverseasProperty)
+  def foreignPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceOverseasProperty)
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
 
   "show" should {
@@ -76,7 +76,7 @@ class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec 
 
       mockIndividualWithNoEnrolments()
       mockFetchAllFromSubscriptionDetails(testCacheMap(
-        incomeSourceIndiv = Some(incomeSourceAllTypes)
+        incomeSource = Some(incomeSourceAllTypes)
       ))
 
       status(result) must be(Status.OK)
