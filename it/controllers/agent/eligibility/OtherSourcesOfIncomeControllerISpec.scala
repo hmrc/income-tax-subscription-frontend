@@ -160,6 +160,10 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
       pageContent.select("span[class=error-notification]").text shouldBe OtherSourcesOfIncomeMessages.invalidError
       pageContent.select(s"a[href=#${OtherSourcesOfIncomeForm.fieldName}]").text shouldBe OtherSourcesOfIncomeMessages.invalidError
+
+      val form: Element = pageContent.getForm
+      form.attr("method") shouldBe "POST"
+      form.attr("action") shouldBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.submit().url
     }
 
   }
