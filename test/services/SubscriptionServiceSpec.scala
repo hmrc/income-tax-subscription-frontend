@@ -16,16 +16,19 @@
 
 package services
 
+import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import utilities.individual.TestConstants._
 import utilities.TestModels._
 import models.Cash
-import models.individual.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
+import models.individual.subscription._
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import services.mocks.TestSubscriptionService
+import utilities.AccountingPeriodUtil.getCurrentTaxYear
 import utilities.{AccountingPeriodUtil, TestModels}
 import utilities.individual.TestConstants
 
@@ -197,4 +200,57 @@ class SubscriptionServiceSpec extends TestSubscriptionService
     }
   }
 
+  "SubscriptionService.signUpIncomeSources" should {
+
+    def call: PostSignUpIncomeSourcesResponse = await(TestSubscriptionService.signUpIncomeSources(nino = testNino))
+
+    "return the mtdbsa id when the signUp is successful" in {
+      setupMockSignUpIncomeSourcesSuccess(testNino)
+      call.right.value shouldBe SignUpIncomeSourcesSuccess(testMTDID)
+    }
+
+    "return the error if sign up fails on bad request" in {
+      setupMockSignUpIncomeSourcesFailure(testNino)
+      call.left.value shouldBe SignUpIncomeSourcesFailureResponse(BAD_REQUEST)
+    }
+
+    "return the error if sign up fails on bad formatting" in {
+      setupMockSignUpIncomeSourcesBadFormatting(testNino)
+      call.left.value shouldBe BadlyFormattedSignUpIncomeSourcesResponse
+    }
+
+    "return the error if subscription throws an exception" in {
+      setupMockSignUpIncomeSourcesException(testNino)
+      intercept[Exception](call) shouldBe testException
+    }
+  }
+
+  "SubscriptionService.createIncomeSources" should {
+
+    def call: PostCreateIncomeSourceResponse = await(TestSubscriptionService.createIncomeSources(mtdbsa = testMTDID, testIndividualSummary))
+
+    "return the list of income source ids when the create is successful" in {
+      setupMockCreateIncomeSourcesSuccess(testMTDID,
+        testIndividualSummary.toBusinessSubscriptionDetailsModel.copy(accountingPeriod = getCurrentTaxYear))
+      call.right.value shouldBe CreateIncomeSourcesSuccess()
+    }
+
+    "return the error if create fails on bad request" in {
+      setupMockCreateIncomeSourcesFailure(testMTDID,
+        testIndividualSummary.toBusinessSubscriptionDetailsModel.copy(accountingPeriod = getCurrentTaxYear))
+      call.left.value shouldBe CreateIncomeSourcesFailureResponse(BAD_REQUEST)
+    }
+
+    "return the error if create fails on bad formatting" in {
+      setupMockCreateIncomeSourcesBadFormatting(testMTDID,
+        testIndividualSummary.toBusinessSubscriptionDetailsModel.copy(accountingPeriod = getCurrentTaxYear))
+      call.left.value shouldBe BadlyFormattedCreateIncomeSourcesResponse
+    }
+
+    "return the error if subscription throws an exception" in {
+      setupMockCreateIncomeSourcesException(testMTDID,
+        testIndividualSummary.toBusinessSubscriptionDetailsModel.copy(accountingPeriod = getCurrentTaxYear))
+      intercept[Exception](call) shouldBe testException
+    }
+  }
 }

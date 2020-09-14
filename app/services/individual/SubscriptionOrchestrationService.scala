@@ -19,8 +19,8 @@ package services.individual
 import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
-import models.{ConnectorError, SummaryModel}
-import models.individual.subscription.SubscriptionSuccess
+import models.individual.subscription.{SignUpIncomeSourcesSuccess, SubscriptionSuccess}
+import models.{ConnectorError, IndividualSummary, SummaryModel}
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -32,8 +32,14 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                  enrolmentService: EnrolmentService
                                                 )(implicit ec: ExecutionContext) {
 
-  def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
-    createSubscriptionCore(nino, summaryModel)
+  def createSubscription(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false)
+                        (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+    if(isReleaseFourEnabled) {
+      signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[IndividualSummary])
+    } else {
+      createSubscriptionCore(nino, summaryModel)
+    }
+  }
 
   private[services] def createSubscriptionCore(nino: String, summaryModel: SummaryModel)
                                               (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
@@ -51,6 +57,19 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     val res = for {
       _ <- EitherT(enrolmentService.enrol(mtditId, nino))
     } yield mtditId
+
+    res.value
+  }
+
+  private[services] def signUpAndCreateIncomeSources(nino: String, individualSummary: IndividualSummary)
+                                                    (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+    val res = for {
+      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
+      mtdbsa = signUpResponse.mtdbsa
+      _ <- EitherT(subscriptionService.createIncomeSources(mtdbsa, individualSummary))
+      _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))
+      _ <- EitherT(enrolAndRefresh(mtdbsa, nino))
+    } yield SubscriptionSuccess(mtdbsa)
 
     res.value
   }

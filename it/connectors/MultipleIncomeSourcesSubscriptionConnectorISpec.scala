@@ -4,8 +4,8 @@ package connectors
 import connectors.individual.subscription.MultipleIncomeSourcesSubscriptionConnector
 import connectors.stubs.MultipleIncomeSourcesSubscriptionAPIStub._
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{testMtdId, testMtdId2, testNino}
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
+import helpers.IntegrationTestConstants.{testMtdId, testNino}
+import models.common.{AccountingMethodPropertyModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
 import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
@@ -48,14 +48,14 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
   "MultipleIncomeSourcesSubscription createIncomeSources" should {
     val businessDetailsModel = BusinessSubscriptionDetailsModel(
       accountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2018"), DateModel("5", "4", "2019")),
-      selfEmploymentsData = Seq(SelfEmploymentData(
+      selfEmploymentsData = Some(Seq(SelfEmploymentData(
         id = "id1",
         businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "2017"))),
         businessName = Some(BusinessNameModel("ABC Limited")),
         businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
         businessAddress = Some(BusinessAddressModel("12345", Address(Seq("line1", "line2", "line3", "line4"), "TF3 4NT")))
-      )),
-      accountingMethod = AccountingMethodModel(Cash),
+      ))),
+      accountingMethod = Some(Cash),
       incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
       propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("6", "7", "2018"))),
       propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
@@ -65,17 +65,17 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
     "return CreateIncomeSourcesSuccess when valid response is returned" in {
 
-      stubPostSubscription(testNino, businessDetailsModel)(NO_CONTENT)
+      stubPostSubscription(testMtdId, businessDetailsModel)(NO_CONTENT)
 
-      val res = TestMisSubscriptionConnector.createIncomeSources(testNino, businessDetailsModel)
+      val res = TestMisSubscriptionConnector.createIncomeSources(testMtdId, businessDetailsModel)
 
       await(res) shouldBe Right(CreateIncomeSourcesSuccess())
     }
 
     "return CreateIncomeSourcesFailureResponse if the request fails" in {
-      stubPostSubscription(testNino, businessDetailsModel)(INTERNAL_SERVER_ERROR)
+      stubPostSubscription(testMtdId, businessDetailsModel)(INTERNAL_SERVER_ERROR)
 
-      val res = TestMisSubscriptionConnector.createIncomeSources(testNino, businessDetailsModel)
+      val res = TestMisSubscriptionConnector.createIncomeSources(testMtdId, businessDetailsModel)
 
       await(res) shouldBe Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
     }

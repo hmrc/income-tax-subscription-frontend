@@ -16,6 +16,7 @@
 
 package controllers.individual.subscription
 
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.common.AccountingMethodModel
@@ -27,8 +28,8 @@ import play.api.test.Helpers._
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.SubscriptionDataUtil._
 import utilities.SubscriptionDataKeys.MtditId
+import utilities.SubscriptionDataUtil._
 import utilities.TestModels._
 import utilities.individual.ImplicitDateFormatterImpl
 import utilities.individual.TestConstants._
@@ -97,13 +98,37 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     def call: Future[Result] = TestCheckYourAnswersController.submit(request)
 
-    "When the submission is successful" should {
+    "When the submission is successful and release four is disabled" should {
       lazy val result = call
 
       "return a redirect status (SEE_OTHER - 303)" in {
+        disable(ReleaseFour)
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchAllFromSubscriptionDetails(testCacheMap)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
+        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+        mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), false)
+        status(result) must be(Status.SEE_OTHER)
+        await(result)
+        verifySubscriptionDetailsSave(MtditId, 1)
+        verifySubscriptionDetailsFetchAll(2)
+      }
+
+      s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
+        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show().url)
+      }
+    }
+
+    "When the submission is successful and release four is enabled" should {
+      lazy val result = call
+
+      "return a redirect status (SEE_OTHER - 303)" in {
+        enable(ReleaseFour)
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchAllFromSubscriptionDetails(testCacheMap)
+        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+        mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), true)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -119,8 +144,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a internalServer error" in {
+        disable(ReleaseFour)
         mockFetchAllFromSubscriptionDetails(testCacheMap)
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary())
+        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+        mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(), false)
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifySubscriptionDetailsFetchAll(1)
         verifySubscriptionDetailsSave(MtditId, 0)
@@ -128,6 +156,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
 
   }
+
 
   "The back url" when {
     s"point to the ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url} when the income source is Business" in {

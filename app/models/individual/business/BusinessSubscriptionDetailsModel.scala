@@ -16,13 +16,14 @@
 
 package models.individual.business
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, OverseasAccountingMethodPropertyModel}
+import models.AccountingMethod
+import models.common.{AccountingMethodPropertyModel, OverseasAccountingMethodPropertyModel}
 import models.individual.incomesource.IncomeSourceModel
 import play.api.libs.json.Json
 
 case class BusinessSubscriptionDetailsModel(accountingPeriod: AccountingPeriodModel,
-                                            selfEmploymentsData: Seq[SelfEmploymentData],
-                                            accountingMethod: AccountingMethodModel,
+                                            selfEmploymentsData: Option[Seq[SelfEmploymentData]] = None,
+                                            accountingMethod: Option[AccountingMethod] = None,
                                             incomeSource: IncomeSourceModel,
                                             propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
                                             propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None,

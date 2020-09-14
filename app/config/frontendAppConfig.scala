@@ -35,6 +35,8 @@ trait AppConfig extends FeatureSwitching {
   val subscriptionUrlPost: String
   val userMatchingUrl: String
   val clientMatchingUrl: String
+  val signUpIncomeSourcesUrl: String
+  val createIncomeSourcesUrl: String
   val authUrl: String
   val preferencesFrontend: String
   val preferencesFrontendRedirect: String
@@ -158,6 +160,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val subscriptionUrlPost = s"$microServiceUrl/income-tax-subscription/subscription-v2"
   override lazy val userMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
   override lazy val clientMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
+  override lazy val signUpIncomeSourcesUrl = s"$microServiceUrl/income-tax-subscription/mis/sign-up"
+  override lazy val createIncomeSourcesUrl = s"$microServiceUrl/income-tax-subscription/mis/create"
 
   override def storeNinoUrl(token: String): String = s"$microServiceUrl/income-tax-subscription/identifier-mapping/$token"
 

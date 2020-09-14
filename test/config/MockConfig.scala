@@ -28,6 +28,8 @@ trait MockConfig extends AppConfig {
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"
   override val subscriptionUrlPost: String = "/income-tax-subscription/subscription-v2"
   override val clientMatchingUrl = "/income-tax-subscription/client-matching"
+  override val signUpIncomeSourcesUrl = "/income-tax-subscription/mis/sign-up"
+  override val createIncomeSourcesUrl = "/income-tax-subscription/mis/create"
   override val microServiceUrl: String = "subscription-service"
   override val agentMicroserviceUrl: String = "/agent-subscription"
   override val preferencesFrontend: String = ""
