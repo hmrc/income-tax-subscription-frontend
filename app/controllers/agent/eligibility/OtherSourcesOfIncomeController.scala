@@ -43,7 +43,7 @@ class OtherSourcesOfIncomeController @Inject()(val authService: AuthService)
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       otherSourcesOfIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(other_sources_of_income(formWithErrors, routes.OtherSourcesOfIncomeController.show(), backUrl)),
+        formWithErrors => BadRequest(other_sources_of_income(formWithErrors, routes.OtherSourcesOfIncomeController.submit(), backUrl)),
         {
           case Yes => Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
           case No => Redirect(controllers.agent.eligibility.routes.SoleTraderController.show())
