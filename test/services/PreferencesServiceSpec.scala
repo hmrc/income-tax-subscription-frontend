@@ -16,15 +16,15 @@
 
 package services
 
-import utilities.individual.TestConstants._
 import models.{Activated, Unset}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
-import play.api.i18n.{MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.TestPreferencesService
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService with EitherValues {
 

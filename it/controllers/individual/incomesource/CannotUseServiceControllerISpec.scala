@@ -19,7 +19,6 @@ package controllers.individual.incomesource
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.OK
-import play.api.i18n.Messages
 
 class CannotUseServiceControllerISpec extends ComponentSpecBase {
 

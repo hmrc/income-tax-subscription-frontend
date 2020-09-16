@@ -22,8 +22,8 @@ import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, GetUse
 import connectors.agent.mocks.{MockEnrolmentStoreProxyConnector, MockUsersGroupsSearchConnector}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.Helpers._
-import services.agent.{AssignEnrolmentToUserService, AutoEnrolmentService, CheckEnrolmentAllocationService}
 import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
+import services.agent.{AssignEnrolmentToUserService, AutoEnrolmentService, CheckEnrolmentAllocationService}
 import services.mocks.{MockAssignEnrolmentToUserService, MockCheckEnrolmentAllocationService}
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.HeaderCarrier

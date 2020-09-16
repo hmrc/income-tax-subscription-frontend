@@ -17,12 +17,12 @@
 package services
 
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
-import utilities.HttpResult.HttpConnectorError
-import utilities.individual.TestConstants.testUtr
 import play.api.libs.json.JsError
 import play.api.test.Helpers._
 import services.mocks.TestGetEligibilityStatusService
 import uk.gov.hmrc.http.HttpResponse
+import utilities.HttpResult.HttpConnectorError
+import utilities.individual.TestConstants.testUtr
 
 import scala.concurrent.Future
 

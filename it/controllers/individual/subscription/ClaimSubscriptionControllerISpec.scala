@@ -17,13 +17,13 @@
 package controllers.individual.subscription
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import utilities.SubscriptionDataKeys.MtditId
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testGroupId, testMtdId}
 import helpers.IntegrationTestModels.testEnrolmentKey
 import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.libs.json.Json.toJson
+import utilities.SubscriptionDataKeys.MtditId
 
 
 class ClaimSubscriptionControllerISpec extends ComponentSpecBase {

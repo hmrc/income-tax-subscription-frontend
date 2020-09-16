@@ -16,7 +16,6 @@
 
 package models.common
 
-import agent.assets.MessageLookup.PropertyAccountingMethod
 import models._
 import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel

@@ -20,7 +20,7 @@ import connectors.individual.subscription.httpparsers.CreateIncomeSourcesRespons
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import connectors.individual.subscription.mocks.{MockSubscriptionConnector, MockMisSubscriptionConnector}
+import connectors.individual.subscription.mocks.{MockMisSubscriptionConnector, MockSubscriptionConnector}
 import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import models.{IndividualSummary, SummaryModel}
 import org.mockito.ArgumentMatchers

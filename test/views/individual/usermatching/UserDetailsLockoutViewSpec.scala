@@ -17,7 +17,6 @@
 package views.individual.usermatching
 
 import assets.MessageLookup.{Base => commonMessages, UserDetailsLockout => messages}
-
 import views.ViewSpecTrait
 
 class UserDetailsLockoutViewSpec extends ViewSpecTrait {

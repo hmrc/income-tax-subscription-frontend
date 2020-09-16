@@ -23,7 +23,6 @@ import cats.implicits._
 import config.AppConfig
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup._
-import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
 import utilities.ITSASessionKeys.JourneyStateKey

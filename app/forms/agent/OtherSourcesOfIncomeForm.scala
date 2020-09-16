@@ -18,8 +18,8 @@ package forms.agent
 
 import forms.submapping.YesNoMapping
 import models.YesNo
-import play.api.data.{Form, Mapping}
-import play.api.data.Forms.{of, single}
+import play.api.data.Form
+import play.api.data.Forms.single
 import play.api.data.validation.Invalid
 
 object OtherSourcesOfIncomeForm {

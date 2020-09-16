@@ -21,10 +21,9 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.AuthStub
-import models.common.AccountingMethodModel
 import models.individual.business.MatchTaxYearModel
 import models.individual.subscription.IncomeSourceType
-import models.{Cash, No, Yes}
+import models.{No, Yes}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap

@@ -25,7 +25,7 @@ import play.api.mvc._
 import services.AuthService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,15 +42,16 @@ abstract class BaseFrontendController @Inject()(implicit val mcc: MessagesContro
 
   protected trait AuthenticatedActions[User <: IncomeTaxUser] {
 
-    def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel) => User
+    def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => User
 
     def apply(action: Request[AnyContent] => User => Result): Action[AnyContent] = async(action andThen (_ andThen Future.successful))
 
     protected def asyncInternal(predicate: AuthPredicate[User])(action: ActionBody[User]): Action[AnyContent] =
       Action.async { implicit request =>
-        authService.authorised().retrieve(allEnrolments and affinityGroup and credentialRole and confidenceLevel) {
-          case enrolments ~ affinity ~ role ~ confidence =>
-            implicit val user: User = userApply(enrolments, affinity, role, confidence)
+        authService.authorised().retrieve(allEnrolments and affinityGroup and credentialRole and confidenceLevel and credentials) {
+          case enrolments ~ affinity ~ role ~ confidence ~ credentials=>
+            implicit val user: User = userApply(enrolments, affinity, role, confidence,
+              credentials.map(_.providerId).getOrElse(throw UnsupportedAuthProvider()))
 
             predicate.apply(request)(user) match {
               case Right(AuthPredicateSuccess) => action(request)(user)

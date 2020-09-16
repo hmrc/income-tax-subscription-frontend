@@ -17,10 +17,10 @@
 package views.agent
 
 import agent.assets.MessageLookup
-import utilities.TestModels.testAgentSummaryData
 import models.DateModel
 import org.jsoup.Jsoup
 import play.api.test.FakeRequest
+import utilities.TestModels.testAgentSummaryData
 import utilities.UnitTestTrait
 import views.ViewSpecTrait
 

@@ -41,6 +41,9 @@ object AuthStub extends WireMockMethods {
     Json.obj(
       "allEnrolments" -> enrolments,
       "affinityGroup" -> affinityGroup,
-      "confidenceLevel" -> confidenceLevel
-    )
+      "confidenceLevel" -> confidenceLevel,
+      "optionalCredentials" -> Json.obj(
+        "providerId" -> "",
+        "providerType" -> GovernmentGateway.GGProviderId
+    ))
 }

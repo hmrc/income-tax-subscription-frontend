@@ -16,11 +16,11 @@
 
 package connectors.agent
 
-import utilities.agent.TestConstants._
 import connectors.agent.mocks.TestAgentServicesConnector
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
+import utilities.agent.TestConstants._
 
 class AgentServicesConnectorSpec extends TestAgentServicesConnector {
   "isPreExistingRelationship" should {

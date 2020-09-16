@@ -17,8 +17,8 @@
 package connectors.individual.subscription
 
 import config.AppConfig
-import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser._
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser._
+import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser._
 import javax.inject.{Inject, Singleton}
 import models.individual.business.BusinessSubscriptionDetailsModel
 import uk.gov.hmrc.http.HeaderCarrier

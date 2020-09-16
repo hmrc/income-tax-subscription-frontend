@@ -3,12 +3,12 @@ package connectors
 
 import connectors.agent.UsersGroupsSearchConnector
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UsersFound
-import helpers.IntegrationTestConstants._
 import connectors.stubs.UsersGroupsSearchStub._
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants._
+import play.api.http.Status.NON_AUTHORITATIVE_INFORMATION
 import uk.gov.hmrc.auth.core.{Assistant, User}
 import uk.gov.hmrc.http.HeaderCarrier
-import play.api.http.Status.NON_AUTHORITATIVE_INFORMATION
 
 class UsersGroupsSearchISpec extends ComponentSpecBase {
 

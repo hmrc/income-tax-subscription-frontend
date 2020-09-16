@@ -27,7 +27,7 @@ abstract class StatelessController @Inject()(implicit mcc: MessagesControllerCom
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 
-    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
     override val async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(statelessDefaultPredicate)
 

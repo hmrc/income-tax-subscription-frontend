@@ -18,9 +18,9 @@ package services
 
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import connectors.individual.eligibility.httpparsers.EligibilityStatus
-import utilities.HttpResult.HttpResult
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.HttpResult.HttpResult
 
 import scala.concurrent.{ExecutionContext, Future}
 

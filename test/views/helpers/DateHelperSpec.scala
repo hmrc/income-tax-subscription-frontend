@@ -21,11 +21,8 @@ import forms.submapping.DateMapping._
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import org.scalatest.Matchers._
-import play.api.data.{Field, Form}
-import play.api.http.HeaderNames
+import play.api.data.Form
 import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.mvc.Cookie
-import play.api.test.FakeRequest
 import utilities.UnitTestTrait
 import views.html.helpers.dateHelper
 

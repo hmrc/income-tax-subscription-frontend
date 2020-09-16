@@ -17,7 +17,7 @@
 package controllers.utils
 
 import models.common.AccountingMethodModel
-import models.individual.business.{OverseasPropertyCommencementDateModel, MatchTaxYearModel, PropertyCommencementDateModel}
+import models.individual.business.{MatchTaxYearModel, OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
 import play.api.libs.functional.~

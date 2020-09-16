@@ -20,7 +20,6 @@ import java.net.URLEncoder
 import java.time.LocalDateTime
 
 import helpers.IntegrationTestConstants._
-import play.api.libs.Crypto
 import play.api.libs.crypto.DefaultCookieSigner
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
 import uk.gov.hmrc.http.SessionKeys

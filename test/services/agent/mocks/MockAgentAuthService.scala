@@ -17,13 +17,14 @@
 package services.agent.mocks
 
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatestplus.mockito.MockitoSugar
 import services.AuthService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.agent.TestConstants.testCredId
 import utilities.agent.{Constants, TestConstants}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -58,9 +59,9 @@ trait MockAgentAuthService extends BeforeAndAfterEach with MockitoSugar {
         })
   }
 
-  def mockAgent(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(arnEnrolment)), Some(AffinityGroup.Agent)), Some(User)), testConfidenceLevel))
+  def mockAgent(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(new ~(Enrolments(Set(arnEnrolment)), Some(AffinityGroup.Agent)), Some(User)), testConfidenceLevel), Some(Credentials(testCredId,""))))
 
-  def mockNotAgent(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set()), Some(AffinityGroup.Agent)), Some(User)), testConfidenceLevel))
+  def mockNotAgent(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(new ~(Enrolments(Set()), Some(AffinityGroup.Agent)), Some(User)), testConfidenceLevel), Some(Credentials(testCredId,""))))
 
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())

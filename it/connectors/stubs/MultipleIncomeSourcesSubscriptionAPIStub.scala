@@ -2,7 +2,7 @@
 package connectors.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import helpers.IntegrationTestConstants.{testMtdId, testMtdId2}
+import helpers.IntegrationTestConstants.testMtdId
 import helpers.servicemocks.WireMockMethods
 import models.individual.business.BusinessSubscriptionDetailsModel
 import play.api.libs.json.{JsValue, Json}

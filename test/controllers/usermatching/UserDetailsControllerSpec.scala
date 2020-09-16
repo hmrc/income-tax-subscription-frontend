@@ -59,14 +59,14 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
     )
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
-    SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+    SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "Calling the show action of the UserDetailsController with an authorised user" should {
     def call(request: Request[AnyContent]): Future[Result] = TestUserDetailsController.show(isEditMode = false)(request)
 
     "return ok (200)" in {
-      setupMockNotLockedOut(testUserId.value)
+      setupMockNotLockedOut(testCredId)
 
       val r = request.buildRequest(None)
 
@@ -102,7 +102,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
           s"redirect to '${controllers.usermatching.routes.ConfirmUserController.show().url}" in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
-            setupMockNotLockedOut(testUserId.value)
+            setupMockNotLockedOut(testCredId)
 
             val r = request.buildRequest(None)
 
@@ -122,7 +122,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
           s"redirect to '${controllers.usermatching.routes.ConfirmUserController.show().url} and deleted all pre-existing entries in Subscription Details " in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
-            setupMockNotLockedOut(testUserId.value)
+            setupMockNotLockedOut(testCredId)
 
             val previousUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT")
 
@@ -143,7 +143,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
           s"redirect to '${controllers.usermatching.routes.ConfirmUserController.show().url} but do not delete Subscription Details " in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
-            setupMockNotLockedOut(testUserId.value)
+            setupMockNotLockedOut(testCredId)
 
             val r = request.buildRequest(testUserDetails)
 
@@ -173,7 +173,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
         "return a redirect status (BAD_REQUEST - 400)" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          setupMockNotLockedOut(testUserId.value)
+          setupMockNotLockedOut(testCredId)
 
           val badResult = callSubmit(isEditMode = editMode)
 
@@ -184,7 +184,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         }
 
         "return HTML" in {
-          setupMockNotLockedOut(testUserId.value)
+          setupMockNotLockedOut(testCredId)
 
           val badResult = callSubmit(isEditMode = editMode)
 
@@ -193,7 +193,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         }
 
         "render the 'User Details page'" in {
-          setupMockNotLockedOut(testUserId.value)
+          setupMockNotLockedOut(testCredId)
 
           val badResult = callSubmit(isEditMode = editMode)
           val document = Jsoup.parse(contentAsString(badResult))
@@ -207,14 +207,14 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
   "If the user is locked out" should {
     s"calling show should redirect them to ${controllers.usermatching.routes.UserDetailsLockoutController.show().url}" in {
-      setupMockLockedOut(testUserId.value)
+      setupMockLockedOut(testCredId)
       lazy val result = TestUserDetailsController.show(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsLockoutController.show().url
     }
 
     s"calling submit should redirect them to ${controllers.usermatching.routes.UserDetailsLockoutController.show().url}" in {
-      setupMockLockedOut(testUserId.value)
+      setupMockLockedOut(testCredId)
       lazy val result = TestUserDetailsController.submit(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsLockoutController.show().url

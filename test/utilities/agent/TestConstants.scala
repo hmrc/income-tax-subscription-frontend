@@ -17,13 +17,14 @@
 package utilities.agent
 
 import java.time.LocalDate
+import java.util.UUID
 
 import models.DateModel
 import models.individual.subscription._
 import models.usermatching.LockedOut
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
-import Constants.{agentServiceEnrolmentName, agentServiceIdentifierKey, mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
+import utilities.agent.Constants.{agentServiceEnrolmentName, agentServiceIdentifierKey, mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import utilities.individual
 
 object TestConstants {
@@ -51,6 +52,8 @@ object TestConstants {
   val testException: Exception = individual.TestConstants.testException
 
   val minStartDate: LocalDate = LocalDate.of(LocalDate.now.getYear, 4, 6)
+
+  val testCredId = UUID.randomUUID().toString
 
   val testSubscriptionSuccess = Right(SubscriptionSuccess(testMTDID))
 

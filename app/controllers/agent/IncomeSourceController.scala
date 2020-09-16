@@ -24,8 +24,7 @@ import models.individual.subscription.{Both, Business, IncomeSourceType, UkPrope
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.AuthService
-import services.SubscriptionDetailsService
+import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

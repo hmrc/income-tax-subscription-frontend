@@ -21,9 +21,9 @@ import helpers.IntegrationTestModels
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.SubscriptionSuccess
 import play.api.http.Status
-import play.api.libs.json.{JsObject, Json, Writes}
-import utilities.{AccountingPeriodUtil, ITSASessionKeys}
+import play.api.libs.json.{JsObject, Json}
 import utilities.JsonUtils._
+import utilities.{AccountingPeriodUtil, ITSASessionKeys}
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"

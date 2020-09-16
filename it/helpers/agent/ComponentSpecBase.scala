@@ -38,6 +38,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.test.UnitSpec
+
 import scala.collection.JavaConversions._
 
 trait ComponentSpecBase extends UnitSpec

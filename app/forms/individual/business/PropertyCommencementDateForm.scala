@@ -18,13 +18,13 @@ package forms.individual.business
 
 import java.time.LocalDate
 
+import forms.submapping.DateMapping._
+import forms.validation.utils.ConstraintUtil._
 import models.DateModel
+import models.individual.business.PropertyCommencementDateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
-import forms.validation.utils.ConstraintUtil._
-import forms.submapping.DateMapping._
-import models.individual.business.PropertyCommencementDateModel
 
 import scala.util.Try
 

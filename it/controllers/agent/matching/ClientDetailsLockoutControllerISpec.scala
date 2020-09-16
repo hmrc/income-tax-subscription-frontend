@@ -20,7 +20,6 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.{clientDetailsURI, testARN}
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.i18n.Messages
 
 class ClientDetailsLockoutControllerISpec extends ComponentSpecBase {
 

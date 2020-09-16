@@ -16,11 +16,11 @@
 
 package services
 
-import utilities.individual.TestConstants._
 import models.usermatching.CitizenDetailsSuccess
 import org.scalatest.concurrent.ScalaFutures
 import services.mocks.TestCitizenDetailsService
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 

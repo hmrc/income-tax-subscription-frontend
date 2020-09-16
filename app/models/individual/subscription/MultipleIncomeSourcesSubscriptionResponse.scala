@@ -17,7 +17,6 @@
 package models.individual.subscription
 
 import models.ConnectorError
-import play.api.libs.json.{Json, OFormat}
 
 case class CreateIncomeSourcesSuccess()
 

@@ -2,13 +2,11 @@
 package controllers.agent.eligibility
 
 import forms.agent.OtherSourcesOfIncomeForm
-import helpers.ViewSpec
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import org.jsoup.select.Elements
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 

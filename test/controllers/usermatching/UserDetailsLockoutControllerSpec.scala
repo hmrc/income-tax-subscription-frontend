@@ -49,7 +49,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   lazy val TestUserDetailsLockoutController: UserDetailsLockoutController = createTestUserDetailsLockoutController(enableMatchingFeature = true)
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
-    SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+    SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "Calling the 'show' action of the UserDetailsLockoutController" when {
@@ -59,7 +59,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
       lazy val document = Jsoup.parse(contentAsString(result))
 
       "return 200" in {
-        setupMockLockedOut(testUserId.value)
+        setupMockLockedOut(testCredId)
         status(result) must be(Status.OK)
 
         contentType(result) must be(Some("text/html"))
@@ -71,7 +71,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
 
     "the user is not locked out" should {
       s"redirect to ${controllers.usermatching.routes.UserDetailsController.show().url}" in {
-        setupMockNotLockedOut(testUserId.value)
+        setupMockNotLockedOut(testCredId)
 
         lazy val result = TestUserDetailsLockoutController.show(request)
 

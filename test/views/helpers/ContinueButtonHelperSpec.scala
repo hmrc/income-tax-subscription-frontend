@@ -18,7 +18,6 @@ package views.helpers
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
-
 import utilities.UnitTestTrait
 import views.html.helpers.continueButton
 

@@ -17,8 +17,7 @@
 package models
 
 import models.common._
-import models.individual.business._
-import models.individual.business.PropertyCommencementDateModel
+import models.individual.business.{PropertyCommencementDateModel, _}
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription.IncomeSourceType
 import utilities.AccountingPeriodUtil._

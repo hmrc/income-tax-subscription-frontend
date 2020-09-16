@@ -16,11 +16,11 @@
 
 package services.agent
 
-import utilities.agent.TestConstants._
-import utilities.TestModels.testSummaryData
 import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess}
 import play.api.test.Helpers._
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
+import utilities.TestModels.testSummaryData
+import utilities.agent.TestConstants._
 
 import scala.concurrent.Future
 

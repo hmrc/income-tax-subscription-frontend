@@ -17,8 +17,8 @@
 package forms.individual.incomesource
 
 import models.individual.incomesource.IncomeSourceModel
-import play.api.data._
 import play.api.data.Forms._
+import play.api.data._
 
 object IncomeSourceForm {
 

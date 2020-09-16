@@ -18,7 +18,6 @@ package views.agent
 
 import agent.assets.MessageLookup.{IncomeSource => messages}
 import forms.agent.IncomeSourceForm
-
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

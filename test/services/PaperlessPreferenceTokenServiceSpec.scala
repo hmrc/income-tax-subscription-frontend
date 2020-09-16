@@ -16,11 +16,11 @@
 
 package services
 
-import utilities.individual.TestConstants._
 import play.api.test.Helpers._
 import services.mocks.TestPaperlessPreferenceTokenService
-import utilities.UnitTestTrait
 import utilities.SubscriptionDataKeys.PaperlessPreferenceToken
+import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperlessPreferenceTokenService {
   "storeNino" should {

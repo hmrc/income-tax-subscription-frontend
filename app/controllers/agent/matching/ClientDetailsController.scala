@@ -24,8 +24,7 @@ import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.SubscriptionDetailsService
-import services.{AuthService, UserLockoutService}
+import services.{AuthService, SubscriptionDetailsService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}

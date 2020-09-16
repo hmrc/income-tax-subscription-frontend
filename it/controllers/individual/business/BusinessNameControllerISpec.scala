@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.{accountingYearURI,  businessAccountingMethodURI, checkYourAnswersURI}
+import helpers.IntegrationTestConstants.{accountingYearURI, businessAccountingMethodURI, checkYourAnswersURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}

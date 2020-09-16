@@ -18,10 +18,10 @@ package forms.individual.business
 
 import java.time.LocalDate
 
-import forms.submapping.DateMapping._
-import models.DateModel
 import forms.individual.business.PropertyCommencementDateForm.{propertyCommencementDateForm, startDate}
+import forms.submapping.DateMapping._
 import forms.validation.testutils.DataMap.DataMap
+import models.DateModel
 import models.individual.business.PropertyCommencementDateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec

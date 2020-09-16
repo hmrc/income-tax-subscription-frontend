@@ -21,12 +21,11 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.MessagesControllerComponents
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
-import play.api.i18n.I18nSupport
-import play.api.test.FakeRequest
 import uk.gov.hmrc.play.language.LanguageUtils
 
 import scala.concurrent.{ExecutionContextExecutor, Future}

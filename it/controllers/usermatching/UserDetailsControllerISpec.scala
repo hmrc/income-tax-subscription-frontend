@@ -33,8 +33,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
 
-      if (agentLocked) UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
-      else UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+      if (agentLocked) UserLockoutStub.stubUserIsLocked(testCredId)
+      else UserLockoutStub.stubUserIsNotLocked(testCredId)
 
       When("I call GET /user-details")
       IncomeTaxSubscriptionFrontend.showUserDetails()
@@ -71,7 +71,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
       "show the user lock out page" in {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
-        UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
+        UserLockoutStub.stubUserIsLocked(testCredId)
 
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
 
@@ -88,7 +88,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+        UserLockoutStub.stubUserIsNotLocked(testCredId)
 
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
@@ -109,7 +109,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         AuthStub.stubAuthSuccess()
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+        UserLockoutStub.stubUserIsNotLocked(testCredId)
 
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = Some(userDetails), storedSubmission = Some(userDetails))
@@ -130,7 +130,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
-        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+        UserLockoutStub.stubUserIsNotLocked(testCredId)
 
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = Some(userDetails), storedSubmission = Some(userDetails))
@@ -152,7 +152,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         AuthStub.stubAuthSuccess()
         val userDetails = IntegrationTestModels.testUserDetails
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+        UserLockoutStub.stubUserIsNotLocked(testCredId)
 
         When("I call POST /user-details")
         val submittedUserDetails = userDetails.copy(firstName = "NotMatching")

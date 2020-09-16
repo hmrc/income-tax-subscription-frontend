@@ -20,8 +20,6 @@ import connectors.individual.subscription.httpparsers.CreateIncomeSourcesRespons
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import utilities.individual.TestConstants._
-import utilities.TestModels._
 import models.Cash
 import models.individual.subscription._
 import org.scalatest.EitherValues
@@ -29,8 +27,10 @@ import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import services.mocks.TestSubscriptionService
 import utilities.AccountingPeriodUtil.getCurrentTaxYear
-import utilities.{AccountingPeriodUtil, TestModels}
+import utilities.TestModels._
 import utilities.individual.TestConstants
+import utilities.individual.TestConstants._
+import utilities.{AccountingPeriodUtil, TestModels}
 
 
 class SubscriptionServiceSpec extends TestSubscriptionService

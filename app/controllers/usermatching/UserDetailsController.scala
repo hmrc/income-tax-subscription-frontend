@@ -17,17 +17,15 @@
 package controllers.usermatching
 
 import auth.individual.{IncomeTaxSAUser, UserMatchingController}
-import auth.individual.UserMatchingController
 import config.AppConfig
 import forms.usermatching.UserDetailsForm
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService, UserLockoutService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,9 +42,8 @@ class UserDetailsController @Inject()(val authService: AuthService, subscription
     )
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
-    val bearerToken = implicitly[HeaderCarrier].userId.get.value
 
-    lockOutService.getLockoutStatus(bearerToken) flatMap {
+    lockOutService.getLockoutStatus(user.userId) flatMap {
       case Right(NotLockedOut) => f
       case Right(_) => Future.successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show().url))
       case Left(_) => throw new InternalServerException("[UserDetailsController][handleLockOut] failure response from lockout service")

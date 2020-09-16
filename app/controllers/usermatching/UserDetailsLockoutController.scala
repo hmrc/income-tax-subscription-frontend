@@ -23,9 +23,9 @@ import config.AppConfig
 import javax.inject.Inject
 import models.usermatching.{LockedOut, NotLockedOut}
 import play.api.i18n.Messages
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import services.{AuthService, UserLockoutService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,8 +34,7 @@ class UserDetailsLockoutController @Inject()(val authService: AuthService, locko
                                              appConfig: AppConfig, mcc: MessagesControllerComponents) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
-    val bearerToken = implicitly[HeaderCarrier].userId.get.value
-    lockoutService.getLockoutStatus(bearerToken) flatMap {
+    lockoutService.getLockoutStatus(user.userId) flatMap {
       case Right(_: LockedOut) => f
       case Right(NotLockedOut) => Future.successful(Redirect(controllers.usermatching.routes.UserDetailsController.show()))
       case Left(_) => throw new InternalServerException("[UserDetailsLockoutController][handleLockOut] failure response returned from lockout service")

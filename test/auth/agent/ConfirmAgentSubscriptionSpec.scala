@@ -54,13 +54,13 @@ class ConfirmAgentSubscriptionSpec extends UnitTestTrait with FeatureSwitching w
     ITSASessionKeys.NINO -> testNino,
     ITSASessionKeys.UTR -> testUtr
   )
-  lazy val testUser = IncomeTaxSAUser(Enrolments(Set.empty), Some(AffinityGroup.Individual), None, ConfidenceLevel.L200)
+  lazy val testUser = IncomeTaxSAUser(Enrolments(Set.empty), Some(AffinityGroup.Individual), None, ConfidenceLevel.L200, "")
   lazy val testEnrolledUser = IncomeTaxSAUser(Enrolments(Set(
     Enrolment(Constants.mtdItsaEnrolmentName,
       Seq(EnrolmentIdentifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
       "Activated"
     ))
-  ), Some(AffinityGroup.Individual), None, ConfidenceLevel.L200)
+  ), Some(AffinityGroup.Individual), None, ConfidenceLevel.L200,"")
 
   "authPredicates" should {
     s"return $AuthPredicateSuccess when the session contains the correct state" in {

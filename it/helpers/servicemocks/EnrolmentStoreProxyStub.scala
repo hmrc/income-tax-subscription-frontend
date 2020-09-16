@@ -17,10 +17,9 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.{JsValue, Json}
-import helpers.IntegrationTestConstants._
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.principalGroupIdKey
-import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
+import helpers.IntegrationTestConstants._
+import play.api.libs.json.{JsValue, Json}
 
 object EnrolmentStoreProxyStub extends WireMockMethods {
 

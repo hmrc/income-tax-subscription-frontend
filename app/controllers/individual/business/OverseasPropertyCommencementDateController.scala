@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.Answers._
 import controllers.utils.RequireAnswer
 import forms.individual.business.OverseasPropertyCommencementDateForm

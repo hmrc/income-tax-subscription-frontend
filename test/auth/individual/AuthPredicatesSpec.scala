@@ -27,6 +27,7 @@ import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
+import utilities.individual.TestConstants.testCredId
 import utilities.{ITSASessionKeys, UnitTestTrait}
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
@@ -35,22 +36,23 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   import authPredicates._
 
-  private def testUser(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole], confidenceLevel: ConfidenceLevel,
+  private def testUser(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole], confidenceLevel: ConfidenceLevel, userId: String,
                        enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
     enrolments = Enrolments(enrolments.toSet),
     affinityGroup = affinityGroup,
     credentialRole = credentialRole,
-    confidenceLevel
+    confidenceLevel,
+    userId = userId
   )
 
   private def testUser(affinityGroup: Option[AffinityGroup], enrolments: Enrolment*): IncomeTaxSAUser =
-    testUser(affinityGroup, Some(User), testConfidenceLevel, enrolments: _*)
+    testUser(affinityGroup, Some(User), testConfidenceLevel, testCredId, enrolments: _*)
 
   val userWithNinoEnrolment: IncomeTaxSAUser = testUser(None, ninoEnrolment)
   val userWithMtditIdEnrolment: IncomeTaxSAUser = testUser(None, mtdidEnrolment)
   val userWithMtditIdEnrolmentAndNino: IncomeTaxSAUser = testUser(None, ninoEnrolment, mtdidEnrolment)
   val userWithUtrButNoNino: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual), utrEnrolment)
-  val blankUser: IncomeTaxSAUser = testUser(None, None, confidenceLevel = ConfidenceLevel.L0)
+  val blankUser: IncomeTaxSAUser = testUser(None, None, confidenceLevel = ConfidenceLevel.L0, "")
 
   val userWithIndividualAffinity: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual))
   val userWithAgentAffinity: IncomeTaxSAUser = testUser(Some(AffinityGroup.Agent))

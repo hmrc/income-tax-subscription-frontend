@@ -19,8 +19,8 @@ package services
 import java.time.LocalDate
 import java.time.Month.APRIL
 
-import utilities.AccountingPeriodUtil._
 import javax.inject.{Inject, Singleton}
+import utilities.AccountingPeriodUtil._
 import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 
 import scala.Ordering.Implicits._

@@ -21,8 +21,7 @@ import auth.individual.AuthPredicate.AuthPredicate
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
-import services.SubscriptionDetailsService
+import services.{AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.ExecutionContext
 
