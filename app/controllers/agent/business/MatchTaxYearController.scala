@@ -21,8 +21,8 @@ import config.AppConfig
 import forms.agent.MatchTaxYearForm
 import javax.inject.{Inject, Singleton}
 import models.No
+import models.common.IncomeSourceModel
 import models.individual.business.MatchTaxYearModel
-import models.individual.subscription.Both
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
@@ -66,7 +66,7 @@ class MatchTaxYearController @Inject()(val authService: AuthService,
           Redirect(controllers.agent.routes.CheckYourAnswersController.show())
         case (MatchTaxYearModel(No), _) =>
           Redirect(controllers.agent.business.routes.BusinessAccountingPeriodDateController.show(isEditMode))
-        case (_, Some(Both)) =>
+        case (_, Some(IncomeSourceModel(true, true, _))) =>
           Redirect(controllers.agent.business.routes.BusinessAccountingMethodController.show(isEditMode))
         case _ =>
           Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show(isEditMode))

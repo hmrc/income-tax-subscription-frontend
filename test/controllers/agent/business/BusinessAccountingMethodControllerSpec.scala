@@ -19,9 +19,8 @@ package controllers.agent.business
 import utilities.agent.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodForm
-import models.common.AccountingMethodModel
+import models.common.{AccountingMethodModel, IncomeSourceModel}
 import models.individual.business.MatchTaxYearModel
-import models.individual.subscription.{Both, Business}
 import models.{Cash, No, Yes, common}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -53,7 +52,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     s"return $OK" when {
       "the user has not entered an answer previously" in new Test {
         mockFetchAllFromSubscriptionDetails(testCacheMap(
-          incomeSource = Some(Business),
+          incomeSource = Some(IncomeSourceModel(true, false, false)),
           matchTaxYear = Some(MatchTaxYearModel(Yes))
         ))
 
@@ -65,7 +64,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
       }
       "the user has entered the answer previously" in new Test {
         mockFetchAllFromSubscriptionDetails(testCacheMap(
-            incomeSource = Some(Business),
+            incomeSource = Some(IncomeSourceModel(true, false, false)),
             matchTaxYear = Some(MatchTaxYearModel(Yes)),
             accountingMethod = Some(common.AccountingMethodModel(Cash))
           )
@@ -85,7 +84,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     "the users submission is invalid" must {
       s"return $BAD_REQUEST" in new Test {
         mockFetchAllFromSubscriptionDetails(testCacheMap(
-            incomeSource = Some(Business),
+            incomeSource = Some(IncomeSourceModel(true, false, false)),
             matchTaxYear = Some(MatchTaxYearModel(Yes))
           )
         )
@@ -104,7 +103,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         "the user has both business and property income" in new Test {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(
-              incomeSource = Some(Both),
+              incomeSource = Some(IncomeSourceModel(true, true, false)),
               matchTaxYear = Some(MatchTaxYearModel(Yes))
             )
           )
@@ -126,7 +125,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         "the user has business only income" in new Test {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(
-              incomeSource = Some(Business),
+              incomeSource = Some(IncomeSourceModel(true, false, false)),
               matchTaxYear = Some(MatchTaxYearModel(Yes))
             )
           )
@@ -150,7 +149,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
       s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}'" in new Test {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchAllFromSubscriptionDetails(testCacheMap(
-          incomeSource = Some(Business),
+          incomeSource = Some(IncomeSourceModel(true, false, false)),
           matchTaxYear = MatchTaxYearModel(Yes)
         ))
 
@@ -173,28 +172,28 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "in edit mode" should {
       s"point to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in new Test {
-        controller.backUrl(isEditMode = true, Business, MatchTaxYearModel(Yes)) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+        controller.backUrl(isEditMode = true, IncomeSourceModel(true, false, false), MatchTaxYearModel(Yes)) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
       }
     }
 
     "not in edit mode" when {
       "the user does not match the tax year" should {
         s"point to ${controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url}" in new Test {
-          controller.backUrl(isEditMode = false, Business, MatchTaxYearModel(No)) mustBe
+          controller.backUrl(isEditMode = false, IncomeSourceModel(true, false, false), MatchTaxYearModel(No)) mustBe
             controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url
         }
       }
 
       "the user matches the tax year and only has business income" should {
         s"point to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in new Test {
-          controller.backUrl(isEditMode = false, Business, MatchTaxYearModel(Yes)) mustBe
+          controller.backUrl(isEditMode = false, IncomeSourceModel(true, false, false), MatchTaxYearModel(Yes)) mustBe
             controllers.agent.business.routes.WhatYearToSignUpController.show().url
         }
       }
 
       "the user matches the tax year and doesn't just have business income" should {
         s"point to ${controllers.agent.business.routes.MatchTaxYearController.show().url}" in new Test {
-          controller.backUrl(isEditMode = false, Both, MatchTaxYearModel(Yes)) mustBe
+          controller.backUrl(isEditMode = false, IncomeSourceModel(true, true, false), MatchTaxYearModel(Yes)) mustBe
             controllers.agent.business.routes.MatchTaxYearController.show().url
         }
       }

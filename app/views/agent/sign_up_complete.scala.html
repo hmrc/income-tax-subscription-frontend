@@ -29,7 +29,8 @@
 
     @main_template(title = Messages("agent.sign-up-complete.title")) {
 
-        @dataHelper("income-source", summary.incomeSource.map(_.source))
+        @dataHelper("self-employment", summary.incomeSource.map(_.selfEmployment.toString))
+        @dataHelper("uk-property", summary.incomeSource.map(_.ukProperty.toString))
         @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod.toString))
 
         <div class="form-group">

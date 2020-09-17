@@ -19,13 +19,12 @@ package controllers.agent.business
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.MatchTaxYearForm
 import forms.submapping.YesNoMapping
+import models.common.IncomeSourceModel
 import models.individual.business.MatchTaxYearModel
-import models.individual.subscription.IncomeSourceType
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import utilities.SubscriptionDataKeys.IncomeSource
 import utilities.SubscriptionDataKeys.MatchTaxYear
 
 class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscriptionDetailsService {
@@ -38,7 +37,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
 
   class Test(fetchMatchTaxYear: Option[MatchTaxYearModel] = None,
              saveMatchTaxYear: Option[MatchTaxYearModel] = None,
-             fetchIncomeSource: Option[IncomeSourceType] = None) {
+             fetchIncomeSource: Option[IncomeSourceModel] = None) {
 
     val controller = new MatchTaxYearController(
       mockAuthService,
@@ -68,7 +67,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
       "the previous answer matches the current answer" should {
         s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in new Test(
           fetchMatchTaxYear = Some(MatchTaxYearModel(Yes)),
-          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))) {
+          fetchIncomeSource = Some(IncomeSourceModel(true, true, false))) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_yes)
           val result: Result = await(controller.submit(isEditMode = true)(request))
 
@@ -83,7 +82,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
       s"the answer is changed to '$Yes'" should {
         s"redirect to ${routes.BusinessAccountingMethodController.show().url}" in new Test(
           fetchMatchTaxYear = Some(MatchTaxYearModel(No)),
-          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))) {
+          fetchIncomeSource = Some(IncomeSourceModel(true, true, false))) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_yes)
           val result: Result = await(controller.submit(isEditMode = true)(request))
 
@@ -98,7 +97,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
       s"the answer was changed to '$No'" should {
         s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url}" in new Test(
           fetchMatchTaxYear = Some(MatchTaxYearModel(Yes)),
-          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))) {
+          fetchIncomeSource = Some(IncomeSourceModel(true, true, false))) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_no)
           val result: Result = await(controller.submit(isEditMode = true)(request))
 
@@ -114,7 +113,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
     "not in edit mode" when {
       s"the user answers '$Yes'" should {
         s"redirect to ${routes.BusinessAccountingMethodController.show().url} when they have selected both income sources" in new Test(
-          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))
+          fetchIncomeSource = Some(IncomeSourceModel(true, true, false))
         ) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_yes)
           val result: Result = await(controller.submit(isEditMode = false)(request))
@@ -127,7 +126,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
         }
 
         s"redirect to ${routes.WhatYearToSignUpController.show().url} when they have selected only business income sources" in new Test(
-          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.business))
+          fetchIncomeSource = Some(IncomeSourceModel(true, false, false))
         ) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_yes)
           val result: Result = await(controller.submit(isEditMode = false)(request))
@@ -142,7 +141,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
 
       s"the user answers '$No'" should {
         s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url} when they have selected both income sources" in new Test(
-          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))
+          fetchIncomeSource = Some(IncomeSourceModel(true, true, false))
         ) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_no)
           val result: Result = await(controller.submit(isEditMode = false)(request))
@@ -155,7 +154,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockSubscr
         }
 
         s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url} when they have selected only business income sources" in new Test(
-          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.business))
+          fetchIncomeSource = Some(IncomeSourceModel(true, false, false))
         ) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_no)
           val result: Result = await(controller.submit(isEditMode = false)(request))

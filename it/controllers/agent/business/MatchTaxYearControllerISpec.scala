@@ -21,8 +21,8 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.AuthStub
+import models.common.IncomeSourceModel
 import models.individual.business.MatchTaxYearModel
-import models.individual.subscription.IncomeSourceType
 import models.{No, Yes}
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -75,15 +75,15 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           val userInput: MatchTaxYearModel = MatchTaxYearModel(Yes)
 
           val expectedCacheMap = CacheMap("", Map(
-            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
-            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (Yes))))
+            SubscriptionDataKeys.IncomeSource -> Json.toJson((IncomeSourceModel(true, true, false))),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel(Yes))))
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(matchTaxYear = Some(userInput),
-            incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(matchTaxYear = Some(userInput),
+            incomeSource = Some(IncomeSourceModel(true, true, false))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -106,14 +106,14 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           val userInput: MatchTaxYearModel = MatchTaxYearModel(Yes)
 
           val expectedCacheMap = CacheMap("", Map(
-            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
-            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (Yes))))
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceModel(true, true, false)),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel(Yes))))
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(matchTaxYear = Some(previousAnswer),
-            incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+            incomeSource = Some(IncomeSourceModel(true, true, false))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -136,14 +136,14 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           val userInput: MatchTaxYearModel = MatchTaxYearModel(No)
 
           val expectedCacheMap = CacheMap("", Map(
-            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
-            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (No))))
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceModel(true, true, false)),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel(No))))
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(matchTaxYear = Some(previousAnswer),
-            incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+            incomeSource = Some(IncomeSourceModel(true, true, false))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -166,12 +166,12 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         s"redirect to ${routes.BusinessAccountingMethodController.show().url}" in {
           val userInput: MatchTaxYearModel = MatchTaxYearModel(Yes)
           val expectedCacheMap = CacheMap("", Map(
-            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
-            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (Yes))))
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceModel(true, true, false)),
+            SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel(Yes))))
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
@@ -186,7 +186,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
             redirectURI(businessAccountingMethodURI)
           )
 
-          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.MatchTaxYear, expectedCacheMap , Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.MatchTaxYear, expectedCacheMap, Some(1))
         }
       }
       s"the user answers '$No'" should {
@@ -194,12 +194,12 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           val userInput: MatchTaxYearModel = MatchTaxYearModel(No)
 
           val expectedCacheMap = CacheMap("", Map(
-            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceModel(true, true, false)),
             SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel(No))))
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.MatchTaxYear, userInput)
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")

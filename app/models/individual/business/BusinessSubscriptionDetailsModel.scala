@@ -17,8 +17,7 @@
 package models.individual.business
 
 import models.AccountingMethod
-import models.common.{AccountingMethodPropertyModel, OverseasAccountingMethodPropertyModel}
-import models.individual.incomesource.IncomeSourceModel
+import models.common.{AccountingMethodPropertyModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel}
 import play.api.libs.json.Json
 
 case class BusinessSubscriptionDetailsModel(accountingPeriod: AccountingPeriodModel,
@@ -31,6 +30,6 @@ case class BusinessSubscriptionDetailsModel(accountingPeriod: AccountingPeriodMo
                                             overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None
                                            )
 
-object BusinessSubscriptionDetailsModel{
+object BusinessSubscriptionDetailsModel {
   implicit val format = Json.format[BusinessSubscriptionDetailsModel]
 }

@@ -20,8 +20,8 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.AccountingPeriodDateForm
 import javax.inject.{Inject, Singleton}
+import models.common.IncomeSourceModel
 import models.individual.business.AccountingPeriodModel
-import models.individual.subscription.{Both, IncomeSourceType}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -73,10 +73,10 @@ class BusinessAccountingPeriodDateController @Inject()(val authService: AuthServ
         accountingPeriod =>
           subscriptionDetailsService.fetchIncomeSource() flatMap { incomeSources =>
             if (accountingPeriodService.checkEligibleAccountingPeriod(accountingPeriod.startDate.toLocalDate,
-              accountingPeriod.endDate.toLocalDate, incomeSources.contains(Both))) {
+              accountingPeriod.endDate.toLocalDate, incomeSources.contains(IncomeSourceModel(true, true, false)))) {
               for {
                 cache <- subscriptionDetailsService.fetchAll() map (_.get)
-                _ = cache.agentGetIncomeSource map (source => IncomeSourceType(source.source))
+                _ = cache.getIncomeSource
                 _ <- subscriptionDetailsService.saveAccountingPeriodDate(accountingPeriod)
               } yield {
                 if (isEditMode) {
@@ -101,7 +101,3 @@ class BusinessAccountingPeriodDateController @Inject()(val authService: AuthServ
 
   }
 }
-
-
-
-

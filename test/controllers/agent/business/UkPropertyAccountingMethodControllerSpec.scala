@@ -48,7 +48,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceProperty))
 
   def bothPropertyAndBusinessIncomeSource: CacheMap = testCacheMap(
-    incomeSource = Some(testIncomeSourceBoth)
+    incomeSource = Some(testIncomeSourceBusinessAndUkProperty)
   )
 
   "show" when {

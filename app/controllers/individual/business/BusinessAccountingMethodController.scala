@@ -22,8 +22,7 @@ import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
-import models.common.AccountingMethodModel
-import models.individual.incomesource.IncomeSourceModel
+import models.common.{AccountingMethodModel, IncomeSourceModel}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -66,7 +65,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             } else {
-              subscriptionDetailsService.fetchIndividualIncomeSource() map {
+              subscriptionDetailsService.fetchIncomeSource() map {
                 case Some(IncomeSourceModel(_, true, _)) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty)  =>
@@ -85,7 +84,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     else {
       subscriptionDetailsService.fetchAll() map { cacheMap =>
-        cacheMap.getIncomeSourceModel match {
+        cacheMap.getIncomeSource match {
           case Some(IncomeSourceModel(true, false, _)) =>
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
           case _ =>

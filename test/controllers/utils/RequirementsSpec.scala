@@ -16,9 +16,8 @@
 
 package controllers.utils
 
-import models.common.AccountingMethodModel
+import models.common.{AccountingMethodModel, IncomeSourceModel}
 import models.individual.business.MatchTaxYearModel
-import models.individual.subscription.Both
 import models.{Cash, Yes}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -136,21 +135,6 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("/custom-result")
-      }
-    }
-  }
-
-  "Agent - incomeSourceTypeAnswer" must {
-    "return an income source type" when {
-      "present in the cache map" in {
-        val cacheMap: CacheMap = CacheMap("testId", Map(SubscriptionDataKeys.IncomeSource -> Json.toJson(Both)))
-        Answers.incomeSourceTypeAnswer(cacheMap) mustBe Right(Both)
-      }
-    }
-    "return a redirect to the income source controller" when {
-      "not present in the cache map" in {
-        val cacheMap: CacheMap = CacheMap("testId", Map())
-        Answers.incomeSourceTypeAnswer(cacheMap) mustBe Left(Redirect(controllers.agent.routes.IncomeSourceController.show()))
       }
     }
   }

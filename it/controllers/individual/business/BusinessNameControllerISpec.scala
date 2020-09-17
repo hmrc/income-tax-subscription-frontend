@@ -21,9 +21,7 @@ import helpers.IntegrationTestConstants.{accountingYearURI, businessAccountingMe
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
-import models.common.BusinessNameModel
-import models.individual.incomesource.IncomeSourceModel
-import models.individual.subscription.Both
+import models.common.{BusinessNameModel, IncomeSourceModel}
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 
@@ -168,7 +166,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing business name when calling page from Check Your Answers" in {
-        val SubscriptionDetailsIncomeSource = Both
+        val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
         val SubscriptionDetailsBusinessName = BusinessNameModel("testBusiness")
         val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
 

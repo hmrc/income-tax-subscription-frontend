@@ -45,9 +45,9 @@ class UkPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     MockSubscriptionDetailsService
   )
 
-  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceProperty)
+  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceProperty)
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSourceIndiv = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
   "show" should {
     "display the property accounting method view and return OK (200)" in {

@@ -21,13 +21,13 @@ import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.incomesource.IncomeSourceForm
-import models.individual.incomesource.IncomeSourceModel
+import models.common.IncomeSourceModel
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import utilities.SubscriptionDataKeys.IndividualIncomeSource
+import utilities.SubscriptionDataKeys.IncomeSource
 
 import scala.concurrent.Future
 
@@ -68,14 +68,14 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
     "the new income source flow" should {
       "return ok (200)" in {
-        mockFetchIndividualIncomeSourceFromSubscriptionDetails(None)
+        mockFetchIncomeSourceFromSubscriptionDetails(None)
 
         val result = call
         status(result) must be(Status.OK)
 
         await(result)
-        verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-        verifySubscriptionDetailsSave(IndividualIncomeSource, 0)
+        verifySubscriptionDetailsFetch(IncomeSource, 1)
+        verifySubscriptionDetailsSave(IncomeSource, 0)
       }
     }
 
@@ -101,8 +101,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-          verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
 
@@ -116,8 +116,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-            verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
         "Release Four feature switch is enabled" when {
@@ -130,8 +130,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-            verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
       }
@@ -147,8 +147,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-            verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
         "Release Four feature switch is enabled" when {
@@ -162,8 +162,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url)
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-            verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
       }
@@ -178,15 +178,15 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           redirectLocation(goodRequest).get must be(controllers.individual.business.routes.BusinessNameController.show().url)
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-          verifySubscriptionDetailsSave(IndividualIncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
 
       "When it is in edit mode and user's selection has not changed" should {
         s"return an SEE OTHER (303) when self-employed is checked and rent uk property and foreign property are NOT checked" +
           s"${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-          mockFetchIndividualIncomeSourceFromSubscriptionDetails(IncomeSourceModel(true, false, false))
+          mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(true, false, false))
 
 
           val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = true)
@@ -195,8 +195,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IndividualIncomeSource, 1)
-          verifySubscriptionDetailsSave(IndividualIncomeSource, 0)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 0)
         }
       }
 
@@ -208,8 +208,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           status(badRequest) must be(Status.BAD_REQUEST)
 
           await(badRequest)
-          verifySubscriptionDetailsFetch(IndividualIncomeSource, 0)
-          verifySubscriptionDetailsSave(IndividualIncomeSource, 0)
+          verifySubscriptionDetailsFetch(IncomeSource, 0)
+          verifySubscriptionDetailsSave(IncomeSource, 0)
         }
       }
 

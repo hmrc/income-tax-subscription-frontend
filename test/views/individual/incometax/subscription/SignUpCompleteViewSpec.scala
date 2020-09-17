@@ -19,7 +19,7 @@ package views.individual.incometax.subscription
 import assets.MessageLookup
 import controllers.SignOutController
 import models.DateModel
-import models.individual.incomesource.IncomeSourceModel
+import models.common.IncomeSourceModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.{AnyContentAsEmpty, Call}

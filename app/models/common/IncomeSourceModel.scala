@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.individual.incomesource
+package models.common
 
 import play.api.libs.json._
 

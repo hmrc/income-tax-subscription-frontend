@@ -18,9 +18,8 @@ package views.agent
 
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel}
 import models.individual.business._
-import models.individual.subscription.IncomeSourceType
 import models.{AgentSummary, Current, Next, Yes}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -40,7 +39,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
-  val testIncomeSource: IncomeSourceType = TestModels.testAgentIncomeSourceBoth
+  val testIncomeSource: IncomeSourceModel = TestModels.testAgentIncomeSourceBoth
   val testSummary: AgentSummary = customTestSummary()
 
   def customTestSummary(matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,

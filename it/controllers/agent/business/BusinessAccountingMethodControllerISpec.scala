@@ -22,9 +22,8 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.AuthStub
-import models.common.AccountingMethodModel
+import models.common.{AccountingMethodModel, IncomeSourceModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
-import models.individual.subscription.{Both, IncomeSourceType}
 import models.{Accruals, Cash, Yes}
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -58,7 +57,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       "show the accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(Both),
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false)),
           matchTaxYear = Some(MatchTaxYearModel(Yes))))
 
         When("GET /business/accounting-method is called")
@@ -81,13 +80,13 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           val userInput = AccountingMethodModel(Cash)
 
           val expectedCacheMap = CacheMap("", Map(
-            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceType("Both")),
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceModel(true, true, false)),
             SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel (Yes)),
             SubscriptionDataKeys.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(Both),
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false)),
             matchTaxYear = Some(MatchTaxYearModel(Yes))))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
@@ -110,7 +109,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(Both),
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false)),
           matchTaxYear = Some(MatchTaxYearModel(Yes))))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
@@ -129,7 +128,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(Both),
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false)),
           matchTaxYear = Some(MatchTaxYearModel(Yes))))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
@@ -147,7 +146,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
     "not select an option on the accounting method page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false)), matchTaxYear = Some(MatchTaxYearModel(Yes))))
       IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, "")
 
       When("POST /business/accounting-method is called")
@@ -162,7 +161,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
     "in edit mode" should {
       "changing to the Accruals radio button on the accounting method page" in {
-        val SubscriptionDetailsIncomeSource = Both
+        val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
         val SubscriptionDetailsAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
         val SubscriptionDetailsAccountingMethod = AccountingMethodModel(Cash)
         val userInput = AccountingMethodModel(Accruals)
@@ -190,7 +189,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       }
 
       "simulate not changing accounting method when calling page from Check Your Answers" in {
-        val SubscriptionDetailsIncomeSource = Both
+        val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
         val SubscriptionDetailsAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
         val SubscriptionDetailsAccountingMethod = AccountingMethodModel(Cash)
         val userInput = AccountingMethodModel(Accruals)

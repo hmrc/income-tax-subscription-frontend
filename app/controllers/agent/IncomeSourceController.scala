@@ -18,34 +18,38 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ForeignProperty
+import config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
-import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
+import models.common.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IncomeSourceController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends AuthenticatedController {
+                                       mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching {
 
-  def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.agent.income_source(
       incomeSourceForm = incomeSourceForm,
       postAction = controllers.agent.routes.IncomeSourceController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl
+      backUrl = backUrl,
+      foreignProperty = isEnabled(ForeignProperty)
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchIncomeSource() map {
-        incomeSource => Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
+      subscriptionDetailsService.fetchIncomeSource() map { incomeSource =>
+        Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm
+          .fill(incomeSource), isEditMode = isEditMode))
       }
   }
 
@@ -55,30 +59,28 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
         formWithErrors =>
           Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource => {
-          if (!isEditMode) {
-            saveIncomeSourceAndContinue(incomeSource)
-          } else {
-            subscriptionDetailsService.fetchIncomeSource().flatMap { oldIncomeSource =>
-              if (oldIncomeSource.contains(incomeSource)) {
-                Future.successful(Redirect(routes.CheckYourAnswersController.show()))
-              } else {
-                saveIncomeSourceAndContinue(incomeSource)
+          lazy val linearJourney: Future[Result] =
+            subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
+              incomeSource match {
+                case IncomeSourceModel(true, _, _) =>
+                  Redirect(controllers.agent.business.routes.BusinessNameController.show())
+                case IncomeSourceModel(_, true, _) =>
+                  Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+                case _ =>
+                  throw new InternalServerException("User is missing income source type in Subscription Details")
               }
+            }
+
+          if (!isEditMode) {
+            linearJourney
+          } else {
+            subscriptionDetailsService.fetchIncomeSource() flatMap {
+              case Some(`incomeSource`) => Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.submit()))
+              case _ => linearJourney
             }
           }
         }
       )
-  }
-
-  private def saveIncomeSourceAndContinue(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier): Future[Result] = {
-    subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
-      incomeSource match {
-        case Business | Both =>
-          Redirect(business.routes.BusinessNameController.show())
-        case UkProperty =>
-          Redirect(business.routes.PropertyAccountingMethodController.show())
-      }
-    }
   }
 
   lazy val backUrl: String =

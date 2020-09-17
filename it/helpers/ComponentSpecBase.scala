@@ -30,7 +30,6 @@ import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.DateModel
 import models.common._
 import models.individual.business.{OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
-import models.individual.incomesource.IncomeSourceModel
 import models.usermatching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}

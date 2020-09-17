@@ -16,6 +16,7 @@
 
 package models.individual.subscription
 
+import models.common.IncomeSourceModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.individual.TestConstants
@@ -36,7 +37,7 @@ class SubscriptionRequestSpec extends UnitSpec {
         Json.obj(
           "nino" -> TestConstants.testNino,
           "isAgent" -> false,
-          "incomeSource" -> IncomeSourceType.business
+          "incomeSource" -> IncomeSourceModel(true, false, false)
         )
       ).get
       val actual = Json.fromJson[SubscriptionRequest](request).get

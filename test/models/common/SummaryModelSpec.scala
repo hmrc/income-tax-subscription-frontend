@@ -18,7 +18,6 @@ package models.common
 
 import models._
 import models.individual.business._
-import models.individual.incomesource.IncomeSourceModel
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.AccountingPeriodUtil._
 
@@ -39,7 +38,7 @@ class SummaryModelSpec extends UnitSpec {
 
       "provided with a valid set of data for SE" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
           selfEmployments = Some(Seq(completeSeModel)),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           accountingPeriodDate = Some(getNextTaxYear)
@@ -57,7 +56,7 @@ class SummaryModelSpec extends UnitSpec {
 
       "provided with a valid set of data for SE filtering out incomplete sets" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
           selfEmployments = Some(Seq(completeSeModel, SelfEmploymentData("badData"))),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           accountingPeriodDate = Some(getNextTaxYear)
@@ -75,7 +74,7 @@ class SummaryModelSpec extends UnitSpec {
 
       "provided with a valid set of data for uk property" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
+          incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
           propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash))
         )
@@ -92,7 +91,7 @@ class SummaryModelSpec extends UnitSpec {
 
       "provided with a valid set of data for foreign property" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
+          incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
           overseasPropertyCommencementDateModel = Some(OverseasPropertyCommencementDateModel(date)),
           overseasAccountingMethodPropertyModel = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
@@ -109,7 +108,7 @@ class SummaryModelSpec extends UnitSpec {
 
       "provided with a valid set of all data" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
           selfEmployments = Some(Seq(completeSeModel)),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
@@ -134,7 +133,7 @@ class SummaryModelSpec extends UnitSpec {
 
       "provided with valid data including data not selected as an income source" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = false)),
+          incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = false)),
           selfEmployments = Some(Seq(completeSeModel)),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
@@ -157,7 +156,7 @@ class SummaryModelSpec extends UnitSpec {
 
       "incomplete se data is submitted when required" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
           accountingPeriodDate = Some(getNextTaxYear)
         )
 
@@ -166,21 +165,21 @@ class SummaryModelSpec extends UnitSpec {
 
       "incomplete property data is submitted when required" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)))
+          incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)))
 
         the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "Missing data items for valid property submission"
       }
 
       "incomplete foreign property data is submitted when required" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)))
+          incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)))
 
         the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "Missing data items for valid foreign property submission"
       }
 
       "accounting year selection is missing when se employments are the only income" in {
         val summary = IndividualSummary(
-          incomeSourceIndiv = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
           selfEmployments = Some(Seq(completeSeModel)),
           accountingMethod = Some(AccountingMethodModel(Cash))
         )

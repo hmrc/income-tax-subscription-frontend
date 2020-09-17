@@ -19,9 +19,8 @@ package controllers.individual.subscription
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-import models.common.AccountingMethodModel
+import models.common.{AccountingMethodModel, IncomeSourceModel}
 import models.individual.business.SelfEmploymentData
-import models.individual.incomesource.IncomeSourceModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -64,7 +63,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "return ok (200) for business journey" in {
       val testBusinessCacheMap = testCacheMapCustom(
-        incomeSourceIndiv = testIncomeSourceBusiness
+        incomeSource = testIncomeSourceBusiness
       )
       mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
@@ -74,7 +73,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "return ok (200) for property only journey)" in {
       val testPropertyCacheMap = testCacheMap(
-        incomeSourceIndiv = testIncomeSourceProperty
+        incomeSource = testIncomeSourceProperty
       )
       mockFetchAllFromSubscriptionDetails(testPropertyCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)

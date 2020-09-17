@@ -21,7 +21,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
-import models.individual.incomesource.IncomeSourceModel
+import models.common.IncomeSourceModel
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 
@@ -77,7 +77,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -94,7 +94,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -111,7 +111,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -128,7 +128,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -145,7 +145,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -162,7 +162,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
 
         When("POST /details/income-receive is called")
@@ -180,7 +180,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -200,7 +200,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -217,7 +217,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(userInput)))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IndividualIncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))

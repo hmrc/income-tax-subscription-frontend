@@ -16,8 +16,7 @@
 
 package views.agent.helpers
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
-import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
+import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel}
 import models.{Accruals, Cash, Current, Next}
 import play.api.i18n.Messages
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
@@ -34,14 +33,14 @@ object SummaryHelper {
     case Accruals => Messages("agent.summary.income_type.accruals")
   }
 
-  def incomeSourceText(src: IncomeSourceType)(implicit messages: Messages): String = src match {
-    case Business => Messages("agent.summary.income_source.business")
-    case UkProperty => Messages("agent.summary.income_source.property")
-    case Both => Messages("agent.summary.income_source.both")
+  def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = src match {
+    case IncomeSourceModel(true, false, _) => Messages("agent.summary.income_source.business")
+    case IncomeSourceModel(false, true, _) => Messages("agent.summary.income_source.property")
+    case IncomeSourceModel(true, true, _) => Messages("agent.summary.income_source.both")
   }
 
   def accountingYearText(src: AccountingYearModel)(implicit messages: Messages): String = src.accountingYear match {
-    case Current => Messages("agent.summary.selected_year.current", (getCurrentTaxEndYear -1).toString , getCurrentTaxEndYear.toString)
+    case Current => Messages("agent.summary.selected_year.current", (getCurrentTaxEndYear - 1).toString, getCurrentTaxEndYear.toString)
     case Next => Messages("agent.summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
   }
 }

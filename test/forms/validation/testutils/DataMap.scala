@@ -16,7 +16,7 @@
 
 package forms.validation.testutils
 
-import forms.agent.{IncomeSourceForm, MatchTaxYearForm}
+import forms.agent.MatchTaxYearForm
 import forms.individual.business.BusinessNameForm._
 import forms.individual.business.{AccountingMethodForm, AccountingYearForm}
 import forms.submapping.DateMapping._
@@ -46,7 +46,9 @@ object DataMap {
 
     def accountingYear(iType: String): DataMap = Map(AccountingYearForm.accountingYear -> iType)
 
-    def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
+    def IncomeSource(business: String, ukProperty: String): DataMap =
+      Map(forms.agent.IncomeSourceForm.business -> business,
+        forms.agent.IncomeSourceForm.ukProperty -> ukProperty)
 
     def individualIncomeSource(business: String, ukProperty: String): DataMap =
       Map(forms.individual.incomesource.IncomeSourceForm.business -> business,

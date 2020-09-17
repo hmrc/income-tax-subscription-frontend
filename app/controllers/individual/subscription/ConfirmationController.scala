@@ -49,7 +49,7 @@ class ConfirmationController @Inject()(val authService: AuthService, subscriptio
 
 
       subscriptionDetailsService.fetchAll() map (_.getSummary()) map { summary =>
-        summary.incomeSourceIndiv match {
+        summary.incomeSource match {
           case Some(_) => {
             summary.selectedTaxYear match {
               case Some(AccountingYearModel(Next)) =>

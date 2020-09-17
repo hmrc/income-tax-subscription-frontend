@@ -19,6 +19,44 @@ trait CustomMatchers {
         )
     }
 
+  def checkboxSet(id: String, selectedCheckbox: Option[String]): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
+        val body = Jsoup.parse(response.body)
+        val checkboxes = body.select(s"input[id^=$id]")
+        val checkedAttr = "checked"
+
+        def textForSelectedCheckbox(idForSelectedCheckbox: String) =
+          if (idForSelectedCheckbox.isEmpty) ""
+          else body.select(s"label[for=$idForSelectedCheckbox]").text()
+
+        val matchCondition = selectedCheckbox match {
+          case Some(expectedOption) =>
+            val idForSelectedCheckbox = checkboxes.select(s"input[checked]").attr("id")
+            textForSelectedCheckbox(idForSelectedCheckbox) == expectedOption
+          case None => !checkboxes.hasAttr(checkedAttr)
+        }
+
+        HavePropertyMatchResult(
+          matches = matchCondition,
+          propertyName = "checkbox",
+          expectedValue = selectedCheckbox.fold("")(identity),
+          actualValue = {
+            val selected = checkboxes.select("input[checked]")
+            selected.size() match {
+              case 0 =>
+                "no checkbox is selected"
+              case 1 =>
+                val idForSelectedCheckbox = selected.attr("id")
+                s"""The "${textForSelectedCheckbox(idForSelectedCheckbox)}" selected"""
+              case _ =>
+                s"multiple checkbox are selected: [$checkboxes]"
+            }
+          }
+        )
+      }
+    }
+
   def jsonBodyAs[T](expectedValue: T)(implicit reads: Reads[T]): HavePropertyMatcher[WSResponse, T] =
     new HavePropertyMatcher[WSResponse, T] {
       def apply(response: WSResponse) =

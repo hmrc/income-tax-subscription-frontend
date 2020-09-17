@@ -85,7 +85,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptio
       "the user is business only" should {
         s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSourceIndiv = testIncomeSourceBusiness))
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
 
           val goodRequest = callShow(isEditMode = false)
 

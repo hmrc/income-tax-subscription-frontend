@@ -16,10 +16,10 @@
 
 package controllers.agent
 
-
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.common.IncomeSourceModel
 import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc._
@@ -52,9 +52,9 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, subscri
         }
     }
 
-  def backUrl(incomeSource: Option[IncomeSourceType])(implicit request: Request[_]): String = {
+  def backUrl(incomeSource: Option[IncomeSourceModel])(implicit request: Request[_]): String = {
     incomeSource match {
-      case Some(Business) =>
+      case Some(IncomeSourceModel(true, false, _)) =>
         controllers.agent.business.routes.BusinessAccountingMethodController.show().url
       case Some(_) =>
         controllers.agent.business.routes.PropertyAccountingMethodController.show().url

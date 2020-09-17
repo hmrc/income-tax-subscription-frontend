@@ -19,6 +19,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   implicit val kSubscriptionDetailsFormat: OFormat[SubscriptionData] = Json.format[SubscriptionData]
 
   private def subscriptionUri(id: String) = s"/income-tax-subscription/self-employments/id/$id"
+
   private def subscriptionDeleteUri = s"/income-tax-subscription/subscription-data/all"
 
   def stubGetSubscriptionDetails(id: String, responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
@@ -80,11 +81,11 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
   def stubPostSubscriptionId(): Unit = {
     val id = "MtditId"
-    when(method = POST, uri =subscriptionUri(subscriptionId))
-      .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionData + ( id -> Json.toJson(testMtdId))))
+    when(method = POST, uri = subscriptionUri(subscriptionId))
+      .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionData + (id -> Json.toJson(testMtdId))))
   }
 
-  def postUri(key: String) =  s"${subscriptionUri(subscriptionId)}/$key"
+  def postUri(key: String) = s"${subscriptionUri(subscriptionId)}/$key"
 
 
   case class SubscriptionData(id: String, data: Map[String, JsValue])

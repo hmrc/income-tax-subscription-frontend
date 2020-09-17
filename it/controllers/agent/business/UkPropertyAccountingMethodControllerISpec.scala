@@ -24,7 +24,6 @@ import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.AuthStub
 import models.common._
 import models.individual.business.AccountingPeriodModel
-import models.individual.subscription.Both
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
@@ -127,7 +126,7 @@ class UkPropertyAccountingMethodControllerISpec extends ComponentSpecBase with F
 
       "in edit mode" should {
         "changing to the Accruals radio button on the accounting method page" in {
-          val SubscriptionDetailsIncomeSource = Both
+          val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
           val SubscriptionDetailsAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
           val SubscriptionDetailsAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
           val userInput = AccountingMethodPropertyModel(Accruals)
@@ -154,7 +153,7 @@ class UkPropertyAccountingMethodControllerISpec extends ComponentSpecBase with F
         }
 
         "simulate not changing Property Accounting Method when calling page from Check Your Answers" in {
-          val SubscriptionDetailsIncomeSource = Both
+          val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
           val SubscriptionDetailsAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
           val SubscriptionDetailsAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
           val userInput = AccountingMethodPropertyModel(Cash)

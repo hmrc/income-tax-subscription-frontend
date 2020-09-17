@@ -18,7 +18,6 @@ import helpers.servicemocks.AuditStub
 import models.YesNo
 import models.common._
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
-import models.individual.subscription.IncomeSourceType
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -169,7 +168,7 @@ trait ComponentSpecBase extends UnitSpec
     )
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
-    
+
     def showCovid19ClaimCheck(): WSResponse = get("/eligibility/covid-19")
 
     def submitCovid19ClaimCheck(request: Option[YesNo]): WSResponse = post("/eligibility/covid-19")(
@@ -193,10 +192,21 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitAccountingPeriodCheck(request: Option[YesNo]): WSResponse = post("/eligibility/accounting-period-check")(
       request.fold(Map.empty[String, Seq[String]])(
-        model => AccountingPeriodCheckForm.accountingPeriodCheckForm.fill(model).data.map { case (k, v) => (k, Seq(v))}
+        model => AccountingPeriodCheckForm.accountingPeriodCheckForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
+
     def income(): WSResponse = get("/income")
+
+    def submitIncomeSource(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
+      val uri = s"/income?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
 
     def mainIncomeError(): WSResponse = get("/error/main-income")
 
@@ -285,7 +295,7 @@ trait ComponentSpecBase extends UnitSpec
       else
         get("/add-another")
 
-    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceType]): WSResponse = {
+    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
