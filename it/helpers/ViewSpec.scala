@@ -17,15 +17,11 @@
 package helpers
 
 import config.AppConfig
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
-import org.scalatest.{Assertion, MustMatchers, WordSpec}
+import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
-import scala.collection.JavaConversions._
 
 trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 

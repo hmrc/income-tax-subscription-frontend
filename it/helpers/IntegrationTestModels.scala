@@ -5,16 +5,16 @@ import java.time.LocalDate
 
 import helpers.IntegrationTestConstants._
 import models._
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
+import models.common._
 import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
 import models.individual.subscription._
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
+import utilities.AccountingPeriodUtil
 import utilities.individual.Constants
 import utilities.individual.Constants.GovernmentGateway._
-import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 
 object IntegrationTestModels {

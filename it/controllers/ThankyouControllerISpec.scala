@@ -18,7 +18,6 @@ package controllers
 
 import helpers.ComponentSpecBase
 import play.api.http.Status.OK
-import play.api.i18n.Messages
 
 class ThankyouControllerISpec extends ComponentSpecBase {
 

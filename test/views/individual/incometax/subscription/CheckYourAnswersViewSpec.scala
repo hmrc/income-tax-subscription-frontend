@@ -18,24 +18,21 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
-import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
-import models.{DateModel, IndividualSummary}
+import config.featureswitch.FeatureSwitching
 import models.common._
 import models.individual.business._
 import models.individual.incomesource.IncomeSourceModel
+import models.{DateModel, IndividualSummary}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
+import utilities.individual.{ImplicitDateFormatter, ImplicitDateFormatterImpl}
 import utilities.{TestModels, UnitTestTrait}
 import views.individual.helpers.SummaryIdConstants._
-import utilities.individual.{ImplicitDateFormatter, ImplicitDateFormatterImpl}
-import uk.gov.hmrc.play.language.LanguageUtils
-import connectors.IncomeTaxSubscriptionConnector
-import utilities.SubscriptionDataKeys.BusinessesKey
 
 
 class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter with FeatureSwitching {

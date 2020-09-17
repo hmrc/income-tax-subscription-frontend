@@ -19,7 +19,6 @@ package services.mocks
 import connectors.usermatching.mocks.MockCitizenDetailsConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
 import services.individual.{CitizenDetailsService, OptionalIdentifiers}

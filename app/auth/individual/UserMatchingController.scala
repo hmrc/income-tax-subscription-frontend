@@ -25,7 +25,7 @@ abstract class UserMatchingController @Inject()(implicit mcc: MessagesController
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 
-    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
     override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(userMatchingPredicates)
   }

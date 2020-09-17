@@ -1,16 +1,15 @@
 
 package controllers.individual.business
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{subscriptionData, testAccountingMethodForeignProperty}
 import helpers.servicemocks.AuthStub
-import models.common.{AccountingMethodPropertyModel, OverseasAccountingMethodPropertyModel}
 import models._
+import models.common.OverseasAccountingMethodPropertyModel
 import play.api.http.Status._
-import play.api.i18n.Messages
 import utilities.SubscriptionDataKeys
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 
 
 class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase {

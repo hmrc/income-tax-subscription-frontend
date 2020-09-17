@@ -19,7 +19,7 @@ package services.individual
 import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
-import models.individual.subscription.{SignUpIncomeSourcesSuccess, SubscriptionSuccess}
+import models.individual.subscription.SubscriptionSuccess
 import models.{ConnectorError, IndividualSummary, SummaryModel}
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier

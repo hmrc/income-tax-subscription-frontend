@@ -2,6 +2,7 @@
 package controllers.individual.business
 
 import java.time.LocalDate
+
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{subscriptionData, testPropertyCommencementDate}

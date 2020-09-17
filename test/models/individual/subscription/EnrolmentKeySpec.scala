@@ -16,10 +16,10 @@
 
 package models.individual.subscription
 
+import uk.gov.hmrc.play.test.UnitSpec
 import utilities.individual.Constants.GovernmentGateway._
 import utilities.individual.Constants._
 import utilities.individual.TestConstants._
-import uk.gov.hmrc.play.test.UnitSpec
 
 class EnrolmentKeySpec extends UnitSpec {
   "asString" should {

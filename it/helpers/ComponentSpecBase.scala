@@ -22,16 +22,13 @@ import java.util.UUID
 import auth.individual.{JourneyState, SignUp, UserMatching}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
-import forms.individual.business.PropertyCommencementDateForm.propertyCommencementDateForm
 import forms.individual.business._
 import forms.individual.incomesource.IncomeSourceForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.DateModel
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel, OverseasAccountingMethodPropertyModel}
-import models.individual.business.PropertyCommencementDateModel
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.common._
 import models.individual.business.{OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
 import models.individual.incomesource.IncomeSourceModel
 import models.usermatching.UserDetailsModel
@@ -46,11 +43,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.DefaultCookieSigner
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
-import play.api.mvc.Request
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.ITSASessionKeys._
-import utilities.individual.ImplicitDateFormatter
 
 trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers

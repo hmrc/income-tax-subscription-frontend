@@ -1,18 +1,18 @@
 
 package connectors.stubs
 
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
+import helpers.IntegrationTestConstants.testMtdId
+import helpers.IntegrationTestModels._
+import helpers.agent.IntegrationTestConstants.SessionId
+import helpers.agent.IntegrationTestModels.{fullSubscriptionData, subscriptionData}
+import helpers.agent.WiremockHelper
 import helpers.servicemocks.WireMockMethods
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
-import helpers.agent.IntegrationTestConstants.{SessionId, testSubscriptionID}
-import helpers.IntegrationTestConstants.testMtdId
-import helpers.agent.IntegrationTestModels.{fullSubscriptionData, subscriptionData}
-import helpers.agent.WiremockHelper
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.{BusinessesKey, subscriptionId}
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
-import helpers.IntegrationTestModels._
+import utilities.SubscriptionDataKeys.subscriptionId
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 

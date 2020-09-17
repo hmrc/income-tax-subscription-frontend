@@ -21,13 +21,11 @@ import config.AppConfig
 import forms.individual.business._
 import javax.inject.Inject
 import models.common.OverseasAccountingMethodPropertyModel
-import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.SubscriptionDataUtil.CacheMapUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 

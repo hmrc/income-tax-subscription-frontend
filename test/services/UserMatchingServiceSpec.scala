@@ -16,10 +16,10 @@
 
 package services
 
-import utilities.TestModels._
 import models.usermatching.UserMatchUnexpectedError
 import play.api.test.Helpers._
 import services.mocks.TestUserMatchingService
+import utilities.TestModels._
 
 class UserMatchingServiceSpec extends TestUserMatchingService {
 

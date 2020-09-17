@@ -19,7 +19,6 @@ package controllers.agent.matching
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.OK
-import play.api.i18n.Messages
 
 class ClientDetailsErrorControllerISpec extends ComponentSpecBase {
 

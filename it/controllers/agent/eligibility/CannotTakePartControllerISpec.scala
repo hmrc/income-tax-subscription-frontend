@@ -16,7 +16,6 @@
 
 package controllers.agent.eligibility
 
-import helpers.ViewSpec
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import org.jsoup.Jsoup

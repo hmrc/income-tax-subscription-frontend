@@ -56,7 +56,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   val token: String = TestConstants.testToken
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
-    SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name).buildRequest(userDetails)
+    SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name).buildRequest(userDetails)
 
 
   "Calling the show action of the ConfirmUserController with an authorised user" should {
@@ -64,9 +64,9 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     def call(request: Request[AnyContent]): Future[Result] = TestConfirmUserController.show()(request)
 
     "when there are no user details stored redirect them to user details" in {
-      setupMockNotLockedOut(testUserId.value)
+      setupMockNotLockedOut(testCredId)
 
-      val r = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+      val r = userMatchingRequest.withSession(SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
       val result = call(r)
 
@@ -78,7 +78,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     }
 
     "if there are user details return ok (200)" in {
-      setupMockNotLockedOut(testUserId.value)
+      setupMockNotLockedOut(testCredId)
 
       val r = request.buildRequest(userDetails)
 
@@ -94,7 +94,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
 
     "return the user details page" in {
-      setupMockLockedOut(testUserId.value)
+      setupMockLockedOut(testCredId)
 
       val result = callSubmit()
 
@@ -106,9 +106,9 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     def callSubmit(request: Request[AnyContent]): Future[Result] = TestConfirmUserController.submit()(request)
 
     "return the user details page" in {
-      setupMockNotLockedOut(testUserId.value)
+      setupMockNotLockedOut(testCredId)
 
-      val r = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+      val r = userMatchingRequest.withSession(SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
       val result = callSubmit(r)
 
@@ -123,7 +123,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     "UserMatchingService returns user with nino and utr" should {
       s"redirect to the home controller with nino and sautr added to session" in {
         mockUserMatchSuccess(userDetails)
-        setupMockNotLockedOut(testUserId.value)
+        setupMockNotLockedOut(testCredId)
 
         val r = request.buildRequest(userDetails)
 
@@ -143,7 +143,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     "UserMatchingService returns user with only nino" should {
       s"redirect to the home controller with nino added to session" in {
         mockUserMatchSuccessNoUtr(userDetails)
-        setupMockNotLockedOut(testUserId.value)
+        setupMockNotLockedOut(testCredId)
 
         val r = request.buildRequest(userDetails)
 
@@ -162,8 +162,8 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       "not locked out is returned by the service" should {
         "redirect to the user details page and apply the new counter to session" in {
           mockUserMatchNotFound(userDetails)
-          setupMockNotLockedOut(testUserId.value)
-          setupIncrementNotLockedOut(testUserId.value, 0)
+          setupMockNotLockedOut(testCredId)
+          setupIncrementNotLockedOut(testCredId, 0)
 
           val r = request.buildRequest(userDetails)
 
@@ -181,13 +181,13 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         "remove the counter from the session, lockout the user then redirect to the locked out page" in {
           val currentFailedMatches = 3
           implicit val requestWithLockout: FakeRequest[AnyContentAsEmpty.type] = request.withSession(
-            SessionKeys.userId -> testUserId.value,
+            SessionKeys.userId -> testCredId,
             ITSASessionKeys.FailedUserMatching -> currentFailedMatches.toString
           )
 
           mockUserMatchNotFound(userDetails)
-          setupMockNotLockedOut(testUserId.value)
-          setupIncrementLockedOut(testUserId.value, currentFailedMatches)
+          setupMockNotLockedOut(testCredId)
+          setupIncrementLockedOut(testCredId, currentFailedMatches)
           mockDeleteAllFromSubscriptionDetails(HttpResponse(Status.OK))
 
           val r = requestWithLockout.buildRequest(userDetails)
@@ -200,7 +200,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           val session = await(result).session
           session.get(ITSASessionKeys.FailedUserMatching) mustBe empty
 
-          verifyIncrementLockout(testUserId.value, 1)
+          verifyIncrementLockout(testCredId, 1)
         }
       }
     }

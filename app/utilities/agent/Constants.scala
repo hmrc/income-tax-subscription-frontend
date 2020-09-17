@@ -22,4 +22,10 @@ object Constants {
   val mtdItsaEnrolmentIdentifierKey = "MTDITID"
   val agentServiceIdentifierKey = "AgentReferenceNumber"
   val ninoIdentifierKey = "NINO"
+
+
+  object GovernmentGateway {
+    val GGProviderId = "GovernmentGateway"
+  }
+
 }

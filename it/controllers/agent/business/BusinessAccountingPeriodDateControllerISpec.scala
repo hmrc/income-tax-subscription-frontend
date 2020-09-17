@@ -19,10 +19,10 @@ package controllers.agent.business
 import java.time.LocalDate
 
 import config.featureswitch.FeatureSwitching
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.{subscriptionData, _}
 import helpers.agent.servicemocks.AuthStub
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
 import models.individual.business.AccountingPeriodModel

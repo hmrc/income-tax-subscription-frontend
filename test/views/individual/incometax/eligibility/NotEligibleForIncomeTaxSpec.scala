@@ -17,7 +17,6 @@
 package views.individual.incometax.eligibility
 
 import assets.MessageLookup.{Base => common, NotEligibleForIncomeTax => messages}
-
 import views.ViewSpecTrait
 
 class NotEligibleForIncomeTaxSpec extends ViewSpecTrait {

@@ -21,7 +21,6 @@ import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
-
 import utilities.UnitTestTrait
 
 class InputHelperSpec extends UnitTestTrait {

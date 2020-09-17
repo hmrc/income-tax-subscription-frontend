@@ -26,7 +26,6 @@ import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 
-
 class ForeignPropertyCommencementDateViewSpec extends ViewSpec {
 
   object ForeignPropertyCommencementDateMessages {
@@ -44,8 +43,9 @@ class ForeignPropertyCommencementDateViewSpec extends ViewSpec {
   val taxYearEnd: Int = 2020
   val testError: FormError = FormError("startDate", "testError")
 
-  class Setup(isEditMode: Boolean = false,
-              foreignPropertyCommencementDateForm: Form[OverseasPropertyCommencementDateModel] = OverseasPropertyCommencementDateForm.overseasPropertyCommencementDateForm("testMessage")) {
+  class Setup(isEditMode: Boolean = false, foreignPropertyCommencementDateForm: Form[OverseasPropertyCommencementDateModel] =
+  OverseasPropertyCommencementDateForm.overseasPropertyCommencementDateForm("testMessage")) {
+
     val page: HtmlFormat.Appendable = views.html.individual.incometax.business.overseas_property_commencement_date(
       foreignPropertyCommencementDateForm,
       testCall,
@@ -82,7 +82,8 @@ class ForeignPropertyCommencementDateViewSpec extends ViewSpec {
       document.getBackLink.text mustBe ForeignPropertyCommencementDateMessages.backLink
       document.getBackLink.attr("href") mustBe testBackUrl
     }
-    "must display form error on page" in new Setup(false, OverseasPropertyCommencementDateForm.overseasPropertyCommencementDateForm("testMessage").withError(testError)) {
+    "must display form error on page" in new Setup(false, OverseasPropertyCommencementDateForm.overseasPropertyCommencementDateForm(
+      "testMessage").withError(testError)) {
       document.mustHaveErrorSummary(List[String](testError.message))
       document.mustHaveDateField("startDate", "", ForeignPropertyCommencementDateMessages.exampleStartDate, Some(testError.message))
     }

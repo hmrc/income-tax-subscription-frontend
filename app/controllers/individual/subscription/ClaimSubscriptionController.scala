@@ -24,8 +24,8 @@ import javax.inject.{Inject, Singleton}
 import models.ConnectorError
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
 import services.individual.SubscriptionOrchestrationService
+import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.MtditId
 

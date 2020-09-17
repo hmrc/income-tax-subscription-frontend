@@ -19,7 +19,7 @@ package controllers.individual.subscription
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
 import models.IndividualSummary
@@ -33,9 +33,9 @@ import services.individual.SubscriptionOrchestrationService
 import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.SubscriptionDataUtil._
 import utilities.ITSASessionKeys
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataUtil._
 import utilities.individual.ImplicitDateFormatterImpl
 
 import scala.concurrent.{ExecutionContext, Future}

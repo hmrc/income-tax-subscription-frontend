@@ -20,7 +20,6 @@ import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.OK
-import play.api.i18n.Messages
 
 class UserDetailsErrorControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

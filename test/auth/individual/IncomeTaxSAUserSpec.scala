@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import utilities.ITSASessionKeys
 import utilities.individual.Constants
-import utilities.individual.TestConstants.{testNino, testUtr}
+import utilities.individual.TestConstants.{testCredId, testNino, testUtr}
 
 class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
@@ -48,7 +48,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
         ),
         None,
         None,
-        confidenceLevel
+        confidenceLevel,
+        ""
       )
 
       s"have the expected NINO $testNino" in {
@@ -76,7 +77,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
         Enrolments(Set.empty),
         None,
         None,
-        confidenceLevel
+        confidenceLevel,
+        ""
       )
 
       s"have the expected NINO $testNino" in {
@@ -98,7 +100,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
         Enrolments(Set.empty),
         None,
         credentialRole,
-        L50
+        L50,
+        testCredId
       )
 
     "role is Admin" should {

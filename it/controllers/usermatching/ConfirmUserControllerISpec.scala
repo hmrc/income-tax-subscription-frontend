@@ -34,7 +34,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+        UserLockoutStub.stubUserIsNotLocked(testCredId)
         AuthenticatorStub.stubMatchFailure()
         // n.b. failure is expected as the additional methods are not mocked
 
@@ -54,7 +54,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+        UserLockoutStub.stubUserIsNotLocked(testCredId)
 
         When("I call POST /confirm-user")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmUser(storedUserDetails = None)
@@ -73,7 +73,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
-          UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+          UserLockoutStub.stubUserIsNotLocked(testCredId)
           AuthenticatorStub.stubMatchNotFound()
 
           When("I call POST /confirm-user")
@@ -96,8 +96,8 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
-          UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
-          UserLockoutStub.stubLockAgent(testUserIdEncoded)
+          UserLockoutStub.stubUserIsNotLocked(testCredId)
+          UserLockoutStub.stubLockAgent(testCredId)
           AuthenticatorStub.stubMatchNotFound()
 
           When("I call POST /confirm-user")
@@ -123,7 +123,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
         AuthenticatorStub.stubMatchFound(testNino)
-        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+        UserLockoutStub.stubUserIsNotLocked(testCredId)
         SubscriptionStub.stubGetNoSubscription()
 
         When("I call POST /confirm-user")

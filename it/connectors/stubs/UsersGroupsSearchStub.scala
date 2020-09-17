@@ -1,11 +1,11 @@
 
 package connectors.stubs
 
-import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UserReads.{credentialRoleKey, userIdKey}
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.CredentialRoleReads._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UserReads.{credentialRoleKey, userIdKey}
+import helpers.IntegrationTestConstants._
 import helpers.servicemocks.WireMockMethods
 import play.api.libs.json.{JsArray, JsValue, Json}
-import helpers.IntegrationTestConstants._
 
 object UsersGroupsSearchStub extends WireMockMethods {
 

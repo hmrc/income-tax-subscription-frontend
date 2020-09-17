@@ -16,10 +16,10 @@
 
 package models.individual.subscription
 
-import utilities.individual.Constants.GovernmentGateway._
-import utilities.individual.TestConstants._
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
+import utilities.individual.Constants.GovernmentGateway._
+import utilities.individual.TestConstants._
 
 class EmacEnrolmentRequestSpec extends UnitSpec {
   "format" should {

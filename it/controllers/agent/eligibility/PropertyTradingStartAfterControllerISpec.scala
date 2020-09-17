@@ -18,8 +18,8 @@ package controllers.agent.eligibility
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
 import forms.agent.PropertyTradingStartDateForm
-import helpers.ViewSpec
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.{No, Yes, YesNo}

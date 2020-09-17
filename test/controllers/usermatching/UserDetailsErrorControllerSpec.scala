@@ -19,7 +19,7 @@ package controllers.usermatching
 import assets.MessageLookup.{UserDetailsError => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
-import utilities.individual.TestConstants.testUserId
+import utilities.individual.TestConstants.{testCredId, testUserId}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty}
@@ -43,7 +43,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
   lazy val TestUserDetailsErrorController: UserDetailsErrorController = createTestUserDetailsErrorController(enableMatchingFeature = true)
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
-    SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+    SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "Calling the 'show' action of the UserDetailsErrorController" should {

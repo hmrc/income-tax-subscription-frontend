@@ -24,7 +24,6 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import views.helpers.RadioOption
 
 import scala.collection.JavaConversions._
 

@@ -18,7 +18,6 @@ package views.individual.incometax.business
 
 import assets.MessageLookup.{BusinessName => messages}
 import forms.individual.business.BusinessNameForm
-
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

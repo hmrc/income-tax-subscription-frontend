@@ -16,7 +16,7 @@
 
 package controllers.agent.business
 
-import auth.agent.{AuthenticatedController, UserMatchingController}
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.MatchTaxYearForm
 import javax.inject.{Inject, Singleton}
@@ -26,8 +26,7 @@ import models.individual.subscription.Both
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.AuthService
-import services.SubscriptionDetailsService
+import services.{AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 

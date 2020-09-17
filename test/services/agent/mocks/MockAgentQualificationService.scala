@@ -17,11 +17,11 @@
 package services.agent.mocks
 
 import agent.audit.mocks.MockAuditingService
-import utilities.agent.TestConstants.{testARN, testNino}
-import utilities.agent.TestModels.testClientDetails
 import services.agent._
 import services.mocks.{MockSubscriptionService, MockUserMatchingService}
 import utilities.agent.TestConstants
+import utilities.agent.TestConstants.testNino
+import utilities.agent.TestModels.testClientDetails
 
 trait MockAgentQualificationService extends MockClientRelationshipService
   with MockUserMatchingService
@@ -39,8 +39,8 @@ trait MockAgentQualificationService extends MockClientRelationshipService
                                                 nino: String = TestConstants.testNino,
                                                 isPreExistingRelationship: Boolean): Unit = {
     mockUserMatchSuccess(testClientDetails)
-    setupMockGetSubscriptionNotFound(testNino)
-    preExistingRelationship(testARN, testNino)(isPreExistingRelationship)
+    setupMockGetSubscriptionNotFound(nino)
+    preExistingRelationship(arn, nino)(isPreExistingRelationship)
   }
 
   def setupOrchestrateAgentQualificationFailure(expectedResult: UnqualifiedAgent): Unit = {

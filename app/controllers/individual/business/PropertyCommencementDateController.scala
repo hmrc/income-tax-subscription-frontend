@@ -26,13 +26,13 @@ import javax.inject.{Inject, Singleton}
 import models.individual.business.PropertyCommencementDateModel
 import models.individual.incomesource.IncomeSourceModel
 import play.api.data.Form
+import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.individual.ImplicitDateFormatter
-import play.api.libs.functional.~
 
 import scala.concurrent.{ExecutionContext, Future}
 

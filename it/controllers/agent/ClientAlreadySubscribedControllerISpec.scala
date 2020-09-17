@@ -20,7 +20,6 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.i18n.Messages
 
 class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
 

@@ -1,11 +1,11 @@
 
 package helpers.agent
 
+import models._
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import models.usermatching.UserDetailsModel
-import models._
 import play.api.libs.json.JsValue
 import utilities.SubscriptionDataKeys
 

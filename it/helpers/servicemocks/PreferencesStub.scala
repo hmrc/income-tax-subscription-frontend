@@ -18,13 +18,11 @@ package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
-import config.AppConfig
 import connectors.PaperlessPreferenceHttpParser._
-import utilities.individual.Constants._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
-import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import utilities.individual.Constants._
 
 
 object PreferencesStub extends WireMockMethods {

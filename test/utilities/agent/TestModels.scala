@@ -16,11 +16,11 @@
 
 package utilities.agent
 
-import models.{Cash, Current, DateModel, Next, No, Yes}
 import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.{Both, Business, IncomeSourceType, UkProperty}
 import models.usermatching.UserDetailsModel
+import models.{AccountingMethod => _, _}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap

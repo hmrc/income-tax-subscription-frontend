@@ -31,7 +31,8 @@ trait IncomeTaxUser {
 case class IncomeTaxSAUser(enrolments: Enrolments,
                            affinityGroup: Option[AffinityGroup],
                            credentialRole: Option[CredentialRole],
-                           confidenceLevel: ConfidenceLevel) extends IncomeTaxUser {
+                           confidenceLevel: ConfidenceLevel,
+                           userId: String) extends IncomeTaxUser {
 
   def nino(implicit request: Request[AnyContent]): Option[String] =
     getEnrolment(Constants.ninoEnrolmentName) match {

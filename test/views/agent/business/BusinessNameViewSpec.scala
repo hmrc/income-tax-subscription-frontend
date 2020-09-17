@@ -18,10 +18,9 @@ package views.agent.business
 
 import agent.assets.MessageLookup.{BusinessName => messages}
 import forms.agent.BusinessNameForm
-
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class BusinessNameViewSpec extends ViewSpecTrait {

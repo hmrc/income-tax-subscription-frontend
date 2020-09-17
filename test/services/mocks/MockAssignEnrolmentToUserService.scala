@@ -20,8 +20,8 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import services.agent.AssignEnrolmentToUserService.EnrolmentAssignmentResponse
 import services.agent.AssignEnrolmentToUserService
+import services.agent.AssignEnrolmentToUserService.EnrolmentAssignmentResponse
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

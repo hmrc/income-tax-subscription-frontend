@@ -16,17 +16,17 @@
 
 package controllers.usermatching
 
-import auth.individual.{IncomeTaxSAUser, UserMatched, UserMatchingController}
-import utilities.ITSASessionKeys._
+import auth.individual.IncomeTaxSAUser
 import auth.individual.JourneyState._
 import auth.individual.{UserMatched, UserMatchingController}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuthService, LockoutUpdate, UserLockoutService, UserMatchingService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.InternalServerException
+import utilities.ITSASessionKeys._
 
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,8 +45,7 @@ class ConfirmUserController @Inject()(val authService: AuthService, lockOutServi
     )
 
   private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
-    val bearerToken = implicitly[HeaderCarrier].userId.get
-    lockOutService.getLockoutStatus(bearerToken.value) flatMap {
+    lockOutService.getLockoutStatus(user.userId) flatMap {
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) =>
         Future.successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show().url))
@@ -91,11 +90,11 @@ class ConfirmUserController @Inject()(val authService: AuthService, lockOutServi
     }
   }
 
-  private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent]): Future[Result] = for {
+  private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent], saUser: IncomeTaxSAUser ): Future[Result] = for {
     user <- userMatching.matchUser(userDetails)
     result <- user match {
       case Right(Some(matchedDetails)) => handleMatchedUser(matchedDetails)
-      case Right(None) => handleFailedMatch(implicitly[HeaderCarrier].userId.get.value)
+      case Right(None) => handleFailedMatch(saUser.userId)
       case Left(error) => throw new InternalServerException(error.errors)
     }
   } yield result

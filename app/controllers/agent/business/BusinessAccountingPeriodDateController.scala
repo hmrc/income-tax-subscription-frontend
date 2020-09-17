@@ -25,8 +25,7 @@ import models.individual.subscription.{Both, IncomeSourceType}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.SubscriptionDetailsService
-import services.{AccountingPeriodService, AuthService}
+import services.{AccountingPeriodService, AuthService, SubscriptionDetailsService}
 import utilities.AccountingPeriodUtil
 import utilities.Implicits._
 import utilities.SubscriptionDataUtil._

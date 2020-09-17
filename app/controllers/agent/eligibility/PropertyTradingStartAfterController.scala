@@ -23,14 +23,13 @@ import config.AppConfig
 import forms.agent.PropertyTradingStartDateForm.propertyTradingStartDateForm
 import javax.inject.{Inject, Singleton}
 import models.{No, Yes}
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.agent.eligibility.property_trading_after
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class PropertyTradingStartAfterController @Inject()(val authService: AuthService,

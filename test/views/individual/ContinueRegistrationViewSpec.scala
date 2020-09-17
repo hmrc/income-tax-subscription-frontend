@@ -17,7 +17,6 @@
 package views.individual
 
 import assets.MessageLookup.{PreferencesCallBack => messages}
-
 import views.ViewSpecTrait
 
 class ContinueRegistrationViewSpec extends ViewSpecTrait {

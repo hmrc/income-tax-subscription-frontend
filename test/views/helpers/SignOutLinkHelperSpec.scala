@@ -20,7 +20,6 @@ import assets.MessageLookup
 import controllers.SignOutController
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

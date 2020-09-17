@@ -23,9 +23,8 @@ import javax.inject.{Inject, Singleton}
 import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc._
-import services.AuthService
+import services.{AuthService, SubscriptionDetailsService}
 import services.agent.SubscriptionOrchestrationService
-import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataUtil._

@@ -16,16 +16,15 @@
 
 package controllers.agent.business
 
-import auth.agent.{AuthenticatedController, UserMatchingController}
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.BusinessNameForm
 import javax.inject.{Inject, Singleton}
 import models.common.BusinessNameModel
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesActionBuilder, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
-import services.SubscriptionDetailsService
+import services.{AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 

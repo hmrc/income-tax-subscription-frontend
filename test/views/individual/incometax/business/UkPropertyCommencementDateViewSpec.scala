@@ -16,16 +16,12 @@
 
 package views.individual.incometax.business
 
-import akka.actor.setup.Setup
-import play.api.data.{Form, FormError}
-import play.api.mvc.{Call, Request}
-import views.ViewSpecTrait
-import org.jsoup.nodes.Document
-import assets.MessageLookup.{BusinessName => messages}
 import forms.individual.business.PropertyCommencementDateForm
-import forms.individual.business.PropertyCommencementDateForm._
 import models.individual.business.PropertyCommencementDateModel
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import play.api.data.{Form, FormError}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec

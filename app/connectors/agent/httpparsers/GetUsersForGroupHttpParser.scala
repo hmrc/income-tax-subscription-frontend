@@ -16,9 +16,8 @@
 
 package connectors.agent.httpparsers
 
-import play.api.libs.json.JsonValidationError
 import play.api.http.Status.NON_AUTHORITATIVE_INFORMATION
-import play.api.libs.json._
+import play.api.libs.json.{JsonValidationError, _}
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
