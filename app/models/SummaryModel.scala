@@ -71,7 +71,10 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
 
     val accountingPeriodVal: Option[AccountingPeriodModel] =
       if (incomeSource.exists(sources => sources.ukProperty || sources.foreignProperty)) Some(getCurrentTaxYear)
-      else accountingPeriodDate
+      else selectedTaxYear map {selectedYear => selectedYear match {
+        case AccountingYearModel(Next) => getNextTaxYear
+        case AccountingYearModel(Current) => getCurrentTaxYear
+      }}
 
     BusinessSubscriptionDetailsModel(
       accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),
