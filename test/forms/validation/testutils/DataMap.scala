@@ -18,7 +18,8 @@ package forms.validation.testutils
 
 import forms.agent.MatchTaxYearForm
 import forms.individual.business.BusinessNameForm._
-import forms.individual.business.{AccountingMethodForm, AccountingYearForm}
+import forms.individual.business.BusinessTradeNameForm.businessTradeName
+import forms.individual.business.{AccountingMethodForm, AccountingYearForm, AddAnotherBusinessForm}
 import forms.submapping.DateMapping._
 import forms.validation.utils.ConstraintUtil._
 import play.api.data.validation._
@@ -54,6 +55,9 @@ object DataMap {
       Map(forms.individual.incomesource.IncomeSourceForm.business -> business,
         forms.individual.incomesource.IncomeSourceForm.ukProperty -> ukProperty)
 
+    def addAnotherBusiness(value: String): DataMap = Map(AddAnotherBusinessForm.addAnotherBusiness -> value)
+
+    def businessTradeNameMap(name: String): DataMap = Map(businessTradeName -> name)
 
     val alwaysFailInvalid: Invalid = Invalid("always fail")
 

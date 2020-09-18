@@ -22,6 +22,12 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 
 object Constraints {
 
+  val charRegex = """^([ A-Za-z0-9&@£$€¥#.,:;-])*$"""
+
+  val validateChar: String => Constraint[String] = msgKey => constraint[String](
+    x => if (x.matches(charRegex)) Valid else Invalid(msgKey)
+  )
+
   val nonEmpty: String => Constraint[String] = msgKey => constraint[String](
     x => if (x.isEmpty) Invalid(msgKey) else Valid
   )

@@ -266,6 +266,38 @@ sign-up-complete.whatHappensNow.para1                           = After you have
 sign-up-complete.whatHappensNow.para2                           = It may take a few hours before new information is displayed.
 sign-up-complete.whatHappensNow.signOut                         = Finish and sign out
 
+# Business trade name
+business.trade_name.title                                       = What is the trade of your business?
+business.trade_name.heading                                     = What is the trade of your business?
+business.trade_name.hint                                        = For example: plumbing, electrical work, consulting
+
+# Business start date
+business.start_date.title                                       = When did your business start trading?
+business.start_date.heading                                     = When did your business start trading?
+business.start_date.exampleStartDate                            = For example, 1 4 2018
+
+# Check your answers
+self_employments_check_your_answers.title                       = Check your answers
+self_employments_check_your_answers.heading                     = Check your answers
+self_employments_check_your_answers.sub_heading                 = Business {0}
+self_employments_check_your_answers.trading_start_date          = Trading start date of business
+self_employments_check_your_answers.business_name               = Business name
+self_employments_check_your_answers.business_trade              = Business trade
+self_employments_check_your_answers.business_address            = Business address
+self_employments_check_your_answers.remove_business             = Remove business {0}
+self_employments_check_your_answers.add_another_business_heading= Do you want to add another sole trader business?
+
+# Business Address page
+addressLookup.selectPage.title                                  = Select business address
+addressLookup.selectPage.heading                                = Select business address
+addressLookup.lookupPage.title                                  = What is your business address?
+addressLookup.lookupPage.heading                                = What is your business address?
+addressLookup.editPage.title                                    = Enter business address
+addressLookup.editPage.heading                                  = Enter business address
+addressLookup.editPage.postcodeLabel                            = Postcode
+addressLookup.confirmPage.title                                 = Confirm business address
+addressLookup.confirmPage.heading                               = Confirm business address
+
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
 
@@ -286,6 +318,14 @@ error.property.income.invalid                                   = You must selec
 
 error.date.empty                                                = You must enter a date
 error.date.invalid                                              = You must enter a valid date
+
+error.business.date.empty                                       = Enter the date your business started trading
+error.business.day.empty                                        = The date must include a day
+error.business.month.empty                                      = The date must include a month
+error.business.year.empty                                       = The date must include a year
+error.business.day.month.empty                                  = The date must include a day and a month
+error.business.day.year.empty                                   = The date must include a day and a year
+error.business.month.year.empty                                 = The date must include a month and a year
 
 error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
 
@@ -334,6 +374,18 @@ error.confirm-agent.empty                                       = You must selec
 error.confirm-agent.invalid                                     = You must select an option to continue
 
 error.property_accounting_period.minStartDate                   = The date your UK property business started trading must be the same as or before {0}
+
+# Business trade name errors
+error.business_trade_name.empty                                 = Enter the trade of your business
+error.business_trade_name.maxLength                             = Business trade must be 160 characters or fewer
+error.business_trade_name.duplicate                             = You cannot enter the same trade and same business name
+error.business_trade_name.invalid                               = Business trade must only include letters a to z, hyphens, spaces and apostrophes
+
+# Check your answers add another business
+error.add_another_business.limit_reached                        = You can only add up to {0} businesses
+error.add_another_business.invalid                              = Select yes if you want to add another sole trader business
+error.add_another_business.empty                                = Select yes if you want to add another sole trader business
+
 
 ## Eligible page ##
 eligible.title                                                  = You can send digital updates

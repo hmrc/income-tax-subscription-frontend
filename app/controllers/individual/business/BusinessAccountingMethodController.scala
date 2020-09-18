@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ForeignProperty
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
@@ -67,7 +67,8 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
             } else {
               subscriptionDetailsService.fetchIncomeSource() map {
                 case Some(IncomeSourceModel(_, true, _)) =>
-                  Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+                  if(isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+                  else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty)  =>
                   Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
                 case _ =>
@@ -86,9 +87,17 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
       subscriptionDetailsService.fetchAll() map { cacheMap =>
         cacheMap.getIncomeSource match {
           case Some(IncomeSourceModel(true, false, _)) =>
-            controllers.individual.business.routes.WhatYearToSignUpController.show().url
+            if(isEnabled(ReleaseFour)) {
+              controllers.individual.subscription.routes.SelfEmploymentsCYAController.show().url
+            } else {
+              controllers.individual.business.routes.WhatYearToSignUpController.show().url
+            }
           case _ =>
-            controllers.individual.business.routes.BusinessNameController.show().url
+            if(isEnabled(ReleaseFour)) {
+              controllers.individual.incomesource.routes.IncomeSourceController.show().url
+            } else {
+              controllers.individual.business.routes.BusinessNameController.show().url
+            }
         }
       }
     }

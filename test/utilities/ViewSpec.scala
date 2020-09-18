@@ -63,6 +63,11 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
     def getH2Elements: Elements = element.getElementsByTag("h2")
 
+    def getH2Element(nth: Int = 1): Element = element.selectFirst(s"h2:nth-of-type($nth)")
+
+    //Check your answers selectors
+    def getSummaryList(nth: Int = 1): Element = element.selectFirst(s"dl.govuk-summary-list:nth-of-type($nth)")
+
     def getFormElements: Elements = element.getElementsByClass("form-field-group")
 
     def getErrorSummaryMessage: Elements = element.select("#error-summary-display ul")

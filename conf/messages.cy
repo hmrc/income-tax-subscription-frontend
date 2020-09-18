@@ -273,6 +273,37 @@ sign-up-complete.whatHappensNow.para1                           = Ar ôl i chi a
 sign-up-complete.whatHappensNow.para2                           = Gall gymryd rhai oriau cyn i wybodaeth newydd ymddangos.
 sign-up-complete.whatHappensNow.signOut                         = Gorffen ac allgofnodi
 
+# Check your answers
+self_employments_check_your_answers.title                       = Gwiriwch eich atebion
+self_employments_check_your_answers.heading                     = Gwiriwch eich atebion
+self_employments_check_your_answers.sub_heading                 = Busnes {0}
+self_employments_check_your_answers.trading_start_date          = Dyddiad dechrau masnachu’r busnes
+self_employments_check_your_answers.business_name               = Enw’r busnes
+self_employments_check_your_answers.business_trade              = Masnach y busnes
+self_employments_check_your_answers.business_address            = Cyfeiriad y busnes
+self_employments_check_your_answers.remove_business             = Dileu busnes {0}
+self_employments_check_your_answers.add_another_business_heading= A hoffech ychwanegu busnes unig fasnachwr arall?
+
+# Business start date
+business.start_date.title                                       = Pryd y dechreuodd eich busnes fasnachu?
+business.start_date.heading                                     = Pryd y dechreuodd eich busnes fasnachu?
+business.start_date.exampleStartDate                            = Er enghraifft, 1 8 2014
+
+# Business trade name
+business.trade_name.title                                       = Beth yw masnach eich busnes?
+business.trade_name.heading                                     = Beth yw masnach eich busnes?
+business.trade_name.hint                                        = Er enghraifft: plymio, gwaith trydanol, ymgynghori
+
+# Business Address page
+addressLookup.selectPage.title                                  = Dewiswch gyfeiriad busnes
+addressLookup.selectPage.heading                                = Dewiswch gyfeiriad busnes
+addressLookup.lookupPage.title                                  = Beth yw cyfeiriad eich busnes?
+addressLookup.lookupPage.heading                                = Beth yw cyfeiriad eich busnes?
+addressLookup.editPage.title                                    = Rhowch gyfeiriad busnes
+addressLookup.editPage.heading                                  = Rhowch gyfeiriad busnes
+addressLookup.editPage.postcodeLabel                            = Cod post y DU
+addressLookup.confirmPage.title                                 = Cadarnhau cyfeiriad busnes
+addressLookup.confirmPage.heading                               = Cadarnhau cyfeiriad busnes
 
 ## Errors ##
 error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -294,6 +325,15 @@ error.property.income.invalid                                   = Rhaid i chi dd
 
 error.date.empty                                                = Rhaid i chi nodi dyddiad
 error.date.invalid                                              = Rhaid i chi nodi dyddiad dilys
+
+error.business.date.empty                                       = Nodwch y dyddiad y gwnaeth eich busnes ddechrau masnachu
+error.business.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+error.business.month.empty                                      = Mae’n rhaid i’r dyddiad gynnwys mis
+error.business.year.empty                                       = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+error.business.day.month.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+error.business.day.year.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+error.business.month.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+
 
 error.business_accounting_period.minStartDate                   = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
 error.business_accounting_period.maxEndDate                     = Rhaid i chi nodi dyddiad dod i ben nad yw’n fwy na 24 mis ar ôl eich dyddiad dechrau
@@ -344,6 +384,17 @@ error.confirm-agent.empty                                       = Rhaid i chi dd
 error.confirm-agent.invalid                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
 error.property_accounting_period.minStartDate                   = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+
+# Check your answers add another business
+error.add_another_business.limit_reached                        = Gallwch ychwanegu hyd at {0} o fusnesau yn unig
+error.add_another_business.invalid                              = Dewiswch ‘Iawn’ os ydych am ychwanegu busnes unig fasnachwr arall
+error.add_another_business.empty                                = Dewiswch ‘Iawn’ os ydych am ychwanegu busnes unig fasnachwr arall
+
+# Business trade name errors
+error.business_trade_name.empty                                 = Nodwch fasnach eich busnes
+error.business_trade_name.maxLength                             = Mae’n rhaid i fasnach y busnes fod yn 160 o gymeriadau neu lai
+error.business_trade_name.duplicate                             = Ni allwch nodi’r un peth ar gyfer masnach busnes ac enw’r busnes
+error.business_trade_name.invalid                               = Mae’n rhaid i fasnach y busnes gynnwys y llythrennau a i z, cysylltnodau, bylchau a chollnodau yn unig
 
 ## Eligible page ##
 eligible.title                                                  = Gallwch anfon diweddariadau digidol

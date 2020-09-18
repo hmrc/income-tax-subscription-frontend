@@ -16,6 +16,8 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -26,7 +28,7 @@ import models.{Accruals, Cash}
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 
-class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
+class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-method" when {
 
@@ -108,6 +110,28 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(accountingMethodPropertyURI)
           )
+        }
+        s"redirect to ${controllers.individual.business.routes.PropertyCommencementDateController.show().url}" in {
+          val userInput: AccountingMethodModel = AccountingMethodModel(Cash)
+
+          Given("I setup the wiremock stubs and feature switches")
+          enable(ReleaseFour)
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod)
+
+          When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = Some(userInput))
+
+          Then(s"Should return a $SEE_OTHER with a redirect location of ${
+            controllers.individual.business.routes.PropertyCommencementDateController.show().url
+          }")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(propertyCommencementDateURI)
+          )
+          disable(ReleaseFour)
         }
       }
       "the user does not rent a uk property " should {

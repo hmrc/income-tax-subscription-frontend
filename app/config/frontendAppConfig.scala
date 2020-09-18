@@ -106,6 +106,10 @@ trait AppConfig extends FeatureSwitching {
 
   def betaFeedbackUnauthenticatedUrl: String
 
+  val limitOnNumberOfBusinesses: Int
+
+  val addressLookupUrl: String
+  def addressLookupChangeUrl(id: String): String
 }
 
 @Singleton
@@ -258,6 +262,10 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val betaFeedbackUnauthenticatedUrl: String =
     s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
+  override lazy val limitOnNumberOfBusinesses = config.getInt("check-your-answers.maxNumberOfBusinesses")
+
+  override lazy val addressLookupUrl: String = config.baseUrl("address-lookup-frontend")
+  override def addressLookupChangeUrl(id: String): String = s"$addressLookupUrl/lookup-address/$id/lookup"
 
 }
 

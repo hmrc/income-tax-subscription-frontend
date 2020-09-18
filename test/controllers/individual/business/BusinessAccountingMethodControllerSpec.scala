@@ -16,6 +16,8 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodForm
 import models.common.AccountingMethodModel
@@ -30,7 +32,7 @@ import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
+class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with FeatureSwitching {
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -125,17 +127,34 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
 
   "The back url" when {
     "not in edit mode" when {
-      "income source type is business" should {
+      "income source type is business and Release four disabled" should {
         s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
+          disable(ReleaseFour)
           mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
         }
 
         s"point to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
+          disable(ReleaseFour)
           mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBoth))
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.BusinessNameController.show().url
+        }
+      }
+      "income source type is business and Release four enabled" should {
+        s"point to ${controllers.individual.subscription.routes.SelfEmploymentsCYAController.show().url}" in {
+          enable(ReleaseFour)
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
+          await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
+            controllers.individual.subscription.routes.SelfEmploymentsCYAController.show().url
+        }
+
+        s"point to ${controllers.individual.incomesource.routes.IncomeSourceController.show().url}" in {
+          enable(ReleaseFour)
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBoth))
+          await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }
       }
     }

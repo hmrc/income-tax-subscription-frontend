@@ -31,32 +31,40 @@ object BusinessNameForm {
 
   val businessNameMaxLength = 105
 
-  val nameEmpty: Constraint[String] = constraint[String](
+  val nameNotEmpty: Constraint[String] = constraint[String](
     name => {
       lazy val emptyName = Invalid("error.business_name.empty")
       if (name.isEmpty) emptyName else Valid
     }
   )
 
-  val nameTooLong: Constraint[String] = constraint[String](
+  val nameNotTooLong: Constraint[String] = constraint[String](
     name => {
       lazy val tooLong = Invalid("error.business_name.maxLength")
       if (name.trim.length > businessNameMaxLength) tooLong else Valid
     }
   )
 
-  val nameInvalid: Constraint[String] = constraint[String](
+  val nameHasValidChars: Constraint[String] = constraint[String](
     name => {
       lazy val invalidName = Invalid("error.business_name.invalid")
       if (Patterns.validText(name.trim)) Valid else invalidName
     }
   )
 
-  val businessNameValidationForm = Form(
+  def nameIsNotExcluded(excludedNames: Seq[BusinessNameModel]): Constraint[String] = constraint[String] { name =>
+    if (excludedNames.exists(_.businessName == name)) Invalid("error.business_trade_name.duplicate")
+    else Valid
+  }
+
+  def businessNameValidationForm(excludedBusinessNames: Seq[BusinessNameModel] = Seq()): Form[BusinessNameModel] = Form(
     mapping(
-      businessName -> oText.toText.verifying(nameEmpty andThen nameTooLong andThen nameInvalid)
+      businessName -> trimmedText.verifying(
+        nameNotEmpty andThen nameNotTooLong andThen nameHasValidChars andThen nameIsNotExcluded(excludedBusinessNames)
+      )
     )(BusinessNameModel.apply)(BusinessNameModel.unapply)
   )
 
-  val businessNameForm: PrevalidationAPI[BusinessNameModel] = PreprocessedForm(businessNameValidationForm)
+  def businessNameForm(excludedBusinessNames: Seq[BusinessNameModel] = Seq()): PrevalidationAPI[BusinessNameModel] =
+    PreprocessedForm(businessNameValidationForm(excludedBusinessNames))
 }

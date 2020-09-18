@@ -29,6 +29,13 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     ) thenReturn(responseStatus, responseBody)
   }
 
+  def stubSaveSelfEmploymentsDetails(id: String, responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
+    when(
+      method = GET,
+      uri = subscriptionUri(id)
+    ) thenReturn(responseStatus, responseBody)
+  }
+
   def stubSaveSubscriptionDetails[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {
     when(method = POST, uri = postUri(id))
       .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionData + (id -> Json.toJson(body))))

@@ -29,7 +29,7 @@ import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.DateModel
 import models.common._
-import models.individual.business.{OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
+import models.individual.business._
 import models.usermatching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -59,7 +59,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  def config: Map[String, String] = Map(
+  def config(): Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.auth.host" -> mockHost,
     "microservice.services.auth.port" -> mockPort,
@@ -240,7 +240,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            BusinessNameForm.businessNameValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            BusinessNameForm.businessNameValidationForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
@@ -301,7 +301,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-
     def iv(): WSResponse = get("/iv")
 
     def showUserDetails(): WSResponse = get("/user-details", Map(JourneyStateKey -> UserMatching.name))
@@ -330,6 +329,53 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
 
+    def getBusinessStartDate(id: String): WSResponse = get(s"/business/start-date?id=$id")
+
+    def submitBusinessStartDate(request: Option[BusinessStartDate], id: String, inEditMode: Boolean = false): WSResponse = {
+      val uri = s"/business/start-date?id=$id&editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            BusinessStartDateForm.businessStartDateForm("error").fill(model).data.map {
+              case (k, v) =>
+                (k, Seq(v))
+            }
+        )
+      )
+    }
+
+    def getBusinessTradeName(id: String): WSResponse = get(s"/business/trade?id=$id")
+
+    def submitBusinessTradeName(id: String, inEditMode: Boolean, request: Option[BusinessTradeNameModel]): WSResponse = {
+      val uri = s"/business/trade?id=$id&editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            BusinessTradeNameForm.businessTradeNameValidationForm(Nil).fill(model).data.map {
+              case (k, v) =>
+                (k, Seq(v))
+            }
+        )
+      )
+    }
+
+    def getSelfEmploymentsCheckYourAnswers: WSResponse = get(s"/details/business-list")
+
+    def submitSelfEmploymentsCheckYourAnswers(request: Option[AddAnotherBusinessModel],
+                                              currentBusinesses: Int,
+                                              limit: Int): WSResponse = {
+      val uri = s"/details/business-list"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AddAnotherBusinessForm.addAnotherBusinessForm(currentBusinesses,limit).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def getAddressLookupInitialise(itsaId: String): WSResponse = get(s"/address-lookup-initialise/$itsaId")
+    def getAddressLookup(itsaId: String, id: String): WSResponse = get(s"/details/address-lookup/${itsaId}?id=$id")
+
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
@@ -341,5 +387,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
   def removeHtmlMarkup(stringWithMarkup: String): String =
     stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim
+
 
 }

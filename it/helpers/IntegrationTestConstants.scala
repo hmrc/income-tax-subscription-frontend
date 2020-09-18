@@ -70,6 +70,12 @@ object IntegrationTestConstants {
   val accountingMethodPropertyURI = s"$baseURI/business/accounting-method-property"
   val propertyCommencementDateURI = s"$baseURI/business/property-commencement-date"
   val accountingMethodForeignPropertyURI = s"$baseURI/business/overseas-property-accounting-method"
+  val businessStartDateUri = s"$baseURI/business/start-date"
+  val businessTradeNameUri = s"$baseURI/business/trade"
+  val businessListCYAUri = s"$baseURI/details/business-list"
+  val initialiseUri = s"$baseURI/business"
+  def businessAddressInitialiseUri(itsaId: String): String = s"$baseURI/address-lookup-initialise/$itsaId"
+  def businessAddressLookupRedirectUri(itsaId: String): String = s"$baseURI/details/address-lookup/$itsaId"
 
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val preferencesURI = s"$baseURI/preferences"
@@ -95,4 +101,68 @@ object IntegrationTestConstants {
         }""")
   }
 
+  def testAddressLookupConfig(continueUrl: String): String =
+    s"""{
+       |  "version": 2,
+       |  "options": {
+       |    "continueUrl": "$continueUrl",
+       |    "showBackButtons": true,
+       |    "includeHMRCBranding": true,
+       |    "ukMode": true,
+       |    "selectPageConfig": {
+       |      "proposalListLimit": 50,
+       |      "showSearchLinkAgain": true
+       |    },
+       |    "confirmPageConfig": {
+       |      "showChangeLink": true,
+       |      "showSubHeadingAndInfo": true,
+       |      "showSearchAgainLink": false,
+       |      "showConfirmChangeText": true
+       |    },
+       |    "timeoutConfig": {
+       |      "timeoutAmount": 900,
+       |      "timeoutUrl": "http://tax.service.gov.uk/income-tax-subscription-frontend/session-timeout"
+       |    }
+       |},
+       |    "labels": {
+       |      "en": {
+       |        "selectPageLabels": {
+       |          "title": "Select business address",
+       |          "heading": "Select business address"
+       |        },
+       |        "lookupPageLabels": {
+       |          "title": "What is your business address?",
+       |          "heading": "What is your business address?"
+       |        },
+       |        "editPageLabels": {
+       |          "title": "Enter business address",
+       |          "heading": "Enter business address",
+       |          "postcodeLabel":"Postcode"
+       |        },
+       |        "confirmPageLabels": {
+       |          "title": "Confirm business address",
+       |          "heading": "Confirm business address"
+       |        }
+       |      },
+       |      "cy": {
+       |        "selectPageLabels": {
+       |          "title": "Dewiswch gyfeiriad busnes",
+       |          "heading": "Dewiswch gyfeiriad busnes"
+       |        },
+       |        "lookupPageLabels": {
+       |          "title": "Beth yw cyfeiriad eich busnes?",
+       |          "heading": "Beth yw cyfeiriad eich busnes?"
+       |        },
+       |        "editPageLabels": {
+       |          "title": "Rhowch gyfeiriad busnes",
+       |          "heading": "Rhowch gyfeiriad busnes",
+       |          "postcodeLabel":"Cod post y DU"
+       |        },
+       |        "confirmPageLabels": {
+       |          "title": "Cadarnhau cyfeiriad busnes",
+       |          "heading": "Cadarnhau cyfeiriad busnes"
+       |        }
+       |      }
+       |    }
+       |  }""".stripMargin
 }

@@ -104,6 +104,9 @@ trait MockConfig extends AppConfig {
 
   override def assignEnrolmentUrl(userId: String, enrolmentKey: String): String = ???
 
+  override val addressLookupUrl: String = "http://localhost:9082"
+  override def addressLookupChangeUrl(id: String): String = s"$addressLookupUrl/lookup-address/$id/lookup"
+  override val limitOnNumberOfBusinesses: Int = 50
 }
 
 object MockConfig extends MockConfig

@@ -33,7 +33,7 @@ class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       val testBusinessName = "Test business"
       val testInput = Map(businessName -> testBusinessName)
       val expected = BusinessNameModel(testBusinessName)
-      val actual = businessNameForm.bind(testInput).value
+      val actual = businessNameForm().bind(testInput).value
       actual shouldBe Some(expected)
     }
 
@@ -46,37 +46,37 @@ class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
       "the map be empty" in {
         val emptyInput0 = DataMap.EmptyMap
-        val emptyTest0 = businessNameForm.bind(emptyInput0)
+        val emptyTest0 = businessNameForm().bind(emptyInput0)
         emptyTest0.errors must contain(FormError(businessName,empty))
       }
 
       "the name be empty" in {
         val emptyInput = DataMap.busName("")
-        val emptyTest = businessNameForm.bind(emptyInput)
+        val emptyTest = businessNameForm().bind(emptyInput)
         emptyTest.errors must contain(FormError(businessName,empty))
       }
 
       "the name is too long" in {
         val maxLengthInput = DataMap.busName("a" * maxLength + 1)
-        val maxLengthTest = businessNameForm.bind(maxLengthInput)
+        val maxLengthTest = businessNameForm().bind(maxLengthInput)
         maxLengthTest.errors must contain(FormError(businessName,maxLen))
       }
 
       "the name should be invalid" in {
         val invalidInput = DataMap.busName("α")
-        val invalidTest = businessNameForm.bind(invalidInput)
+        val invalidTest = businessNameForm().bind(invalidInput)
         invalidTest.errors must contain(FormError(businessName,invalid))
       }
 
       "the name is max characters and acceptable" in {
         val withinLimitInput = DataMap.busName("a" * maxLength)
-        val withinLimitTest = businessNameForm.bind(withinLimitInput)
+        val withinLimitTest = businessNameForm().bind(withinLimitInput)
         withinLimitTest.value mustNot contain(maxLen)
       }
 
       "The following submission should be valid" in {
         val valid = DataMap.busName("Test business")
-        businessNameForm.form isValidFor valid
+        businessNameForm().form isValidFor valid
       }
     }
 

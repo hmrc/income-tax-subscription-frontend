@@ -30,7 +30,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
 
   def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable =
     views.html.individual.incometax.business.business_name(
-    businessNameForm = BusinessNameForm.businessNameForm.form.addError(addFormErrors),
+    businessNameForm = BusinessNameForm.businessNameForm().form.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode

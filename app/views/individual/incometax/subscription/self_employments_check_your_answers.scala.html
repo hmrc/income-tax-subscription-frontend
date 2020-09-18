@@ -1,0 +1,113 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import config.AppConfig
+@import views.html.templates.main_template
+@import views.individual.helpers._
+@import utilities.individual.ImplicitDateFormatter
+@import models.common._
+@import models.individual.business._
+@import models.individual.incomesource._
+@import models.{Yes, No}
+@import forms.individual.business.AddAnotherBusinessForm
+@import forms.submapping.YesNoMapping
+@import views.helpers.RadioOption
+@import views.html.helpers._
+
+@(addAnotherBusinessForm: Form[AddAnotherBusinessModel], answers: Seq[SelfEmploymentData], postAction: Call, implicitDateFormatter: ImplicitDateFormatter)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@summaryRow(question: String, answer: String, changeUrl: Option[String]) = {
+<div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">@question</dt>
+    <dd class="govuk-summary-list__value">@answer</dd>
+    <dd class="govuk-summary-list__actions">
+        @changeUrl.map { url =>
+        <a href=@url>@messages("base.change")</a>
+        }
+    </dd>
+</div>
+}
+
+
+@tradingStartDate(businessStartDate: BusinessStartDate, businessId: String) = @{
+    import implicitDateFormatter.LongDate
+    val question: String = messages("self_employments_check_your_answers.trading_start_date")
+    val answer: String = businessStartDate.startDate.toLocalDate.toLongDate
+    val changeUrl: String = controllers.individual.business.routes.BusinessStartDateController.show(businessId, editMode = true).url
+    summaryRow(question, answer, Some(changeUrl))
+}
+
+@businessName(businessName: BusinessNameModel, businessId: String) = @{
+    val question: String = messages("self_employments_check_your_answers.business_name")
+    val answer: String = businessName.businessName
+    val changeUrl: String = controllers.individual.business.routes.BusinessNameController.show(businessId, editMode = true).url
+    summaryRow(question, answer, Some(changeUrl))
+}
+
+@businessTrade(businessTrade: BusinessTradeNameModel, businessId: String) = @{
+    val question: String = messages("self_employments_check_your_answers.business_trade")
+    val answer: String = businessTrade.businessTradeName
+    val changeUrl: String = controllers.individual.business.routes.BusinessTradeNameController.show(businessId, editMode = true).url
+    summaryRow(question, answer, Some(changeUrl))
+}
+
+@businessAddress(businessAddress: BusinessAddressModel, addressId: String) = @{
+    val question: String = messages("self_employments_check_your_answers.business_address")
+    val answer: String = businessAddress.address.toString
+    val changeUrl: String = appConfig.addressLookupChangeUrl(addressId)
+    summaryRow(question, answer, Some(changeUrl))
+}
+
+@businessTable(business: SelfEmploymentData, businessNumber: Int) = {
+    <h2 class="heading-medium" id="check-your-answer-heading">@messages("self_employments_check_your_answers.sub_heading", businessNumber)</h2>
+    <dl class="govuk-summary-list">
+        @business.businessStartDate.map(startDate => tradingStartDate(startDate, business.id))
+        @business.businessName.map(name => businessName(name, business.id))
+        @business.businessTradeName.map(trade => businessTrade(trade, business.id))
+        @business.businessAddress.map(address => businessAddress(address, address.auditRef))
+    </dl>
+    <div class="form-group">
+        <a id="remove-business-@businessNumber" href=@controllers.individual.subscription.routes.RemoveBusinessController.show(business.id).url>@messages("self_employments_check_your_answers.remove_business", businessNumber)</a>
+    </div>
+}
+
+@main_template(title = messages("self_employments_check_your_answers.title")) {
+
+    @summaryErrorHelper(addAnotherBusinessForm)
+    
+    <h1 class="heading-large">@messages("self_employments_check_your_answers.heading")</h1>
+    
+    @answers.zip(1 to answers.length).map { case (business, businessNumber) =>
+        @businessTable(business, businessNumber)
+    }
+    
+    @form(action = postAction) {
+        <h2 class="heading-medium" id="add-another-business-heading">@messages("self_employments_check_your_answers.add_another_business_heading")</h2>
+        @yesNoRadioHelper(
+            field = addAnotherBusinessForm(AddAnotherBusinessForm.addAnotherBusiness),
+            legend = Messages("self_employments_check_your_answers.add_another_business_heading"),
+            options = Seq(
+            RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+            RadioOption(YesNoMapping.option_no, No.toMessageString)
+            ),
+            parentForm = addAnotherBusinessForm,
+            inline = true
+        )
+        @continueButton()
+    }
+
+}

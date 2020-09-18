@@ -16,70 +16,95 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
+import connectors.httpparser.PostSubscriptionDetailsHttpParser._
 import controllers.ControllerBaseSpec
 import forms.individual.business.BusinessNameForm
+import models.DateModel
 import models.common.BusinessNameModel
+import models.individual.business.{BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockSubscriptionDetailsService
-import utilities.TestModels._
+import services.mocks.{MockMultipleSelfEmploymentsService, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.BusinessName
+import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
+class BusinessNameControllerSpec extends ControllerBaseSpec
+  with MockSubscriptionDetailsService with MockMultipleSelfEmploymentsService with FeatureSwitching {
+
+  val id: String = "testId"
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestBusinessNameController.show(isEditMode = false),
-    "submit" -> TestBusinessNameController.submit(isEditMode = false)
+    "show" -> TestBusinessNameController.show(id, isEditMode = false),
+    "submit" -> TestBusinessNameController.submit(id, isEditMode = false)
   )
 
   object TestBusinessNameController extends BusinessNameController(
     mockAuthService,
-    MockSubscriptionDetailsService
+    MockSubscriptionDetailsService,
+    mockMultipleSelfEmploymentsService
   )
 
-  "Calling the show action of the BusinessNameController with an authorised user" should {
+  val testBusinessNameModel: BusinessNameModel = BusinessNameModel("ITSA me, Mario")
 
-    lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
+  val selfEmploymentData: SelfEmploymentData = SelfEmploymentData(
+    id = id,
+    businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1"))),
+    businessName = Some(BusinessNameModel("testName")),
+    businessTradeName = Some(BusinessTradeNameModel("testTrade"))
+  )
 
-    "return ok (200)" in {
-      mockFetchBusinessNameFromSubscriptionDetails(None)
+  def modelToFormData(businessNameModel: BusinessNameModel): Seq[(String, String)] = {
+    BusinessNameForm.businessNameValidationForm(Nil).fill(businessNameModel).data.toSeq
+  }
 
-      status(result) must be(Status.OK)
+  "Release four is disabled" when {
+    "Calling the show action of the BusinessNameController with an authorised user" should {
+      lazy val result = TestBusinessNameController.show(id, isEditMode = false)(subscriptionRequest)
 
-      await(result)
-      verifySubscriptionDetailsFetch(BusinessName, 1)
-      verifySubscriptionDetailsSave(BusinessName, 0)
+      "return ok (200)" in {
+        disable(ReleaseFour)
+        mockFetchBusinessNameFromSubscriptionDetails(None)
+        status(result) must be(Status.OK)
 
+        await(result)
+        verifySubscriptionDetailsFetch(BusinessName, 1)
+        verifySubscriptionDetailsSave(BusinessName, 0)
+
+      }
     }
   }
 
-  "Calling the submit action of the BusinessNameController with an authorised user on the sign up journey and valid submission" when {
+  "Release four is disabled" when {
+    "Calling the submit action of the BusinessNameController with an authorised user on the sign up journey and valid submission" when {
 
-    def callShow(isEditMode: Boolean): Future[Result] =
-      TestBusinessNameController.submit(isEditMode = isEditMode)(
-        subscriptionRequest
-          .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
-      )
+      def callShow(isEditMode: Boolean): Future[Result] =
+        TestBusinessNameController.submit(id, isEditMode = isEditMode)(
+          subscriptionRequest
+            .post(BusinessNameForm.businessNameForm(Nil).form, BusinessNameModel("Test business"))
+        )
 
-    "it is in edit mode" should {
-      s"return a redirect status (SEE_OTHER - 303) to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchBusinessNameFromSubscriptionDetails(None)
+      "it is in edit mode" should {
+        s"return a redirect status (SEE_OTHER - 303) to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchBusinessNameFromSubscriptionDetails(None)
 
-        val goodRequest = callShow(isEditMode = true)
+          val goodRequest = callShow(isEditMode = true)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
-        await(goodRequest)
-        verifySubscriptionDetailsFetch(BusinessName, 1)
-        verifySubscriptionDetailsSave(BusinessName, 1)
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(BusinessName, 1)
+          verifySubscriptionDetailsSave(BusinessName, 1)
+        }
       }
-    }
 
     "it is not in edit mode" when {
       "the user is business only" should {
@@ -87,41 +112,173 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptio
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
 
-          val goodRequest = callShow(isEditMode = false)
+            val goodRequest = callShow(isEditMode = false)
 
-          status(goodRequest) mustBe Status.SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
+            status(goodRequest) mustBe Status.SEE_OTHER
+            redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
 
-          await(goodRequest)
-          verifySubscriptionDetailsFetchAll(2)
-          verifySubscriptionDetailsSave(BusinessName, 1)
+            await(goodRequest)
+            verifySubscriptionDetailsFetchAll(2)
+            verifySubscriptionDetailsSave(BusinessName, 1)
+          }
         }
       }
+
     }
 
-  }
+    "Release four is enabled" when {
+      "show" should {
+        "return ok (200)" when {
+          "the connector returns data for the current business" in {
+            enable(ReleaseFour)
+            mockFetchAllBusinesses(
+              Seq(selfEmploymentData)
+            )
+            val result = TestBusinessNameController.show(id, isEditMode = false)(subscriptionRequest)
+            status(result) mustBe OK
+            contentType(result) mustBe Some("text/html")
+          }
+          "the connector returns data for the current business but with no business name" in {
+            enable(ReleaseFour)
+            mockFetchAllBusinesses(
+              Seq(selfEmploymentData.copy(businessName = None))
+            )
+            val result = TestBusinessNameController.show(id, isEditMode = false)(subscriptionRequest)
+            status(result) mustBe OK
+            contentType(result) mustBe Some("text/html")
+          }
+        }
+        "Throw an internal exception error" when {
+          "the connector returns an error" in {
+            enable(ReleaseFour)
+            mockFetchAllBusinessesException()
 
-  "Calling the submit action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
+            intercept[InternalServerException](await(TestBusinessNameController.show(id, isEditMode = false)(subscriptionRequest)))
+          }
 
-    "return a bad request status (400)" in {
-      status(badRequest) must be(Status.BAD_REQUEST)
+        }
+      }
 
-      await(badRequest)
-      verifySubscriptionDetailsFetch(BusinessName, 0)
-      verifySubscriptionDetailsSave(BusinessName, 0)
-    }
-  }
+      "submit" when {
+        "not in edit mode" should {
+          s"return $SEE_OTHER" when {
+            "the users input is valid and is saved" in {
+              enable(ReleaseFour)
+              mockFetchAllBusinesses(
+                Seq(selfEmploymentData.copy(businessName = None, businessTradeName = None))
+              )
+              mockSaveBusinessName(id, testBusinessNameModel)(Right(PostSubscriptionDetailsSuccessResponse))
+              val result = TestBusinessNameController.submit(id, isEditMode = false)(subscriptionRequest
+                .withFormUrlEncodedBody(modelToFormData(testBusinessNameModel): _*)
+              )
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(routes.BusinessTradeNameController.show(id).url)
+            }
+          }
+          s"return $BAD_REQUEST" when {
+            "the user submits invalid data" in {
+              enable(ReleaseFour)
+              mockFetchAllBusinesses(
+                Seq(selfEmploymentData.copy(businessName = None, businessTradeName = None))
+              )
+              val result = TestBusinessNameController.submit(id, isEditMode = false)(subscriptionRequest)
+              status(result) mustBe BAD_REQUEST
+              contentType(result) mustBe Some("text/html")
+            }
+            "the user enters a business name which would cause a duplicate business name / trade combination" in {
+              enable(ReleaseFour)
+              mockFetchAllBusinesses(
+                Seq(
+                  selfEmploymentData.copy(
+                    id = "idOne",
+                    businessName = Some(BusinessNameModel("nameOne")),
+                    businessTradeName = Some(BusinessTradeNameModel("tradeOne"))
+                  ),
+                  selfEmploymentData.copy(
+                    id = "idTwo",
+                    businessName = None,
+                    businessTradeName = Some(BusinessTradeNameModel("tradeOne"))
+                  )
+                )
+              )
+              val result = TestBusinessNameController.submit("idTwo", isEditMode = false)(
+                subscriptionRequest.withFormUrlEncodedBody(modelToFormData(BusinessNameModel("nameOne")): _*)
+              )
+              status(result) mustBe BAD_REQUEST
+              contentType(result) mustBe Some("text/html")
+            }
+          }
+          "throw an exception" when {
+            "an error is returned when retrieving all businesses" in {
+              enable(ReleaseFour)
+              mockFetchAllBusinessesException()
 
-  "The back url" when {
-    "in edit mode" should {
-      s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-        TestBusinessNameController.backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+              intercept[InternalServerException](await(TestBusinessNameController.submit(id, isEditMode = false)(subscriptionRequest)))
+            }
+          }
+        }
+        "in edit mode" should {
+          s"return $SEE_OTHER" when {
+            "the users answer is updated correctly" in {
+              enable(ReleaseFour)
+              mockFetchAllBusinesses(
+                Seq(selfEmploymentData.copy(businessName = Some(BusinessNameModel("nameOne"))))
+              )
+              mockSaveBusinessName(id, testBusinessNameModel)(Right(PostSubscriptionDetailsSuccessResponse))
+              val result = TestBusinessNameController.submit(id, isEditMode = true)(
+                subscriptionRequest.withFormUrlEncodedBody(modelToFormData(testBusinessNameModel): _*)
+              )
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.SelfEmploymentsCYAController.show().url)
+            }
+            "the user does not update their answer" in {
+              enable(ReleaseFour)
+              mockFetchAllBusinesses(
+                Seq(selfEmploymentData)
+              )
+              mockSaveBusinessName(id, testBusinessNameModel)(Right(PostSubscriptionDetailsSuccessResponse))
+              val result = TestBusinessNameController.submit(id, isEditMode = true)(
+                subscriptionRequest.withFormUrlEncodedBody(modelToFormData(testBusinessNameModel): _*)
+              )
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.SelfEmploymentsCYAController.show().url)
+            }
+          }
+        }
+
       }
     }
-    "not in edit mode" should {
-      s"redirect to ${controllers.individual.incomesource.routes.IncomeSourceController.show().url}" in {
-        TestBusinessNameController.backUrl(isEditMode = false) mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+
+    "Calling the submit action of the BusinessNameController with an authorised user and invalid submission" should {
+      lazy val badRequest = TestBusinessNameController.submit(id, isEditMode = false)(subscriptionRequest)
+
+      "return a bad request status (400)" in {
+        disable(ReleaseFour)
+        status(badRequest) must be(Status.BAD_REQUEST)
+
+        await(badRequest)
+        verifySubscriptionDetailsFetch(BusinessName, 0)
+        verifySubscriptionDetailsSave(BusinessName, 0)
+      }
+    }
+
+    "The back url" when {
+      "in edit mode and release four disabled" should {
+        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+          disable(ReleaseFour)
+          TestBusinessNameController.backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        }
+      }
+      "in edit mode and release four enabled" should {
+        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+          enable(ReleaseFour)
+          TestBusinessNameController.backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.SelfEmploymentsCYAController.show().url
+        }
+      }
+      "not in edit mode" should {
+        s"redirect to ${controllers.individual.incomesource.routes.IncomeSourceController.show().url}" in {
+          TestBusinessNameController.backUrl(isEditMode = false) mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
       }
     }
   }

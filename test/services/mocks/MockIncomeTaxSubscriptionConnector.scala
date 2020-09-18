@@ -43,6 +43,12 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
     )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
   }
 
+  def mockGetSelfEmploymentsException[T](id: String): OngoingStubbing[Future[Option[T]]] = {
+    when(mockIncomeTaxSubscriptionConnector.getSubscriptionDetails[T](
+      ArgumentMatchers.eq(id)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.failed(new Exception("Unexpected response: 500")))
+  }
+
   def mockSaveSelfEmployments[T](id: String, value: T)
                                 (response: PostSubscriptionDetailsResponse): OngoingStubbing[Future[PostSubscriptionDetailsResponse]] = {
     when(mockIncomeTaxSubscriptionConnector.saveSubscriptionDetails[T](

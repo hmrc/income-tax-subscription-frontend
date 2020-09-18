@@ -1,0 +1,90 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.data.{Field, Form}
+
+@import views.helpers.RadioOption
+@(field: Field,
+    legend: String,
+    options: Seq[RadioOption],
+    parentForm: Form[_],
+    inline: Boolean = false,
+    fieldSetClass: Option[String] = None,
+    useTextForValue: Boolean = false
+)(implicit messages: Messages)
+
+@hasError = @{
+    parentForm.error(field.name).isDefined
+}
+
+@fieldSetClassValue = @{
+    (inline, fieldSetClass) match {
+        case (false, _ )       => fieldSetClass.fold(Html(""))(cls => Html(s"""class="$cls""""))
+        case (true, Some(cls)) => Html(s"""class="inline $cls"""")
+        case _                 => Html(s"""class="inline"""")
+    }
+}
+
+@isSelected(option: String) = {
+    @field.value match {
+        case Some(`option`) => {checked="checked"}
+        case _ => {}
+    }
+}
+
+@valueAttr(option: RadioOption) = @{
+    useTextForValue match {
+        case true => option.message
+        case false => option.optionName
+    }
+}
+    @dataTarget(radioOption: RadioOption) = {
+        @if(radioOption.conditionalContent.isDefined){
+            data-target = @radioOption.optionName
+        }
+    }
+
+
+<div class="form-group @if(hasError) { form-field--error}">
+
+    @if(hasError){
+    <span class="error-notification" role="tooltip" id="error-message-@field.name">
+        @messages(s"${parentForm.error(field.name).get.message}", parentForm.error(field.name).get.args:_*)
+    </span>
+    }
+    <fieldset @fieldSetClassValue>
+
+        <div class="multiple-choice" @dataTarget(options(0))>
+            <input id="yes-no" type="radio" name="@field.name" value="@valueAttr(options(0))" @isSelected(options(0).optionName)>
+            <label @options(0).classes.fold("")(x => s"""class="$x"""") for="yes-no">@Html(options(0).message)</label>
+        </div>
+        @options(0).conditionalContent.map{content =>
+            <div id="@options(0).optionName" class="panel panel-indent panel-border-narrow js-hidden">
+            @content
+            </div>
+        }
+        <div class="multiple-choice" @dataTarget(options(1))>
+            <input id="yes-no-2" type="radio" name="@field.name" value="@valueAttr(options(1))" @isSelected(options(1).optionName)>
+            <label @options(1).classes.fold("")(x => s"""class="$x"""") for="yes-no-2">@Html(options(1).message)</label>
+        </div>
+        @options(1).conditionalContent.map{content =>
+        <div id="@options(1).optionName" class="panel panel-indent panel-border-narrow js-hidden">
+            @content
+        </div>
+        }
+    </fieldset>
+</div>
+

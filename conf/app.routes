@@ -22,6 +22,14 @@ POST        /details/income-receive                     controllers.individual.i
 GET         /check-your-answers                         controllers.individual.subscription.CheckYourAnswersController.show
 POST        /check-your-answers                         controllers.individual.subscription.CheckYourAnswersController.submit
 
+# Self employments summary Routes
+GET         /details/business-list                      controllers.individual.subscription.SelfEmploymentsCYAController.show
+POST        /details/business-list                      controllers.individual.subscription.SelfEmploymentsCYAController.submit
+
+#Address lookup Routes
+GET        /address-lookup-initialise/:itsaId           controllers.individual.business.AddressLookupRoutingController.initialiseAddressLookupJourney(itsaId: String)
+GET        /details/address-lookup/:itsaId              controllers.individual.business.AddressLookupRoutingController.addressLookupRedirect(itsaId: String, id: Option[String] ?= None)
+
 # Confirmation Routes
 GET         /confirmation                               controllers.individual.subscription.ConfirmationController.show
 
@@ -72,13 +80,27 @@ GET         /thank-you                                  controllers.FeedbackCont
 
 ################## Business Routes
 
+#Initialise Routes
+GET         /business                                   controllers.individual.business.InitialiseController.initialise
+
 #What Tax Year To Sign Up Routes
 GET         /business/what-year-to-sign-up              controllers.individual.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up              controllers.individual.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 #Business Name Routes
-GET         /business/name                              controllers.individual.business.BusinessNameController.show(editMode: Boolean ?= false)
-POST        /business/name                              controllers.individual.business.BusinessNameController.submit(editMode: Boolean ?= false)
+GET         /business/name                              controllers.individual.business.BusinessNameController.show(id: String ?= "", editMode: Boolean ?= false)
+POST        /business/name                              controllers.individual.business.BusinessNameController.submit(id: String ?= "", editMode: Boolean ?= false)
+
+#Business Trade Name Routes
+GET         /business/trade                             controllers.individual.business.BusinessTradeNameController.show(id: String, editMode: Boolean ?= false)
+POST        /business/trade                             controllers.individual.business.BusinessTradeNameController.submit(id: String, editMode: Boolean ?= false)
+
+#Business Start Date Routes
+GET         /business/start-date                        controllers.individual.business.BusinessStartDateController.show(id: String, editMode: Boolean ?= false)
+POST        /business/start-date                        controllers.individual.business.BusinessStartDateController.submit(id: String, editMode: Boolean ?= false)
+
+#Remove Business Routes
+GET         /business/remove                            controllers.individual.subscription.RemoveBusinessController.show(id: String)
 
 #Income Type Routes
 GET         /business/accounting-method                 controllers.individual.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
