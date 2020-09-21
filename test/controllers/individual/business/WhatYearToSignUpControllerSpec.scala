@@ -16,11 +16,12 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import controllers.ControllerBaseSpec
 import config.featureswitch._
 import forms.individual.business.AccountingYearForm
 import models.Current
-import models.common.AccountingYearModel
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -87,7 +88,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
       subscriptionRequest
     )
 
-    "When it is not in edit mode" should {
+    "When it is not in edit mode and release four is disabled" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callShow(isEditMode = false)
@@ -109,6 +110,47 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
+    }
+
+    "When it is not in edit mode and Release four is enabled" should {
+      "return a redirect to self-employments initialise controller when self-employment is selected" in {
+        enable(ReleaseFour)
+        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(true, false, false)))
+        setupMockSubscriptionDetailsSaveFunctions()
+        val goodRequest = callShow(isEditMode = false)
+
+        redirectLocation(goodRequest) mustBe Some("/report-quarterly/income-and-expenses/sign-up/self-employments/details")
+        status(goodRequest) must be(Status.SEE_OTHER)
+
+        await(goodRequest)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+      }
+
+      "redirect to Property commencement date page when only UK property is selected" in {
+        enable(ReleaseFour)
+        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(false, true, false)))
+        setupMockSubscriptionDetailsSaveFunctions()
+
+        val goodRequest = callShow(isEditMode = false)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
+
+        await(goodRequest)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+      }
+
+      "redirect to Property commencement date page when only Overseas property is selected" in {
+        enable(ReleaseFour)
+        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(false, false, true)))
+        setupMockSubscriptionDetailsSaveFunctions()
+
+        val goodRequest = callShow(isEditMode = false)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url)
+
+        await(goodRequest)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+      }
     }
 
     "When it is in edit mode" should {
@@ -148,7 +190,12 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "The back url is not in edit mode" when {
       "the user click back url" should {
-        "redirect to Match Tax Year page" in {
+        "redirect to Income source page when release four is enabled" in {
+          TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
+        "redirect to Business name page when release four is disabled" in {
+          disable(ReleaseFour)
           TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
             controllers.individual.business.routes.BusinessNameController.show().url
         }

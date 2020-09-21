@@ -93,13 +93,52 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
     "When it is not edit mode" should {
       "self-employed is checked and rent UK property and foreign property are NOT checked" when {
-        "redirect to BusinessName page" in {
+        "redirect to BusinessName page if release four is disabled" in {
           setupMockSubscriptionDetailsSaveFunctions()
 
           val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
+        }
+        "redirect to WhatYearToSignUp page if release four is enabled" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          enable(ReleaseFour)
+
+          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
+        }
+      }
+
+      "self-employed is checked and rent UK property is checked but foreign property is NOT checked" when {
+        "redirect to BusinessName page if release four is enabled" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          disable(ReleaseFour)
+          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
+        }
+
+        "redirect to self-employments start date page if release four is enabled" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          enable(ReleaseFour)
+
+          val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe "/report-quarterly/income-and-expenses/sign-up/self-employments/details"
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
           verifySubscriptionDetailsSave(IncomeSource, 1)
@@ -111,6 +150,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           "redirect to the PropertyAccounting method page" in {
             setupMockSubscriptionDetailsSaveFunctions()
             val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+            disable(ReleaseFour)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
@@ -138,13 +178,13 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
       "Foreign property is checked and self-employed, UK property are NOT checked" should {
         "Release Four feature switch is disabled" when {
-          "redirect to the PropertyAccounting method page" in {
+          "redirect to the overseas property commencement date page" in {
             setupMockSubscriptionDetailsSaveFunctions()
 
             val goodRequest = callSubmit(IncomeSourceModel(false, false, true), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
+            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url)
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -152,7 +192,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           }
         }
         "Release Four feature switch is enabled" when {
-          "redirect to the PropertyAccounting method page" in {
+          "redirect to the overseas property commencement date page" in {
             enable(ForeignProperty)
             setupMockSubscriptionDetailsSaveFunctions()
 
