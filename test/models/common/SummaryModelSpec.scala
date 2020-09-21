@@ -41,7 +41,7 @@ class SummaryModelSpec extends UnitSpec {
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
           selfEmployments = Some(Seq(completeSeModel)),
           accountingMethod = Some(AccountingMethodModel(Cash)),
-          accountingPeriodDate = Some(getNextTaxYear)
+          selectedTaxYear = Some(AccountingYearModel(Next))
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
@@ -59,7 +59,7 @@ class SummaryModelSpec extends UnitSpec {
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
           selfEmployments = Some(Seq(completeSeModel, SelfEmploymentData("badData"))),
           accountingMethod = Some(AccountingMethodModel(Cash)),
-          accountingPeriodDate = Some(getNextTaxYear)
+          selectedTaxYear = Some(AccountingYearModel(Next))
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
@@ -140,7 +140,7 @@ class SummaryModelSpec extends UnitSpec {
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash)),
           overseasPropertyCommencementDateModel = Some(OverseasPropertyCommencementDateModel(date)),
           overseasAccountingMethodPropertyModel = Some(OverseasAccountingMethodPropertyModel(Cash)),
-          accountingPeriodDate = Some(getCurrentTaxYear)
+          selectedTaxYear = Some(AccountingYearModel(Current))
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
@@ -157,7 +157,7 @@ class SummaryModelSpec extends UnitSpec {
       "incomplete se data is submitted when required" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-          accountingPeriodDate = Some(getNextTaxYear)
+          selectedTaxYear = Some(AccountingYearModel(Next))
         )
 
         the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "Missing data items for valid self employments submission"
@@ -191,7 +191,7 @@ class SummaryModelSpec extends UnitSpec {
         val summary = IndividualSummary(
           selfEmployments = Some(Seq(completeSeModel)),
           accountingMethod = Some(AccountingMethodModel(Cash)),
-          accountingPeriodDate = Some(getNextTaxYear)
+          selectedTaxYear = Some(AccountingYearModel(Next))
         )
 
         the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "IncomeSource model not defined for BusinessSubscriptionDetailsModel"

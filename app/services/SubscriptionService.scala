@@ -126,8 +126,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
     Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
     val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel =
-      individualSummary.copy(
-        accountingPeriodDate = getAccountingPeriod(individualSummary, false)).toBusinessSubscriptionDetailsModel
+      individualSummary.toBusinessSubscriptionDetailsModel
 
     multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
   }
