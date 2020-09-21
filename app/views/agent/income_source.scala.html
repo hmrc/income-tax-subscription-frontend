@@ -31,15 +31,32 @@
         @back_link(backUrl)
     }
 
-    @summaryErrorHelper(incomeSourceForm)
+@if(incomeSourceForm.hasErrors) {
+
+    <div class="flash error-summary error-summary--show"
+     id="error-summary-display"
+     role="alert"
+     aria-labelledby="error-summary-heading"
+     tabindex="-1">
+        <h2 id="error-summary-heading" class="h3-heading">@Messages("base.error_heading")</h2>
+            <ul>
+                <li>
+                    <a id="error-summary-heading-href" href="#@IncomeSourceForm.business">@{Messages("agent.error.income_source.invalid")}</a>
+                </li>
+            </ul>
+    </div>
+
+}
 
     <h1 class="heading-large">@Messages("agent.income_source.heading")</h1>
 
     @form(action = postAction) {
         @if(incomeSourceForm.hasErrors){
+            <div class="form-group form-field-group--error">
             <span class="error-notification bold">@messages("agent.error.income_source.invalid")</span>
         } else {
-        <div class="form-group">
+            <div class="form-group">
+                }
             <p id="checkbox-hint" class="form-hint">
                 @messages("agent.income_source.checkbox.hint")
             </p>
@@ -59,10 +76,9 @@
                     label = Messages("agent.income_source.foreignProperty"),
                     parentForm = incomeSourceForm
                 )
-            }
-        }
+            }}
+
         </div>
-    }
 
     @if(isEditMode) {
         @continueButton(Messages("base.update"))
