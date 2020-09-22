@@ -57,32 +57,37 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
         formWithErrors =>
           Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource => {
-          lazy val linearJourney: Future[Result] =
-            subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
-              incomeSource match {
-                case IncomeSourceModel(true, _, _) =>
-                  Redirect(controllers.individual.business.routes.BusinessNameController.show())
-                case IncomeSourceModel(_, true, _) =>
-                  if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
-                  else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-                case IncomeSourceModel(_, _, true) =>
-                  if (isEnabled(ForeignProperty)) Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
-                  else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-                case _ =>
-                  Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-              }
-            }
-
           if (!isEditMode) {
-            linearJourney
+            linearJourney(incomeSource)
           } else {
             subscriptionDetailsService.fetchIncomeSource() flatMap {
               case Some(`incomeSource`) => Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
-              case _ => linearJourney
+              case _ => linearJourney(incomeSource)
             }
           }
         }
       )
+  }
+
+
+  private def linearJourney(incomeSource: IncomeSourceModel)(implicit request: Request[_]): Future[Result] = {
+    subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
+      incomeSource match {
+        case IncomeSourceModel(true, false, false) =>
+          if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+          else Redirect(controllers.individual.business.routes.BusinessNameController.show())
+        case IncomeSourceModel(true, _, _) =>
+          if (isEnabled(ReleaseFour)) Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+          else Redirect(controllers.individual.business.routes.BusinessNameController.show())
+        case IncomeSourceModel(false, true, _) =>
+          if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+          else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+        case IncomeSourceModel(false, _, true) =>
+          Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+        case _ =>
+          Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+      }
+    }
   }
 
   lazy val backUrl: String =

@@ -18,6 +18,8 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
 import controllers.utils.Answers._
 import controllers.utils.RequireAnswer
 import forms.individual.business.OverseasPropertyCommencementDateForm
@@ -39,9 +41,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class OverseasPropertyCommencementDateController @Inject()(val authService: AuthService,
                                                            val subscriptionDetailsService: SubscriptionDetailsService,
-                                                           val languageUtils: LanguageUtils)(implicit val ec: ExecutionContext,
-                                                            appConfig: AppConfig, mcc: MessagesControllerComponents) extends
-                                                            SignUpController with ImplicitDateFormatter with RequireAnswer {
+                                                           val languageUtils: LanguageUtils
+                                                          )(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                                            mcc: MessagesControllerComponents)
+  extends SignUpController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
 
   def view(overseasPropertyCommencementDateForm: Form[OverseasPropertyCommencementDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
@@ -90,9 +93,15 @@ class OverseasPropertyCommencementDateController @Inject()(val authService: Auth
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
       (incomeSourceModel.selfEmployment, incomeSourceModel.ukProperty) match {
-        case (_, true) => appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/business/accounting-method-property"
-        case (true, false) => appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
-        case _ => controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        case (_, true) => controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+        case (true, false) => {
+         if (isEnabled(ReleaseFour)) appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
+         else controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+        }
+        case _ => {
+          if (isEnabled(ReleaseFour)) controllers.individual.business.routes.WhatYearToSignUpController.show().url
+          else controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
       }
     }
   }

@@ -93,6 +93,7 @@ trait MockConfig extends AppConfig {
   override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
 
   override val incomeTaxSelfEmploymentsFrontendUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments"
+  override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details"
 
   override def getAllocatedEnrolmentUrl(utr: String): String = ???
 

@@ -18,6 +18,8 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.subscriptionData
@@ -28,7 +30,7 @@ import models.{Current, Next}
 import play.api.http.Status._
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
-class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
+class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
@@ -86,6 +88,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")
@@ -103,6 +106,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")

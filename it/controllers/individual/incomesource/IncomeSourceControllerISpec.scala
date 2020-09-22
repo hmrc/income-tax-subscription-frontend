@@ -70,7 +70,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/details/income-receive" when {
-    "not in edit mode" when {
+    "not in edit mode and release four is disabled" when {
       "the user is self-employed, doesn't have uk and foreign property " in {
         val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
 
@@ -185,10 +185,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-        Then(s"Should return $SEE_OTHER with a redirect location of property accounting method")
+        Then(s"Should return $SEE_OTHER with a redirect location of overseas property commencement date")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingMethodPropertyURI)
+          redirectURI(overseasPropertyCommencementDateURI)
         )
       }
     }

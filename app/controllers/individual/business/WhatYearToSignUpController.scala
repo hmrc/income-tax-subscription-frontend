@@ -18,9 +18,11 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingYearForm
 import javax.inject.{Inject, Singleton}
-import models.common.AccountingYearModel
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -29,9 +31,11 @@ import services.{AccountingPeriodService, AuthService, SubscriptionDetailsServic
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatYearToSignUpController @Inject()(val authService: AuthService, accountingPeriodService: AccountingPeriodService,
-                                           subscriptionDetailsService: SubscriptionDetailsService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                                                                       mcc: MessagesControllerComponents) extends SignUpController {
+class WhatYearToSignUpController @Inject()(val authService: AuthService,
+                                           accountingPeriodService: AccountingPeriodService,
+                                           subscriptionDetailsService: SubscriptionDetailsService
+                                          )(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                            mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.individual.incometax.business.what_year_to_sign_up(
@@ -57,12 +61,22 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(accountingYear)) map { _ =>
+          subscriptionDetailsService.saveSelectedTaxYear(accountingYear) flatMap { _ =>
             if (isEditMode) {
-              Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-            }
-            else {
-              Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())
+              Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
+            } else {
+              if (isEnabled(ReleaseFour)) {
+                subscriptionDetailsService.fetchIncomeSource() map {
+                  case Some(IncomeSourceModel(true, _, _)) =>
+                    Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+                  case Some(IncomeSourceModel(_, true, _)) =>
+                    Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+                  case Some(IncomeSourceModel(_, _, true)) =>
+                    Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+                }
+              } else {
+                Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show()))
+              }
             }
           }
         }
@@ -72,6 +86,8 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService, account
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+    } else if (isEnabled(ReleaseFour)){
+      controllers.individual.incomesource.routes.IncomeSourceController.show().url
     } else {
       controllers.individual.business.routes.BusinessNameController.show().url
     }

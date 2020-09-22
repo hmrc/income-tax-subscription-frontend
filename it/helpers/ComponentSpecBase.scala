@@ -206,6 +206,8 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def noSA(): WSResponse = get("/register-for-SA")
 
+    def getRouting(): WSResponse = get("/business/routing")
+
     def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
 
     def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYearModel]): WSResponse = {

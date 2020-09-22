@@ -99,3 +99,6 @@ POST        /business/property-commencement-date        controllers.individual.b
 #Foreign Property Commencement Date Routes
 GET         /business/overseas-property-start-date      controllers.individual.business.OverseasPropertyCommencementDateController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-start-date      controllers.individual.business.OverseasPropertyCommencementDateController.submit(editMode: Boolean ?= false)
+
+#Routing controller
+GET         /business/routing                           controllers.individual.business.RoutingController.show
