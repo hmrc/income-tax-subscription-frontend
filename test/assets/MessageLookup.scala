@@ -90,6 +90,9 @@ object MessageLookup {
     val business = "Self-employed"
     val ukProperty = "Rent out a property in the UK"
     val foreignProperty = "Rent out a foreign property outside the UK"
+    val errorHeading ="There’s a problem"
+    val errorSummary = "Select if you receive your income from self employment or UK property"
+    val errorSummaryForeignProperty = "Select if you receive your income from self employment, UK property or foreign property"
   }
 
 

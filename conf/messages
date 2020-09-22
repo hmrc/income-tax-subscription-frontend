@@ -72,7 +72,8 @@ income_source.para1                                             = Renting out a 
 income_source.selfEmployed                                      = Self-employed
 income_source.rentUkProperty                                    = Rent out a property in the UK
 income_source.foreignProperty                                   = Rent out a foreign property outside the UK
-individual.error.income_source.invalid                          = Select if you receive your income from self employment, UK property or foreign property
+individual.error.income_source.invalid                          = Select if you receive your income from self employment or UK property
+individual.error.income_source_foreignProperty.invalid          = Select if you receive your income from self employment, UK property or foreign property
 income_source.checkbox.hint                                     = Select all that apply
 
 
@@ -529,8 +530,8 @@ agent.income_source.checkbox.hint                               = Select all tha
 agent.income_source.selfEmployed                                = Self-employed
 agent.income_source.rentUkProperty                              = Rent out a property in the UK
 agent.income_source.foreignProperty                             = Rent out a foreign property outside the UK
-agent.error.income_source.invalid                               = Select if your client receives income from self employment, UK property or foreign property
-agent.error.income_source.empty                                 = Select if your client receives income from self employment, UK property or foreign property
+agent.error.income_source.invalid                               = Select if your client receives income from self employment or UK property
+agent.error.income_source_foreignProperty.invalid               = Select if your client receives income from self employment, UK property or foreign property
 
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?
