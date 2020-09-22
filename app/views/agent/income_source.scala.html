@@ -41,7 +41,13 @@
         <h2 id="error-summary-heading" class="h3-heading">@Messages("base.error_heading")</h2>
             <ul>
                 <li>
-                    <a id="error-summary-heading-href" href="#@IncomeSourceForm.business">@{Messages("agent.error.income_source.invalid")}</a>
+                    <a id="error-summary-heading-href" href="#@IncomeSourceForm.business">
+                        @if(foreignProperty){
+                            @Messages("agent.error.income_source_foreignProperty.invalid")
+                        }else{
+                            @Messages("agent.error.income_source.invalid")
+                        }
+                    </a>
                 </li>
             </ul>
     </div>
@@ -53,7 +59,13 @@
     @form(action = postAction) {
         @if(incomeSourceForm.hasErrors){
             <div class="form-group form-field-group--error">
-            <span class="error-notification bold">@messages("agent.error.income_source.invalid")</span>
+            <span class="error-notification bold">
+                @if(foreignProperty){
+                    @Messages("agent.error.income_source_foreignProperty.invalid")
+                }else{
+                    @Messages("agent.error.income_source.invalid")
+                }
+            </span>
         } else {
             <div class="form-group">
                 }

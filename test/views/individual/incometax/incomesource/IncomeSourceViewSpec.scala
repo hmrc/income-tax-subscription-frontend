@@ -18,6 +18,7 @@ package views.individual.incometax.incomesource
 
 import assets.MessageLookup.{IndividualIncomeSource => messages}
 import forms.individual.incomesource.IncomeSourceForm
+import org.jsoup.Jsoup
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -31,12 +32,12 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
 
   implicit val request: Request[_] = FakeRequest()
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.incometax.incomesource.income_source(
+  def page(isEditMode: Boolean, addFormErrors: Boolean, foreignProperty: Boolean = true): HtmlFormat.Appendable = views.html.individual.incometax.incomesource.income_source(
     incomeSourceForm = IncomeSourceForm.incomeSourceForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode,
-    foreignProperty = true
+    foreignProperty = foreignProperty
   )(FakeRequest(), implicitly, appConfig)
 
   "The Income Source view" should {
@@ -80,5 +81,33 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
 
     val testPage = documentCore()
     testPage.mustHaveHrefValue("error-summary-heading-href", s"#Business")
+  }
+
+  "Display error summary and error notification" when {
+    "foreign property FS is disabled" in {
+
+      lazy val document = Jsoup.parse(page(false, true, false).body)
+
+      val errorHeading = document.getElementById("error-summary-heading")
+      errorHeading.text() mustBe messages.errorHeading
+
+      val summaryError = document.getElementById("error-summary-heading-href")
+      summaryError.text() mustBe messages.errorSummary
+
+      val summaryNotification = document.getElementsByClass("error-notification bold")
+      summaryNotification.text() mustBe messages.errorSummary
+    }
+    "foreign property FS is enabled" in {
+      lazy val document = Jsoup.parse(page(false, true).body)
+
+      val errorHeading = document.getElementById("error-summary-heading")
+      errorHeading.text() mustBe messages.errorHeading
+
+      val summaryError = document.getElementById("error-summary-heading-href")
+      summaryError.text() mustBe messages.errorSummaryForeignProperty
+
+      val summaryNotification = document.getElementsByClass("error-notification bold")
+      summaryNotification.text() mustBe messages.errorSummaryForeignProperty
+    }
   }
 }

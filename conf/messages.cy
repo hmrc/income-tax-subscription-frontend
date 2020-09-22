@@ -71,7 +71,8 @@ income_source.para1                                             = Mae rhoi eiddo
 income_source.selfEmployed                                      = Hunangyflogedig
 income_source.rentUkProperty                                    = Rhoi eiddo ar osod yn y DU
 income_source.foreignProperty                                   = Rhoi eiddo tramor ar osod y tu allan i’r DU
-individual.error.income_source.invalid                          = Dewiswch os ydych yn cael eich incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
+individual.error.income_source.invalid                          = Dewiswch a ydych chi'n cael eich incwm o hunangyflogaeth neu'r DU eiddo
+individual.error.income_source_foreignProperty.invalid          = Dewiswch os ydych yn cael eich incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
 income_source.checkbox.hint                                     = Dewiswch bob un sy’n gymwys
 
 ## Rent Uk Property page
@@ -539,8 +540,8 @@ agent.income_source.checkbox.hint                               = Dewiswch bob u
 agent.income_source.selfEmployed                                = Hunangyflogedig
 agent.income_source.rentUkProperty                              = Rhoi eiddo ar osod yn y DU
 agent.income_source.foreignProperty                             = Rhoi eiddo tramor ar osod y tu allan i’r DU
-agent.error.income_source.invalid                               = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
-agent.error.income_source.empty                                 = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
+agent.error.income_source.invalid                               = Dewiswch a yw'ch cleient yn cael incwm ohono eiddo hunangyflogedig neu eiddo'r DU
+agent.error.income_source_foreignProperty.invalid               = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
 
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?
