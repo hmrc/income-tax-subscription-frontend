@@ -41,6 +41,11 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     "submit" -> TestWhatYearToSignUpController.submit(isEditMode = false)
   )
 
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    super.beforeEach()
+  }
+
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
     mockAuthService,
     mockAccountingPeriodService,
@@ -191,11 +196,11 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     "The back url is not in edit mode" when {
       "the user click back url" should {
         "redirect to Income source page when release four is enabled" in {
+          enable(ReleaseFour)
           TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
             controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }
         "redirect to Business name page when release four is disabled" in {
-          disable(ReleaseFour)
           TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
             controllers.individual.business.routes.BusinessNameController.show().url
         }
