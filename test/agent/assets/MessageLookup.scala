@@ -108,14 +108,6 @@ object MessageLookup {
       val no = "No - I am a different type of business"
     }
 
-    object MatchTaxYear {
-      val heading = "Does your client’s accounting period match the tax year?"
-      val para1 = "The tax year runs from 6 April to 5 April."
-      val para2 = "Your client’s accounting period is the same unless you have previously chosen different dates."
-      val yes = "Yes"
-      val no = "No"
-    }
-
     object WhatYearToSignUp {
       val heading = "What tax year do you want to sign your client up for?"
       val line1 = "You can sign your client up for the current year or the next year."

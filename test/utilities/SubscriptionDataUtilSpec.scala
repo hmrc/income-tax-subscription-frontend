@@ -34,8 +34,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       emptyCacheMap.getIncomeSource shouldBe None
       emptyCacheMap.getIncomeSource shouldBe None
       emptyCacheMap.getBusinessName shouldBe None
-      emptyCacheMap.getMatchTaxYear shouldBe None
-      emptyCacheMap.getEnteredAccountingPeriodDate shouldBe None
       emptyCacheMap.getSelectedTaxYear shouldBe None
       emptyCacheMap.getAccountingMethod shouldBe None
       emptyCacheMap.getPropertyAccountingMethod shouldBe None
@@ -44,8 +42,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
     "In the respective get calls, return the models if they are in the cachemap" in {
       testCacheMap.getIncomeSource shouldBe Some(IncomeSourceModel(true, true, false))
       testCacheMap.getBusinessName shouldBe Some(testBusinessName)
-      testCacheMap.getMatchTaxYear shouldBe Some(testMatchTaxYearNo)
-      testCacheMap.getEnteredAccountingPeriodDate shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod shouldBe Some(testAccountingMethod)
       testCacheMap.getSelectedTaxYear shouldBe Some(testSelectedTaxYearNext)
       testCacheMap.getPropertyAccountingMethod.contains(testAccountingMethodProperty) shouldBe true
@@ -97,8 +93,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           incomeSource = Some(testAgentIncomeSourceProperty)
         ).getAgentSummary() shouldBe AgentSummary(
           incomeSource = Some(testAgentIncomeSourceProperty),
-          matchTaxYear = None,
-          accountingPeriodDate = None,
           businessName = None,
           accountingMethod = None,
           accountingMethodProperty = Some(testAccountingMethodProperty)
@@ -110,9 +104,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           incomeSource = Some(testAgentIncomeSourceBusiness)
         ).getAgentSummary() shouldBe AgentSummary(
           incomeSource = Some(testAgentIncomeSourceBusiness),
-          matchTaxYear = Some(testMatchTaxYearNo),
           selectedTaxYear = Some(testSelectedTaxYearNext),
-          accountingPeriodDate = Some(testAccountingPeriod),
           businessName = Some(testBusinessName),
           accountingMethod = Some(testAccountingMethod),
           accountingMethodProperty = None
@@ -125,8 +117,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         ).getAgentSummary() shouldBe
           AgentSummary(
             incomeSource = testAgentIncomeSourceBoth,
-            matchTaxYear = testMatchTaxYearNo,
-            accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod,
             accountingMethodProperty = testAccountingMethodProperty

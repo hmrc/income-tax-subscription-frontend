@@ -85,7 +85,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of match tax year")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(matchTaxYearURI)
+          redirectURI(whatYearToSignUpURI)
         )
       }
 

@@ -66,18 +66,6 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
   def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FA =
     save[BusinessNameModel](BusinessName, businessName)
 
-  def fetchMatchTaxYear()(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FO[MatchTaxYearModel] =
-    fetch[MatchTaxYearModel](MatchTaxYear)
-
-  def saveMatchTaxYear(accountingPeriod: MatchTaxYearModel)(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FA =
-    save[MatchTaxYearModel](MatchTaxYear, accountingPeriod)
-
-  def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
-    fetch[AccountingPeriodModel](AccountingPeriodDate)
-
-  def saveAccountingPeriodDate(accountingPeriod: AccountingPeriodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FA =
-    save[AccountingPeriodModel](AccountingPeriodDate, accountingPeriod)
-
   def fetchAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FO[AccountingMethodModel] =
     fetch[AccountingMethodModel](AccountingMethod)
 

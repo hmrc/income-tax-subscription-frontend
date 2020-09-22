@@ -16,10 +16,12 @@
 
 package controllers.individual.subscription
 
+import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers._
+import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.libs.json.Json

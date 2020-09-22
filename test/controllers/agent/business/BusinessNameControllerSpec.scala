@@ -16,9 +16,8 @@
 
 package controllers.agent.business
 
-import utilities.agent.TestModels._
-import controllers.agent.AgentControllerBaseSpec
 import config.featureswitch.FeatureSwitching
+import controllers.agent.AgentControllerBaseSpec
 import forms.agent.BusinessNameForm
 import models.common.BusinessNameModel
 import play.api.http.Status
@@ -26,6 +25,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.BusinessName
+import utilities.agent.TestModels._
 
 import scala.concurrent.Future
 
@@ -60,7 +60,6 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
 
     "return ok (200)" in {
       mockFetchBusinessNameFromSubscriptionDetails(None)
-      mockFetchAccountingPeriodFromSubscriptionDetails(Some(testAccountingPeriod))
       mockFetchIncomeSourceFromSubscriptionDetails(Some(testIncomeSourceBusiness))
 
       status(result) must be(Status.OK)
@@ -79,55 +78,97 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
         subscriptionRequest.post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )
 
-    "When it is not in edit mode" should {
+    def callSubmit(isEditMode: Boolean, businessNameModel: BusinessNameModel): Future[Result] = {
+      TestBusinessNameController.submit(isEditMode = isEditMode)(
+        subscriptionRequest.post(BusinessNameForm.businessNameForm.form, businessNameModel)
+      )
+    }
 
-      s"redirect to '${controllers.agent.business.routes.MatchTaxYearController.show().url}'" in {
+    "When is not in edit mode" when {
+      "the user is business only" should {
+        s"redirect to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
+
+          val goodRequest = callShow(isEditMode = false)
+
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.WhatYearToSignUpController.show().url)
+
+          await(goodRequest)
+          verifySubscriptionDetailsFetchAll(2)
+          verifySubscriptionDetailsSave(BusinessName, 1)
+        }
+      }
+
+      "the user is business and income source" should {
+        s"redirect to ${controllers.agent.business.routes.BusinessAccountingMethodController.show().url}" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusinessAndUkProperty))
+
+          val goodRequest = callShow(isEditMode = false)
+
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
+
+          await(goodRequest)
+          verifySubscriptionDetailsFetchAll(2)
+          verifySubscriptionDetailsSave(BusinessName, 1)
+        }
+      }
+    }
+
+    "the income source is false" should {
+      s"redirect to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceNone))
+
+        val goodRequest = callShow(isEditMode = false)
+
+        status(goodRequest) mustBe Status.SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
+
+        await(goodRequest)
+        verifySubscriptionDetailsFetchAll(2)
+        verifySubscriptionDetailsSave(BusinessName, 1)
+      }
+    }
+
+    "there is no income source" should {
+      s"redirect to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.MatchTaxYearController.show().url)
+        status(goodRequest) mustBe Status.SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetch(BusinessName, 1)
+        verifySubscriptionDetailsFetchAll(2)
         verifySubscriptionDetailsSave(BusinessName, 1)
       }
-
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+    "When is in edit mode" should {
+      s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness, businessName = testBusinessName))
 
-        val goodRequest = callShow(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = true, testBusinessName)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsFetch(BusinessName, 1)
-        verifySubscriptionDetailsSave(BusinessName, 1)
-      }
-
-      s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}'" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = true)
-
+        status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetch(BusinessName, 1)
+        verifySubscriptionDetailsFetch(BusinessName, 2)
         verifySubscriptionDetailsSave(BusinessName, 1)
       }
     }
   }
-
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
+    "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
     lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
-      mockFetchAccountingPeriodFromSubscriptionDetails(Some(testAccountingPeriod))
       mockFetchIncomeSourceFromSubscriptionDetails(Some(testIncomeSourceBusiness))
 
       status(badRequest) must be(Status.BAD_REQUEST)

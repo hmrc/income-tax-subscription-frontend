@@ -23,8 +23,6 @@ import controllers.utils.RequireAnswer
 import forms.agent.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
 import models.common.{AccountingMethodModel, IncomeSourceModel}
-import models.individual.business.MatchTaxYearModel
-import models.{No, Yes}
 import play.api.data.Form
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -49,23 +47,23 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optAccountingMethodAnswer and incomeSourceModelAnswer and matchTaxYearAnswer) { case optAccountingMethod ~ incomeSourceModel ~ matchTaxYear =>
+      require(optAccountingMethodAnswer and incomeSourceModelAnswer) { case optAccountingMethod ~ incomeSourceModel =>
         Future.successful(Ok(view(
           accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(optAccountingMethod),
           isEditMode = isEditMode,
-          backUrl = backUrl(isEditMode, incomeSourceModel, matchTaxYear)
+          backUrl = backUrl(isEditMode, incomeSourceModel)
         )))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(incomeSourceModelAnswer and matchTaxYearAnswer) { case incomeSourceModel ~ matchTaxYear =>
+      require(incomeSourceModelAnswer) { incomeSourceModel =>
         AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(
             accountingMethodForm = formWithErrors,
             isEditMode = isEditMode,
-            backUrl = backUrl(isEditMode, incomeSourceModel, matchTaxYear)
+            backUrl = backUrl(isEditMode, incomeSourceModel)
           ))),
           accountingMethod => {
             subscriptionDetailsService.saveAccountingMethod(accountingMethod) map { _ =>
@@ -80,14 +78,13 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
       }
   }
 
-  def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel, matchTaxYear: MatchTaxYearModel): String = {
+  def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel): String = {
     if (isEditMode) {
       controllers.agent.routes.CheckYourAnswersController.show().url
     } else {
-      (matchTaxYear.matchTaxYear, incomeSourceModel) match {
-        case (No, _) => controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url
-        case (Yes, IncomeSourceModel(true, false, _)) => controllers.agent.business.routes.WhatYearToSignUpController.show().url
-        case _ => controllers.agent.business.routes.MatchTaxYearController.show().url
+      incomeSourceModel match {
+        case IncomeSourceModel(true, false, _) => controllers.agent.business.routes.WhatYearToSignUpController.show().url
+        case _ => controllers.agent.business.routes.BusinessNameController.show().url
       }
     }
   }

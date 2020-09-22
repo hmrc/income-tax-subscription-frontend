@@ -127,7 +127,6 @@ class UkPropertyAccountingMethodControllerISpec extends ComponentSpecBase with F
       "in edit mode" should {
         "changing to the Accruals radio button on the accounting method page" in {
           val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
-          val SubscriptionDetailsAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
           val SubscriptionDetailsAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
           val userInput = AccountingMethodPropertyModel(Accruals)
 
@@ -136,7 +135,6 @@ class UkPropertyAccountingMethodControllerISpec extends ComponentSpecBase with F
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(SubscriptionDetailsIncomeSource),
-              accountingPeriodDate = Some(SubscriptionDetailsAccountingPeriodDates),
               accountingMethodProperty = Some(SubscriptionDetailsAccountingMethodProperty)
             )
           )
@@ -154,7 +152,6 @@ class UkPropertyAccountingMethodControllerISpec extends ComponentSpecBase with F
 
         "simulate not changing Property Accounting Method when calling page from Check Your Answers" in {
           val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
-          val SubscriptionDetailsAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
           val SubscriptionDetailsAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
           val userInput = AccountingMethodPropertyModel(Cash)
 
@@ -163,7 +160,6 @@ class UkPropertyAccountingMethodControllerISpec extends ComponentSpecBase with F
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(SubscriptionDetailsIncomeSource),
-              accountingPeriodDate = Some(SubscriptionDetailsAccountingPeriodDates),
               accountingMethodProperty = Some(SubscriptionDetailsAccountingMethodProperty)
             )
           )

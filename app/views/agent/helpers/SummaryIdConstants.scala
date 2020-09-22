@@ -20,8 +20,6 @@ object SummaryIdConstants {
 
   val ReceiveEmail = "receiveEmail"
   val IncomeSourceId = "incomeSource"
-  val MatchTaxYearId= "matchTaxYear"
-  val AccountingPeriodDateId = "accountingPeriodDate"
   val BusinessNameId = "businessName"
   val SelectedTaxYearId = "selectedTaxYear"
   val AccountingMethodId = "accountingMethod"

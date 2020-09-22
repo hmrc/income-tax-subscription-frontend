@@ -82,9 +82,11 @@ class SubscriptionServiceSpec extends TestSubscriptionService
         val request = TestSubscriptionService.buildRequestPost(nino, testAgentSummaryDataBusiness.copy(selectedTaxYear =
           Some(testSelectedTaxYearNext)), Some(testArn))
 
+        val expectedTaxYear = AccountingPeriodUtil.getNextTaxYear
+
         request.nino mustBe nino
-        request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
-        request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
+        request.businessIncome.get.accountingPeriod.startDate mustBe expectedTaxYear.startDate
+        request.businessIncome.get.accountingPeriod.endDate mustBe expectedTaxYear.endDate
         request.businessIncome.get.accountingMethod mustBe Cash
         request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
         request.propertyIncome.isDefined mustBe false
@@ -134,8 +136,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
       "convert the user's data into the correct format when they are self employed and they are signing up in next Tax year" in {
         val nino = TestModels.newNino
-        val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusinessMatchTaxYear.copy(selectedTaxYear =
-          Some(testSelectedTaxYearNext)), None)
+        val request = TestSubscriptionService.buildRequestPost(nino,testSummaryDataBusinessNextTaxYear, None)
 
         val expectedTaxYear = AccountingPeriodUtil.getNextTaxYear
 

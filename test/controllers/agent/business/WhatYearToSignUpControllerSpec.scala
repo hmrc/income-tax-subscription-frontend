@@ -150,7 +150,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "the user click back url" should {
         "redirect to Match Tax Year page" in {
           TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
-            controllers.agent.business.routes.MatchTaxYearController.show().url
+            controllers.agent.business.routes.BusinessNameController.show().url
         }
       }
     }

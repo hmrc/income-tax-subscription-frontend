@@ -26,10 +26,6 @@ sealed trait SummaryModel {
 
   def incomeSource: Option[IncomeSourceModel]
 
-  def matchTaxYear: Option[MatchTaxYearModel]
-
-  def accountingPeriodDate: Option[AccountingPeriodModel]
-
   def businessName: Option[BusinessNameModel]
 
   def selectedTaxYear: Option[AccountingYearModel]
@@ -43,8 +39,6 @@ sealed trait SummaryModel {
 
 
 case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
-                             matchTaxYear: Option[MatchTaxYearModel] = None,
-                             accountingPeriodDate: Option[AccountingPeriodModel] = None,
                              businessName: Option[BusinessNameModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
@@ -92,8 +86,6 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
 
 
 case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
-                        matchTaxYear: Option[MatchTaxYearModel] = None,
-                        accountingPeriodDate: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,

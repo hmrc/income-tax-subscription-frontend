@@ -39,12 +39,11 @@ object IntegrationTestConstants {
   val businessAccountingMethodURI = s"$baseURI/business/accounting-method"
   val propertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
   val errorMainIncomeURI = s"$baseURI/error/main-income"
-  val accountingPeriodDatesURI = s"$baseURI/business/accounting-period-dates"
-  val matchTaxYearURI = s"$baseURI/business/match-to-tax-year"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val ggSignOutURI = s"/gg/sign-out"
   val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
+  val whatYearToSignUpURI = s"$baseURI/business/what-year-to-sign-up"
 
 
   object Auth {

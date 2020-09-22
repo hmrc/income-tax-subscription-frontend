@@ -19,13 +19,16 @@ package controllers.agent
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants.{testCredentialId, testCredentialId2, testGroupId, testUtr}
+import helpers.IntegrationTestModels.{testAccountingMethod, testBusinesses, testEnrolmentKey}
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
-import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub}
+import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub, TaxEnrolmentsStub}
 import play.api.http.Status._
+import play.api.libs.json.Json
 import play.api.test.Helpers.OK
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
 

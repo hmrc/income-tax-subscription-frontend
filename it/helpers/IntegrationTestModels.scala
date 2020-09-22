@@ -29,8 +29,6 @@ import utilities.individual.Constants.GovernmentGateway._
   val testEndDate: DateModel = DateModel.dateConvert(LocalDate.now.plusYears(1).plusDays(-1))
   val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1).plusDays(-1)
   val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
-  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
-  val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -56,9 +54,7 @@ import utilities.individual.Constants.GovernmentGateway._
     subscriptionData(
       incomeSource = Some(IncomeSourceModel(true, true, false)),
       individualIncomeSource = Some(IncomeSourceModel(true, true, false)),
-      matchTaxYear = Some(testMatchTaxYearNo),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
       propertyCommencementDate = Some(testPropertyCommencementDate),
@@ -69,9 +65,7 @@ import utilities.individual.Constants.GovernmentGateway._
     subscriptionData(
       incomeSource = Some(IncomeSourceModel(true, true, false)),
       individualIncomeSource = Some(IncomeSourceModel(true, true, true)),
-      matchTaxYear = Some(testMatchTaxYearNo),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
       propertyCommencementDate = Some(testPropertyCommencementDate),
@@ -90,9 +84,7 @@ import utilities.individual.Constants.GovernmentGateway._
 
   def subscriptionData(incomeSource: Option[IncomeSourceModel] = None,
                        individualIncomeSource: Option[IncomeSourceModel] = None,
-                       matchTaxYear: Option[MatchTaxYearModel] = None,
                        selectedTaxYear: Option[AccountingYearModel] = None,
-                       accountingPeriodDate: Option[AccountingPeriodModel] = None,
                        businessName: Option[BusinessNameModel] = None,
                        accountingMethod: Option[AccountingMethodModel] = None,
                        propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
@@ -103,9 +95,7 @@ import utilities.individual.Constants.GovernmentGateway._
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       individualIncomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
-      matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
-      accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       propertyCommencementDate.map(model => PropertyCommencementDate -> PropertyCommencementDateModel.format.writes(model)) ++
