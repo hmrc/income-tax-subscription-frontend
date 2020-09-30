@@ -28,11 +28,11 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits with I18nSupport{
 
-  implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+  implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
