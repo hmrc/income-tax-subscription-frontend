@@ -548,11 +548,6 @@ agent.property.income.title                                     = Faint oedd eic
 agent.property.income.heading                                   = Faint oedd eich incwm o eiddo y flwyddyn hon?
 agent.property.income.line_1                                    = Dyma’r swm a wnaethoch cyn didynnu unrhyw dreuliau caniataol.
 
-## Match Tax Year page
-agent.business.match_tax_year.heading                           = A yw cyfnod cyfrifyddu eich cleient yn paru â’r flwyddyn dreth?
-agent.business.match_tax_year.para1                             = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill.
-agent.business.match_tax_year.para2                             = Mae cyfnod cyfrifyddu eich cleient yr un peth oni bai eich bod eisoes wedi dewis dyddiadau gwahanol.
-
 ## Accounting Year page
 agent.business.what_year_to_sign_up.heading                     = Pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer?
 agent.business.what_year_to_sign_up.line_1                      = Gallwch gofrestru eich cleient ar gyfer y flwyddyn bresennol neu’r flwyddyn nesaf.
@@ -560,15 +555,6 @@ agent.business.what_year_to_sign_up.example_line_1              = Er enghraifft,
 agent.business.what_year_to_sign_up.example_line_2              = Os yw cyfnod cyfrifyddu eich cleient yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru eich cleient ar gyfer y flwyddyn nesaf {0} i {1}.
 agent.business.what_year_to_sign_up.option_1                    = Y flwyddyn dreth bresennol ({0} i {1})
 agent.business.what_year_to_sign_up.option_2                    = Y flwyddyn dreth nesaf ({0} i {1})
-
-## Business Accounting Period page
-agent.accounting_period.title                                   = Ar gyfer pa gyfnod cyfrifyddu rydych yn cofrestru’ch cleient ar ei chyfer?
-agent.accounting_period.heading                                 = Ar gyfer pa gyfnod cyfrifyddu rydych yn cofrestru’ch cleient ar ei chyfer?
-agent.accounting_period.line1                                   = Er enghraifft, os eich cyfnod cyfrifyddu yw 1 Awst {0} i 31 Gorffennaf {1}, byddwch yn cofrestru ar gyfer y flwyddyn dreth {1} i {2}.
-agent.accounting_period.exampleStartDate.current                = Er enghraifft, 1 4 {0}
-agent.accounting_period.exampleEndDate.current                  = Er enghraifft, 31 3 {0}
-agent.accounting_period.exampleStartDate.next                   = Er enghraifft, 1 4 {0}
-agent.accounting_period.exampleEndDate.next                     = Er enghraifft, 31 3 {0}
 
 # Sole trader page
 agent.eligibility.sole_trader.heading                           = A ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}?

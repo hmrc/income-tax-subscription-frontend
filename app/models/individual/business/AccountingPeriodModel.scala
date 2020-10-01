@@ -17,6 +17,7 @@
 package models.individual.business
 
 import models.DateModel
+
 import play.api.libs.json.{Json, OFormat}
 import utilities.AccountingPeriodUtil
 

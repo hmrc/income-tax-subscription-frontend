@@ -17,7 +17,6 @@ import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import models.YesNo
 import models.common._
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -275,13 +274,9 @@ trait ComponentSpecBase extends UnitSpec
       )(Map.empty)
     }
 
-    def matchTaxYear(): WSResponse = get("/business/match-to-tax-year")
-
     def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
-
-    def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
 
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
@@ -307,30 +302,11 @@ trait ComponentSpecBase extends UnitSpec
 
     def confirmation(): WSResponse = get("/confirmation")
 
-    def submitMatchTaxYear(inEditMode: Boolean, request: Option[MatchTaxYearModel]): WSResponse = {
-      val uri = s"/business/match-to-tax-year?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => MatchTaxYearForm.matchTaxYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
     def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYearModel]): WSResponse = {
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def submitAccountingPeriodDates(inEditMode: Boolean, request: Option[AccountingPeriodModel]): WSResponse = {
-      val uri = s"/business/accounting-period-dates?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingPeriodDateForm.accountingPeriodDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

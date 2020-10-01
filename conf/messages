@@ -538,10 +538,6 @@ agent.property.income.title                                     = How much was y
 agent.property.income.heading                                   = How much was your income from property this year?
 agent.property.income.line_1                                    = This is the amount you made before deducting any allowable expenses.
 
-## Match Tax Year page
-agent.business.match_tax_year.heading                           = Does your client’s accounting period match the tax year?
-agent.business.match_tax_year.para1                             = The tax year runs from 6 April to 5 April.
-agent.business.match_tax_year.para2                             = Your client’s accounting period is the same unless you have previously chosen different dates.
 
 ## Accounting Year page
 agent.business.what_year_to_sign_up.heading                     = What tax year do you want to sign your client up for?
@@ -550,15 +546,6 @@ agent.business.what_year_to_sign_up.example_line_1              = For example, i
 agent.business.what_year_to_sign_up.example_line_2              = If your client’s accounting period runs from 6 April {0} to 5 April {1}, you will sign your client up for next year {0} to {1}.
 agent.business.what_year_to_sign_up.option_1                    = Current tax year ({0} to {1})
 agent.business.what_year_to_sign_up.option_2                    = Next tax year ({0} to {1})
-
-## Business Accounting Period page
-agent.accounting_period.title                                   = What accounting period are you signing your client up for?
-agent.accounting_period.heading                                 = What accounting period are you signing your client up for?
-agent.accounting_period.line1                                   = For example, if your accounting period is 1 August {0} to 31 July {1}, you will be signing up for the {1} to {2} tax year.
-agent.accounting_period.exampleStartDate.current                = For example, 1 4 {0}
-agent.accounting_period.exampleEndDate.current                  = For example, 31 3 {0}
-agent.accounting_period.exampleStartDate.next                   = For example, 1 4 {0}
-agent.accounting_period.exampleEndDate.next                     = For example, 31 3 {0}
 
 # Agent Sole trader page
 agent.eligibility.sole_trader.heading                              = Is your client a sole trader that began trading on or after {0}?

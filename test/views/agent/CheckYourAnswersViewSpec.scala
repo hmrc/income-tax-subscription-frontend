@@ -26,7 +26,7 @@ import org.scalatest.Matchers._
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import utilities.TestModels.{testAccountingPeriod, testAgentSummaryData, testBusinessName}
+import utilities.TestModels.{testAgentSummaryData, testBusinessName}
 import utilities.{AccountingPeriodUtil, TestModels, UnitTestTrait}
 import views.agent.helpers.SummaryIdConstants._
 
@@ -42,12 +42,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testIncomeSource: IncomeSourceModel = TestModels.testAgentIncomeSourceBoth
   val testSummary: AgentSummary = customTestSummary()
 
-  def customTestSummary(matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
-                        accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod,
-                        selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
+  def customTestSummary(selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): AgentSummary = AgentSummary(
-    matchTaxYear = matchTaxYear,
-    accountingPeriodDate = accountingPeriod,
     businessName = testBusinessName,
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
@@ -117,7 +113,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String])(
       setupData: AgentSummary = testAgentSummaryData): Unit = {
-      val accountingPeriod = document(setupData).getElementById(sectionId)
       val question = document(setupData).getElementById(questionId(sectionId))
       val answer = document(setupData).getElementById(answerId(sectionId))
       val editLink = document(setupData).getElementById(editLinkId(sectionId))
@@ -137,48 +132,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
     }
 
-    "display the correct info for the accounting period date" when {
-
-      "do not display if the user chooses yes to match tax year" in {
-        val sectionId = AccountingPeriodDateId
-        val doc = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = None))
-        Option(doc.getElementById(sectionId)) mustBe None
-
-        val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes),
-          accountingPeriod = Some(testAccountingPeriod)))
-        Option(doc2.getElementById(sectionId)) mustBe None
-      }
-      "the user chooses no to match tax year" in {
-        val sectionId = AccountingPeriodDateId
-        val expectedQuestion = messages.accounting_period
-        val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
-        val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-        val expectedEditLink = controllers.agent.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
-
-        sectionTest(
-          sectionId = sectionId,
-          expectedQuestion = expectedQuestion,
-          expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink
-        )()
-
-      }
-    }
-
-    "display the correct info for the match tax year" in {
-      val sectionId = MatchTaxYearId
-      val expectedQuestion = messages.match_tax_year
-      val expectedAnswer = MessageLookup.Business.MatchTaxYear.no
-      val expectedEditLink = controllers.agent.business.routes.MatchTaxYearController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )()
-    }
-
     "display the correct info for the select tax year" when {
 
       "selected current tax year" in {
@@ -194,8 +147,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink
-        )(setupData = customTestSummary(matchTaxYear = Some(MatchTaxYearModel(Yes)),
-          selectedTaxYear = Some(AccountingYearModel(Current))))
+        )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Current))))
       }
 
       "selected next tax year" in {
@@ -211,8 +163,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink
-        )(setupData = customTestSummary(matchTaxYear = Some(MatchTaxYearModel(Yes)),
-          selectedTaxYear = Some(AccountingYearModel(Next))))
+        )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Next))))
       }
     }
 

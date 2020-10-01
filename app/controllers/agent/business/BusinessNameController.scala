@@ -19,10 +19,12 @@ package controllers.agent.business
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.BusinessNameForm
+import forms.agent.BusinessNameForm.businessName
 import javax.inject.{Inject, Singleton}
-import models.common.BusinessNameModel
+import models.common.{BusinessNameModel, IncomeSourceModel}
+import play.api.Logger
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
 
@@ -52,19 +54,33 @@ class BusinessNameController @Inject()(val authService: AuthService, subscriptio
       ))
   }
 
+  private def redirectLocation( currentAnswer: BusinessNameModel, isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
+    for {
+      incomeSources <- subscriptionDetailsService.fetchIncomeSource
+    } yield {
+      incomeSources match {
+        case None =>
+          Redirect(controllers.agent.routes.IncomeSourceController.show())
+        case _ if isEditMode =>
+          Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+        case Some(IncomeSourceModel(true, true, _)) =>
+          Redirect(controllers.agent.business.routes.BusinessAccountingMethodController.show(isEditMode))
+        case Some(IncomeSourceModel(false, false, false)) =>
+          Logger.error("[BusinessNameController][Redirect Location] The User has attempted to submit a Business name with no valid sources of income")
+          Redirect(controllers.agent.routes.IncomeSourceController.show())
+        case _ =>
+          Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show(isEditMode))
+      }
+    }
+  }
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
-        businessName => {
-          subscriptionDetailsService.saveBusinessName(businessName) map (_ =>
-            if (isEditMode)
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-            else
-              Redirect(controllers.agent.business.routes.MatchTaxYearController.show())
-            )
-        }
+        businessName => for {
+          redirect <- redirectLocation(businessName, isEditMode)
+          _ <- subscriptionDetailsService.saveBusinessName(businessName)
+        } yield redirect
       )
   }
 

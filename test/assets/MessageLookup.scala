@@ -353,11 +353,6 @@ object MessageLookup {
 
   object Error {
 
-    object MatchTaxYear {
-      val empty = "Select yes if your client’s accounting period matches the tax year"
-      val invalid = "Select yes if your client’s accounting period matches the tax year"
-    }
-
     object AccountingYear {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
@@ -397,11 +392,6 @@ object MessageLookup {
       object SoleTrader {
         val empty = "You must select an option to continue"
         val invalid = "You must select an option to continue"
-      }
-
-      object MatchTaxYear {
-        val empty = "Select yes if your accounting period is from 6 April to 5 April"
-        val invalid = "Select yes if your accounting period is from 6 April to 5 April"
       }
 
     }

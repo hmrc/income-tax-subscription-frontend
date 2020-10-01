@@ -4,7 +4,7 @@ package helpers.agent
 
 import models._
 import models.common._
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.business.AccountingPeriodModel
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import utilities.SubscriptionDataKeys
@@ -13,7 +13,6 @@ object IntegrationTestModels {
 
   val testStartDate: DateModel = helpers.IntegrationTestModels.testStartDate
   val testEndDate: DateModel = helpers.IntegrationTestModels.testEndDate
-  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -31,9 +30,7 @@ object IntegrationTestModels {
   val fullSubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceAll),
-      matchTaxYear = Some(testMatchTaxYearYes),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
       accountingMethodProperty = Some(testPropertyAccountingMethod)
@@ -41,20 +38,16 @@ object IntegrationTestModels {
 
   def subscriptionData(
                         incomeSource: Option[IncomeSourceModel] = None,
-                        matchTaxYear: Option[MatchTaxYearModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
-                        accountingPeriodDate: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None)
   : Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceModel.format.writes(model)) ++
-      accountingPeriodDate.map(model => SubscriptionDataKeys.AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => SubscriptionDataKeys.BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       accountingMethodProperty.map(model => SubscriptionDataKeys.PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
-      matchTaxYear.map(model => SubscriptionDataKeys.MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model))
 
 

@@ -57,23 +57,6 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@accountingPeriodDate(period: AccountingPeriodModel) = @{
-    val rowName = AccountingPeriodDateId
-    val rowQuestion = Messages("agent.summary.accounting_period")
-    val periodInMonth = period.startDate.diffInMonth(period.endDate)
-    val rowAnswer = Messages("base.date-to-date", period.startDate.toCheckYourAnswersDateFormat, period.endDate.toCheckYourAnswersDateFormat)
-    val rowUrl = controllers.agent.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
-}
-
-@matchTaxYear(taxYear: MatchTaxYearModel) = @{
-    val rowName = MatchTaxYearId
-    val rowQuestion = Messages("agent.summary.match_tax_year")
-    val rowAnswer = taxYear.matchTaxYear.toMessageString
-    val rowUrl = controllers.agent.business.routes.MatchTaxYearController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
-}
-
 @businessName(name: BusinessNameModel) = @{
     val rowName = BusinessNameId
     val rowQuestion = Messages("agent.summary.business_name")
@@ -114,13 +97,7 @@
 
     <div class="form-group">
         @summaryModel.incomeSource.map(incomeSource)
-        @summaryModel.matchTaxYear.map(matchTaxYear)
-        @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == Yes)) {
-            @summaryModel.selectedTaxYear.map(selectedTaxYear)
-        }
-        @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == No)) {
-            @summaryModel.accountingPeriodDate.map(accountingPeriodDate)
-        }
+        @summaryModel.selectedTaxYear.map(selectedTaxYear)
         @summaryModel.businessName.map(businessName)
         @summaryModel.accountingMethod.map(accountingMethod)
         @summaryModel.accountingMethodProperty.map(accountingMethodProperty)

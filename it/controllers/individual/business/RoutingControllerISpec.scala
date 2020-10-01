@@ -21,7 +21,7 @@ import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{subscriptionData, testMatchTaxYearYes}
+import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
 import models.common.{AccountingMethodModel, IncomeSourceModel}
 import models.{Accruals, Cash}

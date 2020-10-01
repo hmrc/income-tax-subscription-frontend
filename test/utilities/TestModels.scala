@@ -37,11 +37,9 @@ object TestModels extends Implicits {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = DateModel("06", "04", LocalDate.now.getYear.toString)
-  val testEndDate = DateModel("01", "04", LocalDate.now.plusYears(1).getYear.toString)
+  val testStartDate = DateModel("6", "4", LocalDate.now.getYear.toString)
+  val testEndDate = DateModel("5", "4", LocalDate.now.plusYears(1).getYear.toString)
 
-  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
-  val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
   val adjustedTestAccountingPeriod: AccountingPeriodModel =
@@ -65,8 +63,6 @@ object TestModels extends Implicits {
   lazy val testCacheMap: CacheMap =
     testCacheMap(
       incomeSource = testAgentIncomeSourceBoth,
-      matchTaxYear = testMatchTaxYearNo,
-      accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
       selectedTaxYear = testSelectedTaxYearNext,
       accountingMethod = testAccountingMethod,
@@ -74,8 +70,6 @@ object TestModels extends Implicits {
     )
 
   def testCacheMapCustom(incomeSource: Option[IncomeSourceModel] = testAgentIncomeSourceBoth,
-                         matchTaxYear: Option[MatchTaxYearModel] = testMatchTaxYearNo,
-                         accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                          businessName: Option[BusinessNameModel] = testBusinessName,
                          selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
@@ -83,8 +77,6 @@ object TestModels extends Implicits {
                          overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = testAccountingMethodOverseasProperty): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
-      matchTaxYear = matchTaxYear,
-      accountingPeriodDate = accountingPeriodDate,
       businessName = businessName,
       selectedTaxYear = selectedTaxYear,
       accountingMethod = accountingMethod,
@@ -92,8 +84,6 @@ object TestModels extends Implicits {
       overseasPropertyAccountingMethod = overseasPropertyAccountingMethod)
 
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
-                   matchTaxYear: Option[MatchTaxYearModel] = None,
-                   accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
@@ -102,8 +92,6 @@ object TestModels extends Implicits {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
-      matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
-      accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
@@ -137,13 +125,6 @@ object TestModels extends Implicits {
     accountingMethodProperty = testAccountingMethodProperty
   )
 
-  lazy val testSummaryDataBusinessMatchTaxYear = IndividualSummary(
-    incomeSource = testIncomeSourceBusiness,
-    businessName = testBusinessName,
-    selectedTaxYear = testSelectedTaxYearCurrent,
-    accountingMethod = testAccountingMethod
-  )
-
   lazy val testSummaryDataBusinessNextTaxYear = IndividualSummary(
     incomeSource = testIncomeSourceBusiness,
     businessName = testBusinessName,
@@ -167,8 +148,6 @@ object TestModels extends Implicits {
 
   lazy val testAgentSummaryData = AgentSummary(
     incomeSource = Some(testAgentIncomeSourceBoth),
-    matchTaxYear = Some(testMatchTaxYearNo),
-    accountingPeriodDate = testAccountingPeriod,
     businessName = Some(testBusinessName),
     accountingMethod = Some(testAccountingMethod),
     accountingMethodProperty = Some(testAccountingMethodProperty)
@@ -176,8 +155,6 @@ object TestModels extends Implicits {
 
   lazy val testAgentSummaryDataBusiness = AgentSummary(
     incomeSource = Some(testAgentIncomeSourceBusiness),
-    matchTaxYear = Some(testMatchTaxYearNo),
-    accountingPeriodDate = testAccountingPeriod,
     businessName = Some(testBusinessName),
     accountingMethod = Some(testAccountingMethod)
   )
@@ -189,8 +166,6 @@ object TestModels extends Implicits {
 
   lazy val testAgentSummaryDataBoth = AgentSummary(
     incomeSource = Some(testAgentIncomeSourceBoth),
-    matchTaxYear = Some(testMatchTaxYearNo),
-    accountingPeriodDate = testAccountingPeriod,
     businessName = Some(testBusinessName),
     accountingMethod = Some(testAccountingMethod),
     accountingMethodProperty = Some(testAccountingMethodProperty)

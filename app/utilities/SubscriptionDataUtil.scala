@@ -29,10 +29,6 @@ object SubscriptionDataUtil {
 
     def getIncomeSource: Option[IncomeSourceModel] = cacheMap.getEntry[IncomeSourceModel](IncomeSource)
 
-    def getMatchTaxYear: Option[MatchTaxYearModel] = cacheMap.getEntry[MatchTaxYearModel](MatchTaxYear)
-
-    def getEnteredAccountingPeriodDate: Option[AccountingPeriodModel] = cacheMap.getEntry[AccountingPeriodModel](AccountingPeriodDate)
-
     def getBusinessName: Option[BusinessNameModel] = cacheMap.getEntry[BusinessNameModel](BusinessName)
 
     def getSelectedTaxYear: Option[AccountingYearModel] = cacheMap.getEntry[AccountingYearModel](SelectedTaxYear)
@@ -75,17 +71,13 @@ object SubscriptionDataUtil {
         case Some(IncomeSourceModel(true, false, false)) =>
           AgentSummary(
             incomeSource = getIncomeSource,
-            matchTaxYear = getMatchTaxYear,
             selectedTaxYear = getSelectedTaxYear,
-            accountingPeriodDate = getEnteredAccountingPeriodDate,
             businessName = getBusinessName,
             accountingMethod = getAccountingMethod
           )
         case Some(IncomeSourceModel(true, true, false)) =>
           AgentSummary(
             incomeSource = getIncomeSource,
-            matchTaxYear = getMatchTaxYear,
-            accountingPeriodDate = getEnteredAccountingPeriodDate,
             businessName = getBusinessName,
             accountingMethod = getAccountingMethod,
             accountingMethodProperty = getPropertyAccountingMethod

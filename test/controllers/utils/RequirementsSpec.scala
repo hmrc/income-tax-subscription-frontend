@@ -16,14 +16,14 @@
 
 package controllers.utils
 
-import models.common.{AccountingMethodModel, IncomeSourceModel}
-import models.individual.business.MatchTaxYearModel
-import models.{Cash, Yes}
+import models.common.AccountingMethodModel
+import models.Cash
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.{MustMatchers, WordSpecLike}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.functional.~
+import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results._
@@ -135,21 +135,6 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("/custom-result")
-      }
-    }
-  }
-
-  "Agent - matchTaxYearAnswer" must {
-    "return a match tax year model" when {
-      "present in the cache map" in {
-        val cacheMap: CacheMap = CacheMap("testId", Map(SubscriptionDataKeys.MatchTaxYear -> Json.toJson(MatchTaxYearModel(Yes))))
-        Answers.matchTaxYearAnswer(cacheMap) mustBe Right(MatchTaxYearModel(Yes))
-      }
-    }
-    "return a redirect to the match tax year controller" when {
-      "not present in the cache map" in {
-        val cacheMap: CacheMap = CacheMap("testId", Map())
-        Answers.matchTaxYearAnswer(cacheMap) mustBe Left(Redirect(controllers.agent.business.routes.MatchTaxYearController.show()))
       }
     }
   }

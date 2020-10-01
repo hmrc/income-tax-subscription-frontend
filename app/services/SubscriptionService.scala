@@ -24,7 +24,7 @@ import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpPa
 import connectors.individual.subscription.{MultipleIncomeSourcesSubscriptionConnector, SubscriptionConnector}
 import javax.inject.{Inject, Singleton}
 import models.common.{AccountingYearModel, IncomeSourceModel}
-import models.individual.business.{AccountingPeriodModel, BusinessSubscriptionDetailsModel, MatchTaxYearModel}
+import models.individual.business.{AccountingPeriodModel, BusinessSubscriptionDetailsModel}
 import models.individual.subscription._
 import models.{IndividualSummary, Next, SummaryModel, Yes}
 import play.api.Logger
@@ -39,21 +39,13 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
                                    ) extends FeatureSwitching {
 
 
-  private[services] def getAccountingPeriod(summaryData: SummaryModel, isAgent: Boolean): Option[AccountingPeriodModel] = {
-    if (isAgent) {
-      (summaryData.incomeSource.get, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
-        case (IncomeSourceModel(true, false, _), Some(MatchTaxYearModel(Yes)), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
-        case (IncomeSourceModel(true, _, _), Some(MatchTaxYearModel(Yes)), _) => Some(getCurrentTaxYear)
-        case (IncomeSourceModel(true, _, _), _, _) => summaryData.accountingPeriodDate
-        case _ => None
-      }
-    } else {
+  private[services] def getAccountingPeriod(summaryData: SummaryModel): Option[AccountingPeriodModel] = {
       (summaryData.incomeSource.get, summaryData.selectedTaxYear) match {
         case (IncomeSourceModel(true, false, _), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
         case (IncomeSourceModel(true, _, _), _) => Some(getCurrentTaxYear)
         case _ => None
       }
-    }
+
   }
 
   private[services] def buildRequestPost(nino: String, model: SummaryModel, arn: Option[String]): SubscriptionRequest = {
@@ -61,7 +53,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
       val businessSection = model.incomeSource.flatMap {
         case IncomeSourceModel(true, _, _) =>
           for {
-            accountingPeriod <- getAccountingPeriod(model, arn.isDefined)
+            accountingPeriod <- getAccountingPeriod(model)
             accountingMethod <- model.accountingMethod map (_.accountingMethod)
             businessName = model.businessName map (_.businessName)
           } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)
@@ -82,7 +74,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
       val businessSection = model.incomeSource.flatMap {
         case IncomeSourceModel(true, _, _) =>
           for {
-            accountingPeriod <- getAccountingPeriod(model, arn.isDefined)
+            accountingPeriod <- getAccountingPeriod(model)
             accountingMethod <- model.accountingMethod map (_.accountingMethod)
             businessName = model.businessName map (_.businessName)
           } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)

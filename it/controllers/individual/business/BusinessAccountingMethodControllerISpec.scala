@@ -19,7 +19,7 @@ package controllers.individual.business
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{subscriptionData, testMatchTaxYearYes}
+import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
 import models.common.{AccountingMethodModel, IncomeSourceModel}
 import models.{Accruals, Cash}
@@ -54,7 +54,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       "show the accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(matchTaxYear = Some(testMatchTaxYearYes)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()

@@ -19,7 +19,7 @@ package services.mocks
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import models.common._
-import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel, PropertyCommencementDateModel}
+import models.individual.business.PropertyCommencementDateModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -86,10 +86,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     mockFetchFromSubscriptionDetails[BusinessNameModel](BusinessName, fetchBusinessName)
   }
 
-  protected final def mockFetchAccountingPeriodFromSubscriptionDetails(fetchAccountingPeriodDate: Option[AccountingPeriodModel]): Unit = {
-    mockFetchFromSubscriptionDetails[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
-  }
-
   protected final def mockFetchAccountingMethodFromSubscriptionDetails(fetchAccountingMethod: Option[AccountingMethodModel]): Unit = {
     mockFetchFromSubscriptionDetails[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
   }
@@ -109,10 +105,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
 
   protected final def mockFetchSubscriptionIdFromSubscriptionDetails(fetchSubscriptionId: Option[String]): Unit = {
     mockFetchFromSubscriptionDetails[String](MtditId, fetchSubscriptionId)
-  }
-
-  protected final def mockFetchMatchTaxYearFromSubscriptionDetails(fetchMatchTaxYear: Option[MatchTaxYearModel]): Unit = {
-    mockFetchFromSubscriptionDetails[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
   }
 
   protected final def mockFetchSelectedTaxYearFromSubscriptionDetails(fetchSelectedTaxYear: Option[AccountingYearModel]): Unit = {

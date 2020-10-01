@@ -18,7 +18,7 @@ package controllers.utils
 
 
 import models.common.{AccountingMethodModel, IncomeSourceModel}
-import models.individual.business.{MatchTaxYearModel, OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
+import models.individual.business.{OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
 import play.api.libs.functional.~
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
@@ -57,11 +57,6 @@ object Answers {
   val incomeSourceModelAnswer: Answer[IncomeSourceModel] = SingleAnswer[IncomeSourceModel](
     retrieveAnswer = _.getIncomeSource,
     ifEmpty = Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
-  )
-
-  val matchTaxYearAnswer: Answer[MatchTaxYearModel] = SingleAnswer(
-    retrieveAnswer = _.getMatchTaxYear,
-    ifEmpty = Redirect(controllers.agent.business.routes.MatchTaxYearController.show())
   )
 
   val optAccountingMethodAnswer: Answer[Option[AccountingMethodModel]] = OptionalAnswer(

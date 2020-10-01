@@ -28,7 +28,7 @@ import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.UserId
 import utilities.AccountingPeriodUtil
-import utilities.TestModels.{adjustedTestAccountingPeriod, testBusinessName}
+import utilities.TestModels.testBusinessName
 import utilities.individual.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
 import utilities.individual.Constants.mtdItsaEnrolmentName
 
@@ -81,14 +81,6 @@ object TestConstants {
     propertyIncome = Some(PropertyIncomeModel(Some(Cash)))
   )
 
-  val testAdjustedSubmissionRequest = SubscriptionRequest(
-    nino = TestConstants.testNino,
-    arn = None,
-    businessIncome = Some(BusinessIncomeModel(Some(testBusinessName.businessName),adjustedTestAccountingPeriod, Cash)),
-    propertyIncome = Some(PropertyIncomeModel(Some(Cash)))
-
-  )
-
   val testCredentialId: String = UUID.randomUUID().toString
   val testCredentialId2: String = UUID.randomUUID().toString
 
@@ -133,7 +125,6 @@ object TestConstants {
 
   val testIndividualSummary: IndividualSummary = IndividualSummary(
     incomeSource = Some(IncomeSourceModel(true, false, false)),
-    accountingPeriodDate = Some(AccountingPeriodModel(startDate, endDate)),
     selfEmployments = Some(Seq(SelfEmploymentData("1", Some(BusinessStartDate(startDate)), Some(testBusinessName),
       Some(BusinessTradeNameModel("plumbing"))))),
     accountingMethod = Some(AccountingMethodModel(Cash)),
