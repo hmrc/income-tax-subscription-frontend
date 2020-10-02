@@ -540,12 +540,19 @@ agent.property.income.line_1                                    = This is the am
 
 
 ## Accounting Year page
-agent.business.what_year_to_sign_up.heading                     = What tax year do you want to sign your client up for?
-agent.business.what_year_to_sign_up.line_1                      = You can sign your client up for the current year or the next year.
-agent.business.what_year_to_sign_up.example_line_1              = For example, if your client’s accounting period runs from 6 April {0} to 5 April {1}, you will sign your client up for the current year {0} to {1}.
-agent.business.what_year_to_sign_up.example_line_2              = If your client’s accounting period runs from 6 April {0} to 5 April {1}, you will sign your client up for next year {0} to {1}.
-agent.business.what_year_to_sign_up.option_1                    = Current tax year ({0} to {1})
-agent.business.what_year_to_sign_up.option_2                    = Next tax year ({0} to {1})
+agent.business.what_year_to_sign_up.title                     = Which tax year do you want to sign your client up for?
+agent.business.what_year_to_sign_up.heading                   = Which tax year do you want to sign your client up for?
+agent.business.what_year_to_sign_up.line_1                    = You can sign your client up for the current tax year or the next tax year.
+agent.business.what_year_to_sign_up.option_1                  = Current tax year (6 April {0} to 5 April {1})
+agent.business.what_year_to_sign_up.option_2                  = Next tax year (6 April {0} to 5 April {1})
+agent.business.what_year_to_sign_up.conditional.1.line_1      = You or your client will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You or your client need to send a quarterly update for:
+agent.business.what_year_to_sign_up.conditional.1.line_2      = You or your client need to send a final declaration by the 31 January {0}.
+agent.business.what_year_to_sign_up.conditional.2.line_1      = You or your client need to send a quarterly update for:
+agent.business.what_year_to_sign_up.conditional.2.line_2      = You or your client need to send a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
+agent.business.what_year_to_sign_up.quarterly.date_1          = 5 July {0}
+agent.business.what_year_to_sign_up.quarterly.date_2          = 5 October {0}
+agent.business.what_year_to_sign_up.quarterly.date_3          = 5 January {0}
+agent.business.what_year_to_sign_up.quarterly.date_4          = 5 April {0}
 
 # Agent Sole trader page
 agent.eligibility.sole_trader.heading                              = Is your client a sole trader that began trading on or after {0}?

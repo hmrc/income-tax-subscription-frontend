@@ -47,12 +47,13 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optAccountingMethodAnswer and incomeSourceModelAnswer) { case optAccountingMethod ~ incomeSourceModel =>
-        Future.successful(Ok(view(
-          accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(optAccountingMethod),
-          isEditMode = isEditMode,
-          backUrl = backUrl(isEditMode, incomeSourceModel)
-        )))
+      require(optAccountingMethodAnswer) {
+        case optAccountingMethod =>
+          Future.successful(Ok(view(
+            accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(optAccountingMethod),
+            isEditMode = isEditMode,
+            backUrl = backUrl(isEditMode)
+          )))
       }
   }
 
@@ -63,7 +64,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
           formWithErrors => Future.successful(BadRequest(view(
             accountingMethodForm = formWithErrors,
             isEditMode = isEditMode,
-            backUrl = backUrl(isEditMode, incomeSourceModel)
+            backUrl = backUrl(isEditMode)
           ))),
           accountingMethod => {
             subscriptionDetailsService.saveAccountingMethod(accountingMethod) map { _ =>
@@ -78,14 +79,11 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
       }
   }
 
-  def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel): String = {
+  def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       controllers.agent.routes.CheckYourAnswersController.show().url
     } else {
-      incomeSourceModel match {
-        case IncomeSourceModel(true, false, _) => controllers.agent.business.routes.WhatYearToSignUpController.show().url
-        case _ => controllers.agent.business.routes.BusinessNameController.show().url
-      }
+      controllers.agent.business.routes.BusinessNameController.show().url
     }
   }
 }

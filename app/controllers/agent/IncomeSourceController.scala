@@ -62,6 +62,8 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           lazy val linearJourney: Future[Result] =
             subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
               incomeSource match {
+                case IncomeSourceModel(true, false, false) =>
+                  Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
                 case IncomeSourceModel(true, _, _) =>
                   Redirect(controllers.agent.business.routes.BusinessNameController.show())
                 case IncomeSourceModel(_, true, _) =>

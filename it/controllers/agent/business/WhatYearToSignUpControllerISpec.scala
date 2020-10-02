@@ -94,7 +94,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(businessAccountingMethodURI)
+          redirectURI(businessNameURI)
         )
       }
 
@@ -111,7 +111,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(businessAccountingMethodURI)
+          redirectURI(businessNameURI)
         )
       }
     }

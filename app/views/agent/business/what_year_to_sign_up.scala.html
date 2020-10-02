@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import play.api.data.Form
 @import models.common.AccountingYearModel
 @import forms.agent.AccountingYearForm
 @import config.AppConfig
@@ -25,26 +26,60 @@
 
 @(accountingYearForm: Form[AccountingYearModel], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("agent.business.what_year_to_sign_up.heading"), form = Some(accountingYearForm)) {
+@scripts = {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/show-hide-content.js")"></script>
+}
+
+@question = @{messages("agent.business.what_year_to_sign_up.heading")}
+@pageTitle = @{messages("agent.business.what_year_to_sign_up.title")}
+
+@optionCurrentContent ={
+    <p> @messages("agent.business.what_year_to_sign_up.conditional.1.line_1") </p>
+    <ul>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_1",  (endYearOfCurrentTaxPeriod - 1).toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_2",  (endYearOfCurrentTaxPeriod - 1).toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_3",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_4",  endYearOfCurrentTaxPeriod.toString)</li>
+    </ul>
+    <p> @messages("agent.business.what_year_to_sign_up.conditional.1.line_2", (endYearOfCurrentTaxPeriod +1).toString) </p>
+}
+@optionNextContent ={
+    <p> @messages("agent.business.what_year_to_sign_up.conditional.2.line_1") </p>
+    <ul>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_1",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_2",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_3",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_4",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
+    </ul>
+    <p> @messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod).toString) </p>
+}
+
+@main_template(title = pageTitle, form = Some(accountingYearForm), scriptElem = Some(scripts)) {
 
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingYearForm)
 
-    <h1 class="heading-large">@Messages("agent.business.what_year_to_sign_up.heading")</h1>
+    <h1 class="heading-large">@question</h1>
     <p>@Messages("agent.business.what_year_to_sign_up.line_1")</p>
-    <div class="panel panel-border-wide">
-        <p>@Messages("agent.business.what_year_to_sign_up.example_line_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)</p>
-        <p>@Messages("agent.business.what_year_to_sign_up.example_line_2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)</p>
-    </div>
 
     @form(action = postAction) {
         @radioHelper(
             field = accountingYearForm(AccountingYearForm.accountingYear),
-            legend = Messages("agent.business.what_year_to_sign_up.heading"),
+            legend = question,
             options = Seq(
-                RadioOption(AccountingYearMapping.option_current, Messages("agent.business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
-                RadioOption(AccountingYearMapping.option_next, Messages("agent.business.what_year_to_sign_up.option_2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString))
+              RadioOption(
+                AccountingYearMapping.option_current,
+                Messages("agent.business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString),
+                None,
+                Some(optionCurrentContent)
+              ),
+              RadioOption(
+                AccountingYearMapping.option_next,
+                Messages("agent.business.what_year_to_sign_up.option_2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString),
+                None,
+                Some(optionNextContent)
+              )
             ),
             parentForm = accountingYearForm
         )
