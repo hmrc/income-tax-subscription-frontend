@@ -165,24 +165,17 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "in edit mode" should {
       s"point to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in new Test {
-        controller.backUrl(isEditMode = true, IncomeSourceModel(true, false, false)) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+        controller.backUrl(isEditMode = true) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
       }
     }
 
-      "the user only has business income" should {
-        s"point to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in new Test {
-          controller.backUrl(isEditMode = false, IncomeSourceModel(true, false, false)) mustBe
-            controllers.agent.business.routes.WhatYearToSignUpController.show().url
-        }
-      }
-
-      "the user doesn't just have business income" should {
-        s"point to ${controllers.agent.business.routes.BusinessNameController.show().url}" in new Test {
-          controller.backUrl(isEditMode = false, IncomeSourceModel(true, true, false)) mustBe
-            controllers.agent.business.routes.BusinessNameController.show().url
-        }
+    "not in edit mode" should {
+      s"point to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in new Test {
+        controller.backUrl(isEditMode = false) mustBe
+          controllers.agent.business.routes.BusinessNameController.show().url
       }
     }
+  }
 
   authorisationTests()
 

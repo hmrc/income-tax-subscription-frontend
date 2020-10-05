@@ -139,7 +139,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year
-        val expectedAnswer = MessageLookup.Business.WhatYearToSignUp.option1(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
+        val expectedAnswer = messages.option1(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
         val expectedEditLink = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
 
         sectionTest(
@@ -155,7 +155,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year
-        val expectedAnswer = MessageLookup.Business.WhatYearToSignUp.option2(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
+        val expectedAnswer = messages.option2(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
         val expectedEditLink = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
 
         sectionTest(

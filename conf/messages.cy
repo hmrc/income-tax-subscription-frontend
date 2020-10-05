@@ -549,12 +549,19 @@ agent.property.income.heading                                   = Faint oedd eic
 agent.property.income.line_1                                    = Dyma’r swm a wnaethoch cyn didynnu unrhyw dreuliau caniataol.
 
 ## Accounting Year page
-agent.business.what_year_to_sign_up.heading                     = Pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer?
-agent.business.what_year_to_sign_up.line_1                      = Gallwch gofrestru eich cleient ar gyfer y flwyddyn bresennol neu’r flwyddyn nesaf.
-agent.business.what_year_to_sign_up.example_line_1              = Er enghraifft, os yw cyfnod cyfrifyddu eich cleient yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru eich cleient ar gyfer y flwyddyn bresennol {0} i {1}.
-agent.business.what_year_to_sign_up.example_line_2              = Os yw cyfnod cyfrifyddu eich cleient yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru eich cleient ar gyfer y flwyddyn nesaf {0} i {1}.
-agent.business.what_year_to_sign_up.option_1                    = Y flwyddyn dreth bresennol ({0} i {1})
-agent.business.what_year_to_sign_up.option_2                    = Y flwyddyn dreth nesaf ({0} i {1})
+agent.business.what_year_to_sign_up.title                     = Pa flwyddyn dreth rydych am gofrestru’ch cleient ar ei chyfer?
+agent.business.what_year_to_sign_up.heading                   = Pa flwyddyn dreth rydych am gofrestru’ch cleient ar ei chyfer?
+agent.business.what_year_to_sign_up.line_1                    = Gallwch gofrestru’ch cleient ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf.
+agent.business.what_year_to_sign_up.option_1                  = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
+agent.business.what_year_to_sign_up.option_2                  = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
+agent.business.what_year_to_sign_up.conditional.1.line_1      = Bydd angen i chi neu’ch cleient fewnbynnu yr holl incwm a threuliau busnes i’ch meddalwedd o ddechrau’r flwyddyn dreth bresennol. Mae angen i chi neu’ch cleient anfon diweddariad chwarterol ar gyfer:
+agent.business.what_year_to_sign_up.conditional.1.line_2      = Mae angen i chi neu’ch cleient anfon datganiad terfynol erbyn 31 Ionawr {0}.
+agent.business.what_year_to_sign_up.conditional.2.line_1      = Mae angen i chi neu'ch cleient anfon diweddariad chwarterol ar gyfer:
+agent.business.what_year_to_sign_up.conditional.2.line_2      = Mae angen i chi neu’ch cleient anfon datganiad terfynol erbyn 31 Ionawr {0}, a bydd angen llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer..
+agent.business.what_year_to_sign_up.quarterly.date_1          = 5 Gorffennaf {0}
+agent.business.what_year_to_sign_up.quarterly.date_2          = 5 Hydref {0}
+agent.business.what_year_to_sign_up.quarterly.date_3          = 5 Ionawr {0}
+agent.business.what_year_to_sign_up.quarterly.date_4          = 5 Ebrill {0}
 
 # Sole trader page
 agent.eligibility.sole_trader.heading                           = A ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}?

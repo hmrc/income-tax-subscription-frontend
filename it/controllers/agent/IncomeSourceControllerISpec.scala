@@ -126,10 +126,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           When("POST /income is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-          Then(s"Should return $SEE_OTHER with a redirect location of business name page")
+          Then(s"Should return $SEE_OTHER with a redirect location of what year to sign up page")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(businessNameURI)
+            redirectURI(whatYearToSignUp)
           )
         }
         "the user is self-employed and has uk property but doesn't have foreign property" in {

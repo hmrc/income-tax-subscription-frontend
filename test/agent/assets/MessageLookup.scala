@@ -109,16 +109,28 @@ object MessageLookup {
     }
 
     object WhatYearToSignUp {
-      val heading = "What tax year do you want to sign your client up for?"
-      val line1 = "You can sign your client up for the current year or the next year."
+      val heading = "Which tax year do you want to sign your client up for?"
+      val line1 = "You can sign your client up for the current tax year or the next tax year."
 
-      def example1(taxYearStart: String, taxYearEnd: String) = s"For example, if your client’s accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for the current year $taxYearStart to $taxYearEnd."
 
-      def example2(taxYearStart: String, taxYearEnd: String) = s"If your client’s accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for next year $taxYearStart to $taxYearEnd."
+      def option1ConditionalExample1: String = "You or your client will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You or your client need to send a quarterly update for:"
+      def option1ConditionalExample2(year: String): String = s"You or your client need to send a final declaration by the 31 January $year."
 
-      def option1(taxYearStart: String, taxYearEnd: String) = s"Current tax year ($taxYearStart to $taxYearEnd)"
+      def option2ConditionalExample1: String = "You or your client need to send a quarterly update for:"
 
-      def option2(taxYearStart: String, taxYearEnd: String) = s"Next tax year ($taxYearStart to $taxYearEnd)"
+      def option2ConditionalExample2(year: String): String = s"You or your client need to send a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
+
+      def option1(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
+
+      def option2(fromYear: String, toYear: String): String = s"Next tax year (6 April $fromYear to 5 April $toYear)"
+
+      def conditionalDate1(year: String): String = s"5 July $year"
+
+      def conditionalDate2(year: String): String = s"5 October $year"
+
+      def conditionalDate3(year: String): String = s"5 January $year"
+
+      def conditionalDate4(year: String): String = s"5 April $year"
     }
 
   }
@@ -175,6 +187,10 @@ object MessageLookup {
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"
     val selected_tax_year = "Year signed-up for"
+
+    def option1(taxYearStart: String, taxYearEnd: String) = s"Current tax year ($taxYearStart to $taxYearEnd)"
+    def option2(taxYearStart: String, taxYearEnd: String) = s"Next tax year ($taxYearStart to $taxYearEnd)"
+
     val income_type = "Accounting method for their self-employed business"
     val income_type_property = "Accounting method for their property business"
     val match_tax_year = "Accounting period matches tax year"

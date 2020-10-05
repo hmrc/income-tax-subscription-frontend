@@ -36,6 +36,7 @@ object IntegrationTestConstants {
   val noClientRelationshipURI = s"$baseURI/error/no-client-relationship"
   val incomeSourceURI = s"$baseURI/income"
   val businessNameURI = s"$baseURI/business/name"
+  val whatYearToSignUp = s"$baseURI/business/what-year-to-sign-up"
   val businessAccountingMethodURI = s"$baseURI/business/accounting-method"
   val propertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
   val errorMainIncomeURI = s"$baseURI/error/main-income"

@@ -103,7 +103,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessNameController.show().url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
@@ -150,7 +150,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "the user click back url" should {
         "redirect to Match Tax Year page" in {
           TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
-            controllers.agent.business.routes.BusinessNameController.show().url
+            controllers.agent.routes.IncomeSourceController.show().url
         }
       }
     }

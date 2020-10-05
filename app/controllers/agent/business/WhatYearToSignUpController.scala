@@ -39,7 +39,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
     if (isEditMode) {
       controllers.agent.routes.CheckYourAnswersController.show().url
     } else {
-      controllers.agent.business.routes.BusinessNameController.show().url
+      controllers.agent.routes.IncomeSourceController.show().url
     }
   }
 
@@ -71,7 +71,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
             if (isEditMode) {
               Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             } else {
-              Redirect(controllers.agent.business.routes.BusinessAccountingMethodController.show())
+              Redirect(controllers.agent.business.routes.BusinessNameController.show())
             }
           }
         }

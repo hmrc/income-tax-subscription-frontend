@@ -19,7 +19,7 @@ package controllers.agent.business
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.BusinessNameForm
-import models.common.BusinessNameModel
+import models.common.{BusinessNameModel, IncomeSourceModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -46,11 +46,17 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
   "The back url for BusinessNameController" should {
 
     "return the url for check your answers if in edit mode" in {
-      TestBusinessNameController.backUrl(true) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+      TestBusinessNameController.backUrl(true, IncomeSourceModel(true, false, false)) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
     }
 
-    "return the url for income source if not in edit mode" in {
-      TestBusinessNameController.backUrl(false) mustBe controllers.agent.routes.IncomeSourceController.show().url
+    "return the url for WhatYearToSignUp if not in edit mode and only self employment is checked in IncomeSource" in {
+      TestBusinessNameController.backUrl(false,
+        IncomeSourceModel(true, false, false)) mustBe controllers.agent.business.routes.WhatYearToSignUpController.show().url
+    }
+
+    "return the url for income source if not in edit mode and self employment and any other property source is selected" in {
+      TestBusinessNameController.backUrl(false,
+        IncomeSourceModel(true, true, false)) mustBe controllers.agent.routes.IncomeSourceController.show().url
     }
   }
 
@@ -66,7 +72,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
 
       await(result)
       verifySubscriptionDetailsSave(BusinessName, 0)
-      verifySubscriptionDetailsFetch(BusinessName, 1)
+      verifySubscriptionDetailsFetch(BusinessName, 2)
 
     }
   }
@@ -93,7 +99,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
           val goodRequest = callShow(isEditMode = false)
 
           status(goodRequest) mustBe Status.SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.WhatYearToSignUpController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessAccountingMethodController.show().url)
 
           await(goodRequest)
           verifySubscriptionDetailsFetchAll(2)
@@ -179,7 +185,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     "in edit mode" should {
       s"point to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
         TestBusinessNameController.backUrl(
-          isEditMode = true
+          isEditMode = true,
+          IncomeSourceModel(true, false, false)
         ) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
       }
     }
