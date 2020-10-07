@@ -20,7 +20,7 @@
 @import views.html.helpers._
 @import views.individual.helpers._
 
-@import models.individual.business.PropertyCommencementDateModel
+@import models.common.PropertyCommencementDateModel
 @import forms.individual.business.PropertyCommencementDateForm._
 
 @(propertyCommencementDateForm: Form[PropertyCommencementDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)

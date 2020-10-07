@@ -18,8 +18,7 @@ package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import models.common._
-import models.individual.business.PropertyCommencementDateModel
+import models.common.{PropertyCommencementDateModel, _}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach

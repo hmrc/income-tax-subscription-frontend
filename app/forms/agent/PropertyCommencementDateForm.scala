@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.individual.business
+package forms.agent
 
 import java.time.LocalDate
 
@@ -37,7 +37,7 @@ object PropertyCommencementDateForm {
 
   val dateValidation: Constraint[(Option[String], Option[String], Option[String])] = constraint[(Option[String], Option[String], Option[String])] {
     case (day, month, year) => {
-      lazy val invalidDate = Invalid("property.error.date.empty")
+      lazy val invalidDate = Invalid("agent.property.error.date.empty")
       Try[ValidationResult] {
         LocalDate.of(year.get.toInt, month.get.toInt, day.get.toInt)
         Valid
@@ -46,13 +46,13 @@ object PropertyCommencementDateForm {
   }
 
   val validateDate: Constraint[(Option[String], Option[String], Option[String])] = constraint[(Option[String], Option[String], Option[String])] {
-    case (None, None, None) => Invalid("property.error.date.empty")
-    case (Some(_), None, None) => Invalid("property.error.month.year.empty")
-    case (None, None, Some(_)) => Invalid("property.error.day.month.empty")
-    case (None, Some(_), None) => Invalid("property.error.day.year.empty")
-    case (Some(_), Some(_), None) => Invalid("property.error.year.empty")
-    case (None, Some(_), Some(_)) => Invalid("property.error.day.empty")
-    case (Some(_), None, Some(_)) => Invalid("property.error.month.empty")
+    case (None, None, None) => Invalid("agent.property.error.date.empty")
+    case (Some(_), None, None) => Invalid("agent.property.error.month.year.empty")
+    case (None, None, Some(_)) => Invalid("agent.property.error.day.month.empty")
+    case (None, Some(_), None) => Invalid("agent.property.error.day.year.empty")
+    case (Some(_), Some(_), None) => Invalid("agent.property.error.year.empty")
+    case (None, Some(_), Some(_)) => Invalid("agent.property.error.day.empty")
+    case (Some(_), None, Some(_)) => Invalid("agent.property.error.month.empty")
     case (Some(_), Some(_), Some(_)) => Valid
 
 
@@ -69,7 +69,7 @@ object PropertyCommencementDateForm {
 
   def startBeforeOneYear(date: String): Constraint[DateModel] = constraint[DateModel](
     dateModel => {
-      lazy val invalid = Invalid("property.error.property_accounting_period.minStartDate", date)
+      lazy val invalid = Invalid("agent.property.error.property_accounting_period.minStartDate", date)
       if (DateModel.dateConvert(dateModel).isAfter(propertyStartDate)) invalid else Valid
     }
   )
@@ -80,7 +80,5 @@ object PropertyCommencementDateForm {
         transform[DateModel](toDateModel.tupled, fromDateModel).verifying(startBeforeOneYear(date))
     )(PropertyCommencementDateModel.apply)(PropertyCommencementDateModel.unapply)
   )
-
-
 
 }
