@@ -21,8 +21,7 @@ import java.time.LocalDate
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyCommencementDateForm
 import models.DateModel
-import models.common.IncomeSourceModel
-import models.individual.business.PropertyCommencementDateModel
+import models.common.{IncomeSourceModel, PropertyCommencementDateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._

@@ -177,6 +177,16 @@ property.error.day.year.empty                                   = Mae’n rhaid 
 property.error.month.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
 property.error.property_accounting_period.minStartDate          = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
 
+# Agent Property Commencement Date errors
+agent.property.error.date.empty                                  = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
+agent.property.error.day.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+agent.property.error.month.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis
+agent.property.error.year.empty                                  = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+agent.property.error.day.month.empty                             = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+agent.property.error.day.year.empty                              = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+agent.property.error.month.year.empty                            = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+agent.property.error.property_accounting_period.minStartDate     = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+
 ## Foreign Property Commencement Date
 foreign.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
 foreign.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?

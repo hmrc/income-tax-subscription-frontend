@@ -17,8 +17,8 @@
 package controllers.utils
 
 
-import models.common.{AccountingMethodModel, IncomeSourceModel}
-import models.individual.business.{OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
+import models.common.{AccountingMethodModel, IncomeSourceModel, PropertyCommencementDateModel}
+import models.individual.business.OverseasPropertyCommencementDateModel
 import play.api.libs.functional.~
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect

@@ -18,7 +18,7 @@ package models
 
 
 import models.common.{IncomeSourceModel, _}
-import models.individual.business.{PropertyCommencementDateModel, _}
+import models.individual.business._
 import utilities.AccountingPeriodUtil._
 
 
@@ -65,10 +65,12 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
 
     val accountingPeriodVal: Option[AccountingPeriodModel] =
       if (incomeSource.exists(sources => sources.ukProperty || sources.foreignProperty)) Some(getCurrentTaxYear)
-      else selectedTaxYear map {selectedYear => selectedYear match {
-        case AccountingYearModel(Next) => getNextTaxYear
-        case AccountingYearModel(Current) => getCurrentTaxYear
-      }}
+      else selectedTaxYear map { selectedYear =>
+        selectedYear match {
+          case AccountingYearModel(Next) => getNextTaxYear
+          case AccountingYearModel(Current) => getCurrentTaxYear
+        }
+      }
 
     BusinessSubscriptionDetailsModel(
       accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),

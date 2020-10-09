@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package forms.individual.business
+package forms.agent
 
 import java.time.LocalDate
 
-import forms.individual.business.PropertyCommencementDateForm.{propertyCommencementDateForm, startDate}
+import forms.agent.PropertyCommencementDateForm.{propertyCommencementDateForm, startDate}
 import forms.submapping.DateMapping._
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
@@ -34,6 +34,7 @@ class UkPropertyCommencementDateFormSpec extends PlaySpec with GuiceOneAppPerSui
   def form: Form[PropertyCommencementDateModel] = {
     propertyCommencementDateForm(PropertyCommencementDateForm.propertyStartDate.toString)
   }
+
   "The PropertyCommencementDateForm" should {
     "transform a valid request to the date form case class" in {
       val testDateDay = "31"
@@ -50,9 +51,9 @@ class UkPropertyCommencementDateFormSpec extends PlaySpec with GuiceOneAppPerSui
     }
     "when testing the validation" should {
       "output the appropriate error messages for the start date" when {
-        val empty = "property.error.date.empty"
-        val invalid = "property.error.date.empty"
-        val afterMax = "property.error.property_accounting_period.minStartDate"
+        val empty = "agent.property.error.date.empty"
+        val invalid = "agent.property.error.date.empty"
+        val afterMax = "agent.property.error.property_accounting_period.minStartDate"
 
         "the date is not supplied to the map" in {
           form.bind(DataMap.EmptyMap).errors must contain(FormError(startDate, empty))
@@ -67,32 +68,32 @@ class UkPropertyCommencementDateFormSpec extends PlaySpec with GuiceOneAppPerSui
         "it is not older than 1 year ago" in {
           val currentDate = LocalDate.now()
           val testDate = currentDate.minusDays(364)
-          val maxTest = form.bind(DataMap.date(startDate)(testDate.getDayOfMonth.toString,testDate.getMonthValue.toString, testDate.getYear.toString))
+          val maxTest = form.bind(DataMap.date(startDate)(testDate.getDayOfMonth.toString, testDate.getMonthValue.toString, testDate.getYear.toString))
           maxTest.errors must contain(FormError(startDate, afterMax, Seq(currentDate.minusYears(1).toString)))
         }
         "it is missing the day" in {
           val dayTest = form.bind(DataMap.date(startDate)("", "4", "2017"))
-          dayTest.errors must contain(FormError(startDate, "property.error.day.empty"))
+          dayTest.errors must contain(FormError(startDate, "agent.property.error.day.empty"))
         }
-        "it is is missing the month" in {
+        "it is missing the month" in {
           val mothTest = form.bind(DataMap.date(startDate)("06", "", "2017"))
-          mothTest.errors must contain(FormError(startDate, "property.error.month.empty"))
+          mothTest.errors must contain(FormError(startDate, "agent.property.error.month.empty"))
         }
-        "it is is missing the year" in {
+        "it is missing the year" in {
           val yearTest = form.bind(DataMap.date(startDate)("06", "4", ""))
-          yearTest.errors must contain(FormError(startDate, "property.error.year.empty"))
+          yearTest.errors must contain(FormError(startDate, "agent.property.error.year.empty"))
         }
-        "it is is missing the day and month" in {
+        "it is missing the day and month" in {
           val dayAndMonthTest = form.bind(DataMap.date(startDate)("", "", "2017"))
-          dayAndMonthTest.errors must contain(FormError(startDate, "property.error.day.month.empty"))
+          dayAndMonthTest.errors must contain(FormError(startDate, "agent.property.error.day.month.empty"))
         }
-        "it is is missing the day and year" in {
+        "it is missing the day and year" in {
           val dayAndYearTest = form.bind(DataMap.date(startDate)("", "4", ""))
-          dayAndYearTest.errors must contain(FormError(startDate, "property.error.day.year.empty"))
+          dayAndYearTest.errors must contain(FormError(startDate, "agent.property.error.day.year.empty"))
         }
-        "it is is missing the month and year" in {
+        "it is missing the month and year" in {
           val monthAndYearTest = form.bind(DataMap.date(startDate)("06", "", ""))
-          monthAndYearTest.errors must contain(FormError(startDate, "property.error.month.year.empty"))
+          monthAndYearTest.errors must contain(FormError(startDate, "agent.property.error.month.year.empty"))
         }
       }
     }

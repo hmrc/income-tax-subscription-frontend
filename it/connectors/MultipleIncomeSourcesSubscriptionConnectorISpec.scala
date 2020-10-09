@@ -5,7 +5,7 @@ import connectors.individual.subscription.MultipleIncomeSourcesSubscriptionConne
 import connectors.stubs.MultipleIncomeSourcesSubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
-import models.common.{AccountingMethodPropertyModel, BusinessNameModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel}
+import models.common._
 import models.individual.business._
 import models.individual.subscription._
 import models.{Accruals, Cash, DateModel}
