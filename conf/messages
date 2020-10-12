@@ -779,3 +779,13 @@ agent.covid_cannot_sign_up.heading                              = Your client ca
 agent.covid_cannot_sign_up.line1                                = You will not be able to take part in this pilot on your client’s behalf if they have ever claimed a coronavirus (COVID-19) grant, or intended to do so in future.
 agent.covid_cannot_sign_up.line2                                = You will need to send a {0} instead and you may be able to sign your client up in future.
 agent.covid_cannot_sign_up.line2.link                           = Self Assessment tax return
+
+# Agent Overseas Property Commencement Date Page errors
+agent.overseas.property.error.date.empty                        = Enter the date your client’s foreign property business started trading
+agent.overseas.property.error.month.year.empty                  = The date must include a month and a year
+agent.overseas.property.error.day.month.empty                   = The date must include a day and a month
+agent.overseas.property.error.day.year.empty                    = The date must include a day and a year
+agent.overseas.property.error.year.empty                        = The date must include a year
+agent.overseas.property.error.day.empty                         = The date must include a day
+agent.overseas.property.error.month.empty                       = The date must include a month
+agent.overseas.property.error.accounting_period.minStartDate    = The date the foreign property business started trading must be on or before {0}

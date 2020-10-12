@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package forms.individual.business
+package forms.agent
 
 import java.time.LocalDate
 
-import forms.individual.business.OverseasPropertyCommencementDateForm.{overseasPropertyCommencementDateForm, startDate}
-import forms.submapping.DateMapping._
+import forms.agent.OverseasPropertyCommencementDateForm.{overseasPropertyCommencementDateForm, startDate}
+import forms.submapping.DateMapping.{dateDay, dateMonth, dateYear}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import models.common.OverseasPropertyCommencementDateModel
@@ -27,7 +27,6 @@ import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
-
 
 class OverseasPropertyCommencementDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
@@ -51,9 +50,9 @@ class OverseasPropertyCommencementDateFormSpec extends PlaySpec with GuiceOneApp
     }
     "when testing the validation" should {
       "output the appropriate error messages for the start date" when {
-        val empty = "foreign.property.error.date.empty"
-        val invalid = "foreign.property.error.date.empty"
-        val afterMax = "foreign.property.error.property_commencement_date.minStartDate"
+        val empty = "agent.overseas.property.error.date.empty"
+        val invalid = "agent.overseas.property.error.date.empty"
+        val afterMax = "agent.overseas.property.error.accounting_period.minStartDate"
 
         "the date is not supplied to the map" in {
           form.bind(DataMap.EmptyMap).errors must contain(FormError(startDate, empty))
@@ -73,27 +72,27 @@ class OverseasPropertyCommencementDateFormSpec extends PlaySpec with GuiceOneApp
         }
         "it is missing the day" in {
           val dayTest = form.bind(DataMap.date(startDate)("", "4", "2017"))
-          dayTest.errors must contain(FormError(startDate, "foreign.property.error.day.empty"))
+          dayTest.errors must contain(FormError(startDate, "agent.overseas.property.error.day.empty"))
         }
         "it is is missing the month" in {
           val mothTest = form.bind(DataMap.date(startDate)("06", "", "2017"))
-          mothTest.errors must contain(FormError(startDate, "foreign.property.error.month.empty"))
+          mothTest.errors must contain(FormError(startDate, "agent.overseas.property.error.month.empty"))
         }
         "it is is missing the year" in {
           val yearTest = form.bind(DataMap.date(startDate)("06", "4", ""))
-          yearTest.errors must contain(FormError(startDate, "foreign.property.error.year.empty"))
+          yearTest.errors must contain(FormError(startDate, "agent.overseas.property.error.year.empty"))
         }
         "it is is missing the day and month" in {
           val dayAndMonthTest = form.bind(DataMap.date(startDate)("", "", "2017"))
-          dayAndMonthTest.errors must contain(FormError(startDate, "foreign.property.error.day.month.empty"))
+          dayAndMonthTest.errors must contain(FormError(startDate, "agent.overseas.property.error.day.month.empty"))
         }
         "it is is missing the day and year" in {
           val dayAndYearTest = form.bind(DataMap.date(startDate)("", "4", ""))
-          dayAndYearTest.errors must contain(FormError(startDate, "foreign.property.error.day.year.empty"))
+          dayAndYearTest.errors must contain(FormError(startDate, "agent.overseas.property.error.day.year.empty"))
         }
         "it is is missing the month and year" in {
           val monthAndYearTest = form.bind(DataMap.date(startDate)("06", "", ""))
-          monthAndYearTest.errors must contain(FormError(startDate, "foreign.property.error.month.year.empty"))
+          monthAndYearTest.errors must contain(FormError(startDate, "agent.overseas.property.error.month.year.empty"))
         }
       }
     }
@@ -104,4 +103,5 @@ class OverseasPropertyCommencementDateFormSpec extends PlaySpec with GuiceOneApp
       validated.hasGlobalErrors shouldBe false
     }
   }
+
 }
