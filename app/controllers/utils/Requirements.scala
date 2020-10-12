@@ -59,6 +59,11 @@ object Answers {
     ifEmpty = Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
   )
 
+  val incomeSourceModelAnswerAgent: Answer[IncomeSourceModel] = SingleAnswer[IncomeSourceModel](
+    retrieveAnswer = _.getIncomeSource,
+    ifEmpty = Redirect(controllers.agent.routes.IncomeSourceController.show().url)
+  )
+
   val optAccountingMethodAnswer: Answer[Option[AccountingMethodModel]] = OptionalAnswer(
     retrieveAnswer = _.getAccountingMethod
   )

@@ -39,7 +39,7 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(individualIncomeSource = Some(IncomeSourceModel(false, true, false))))
+          subscriptionData(incomeSource = Some(IncomeSourceModel(false, true, false))))
 
         When("GET /business/routing is called")
         val res = IncomeTaxSubscriptionFrontend.getRouting()
@@ -58,7 +58,7 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(individualIncomeSource = Some(IncomeSourceModel(false, false, true))))
+          subscriptionData(incomeSource = Some(IncomeSourceModel(false, false, true))))
 
         When("GET /business/routing is called")
         val res = IncomeTaxSubscriptionFrontend.getRouting()
@@ -76,7 +76,7 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(individualIncomeSource = Some(IncomeSourceModel(true, false, false))))
+          subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, false))))
 
         When("GET /business/routing is called")
         val res = IncomeTaxSubscriptionFrontend.getRouting()

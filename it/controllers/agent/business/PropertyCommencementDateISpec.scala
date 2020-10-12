@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.individual.business
+package controllers.agent.business
 
 import java.time.LocalDate
 
@@ -28,9 +28,9 @@ import models.common.{IncomeSourceModel, PropertyCommencementDateModel}
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import utilities.SubscriptionDataKeys
 
-class UkPropertyCommencementDateISpec extends ComponentSpecBase {
+class PropertyCommencementDateISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/business/property-commencement-date" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/client/business/property-commencement-date" when {
 
     "the Subscription Details Connector returns all data" should {
       "show the property commencement date page" in {
@@ -71,7 +71,7 @@ class UkPropertyCommencementDateISpec extends ComponentSpecBase {
 
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/property-commencement-date" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/client/property-commencement-date" when {
     "not in edit mode" when {
       "enter commencement date" should {
         "redirect to the accounting method page" in {
@@ -153,15 +153,15 @@ class UkPropertyCommencementDateISpec extends ComponentSpecBase {
       }
 
       "simulate changing commencement date when calling page from Check Your Answers" in {
-        val kSubscriptionDetailsCommencementDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
-        val kSubscriptionDetailsPropertyCommencementDate = PropertyCommencementDateModel(kSubscriptionDetailsCommencementDate)
+        val SubscriptionDetailsCommencementDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
+        val SubscriptionDetailsPropertyCommencementDate = PropertyCommencementDateModel(SubscriptionDetailsCommencementDate)
         val userInput: PropertyCommencementDateModel = IntegrationTestModels.testPropertyCommencementDate
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
           subscriptionData(
-            propertyCommencementDate = Some(kSubscriptionDetailsPropertyCommencementDate)
+            propertyCommencementDate = Some(SubscriptionDetailsPropertyCommencementDate)
           )
         )
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyCommencementDate, userInput)

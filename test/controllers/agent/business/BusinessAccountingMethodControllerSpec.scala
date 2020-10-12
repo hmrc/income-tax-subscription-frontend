@@ -95,7 +95,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     }
 
     "not in edit mode" should {
-      s"redirect to ${routes.PropertyAccountingMethodController.show().url}" when {
+      s"redirect to ${routes.PropertyCommencementDateController.show().url}" when {
         "the user has both business and property income" in new Test {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(
@@ -108,7 +108,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           )))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.PropertyAccountingMethodController.show().url)
+          redirectLocation(result) mustBe Some(routes.PropertyCommencementDateController.show().url)
 
           verifySubscriptionDetailsFetchAll(2)
           verifySubscriptionDetailsSave(AccountingMethod, 1)

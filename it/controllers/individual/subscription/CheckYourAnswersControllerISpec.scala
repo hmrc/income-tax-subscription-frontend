@@ -35,7 +35,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         When("GET /check-your-answers is called")
@@ -57,7 +57,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         SubscriptionStub.stubIndividualSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
@@ -80,7 +80,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionPropertyPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionPropertyPost()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
