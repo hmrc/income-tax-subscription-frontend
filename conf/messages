@@ -192,6 +192,11 @@ foreign.property.name.heading                                   = When did your 
 foreign.property.line_1                                         = This is the date that letting or renting out any foreign property first started.
 foreign.property.start_date.exampleStartDate                    = For example, 1 8 2014
 
+# Agent Foreign Property Commencement Date
+agent.overseas.property.name.heading                            = When did your client’s foreign property business start trading?
+agent.overseas.property.line_1                                  = This is the date that letting or renting out any foreign property first started.
+agent.overseas.property.start_date.exampleStartDate             = For example, 1 8 2014
+
 # Foreign Property Commencement Date errors
 foreign.property.error.date.empty                               = Enter the date your business started trading
 foreign.property.error.day.empty                                = The date must include a day

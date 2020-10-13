@@ -198,6 +198,11 @@ foreign.property.name.heading                                   = Pryd y dechreu
 foreign.property.line_1                                         = Dyma’r dyddiad y dechreuoch roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
 foreign.property.start_date.exampleStartDate                    = Er enghraifft, 1 8 2014
 
+# Agent Foreign Property Commencement Date
+agent.overseas.property.name.heading                            = Pryd y dechreuodd busnes eiddo tramor eich cleient fasnachu?
+agent.overseas.property.line_1                                  = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
+agent.overseas.property.start_date.exampleStartDate             = Er enghraifft, 1 8 2014
+
 # Foreign Property Commencement Date errors
 foreign.property.error.date.empty                                       = Nodwch y dyddiad y gwnaeth eich busnes ddechrau masnachu
 foreign.property.error.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
@@ -797,4 +802,4 @@ agent.overseas.property.error.day.year.empty                    = Mae’n rhaid 
 agent.overseas.property.error.year.empty                        = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
 agent.overseas.property.error.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 agent.overseas.property.error.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
-agent.overseas.property.error.accounting_period.minStartDate    = Mae’n rhaid i’r dyddiad y dechreuodd y busnes eiddo tramor fasnachu fod ar neu cyn {0}
+agent.overseas.property.error.accounting_period.minStartDate    = Mae’n rhaid i ddyddiad busnes eiddo tramor eich cleient fod ar neu cyn {0}
