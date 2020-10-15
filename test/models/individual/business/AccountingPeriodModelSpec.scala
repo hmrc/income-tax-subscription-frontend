@@ -17,6 +17,7 @@
 package models.individual.business
 
 import models.DateModel
+import models.common.AccountingPeriodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import utilities.TestModels

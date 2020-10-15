@@ -18,20 +18,21 @@ package views.agent
 
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel}
-import models.individual.business._
-import models.{AgentSummary, Current, Next, Yes}
+import models.common._
+import models.{AgentSummary, Current, Next}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.TestModels.{testAgentSummaryData, testBusinessName}
-import utilities.{AccountingPeriodUtil, TestModels, UnitTestTrait}
+import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, TestModels, UnitTestTrait}
 import views.agent.helpers.SummaryIdConstants._
 
+class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter {
 
-class CheckYourAnswersViewSpec extends UnitTestTrait {
+  override val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
 
   lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.agent.routes.IncomeSourceController.show().url
@@ -40,20 +41,25 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
   val testIncomeSource: IncomeSourceModel = TestModels.testAgentIncomeSourceBoth
+  val testPropertyCommencementDate: PropertyCommencementDateModel = TestModels.testPropertyCommencementDateModel
   val testSummary: AgentSummary = customTestSummary()
+  val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   def customTestSummary(selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): AgentSummary = AgentSummary(
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                        propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencementDate): AgentSummary = AgentSummary(
     businessName = testBusinessName,
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
+    propertyCommencementDate = testPropertyCommencementDate,
     accountingMethodProperty = accountingMethodProperty
   )
 
   def page(testSummaryModel: AgentSummary): HtmlFormat.Appendable = views.html.agent.check_your_answers(
     summaryModel = testSummaryModel,
     postAction = postAction,
-    backUrl = backUrl
+    backUrl = backUrl,
+    dateFormatter
   )(FakeRequest(), implicitly, appConfig)
 
   def document(testSummaryModel: AgentSummary = testAgentSummaryData): Document
@@ -107,12 +113,13 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         document().select("form").attr("action") mustBe postAction.url
         document().select("form").attr("method") mustBe "POST"
       }
-
     }
 
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String])(
+    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
+                    testSummaryModel: AgentSummary = testSummary)(
       setupData: AgentSummary = testAgentSummaryData): Unit = {
+      println(document(setupData).toString)
       val question = document(setupData).getElementById(questionId(sectionId))
       val answer = document(setupData).getElementById(answerId(sectionId))
       val editLink = document(setupData).getElementById(editLinkId(sectionId))
@@ -129,14 +136,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         editLink.select("span").text() shouldBe expectedQuestion
         editLink.select("span").hasClass("visuallyhidden") shouldBe true
       }
-
     }
 
     "display the correct info for the select tax year" when {
 
       "selected current tax year" in {
         val currentTaxYear: AccountingPeriodModel = AccountingPeriodUtil.getCurrentTaxYear
-
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year
         val expectedAnswer = messages.option1(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
@@ -209,6 +214,20 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       )()
     }
 
+    "display the correct info for the property commencement date" in {
+      val sectionId = PropertyCommencementDateId
+      val expectedQuestion = messages.propertyCommencementDate
+      val expectedAnswer = testPropertyCommencementDate.startDate.toLocalDate.toLongDate
+      val expectedEditLink = controllers.agent.business.routes.PropertyCommencementDateController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )()
+    }
+
     "display the correct info for the property accounting method" in {
       val sectionId = AccountingMethodPropertyId
       val expectedQuestion = messages.income_type_property
@@ -222,7 +241,5 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedEditLink = expectedEditLink
       )()
     }
-
   }
-
 }

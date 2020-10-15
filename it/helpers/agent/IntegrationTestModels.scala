@@ -3,8 +3,7 @@ package helpers.agent
 
 
 import models._
-import models.common._
-import models.individual.business.AccountingPeriodModel
+import models.common.{AccountingPeriodModel, _}
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import utilities.SubscriptionDataKeys

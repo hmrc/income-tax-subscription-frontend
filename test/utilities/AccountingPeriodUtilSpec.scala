@@ -17,7 +17,7 @@
 package utilities
 
 import models.DateModel
-import models.individual.business.AccountingPeriodModel
+import models.common.AccountingPeriodModel
 import uk.gov.hmrc.play.test.UnitSpec
 
 

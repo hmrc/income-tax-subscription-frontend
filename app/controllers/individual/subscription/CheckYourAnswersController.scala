@@ -35,7 +35,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.ITSASessionKeys
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
-import utilities.individual.ImplicitDateFormatterImpl
+import utilities.ImplicitDateFormatterImpl
 
 import scala.concurrent.{ExecutionContext, Future}
 

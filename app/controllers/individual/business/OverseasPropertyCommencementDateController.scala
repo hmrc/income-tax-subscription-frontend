@@ -33,7 +33,7 @@ import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
-import utilities.individual.ImplicitDateFormatter
+import utilities.ImplicitDateFormatter
 
 import scala.concurrent.{ExecutionContext, Future}
 

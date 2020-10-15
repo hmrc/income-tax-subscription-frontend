@@ -17,7 +17,7 @@
 package models.individual.subscription
 
 import models.AccountingMethod
-import models.individual.business.AccountingPeriodModel
+import models.common.AccountingPeriodModel
 import play.api.libs.json.{Json, OFormat}
 
 case class SubscriptionRequest(nino: String,

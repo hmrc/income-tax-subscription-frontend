@@ -194,6 +194,7 @@ object MessageLookup {
     val income_type = "Accounting method for their self-employed business"
     val income_type_property = "Accounting method for their property business"
     val match_tax_year = "Accounting period matches tax year"
+    val propertyCommencementDate = "Trading start for UK property"
 
     object AccountingMethod {
       val cash = "Cash basis"

@@ -23,8 +23,8 @@ import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesRespons
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.{MultipleIncomeSourcesSubscriptionConnector, SubscriptionConnector}
 import javax.inject.{Inject, Singleton}
-import models.common.{AccountingYearModel, IncomeSourceModel}
-import models.individual.business.{AccountingPeriodModel, BusinessSubscriptionDetailsModel}
+import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel}
+import models.individual.business.BusinessSubscriptionDetailsModel
 import models.individual.subscription._
 import models.{IndividualSummary, Next, SummaryModel, Yes}
 import play.api.Logger

@@ -66,6 +66,7 @@ object SubscriptionDataUtil {
         case Some(IncomeSourceModel(false, true, false)) =>
           AgentSummary(
             incomeSource = getIncomeSource,
+            propertyCommencementDate = getPropertyCommencementDate,
             accountingMethodProperty = getPropertyAccountingMethod
           )
         case Some(IncomeSourceModel(true, false, false)) =>
@@ -80,6 +81,7 @@ object SubscriptionDataUtil {
             incomeSource = getIncomeSource,
             businessName = getBusinessName,
             accountingMethod = getAccountingMethod,
+            propertyCommencementDate = getPropertyCommencementDate,
             accountingMethodProperty = getPropertyAccountingMethod
           )
         case _ => AgentSummary()

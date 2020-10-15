@@ -653,6 +653,7 @@ agent.summary.match_tax_year                                    = Mae’r cyfnod
 agent.summary.selected_year                                     = Y flwyddyn cofrestrwyd ar ei chyfer
 agent.summary.selected_year.current                             = Y flwyddyn dreth bresennol ({0} i {1})
 agent.summary.selected_year.next                                = Y flwyddyn dreth nesaf ({0} i {1})
+agent.summary.property_commencement_date                        = Dyddiad dechrau masnachu ar gyfer eiddo yn y DU
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                    = Rydych wedi cofrestru eich cleient ar gyfer y peilot ‘Defnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm’

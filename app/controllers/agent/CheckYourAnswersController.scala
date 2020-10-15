@@ -28,12 +28,14 @@ import services.agent.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataUtil._
+import utilities.ImplicitDateFormatterImpl
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService,
-                                           subscriptionService: SubscriptionOrchestrationService)
+                                           subscriptionService: SubscriptionOrchestrationService,
+                                           implicitDateFormatter: ImplicitDateFormatterImpl)
                                           (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends AuthenticatedController {
 
@@ -72,7 +74,8 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, subscri
           Ok(views.html.agent.check_your_answers(
             cache.getAgentSummary(),
             controllers.agent.routes.CheckYourAnswersController.submit(),
-            backUrl = backLinkUrl
+            backUrl = backLinkUrl,
+            implicitDateFormatter
           ))
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
 

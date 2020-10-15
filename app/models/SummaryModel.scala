@@ -91,5 +91,5 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                        propertyCommencementDate: Option[PropertyCommencementDateModel] = None) extends SummaryModel
+                        propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel
