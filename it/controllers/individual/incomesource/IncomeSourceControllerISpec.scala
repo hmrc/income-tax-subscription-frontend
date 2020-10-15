@@ -33,7 +33,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       "show the income source page with the options selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
 
         When("GET /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.incomeSource()
@@ -199,7 +199,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(IncomeSourceModel(true, true, false))))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")
@@ -216,7 +216,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(userInput)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(userInput)))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
 
         When("POST /details/income-receive is called")

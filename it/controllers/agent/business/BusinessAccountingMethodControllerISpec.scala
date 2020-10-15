@@ -75,7 +75,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
   "POST /business/accounting-method" when {
     "the user is in the both flow" when {
       "an option is selected on the accounting method page" should {
-        "redirect the user to the property accounting method page" in {
+        "redirect the user to the property commencement date page" in {
 
           val userInput = AccountingMethodModel(Cash)
 
@@ -95,7 +95,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyAccountingMethodURI)
+            redirectURI(propertyCommencementDateURI)
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.AccountingMethod, expectedCacheMap, Some(1))
@@ -117,7 +117,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(propertyAccountingMethodURI)
+          redirectURI(propertyCommencementDateURI)
         )
       }
 
@@ -135,7 +135,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(propertyAccountingMethodURI)
+          redirectURI(propertyCommencementDateURI)
         )
       }
     }

@@ -164,7 +164,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           Then(s"Should return $SEE_OTHER with a redirect location of property commencement date page")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyAccountingMethodURI)
+            redirectURI(propertyCommencementDateURI)
           )
         }
       }
@@ -184,7 +184,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           Then(s"Should return $SEE_OTHER with a redirect location of property accounting method")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyAccountingMethodURI)
+            redirectURI(propertyCommencementDateURI)
           )
         }
         "the user selects the same answer" in {

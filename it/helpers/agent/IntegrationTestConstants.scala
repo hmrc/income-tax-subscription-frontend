@@ -39,6 +39,7 @@ object IntegrationTestConstants {
   val whatYearToSignUp = s"$baseURI/business/what-year-to-sign-up"
   val businessAccountingMethodURI = s"$baseURI/business/accounting-method"
   val propertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
+  val propertyCommencementDateURI = s"$baseURI/business/property-commencement-date"
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"

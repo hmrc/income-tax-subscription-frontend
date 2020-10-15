@@ -111,7 +111,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
+            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyCommencementDateController.show().url)
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)

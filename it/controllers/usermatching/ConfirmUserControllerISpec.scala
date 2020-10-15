@@ -33,7 +33,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
       "show error page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
         UserLockoutStub.stubUserIsNotLocked(testCredId)
         AuthenticatorStub.stubMatchFailure()
         // n.b. failure is expected as the additional methods are not mocked
@@ -72,7 +72,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         "redirect the user to user details error page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
           UserLockoutStub.stubUserIsNotLocked(testCredId)
           AuthenticatorStub.stubMatchNotFound()
 
@@ -94,7 +94,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         "redirect the user to agent locked out page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
           UserLockoutStub.stubUserIsNotLocked(testCredId)
           UserLockoutStub.stubLockAgent(testCredId)
@@ -121,7 +121,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
       "redirect to income source page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
         AuthenticatorStub.stubMatchFound(testNino)
         UserLockoutStub.stubUserIsNotLocked(testCredId)
         SubscriptionStub.stubGetNoSubscription()

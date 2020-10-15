@@ -33,7 +33,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       "show the business name page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
 
         When("GET /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.businessName()
@@ -77,7 +77,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(
-            individualIncomeSource = Some(IncomeSourceModel(true, false, false))
+            incomeSource = Some(IncomeSourceModel(true, false, false))
           ))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
@@ -152,7 +152,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
         When("POST /business/name is called")

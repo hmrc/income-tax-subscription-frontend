@@ -50,10 +50,9 @@ import utilities.individual.Constants.GovernmentGateway._
   val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData("businessId", businessName = Some(testBusinessName)))
   val testInvalidForeignPropertyCommencementDate = OverseasPropertyCommencementDateModel(testInvalidStartDate)
 
-  lazy val fullIndivSubscriptionDataBothPost: Map[String, JsValue] =
+  lazy val fullSubscriptionDataBothPost: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(IncomeSourceModel(true, true, false)),
-      individualIncomeSource = Some(IncomeSourceModel(true, true, false)),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
@@ -61,10 +60,9 @@ import utilities.individual.Constants.GovernmentGateway._
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
-  lazy val fullIndivSubscriptionDataAllPost: Map[String, JsValue] =
+  lazy val fullSubscriptionDataAllPost: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(IncomeSourceModel(true, true, false)),
-      individualIncomeSource = Some(IncomeSourceModel(true, true, true)),
+      incomeSource = Some(IncomeSourceModel(true, true, true)),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
@@ -73,9 +71,9 @@ import utilities.individual.Constants.GovernmentGateway._
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
-  lazy val fullIndivSubscriptionDataPropertyPost: Map[String, JsValue] =
+  lazy val fullSubscriptionDataPropertyPost: Map[String, JsValue] =
     subscriptionData(
-      individualIncomeSource = Some(IncomeSourceModel(false, true, false)),
+      incomeSource = Some(IncomeSourceModel(false, true, false)),
       propertyAccountingMethod = Some(testAccountingMethodProperty),
       overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
 
@@ -83,7 +81,6 @@ import utilities.individual.Constants.GovernmentGateway._
 
 
   def subscriptionData(incomeSource: Option[IncomeSourceModel] = None,
-                       individualIncomeSource: Option[IncomeSourceModel] = None,
                        selectedTaxYear: Option[AccountingYearModel] = None,
                        businessName: Option[BusinessNameModel] = None,
                        accountingMethod: Option[AccountingMethodModel] = None,
@@ -94,7 +91,6 @@ import utilities.individual.Constants.GovernmentGateway._
                       ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
-      individualIncomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++

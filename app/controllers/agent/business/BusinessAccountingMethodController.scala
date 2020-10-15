@@ -71,7 +71,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
               if (isEditMode || incomeSourceModel.selfEmployment && !incomeSourceModel.ukProperty && !incomeSourceModel.foreignProperty) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show())
               } else {
-                Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+                Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
               }
             }
           }

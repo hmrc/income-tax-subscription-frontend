@@ -22,7 +22,7 @@ class ForeignPropertyCommencementDateISpec extends ComponentSpecBase {
       "show the foreign property commencement date page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubIndivFullSubscriptionAllPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionAllPost()
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyCommencementDate()
@@ -42,7 +42,7 @@ class ForeignPropertyCommencementDateISpec extends ComponentSpecBase {
         val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
           foreignProperty = true)
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(incomeSourceModel)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyCommencementDate()
@@ -84,7 +84,7 @@ class ForeignPropertyCommencementDateISpec extends ComponentSpecBase {
         val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
           foreignProperty = false)
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(incomeSourceModel)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.OverseasPropertyCommencementDate, "")
 
         When("POST /overseas-property-start-date is called")
@@ -104,7 +104,7 @@ class ForeignPropertyCommencementDateISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(individualIncomeSource = Some(incomeSourceModel)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
         When("POST /overseas-property-start-date is called")
