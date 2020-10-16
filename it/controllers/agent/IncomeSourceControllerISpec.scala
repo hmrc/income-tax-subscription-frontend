@@ -49,11 +49,11 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
           When("GET /income is called")
           val res = IncomeTaxSubscriptionFrontend.income()
-
+          val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
           Then("Should return a OK with the income source page")
           res should have(
             httpStatus(OK),
-            pageTitle(messages("agent.income_source.heading")),
+            pageTitle(messages("agent.income_source.heading") + serviceNameGovUk),
             checkboxSet(id = "Business", selectedCheckbox = Some(messages("income_source.selfEmployed"))),
             checkboxSet(id = "UkProperty", selectedCheckbox = Some(messages("income_source.rentUkProperty"))),
             checkboxSet(id = "ForeignProperty", selectedCheckbox = Some(messages("income_source.foreignProperty")))
@@ -70,11 +70,11 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
           When("GET /income is called")
           val res = IncomeTaxSubscriptionFrontend.income()
-
+          val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
           Then("Should return a OK with the income source page")
           res should have(
             httpStatus(OK),
-            pageTitle(messages("agent.income_source.heading")),
+            pageTitle(messages("agent.income_source.heading") + serviceNameGovUk),
             checkboxSet(id = "Business", selectedCheckbox = None),
             checkboxSet(id = "UkProperty", selectedCheckbox = None),
             checkboxSet(id = "ForeignProperty", selectedCheckbox = None)
@@ -91,11 +91,11 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
           When("GET /income is called")
           val res = IncomeTaxSubscriptionFrontend.income()
-
+          val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
           Then("Should return a OK with the income source page")
           res should have(
             httpStatus(OK),
-            pageTitle(messages("agent.income_source.heading")),
+            pageTitle(messages("agent.income_source.heading") + serviceNameGovUk),
             checkboxSet(id = "Business", selectedCheckbox = Some(messages("income_source.selfEmployed"))),
             checkboxSet(id = "UkProperty", selectedCheckbox = Some(messages("income_source.rentUkProperty")))
           )

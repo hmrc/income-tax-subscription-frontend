@@ -47,7 +47,8 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
   "property accounting method" must {
 
     "have a title" in new Setup {
-      document.title mustBe messages.title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title mustBe messages.title + serviceNameGovUk
     }
 
     "have a heading" in new Setup {

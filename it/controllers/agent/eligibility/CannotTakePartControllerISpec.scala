@@ -66,7 +66,8 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
     "return a page" which {
 
       "has the correct title" in new Setup {
-        doc.title shouldBe CannotTakePartMessages.title
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        doc.title shouldBe CannotTakePartMessages.title + serviceNameGovUk
       }
 
       "has a back link" in new Setup {

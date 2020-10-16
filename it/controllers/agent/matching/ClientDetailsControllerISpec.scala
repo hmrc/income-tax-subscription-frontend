@@ -56,11 +56,11 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     "the agent is not locked out" should {
       "show the client details page" in {
         val res = fixture(agentLocked = false)
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("The result should have a status of OK")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("agent.client-details.title"))
+          pageTitle(messages("agent.client-details.title") + serviceNameGovUk)
         )
       }
     }
@@ -93,11 +93,11 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("The result should have a status of BadRequest")
         res should have(
           httpStatus(BAD_REQUEST),
-          pageTitle("Error: " + messages("agent.client-details.title"))
+          pageTitle("Error: " + messages("agent.client-details.title") + serviceNameGovUk)
         )
 
         res.verifyStoredUserDetailsIs(None)

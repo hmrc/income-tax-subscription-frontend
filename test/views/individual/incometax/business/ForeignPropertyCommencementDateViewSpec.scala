@@ -60,7 +60,8 @@ class ForeignPropertyCommencementDateViewSpec extends ViewSpec {
   "foreign property commencement date page" must {
 
     "have a title" in new Setup {
-      document.title mustBe ForeignPropertyCommencementDateMessages.title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title mustBe ForeignPropertyCommencementDateMessages.title + serviceNameGovUk
     }
     "have a heading" in new Setup {
       document.getH1Element.text mustBe ForeignPropertyCommencementDateMessages.heading

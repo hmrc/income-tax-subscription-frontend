@@ -30,11 +30,11 @@ class UserDetailsErrorControllerISpec extends ComponentSpecBase with FeatureSwit
 
       When("GET /error/user-details is called")
       val res = IncomeTaxSubscriptionFrontend.showUserDetailsError()
-
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
       Then("Should return a OK with the no matching user page")
       res should have(
         httpStatus(OK),
-        pageTitle(messages("user-details-error.title"))
+        pageTitle(messages("user-details-error.title") + serviceNameGovUk)
       )
     }
   }

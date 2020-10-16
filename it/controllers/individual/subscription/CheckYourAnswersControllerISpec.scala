@@ -40,11 +40,11 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the check your answers page")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("summary.title"))
+          pageTitle(messages("summary.title") + serviceNameGovUk)
         )
       }
     }

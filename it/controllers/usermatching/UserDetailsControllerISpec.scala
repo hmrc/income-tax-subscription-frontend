@@ -55,11 +55,11 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
     "the user is not locked out" should {
       "show the user details page" in {
         val res = fixture(agentLocked = false)
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("The result should have a status of OK")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("user-details.title"))
+          pageTitle(messages("user-details.title") + serviceNameGovUk)
         )
       }
     }
@@ -92,11 +92,11 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
 
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("The result should have a status of BadRequest")
         res should have(
           httpStatus(BAD_REQUEST),
-          pageTitle("Error: " + messages("user-details.title"))
+          pageTitle("Error: " + messages("user-details.title") + serviceNameGovUk)
         )
         res.verifyStoredUserDetailsIs(None)
         IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))

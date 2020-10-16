@@ -40,10 +40,11 @@ class CannotUseServiceControllerSpec extends ControllerBaseSpec {
     "return ok (200)" in {
       val result = call
       val document = Jsoup.parse(contentAsString(result))
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
       status(result) must be(Status.OK)
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-      document.title mustBe messages.title
+      document.title mustBe messages.title + serviceNameGovUk
     }
   }
 }

@@ -150,11 +150,11 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
 
       When("GET /paperless-error is called")
       val res = IncomeTaxSubscriptionFrontend.paperlessError()
-
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
       Then("Should return a OK status with the paperless error page")
       res should have(
         httpStatus(OK),
-        pageTitle(messages("preferences_callback.title"))
+        pageTitle(messages("preferences_callback.title") + serviceNameGovUk)
       )
     }
   }

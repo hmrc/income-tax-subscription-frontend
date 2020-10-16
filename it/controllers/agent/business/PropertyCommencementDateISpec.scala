@@ -40,11 +40,11 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.propertyCommencementDate()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the property commencement page with populated commencement date")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("business.property.name.title")),
+          pageTitle(messages("business.property.name.title") + serviceNameGovUk),
           dateField("startDate", testPropertyCommencementDate.startDate)
         )
       }
@@ -60,11 +60,11 @@ class PropertyCommencementDateISpec extends ComponentSpecBase {
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.propertyCommencementDate()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the property commencement date page with no commencement date")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("business.property.name.title"))
+          pageTitle(messages("business.property.name.title") +serviceNameGovUk)
         )
       }
     }

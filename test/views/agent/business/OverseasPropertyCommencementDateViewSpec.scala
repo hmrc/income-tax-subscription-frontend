@@ -40,6 +40,7 @@ class OverseasPropertyCommencementDateViewSpec extends ViewSpec {
   val action: Call = testCall
   val taxYearEnd: Int = 2020
   val testError: FormError = FormError("startDate", "testError")
+  val titleSuffix = " - Report your income and expenses quarterly - GOV.UK"
 
   class Setup(isEditMode: Boolean = false, foreignPropertyCommencementDateForm: Form[OverseasPropertyCommencementDateModel] =
   OverseasPropertyCommencementDateForm.overseasPropertyCommencementDateForm("testMessage")) {
@@ -56,7 +57,7 @@ class OverseasPropertyCommencementDateViewSpec extends ViewSpec {
 
   "Overseas Commencement Date page" must {
     "have a title" in new Setup {
-      document.title mustBe OverseasPropertyCommencementDateMessages.heading
+      document.title mustBe OverseasPropertyCommencementDateMessages.heading + titleSuffix
     }
 
     "have a heading" in new Setup {

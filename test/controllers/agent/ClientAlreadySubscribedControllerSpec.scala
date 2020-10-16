@@ -49,7 +49,8 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec {
     }
 
     s"render the already subscribed page" in {
-      document.title mustBe messages.heading
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title mustBe messages.heading + serviceNameGovUk
     }
 
     s"the post action of the page rendered should be '${controllers.agent.routes.ClientAlreadySubscribedController.submit().url}'" in {

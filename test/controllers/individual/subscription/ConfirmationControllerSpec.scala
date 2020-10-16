@@ -64,9 +64,10 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
           subscriptionRequest.addStartTime(startTime)
         )
 
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         status(result) shouldBe OK
 
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("sign-up-complete.title")
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("sign-up-complete.title") + serviceNameGovUk
 
       }
 

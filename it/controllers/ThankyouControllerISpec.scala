@@ -25,11 +25,11 @@ class ThankyouControllerISpec extends ComponentSpecBase {
     "show the thankyou page" in {
       When("GET /thankyou is called")
       val res = IncomeTaxSubscriptionFrontend.thankYou()
-
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
       Then("Should return a OK with the thankyou page")
       res should have(
         httpStatus(OK),
-        pageTitle(messages("feedback.thankyou.title"))
+        pageTitle(messages("feedback.thankyou.title") + serviceNameGovUk)
       )
     }
   }

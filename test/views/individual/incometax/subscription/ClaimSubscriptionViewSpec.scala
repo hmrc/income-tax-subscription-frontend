@@ -34,7 +34,8 @@ class ClaimSubscriptionViewSpec extends ViewSpecTrait {
   "The Confirmation view" should {
 
     s"have the title '${MessageLookup.Confirmation.title}'" in {
-      document.title() must be(MessageLookup.ClaimSubscription.title)
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title() must be(MessageLookup.ClaimSubscription.title + serviceNameGovUk)
     }
 
     "have a successful transaction confirmation banner" which {

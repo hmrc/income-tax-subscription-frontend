@@ -63,7 +63,9 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct title" in new GetSetup {
-      doc.title shouldBe s"${PropertyStartAfterMessage.title(date)}"
+
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      doc.title shouldBe s"${PropertyStartAfterMessage.title(date) + serviceNameGovUk}"
     }
 
     "have a view with the correct heading" in new GetSetup {

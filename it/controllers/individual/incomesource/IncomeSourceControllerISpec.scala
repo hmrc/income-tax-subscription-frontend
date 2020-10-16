@@ -37,11 +37,11 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         When("GET /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.incomeSource()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the income source page")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("income_source.title")),
+          pageTitle(messages("income_source.title") + serviceNameGovUk),
           checkboxSet(id = "Business", selectedCheckbox = Some(messages("income_source.selfEmployed"))),
           checkboxSet(id = "UkProperty", selectedCheckbox = Some(messages("income_source.rentUkProperty")))
         )
@@ -56,11 +56,11 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
         When("GET /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.incomeSource()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the rent uk property page")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("income_source.title")),
+          pageTitle(messages("income_source.title") + serviceNameGovUk),
           checkboxSet(id = "Business", selectedCheckbox = None),
           checkboxSet(id = "UkProperty", selectedCheckbox = None)
         )
