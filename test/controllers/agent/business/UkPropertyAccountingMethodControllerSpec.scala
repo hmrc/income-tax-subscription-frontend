@@ -16,6 +16,7 @@
 
 package controllers.agent.business
 
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import utilities.agent.TestModels._
 import controllers.agent.AgentControllerBaseSpec
 import config.featureswitch._
@@ -50,6 +51,11 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   def bothPropertyAndBusinessIncomeSource: CacheMap = testCacheMap(
     incomeSource = Some(testIncomeSourceBusinessAndUkProperty)
   )
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    super.beforeEach()
+  }
 
   "show" when {
     "there is no previous selected answer" should {
@@ -158,18 +164,36 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "The back url is not in edit mode" when {
 
-      "the user has rental property" should {
+      "the user has rental property and ReleaseFour FS is disabled" should {
         s"return ${controllers.agent.routes.IncomeSourceController.show().url}" in {
           mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe controllers.agent.routes.IncomeSourceController.show().url
         }
       }
 
-      "the user has both rental property and business" should {
+      "the user has rental property and ReleaseFour FS is enabled" should {
+        s"return ${controllers.agent.business.routes.PropertyCommencementDateController.show().url}" in {
+          enable(ReleaseFour)
+          mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
+          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
+            controllers.agent.business.routes.PropertyCommencementDateController.show().url
+        }
+      }
+
+      "the user has both rental property and business and ReleaseFour FS is disabled" should {
         "redirect to Business Accounting Method page" in {
           mockFetchAllFromSubscriptionDetails(bothPropertyAndBusinessIncomeSource)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
             controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        }
+      }
+
+      "the user has both rental property and business and ReleaseFour FS is enabled" should {
+        "redirect to Property Commencement Date page" in {
+          enable(ReleaseFour)
+          mockFetchAllFromSubscriptionDetails(bothPropertyAndBusinessIncomeSource)
+          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
+            controllers.agent.business.routes.PropertyCommencementDateController.show().url
         }
       }
     }
