@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package forms.individual.business
+package forms.agent
 
 import java.time.LocalDate
 
-import forms.submapping.DateMapping._
-import forms.validation.utils.ConstraintUtil._
+import forms.submapping.DateMapping.optDateMapping
+import forms.validation.utils.ConstraintUtil.{ConstraintUtil, constraint}
 import models.DateModel
 import models.common.OverseasPropertyCommencementDateModel
 import play.api.data.Form
@@ -30,14 +30,13 @@ import scala.util.Try
 
 object OverseasPropertyCommencementDateForm {
 
-
   def overseasPropertyStartDate: LocalDate = LocalDate.now().minusYears(1)
 
   val startDate: String = "startDate"
 
   val dateValidation: Constraint[(Option[String], Option[String], Option[String])] = constraint[(Option[String], Option[String], Option[String])] {
     case (day, month, year) => {
-      lazy val invalidDate = Invalid("foreign.property.error.date.empty")
+      lazy val invalidDate = Invalid("agent.overseas.property.error.date.empty")
       Try[ValidationResult] {
         LocalDate.of(year.get.toInt, month.get.toInt, day.get.toInt)
         Valid
@@ -46,16 +45,14 @@ object OverseasPropertyCommencementDateForm {
   }
 
   val validateDate: Constraint[(Option[String], Option[String], Option[String])] = constraint[(Option[String], Option[String], Option[String])] {
-    case (None, None, None) => Invalid("foreign.property.error.date.empty")
-    case (Some(_), None, None) => Invalid("foreign.property.error.month.year.empty")
-    case (None, None, Some(_)) => Invalid("foreign.property.error.day.month.empty")
-    case (None, Some(_), None) => Invalid("foreign.property.error.day.year.empty")
-    case (Some(_), Some(_), None) => Invalid("foreign.property.error.year.empty")
-    case (None, Some(_), Some(_)) => Invalid("foreign.property.error.day.empty")
-    case (Some(_), None, Some(_)) => Invalid("foreign.property.error.month.empty")
+    case (None, None, None) => Invalid("agent.overseas.property.error.date.empty")
+    case (Some(_), None, None) => Invalid("agent.overseas.property.error.month.year.empty")
+    case (None, None, Some(_)) => Invalid("agent.overseas.property.error.day.month.empty")
+    case (None, Some(_), None) => Invalid("agent.overseas.property.error.day.year.empty")
+    case (Some(_), Some(_), None) => Invalid("agent.overseas.property.error.year.empty")
+    case (None, Some(_), Some(_)) => Invalid("agent.overseas.property.error.day.empty")
+    case (Some(_), None, Some(_)) => Invalid("agent.overseas.property.error.month.empty")
     case (Some(_), Some(_), Some(_)) => Valid
-
-
   }
 
   private val toDateModel: (Option[String], Option[String], Option[String]) => DateModel = {
@@ -66,10 +63,9 @@ object OverseasPropertyCommencementDateForm {
     dateModel => (Some(dateModel.day), Option(dateModel.month), Option(dateModel.year))
   }
 
-
   def startBeforeOneYear(date: String): Constraint[DateModel] = constraint[DateModel](
     dateModel => {
-      lazy val invalid = Invalid("foreign.property.error.property_commencement_date.minStartDate", date)
+      lazy val invalid = Invalid("agent.overseas.property.error.accounting_period.minStartDate", date)
       if (DateModel.dateConvert(dateModel).isAfter(overseasPropertyStartDate)) invalid else Valid
     }
   )
@@ -80,7 +76,5 @@ object OverseasPropertyCommencementDateForm {
         transform[DateModel](toDateModel.tupled, fromDateModel).verifying(startBeforeOneYear(date))
     )(OverseasPropertyCommencementDateModel.apply)(OverseasPropertyCommencementDateModel.unapply)
   )
-
-
 
 }

@@ -17,7 +17,7 @@
 package views.individual.incometax.business
 
 import forms.individual.business.OverseasPropertyCommencementDateForm
-import models.individual.business.OverseasPropertyCommencementDateModel
+import models.common.OverseasPropertyCommencementDateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}

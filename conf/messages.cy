@@ -787,3 +787,13 @@ agent.covid_cannot_sign_up.button                               = Cofrestru clei
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
+
+# Agent Overseas Property Commencement Date Page errors
+agent.overseas.property.error.date.empty                        = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
+agent.overseas.property.error.month.year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+agent.overseas.property.error.day.month.empty                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+agent.overseas.property.error.day.year.empty                    = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+agent.overseas.property.error.year.empty                        = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+agent.overseas.property.error.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+agent.overseas.property.error.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
+agent.overseas.property.error.accounting_period.minStartDate    = Mae’n rhaid i’r dyddiad y dechreuodd y busnes eiddo tramor fasnachu fod ar neu cyn {0}

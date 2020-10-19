@@ -24,8 +24,7 @@ import services.mocks.MockSubscriptionDetailsService
 import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyCommencementDateForm
 import models.DateModel
-import models.common.IncomeSourceModel
-import models.individual.business.OverseasPropertyCommencementDateModel
+import models.common.{IncomeSourceModel, OverseasPropertyCommencementDateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._

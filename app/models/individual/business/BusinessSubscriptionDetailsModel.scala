@@ -17,7 +17,7 @@
 package models.individual.business
 
 import models.AccountingMethod
-import models.common.{AccountingMethodPropertyModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel, PropertyCommencementDateModel}
+import models.common._
 import play.api.libs.json.Json
 
 case class BusinessSubscriptionDetailsModel(accountingPeriod: AccountingPeriodModel,
