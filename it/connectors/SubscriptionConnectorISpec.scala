@@ -5,7 +5,7 @@ import connectors.individual.subscription.SubscriptionConnector
 import connectors.stubs.SubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
-import models.individual.business.AccountingPeriodModel
+import models.common.AccountingPeriodModel
 import models.individual.subscription._
 import models.{Cash, DateModel}
 import org.scalatest.Matchers

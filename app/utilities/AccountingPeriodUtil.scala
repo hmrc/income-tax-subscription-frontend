@@ -19,7 +19,7 @@ package utilities
 import java.time.LocalDate
 
 import models.DateModel
-import models.individual.business.AccountingPeriodModel
+import models.common.AccountingPeriodModel
 
 object AccountingPeriodUtil {
   private val april = 4

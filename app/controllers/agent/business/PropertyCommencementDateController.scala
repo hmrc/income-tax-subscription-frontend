@@ -67,7 +67,7 @@ class PropertyCommencementDateController @Inject()(val authService: AuthService,
     implicit user =>
       form.bindFromRequest.fold(
         formWithErrors =>
-          require(incomeSourceModelAnswer) {
+          require(incomeSourceModelAnswerAgent) {
             incomeSourceModel =>
               Future.successful(BadRequest(view(propertyCommencementDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
           },

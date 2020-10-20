@@ -646,6 +646,7 @@ agent.summary.match_tax_year                                    = Accounting per
 agent.summary.selected_year                                     = Year signed-up for
 agent.summary.selected_year.current                             = Current tax year ({0} to {1})
 agent.summary.selected_year.next                                = Next tax year ({0} to {1})
+agent.summary.property_commencement_date                        = Trading start for UK property
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                    = You have signed up your client for the Use software to send Income Tax updates pilot

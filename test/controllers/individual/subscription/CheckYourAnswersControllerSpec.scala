@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.MtditId
 import utilities.SubscriptionDataUtil._
 import utilities.TestModels._
-import utilities.individual.ImplicitDateFormatterImpl
+import utilities.ImplicitDateFormatterImpl
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future

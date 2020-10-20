@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package models.individual.business
+package models.common
 
 import models.DateModel
-
 import play.api.libs.json.{Json, OFormat}
 import utilities.AccountingPeriodUtil
 

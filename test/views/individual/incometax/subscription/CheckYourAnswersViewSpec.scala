@@ -29,8 +29,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
-import utilities.individual.{ImplicitDateFormatter, ImplicitDateFormatterImpl}
-import utilities.{TestModels, UnitTestTrait}
+import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, TestModels, UnitTestTrait}
 import views.individual.helpers.SummaryIdConstants._
 
 
@@ -289,7 +288,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       }
 
 
-      "display the correct info for the Property Business Commencement" in {
+      "display the correct info for the Property Commencement Date" in {
         val sectionId = PropertyCommencementId
         val expectedQuestion = messages.propertyCommencement
         val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
@@ -304,53 +303,35 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         )
       }
 
+      "display the correct info for the Foreign Property Business Commencement" in {
+        val sectionId = ForeignPropertyCommencementId
+        val expectedQuestion = messages.foreignPropertyCommencement
+        val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
+        val expectedEditLink = controllers.individual.business.routes.OverseasPropertyCommencementDateController.show(editMode = true).url
 
-    }
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
+        )
+      }
 
-    "display the correct info for the Property Business Commencement" in {
-      val sectionId = PropertyCommencementId
-      val expectedQuestion = messages.propertyCommencement
-      val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
-      val expectedEditLink = controllers.individual.business.routes.PropertyCommencementDateController.show(editMode = true).url
+      "display the correct info for the accounting method Foreign Property " in {
+        val sectionId = AccountingMethodForeignPropertyId
+        val expectedQuestion = messages.accountingMethodForeignProperty
+        val expectedAnswer = messages.AccountingMethod.cash
+        val expectedEditLink = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
 
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
-      )
-    }
-
-
-    "display the correct info for the Foreign Property Business Commencement" in {
-      val sectionId = ForeignPropertyCommencementId
-      val expectedQuestion = messages.foreignPropertyCommencement
-      val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
-      val expectedEditLink = controllers.individual.business.routes.OverseasPropertyCommencementDateController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
-      )
-    }
-
-    "display the correct info for the accounting method Foreign Property " in {
-      val sectionId = AccountingMethodForeignPropertyId
-      val expectedQuestion = messages.accountingMethodForeignProperty
-      val expectedAnswer = messages.AccountingMethod.cash
-      val expectedEditLink = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
-      )
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
+        )
+      }
     }
   }
 }

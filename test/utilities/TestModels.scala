@@ -58,6 +58,11 @@ object TestModels extends Implicits {
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testAccountingMethodOverseasProperty = OverseasAccountingMethodPropertyModel(Cash)
 
+
+  val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
+  val testPropertyCommencementDateModel: PropertyCommencementDateModel = PropertyCommencementDateModel(testValidStartDate)
+  val testForeignPropertyCommencementDateModel: OverseasPropertyCommencementDateModel = OverseasPropertyCommencementDateModel(testValidStartDate)
+
   val emptyCacheMap = CacheMap("", Map())
 
   lazy val testCacheMap: CacheMap =
@@ -150,7 +155,8 @@ object TestModels extends Implicits {
     incomeSource = Some(testAgentIncomeSourceBoth),
     businessName = Some(testBusinessName),
     accountingMethod = Some(testAccountingMethod),
-    accountingMethodProperty = Some(testAccountingMethodProperty)
+    accountingMethodProperty = Some(testAccountingMethodProperty),
+    propertyCommencementDate = Some(testPropertyCommencementDateModel)
   )
 
   lazy val testAgentSummaryDataBusiness = AgentSummary(
@@ -171,7 +177,4 @@ object TestModels extends Implicits {
     accountingMethodProperty = Some(testAccountingMethodProperty)
   )
 
-  val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
-  val testPropertyCommencementDateModel: PropertyCommencementDateModel = PropertyCommencementDateModel(testValidStartDate)
-  val testForeignPropertyCommencementDateModel: OverseasPropertyCommencementDateModel = OverseasPropertyCommencementDateModel(testValidStartDate)
 }

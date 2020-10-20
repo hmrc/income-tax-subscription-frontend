@@ -30,6 +30,7 @@ import utilities.SubscriptionDataUtil._
 import utilities.agent.TestConstants.{testNino, _}
 import utilities.agent.TestModels
 import utilities.agent.TestModels.testCacheMap
+import utilities.ImplicitDateFormatterImpl
 
 import scala.concurrent.Future
 
@@ -37,6 +38,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockClientRelationshipService
   with MockSubscriptionOrchestrationService {
+
+  implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -47,7 +50,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   object TestCheckYourAnswersController extends CheckYourAnswersController(
     mockAuthService,
     MockSubscriptionDetailsService,
-    mockSubscriptionOrchestrationService
+    mockSubscriptionOrchestrationService,
+    mockImplicitDateFormatter
   )
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {

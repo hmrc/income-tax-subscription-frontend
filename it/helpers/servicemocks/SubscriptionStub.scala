@@ -18,7 +18,7 @@ package helpers.servicemocks
 
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
-import models.individual.business.AccountingPeriodModel
+import models.common.AccountingPeriodModel
 import models.individual.subscription.SubscriptionSuccess
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}

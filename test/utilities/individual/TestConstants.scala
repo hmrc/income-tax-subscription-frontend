@@ -20,7 +20,7 @@ import java.net.URLEncoder
 import java.time.OffsetDateTime
 import java.util.UUID
 import models.common.{AccountingMethodModel, AccountingYearModel, IncomeSourceModel}
-import models.individual.business.{AccountingPeriodModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.individual.business.{BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import models.individual.subscription._
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import models.{Cash, Current, DateModel, IndividualSummary}

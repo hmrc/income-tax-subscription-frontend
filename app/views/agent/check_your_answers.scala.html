@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.individual.business._
 @import models.common._
 @import models.SummaryModel
 @import config.AppConfig
@@ -25,8 +24,10 @@
 @import views.html.templates.main_template
 @import views.agent.helpers.SummaryHelper._
 @import views.agent.helpers.SummaryIdConstants._
+@import utilities.ImplicitDateFormatter
+@import models.common.PropertyCommencementDateModel
 
-@(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summaryModel: SummaryModel, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
     <div class="tabular-data__entry divider--bottom" id="@field-row">
@@ -81,6 +82,15 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
+@propertyCommencementDate(propertyCommencementDateModel: PropertyCommencementDateModel) = @{
+    import implicitDateFormatter.LongDate
+    val rowName = PropertyCommencementDateId
+    val rowQuestion = messages("agent.summary.property_commencement_date")
+    val rowAnswer = propertyCommencementDateModel.startDate.toLocalDate.toLongDate
+    val rowUrl = controllers.agent.business.routes.PropertyCommencementDateController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
 @accountingMethodProperty(income: AccountingMethodPropertyModel) = @{
     val rowName = AccountingMethodPropertyId
     val rowQuestion = messages("agent.summary.income_type_property")
@@ -96,11 +106,15 @@
     <h1 class="heading-large">@Messages("agent.summary.heading") <span class="visuallyhidden">@Messages("agent.summary.heading_hidden")</span></h1>
 
     <div class="form-group">
-        @summaryModel.incomeSource.map(incomeSource)
-        @summaryModel.selectedTaxYear.map(selectedTaxYear)
-        @summaryModel.businessName.map(businessName)
-        @summaryModel.accountingMethod.map(accountingMethod)
-        @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
+
+        <dl class="govuk-summary-list">
+            @summaryModel.incomeSource.map(incomeSource)
+            @summaryModel.selectedTaxYear.map(selectedTaxYear)
+            @summaryModel.businessName.map(businessName)
+            @summaryModel.accountingMethod.map(accountingMethod)
+            @summaryModel.propertyCommencementDate.map(propertyCommencementDate)
+            @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
+        </dl>
 
     </div>
 
