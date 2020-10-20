@@ -18,7 +18,7 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
@@ -67,8 +67,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
                 case IncomeSourceModel(true, _, _) =>
                   Redirect(controllers.agent.business.routes.BusinessNameController.show())
                 case IncomeSourceModel(_, true, _) =>
-                  if (isEnabled(ReleaseFour)) Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
-                  else Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+                  Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
                 case _ =>
                   throw new InternalServerException("User is missing income source type in Subscription Details")
               }

@@ -18,8 +18,6 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.FeatureSwitching
 import controllers.utils.Answers.{incomeSourceModelAnswer, incomeSourceModelAnswerAgent, optPropertyCommencementDateAnswer}
 import controllers.utils.RequireAnswer
 import forms.agent.PropertyCommencementDateForm
@@ -41,7 +39,7 @@ class PropertyCommencementDateController @Inject()(val authService: AuthService,
                                                    val languageUtils: LanguageUtils)
                                                   (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends AuthenticatedController
-                                                   with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
+                                                   with ImplicitDateFormatter with RequireAnswer {
 
   def view(propertyCommencementDateForm: Form[PropertyCommencementDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
@@ -89,9 +87,7 @@ class PropertyCommencementDateController @Inject()(val authService: AuthService,
     if (isEditMode) controllers.agent.routes.CheckYourAnswersController.show().url
     else
       incomeSourceModel match {
-        case IncomeSourceModel(true, _, _) =>
-          if (isEnabled(ReleaseFour)) controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-          else controllers.agent.routes.IncomeSourceController.show().url
+        case IncomeSourceModel(true, false, false) => controllers.agent.business.routes.WhatYearToSignUpController.show().url
         case _ => controllers.agent.routes.IncomeSourceController.show().url
       }
   }

@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
@@ -31,11 +30,6 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    disable(ReleaseFour)
-    super.beforeEach()
-  }
 
   "GET /business/accounting-method" when {
     "the Subscription Details Connector returns all data" should {
@@ -81,139 +75,68 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
   "POST /business/accounting-method" when {
     "the user is in the both flow" when {
       "an option is selected on the accounting method page" should {
-        "FS ReleaseFour is not enabled" should {
-          "redirect the user to the property accounting method page" in {
+        "redirect the user to the property commencement date page" in {
 
-            val userInput = AccountingMethodModel(Cash)
+          val userInput = AccountingMethodModel(Cash)
 
-            val expectedCacheMap = CacheMap("", Map(
-              SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceModel(true, true, false)),
-              SubscriptionDataKeys.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
+          val expectedCacheMap = CacheMap("", Map(
+            SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceModel(true, true, false)),
+            SubscriptionDataKeys.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
 
-            Given("I setup the wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
-            When("POST /business/accounting-method is called")
+          When ("POST /business/accounting-method is called")
 
-            val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
-            Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res should have(
-              httpStatus(SEE_OTHER),
-              redirectURI(propertyAccountingMethodURI)
-            )
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(propertyCommencementDateURI)
+          )
 
-            IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.AccountingMethod, expectedCacheMap, Some(1))
-          }
-        }
-        "FS ReleaseFour is enabled" should {
-          "redirect the user to the property commencement date page" in {
-            enable(ReleaseFour)
-
-            val userInput = AccountingMethodModel(Cash)
-
-            val expectedCacheMap = CacheMap("", Map(
-              SubscriptionDataKeys.IncomeSource -> Json.toJson(IncomeSourceModel(true, true, false)),
-              SubscriptionDataKeys.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
-
-            Given("I setup the wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
-
-            When("POST /business/accounting-method is called")
-
-            val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
-
-            Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res should have(
-              httpStatus(SEE_OTHER),
-              redirectURI(propertyCommencementDateURI)
-            )
-
-            IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.AccountingMethod, expectedCacheMap, Some(1))
-          }
+          IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.AccountingMethod, expectedCacheMap, Some(1))
         }
       }
     }
     "not in edit mode" should {
-      "FS ReleaseFour is not enabled" should {
-        "select the Cash radio button on the accounting method page" in {
-          val userInput = AccountingMethodModel(Cash)
+      "select the Cash radio button on the accounting method page" in {
+        val userInput = AccountingMethodModel(Cash)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
+        When("POST /business/accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(propertyAccountingMethodURI)
-          )
-        }
-
-        "select the Accruals radio button on the accounting method page" in {
-          val userInput = AccountingMethodModel(Accruals)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
-
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(propertyAccountingMethodURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(propertyCommencementDateURI)
+        )
       }
-      "FS ReleaseFour is enabled" should {
-        "select the Cash radio button on the accounting method page" in {
-          enable(ReleaseFour)
-          val userInput = AccountingMethodModel(Cash)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
+      "select the Accruals radio button on the accounting method page" in {
+        val userInput = AccountingMethodModel(Accruals)
 
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
 
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(propertyCommencementDateURI)
-          )
-        }
+        When("POST /business/accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
-        "select the Accruals radio button on the accounting method page" in {
-          enable(ReleaseFour)
-          val userInput = AccountingMethodModel(Accruals)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
-
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(propertyCommencementDateURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(propertyCommencementDateURI)
+        )
       }
     }
 

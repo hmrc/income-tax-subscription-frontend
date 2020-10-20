@@ -106,22 +106,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
       "Rent UK property is checked and self-employed, foreign property are NOT checked" should {
         "Release Four feature switch is disabled" when {
-          "redirect to the Property Accounting Method page" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-
-        "Release Four feature switch is enabled" when {
-          "redirect to the Property Commencement Date page" in {
-            enable(ReleaseFour)
+          "redirect to the PropertyAccounting method page" in {
             setupMockSubscriptionDetailsSaveFunctions()
             val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
 

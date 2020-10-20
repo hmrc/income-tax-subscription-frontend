@@ -18,8 +18,6 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.FeatureSwitching
 import controllers.utils.Answers._
 import controllers.utils.RequireAnswer
 import forms.agent.AccountingMethodForm
@@ -36,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BusinessAccountingMethodController @Inject()(val authService: AuthService, val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                                   appConfig: AppConfig) extends AuthenticatedController with RequireAnswer with FeatureSwitching {
+                                                   appConfig: AppConfig) extends AuthenticatedController with RequireAnswer {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {
     views.html.agent.business.accounting_method(
@@ -72,10 +70,8 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
             subscriptionDetailsService.saveAccountingMethod(accountingMethod) map { _ =>
               if (isEditMode || incomeSourceModel.selfEmployment && !incomeSourceModel.ukProperty && !incomeSourceModel.foreignProperty) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-              } else if (isEnabled(ReleaseFour)) {
-                Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
               } else {
-                Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+                Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
               }
             }
           }

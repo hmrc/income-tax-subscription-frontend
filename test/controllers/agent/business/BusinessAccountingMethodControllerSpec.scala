@@ -16,8 +16,6 @@
 
 package controllers.agent.business
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.FeatureSwitching
 import utilities.agent.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodForm
@@ -29,7 +27,7 @@ import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.AccountingMethod
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching {
+  with MockSubscriptionDetailsService {
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -47,11 +45,6 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
       mockAuthService,
       MockSubscriptionDetailsService
     )
-  }
-
-  override def beforeEach(): Unit = {
-    disable(ReleaseFour)
-    super.beforeEach()
   }
 
   "show" must {
@@ -102,29 +95,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     }
 
     "not in edit mode" should {
-      s"redirect to ${routes.PropertyAccountingMethodController.show().url} when FS ReleaseFour is not enabled" when {
+      s"redirect to ${routes.PropertyCommencementDateController.show().url}" when {
         "the user has both business and property income" in new Test {
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(testCacheMap(
-            incomeSource = Some(IncomeSourceModel(true, true, false))
-          )
-          )
-
-          val result: Result = await(controller.submit(isEditMode = false)(subscriptionRequest.post(
-            AccountingMethodForm.accountingMethodForm, AccountingMethodModel(Cash)
-          )))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.PropertyAccountingMethodController.show().url)
-
-          verifySubscriptionDetailsFetchAll(2)
-          verifySubscriptionDetailsSave(AccountingMethod, 1)
-        }
-      }
-
-      s"redirect to ${routes.PropertyCommencementDateController.show().url} when FS ReleaseFour is enabled" when {
-        "the user has both business and property income" in new Test {
-          enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(
               incomeSource = Some(IncomeSourceModel(true, true, false))
@@ -198,7 +170,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     }
 
     "not in edit mode" should {
-      s"point to ${controllers.agent.business.routes.BusinessNameController.show().url}" in new Test {
+      s"point to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in new Test {
         controller.backUrl(isEditMode = false) mustBe
           controllers.agent.business.routes.BusinessNameController.show().url
       }
