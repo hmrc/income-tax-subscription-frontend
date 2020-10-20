@@ -18,6 +18,8 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.business.PropertyCommencementDateController
@@ -34,7 +36,7 @@ import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourc
 
 import scala.concurrent.Future
 
-class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec with MockSubscriptionDetailsService {
+class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec with MockSubscriptionDetailsService with FeatureSwitching {
 
   override val controllerName: String = "PropertyCommencementDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -54,6 +56,11 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
       MockSubscriptionDetailsService,
       mockLanguageUtils
     )
+  }
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    super.beforeEach()
   }
 
   val incomeSourcePropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true,
@@ -102,7 +109,7 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetchAll( 1)
+        verifySubscriptionDetailsFetchAll(1)
         verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
 
       }
@@ -119,7 +126,7 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
         verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
       }
 
-      }
+    }
 
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
@@ -130,7 +137,7 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetchAll( 1)
+        verifySubscriptionDetailsFetchAll(1)
         verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
 
       }
@@ -143,7 +150,7 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetchAll( 1)
+        verifySubscriptionDetailsFetchAll(1)
         verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
 
 
@@ -160,26 +167,37 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifySubscriptionDetailsFetchAll( 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
 
     "The back url is not in edit mode" when {
       "the user has rental property and it is the only income source" should {
-        "redirect to income source page" in new Test {
+        "redirect to income source page when FS ReleaseFour is not enabled" in new Test {
+          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+            controllers.agent.routes.IncomeSourceController.show().url
+        }
+
+        "redirect to income source page when FS ReleaseFour is enabled" in new Test {
+          enable(ReleaseFour)
           controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
             controllers.agent.routes.IncomeSourceController.show().url
         }
       }
 
       "the user has rental property and has a business" should {
-        "redirect to business accounting method page" in new Test {
+        "redirect to income source page when FS ReleaseFour is not enabled" in new Test {
           controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
             controllers.agent.routes.IncomeSourceController.show().url
         }
+        "redirect to Business Accounting Method page when FS ReleaseFour is enabled" in new Test {
+          enable(ReleaseFour)
+          controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
+            controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        }
       }
-
     }
+
     "The back url is in edit mode" when {
       "the user click back url" should {
         "redirect to check your answer page" in new Test {
