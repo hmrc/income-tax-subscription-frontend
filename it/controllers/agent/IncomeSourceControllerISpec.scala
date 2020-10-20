@@ -113,7 +113,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/income" when {
-    "FS ForeignProperty & ReleaseFour are disabled" when {
+    "FS ForeignProperty is disabled" when {
       "not in edit mode" when {
         "the user is self-employed, doesn't have uk and foreign property " in {
           val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
@@ -164,7 +164,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           Then(s"Should return $SEE_OTHER with a redirect location of property commencement date page")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyAccountingMethodURI)
+            redirectURI(propertyCommencementDateURI)
           )
         }
       }
@@ -184,73 +184,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           Then(s"Should return $SEE_OTHER with a redirect location of property accounting method")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyAccountingMethodURI)
-          )
-        }
-        "the user selects the same answer" in {
-          val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
-
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(userInput)))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
-
-          When("POST /income is called")
-          val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
-
-          Then(s"Should return $SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
-      }
-    }
-
-    "ReleaseFour is enabled" when {
-      "not in edit mode" when {
-        "the user rents a uk property, is not self-employed and doesn't have foreign property" in {
-          enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
-
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
-
-          When("POST /income is called")
-          val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
-
-          Then(s"Should return $SEE_OTHER with a redirect location of property commencement date page")
-          res should have(
-            httpStatus(SEE_OTHER),
             redirectURI(propertyCommencementDateURI)
           )
         }
-      }
-
-      "in edit mode" when {
-        "the user selects a different answer" in {
-          enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
-
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, true, false))))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
-
-          When("POST /income is called")
-          val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
-
-          Then(s"Should return $SEE_OTHER with a redirect location of property accounting method")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(propertyCommencementDateURI)
-          )
-        }
-
         "the user selects the same answer" in {
-          enable(ReleaseFour)
           val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
           Given("I setup the wiremock stubs")
