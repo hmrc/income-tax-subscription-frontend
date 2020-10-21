@@ -327,6 +327,9 @@ error.accounting-method-property.invalid                        = Select how you
 error.overseas_property_accounting_method.invalid               = Select if you use cash accounting or standard accounting
 error.overseas_property_accounting_method.empty                 = Select if you use cash accounting or standard accounting
 
+#Agent Overseas Property accounting method errors
+error.agent.overseas_property_accounting_method.empty           = Select if your client uses cash or standard accounting
+
 error.user_details.first_name.empty                             = Enter your first name
 error.user_details.last_name.empty                              = Enter your last name
 error.user_details.first_name.invalid                           = Enter a valid first name
