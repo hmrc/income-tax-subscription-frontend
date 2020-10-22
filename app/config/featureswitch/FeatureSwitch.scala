@@ -26,7 +26,8 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch]  = Set(
     ReleaseFour,
-    ForeignProperty
+    ForeignProperty,
+    PropertyNextTaxYear
   )
 
   def apply(str: String): FeatureSwitch =
@@ -45,5 +46,10 @@ object FeatureSwitch {
   case object ForeignProperty extends FeatureSwitch {
     override val name = s"$prefix.enable-foreign-property"
     override val displayText = "Foreign property"
+  }
+
+  case object PropertyNextTaxYear extends FeatureSwitch {
+    override val name = s"$prefix.enable-property-next-tax-year"
+    override val displayText = "Property Next Tax Year"
   }
 }
