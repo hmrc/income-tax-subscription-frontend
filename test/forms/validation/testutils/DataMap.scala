@@ -16,6 +16,7 @@
 
 package forms.validation.testutils
 
+import forms.agent.AccountingMethodOverseasPropertyForm
 import forms.individual.business.BusinessNameForm._
 import forms.individual.business.{AccountingMethodForm, AccountingYearForm}
 import forms.submapping.DateMapping._
@@ -40,6 +41,8 @@ object DataMap {
     def busName(name: String): DataMap = Map(businessName -> name)
 
     def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
+
+    def overseasPropertyAccountingMethod(iType: String): DataMap = Map(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty -> iType)
 
     def accountingYear(iType: String): DataMap = Map(AccountingYearForm.accountingYear -> iType)
 

@@ -337,6 +337,9 @@ error.accounting-method-property.invalid                        = Dewiswch sut r
 error.overseas_property_accounting_method.invalid               = Dewiswch os ydych yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
 error.overseas_property_accounting_method.empty                 = Dewiswch os ydych yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
 
+#Agent Overseas Property accounting method errors
+error.agent.overseas_property_accounting_method.empty           = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
+
 error.user_details.first_name.empty                             = Nodwch eich enw cyntaf
 error.user_details.last_name.empty                              = Nodwch eich enw olaf
 error.user_details.first_name.invalid                           = Nodwch enw cyntaf dilys
