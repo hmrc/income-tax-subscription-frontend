@@ -592,6 +592,10 @@ agent.property.accounting_method.title                          = What accountin
 agent.property.accounting_method.radio.cash                     = Cash accounting
 agent.property.accounting_method.radio.accruals                 = Standard accounting
 
+# Agent Overseas Property Accounting Method Page
+agent.overseas.property.accounting_method.title                 = What accounting method does your client use for their foreign property business?
+agent.overseas.property.accounting_method.radio.cash            = Cash accounting
+agent.overseas.property.accounting_method.radio.accruals        = Standard accounting
 
 ## Business Name
 agent.business.name.title                                       = Business name
