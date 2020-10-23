@@ -44,7 +44,8 @@ class SessionTimeoutControllerSpec extends ControllerBaseSpec {
     }
 
     s"have the title '${MessageLookup.Timeout.title}'" in {
-      document.title() must be(MessageLookup.Timeout.title)
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title() must be(MessageLookup.Timeout.title + serviceNameGovUk)
     }
   }
 }

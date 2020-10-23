@@ -34,7 +34,8 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
   "The Already Enrolled view" should {
 
     s"have the title '${MessageLookup.AlreadyEnrolled.title}'" in {
-      document.title() must be(MessageLookup.AlreadyEnrolled.title)
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title() must be(MessageLookup.AlreadyEnrolled.title + serviceNameGovUk )
     }
 
           s"has a heading (H1)" which {

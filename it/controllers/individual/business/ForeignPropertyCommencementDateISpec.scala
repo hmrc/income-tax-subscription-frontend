@@ -25,11 +25,11 @@ class ForeignPropertyCommencementDateISpec extends ComponentSpecBase {
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyCommencementDate()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the foreign property commencement page with populated commencement date")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("foreign.property.name.title")),
+          pageTitle(messages("foreign.property.name.title") + serviceNameGovUk),
           dateField("startDate", testPropertyCommencementDate.startDate)
         )
       }
@@ -45,11 +45,11 @@ class ForeignPropertyCommencementDateISpec extends ComponentSpecBase {
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyCommencementDate()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the foreign property commencement date page with no commencement date")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("foreign.property.name.title"))
+          pageTitle(messages("foreign.property.name.title") + serviceNameGovUk)
         )
       }
     }

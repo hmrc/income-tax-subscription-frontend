@@ -46,7 +46,8 @@ object SoleTraderPageMessages {
     }
 
     "have a view with the correct title" in new GetSetup {
-      doc.title shouldBe s"${SoleTraderPageMessages.heading(date)}"
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      doc.title shouldBe s"${SoleTraderPageMessages.heading(date)}" + serviceNameGovUk
     }
 
     "have a view with a back link" in new GetSetup {

@@ -50,7 +50,8 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct title" in new GetSetup {
-      doc.title shouldBe OtherSourcesOfIncomeMessages.title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      doc.title shouldBe OtherSourcesOfIncomeMessages.title + serviceNameGovUk
     }
 
     "have a view with a back link" in new GetSetup {

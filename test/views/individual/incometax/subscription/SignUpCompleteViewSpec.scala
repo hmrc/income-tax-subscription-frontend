@@ -51,10 +51,13 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
 
   def documentNextTaxYear: Document = Jsoup.parse(page(incomeSourceBusinessNextTaxYear).body)
 
+  val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+
   "The Sign up confirmation page" should {
 
     s"have the title '${MessageLookup.SignUpComplete.title}'" in {
-      documentCurrentTaxYear.title() must be(MessageLookup.SignUpComplete.title)
+      documentCurrentTaxYear.title() must be(MessageLookup.SignUpComplete.title + serviceNameGovUk
+      )
     }
 
     "have a successful transaction confirmation banner" which {

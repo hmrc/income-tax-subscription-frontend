@@ -48,11 +48,11 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
 
         val expectedText = removeHtmlMarkup(messages("agent.business.accounting_method.cash"))
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the accounting method page")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("agent.business.accounting_method.title")),
+          pageTitle(messages("agent.business.accounting_method.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingMethod", selectedRadioButton = Some(expectedText))
         )
       }
@@ -67,11 +67,11 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           When ("GET /business/accounting-method is called")
 
           val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
-
+          val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
           Then("Should return a OK with the accounting method page")
           res should have(
             httpStatus(OK),
-            pageTitle(messages("agent.business.accounting_method.title")),
+            pageTitle(messages("agent.business.accounting_method.title") + serviceNameGovUk),
             radioButtonSet(id = "accountingMethod", selectedRadioButton = None)
           )
       }

@@ -45,7 +45,8 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
 
-      document.title mustBe messages.heading
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title mustBe messages.heading + serviceNameGovUk
 
       document.select("#sign-out-button").attr("href") mustBe
         controllers.SignOutController.signOut(subscriptionRequest.path).url

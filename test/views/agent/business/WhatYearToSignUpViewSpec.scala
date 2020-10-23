@@ -47,7 +47,8 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
 
   "what year to sign up" must {
     "have a title" in new Setup {
-      document.title mustBe MessageLookup.Business.WhatYearToSignUp.heading
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title mustBe MessageLookup.Business.WhatYearToSignUp.heading + serviceNameGovUk
     }
 
     "have a heading" in new Setup {

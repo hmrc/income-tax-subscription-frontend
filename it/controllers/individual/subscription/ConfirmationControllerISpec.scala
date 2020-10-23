@@ -38,11 +38,11 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
       When("GET /confirmation is called")
       val res = IncomeTaxSubscriptionFrontend.confirmation()
-
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
       Then("Should return a OK with the confirmation page")
       res should have(
         httpStatus(OK),
-        pageTitle(messages("sign-up-complete.title"))
+        pageTitle(messages("sign-up-complete.title") + serviceNameGovUk)
       )
     }
 

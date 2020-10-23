@@ -32,11 +32,11 @@ class ClientDetailsLockoutControllerISpec extends ComponentSpecBase {
 
         When("I call GET /error/lockout")
         val res = IncomeTaxSubscriptionFrontend.showClientDetailsLockout()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("The result should have a status of OK")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("agent.client-details-lockout.title"))
+          pageTitle(messages("agent.client-details-lockout.title") + serviceNameGovUk)
         )
       }
     }

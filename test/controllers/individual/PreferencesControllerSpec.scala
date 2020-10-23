@@ -106,7 +106,8 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     }
 
     "render the Contact Email address view" in {
-      document.title() mustBe Messages("preferences_callback.title")
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title() mustBe Messages("preferences_callback.title") + serviceNameGovUk
     }
   }
 

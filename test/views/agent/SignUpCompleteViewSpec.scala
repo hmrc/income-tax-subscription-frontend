@@ -39,7 +39,8 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
   "The Sign Up Complete view" should {
 
     s"have the title '${MessageLookup.SignUpComplete.title}'" in {
-      document.title() must be(MessageLookup.SignUpComplete.title)
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title() must be(MessageLookup.SignUpComplete.title + serviceNameGovUk)
     }
 
     "have a successful transaction confirmation banner" which {
@@ -51,7 +52,6 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
       s"has a heading (H1)" which {
 
         lazy val heading = document.select("H1")
-
         s"has the text '${MessageLookup.SignUpComplete.heading}'" in {
           heading.text() mustBe MessageLookup.SignUpComplete.heading
         }

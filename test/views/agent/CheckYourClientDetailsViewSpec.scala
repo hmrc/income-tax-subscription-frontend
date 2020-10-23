@@ -77,7 +77,8 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
     }
 
     s"have the title '${messages.title}'" in {
-      document().title() mustBe messages.title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document().title() mustBe messages.title + serviceNameGovUk
     }
 
     s"have the heading (H1) '${messages.heading}'" in {

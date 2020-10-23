@@ -45,7 +45,8 @@ class NotEnrolledAgentServicesControllerSpec extends AgentControllerBaseSpec {
     }
 
     "render the 'Not subscribed to Agent Services page'" in {
-      document.title mustBe messages.title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title mustBe messages.title + serviceNameGovUk
     }
 
   }

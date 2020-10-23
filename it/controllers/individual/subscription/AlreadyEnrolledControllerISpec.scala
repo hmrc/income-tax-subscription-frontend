@@ -31,11 +31,11 @@ class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
 
         When("GET /already-enrolled is called")
         val res = IncomeTaxSubscriptionFrontend.alreadyEnrolled()
-
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the already enrolled page")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("already-enrolled.title"))
+          pageTitle(messages("already-enrolled.title") + serviceNameGovUk)
         )
       }
     }

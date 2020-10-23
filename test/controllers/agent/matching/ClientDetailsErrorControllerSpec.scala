@@ -51,7 +51,8 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec {
     }
 
     "render the 'Client Details Error page'" in {
-      document.title mustBe messages.title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title mustBe messages.title + serviceNameGovUk
     }
 
     s"the page must have a link to sign out}" in {

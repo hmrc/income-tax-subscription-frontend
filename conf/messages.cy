@@ -20,7 +20,7 @@ base.no                                                         = Na
 base.go_back                                                    = Ewch yn ôl
 base.userResearch.title                                         = Helpu i wella ein gwasanaeth
 base.userResearch.link                                          = Atebwch ychydig o gwestiynau am eich hunan er mwyn ymuno â’r panel ymchwil
-base.title.error                                                = Gwall: {0}
+
 ## base.userResearch.text                                       = Mae’r cysylltiad hwn yn agor tab newydd. Sylwer - nid yw’r gwasanaeth hwn ar gael yn Gymraeg.
 base.dismissBanner                                              = Dim diolch
 base.dismissBanner.screenReader                                 = Dydw i ddim eisiau ateb cwestiynau ynglŷn ag ymuno â’r panel ymchwil
@@ -797,6 +797,7 @@ agent.covid_cannot_sign_up.button                               = Cofrestru clei
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
 
+
 # Agent Overseas Property Commencement Date Page errors
 agent.overseas.property.error.date.empty                        = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
 agent.overseas.property.error.month.year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
@@ -806,3 +807,8 @@ agent.overseas.property.error.year.empty                        = Mae’n rhaid 
 agent.overseas.property.error.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 agent.overseas.property.error.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
 agent.overseas.property.error.accounting_period.minStartDate    = Mae’n rhaid i ddyddiad busnes eiddo tramor eich cleient fod ar neu cyn {0}
+
+## Title pattern
+titlePattern.serviceName.govUk = {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
+base.title.error               = Gwall: {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
+

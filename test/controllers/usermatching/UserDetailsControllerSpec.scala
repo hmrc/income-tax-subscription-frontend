@@ -81,7 +81,8 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
       charset(result) must be(Some("utf-8"))
 
       val document = Jsoup.parse(contentAsString(result))
-      document.title mustBe messages.title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title mustBe messages.title + serviceNameGovUk
     }
   }
 
@@ -197,7 +198,8 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
           val badResult = callSubmit(isEditMode = editMode)
           val document = Jsoup.parse(contentAsString(badResult))
-          document.title mustBe "Error: " + messages.title
+          val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+          document.title mustBe "Error: " + messages.title + serviceNameGovUk
         }
 
       }

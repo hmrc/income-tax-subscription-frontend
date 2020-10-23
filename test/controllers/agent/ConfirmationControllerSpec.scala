@@ -68,9 +68,10 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")
         )
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         status(result) shouldBe OK
 
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title")
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title") + serviceNameGovUk
       }
     }
 

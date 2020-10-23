@@ -434,7 +434,8 @@ trait ViewSpecTrait extends UnitTestTrait {
     }
 
     s"$name must have the title '$title'" in {
-      document.title() mustBe title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      document.title() mustBe title + serviceNameGovUk
     }
 
     s"$name must have the heading (H1) '$heading'" in {

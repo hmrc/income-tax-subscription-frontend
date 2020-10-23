@@ -50,7 +50,8 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
         }
 
         "have a view with the correct title" in new Setup {
-          doc.title shouldBe NoClientRelationshipMessages.title
+          val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+          doc.title shouldBe NoClientRelationshipMessages.title + serviceNameGovUk
         }
 
         "have a view with the correct heading" in new Setup {

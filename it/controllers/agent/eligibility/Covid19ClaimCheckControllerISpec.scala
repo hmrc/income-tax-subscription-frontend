@@ -43,7 +43,8 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct title" in new GetSetup {
-      doc.title shouldBe Covid19ClaimCheckMessages.title
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      doc.title shouldBe Covid19ClaimCheckMessages.title + serviceNameGovUk
     }
 
     "have a view with the correct heading" in new GetSetup {
