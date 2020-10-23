@@ -60,8 +60,8 @@ class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
         emptyTest0.hasErrors shouldBe true
       }
 
-      "show an error when the both values are not checked" in {
-        val bothFalseData = DataMap.individualIncomeSource("false", "false")
+      "show an error when the all values are not checked" in {
+        val bothFalseData = DataMap.incomeSource("false", "false", "false")
         val bothFalseActualResponse = incomeSourceForm.bind(bothFalseData)
         bothFalseActualResponse.hasErrors shouldBe true
         bothFalseActualResponse.errors.size shouldBe 1
@@ -69,10 +69,20 @@ class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
       }
     }
     "The following submission should be valid" in {
-      val testBothTrue = DataMap.individualIncomeSource("true","true")
-      incomeSourceForm isValidFor testBothTrue
-      val testsOneTrue = DataMap.individualIncomeSource("false", "true")
-      incomeSourceForm isValidFor testsOneTrue
+      val testAllTrue = DataMap.incomeSource("true","true", "true")
+      incomeSourceForm isValidFor testAllTrue
+      val testsPropFPropTrue = DataMap.incomeSource("false", "true", "true")
+      incomeSourceForm isValidFor testsPropFPropTrue
+      val testsBusFPropTrue = DataMap.incomeSource("true", "false", "true")
+      incomeSourceForm isValidFor testsBusFPropTrue
+      val testsBusPropTrue = DataMap.incomeSource("true", "true", "false")
+      incomeSourceForm isValidFor testsBusPropTrue
+      val testsBusTrue = DataMap.incomeSource("true", "false", "false")
+      incomeSourceForm isValidFor testsBusTrue
+      val testsPropTrue = DataMap.incomeSource("false", "true", "false")
+      incomeSourceForm isValidFor testsPropTrue
+      val testsFPropTrue = DataMap.incomeSource("false", "false", "true")
+      incomeSourceForm isValidFor testsFPropTrue
     }
 
   }

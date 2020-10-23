@@ -552,7 +552,7 @@ agent.income_source.heading                                     = How does your 
 agent.income_source.checkbox.hint                               = Select all that apply
 agent.income_source.selfEmployed                                = Self-employed
 agent.income_source.rentUkProperty                              = Rent out a property in the UK
-agent.income_source.foreignProperty                             = Rent out a foreign property outside the UK
+agent.income_source.foreignProperty                             = Rent out foreign properties
 agent.error.income_source.invalid                               = Select if your client receives income from self employment or UK property
 agent.error.income_source_foreignProperty.invalid               = Select if your client receives income from self employment, UK property or foreign property
 

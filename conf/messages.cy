@@ -562,7 +562,7 @@ agent.income_source.heading                                     = Sut mae’ch c
 agent.income_source.checkbox.hint                               = Dewiswch bob un sy’n gymwys
 agent.income_source.selfEmployed                                = Hunangyflogedig
 agent.income_source.rentUkProperty                              = Rhoi eiddo ar osod yn y DU
-agent.income_source.foreignProperty                             = Rhoi eiddo tramor ar osod y tu allan i’r DU
+agent.income_source.foreignProperty                             = Rhoi eiddo tramor ar osod
 agent.error.income_source.invalid                               = Dewiswch a yw'ch cleient yn cael incwm ohono eiddo hunangyflogedig neu eiddo'r DU
 agent.error.income_source_foreignProperty.invalid               = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
 
