@@ -90,7 +90,7 @@ object TestModels extends Implicits {
 
   lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
-  lazy val testIncomeSourceUkProperty: IncomeSourceModel = IncomeSourceModel(false, false, true)
+  lazy val testIncomeSourceOverseasProperty: IncomeSourceModel = IncomeSourceModel(false, false, true)
 
   lazy val testIncomeSourceBusinessAndUkProperty: IncomeSourceModel = IncomeSourceModel(true, true, false)
 

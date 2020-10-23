@@ -282,6 +282,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def propertyAccountingMethod(): WSResponse = get("/business/accounting-method-property")
 
+    def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
+
     def businessName(): WSResponse = get("/business/name")
 
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
@@ -337,6 +339,16 @@ trait ComponentSpecBase extends UnitSpec
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[OverseasAccountingMethodPropertyModel]): WSResponse = {
+      val uri = s"/business/overseas-property-accounting-method?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
