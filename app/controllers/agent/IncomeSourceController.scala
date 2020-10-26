@@ -78,8 +78,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
             linearJourney
           } else {
             subscriptionDetailsService.fetchIncomeSource() flatMap {
-              case Some(`incomeSource`) =>
-                Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.submit()))
+              case Some(`incomeSource`) => Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.submit()))
               case _ => linearJourney
             }
           }

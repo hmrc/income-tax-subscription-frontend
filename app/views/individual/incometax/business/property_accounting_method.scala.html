@@ -28,11 +28,14 @@
 @(accountingMethodForm: Form[AccountingMethodPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
-    messages("property.accounting_method.heading")
+messages("property.accounting_method.heading")
 }
 
-@main_template(title = messages("property.accounting_method.title"), form = accountingMethodForm) {
+@scripts = {
+<link rel="stylesheet" href=@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")>
+}
 
+@main_template(title = messages("property.accounting_method.title"), form = accountingMethodForm, scriptElem = Some(scripts)) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodForm)
@@ -60,27 +63,18 @@
             field = accountingMethodForm(AccountingMethodPropertyForm.accountingMethodProperty),
             legend = question,
             options = Seq(
-                RadioOption(
-                    AccountingMethodMapping.option_cash, {
-                        <div class="bold">{messages("property.accounting_method.radio.cash")}</div>
-                        <div>{messages("property.accounting_method.radio.cash.detail")}</div>
-                    }.mkString
-                ),
-                RadioOption(
-                    AccountingMethodMapping.option_accruals, {
-                        <div class="bold">{messages("property.accounting_method.radio.accruals")}</div>
-                        <div>{messages("property.accounting_method.radio.accruals.detail")}</div>
-                    }.mkString
-                )
+                RadioOption(AccountingMethodMapping.option_cash, Messages("property.accounting_method.cash")),
+                RadioOption(AccountingMethodMapping.option_accruals, Messages("property.accounting_method.accruals"))
             ),
             parentForm = accountingMethodForm
         )
 
         @if(isEditMode) {
-            @continueButton(messages("base.update"))
+            @continueButton(Messages("base.update"))
         } else {
             @continueButton()
         }
     }
+
 
 }

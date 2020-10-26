@@ -25,13 +25,13 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         When("GET /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
 
-        val expected = s"${messages("overseas.property.accounting_method.radio.cash")} ${messages("overseas.property.accounting_method.radio.cash.detail")}"
+        val expectedText = removeHtmlMarkup(messages("overseas.property.accounting_method.cash"))
         val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         Then("Should return a OK with the foreign property accounting method page")
         res should have(
           httpStatus(OK),
           pageTitle(messages("overseas.property.accounting_method.title") + serviceNameGovUk),
-          radioButtonSet(id = "accountingMethodOverseasProperty", selectedRadioButton = Some(expected))
+          radioButtonSet(id = "accountingMethodOverseasProperty", selectedRadioButton = Some(expectedText))
         )
       }
     }

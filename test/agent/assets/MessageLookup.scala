@@ -81,7 +81,7 @@ object MessageLookup {
     val heading: String = title
     val business = "Self-employed"
     val ukProperty = "Rent out a property in the UK"
-    val foreignProperty = "Rent out foreign properties"
+    val foreignProperty = "Rent out a foreign property outside the UK"
     val errorHeading = "There’s a problem"
     val errorSummary = "Select if your client receives income from self employment or UK property"
     val errorSummaryForeignProperty = "Select if your client receives income from self employment, UK property or foreign property"

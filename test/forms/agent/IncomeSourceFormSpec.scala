@@ -21,10 +21,10 @@ import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.common.IncomeSourceModel
 import org.scalatest.Matchers._
-import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
 
-class IncomeSourceFormSpec extends PlaySpec {
+class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
 
   "The IncomeSource Form" should {
     "transform the request to the form case class when both checked values are bound to income source" in {
@@ -52,7 +52,7 @@ class IncomeSourceFormSpec extends PlaySpec {
       actual shouldBe Some(expected)
     }
 
-    "transform the request to the form case class when when only foreign property is checked" in {
+     "transform the request to the form case class when when only foreign property is checked" in {
       val testInput = Map(business -> "false", ukProperty -> "false", foreignProperty -> "true")
       val expected = IncomeSourceModel(false, false, true)
       val actual = incomeSourceForm.bind(testInput).value
@@ -61,8 +61,7 @@ class IncomeSourceFormSpec extends PlaySpec {
     }
 
     "validate income source with incorrect data" when {
-
-      val invalidAgentIncomeSourceMessage = "agent.error.income_source.invalid"
+      val agentIncomeSourceMessage = "agent.error.income_source.invalid"
 
       "show an error when the map is empty" in {
         val emptyInput0 = DataMap.EmptyMap
@@ -70,31 +69,20 @@ class IncomeSourceFormSpec extends PlaySpec {
         emptyTest0.hasErrors shouldBe true
       }
 
-      "show an error when the all values are not checked" in {
-        val allFalseData = DataMap.incomeSource("false", "false", "false")
-        val allFalseActualResponse = incomeSourceForm.bind(allFalseData)
-        allFalseActualResponse.hasErrors shouldBe true
-        allFalseActualResponse.errors.size shouldBe 1
-        allFalseActualResponse.errors.head.message shouldBe invalidAgentIncomeSourceMessage
-
+      "show an error when the both values are not checked" in {
+        val bothFalseData = DataMap.IncomeSource("false", "false")
+        val bothFalseActualResponse = incomeSourceForm.bind(bothFalseData)
+        bothFalseActualResponse.hasErrors shouldBe true
+        bothFalseActualResponse.errors.size shouldBe 1
+        bothFalseActualResponse.errors.head.message shouldBe agentIncomeSourceMessage
       }
-      "The following submission should be valid" in {
-        val testAllTrue = DataMap.incomeSource("true", "true", "true")
-        incomeSourceForm isValidFor testAllTrue
-        val testsPropFPropTrue = DataMap.incomeSource("false", "true", "true")
-        incomeSourceForm isValidFor testsPropFPropTrue
-        val testsBusFPropTrue = DataMap.incomeSource("true", "false", "true")
-        incomeSourceForm isValidFor testsBusFPropTrue
-        val testsBusPropTrue = DataMap.incomeSource("true", "true", "false")
-        incomeSourceForm isValidFor testsBusPropTrue
-        val testsBusTrue = DataMap.incomeSource("true", "false", "false")
-        incomeSourceForm isValidFor testsBusTrue
-        val testsPropTrue = DataMap.incomeSource("false", "true", "false")
-        incomeSourceForm isValidFor testsPropTrue
-        val testsFPropTrue = DataMap.incomeSource("false", "false", "true")
-        incomeSourceForm isValidFor testsFPropTrue
-      }
-
     }
+    "The following submission should be valid" in {
+      val testBothTrue = DataMap.individualIncomeSource("true", "true")
+      incomeSourceForm isValidFor testBothTrue
+      val testsOneTrue = DataMap.individualIncomeSource("false", "true")
+      incomeSourceForm isValidFor testsOneTrue
+    }
+
   }
 }
