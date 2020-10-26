@@ -48,7 +48,7 @@ trait CustomMatchers {
                 "no checkbox is selected"
               case 1 =>
                 val idForSelectedCheckbox = selected.attr("id")
-                s"""The "${textForSelectedCheckbox(idForSelectedCheckbox)}" selected"""
+                s"${textForSelectedCheckbox(idForSelectedCheckbox)}"
               case _ =>
                 s"multiple checkbox are selected: [$checkboxes]"
             }

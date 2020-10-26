@@ -46,14 +46,10 @@ object DataMap {
 
     def accountingYear(iType: String): DataMap = Map(AccountingYearForm.accountingYear -> iType)
 
-    def IncomeSource(business: String, ukProperty: String): DataMap =
+    def incomeSource(business: String, ukProperty: String, foreignProperty: String): DataMap =
       Map(forms.agent.IncomeSourceForm.business -> business,
-        forms.agent.IncomeSourceForm.ukProperty -> ukProperty)
-
-    def individualIncomeSource(business: String, ukProperty: String): DataMap =
-      Map(forms.individual.incomesource.IncomeSourceForm.business -> business,
-        forms.individual.incomesource.IncomeSourceForm.ukProperty -> ukProperty)
-
+        forms.agent.IncomeSourceForm.ukProperty -> ukProperty,
+      forms.agent.IncomeSourceForm.foreignProperty -> foreignProperty)
 
     val alwaysFailInvalid: Invalid = Invalid("always fail")
 

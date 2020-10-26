@@ -120,7 +120,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
                     testSummaryModel: AgentSummary = testSummary)(
       setupData: AgentSummary = testAgentSummaryData): Unit = {
-      println(document(setupData).toString)
       val question = document(setupData).getElementById(questionId(sectionId))
       val answer = document(setupData).getElementById(answerId(sectionId))
       val editLink = document(setupData).getElementById(editLinkId(sectionId))
