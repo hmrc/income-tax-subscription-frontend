@@ -803,4 +803,3 @@ agent.overseas.property.error.accounting_period.minStartDate    = The date the f
 ## Title pattern
 titlePattern.serviceName.govUk = {0} - Report your income and expenses quarterly - GOV.UK
 base.title.error               = Error: {0} - Report your income and expenses quarterly - GOV.UK
-
