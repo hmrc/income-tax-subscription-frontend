@@ -114,6 +114,7 @@ object MessageLookup {
 
 
       def option1ConditionalExample1: String = "You or your client will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You or your client need to send a quarterly update for:"
+
       def option1ConditionalExample2(year: String): String = s"You or your client need to send a final declaration by the 31 January $year."
 
       def option2ConditionalExample1: String = "You or your client need to send a quarterly update for:"
@@ -138,7 +139,8 @@ object MessageLookup {
   object AccountingPeriod {
     val title = "What accounting period are you signing your client up for?"
     val heading = "What accounting period are you signing your client up for?"
-    def line1(year: Int) = s"For example, if your accounting period is 1 August ${year-1} to 31 July $year, you will be signing up for the $year to ${year+1} tax year."
+
+    def line1(year: Int) = s"For example, if your accounting period is 1 August ${year - 1} to 31 July $year, you will be signing up for the $year to ${year + 1} tax year."
 
     def exampleStartDate(year: Int): String = s"For example, 1 4 ${year.toString}"
 
@@ -171,6 +173,13 @@ object MessageLookup {
     val accruals = "Standard accounting"
   }
 
+  object OverseasPropertyAccountingMethod {
+    val title = "What accounting method does your client use for their foreign property business?"
+    val heading = title
+    val cash = "Cash accounting"
+    val accruals = "Standard accounting"
+  }
+
   object Summary {
     val title = "Check your answers"
     val heading: String = title
@@ -189,6 +198,7 @@ object MessageLookup {
     val selected_tax_year = "Year signed-up for"
 
     def option1(taxYearStart: String, taxYearEnd: String) = s"Current tax year ($taxYearStart to $taxYearEnd)"
+
     def option2(taxYearStart: String, taxYearEnd: String) = s"Next tax year ($taxYearStart to $taxYearEnd)"
 
     val income_type = "Accounting method for their self-employed business"

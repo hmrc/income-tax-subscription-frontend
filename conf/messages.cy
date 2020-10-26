@@ -600,6 +600,11 @@ agent.property.accounting_method.title                          = Pa ddull cyfri
 agent.property.accounting_method.radio.cash                     = Cyfrifyddu arian parod
 agent.property.accounting_method.radio.accruals                 = Cyfrifyddu safonol
 
+# Agent Overseas Property Accounting Method Page
+agent.overseas.property.accounting_method.title                 = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
+agent.overseas.property.accounting_method.radio.cash            = Cyfrifyddu arian parod
+agent.overseas.property.accounting_method.radio.accruals        = Cyfrifyddu safonol
+
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
 agent.business.name.heading                                     = Beth yw enw busnes eich cleient?
