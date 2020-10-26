@@ -31,7 +31,11 @@
     messages("overseas.property.accounting_method.heading")
 }
 
-@main_template(title = messages("overseas.property.accounting_method.title"), form = overseasPropertyAccountingMethodForm) {
+@scripts = {
+<link rel="stylesheet" href=@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")>
+}
+
+@main_template(title = messages("overseas.property.accounting_method.title"), form = overseasPropertyAccountingMethodForm, scriptElem = Some(scripts))  {
 
     @back_link(backUrl)
 
@@ -60,18 +64,8 @@
             field = overseasPropertyAccountingMethodForm(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty),
             legend = question,
             options = Seq(
-                RadioOption(
-                    AccountingMethodMapping.option_cash, {
-                            <div class="bold">{messages("overseas.property.accounting_method.radio.cash")}</div>
-                            <div>{messages("overseas.property.accounting_method.radio.cash.detail")}</div>
-                    }.mkString
-                ),
-                RadioOption(
-                    AccountingMethodMapping.option_accruals, {
-                            <div class="bold">{messages("overseas.property.accounting_method.radio.standard")}</div>
-                            <div>{messages("overseas.property.accounting_method.radio.standard.detail")}</div>
-                    }.mkString
-                )
+                RadioOption(AccountingMethodMapping.option_cash, Messages("overseas.property.accounting_method.cash")),
+                RadioOption(AccountingMethodMapping.option_accruals, Messages("overseas.property.accounting_method.standard"))
             ),
             parentForm = overseasPropertyAccountingMethodForm
         )
