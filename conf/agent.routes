@@ -79,25 +79,29 @@ GET         /error/covid-cannot-sign-up             controllers.agent.eligibilit
 ######################### Business Routes
 
 #What Tax Year To Sign Up Routes
-GET         /business/what-year-to-sign-up                   controllers.agent.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
-POST        /business/what-year-to-sign-up                   controllers.agent.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
+GET         /business/what-year-to-sign-up                      controllers.agent.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
+POST        /business/what-year-to-sign-up                      controllers.agent.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 #Name Routes
-GET         /business/name                                   controllers.agent.business.BusinessNameController.show(editMode: Boolean ?= false)
-POST        /business/name                                   controllers.agent.business.BusinessNameController.submit(editMode: Boolean ?= false)
+GET         /business/name                                      controllers.agent.business.BusinessNameController.show(editMode: Boolean ?= false)
+POST        /business/name                                      controllers.agent.business.BusinessNameController.submit(editMode: Boolean ?= false)
 
 #Business Income Type Routes
-GET         /business/accounting-method                      controllers.agent.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/accounting-method                      controllers.agent.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /business/accounting-method                         controllers.agent.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/accounting-method                         controllers.agent.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Property Income Type Routes
-GET         /business/accounting-method-property             controllers.agent.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/accounting-method-property             controllers.agent.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /business/accounting-method-property                controllers.agent.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/accounting-method-property                controllers.agent.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Property Commencement Date Routes
-GET         /business/property-commencement-date             controllers.agent.business.PropertyCommencementDateController.show(editMode: Boolean ?= false)
-POST        /business/property-commencement-date             controllers.agent.business.PropertyCommencementDateController.submit(editMode: Boolean ?= false)
+GET         /business/property-commencement-date                controllers.agent.business.PropertyCommencementDateController.show(editMode: Boolean ?= false)
+POST        /business/property-commencement-date                controllers.agent.business.PropertyCommencementDateController.submit(editMode: Boolean ?= false)
 
 #Overseas Property Commencement Date Routes
-GET         /business/overseas-commencement-date            controllers.agent.business.OverseasPropertyCommencementDateController.show(editMode: Boolean ?= false)
-POST        /business/overseas-commencement-date            controllers.agent.business.OverseasPropertyCommencementDateController.submit(editMode: Boolean ?= false)
+GET         /business/overseas-commencement-date                controllers.agent.business.OverseasPropertyCommencementDateController.show(editMode: Boolean ?= false)
+POST        /business/overseas-commencement-date                controllers.agent.business.OverseasPropertyCommencementDateController.submit(editMode: Boolean ?= false)
+
+#Foreign Property Accounting Method Routes
+GET         /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)

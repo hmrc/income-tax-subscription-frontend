@@ -24,6 +24,7 @@ object IntegrationTestModels {
   val testBusinessName = BusinessNameModel("test business")
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testPropertyAccountingMethod = AccountingMethodPropertyModel(Cash)
+  val testOverseasAccountingMethod = OverseasAccountingMethodPropertyModel(Cash)
 
 
   val fullSubscriptionData: Map[String, JsValue] =
@@ -32,7 +33,8 @@ object IntegrationTestModels {
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
-      accountingMethodProperty = Some(testPropertyAccountingMethod)
+      accountingMethodProperty = Some(testPropertyAccountingMethod),
+      overseasPropertyAccountingMethod = Some(testOverseasAccountingMethod)
     )
 
   def subscriptionData(
@@ -40,14 +42,16 @@ object IntegrationTestModels {
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None)
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                        overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None)
   : Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       businessName.map(model => SubscriptionDataKeys.BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       accountingMethodProperty.map(model => SubscriptionDataKeys.PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
-      selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model))
+      selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
+      overseasPropertyAccountingMethod.map(model => SubscriptionDataKeys.OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model))
 
 
   }
