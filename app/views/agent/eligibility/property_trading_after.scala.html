@@ -37,8 +37,12 @@
 
     @summaryErrorHelper(propertyTradingBeforeDateForm)
 
-    <h1 class="heading-large" id="heading">@messages("agent.property_trading_after.heading", startDateLimit)</h1>
-    <p class="form-hint">@messages("agent.property_trading_after.line")</p>
+    <fieldset aria-describedby="property-trading-hint">
+        <legend>
+            <h1 class="heading-large" id="heading">@messages("agent.property_trading_after.heading", startDateLimit)</h1>
+        </legend>
+        <p class="form-hint" id="property-trading-hint">@messages("agent.property_trading_after.line")</p>
+    </fieldset>
     @form(action = postAction) {
 
             @radioHelper(
