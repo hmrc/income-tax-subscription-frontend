@@ -70,15 +70,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   val editLinkId: String => String = (sectionId: String) => s"$sectionId-edit"
 
   def questionStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__heading tabular-data__heading--label"
+    section.attr("class") shouldBe "govuk-summary-list__key"
   }
 
   def answerStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__data-1"
+    section.attr("class") shouldBe "govuk-summary-list__value"
   }
 
   def editLinkStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__data-2"
+    section.attr("class") shouldBe "govuk-summary-list__actions"
   }
 
   "Summary page view" should {
@@ -131,10 +131,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       question.text() shouldBe expectedQuestion
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
-        editLink.attr("href") shouldBe expectedEditLink.get
-        editLink.text() should include(MessageLookup.Base.change)
-        editLink.select("span").text() shouldBe expectedQuestion
-        editLink.select("span").hasClass("visuallyhidden") shouldBe true
+        val link = editLink.select("a")
+        link.attr("href") shouldBe expectedEditLink.get
+        link.text() should include(MessageLookup.Base.change)
+        link.select("span").text() shouldBe expectedQuestion
+        link.select("span").hasClass("visuallyhidden") shouldBe true
       }
     }
 
@@ -224,7 +225,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencementDate)
       )()
     }
 
@@ -238,7 +240,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
       )()
     }
   }
