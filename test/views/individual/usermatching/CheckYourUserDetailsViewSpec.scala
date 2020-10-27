@@ -61,15 +61,15 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
   val editLinkId: String => String = (sectionId: String) => s"$sectionId-edit"
 
   def questionStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__heading tabular-data__heading--label"
+    section.attr("class") shouldBe "govuk-summary-list__key"
   }
 
   def answerStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__data-1"
+    section.attr("class") shouldBe "govuk-summary-list__value"
   }
 
   def editLinkStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "tabular-data__data-2"
+    section.attr("class") shouldBe "govuk-summary-list__actions"
   }
 
   "Confirm User page view" should {
@@ -121,10 +121,11 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       question.text() shouldBe expectedQuestion
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
-        editLink.attr("href") should include(expectedEditLink.get)
-        editLink.text() should include(MessageLookup.Base.change)
-        editLink.select("span").text() shouldBe expectedQuestion
-        editLink.select("span").hasClass("visuallyhidden") shouldBe true
+        val link = editLink.select("a")
+        link.attr("href") should include(expectedEditLink.get)
+        link.text() should include(MessageLookup.Base.change)
+        link.select("span").text() shouldBe expectedQuestion
+        link.select("span").hasClass("visuallyhidden") shouldBe true
       }
     }
 

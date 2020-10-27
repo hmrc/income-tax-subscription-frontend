@@ -30,23 +30,20 @@
 @(summaryModel: SummaryModel, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
-    <div class="tabular-data__entry divider--bottom" id="@field-row">
-        <span class="tabular-data__heading tabular-data__heading--label" id="@field-question">
-        @question
-        </span>
-        <div class="tabular-data__data-1" id="@field-answer">
-        @if(enableHtml) {@Html(answer)} else {
-            @answer
-        }
-        </div>
-        @changeUrl match {
-            case Some(url) => {
-                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("agent.base.change") <span class="visuallyhidden">@question</span> </a>
+    <div class="govuk-summary-list__row" id="@field-row">
+        <dt class="govuk-summary-list__key" id="@field-question">
+            @question
+        </dt>
+        <dd class="govuk-summary-list__value" id="@field-answer">
+            @if(enableHtml) {@Html(answer)} else {
+                @answer
             }
-            case _ => {
-                <div class="tabular-data__data-2"></div>
+        </dd>
+        <dd class="govuk-summary-list__actions" id="@field-edit">
+            @changeUrl.map { url =>
+            <a data-journey-click="itsa:changeLink:@field" href="@url">@messages("agent.base.change") <span class="visuallyhidden">@question</span> </a>
             }
-        }
+        </dd>
     </div>
 }
 
