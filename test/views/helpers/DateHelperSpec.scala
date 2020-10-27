@@ -102,5 +102,13 @@ class DateHelperSpec extends UnitTestTrait {
       errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
     }
   }
+  "dateHelper with hint" should {
+    "have aria-describedBy and input Id linked " in {
+      val testField = testForm(dateName)
 
+      val doc = dateHelper(testField, testLabel, Some("Hint text"), testForm).doc
+      doc.getElementsByAttributeValue("aria-describedby", "date-helper-hint").hasText mustBe true
+      doc.getElementById("date-helper-hint").hasText mustBe true
+    }
+  }
 }

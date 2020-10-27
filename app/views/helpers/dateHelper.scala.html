@@ -43,10 +43,15 @@
 }
 
 <div class="form-group form-field@if(hasError) { form-field--error}">
-    <fieldset id="@field.name">
+    @if(hintText.isDefined) {
+        <fieldset id="@field.name" aria-describedby="date-helper-hint">
+    } else {
+        <fieldset id="@field.name">
+    }
+
         <legend>
             <span class="form-label-bold">@label</span>
-            @hintText.map(hint => Html(s"""<span class="form-hint">$hint</span>"""))
+            @hintText.map(hint => Html(s"""<span id="date-helper-hint" class="form-hint">$hint</span>"""))
             @errorNotification
         </legend>
             <div class="form-date">
