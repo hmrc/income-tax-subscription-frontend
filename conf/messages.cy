@@ -139,10 +139,8 @@ property.accounting_method.accordion.summary                    = Rhowch enghrai
 property.accounting_method.accordion.content.para               = Rhoesoch anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Petaech yn rhoi gwybod i Gyllid a Thollau EM eich bod wedi cael yr incwm hwn ym:
 property.accounting_method.accordion.content.bullet1            = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ‘sail arian parod’
 property.accounting_method.accordion.content.bullet2            = mis Mawrth 2017, buasech yn defnyddio’r ‘sail croniadau’
-property.accounting_method.radio.cash                           = Sail arian parod
-property.accounting_method.radio.cash.detail                    = Rydych yn cofnodi pan fydd taliad oddi wrth eich tenantiaid yn cyrraedd eich cyfrif banc, a phan fyddwch yn talu bil, er enghraifft am atgyweiriadau a gwaith cynnal a chadw. Mae’r rhan fwyaf o bobl yn defnyddio’r dull hwn.
-property.accounting_method.radio.accruals                       = Sail croniadau
-property.accounting_method.radio.accruals.detail                = Rydych yn cofnodi ar y dyddiad rydych yn anfon anfoneb i’ch tenant neu’n gofyn am daliad oddi wrtho, hyd yn oed os nad ydych yn cael unrhyw arian. Rydych yn cofnodi ar y dyddiad rydych yn cael anfoneb am atgyweiriadau neu waith cynnal a chadw.
+property.accounting_method.cash                                 = <span class="heading-small">Sail arian parod</span><br>Rydych yn cofnodi pan fydd taliad oddi wrth eich tenantiaid yn cyrraedd eich cyfrif banc, a phan fyddwch yn talu bil, er enghraifft am atgyweiriadau a gwaith cynnal a chadw. Mae’r rhan fwyaf o bobl yn defnyddio’r dull hwn.
+property.accounting_method.accruals                             = <span class="heading-small">Sail croniadau</span><br>Rydych yn cofnodi ar y dyddiad rydych yn anfon anfoneb i’ch tenant neu’n gofyn am daliad oddi wrtho, hyd yn oed os nad ydych yn cael unrhyw arian. Rydych yn cofnodi ar y dyddiad rydych yn cael anfoneb am atgyweiriadau neu waith cynnal a chadw.
 
 #Overseas Property accounting method Page
 overseas.property.accounting_method.title                        = Sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo tramor?
@@ -151,10 +149,8 @@ overseas.property.accounting_method.accordion.summary            = Rhowch enghra
 overseas.property.accounting_method.accordion.content.para       = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
 overseas.property.accounting_method.accordion.content.bullet1    = mis Mai 2017, rydych yn defnyddio ‘cyfrifyddu arian parod’
 overseas.property.accounting_method.accordion.content.bullet2    = mis Mawrth 2017, rydych yn defnyddio ‘cyfrifyddu safonol’
-overseas.property.accounting_method.radio.cash                   = Cyfrifyddu arian parod
-overseas.property.accounting_method.radio.cash.detail            = Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
-overseas.property.accounting_method.radio.standard               = Cyfrifyddu safonol
-overseas.property.accounting_method.radio.standard.detail        = Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
+overseas.property.accounting_method.cash                         = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
+overseas.property.accounting_method.standard                     = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
 
 ## Business Name
 business.name.title                                             = Enw’r busnes
@@ -816,4 +812,3 @@ agent.overseas.property.error.accounting_period.minStartDate    = Mae’n rhaid 
 ## Title pattern
 titlePattern.serviceName.govUk = {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
 base.title.error               = Gwall: {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
-

@@ -132,10 +132,8 @@ property.accounting_method.accordion.summary                    = Show me an exa
 property.accounting_method.accordion.content.para               = You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:
 property.accounting_method.accordion.content.bullet1            = May 2017, you use ‘cash basis’ accounting
 property.accounting_method.accordion.content.bullet2            = March 2017, you use ‘accruals basis’ accounting
-property.accounting_method.radio.cash                           = Cash basis
-property.accounting_method.radio.cash.detail                    = You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method.
-property.accounting_method.radio.accruals                       = Accruals basis
-property.accounting_method.radio.accruals.detail                = You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’.
+property.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method.
+property.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’.
 
 #Overseas Property accounting method Page
 overseas.property.accounting_method.title                        = How do you record your income and expenses for your foreign property business?
@@ -144,10 +142,8 @@ overseas.property.accounting_method.accordion.summary            = Show me an ex
 overseas.property.accounting_method.accordion.content.para       = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
 overseas.property.accounting_method.accordion.content.bullet1    = May 2017, you use ‘cash accounting’
 overseas.property.accounting_method.accordion.content.bullet2    = March 2017, you use ‘standard accounting’
-overseas.property.accounting_method.radio.cash                   = Cash accounting
-overseas.property.accounting_method.radio.cash.detail            = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-overseas.property.accounting_method.radio.standard               = Standard accounting
-overseas.property.accounting_method.radio.standard.detail        = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’.
+overseas.property.accounting_method.cash                         = <span class="heading-small">Cash accounting</span><br>You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
+overseas.property.accounting_method.standard                     = <span class="heading-small">Standard accounting</span><br>You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’.
 
 ## Business Name
 business.name.title                                             = Business name
@@ -807,4 +803,3 @@ agent.overseas.property.error.accounting_period.minStartDate    = The date the f
 ## Title pattern
 titlePattern.serviceName.govUk = {0} - Report your income and expenses quarterly - GOV.UK
 base.title.error               = Error: {0} - Report your income and expenses quarterly - GOV.UK
-
