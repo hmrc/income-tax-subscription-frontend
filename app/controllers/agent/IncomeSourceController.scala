@@ -18,7 +18,7 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
@@ -62,6 +62,8 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           lazy val linearJourney: Future[Result] =
             subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
               incomeSource match {
+								case IncomeSourceModel(_, _, _) if isEnabled(PropertyNextTaxYear) =>
+									Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
                 case IncomeSourceModel(true, false, false) =>
                   Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
                 case IncomeSourceModel(true, _, _) =>

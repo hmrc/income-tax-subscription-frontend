@@ -17,7 +17,7 @@
 package controllers.agent
 
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
 import models.common.IncomeSourceModel
@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.IncomeSource
+
 import scala.concurrent.Future
 
 class IncomeSourceControllerSpec extends AgentControllerBaseSpec
@@ -42,6 +43,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
     disable(ForeignProperty)
+		disable(PropertyNextTaxYear)
     super.beforeEach()
   }
 
@@ -89,106 +91,136 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       )
     }
 
-    "When it is not edit mode" should {
-      "self-employed is checked and rent UK property and foreign property are NOT checked" when {
-        "redirect to BusinessName page" in {
-          setupMockSubscriptionDetailsSaveFunctions()
+		"When it is not edit mode" when {
 
-          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+			"when the next tax year property feature switch is enabled" should {
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.WhatYearToSignUpController.show().url
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-      }
+				"redirect the user to the select tax year page with both business and property selected" in {
+					enable(PropertyNextTaxYear)
+					setupMockSubscriptionDetailsSaveFunctions()
 
-      "Rent UK property is checked and self-employed, foreign property are NOT checked" should {
-        "Release Four feature switch is disabled" when {
-          "redirect to the Property Accounting Method page" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+					val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
 
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
+					status(goodRequest) must be(Status.SEE_OTHER)
+					redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.WhatYearToSignUpController.show().url
+					await(goodRequest)
+					verifySubscriptionDetailsFetch(IncomeSource, 1)
+					verifySubscriptionDetailsSave(IncomeSource, 1)
+				}
 
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
+				"redirect the user to the select tax year page with only property selected" in {
+					enable(PropertyNextTaxYear)
+					setupMockSubscriptionDetailsSaveFunctions()
 
-        "Release Four feature switch is enabled" when {
-          "redirect to the Property Commencement Date page" in {
-            enable(ReleaseFour)
-            setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+					val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
 
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyCommencementDateController.show().url)
+					status(goodRequest) must be(Status.SEE_OTHER)
+					redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.WhatYearToSignUpController.show().url
+					await(goodRequest)
+					verifySubscriptionDetailsFetch(IncomeSource, 1)
+					verifySubscriptionDetailsSave(IncomeSource, 1)
+				}
+			}
 
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
+			"self-employed is checked and rent UK property and foreign property are NOT checked" should {
+				"redirect to BusinessName page" in {
+					setupMockSubscriptionDetailsSaveFunctions()
 
-        "Self-employed, rent UK property are checked" when {
-          "redirect to BusinessName page" in {
-            setupMockSubscriptionDetailsSaveFunctions()
+					val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
 
-            val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
+					status(goodRequest) must be(Status.SEE_OTHER)
+					redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.WhatYearToSignUpController.show().url
+					await(goodRequest)
+					verifySubscriptionDetailsFetch(IncomeSource, 1)
+					verifySubscriptionDetailsSave(IncomeSource, 1)
+				}
+			}
 
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.BusinessNameController.show().url)
+			"Rent UK property is checked and self-employed, foreign property are NOT checked" should {
+				"Release Four feature switch is disabled" should {
+					"redirect to the Property Accounting Method page" in {
+						setupMockSubscriptionDetailsSaveFunctions()
+						val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
 
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
+						status(goodRequest) must be(Status.SEE_OTHER)
+						redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
 
-        "When it is in edit mode and user's selection has not changed" should {
-          s"return an SEE OTHER (303) when self-employed is checked and rent uk property and foreign property are NOT checked" +
-            s"${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-            mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(true, false, false))
+						await(goodRequest)
+						verifySubscriptionDetailsFetch(IncomeSource, 1)
+						verifySubscriptionDetailsSave(IncomeSource, 1)
+					}
+				}
+
+				"Release Four feature switch is enabled" should {
+					"redirect to the Property Commencement Date page" in {
+						enable(ReleaseFour)
+						setupMockSubscriptionDetailsSaveFunctions()
+						val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+
+						status(goodRequest) must be(Status.SEE_OTHER)
+						redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyCommencementDateController.show().url)
+
+						await(goodRequest)
+						verifySubscriptionDetailsFetch(IncomeSource, 1)
+						verifySubscriptionDetailsSave(IncomeSource, 1)
+					}
+				}
+
+				"Self-employed, rent UK property are checked" should {
+					"redirect to BusinessName page" in {
+						setupMockSubscriptionDetailsSaveFunctions()
+
+						val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
+
+						status(goodRequest) must be(Status.SEE_OTHER)
+						redirectLocation(goodRequest).get must be(controllers.agent.business.routes.BusinessNameController.show().url)
+
+						await(goodRequest)
+						verifySubscriptionDetailsFetch(IncomeSource, 1)
+						verifySubscriptionDetailsSave(IncomeSource, 1)
+					}
+				}
+
+				"When it is in edit mode and user's selection has not changed" should {
+					s"return an SEE OTHER (303) when self-employed is checked and rent uk property and foreign property are NOT checked" +
+						s"${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
+						mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(true, false, false))
 
 
-            val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = true)
+						val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = true)
 
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+						status(goodRequest) must be(Status.SEE_OTHER)
+						redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show().url
 
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 0)
-          }
-        }
-
-
-        "Calling the submit action of the IncomeSource controller with an authorised user and invalid submission" should {
-          lazy val badRequest = new TestIncomeSourceController().submit(isEditMode = true)(subscriptionRequest)
-
-          "return a bad request status (400)" in {
-            status(badRequest) must be(Status.BAD_REQUEST)
-
-            await(badRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 0)
-            verifySubscriptionDetailsSave(IncomeSource, 0)
-          }
-        }
+						await(goodRequest)
+						verifySubscriptionDetailsFetch(IncomeSource, 1)
+						verifySubscriptionDetailsSave(IncomeSource, 0)
+					}
+				}
 
 
-        "The back url" should {
-          s"point to ${controllers.agent.routes.CheckYourAnswersController.show().url} on income source page" in {
-            new TestIncomeSourceController().backUrl mustBe controllers.agent.routes.CheckYourAnswersController.show().url
-          }
-        }
+				"Calling the submit action of the IncomeSource controller with an authorised user and invalid submission" should {
+					lazy val badRequest = new TestIncomeSourceController().submit(isEditMode = true)(subscriptionRequest)
 
-        authorisationTests()
+					"return a bad request status (400)" in {
+						status(badRequest) must be(Status.BAD_REQUEST)
 
-      }
-    }
+						await(badRequest)
+						verifySubscriptionDetailsFetch(IncomeSource, 0)
+						verifySubscriptionDetailsSave(IncomeSource, 0)
+					}
+				}
+
+
+				"The back url" should {
+					s"point to ${controllers.agent.routes.CheckYourAnswersController.show().url} on income source page" in {
+						new TestIncomeSourceController().backUrl mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+					}
+				}
+
+				authorisationTests()
+
+			}
+		}
   }
 }
