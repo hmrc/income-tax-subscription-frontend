@@ -92,8 +92,8 @@ class SummaryModelSpec extends UnitSpec {
       "provided with a valid set of data for foreign property" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-          overseasPropertyCommencementDateModel = Some(OverseasPropertyCommencementDateModel(date)),
-          overseasAccountingMethodPropertyModel = Some(OverseasAccountingMethodPropertyModel(Cash))
+          overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
+          overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
@@ -113,8 +113,8 @@ class SummaryModelSpec extends UnitSpec {
           accountingMethod = Some(AccountingMethodModel(Cash)),
           propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash)),
-          overseasPropertyCommencementDateModel = Some(OverseasPropertyCommencementDateModel(date)),
-          overseasAccountingMethodPropertyModel = Some(OverseasAccountingMethodPropertyModel(Cash))
+          overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
+          overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
@@ -138,8 +138,8 @@ class SummaryModelSpec extends UnitSpec {
           accountingMethod = Some(AccountingMethodModel(Cash)),
           propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash)),
-          overseasPropertyCommencementDateModel = Some(OverseasPropertyCommencementDateModel(date)),
-          overseasAccountingMethodPropertyModel = Some(OverseasAccountingMethodPropertyModel(Cash)),
+          overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
+          overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash)),
           selectedTaxYear = Some(AccountingYearModel(Current))
         )
 

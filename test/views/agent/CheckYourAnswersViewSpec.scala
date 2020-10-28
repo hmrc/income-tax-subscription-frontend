@@ -42,17 +42,22 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
   val testIncomeSource: IncomeSourceModel = TestModels.testAgentIncomeSourceBoth
   val testPropertyCommencementDate: PropertyCommencementDateModel = TestModels.testPropertyCommencementDateModel
+  val testOverseasPropertyCommencementDate: OverseasPropertyCommencementDateModel = TestModels.testOverseasPropertyCommencementDateModel
   val testSummary: AgentSummary = customTestSummary()
   val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   def customTestSummary(selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                        propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencementDate): AgentSummary = AgentSummary(
+                        propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencementDate,
+                        overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None,
+                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testOverseasPropertyCommencementDate): AgentSummary = AgentSummary(
     businessName = testBusinessName,
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
-    propertyCommencementDate = testPropertyCommencementDate,
-    accountingMethodProperty = accountingMethodProperty
+    propertyCommencementDate = propertyCommencementDate,
+    accountingMethodProperty = accountingMethodProperty,
+    overseasPropertyCommencementDate = overseasPropertyCommencementDate,
+    overseasAccountingMethodProperty = overseasAccountingMethodProperty
   )
 
   def page(testSummaryModel: AgentSummary): HtmlFormat.Appendable = views.html.agent.check_your_answers(
@@ -173,10 +178,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       }
     }
 
-    "display the correct info for the income source" in {
+    "display the correct info for the income sources" in {
+      import MessageLookup.Summary.IncomeSource
+
       val sectionId = IncomeSourceId
       val expectedQuestion = messages.income_source
-      val expectedAnswer = MessageLookup.Summary.IncomeSource.both
+      val expectedAnswer = s"${IncomeSource.business} ${IncomeSource.property} ${IncomeSource.overseas_property}"
       val expectedEditLink = controllers.agent.routes.IncomeSourceController.show(editMode = true).url
 
       sectionTest(
@@ -242,6 +249,34 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
         testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
+      )()
+    }
+
+    "display the correct info for the Overseas property commencement date" in {
+      val sectionId = OverseasPropertyCommencementDateId
+      val expectedQuestion = messages.overseasPropertyCommencementDate
+      val expectedAnswer = testOverseasPropertyCommencementDate.startDate.toLocalDate.toLongDate
+      val expectedEditLink = controllers.agent.business.routes.OverseasPropertyCommencementDateController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )()
+    }
+
+    "display the correct info for the Overseas property accounting method" in {
+      val sectionId = OverseasAccountingMethodPropertyId
+      val expectedQuestion = messages.income_type_overseas_property
+      val expectedAnswer = messages.AccountingMethodOverseasProperty.cash
+      val expectedEditLink = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
       )()
     }
   }

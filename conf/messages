@@ -122,8 +122,8 @@ business.accounting_method.accordion                            = Show me an exa
 business.accounting_method.accordion.line_1                     = You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:
 business.accounting_method.accordion.bullet_1                   = May 2017, then you use ‘cash basis’ accounting
 business.accounting_method.accordion.bullet_2                   = March 2017, then you use ‘accruals basis’
-business.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>You record on the date you receive money or pay a bill. Many sole traders and small businesses use this method.
-business.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>You record on the date you send or receive an invoice, even if you don’t receive or pay any money. This method is also called ‘traditional accounting’.
+business.accounting_method.cash                                 = <span class="heading-small">Cash accounting</span><br>You record on the date you receive money or pay a bill. Most sole traders and small businesses use this method.
+business.accounting_method.accruals                             = <span class="heading-small">Standard accounting</span><br>You record on the date you send or receive an invoice, even if you do not receive or pay any money. This is also called ‘accruals’ or ‘traditional accounting’.
 
 # Property Accounting Method Page
 property.accounting_method.title                                = How do you record your income and expenses for your property business?
@@ -132,8 +132,8 @@ property.accounting_method.accordion.summary                    = Show me an exa
 property.accounting_method.accordion.content.para               = You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:
 property.accounting_method.accordion.content.bullet1            = May 2017, you use ‘cash basis’ accounting
 property.accounting_method.accordion.content.bullet2            = March 2017, you use ‘accruals basis’ accounting
-property.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method.
-property.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’.
+property.accounting_method.cash                                 = <span class="heading-small">Cash accounting</span><br>You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method.
+property.accounting_method.accruals                             = <span class="heading-small">Standard accounting</span><br>You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’.
 
 #Overseas Property accounting method Page
 overseas.property.accounting_method.title                        = How do you record your income and expenses for your foreign property business?
@@ -143,7 +143,7 @@ overseas.property.accounting_method.accordion.content.para       = You created a
 overseas.property.accounting_method.accordion.content.bullet1    = May 2017, you use ‘cash accounting’
 overseas.property.accounting_method.accordion.content.bullet2    = March 2017, you use ‘standard accounting’
 overseas.property.accounting_method.cash                         = <span class="heading-small">Cash accounting</span><br>You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-overseas.property.accounting_method.standard                     = <span class="heading-small">Standard accounting</span><br>You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’.
+overseas.property.accounting_method.accruals                     = <span class="heading-small">Standard accounting</span><br>You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’.
 
 ## Business Name
 business.name.title                                             = Business name
@@ -246,8 +246,8 @@ summary.accounting_period                                       = Your accountin
 summary.accounting_period.registration                          = When’s your current accounting period?
 summary.business_name                                           = Your business name
 summary.income_type                                             = Accounting method for your self-employment income
-summary.income_type.cash                                        = Cash basis
-summary.income_type.accruals                                    = Accruals basis
+summary.income_type.cash                                        = Cash accounting
+summary.income_type.accruals                                    = Standard accounting
 summary.accounting_method_property                              = Accounting method for UK property income
 summary.selected_year                                           = Tax year signed up for
 summary.selected_year.current                                   = Current tax year ({0} to {1})
@@ -579,8 +579,8 @@ agent.eligibility.sole_trader.heading                              = Is your cli
 ## Business Income page
 agent.business.accounting_method.title                          = What accounting method does your client use for their self-employed business?
 agent.business.accounting_method.heading                        = What accounting method does your client use for their self-employed business?
-agent.business.accounting_method.cash                           = Cash basis
-agent.business.accounting_method.accruals                       = Accruals basis
+agent.business.accounting_method.cash                           = Cash accounting
+agent.business.accounting_method.accruals                       = Standard accounting
 
 
 # Agent Property Accounting Method Page
@@ -642,19 +642,21 @@ agent.summary.confirm_and_sign_up                               = Confirm and si
 agent.summary.line_1                                            = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
 agent.summary.income_source                                     = Client’s income type
 agent.summary.income_source.business                            = Sole trader business
-agent.summary.income_source.property                            = Property
-agent.summary.income_source.both                                = Sole trader business and property
+agent.summary.income_source.uk_property                         = UK property
+agent.summary.income_source.overseas_property                   = Overseas property
 agent.summary.accounting_period                                 = Your client’s accounting period dates
 agent.summary.business_name                                     = Business name
 agent.summary.income_type                                       = Accounting method for their self-employed business
 agent.summary.income_type_property                              = Accounting method for their property business
-agent.summary.income_type.cash                                  = Cash basis
-agent.summary.income_type.accruals                              = Accruals basis
+agent.summary.income_type.cash                                  = Cash accounting
+agent.summary.income_type.accruals                              = Standard accounting
 agent.summary.match_tax_year                                    = Accounting period matches tax year
 agent.summary.selected_year                                     = Year signed-up for
 agent.summary.selected_year.current                             = Current tax year ({0} to {1})
 agent.summary.selected_year.next                                = Next tax year ({0} to {1})
 agent.summary.property_commencement_date                        = Trading start for UK property
+agent.summary.overseas_property_commencement_date               = Trading start for foreign property
+agent.summary.income_type_overseas_property                     = Accounting method for foreign property income
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                    = You have signed up your client for the Use software to send Income Tax updates pilot
@@ -803,3 +805,4 @@ agent.overseas.property.error.accounting_period.minStartDate    = The date the f
 ## Title pattern
 titlePattern.serviceName.govUk = {0} - Report your income and expenses quarterly - GOV.UK
 base.title.error               = Error: {0} - Report your income and expenses quarterly - GOV.UK
+

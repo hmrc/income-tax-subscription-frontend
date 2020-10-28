@@ -176,8 +176,8 @@ object MessageLookup {
     val accordion_line_1 = "You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:"
     val accordion_bullet_1 = "May 2017, then you use ‘cash basis’ accounting"
     val accordion_bullet_2 = "March 2017, then you use ‘accruals basis’"
-    val cash = "Cash basis You record on the date you receive money or pay a bill. Many sole traders and small businesses use this method."
-    val accruals = "Accruals basis You record on the date you send or receive an invoice, even if you don’t receive or pay any money. This method is also called ‘traditional accounting’."
+    val cash = "Cash accounting You record on the date you receive money or pay a bill. Most sole traders and small businesses use this method."
+    val accruals = "Standard accounting You record on the date you send or receive an invoice, even if you do not receive or pay any money. This is also called ‘accruals’ or ‘traditional accounting’."
   }
 
   object PropertyAccountingMethod {
@@ -187,9 +187,9 @@ object MessageLookup {
     val accordionContentPara = "You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:"
     val accordionContentBullet1 = "May 2017, you use ‘cash basis’ accounting"
     val accordionContentBullet2 = "March 2017, you use ‘accruals basis’ accounting"
-    val radioCash = "Cash basis"
+    val radioCash = "Cash accounting"
     val radioCashDetail = "You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method."
-    val radioAccruals = "Accruals basis"
+    val radioAccruals = "Standard accounting"
     val radioAccrualsDetail = "You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’."
   }
 
@@ -230,8 +230,8 @@ object MessageLookup {
     val income_type = "Accounting method for your self-employment income"
 
     object AccountingMethod {
-      val cash = "Cash basis"
-      val accruals = "Accruals basis"
+      val cash = "Cash accounting"
+      val accruals = "Standard accounting"
     }
 
     object SelectedTaxYear {

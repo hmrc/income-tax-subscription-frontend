@@ -26,6 +26,7 @@
 @import views.agent.helpers.SummaryIdConstants._
 @import utilities.ImplicitDateFormatter
 @import models.common.PropertyCommencementDateModel
+@import models.common.OverseasPropertyCommencementDateModel
 
 @(summaryModel: SummaryModel, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -52,7 +53,7 @@
     val rowQuestion = Messages("agent.summary.income_source")
     val rowAnswer = incomeSourceText(source)
     val rowUrl = controllers.agent.routes.IncomeSourceController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
 @businessName(name: BusinessNameModel) = @{
@@ -71,10 +72,10 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
-@accountingMethod(income: AccountingMethodModel) = @{
+@accountingMethod(accountingModel: AccountingMethodModel) = @{
     val rowName = AccountingMethodId
     val rowQuestion = Messages("agent.summary.income_type")
-    val rowAnswer = accountingMethodText(income)
+    val rowAnswer = accountingMethodText(accountingModel.accountingMethod)
     val rowUrl = controllers.agent.business.routes.BusinessAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
@@ -88,11 +89,28 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@accountingMethodProperty(income: AccountingMethodPropertyModel) = @{
+@accountingMethodProperty(propertyModel: AccountingMethodPropertyModel) = @{
     val rowName = AccountingMethodPropertyId
     val rowQuestion = messages("agent.summary.income_type_property")
-    val rowAnswer = accountingMethodText(income)
+    val rowAnswer = accountingMethodText(propertyModel.propertyAccountingMethod)
     val rowUrl = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@overseasPropertyCommencementDate(overseasPropertyCommencementDateModel: OverseasPropertyCommencementDateModel) = @{
+    import implicitDateFormatter.LongDate
+    val rowName = OverseasPropertyCommencementDateId
+    val rowQuestion = messages("agent.summary.overseas_property_commencement_date")
+    val rowAnswer = overseasPropertyCommencementDateModel.startDate.toLocalDate.toLongDate
+    val rowUrl = controllers.agent.business.routes.OverseasPropertyCommencementDateController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@overseasAccountingMethodProperty(overseasPropertyModel: OverseasAccountingMethodPropertyModel) = @{
+    val rowName = OverseasAccountingMethodPropertyId
+    val rowQuestion = messages("agent.summary.income_type_overseas_property")
+    val rowAnswer = accountingMethodText(overseasPropertyModel.overseasPropertyAccountingMethod)
+    val rowUrl = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -111,6 +129,8 @@
             @summaryModel.accountingMethod.map(accountingMethod)
             @summaryModel.propertyCommencementDate.map(propertyCommencementDate)
             @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
+            @summaryModel.overseasPropertyCommencementDate.map(overseasPropertyCommencementDate)
+            @summaryModel.overseasAccountingMethodProperty.map(overseasAccountingMethodProperty)
         </dl>
 
     </div>

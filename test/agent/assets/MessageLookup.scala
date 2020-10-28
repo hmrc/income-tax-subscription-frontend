@@ -162,8 +162,8 @@ object MessageLookup {
   object AccountingMethod {
     val title = "What accounting method does your client use for their self-employed business?"
     val heading: String = "What accounting method does your client use for their self-employed business?"
-    val cash = "Cash basis"
-    val accruals = "Accruals basis"
+    val cash = "Cash accounting"
+    val accruals = "Standard accounting"
   }
 
   object PropertyAccountingMethod {
@@ -188,8 +188,8 @@ object MessageLookup {
 
     object IncomeSource {
       val business = "Sole trader business"
-      val property = "Property"
-      val both = "Sole trader business and property"
+      val property = "UK property"
+      val overseas_property = "Overseas property"
     }
 
     val accounting_period = s"Your client’s accounting period dates"
@@ -205,15 +205,22 @@ object MessageLookup {
     val income_type_property = "Accounting method for their property business"
     val match_tax_year = "Accounting period matches tax year"
     val propertyCommencementDate = "Trading start for UK property"
+    val overseasPropertyCommencementDate = "Trading start for foreign property"
+    val income_type_overseas_property = "Accounting method for foreign property income"
 
     object AccountingMethod {
-      val cash = "Cash basis"
-      val accruals = "Traditional accounting"
+      val cash = "Cash accounting"
+      val accruals = "Standard accounting"
     }
 
     object AccountingMethodProperty {
-      val cash = "Cash basis"
-      val accruals = "Accruals basis"
+      val cash = "Cash accounting"
+      val accruals = "Standard accounting"
+    }
+
+    object AccountingMethodOverseasProperty {
+      val cash = "Cash accounting"
+      val accruals = "Standard accounting"
     }
 
     val contact_email = "Do you want to receive electronic communications from HMRC?"

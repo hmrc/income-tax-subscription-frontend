@@ -129,8 +129,8 @@ business.accounting_method.accordion                            = Rhowch enghrai
 business.accounting_method.accordion.line_1                     = Rhoesoch anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Petaech yn rhoi gwybod i Gyllid a Thollau EM eich bod wedi cael yr incwm hwn ym:
 business.accounting_method.accordion.bullet_1                   = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ‘sail arian parod’
 business.accounting_method.accordion.bullet_2                   = mis Mawrth 2017, buasech yn defnyddio’r ‘sail croniadau’
-business.accounting_method.cash                                 = <span class="heading-small">Sail arian parod</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn cael arian neu’n talu bil. Mae llawer o unig fasnachwyr a busnesau bach yn defnyddio’r dull hwn.
-business.accounting_method.accruals                             = <span class="heading-small">Sail croniadau</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu’n cael anfoneb, hyd yn oed os nad ydych yn cael neu’n talu unrhyw arian. Mae’r dull hwn hefyd yn cael ei alw’n ‘cyfrifyddu traddodiadol’.
+business.accounting_method.cash                                 = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn cael arian neu’n talu bil. Mae’r rhan fwyaf o unig fasnachwyr a busnesau bach yn defnyddio'r dull hwn.
+business.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu’n cael anfoneb, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
 
 # Property Accounting Method Page
 property.accounting_method.title                                = Sut ydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo?
@@ -139,8 +139,8 @@ property.accounting_method.accordion.summary                    = Rhowch enghrai
 property.accounting_method.accordion.content.para               = Rhoesoch anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Petaech yn rhoi gwybod i Gyllid a Thollau EM eich bod wedi cael yr incwm hwn ym:
 property.accounting_method.accordion.content.bullet1            = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ‘sail arian parod’
 property.accounting_method.accordion.content.bullet2            = mis Mawrth 2017, buasech yn defnyddio’r ‘sail croniadau’
-property.accounting_method.cash                                 = <span class="heading-small">Sail arian parod</span><br>Rydych yn cofnodi pan fydd taliad oddi wrth eich tenantiaid yn cyrraedd eich cyfrif banc, a phan fyddwch yn talu bil, er enghraifft am atgyweiriadau a gwaith cynnal a chadw. Mae’r rhan fwyaf o bobl yn defnyddio’r dull hwn.
-property.accounting_method.accruals                             = <span class="heading-small">Sail croniadau</span><br>Rydych yn cofnodi ar y dyddiad rydych yn anfon anfoneb i’ch tenant neu’n gofyn am daliad oddi wrtho, hyd yn oed os nad ydych yn cael unrhyw arian. Rydych yn cofnodi ar y dyddiad rydych yn cael anfoneb am atgyweiriadau neu waith cynnal a chadw.
+property.accounting_method.cash                                 = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi pan fydd taliad oddi wrth eich tenantiaid yn cyrraedd eich cyfrif banc, a phan fyddwch yn talu bil, er enghraifft am atgyweiriadau a gwaith cynnal a chadw. Mae’r rhan fwyaf o bobl yn defnyddio’r dull hwn.
+property.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad rydych yn anfon anfoneb i’ch tenant neu’n gofyn am daliad oddi wrtho, hyd yn oed os nad ydych yn cael unrhyw arian. Rydych yn cofnodi ar y dyddiad rydych yn cael anfoneb am atgyweiriadau neu waith cynnal a chadw.
 
 #Overseas Property accounting method Page
 overseas.property.accounting_method.title                        = Sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo tramor?
@@ -150,7 +150,7 @@ overseas.property.accounting_method.accordion.content.para       = Gwnaethoch gr
 overseas.property.accounting_method.accordion.content.bullet1    = mis Mai 2017, rydych yn defnyddio ‘cyfrifyddu arian parod’
 overseas.property.accounting_method.accordion.content.bullet2    = mis Mawrth 2017, rydych yn defnyddio ‘cyfrifyddu safonol’
 overseas.property.accounting_method.cash                         = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
-overseas.property.accounting_method.standard                     = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
+overseas.property.accounting_method.accruals                     = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
 
 ## Business Name
 business.name.title                                             = Enw’r busnes
@@ -245,8 +245,6 @@ summary.income_source                                           = Incwm a gafwyd
 summary.are_you_selfemployed                                    = Rydych yn hunangyflogedig
 summary.income_source.business                                  = Hunangyflogaeth
 summary.income_source.property                                  = Eiddo yn y DU
-summary.income_source.business                                  = Hunangyflogaeth
-summary.income_source.property                                  = Eiddo
 summary.income_source.foreign_property                          = Eiddo tramor
 summary.income_source.both                                      = Busnes fel unig fasnachwr ac eiddo
 summary.match_tax_year                                          = Mae’ch cyfnod cyfrifyddu yn paru â’r flwyddyn dreth
@@ -254,8 +252,8 @@ summary.accounting_period                                       = Dyddiadau’ch
 summary.accounting_period.registration                          = Pryd y mae’ch cyfnod cyfrifyddu presennol?
 summary.business_name                                           = Enw eich busnes
 summary.income_type                                             = Dull cyfrifyddu ar gyfer eich incwm o hunangyflogaeth
-summary.income_type.cash                                        = Sail arian parod
-summary.income_type.accruals                                    = Sail croniadau
+summary.income_type.cash                                        = Cyfrifyddu arian parod
+summary.income_type.accruals                                    = Cyfrifyddu safonol
 summary.accounting_method_property                              = Dull cyfrifyddu ar gyfer incwm o eiddo yn y DU
 summary.selected_year                                           = Y flwyddyn dreth yr ydych wedi cofrestru ar ei chyfer
 summary.selected_year.current                                   = Y flwyddyn dreth bresennol ({0} i {1})
@@ -588,8 +586,8 @@ agent.eligibility.sole_trader.heading                           = A ydych yn uni
 ## Business Income page
 agent.business.accounting_method.title                          = Pa ddull cyfrifyddu mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
 agent.business.accounting_method.heading                        = Pa ddull cyfrifyddu mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
-agent.business.accounting_method.cash                           = Sail arian parod
-agent.business.accounting_method.accruals                       = Sail croniadau
+agent.business.accounting_method.cash                           = Cyfrifyddu arian parod
+agent.business.accounting_method.accruals                       = Cyfrifyddu safonol
 
 # Agent Property Accounting Method Page
 agent.property.accounting_method.title                          = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
@@ -650,19 +648,21 @@ agent.summary.confirm_and_sign_up                               = Cadarnhau a ch
 agent.summary.line_1                                            = Gallwch olygu’ch atebion, os oes angen.<br>Pan fyddwch chi’n barod, cyflwynwch eich atebion er mwyn cofrestru i anfon diweddariadau digidol i CThEM ynglŷn ag incwm a gwariant.
 agent.summary.income_source                                     = Math o incwm eich cleient
 agent.summary.income_source.business                            = Busnes fel unig fasnachwr
-agent.summary.income_source.property                            = Eiddo
-agent.summary.income_source.both                                = Busnes fel unig fasnachwr ac eiddo
+agent.summary.income_source.uk_property                         = Eiddo yn y DU
+agent.summary.income_source.overseas_property                   = Eiddo tramor
 agent.summary.accounting_period                                 = Dyddiadau cyfnod cyfrifyddu’ch cleient
 agent.summary.business_name                                     = Beth yw enw busnes eich cleient?
 agent.summary.income_type                                       = Dull cyfrifyddu ar gyfer ei fusnes hunangyflogedig
 agent.summary.income_type_property                              = Dull cyfrifyddu ar gyfer ei fusnes eiddo
-agent.summary.income_type.cash                                  = Sail arian parod
-agent.summary.income_type.accruals                              = Sail croniadau
+agent.summary.income_type.cash                                  = Cyfrifyddu arian parod
+agent.summary.income_type.accruals                              = Cyfrifyddu safonol
 agent.summary.match_tax_year                                    = Mae’r cyfnod cyfrifyddu yn paru â’r flwyddyn dreth
 agent.summary.selected_year                                     = Y flwyddyn cofrestrwyd ar ei chyfer
 agent.summary.selected_year.current                             = Y flwyddyn dreth bresennol ({0} i {1})
 agent.summary.selected_year.next                                = Y flwyddyn dreth nesaf ({0} i {1})
 agent.summary.property_commencement_date                        = Dyddiad dechrau masnachu ar gyfer eiddo yn y DU
+agent.summary.overseas_property_commencement_date               = Dyddiad dechrau masnachu ar gyfer eiddo tramor
+agent.summary.income_type_overseas_property                     = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                    = Rydych wedi cofrestru eich cleient ar gyfer y peilot ‘Defnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm’
@@ -812,3 +812,4 @@ agent.overseas.property.error.accounting_period.minStartDate    = Mae’n rhaid 
 ## Title pattern
 titlePattern.serviceName.govUk = {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
 base.title.error               = Gwall: {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
+

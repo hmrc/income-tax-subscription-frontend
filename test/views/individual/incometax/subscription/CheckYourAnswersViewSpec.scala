@@ -51,10 +51,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
-  val testOverseasAccountingPropertyModel: OverseasAccountingMethodPropertyModel = TestModels.testAccountingMethodOverseasProperty
+  val testOverseasAccountingPropertyModel: OverseasAccountingMethodPropertyModel = TestModels.testOverseasAccountingMethodProperty
   val testIncomeSourceBoth: IncomeSourceModel = TestModels.testIncomeSourceBoth
   val testPropertyCommencement: PropertyCommencementDateModel = TestModels.testPropertyCommencementDateModel
-  val testForeignPropertyCommencement: OverseasPropertyCommencementDateModel = TestModels.testForeignPropertyCommencementDateModel
+  val testOverseasPropertyCommencement: OverseasPropertyCommencementDateModel = TestModels.testOverseasPropertyCommencementDateModel
   val testSummary: IndividualSummary = customTestSummary()
   val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
@@ -63,7 +63,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                         propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencement,
                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = testOverseasAccountingPropertyModel,
-                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testForeignPropertyCommencement): IndividualSummary = IndividualSummary(
+                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testOverseasPropertyCommencement
+                       ): IndividualSummary = IndividualSummary(
     incomeSource = incomeSource,
     businessName = testBusinessName,
     selfEmployments = testSelfEmployments,
@@ -71,8 +72,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = accountingMethodProperty,
     propertyCommencementDate = testPropertyCommencement,
-    overseasAccountingMethodPropertyModel = overseasAccountingMethodProperty,
-    overseasPropertyCommencementDateModel = testForeignPropertyCommencement
+    overseasAccountingMethodProperty = overseasAccountingMethodProperty,
+    overseasPropertyCommencementDate = overseasPropertyCommencementDate
   )
 
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
