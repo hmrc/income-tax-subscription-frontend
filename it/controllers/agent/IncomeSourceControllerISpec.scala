@@ -298,7 +298,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
         Then(s"Should return $INTERNAL_SERVER_ERROR with an internal server error page")
         res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
+          httpStatus(SEE_OTHER),
+          redirectURI(foreignPropertyComencementDateURI)
         )
       }
 
@@ -746,7 +747,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
         Then(s"Should return $INTERNAL_SERVER_ERROR with an internal server error")
         res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
+          httpStatus(SEE_OTHER),
+          redirectURI(foreignPropertyComencementDateURI)
         )
       }
     }

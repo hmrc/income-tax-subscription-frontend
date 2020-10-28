@@ -18,26 +18,28 @@ package controllers.agent
 
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
+import controllers.utils.AgentAnswers._
+import controllers.utils.RequireAnswer
 import javax.inject.{Inject, Singleton}
 import models.common.IncomeSourceModel
 import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc._
-import services.{AuthService, SubscriptionDetailsService}
 import services.agent.SubscriptionOrchestrationService
+import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.SubscriptionDataUtil._
 import utilities.ImplicitDateFormatterImpl
+import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService,
+class CheckYourAnswersController @Inject()(val authService: AuthService, val subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
                                            implicitDateFormatter: ImplicitDateFormatterImpl)
                                           (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends AuthenticatedController {
+                                           mcc: MessagesControllerComponents) extends AuthenticatedController with RequireAnswer {
 
 
   private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
@@ -54,36 +56,35 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, subscri
         }
     }
 
-  def backUrl(incomeSource: Option[IncomeSourceModel])(implicit request: Request[_]): String = {
+  def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
-      case Some(IncomeSourceModel(true, false, _)) =>
-        controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-      case Some(_) =>
+      case IncomeSourceModel(_, _, true) =>
+        controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show().url
+      case IncomeSourceModel(_, true, _) =>
         controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-      case None => throw new InternalServerException("User is missing income source type in Subscription Details")
+      case _ =>
+        controllers.agent.business.routes.BusinessAccountingMethodController.show().url
     }
   }
 
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        for {
-          incomeSource <- subscriptionDetailsService.fetchIncomeSource()
-          backLinkUrl = backUrl(incomeSource)
-        } yield
-          Ok(views.html.agent.check_your_answers(
-            cache.getAgentSummary(),
+        require(incomeSourceModelAnswer) { incomeSource =>
+          Future.successful(Ok(views.html.agent.check_your_answers(
+            cache.getAgentSummary,
             controllers.agent.routes.CheckYourAnswersController.submit(),
-            backUrl = backLinkUrl,
+            backUrl = backUrl(incomeSource),
             implicitDateFormatter
-          ))
+          )))
+        }
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
 
   private def submitForAuthorisedAgent(arn: String, nino: String, utr: String)
                                       (implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {
-      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary())(headerCarrier)
+      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary)(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)

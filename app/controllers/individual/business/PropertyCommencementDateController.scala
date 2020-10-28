@@ -18,7 +18,8 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import controllers.utils.Answers._
+import controllers.utils.IndividualAnswers._
+import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
 import forms.individual.business.PropertyCommencementDateForm
 import forms.individual.business.PropertyCommencementDateForm._
@@ -41,7 +42,7 @@ class PropertyCommencementDateController @Inject()(val authService: AuthService,
                                                    val languageUtils: LanguageUtils)
                                                   (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController
-                                                  with ImplicitDateFormatter with RequireAnswer {
+  with ImplicitDateFormatter with RequireAnswer {
 
   def view(propertyCommencementDateForm: Form[PropertyCommencementDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {

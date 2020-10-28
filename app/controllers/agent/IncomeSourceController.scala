@@ -71,6 +71,8 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
                 case IncomeSourceModel(_, true, _) =>
                   if (isEnabled(ReleaseFour)) Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
                   else Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+                case IncomeSourceModel(_, _, true) =>
+                  Redirect(controllers.agent.business.routes.OverseasPropertyCommencementDateController.show())
                 case _ =>
                   throw new InternalServerException("User is missing income source type in Subscription Details")
               }

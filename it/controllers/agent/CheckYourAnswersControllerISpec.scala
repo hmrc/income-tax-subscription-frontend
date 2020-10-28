@@ -33,6 +33,24 @@ import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
 
   "GET /check-your-answers" when {
+
+    "the user has not answered the income sources question" should {
+      "redirect the user to answer that question" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+
+        When("GET /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
+        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        Then("Should return a OK with the check your answers page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(incomeSourceURI)
+        )
+      }
+    }
+
     "the Subscription Details Connector returns all data" should {
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")

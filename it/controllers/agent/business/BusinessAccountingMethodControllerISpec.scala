@@ -139,6 +139,26 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       }
     }
     "not in edit mode" should {
+      "redirect to the overseas property commencement date page" when {
+        "the user has foreign property income but not uk property income" in {
+          val userInput = AccountingMethodModel(Cash)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, true))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.AccountingMethod, userInput)
+
+          When("POST /business/accounting-method is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(foreignPropertyComencementDateURI)
+          )
+        }
+      }
+
       "FS ReleaseFour is not enabled" should {
         "select the Cash radio button on the accounting method page" in {
           val userInput = AccountingMethodModel(Cash)

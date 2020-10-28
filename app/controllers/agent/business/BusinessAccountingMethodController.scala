@@ -20,13 +20,13 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import controllers.utils.Answers._
+import controllers.utils.AgentAnswers._
+import controllers.utils.OptionalAnswers.optAccountingMethodAnswer
 import controllers.utils.RequireAnswer
 import forms.agent.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
-import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.common.AccountingMethodModel
 import play.api.data.Form
-import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
@@ -49,13 +49,12 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optAccountingMethodAnswer) {
-        case optAccountingMethod =>
-          Future.successful(Ok(view(
-            accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(optAccountingMethod),
-            isEditMode = isEditMode,
-            backUrl = backUrl(isEditMode)
-          )))
+      require(optAccountingMethodAnswer) { optAccountingMethod =>
+        Future.successful(Ok(view(
+          accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(optAccountingMethod),
+          isEditMode = isEditMode,
+          backUrl = backUrl(isEditMode)
+        )))
       }
   }
 
@@ -70,12 +69,14 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
           ))),
           accountingMethod => {
             subscriptionDetailsService.saveAccountingMethod(accountingMethod) map { _ =>
-              if (isEditMode || incomeSourceModel.selfEmployment && !incomeSourceModel.ukProperty && !incomeSourceModel.foreignProperty) {
+              if (isEditMode || !incomeSourceModel.ukProperty && !incomeSourceModel.foreignProperty) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-              } else if (isEnabled(ReleaseFour)) {
+              } else if (isEnabled(ReleaseFour) && incomeSourceModel.ukProperty) {
                 Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
-              } else {
+              } else if (incomeSourceModel.ukProperty) {
                 Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+              } else {
+                Redirect(controllers.agent.business.routes.OverseasPropertyCommencementDateController.show())
               }
             }
           }
