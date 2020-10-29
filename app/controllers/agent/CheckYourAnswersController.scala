@@ -18,8 +18,13 @@ package controllers.agent
 
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
+import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
-import models.common.IncomeSourceModel
+import models.{AgentSummary, IndividualSummary}
+import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.individual.business.SelfEmploymentData
 import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc._
@@ -29,15 +34,17 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataUtil._
 import utilities.ImplicitDateFormatterImpl
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
+                                           incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            implicitDateFormatter: ImplicitDateFormatterImpl)
                                           (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends AuthenticatedController {
+                                           mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching {
 
 
   private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
@@ -54,30 +61,43 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, subscri
         }
     }
 
-  def backUrl(incomeSource: Option[IncomeSourceModel])(implicit request: Request[_]): String = {
+  def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
-      case Some(IncomeSourceModel(true, false, _)) =>
+      case IncomeSourceModel(true, false, _) =>
         controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-      case Some(_) =>
+      case _ =>
         controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-      case None => throw new InternalServerException("User is missing income source type in Subscription Details")
     }
   }
 
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        for {
-          incomeSource <- subscriptionDetailsService.fetchIncomeSource()
-          backLinkUrl = backUrl(incomeSource)
-        } yield
-          Ok(views.html.agent.check_your_answers(
-            cache.getAgentSummary(),
-            controllers.agent.routes.CheckYourAnswersController.submit(),
-            backUrl = backLinkUrl,
-            implicitDateFormatter
-          ))
+        getAgentSummary(cache).map {
+          agentSummaryModel =>
+              Ok(views.html.agent.check_your_answers(
+                agentSummaryModel,
+                controllers.agent.routes.CheckYourAnswersController.submit(),
+                backUrl = backUrl(cache.getIncomeSource.get),
+                implicitDateFormatter,
+                isEnabled(ReleaseFour)
+              ))
+        }
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
+
+  private def getAgentSummary(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[AgentSummary] = {
+    for {
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
+      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+    } yield {
+      if (isEnabled(ReleaseFour)) {
+        cacheMap.getAgentSummary(businesses, businessAccountingMethod)
+      } else {
+        cacheMap.getAgentSummary()
+      }
+    }
+  }
+
 
   private def submitForAuthorisedAgent(arn: String, nino: String, utr: String)
                                       (implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap): Future[Result] = {
