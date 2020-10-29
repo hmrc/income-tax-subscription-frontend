@@ -69,7 +69,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         testCacheMapCustom(incomeSource = testIncomeSourceOverseasProperty).getSummary() shouldBe
           IndividualSummary(
             incomeSource = testIncomeSourceOverseasProperty,
-            overseasAccountingMethodPropertyModel = testAccountingMethodOverseasProperty
+            overseasAccountingMethodProperty = testOverseasAccountingMethodProperty
           )
       }
       "income source is all property and business" in {
@@ -79,7 +79,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod,
             accountingMethodProperty = testAccountingMethodProperty,
-            overseasAccountingMethodPropertyModel = testAccountingMethodOverseasProperty
+            overseasAccountingMethodProperty = testOverseasAccountingMethodProperty
           )
       }
       "income source is neither property or business" in {

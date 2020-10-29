@@ -76,6 +76,11 @@ object SubscriptionDataUtil {
             businessName = getBusinessName,
             accountingMethod = getAccountingMethod
           )
+        case Some(IncomeSourceModel(false, false, true)) =>
+          AgentSummary(
+            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
+          )
         case Some(IncomeSourceModel(true, true, false)) =>
           AgentSummary(
             incomeSource = getIncomeSource,
@@ -83,6 +88,31 @@ object SubscriptionDataUtil {
             accountingMethod = getAccountingMethod,
             propertyCommencementDate = getPropertyCommencementDate,
             accountingMethodProperty = getPropertyAccountingMethod
+          )
+        case Some(IncomeSourceModel(false, true, true)) =>
+          AgentSummary(
+            propertyCommencementDate = getPropertyCommencementDate,
+            accountingMethodProperty = getPropertyAccountingMethod,
+            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
+          )
+        case Some(IncomeSourceModel(true, false, true)) =>
+          AgentSummary(
+            incomeSource = getIncomeSource,
+            businessName = getBusinessName,
+            accountingMethod = getAccountingMethod,
+            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
+          )
+        case Some(IncomeSourceModel(true, true, true)) =>
+          AgentSummary(
+            incomeSource = getIncomeSource,
+            businessName = getBusinessName,
+            accountingMethod = getAccountingMethod,
+            propertyCommencementDate = getPropertyCommencementDate,
+            accountingMethodProperty = getPropertyAccountingMethod,
+            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
           )
         case _ => AgentSummary()
       }
@@ -130,8 +160,8 @@ object SubscriptionDataUtil {
                                          hasForeignProperty: Boolean) = {
       if (hasForeignProperty) {
         individualSummary.copy(
-          overseasPropertyCommencementDateModel = getOverseasPropertyCommencementDate,
-          overseasAccountingMethodPropertyModel = getOverseasPropertyAccountingMethod,
+          overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+          overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
           selectedTaxYear = None
         )
       } else individualSummary

@@ -16,31 +16,31 @@
 
 package views.agent.helpers
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel}
-import models.{Accruals, Cash, Current, Next}
+import models.common._
+import models._
 import play.api.i18n.Messages
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 
 object SummaryHelper {
 
-  def accountingMethodText(src: AccountingMethodModel)(implicit messages: Messages): String = src.accountingMethod match {
-    case Cash => Messages("agent.summary.income_type.cash")
-    case Accruals => Messages("agent.summary.income_type.accruals")
+  def accountingMethodText(accountingMethod: AccountingMethod)(implicit messages: Messages): String = accountingMethod match {
+    case Cash => messages("summary.income_type.cash")
+    case Accruals => messages("summary.income_type.accruals")
   }
 
-  def accountingMethodText(src: AccountingMethodPropertyModel)(implicit messages: Messages): String = src.propertyAccountingMethod match {
-    case Cash => Messages("agent.summary.income_type.cash")
-    case Accruals => Messages("agent.summary.income_type.accruals")
-  }
+  def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = {
+    def messageOrNone(message: String, condition: Boolean): Option[String] = {
+      if (condition) Some(messages(message)) else None
+    }
 
-  def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = src match {
-    case IncomeSourceModel(true, false, _) => Messages("agent.summary.income_source.business")
-    case IncomeSourceModel(false, true, _) => Messages("agent.summary.income_source.property")
-    case IncomeSourceModel(true, true, _) => Messages("agent.summary.income_source.both")
+    Seq(messageOrNone(messages("agent.summary.income_source.business"), src.selfEmployment),
+      messageOrNone(messages("agent.summary.income_source.uk_property"), src.ukProperty),
+      messageOrNone(messages("agent.summary.income_source.overseas_property"), src.foreignProperty)
+    ).flatten.mkString("<br>")
   }
 
   def accountingYearText(src: AccountingYearModel)(implicit messages: Messages): String = src.accountingYear match {
-    case Current => Messages("agent.summary.selected_year.current", (getCurrentTaxEndYear - 1).toString, getCurrentTaxEndYear.toString)
-    case Next => Messages("agent.summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
+    case Current => messages("agent.summary.selected_year.current", (getCurrentTaxEndYear - 1).toString, getCurrentTaxEndYear.toString)
+    case Next => messages("agent.summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
   }
 }

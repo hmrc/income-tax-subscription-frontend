@@ -16,14 +16,14 @@
 
 package views.individual.helpers
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel}
-import models.{Accruals, Cash, Current, Next}
+import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.{AccountingMethod, Accruals, Cash, Current, Next}
 import play.api.i18n.Messages
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 
 object SummaryHelper {
 
-  def accountingMethodText(src: AccountingMethodModel)(implicit messages: Messages): String = src.accountingMethod match {
+  def accountingMethodText(accountingMethod: AccountingMethod)(implicit messages: Messages): String = accountingMethod match {
     case Cash => Messages("summary.income_type.cash")
     case Accruals => Messages("summary.income_type.accruals")
   }
@@ -31,16 +31,6 @@ object SummaryHelper {
   def accountingYearText(src: AccountingYearModel)(implicit messages: Messages): String = src.accountingYear match {
     case Current => Messages("summary.selected_year.current", (getCurrentTaxEndYear -1).toString , getCurrentTaxEndYear.toString)
     case Next => Messages("summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
-  }
-
-  def accountingMethodText(src: AccountingMethodPropertyModel)(implicit messages: Messages): String = src.propertyAccountingMethod match {
-    case Cash => Messages("summary.income_type.cash")
-    case Accruals => Messages("summary.income_type.accruals")
-  }
-
-  def accountingMethodText(src: OverseasAccountingMethodPropertyModel)(implicit messages: Messages): String = src.overseasPropertyAccountingMethod match {
-    case Cash => Messages("summary.income_type.cash")
-    case Accruals => Messages("summary.income_type.accruals")
   }
 
   def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = {
