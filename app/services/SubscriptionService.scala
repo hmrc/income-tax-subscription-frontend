@@ -16,6 +16,7 @@
 
 package services
 
+import config.featureswitch.FeatureSwitch.PropertyNextTaxYear
 import config.featureswitch.FeatureSwitching
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
