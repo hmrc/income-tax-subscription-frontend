@@ -20,7 +20,8 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import controllers.utils.Answers.{incomeSourceModelAnswer, incomeSourceModelAnswerAgent, optPropertyCommencementDateAnswer}
+import controllers.utils.AgentAnswers._
+import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
 import forms.agent.PropertyCommencementDateForm
 import forms.agent.PropertyCommencementDateForm.propertyCommencementDateForm
@@ -41,7 +42,7 @@ class PropertyCommencementDateController @Inject()(val authService: AuthService,
                                                    val languageUtils: LanguageUtils)
                                                   (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends AuthenticatedController
-                                                   with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
+  with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
 
   def view(propertyCommencementDateForm: Form[PropertyCommencementDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
@@ -55,7 +56,7 @@ class PropertyCommencementDateController @Inject()(val authService: AuthService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optPropertyCommencementDateAnswer and incomeSourceModelAnswerAgent) {
+      require(optPropertyCommencementDateAnswer and incomeSourceModelAnswer) {
         case propertyCommencementDate ~ incomeSource =>
           Future.successful(Ok(view(
             propertyCommencementDateForm = form.fill(propertyCommencementDate),
@@ -69,7 +70,7 @@ class PropertyCommencementDateController @Inject()(val authService: AuthService,
     implicit user =>
       form.bindFromRequest.fold(
         formWithErrors =>
-          require(incomeSourceModelAnswerAgent) {
+          require(incomeSourceModelAnswer) {
             incomeSourceModel =>
               Future.successful(BadRequest(view(propertyCommencementDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
           },

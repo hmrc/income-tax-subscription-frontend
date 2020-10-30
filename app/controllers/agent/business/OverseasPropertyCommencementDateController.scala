@@ -20,7 +20,8 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import controllers.utils.Answers._
+import controllers.utils.AgentAnswers._
+import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
 import forms.agent.OverseasPropertyCommencementDateForm
 import forms.agent.OverseasPropertyCommencementDateForm._
@@ -38,8 +39,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverseasPropertyCommencementDateController @Inject()(val authService: AuthService,
-                                                          val subscriptionDetailsService: SubscriptionDetailsService,
-                                                          val languageUtils: LanguageUtils
+                                                           val subscriptionDetailsService: SubscriptionDetailsService,
+                                                           val languageUtils: LanguageUtils
                                                           )(implicit val ec: ExecutionContext, appConfig: AppConfig,
                                                             mcc: MessagesControllerComponents)
   extends AuthenticatedController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
@@ -56,7 +57,7 @@ class OverseasPropertyCommencementDateController @Inject()(val authService: Auth
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optForeignPropertyCommencementDateAnswer and incomeSourceModelAnswerAgent) {
+      require(optForeignPropertyCommencementDateAnswer and incomeSourceModelAnswer) {
         case foreignPropertyCommencementDate ~ incomeSource =>
           Future.successful(Ok(view(
             overseasPropertyCommencementDateForm = form.fill(foreignPropertyCommencementDate),
@@ -79,7 +80,7 @@ class OverseasPropertyCommencementDateController @Inject()(val authService: Auth
             if (isEditMode) {
               Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
             } else {
-              Future.successful(Redirect(controllers.agent.business.routes.PropertyCommencementDateController.submit()))
+              Future.successful(Redirect(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit()))
             }
           }
 

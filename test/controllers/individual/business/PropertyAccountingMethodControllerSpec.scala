@@ -31,7 +31,7 @@ import utilities.SubscriptionDataKeys.PropertyAccountingMethod
 
 import scala.concurrent.Future
 
-class UkPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
+class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService with FeatureSwitching {
 
   override val controllerName: String = "PropertyAccountingMethod"

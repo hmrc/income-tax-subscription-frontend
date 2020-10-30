@@ -58,9 +58,20 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     def call(request: Request[AnyContent] = subscriptionRequest): Future[Result] = TestCheckYourAnswersController.show(request)
 
+    "the user has not answered the income source question required" should {
+      "redirect the user to the income sources page" in {
+        mockFetchAllFromSubscriptionDetails(None)
+
+        val result = call(subscriptionRequest)
+
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
+      }
+    }
+
     "There are both a matched nino and terms in Subscription Details " should {
       "return ok (200)" in {
-        mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(true, false, false))
+        mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
 
         status(call()) must be(Status.OK)
@@ -110,10 +121,10 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         lazy val result = call(authorisedAgentRequest)
 
         "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockSubscriptionDetailsSaveFunctions
+          setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testSummary)
 
-          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary())
+          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary)
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
@@ -135,7 +146,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         "return a failure if subscription fails" in {
           mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
-          mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getAgentSummary())
+          mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getAgentSummary)
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
           ex.message mustBe "Successful response not received from submission"
@@ -146,7 +157,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           val request = authorisedAgentRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
 
           mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
-          mockCreateSubscriptionSuccess(testARN, testNino, testUtr, testCacheMap.getAgentSummary())
+          mockCreateSubscriptionSuccess(testARN, testNino, testUtr, testCacheMap.getAgentSummary)
 
           val ex = intercept[InternalServerException](await(call(request)))
           ex.message mustBe "Failed to create client relationship"
@@ -160,22 +171,29 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   "The back url" should {
     s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" when {
       "on the property only journey" in {
-        TestCheckYourAnswersController.backUrl(Some(IncomeSourceModel(false, true, false)))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+        TestCheckYourAnswersController.backUrl(
+          IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
+        ) mustBe business.routes.PropertyAccountingMethodController.show().url
       }
       "on the property and business journey" in {
-        TestCheckYourAnswersController.backUrl(Some(IncomeSourceModel(true, true, false)))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+        TestCheckYourAnswersController.backUrl(
+          IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
+        ) mustBe business.routes.PropertyAccountingMethodController.show().url
       }
     }
 
     s"point to ${controllers.agent.business.routes.BusinessAccountingMethodController.show().url}" when {
       "on the business only journey" in {
-        TestCheckYourAnswersController.backUrl((IncomeSourceModel(true, false, false)))(fakeRequest) mustBe
-          controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        TestCheckYourAnswersController.backUrl(
+          IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
+        ) mustBe controllers.agent.business.routes.BusinessAccountingMethodController.show().url
       }
     }
 
     s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url} on the property journey" in {
-      TestCheckYourAnswersController.backUrl((IncomeSourceModel(false, true, false)))(fakeRequest) mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
+      TestCheckYourAnswersController.backUrl(
+        IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
+      ) mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
     }
 
   }

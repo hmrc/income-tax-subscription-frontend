@@ -61,62 +61,59 @@ object SubscriptionDataUtil {
       }
     }
 
-    def getAgentSummary()(implicit appConfig: AppConfig): AgentSummary = {
+    def getAgentSummary: AgentSummary = {
       getIncomeSource match {
-        case Some(IncomeSourceModel(false, true, false)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod
+        case Some(incomeSourceModel) =>
+          applyAgentOverseasPropertyData(
+            agentSummary = applyAgentUKPropertyData(
+              agentSummary = applyAgentBusinessData(
+                hasBusiness = incomeSourceModel.selfEmployment
+              ),
+              hasUKProperty = incomeSourceModel.ukProperty
+            ),
+            hasOverseasProperty = incomeSourceModel.foreignProperty
           )
-        case Some(IncomeSourceModel(true, false, false)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            selectedTaxYear = getSelectedTaxYear,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod
-          )
-        case Some(IncomeSourceModel(false, false, true)) =>
-          AgentSummary(
-            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
-          )
-        case Some(IncomeSourceModel(true, true, false)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod,
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod
-          )
-        case Some(IncomeSourceModel(false, true, true)) =>
-          AgentSummary(
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod,
-            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
-          )
-        case Some(IncomeSourceModel(true, false, true)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod,
-            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
-          )
-        case Some(IncomeSourceModel(true, true, true)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod,
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod,
-            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
-          )
-        case _ => AgentSummary()
+        case None => AgentSummary()
       }
+    }
 
+    private def applyAgentBusinessData(hasBusiness: Boolean): AgentSummary = {
+      if (hasBusiness) {
+        AgentSummary(
+          incomeSource = getIncomeSource,
+          businessName = getBusinessName,
+          selectedTaxYear = getSelectedTaxYear,
+          accountingMethod = getAccountingMethod
+        )
+      } else {
+        AgentSummary(
+          incomeSource = getIncomeSource
+        )
+      }
+    }
+
+    private def applyAgentUKPropertyData(agentSummary: AgentSummary, hasUKProperty: Boolean): AgentSummary = {
+      if (hasUKProperty) {
+        agentSummary.copy(
+          propertyCommencementDate = getPropertyCommencementDate,
+          accountingMethodProperty = getPropertyAccountingMethod,
+          selectedTaxYear = None
+        )
+      } else {
+        agentSummary
+      }
+    }
+
+    private def applyAgentOverseasPropertyData(agentSummary: AgentSummary, hasOverseasProperty: Boolean): AgentSummary = {
+      if (hasOverseasProperty) {
+        agentSummary.copy(
+          overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+          overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+          selectedTaxYear = None
+        )
+      } else {
+        agentSummary
+      }
     }
 
     private def applySelfEmploymentsData(selfEmployments: Option[Seq[SelfEmploymentData]],

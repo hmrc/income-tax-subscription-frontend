@@ -26,7 +26,7 @@ import models.{Accruals, Cash}
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 
-class UkPropertyAccountingMethodControllerISpec extends ComponentSpecBase {
+class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-method-property" when {
 

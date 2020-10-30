@@ -138,7 +138,7 @@ class OverseasPropertyCommencementDateControllerSpec extends AgentControllerBase
 
         val goodRequest = callSubmit(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyCommencementDateController.submit().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show().url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(OverseasPropertyCommencementDate, 1)

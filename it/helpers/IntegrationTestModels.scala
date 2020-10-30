@@ -52,7 +52,7 @@ import utilities.individual.Constants.GovernmentGateway._
 
   lazy val fullSubscriptionDataBothPost: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(IncomeSourceModel(true, true, false)),
+      incomeSource = Some(IncomeSourceModel(true, true, true)),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),

@@ -139,17 +139,17 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
     }
   }
 
-  "Agent - optAccountingMethodAnswer" must {
+  "Optional - optAccountingMethodAnswer" must {
     "return some accounting method model" when {
       "present in the cache map" in {
         val cacheMap: CacheMap = CacheMap("testId", Map(SubscriptionDataKeys.AccountingMethod -> Json.toJson(AccountingMethodModel(Cash))))
-        Answers.optAccountingMethodAnswer(cacheMap) mustBe Right(Some(AccountingMethodModel(Cash)))
+        OptionalAnswers.optAccountingMethodAnswer(cacheMap) mustBe Right(Some(AccountingMethodModel(Cash)))
       }
     }
     "return none" when {
       "not present in the cache map" in {
         val cacheMap: CacheMap = CacheMap("testId", Map())
-        Answers.optAccountingMethodAnswer(cacheMap) mustBe Right(None)
+        OptionalAnswers.optAccountingMethodAnswer(cacheMap) mustBe Right(None)
       }
     }
   }

@@ -123,7 +123,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
       }
 
       s"redirect to ${routes.PropertyCommencementDateController.show().url} when FS ReleaseFour is enabled" when {
-        "the user has both business and property income" in new Test {
+        "the user has property income" in new Test {
           enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(
@@ -137,6 +137,27 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.PropertyCommencementDateController.show().url)
+
+          verifySubscriptionDetailsFetchAll(2)
+          verifySubscriptionDetailsSave(AccountingMethod, 1)
+        }
+      }
+
+      s"redirect to ${routes.OverseasPropertyCommencementDateController.show().url}" when {
+        "the user doesn't have uk property income and has foreign property income" in new Test {
+          enable(ReleaseFour)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllFromSubscriptionDetails(testCacheMap(
+            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true))
+          )
+          )
+
+          val result: Result = await(controller.submit(isEditMode = false)(subscriptionRequest.post(
+            AccountingMethodForm.accountingMethodForm, AccountingMethodModel(Cash)
+          )))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.OverseasPropertyCommencementDateController.show().url)
 
           verifySubscriptionDetailsFetchAll(2)
           verifySubscriptionDetailsSave(AccountingMethod, 1)

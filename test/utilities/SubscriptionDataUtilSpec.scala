@@ -40,7 +40,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getIncomeSource shouldBe Some(IncomeSourceModel(true, true, false))
+      testCacheMap.getIncomeSource shouldBe Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
       testCacheMap.getBusinessName shouldBe Some(testBusinessName)
       testCacheMap.getAccountingMethod shouldBe Some(testAccountingMethod)
       testCacheMap.getSelectedTaxYear shouldBe Some(testSelectedTaxYearNext)
@@ -91,7 +91,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       "the income type is property" in {
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceProperty)
-        ).getAgentSummary() shouldBe AgentSummary(
+        ).getAgentSummary shouldBe AgentSummary(
           incomeSource = Some(testAgentIncomeSourceProperty),
           businessName = None,
           accountingMethod = None,
@@ -102,7 +102,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       "the income type is business" in {
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceBusiness)
-        ).getAgentSummary() shouldBe AgentSummary(
+        ).getAgentSummary shouldBe AgentSummary(
           incomeSource = Some(testAgentIncomeSourceBusiness),
           selectedTaxYear = Some(testSelectedTaxYearNext),
           businessName = Some(testBusinessName),
@@ -114,7 +114,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       "the income type is both" in {
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceBoth)
-        ).getAgentSummary() shouldBe
+        ).getAgentSummary shouldBe
           AgentSummary(
             incomeSource = testAgentIncomeSourceBoth,
             businessName = testBusinessName,
@@ -124,7 +124,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is not set" in {
-        emptyCacheMap.getAgentSummary() shouldBe AgentSummary()
+        emptyCacheMap.getAgentSummary shouldBe AgentSummary()
       }
     }
   }

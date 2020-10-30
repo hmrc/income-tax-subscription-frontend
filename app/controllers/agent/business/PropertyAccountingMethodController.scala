@@ -20,69 +20,80 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
+import controllers.utils.AgentAnswers._
+import controllers.utils.OptionalAnswers._
+import controllers.utils.RequireAnswer
 import forms.agent.AccountingMethodPropertyForm
 import javax.inject.{Inject, Singleton}
 import models.common.{AccountingMethodPropertyModel, IncomeSourceModel}
 import play.api.data.Form
+import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.HeaderCarrier
-import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
+class PropertyAccountingMethodController @Inject()(val authService: AuthService, val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                                   appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching {
+                                                   appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching with RequireAnswer {
 
-  def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
-    for {
-      back <- backUrl(isEditMode)
-    } yield
-      views.html.agent.business.property_accounting_method(
-        accountingMethodPropertyForm = accountingMethodPropertyForm,
-        postAction = controllers.agent.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
-        isEditMode,
-        backUrl = back
-      )
+  def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], incomeSource: IncomeSourceModel, isEditMode: Boolean)
+          (implicit request: Request[_]): Html = {
+    views.html.agent.business.property_accounting_method(
+      accountingMethodPropertyForm = accountingMethodPropertyForm,
+      postAction = controllers.agent.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
+      isEditMode = isEditMode,
+      backUrl = backUrl(incomeSource, isEditMode)
+    )
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchAccountingMethodProperty() flatMap { accountingMethodProperty =>
-        view(accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm
-          .fill(accountingMethodProperty), isEditMode = isEditMode).map(view => Ok(view))
+      require(incomeSourceModelAnswer and optPropertyAccountingMethod) { case incomeSource ~ propertyAccountingMethod =>
+        Future.successful(Ok(view(
+          accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(propertyAccountingMethod),
+          incomeSource = incomeSource,
+          isEditMode = isEditMode
+        )))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
-        formWithErrors =>
-          view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
-        accountingMethodProperty => {
-          subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) map { _ =>
-            Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+      require(incomeSourceModelAnswer) { incomeSource =>
+        AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(
+              accountingMethodPropertyForm = formWithErrors,
+              incomeSource = incomeSource,
+              isEditMode = isEditMode
+            ))),
+          accountingMethodProperty => {
+            subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) map { _ =>
+              if (isEditMode || !incomeSource.foreignProperty) {
+                Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+              } else {
+                Redirect(routes.OverseasPropertyCommencementDateController.show())
+              }
+            }
           }
-        }
-      )
+        )
+      }
   }
 
-  def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] =
+  def backUrl(incomeSource: IncomeSourceModel, isEditMode: Boolean): String = {
     if (isEditMode) {
-      Future.successful(controllers.agent.routes.CheckYourAnswersController.show().url)
+      controllers.agent.routes.CheckYourAnswersController.show().url
     } else if (isEnabled(ReleaseFour)) {
-      Future.successful(controllers.agent.business.routes.PropertyCommencementDateController.show().url)
+      controllers.agent.business.routes.PropertyCommencementDateController.show().url
     } else {
-      subscriptionDetailsService.fetchAll() map {
-        case cacheMap => cacheMap.getIncomeSource match {
-          case Some(IncomeSourceModel(false, true, _)) => controllers.agent.routes.IncomeSourceController.show().url
-          case Some(IncomeSourceModel(true, true, _)) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-          case _ => controllers.agent.routes.IncomeSourceController.show().url
-        }
+      incomeSource match {
+        case IncomeSourceModel(true, _, _) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        case _ => controllers.agent.routes.IncomeSourceController.show().url
       }
     }
+  }
 
 }
