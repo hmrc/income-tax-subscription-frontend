@@ -61,7 +61,9 @@ object SubscriptionDataUtil {
       }
     }
 
-    def getAgentSummary()(implicit appConfig: AppConfig): AgentSummary = {
+    def getAgentSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+                        selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None
+                       )(implicit appConfig: AppConfig): AgentSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(false, true, false)) =>
           AgentSummary(
@@ -70,25 +72,48 @@ object SubscriptionDataUtil {
             accountingMethodProperty = getPropertyAccountingMethod
           )
         case Some(IncomeSourceModel(true, false, false)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            selectedTaxYear = getSelectedTaxYear,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod
-          )
+          if (selfEmploymentsAccountingMethod.isDefined) {
+            AgentSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              selectedTaxYear = getSelectedTaxYear,
+              accountingMethod = selfEmploymentsAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          } else {
+            AgentSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              selectedTaxYear = getSelectedTaxYear,
+              accountingMethod = getAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          }
         case Some(IncomeSourceModel(false, false, true)) =>
           AgentSummary(
             overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
             overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
           )
         case Some(IncomeSourceModel(true, true, false)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod,
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod
-          )
+          if (selfEmploymentsAccountingMethod.isDefined) {
+            AgentSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              accountingMethod = selfEmploymentsAccountingMethod,
+              propertyCommencementDate = getPropertyCommencementDate,
+              accountingMethodProperty = getPropertyAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          } else {
+            AgentSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              accountingMethod = getAccountingMethod,
+              propertyCommencementDate = getPropertyCommencementDate,
+              accountingMethodProperty = getPropertyAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          }
         case Some(IncomeSourceModel(false, true, true)) =>
           AgentSummary(
             propertyCommencementDate = getPropertyCommencementDate,
@@ -97,23 +122,49 @@ object SubscriptionDataUtil {
             overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
           )
         case Some(IncomeSourceModel(true, false, true)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod,
-            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
-          )
+          if (selfEmploymentsAccountingMethod.isDefined) {
+            AgentSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              accountingMethod = selfEmploymentsAccountingMethod,
+              overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+              overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          } else {
+            AgentSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              accountingMethod = getAccountingMethod,
+              overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+              overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          }
         case Some(IncomeSourceModel(true, true, true)) =>
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            businessName = getBusinessName,
-            accountingMethod = getAccountingMethod,
-            propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod,
-            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
-          )
+          if (selfEmploymentsAccountingMethod.isDefined) {
+            AgentSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              accountingMethod = selfEmploymentsAccountingMethod,
+              propertyCommencementDate = getPropertyCommencementDate,
+              accountingMethodProperty = getPropertyAccountingMethod,
+              overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+              overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          } else {
+            AgentSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              accountingMethod = getAccountingMethod,
+              propertyCommencementDate = getPropertyCommencementDate,
+              accountingMethodProperty = getPropertyAccountingMethod,
+              overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+              overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          }
         case _ => AgentSummary()
       }
 
