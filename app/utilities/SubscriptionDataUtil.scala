@@ -19,10 +19,11 @@ package utilities
 import config.AppConfig
 import models.common._
 import models.individual.business._
-import models.{AgentSummary, IndividualSummary}
+import models.{AgentSummary, IndividualSummary, SummaryModel}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys._
 
+//scalastyle:off
 object SubscriptionDataUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
@@ -52,116 +53,133 @@ object SubscriptionDataUtil {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
             applyPropertyData(
-              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment),
+              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment).asInstanceOf[IndividualSummary],
               hasProperty
-            ),
+            ).asInstanceOf[IndividualSummary],
             hasForeignProperty
-          )
+          ).asInstanceOf[IndividualSummary]
         case _ => IndividualSummary()
       }
     }
 
-    def getAgentSummary: AgentSummary = {
+    def getAgentSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+                        selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
+                        isReleaseFourEnabled: Boolean = false
+                       )(implicit appConfig: AppConfig): AgentSummary = {
       getIncomeSource match {
-        case Some(incomeSourceModel) =>
-          applyAgentOverseasPropertyData(
-            agentSummary = applyAgentUKPropertyData(
-              agentSummary = applyAgentBusinessData(
-                hasBusiness = incomeSourceModel.selfEmployment
-              ),
-              hasUKProperty = incomeSourceModel.ukProperty
-            ),
-            hasOverseasProperty = incomeSourceModel.foreignProperty
-          )
-        case None => AgentSummary()
-      }
-    }
-
-    private def applyAgentBusinessData(hasBusiness: Boolean): AgentSummary = {
-      if (hasBusiness) {
-        AgentSummary(
-          incomeSource = getIncomeSource,
-          businessName = getBusinessName,
-          selectedTaxYear = getSelectedTaxYear,
-          accountingMethod = getAccountingMethod
-        )
-      } else {
-        AgentSummary(
-          incomeSource = getIncomeSource
-        )
-      }
-    }
-
-    private def applyAgentUKPropertyData(agentSummary: AgentSummary, hasUKProperty: Boolean): AgentSummary = {
-      if (hasUKProperty) {
-        agentSummary.copy(
-          propertyCommencementDate = getPropertyCommencementDate,
-          accountingMethodProperty = getPropertyAccountingMethod,
-          selectedTaxYear = None
-        )
-      } else {
-        agentSummary
-      }
-    }
-
-    private def applyAgentOverseasPropertyData(agentSummary: AgentSummary, hasOverseasProperty: Boolean): AgentSummary = {
-      if (hasOverseasProperty) {
-        agentSummary.copy(
-          overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-          overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
-          selectedTaxYear = None
-        )
-      } else {
-        agentSummary
+        case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
+          applyForeignPropertyData(
+            applyPropertyData(
+              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, true).asInstanceOf[AgentSummary],
+              hasProperty,
+              true,
+              isReleaseFourEnabled
+            ).asInstanceOf[AgentSummary],
+            hasForeignProperty,
+            true,
+            isReleaseFourEnabled
+          ).asInstanceOf[AgentSummary]
+        case _ => AgentSummary()
       }
     }
 
     private def applySelfEmploymentsData(selfEmployments: Option[Seq[SelfEmploymentData]],
                                          selfEmploymentsAccountingMethod: Option[AccountingMethodModel],
-                                         hasSelfEmployments: Boolean) = {
+                                         hasSelfEmployments: Boolean,
+                                         isAgent: Boolean = false): SummaryModel = {
       if (hasSelfEmployments) {
         if (selfEmploymentsAccountingMethod.isDefined) {
-          IndividualSummary(
-            incomeSource = getIncomeSource,
-            businessName = getBusinessName,
-            selectedTaxYear = getSelectedTaxYear,
-            accountingMethod = selfEmploymentsAccountingMethod,
-            selfEmployments = selfEmployments
+          if(isAgent) {
+            AgentSummary(
+              selectedTaxYear = getSelectedTaxYear,
+              businessName = getBusinessName,
+              incomeSource = getIncomeSource,
+              selfEmployments = selfEmployments,
+              accountingMethod = selfEmploymentsAccountingMethod
+            )
+          } else {
+            IndividualSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              selectedTaxYear = getSelectedTaxYear,
+              accountingMethod = selfEmploymentsAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          }
+        } else {
+          if(isAgent) {
+            AgentSummary(
+              selectedTaxYear = getSelectedTaxYear,
+              businessName = getBusinessName,
+              incomeSource = getIncomeSource,
+              selfEmployments = selfEmployments,
+              accountingMethod = getAccountingMethod
+            )
+          } else {
+            IndividualSummary(
+              incomeSource = getIncomeSource,
+              businessName = getBusinessName,
+              selectedTaxYear = getSelectedTaxYear,
+              accountingMethod = getAccountingMethod,
+              selfEmployments = selfEmployments
+            )
+          }
+        }
+      } else {
+        if(isAgent) {
+          AgentSummary(
+            incomeSource = getIncomeSource
           )
         } else {
           IndividualSummary(
-            incomeSource = getIncomeSource,
-            businessName = getBusinessName,
-            selectedTaxYear = getSelectedTaxYear,
-            accountingMethod = getAccountingMethod,
-            selfEmployments = selfEmployments
+            incomeSource = getIncomeSource
           )
         }
-      } else IndividualSummary(
-        incomeSource = getIncomeSource
-      )
+      }
     }
 
-    private def applyPropertyData(individualSummary: IndividualSummary,
-                                  hasProperty: Boolean) = {
+    private def applyPropertyData(summaryModel: SummaryModel,
+                                  hasProperty: Boolean,
+                                  isAgent: Boolean = false,
+                                  isReleaseFourEnabled: Boolean = false
+                                 ): SummaryModel = {
       if (hasProperty) {
-        individualSummary.copy(
-          propertyCommencementDate = getPropertyCommencementDate,
-          accountingMethodProperty = getPropertyAccountingMethod,
-          selectedTaxYear = None
-        )
-      } else individualSummary
+        if(isAgent) {
+          summaryModel.asInstanceOf[AgentSummary].copy(
+            propertyCommencementDate = getPropertyCommencementDate,
+            accountingMethodProperty = getPropertyAccountingMethod,
+            selectedTaxYear = if(isReleaseFourEnabled) getSelectedTaxYear else None
+          )
+        } else {
+          summaryModel.asInstanceOf[IndividualSummary].copy(
+            propertyCommencementDate = getPropertyCommencementDate,
+            accountingMethodProperty = getPropertyAccountingMethod,
+            selectedTaxYear = None
+          )
+        }
+      } else summaryModel
     }
 
-    private def applyForeignPropertyData(individualSummary: IndividualSummary,
-                                         hasForeignProperty: Boolean) = {
+    private def applyForeignPropertyData(summaryModel: SummaryModel,
+                                         hasForeignProperty: Boolean,
+                                         isAgent: Boolean = false,
+                                         isReleaseFourEnabled: Boolean = false
+                                        ): SummaryModel = {
       if (hasForeignProperty) {
-        individualSummary.copy(
-          overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-          overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
-          selectedTaxYear = None
-        )
-      } else individualSummary
+        if(isAgent) {
+          summaryModel.asInstanceOf[AgentSummary].copy(
+            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+            selectedTaxYear = if(isReleaseFourEnabled) getSelectedTaxYear else None
+          )
+        } else {
+          summaryModel.asInstanceOf[IndividualSummary].copy(
+            overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+            selectedTaxYear = None
+          )
+        }
+      } else summaryModel
     }
   }
 

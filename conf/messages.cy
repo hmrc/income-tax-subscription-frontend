@@ -660,9 +660,13 @@ agent.summary.match_tax_year                                    = Mae’r cyfnod
 agent.summary.selected_year                                     = Y flwyddyn cofrestrwyd ar ei chyfer
 agent.summary.selected_year.current                             = Y flwyddyn dreth bresennol ({0} i {1})
 agent.summary.selected_year.next                                = Y flwyddyn dreth nesaf ({0} i {1})
+agent.summary.selected_year.release4                            = Blwyddyn dreth i ddechrau cyflwyno diweddariadau
+agent.summary.selected_year.current.release4                    = Y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
+agent.summary.selected_year.next.release4                       = Y flwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 agent.summary.property_commencement_date                        = Dyddiad dechrau masnachu ar gyfer eiddo yn y DU
 agent.summary.overseas_property_commencement_date               = Dyddiad dechrau masnachu ar gyfer eiddo tramor
 agent.summary.income_type_overseas_property                     = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
+agent.summary.self_employments                                  = Nifer y busnesau sydd wedi’u cofrestru
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                    = Rydych wedi cofrestru eich cleient ar gyfer y peilot ‘Defnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm’

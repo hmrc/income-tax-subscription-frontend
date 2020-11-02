@@ -55,6 +55,7 @@ object TestModels extends Implicits {
   val testSelectedTaxYearCurrent = AccountingYearModel(Current)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
+  val testAccountingMethodAccrual = AccountingMethodModel(Accruals)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testOverseasAccountingMethodProperty = OverseasAccountingMethodPropertyModel(Cash)
 
@@ -67,14 +68,14 @@ object TestModels extends Implicits {
 
   lazy val testCacheMap: CacheMap =
     testCacheMap(
-      incomeSource = testAgentIncomeSourceBoth,
+      incomeSource = testAgentIncomeSourceBusinessProperty,
       businessName = testBusinessName,
       selectedTaxYear = testSelectedTaxYearNext,
       accountingMethod = testAccountingMethod,
       accountingMethodProperty = testAccountingMethodProperty
     )
 
-  def testCacheMapCustom(incomeSource: Option[IncomeSourceModel] = testAgentIncomeSourceBoth,
+  def testCacheMapCustom(incomeSource: Option[IncomeSourceModel] = testAgentIncomeSourceBusinessProperty,
                          businessName: Option[BusinessNameModel] = testBusinessName,
                          selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
@@ -115,7 +116,9 @@ object TestModels extends Implicits {
   //agent
   lazy val testAgentIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
   lazy val testAgentIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
-  lazy val testAgentIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
+  lazy val testAgentIncomeSourceBusinessProperty: IncomeSourceModel = IncomeSourceModel(true, true, false)
+  lazy val testAgentIncomeSourceBusinessOverseasProperty: IncomeSourceModel = IncomeSourceModel(true, false, true)
+  lazy val testAgentIncomeSourceUkPropertyOverseasProperty: IncomeSourceModel = IncomeSourceModel(false, true, true)
   lazy val testAgentIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(true, true, true)
   lazy val testAgentIncomeSourceForeignProperty: IncomeSourceModel = IncomeSourceModel(false, false, true)
 
@@ -174,7 +177,7 @@ object TestModels extends Implicits {
   )
 
   lazy val testAgentSummaryDataBoth = AgentSummary(
-    incomeSource = Some(testAgentIncomeSourceBoth),
+    incomeSource = Some(testAgentIncomeSourceBusinessProperty),
     businessName = Some(testBusinessName),
     accountingMethod = Some(testAccountingMethod),
     accountingMethodProperty = Some(testAccountingMethodProperty)

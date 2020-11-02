@@ -18,10 +18,14 @@ package controllers.agent
 
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
+import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.AgentAnswers._
 import controllers.utils.RequireAnswer
 import javax.inject.{Inject, Singleton}
-import models.common.IncomeSourceModel
+import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.individual.business.SelfEmploymentData
 import models.individual.subscription._
 import play.api.Logger
 import play.api.mvc._
@@ -30,6 +34,7 @@ import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.ImplicitDateFormatterImpl
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,9 +42,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CheckYourAnswersController @Inject()(val authService: AuthService, val subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
+                                          incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            implicitDateFormatter: ImplicitDateFormatterImpl)
                                           (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends AuthenticatedController with RequireAnswer {
+                                           mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching with RequireAnswer {
 
 
   private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
@@ -70,13 +76,31 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, val sub
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        require(incomeSourceModelAnswer) { incomeSource =>
-          Future.successful(Ok(views.html.agent.check_your_answers(
-            cache.getAgentSummary,
-            controllers.agent.routes.CheckYourAnswersController.submit(),
-            backUrl = backUrl(incomeSource),
-            implicitDateFormatter
-          )))
+        if(isEnabled(ReleaseFour)) {
+          require(incomeSourceModelAnswer) { incomeSource =>
+            for {
+              businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
+              businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+            } yield {
+              Ok(views.html.agent.check_your_answers(
+                cache.getAgentSummary(businesses, businessAccountingMethod, true),
+                controllers.agent.routes.CheckYourAnswersController.submit(),
+                backUrl = backUrl(incomeSource),
+                implicitDateFormatter,
+                true
+              ))
+            }
+          }
+        } else {
+          require(incomeSourceModelAnswer) { incomeSource =>
+            Future.successful(Ok(views.html.agent.check_your_answers(
+              cache.getAgentSummary(),
+              controllers.agent.routes.CheckYourAnswersController.submit(),
+              backUrl = backUrl(incomeSource),
+              implicitDateFormatter,
+              false
+            )))
+          }
         }
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
 
@@ -84,7 +108,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, val sub
                                       (implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {
-      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary)(headerCarrier)
+      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary())(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)

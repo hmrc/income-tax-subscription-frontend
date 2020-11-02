@@ -17,12 +17,14 @@
 package utilities
 
 import config.featureswitch.FeatureSwitching
-import models.common.IncomeSourceModel
+import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.individual.business.{BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import models.{AgentSummary, IndividualSummary}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
 import utilities.SubscriptionDataUtil._
 import utilities.TestModels._
+import utilities.agent.TestModels.testSelfEmployments
 
 class SubscriptionDataUtilSpec extends UnitTestTrait
   with FeatureSwitching
@@ -91,7 +93,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       "the income type is property" in {
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceProperty)
-        ).getAgentSummary shouldBe AgentSummary(
+        ).getAgentSummary() shouldBe AgentSummary(
           incomeSource = Some(testAgentIncomeSourceProperty),
           businessName = None,
           accountingMethod = None,
@@ -102,7 +104,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       "the income type is business" in {
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceBusiness)
-        ).getAgentSummary shouldBe AgentSummary(
+        ).getAgentSummary() shouldBe AgentSummary(
           incomeSource = Some(testAgentIncomeSourceBusiness),
           selectedTaxYear = Some(testSelectedTaxYearNext),
           businessName = Some(testBusinessName),
@@ -113,10 +115,10 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
 
       "the income type is both" in {
         testCacheMapCustom(
-          incomeSource = Some(testAgentIncomeSourceBoth)
-        ).getAgentSummary shouldBe
+          incomeSource = Some(testAgentIncomeSourceBusinessProperty)
+        ).getAgentSummary() shouldBe
           AgentSummary(
-            incomeSource = testAgentIncomeSourceBoth,
+            incomeSource = testAgentIncomeSourceBusinessProperty,
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod,
             accountingMethodProperty = testAccountingMethodProperty
@@ -124,9 +126,107 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is not set" in {
-        emptyCacheMap.getAgentSummary shouldBe AgentSummary()
+        emptyCacheMap.getAgentSummary() shouldBe AgentSummary()
+      }
+    }
+
+    "The getAgentSummary should populate the Summary model correctly with release four enabled" when {
+      "the income type is property" in {
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceProperty)
+        ).getAgentSummary(
+            selfEmployments = testSelfEmployments,
+            selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+            isReleaseFourEnabled = true
+        ) shouldBe AgentSummary(
+              incomeSource = Some(testAgentIncomeSourceProperty),
+              selectedTaxYear = testSelectedTaxYearNext,
+              businessName = None,
+              accountingMethod = None,
+              accountingMethodProperty = Some(testAccountingMethodProperty)
+        )
+      }
+
+      "the income type is business" in {
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceBusiness)
+        ).getAgentSummary(selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true) shouldBe AgentSummary(
+          incomeSource = Some(testAgentIncomeSourceBusiness),
+          selectedTaxYear = Some(testSelectedTaxYearNext),
+          businessName = Some(testBusinessName),
+          accountingMethod = Some(testAccountingMethodAccrual),
+          accountingMethodProperty = None,
+          selfEmployments = testSelfEmployments
+        )
+      }
+
+      "the income type is foreign property" in {
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceForeignProperty)
+        ).getAgentSummary(selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true) shouldBe AgentSummary(
+          incomeSource = Some(testAgentIncomeSourceForeignProperty),
+          selectedTaxYear = Some(testSelectedTaxYearNext),
+          businessName = None,
+          accountingMethod = None,
+          accountingMethodProperty = None,
+          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+        )
+      }
+
+      "the income type is both business and property" in {
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceBusinessProperty)
+        ).getAgentSummary(selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true) shouldBe
+          AgentSummary(
+            incomeSource = testAgentIncomeSourceBusinessProperty,
+            selectedTaxYear = Some(testSelectedTaxYearNext),
+            businessName = testBusinessName,
+            accountingMethod = testAccountingMethodAccrual,
+            accountingMethodProperty = testAccountingMethodProperty,
+            selfEmployments = testSelfEmployments
+          )
+      }
+
+      "the income type is both business and overseas property" in {
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceBusinessOverseasProperty)
+        ).getAgentSummary(selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true) shouldBe
+          AgentSummary(
+            incomeSource = testAgentIncomeSourceBusinessOverseasProperty,
+            businessName = testBusinessName,
+            selectedTaxYear = Some(testSelectedTaxYearNext),
+            accountingMethod = testAccountingMethodAccrual,
+            overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty),
+            selfEmployments = testSelfEmployments
+          )
+      }
+
+      "the income type is both UK property and overseas property" in {
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)
+        ).getAgentSummary(selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true) shouldBe AgentSummary(
+            incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
+            selectedTaxYear = Some(testSelectedTaxYearNext),
+            businessName = None,
+            accountingMethod = None,
+            accountingMethodProperty = Some(testAccountingMethodProperty),
+            overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+        )
+      }
+
+      "the income type is not set" in {
+        emptyCacheMap.getAgentSummary() shouldBe AgentSummary()
       }
     }
   }
-
 }
