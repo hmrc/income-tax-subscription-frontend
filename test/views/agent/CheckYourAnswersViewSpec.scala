@@ -19,7 +19,8 @@ package views.agent
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import models.common._
-import models.{AgentSummary, Current, Next}
+import models.individual.business.{BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.{AgentSummary, Current, DateModel, Next}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.mvc.Call
@@ -37,14 +38,22 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.agent.routes.IncomeSourceController.show().url
 
+  def selfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(
+    id = id,
+    businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "2018"))),
+    businessName = Some(BusinessNameModel(s"ABC Limited $id")),
+    businessTradeName = Some(BusinessTradeNameModel(s"Plumbing $id"))
+  )
+
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
-  val testIncomeSource: IncomeSourceModel = TestModels.testAgentIncomeSourceBoth
+  val testIncomeSource: IncomeSourceModel = TestModels.testAgentIncomeSourceBusinessProperty
   val testPropertyCommencementDate: PropertyCommencementDateModel = TestModels.testPropertyCommencementDateModel
   val testOverseasPropertyCommencementDate: OverseasPropertyCommencementDateModel = TestModels.testOverseasPropertyCommencementDateModel
   val testSummary: AgentSummary = customTestSummary()
   val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
+  val testSelfEmployments: Seq[SelfEmploymentData] = Seq(selfEmploymentData("1"), selfEmploymentData("2"))
 
   def customTestSummary(selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
@@ -53,6 +62,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
                         overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testOverseasPropertyCommencementDate): AgentSummary = AgentSummary(
     businessName = testBusinessName,
     selectedTaxYear = selectedTaxYear,
+    selfEmployments = testSelfEmployments,
     accountingMethod = testAccountingMethod,
     propertyCommencementDate = propertyCommencementDate,
     accountingMethodProperty = accountingMethodProperty,
@@ -60,15 +70,17 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     overseasAccountingMethodProperty = overseasAccountingMethodProperty
   )
 
-  def page(testSummaryModel: AgentSummary): HtmlFormat.Appendable = views.html.agent.check_your_answers(
+  def page(testSummaryModel: AgentSummary, releaseFour: Boolean = false): HtmlFormat.Appendable = views.html.agent.check_your_answers(
     summaryModel = testSummaryModel,
     postAction = postAction,
     backUrl = backUrl,
-    dateFormatter
+    dateFormatter,
+    releaseFour
   )(FakeRequest(), implicitly, appConfig)
 
-  def document(testSummaryModel: AgentSummary = testAgentSummaryData): Document
-  = page(testSummaryModel).doc
+  def document(testSummaryModel: AgentSummary = testAgentSummaryData,
+               releaseFour: Boolean = false): Document
+  = page(testSummaryModel, releaseFour).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -123,11 +135,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
 
 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
-                    testSummaryModel: AgentSummary = testSummary)(
-      setupData: AgentSummary = testAgentSummaryData): Unit = {
-      val question = document(setupData).getElementById(questionId(sectionId))
-      val answer = document(setupData).getElementById(answerId(sectionId))
-      val editLink = document(setupData).getElementById(editLinkId(sectionId))
+                    testSummaryModel: AgentSummary = testSummary, releaseFour: Boolean = false)(
+                     setupData: AgentSummary = testAgentSummaryData): Unit = {
+      val question = document(setupData, releaseFour).getElementById(questionId(sectionId))
+      val answer = document(setupData, releaseFour).getElementById(answerId(sectionId))
+      val editLink = document(setupData, releaseFour).getElementById(editLinkId(sectionId))
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -178,6 +190,42 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       }
     }
 
+    "display the correct info for the select tax year with release four enabled" when {
+
+      "selected current tax year" in {
+        val currentTaxYear: AccountingPeriodModel = AccountingPeriodUtil.getCurrentTaxYear
+        val sectionId = SelectedTaxYearId
+        val expectedQuestion = messages.selected_tax_year_release4
+        val expectedAnswer = messages.option1_release4(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
+        val expectedEditLink = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          releaseFour = true
+        )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Current))))
+      }
+
+      "selected next tax year" in {
+        val nextTaxYear = AccountingPeriodUtil.getNextTaxYear
+
+        val sectionId = SelectedTaxYearId
+        val expectedQuestion = messages.selected_tax_year_release4
+        val expectedAnswer = messages.option2_release4(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
+        val expectedEditLink = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          releaseFour = true
+        )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Next))))
+      }
+    }
+
     "display the correct info for the income sources" in {
       import MessageLookup.Summary.IncomeSource
 
@@ -206,6 +254,21 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
       )()
+    }
+
+    "display the correct info for the number of businesses and edit link" in {
+      val sectionId = SelfEmploymentsId
+      val expectedQuestion = messages.number_of_businesses
+      val expectedAnswer = testSelfEmployments.size.toString
+      val expectedEditLink = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-list"
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink,
+        releaseFour = true
+      )(setupData = customTestSummary())
     }
 
     "display the correct info for the accounting method" in {

@@ -38,7 +38,7 @@ class ConfirmationController @Inject()(val authService: AuthService, subscriptio
       val postAction = controllers.agent.routes.AddAnotherClientController.addAnother()
       val signOutAction = controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
       subscriptionDetailsService.fetchAll() map { cacheMap =>
-        Ok(sign_up_complete(cacheMap.getAgentSummary, postAction, signOutAction))
+        Ok(sign_up_complete(cacheMap.getAgentSummary(), postAction, signOutAction))
       }
   }
 }

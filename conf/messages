@@ -654,9 +654,13 @@ agent.summary.match_tax_year                                    = Accounting per
 agent.summary.selected_year                                     = Year signed-up for
 agent.summary.selected_year.current                             = Current tax year ({0} to {1})
 agent.summary.selected_year.next                                = Next tax year ({0} to {1})
+agent.summary.selected_year.release4                            = Tax year to start filing updates
+agent.summary.selected_year.current.release4                    = Current tax year (6 April {0} to 5 April {1})
+agent.summary.selected_year.next.release4                       = Next tax year (6 April {0} to 5 April {1})
 agent.summary.property_commencement_date                        = Trading start for UK property
 agent.summary.overseas_property_commencement_date               = Trading start for foreign property
 agent.summary.income_type_overseas_property                     = Accounting method for foreign property income
+agent.summary.self_employments                                  = Number of businesses signed up
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                    = You have signed up your client for the Use software to send Income Tax updates pilot

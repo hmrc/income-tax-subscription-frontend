@@ -195,11 +195,15 @@ object MessageLookup {
     val accounting_period = s"Your client’s accounting period dates"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"
+    val number_of_businesses = "Number of businesses signed up"
     val selected_tax_year = "Year signed-up for"
+    val selected_tax_year_release4 = "Tax year to start filing updates"
 
     def option1(taxYearStart: String, taxYearEnd: String) = s"Current tax year ($taxYearStart to $taxYearEnd)"
+    def option1_release4(taxYearStart: String, taxYearEnd: String) = s"Current tax year (6 April $taxYearStart to 5 April $taxYearEnd)"
 
     def option2(taxYearStart: String, taxYearEnd: String) = s"Next tax year ($taxYearStart to $taxYearEnd)"
+    def option2_release4(taxYearStart: String, taxYearEnd: String) = s"Next tax year (6 April $taxYearStart to 5 April $taxYearEnd)"
 
     val income_type = "Accounting method for their self-employed business"
     val income_type_property = "Accounting method for their property business"
