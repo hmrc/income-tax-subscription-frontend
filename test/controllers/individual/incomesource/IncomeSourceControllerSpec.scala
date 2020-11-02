@@ -17,7 +17,7 @@
 package controllers.individual.incomesource
 
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.incomesource.IncomeSourceForm
@@ -116,12 +116,26 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           verifySubscriptionDetailsFetch(IncomeSource, 1)
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
+        "redirect to WhatYearToSignUp page if PropertyNextTaxYear is enabled" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          enable(PropertyNextTaxYear)
+          enable(ReleaseFour)
+
+          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
+        }
       }
 
       "self-employed is checked and rent UK property is checked but foreign property is NOT checked" when {
         "redirect to BusinessName page if release four is enabled" in {
           setupMockSubscriptionDetailsSaveFunctions()
           disable(ReleaseFour)
+          disable(PropertyNextTaxYear)
           val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
@@ -143,6 +157,19 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           verifySubscriptionDetailsFetch(IncomeSource, 1)
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
+        "redirect to WhatYearToSignUp page if PropertyNextTaxYear is enabled" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          enable(PropertyNextTaxYear)
+          enable(ReleaseFour)
+
+          val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
+        }
       }
 
       "Rent UK property is checked and self-employed, foreign property are NOT checked" should {
@@ -151,6 +178,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             setupMockSubscriptionDetailsSaveFunctions()
             val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
             disable(ReleaseFour)
+            disable(PropertyNextTaxYear)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
@@ -174,12 +202,28 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
-      }
+        "PropertyNextTaxYear feature switch is enabled" when {
+          "redirect to WhatYearToSignUp page" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+            enable(PropertyNextTaxYear)
+            enable(ReleaseFour)
 
+            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
+          }
+        }
+      }
       "Foreign property is checked and self-employed, UK property are NOT checked" should {
         "Release Four feature switch is disabled" when {
           "redirect to the overseas property commencement date page" in {
             setupMockSubscriptionDetailsSaveFunctions()
+            disable(ReleaseFour)
+            disable(PropertyNextTaxYear)
 
             val goodRequest = callSubmit(IncomeSourceModel(false, false, true), isEditMode = false)
 
@@ -206,11 +250,27 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
+        "PropertyNextTaxYear feature switch is enabled" when {
+          "redirect to WhatYearToSignUp page" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+            enable(PropertyNextTaxYear)
+
+            val goodRequest = callSubmit(IncomeSourceModel(false, false, true), isEditMode = false)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
+          }
+        }
       }
 
       "All self-employed, rent UK property and foreign property are checked" when {
         "redirect to BusinessName page" in {
           setupMockSubscriptionDetailsSaveFunctions()
+          disable(ReleaseFour)
+          disable(PropertyNextTaxYear)
 
           val goodRequest = callSubmit(IncomeSourceModel(true, true, true), isEditMode = false)
 
@@ -264,4 +324,6 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
     }
   }
+
+
 }

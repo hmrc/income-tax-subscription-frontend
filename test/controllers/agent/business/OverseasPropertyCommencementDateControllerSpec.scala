@@ -18,7 +18,7 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.OverseasPropertyCommencementDateForm

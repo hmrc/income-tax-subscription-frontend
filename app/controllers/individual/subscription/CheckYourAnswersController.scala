@@ -18,7 +18,7 @@ package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ReleaseFour, PropertyNextTaxYear}
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
@@ -69,7 +69,8 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
               controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
               backUrl = backUrl(cache.getIncomeSource.get),
               implicitDateFormatter,
-              isEnabled(ReleaseFour)
+              isEnabled(ReleaseFour),
+              isEnabled(PropertyNextTaxYear)
             ))
         }
   }
