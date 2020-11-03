@@ -215,3 +215,23 @@ input[type=radio]
         border: 0
     }
 }
+
+
+.flash.error-summary a {
+    color: #d4351c
+}
+
+.error-summary {
+    border: 5px solid #d4351c;
+}
+
+@media (min-width: 641px) {
+    .error-notification {
+        font-size: 19px !important
+    }
+}
+
+.error-notification {
+    color: #d4351c;
+    font-weight: 700 !important
+}

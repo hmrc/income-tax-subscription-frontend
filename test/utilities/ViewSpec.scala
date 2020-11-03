@@ -134,7 +134,6 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       mustHaveTextField(s"$id.dateMonth", "Month")
       mustHaveTextField(s"$id.dateYear", "Year")
       error.map { message =>
-        ele.select("legend").select(".error-notification").attr("role") mustBe "tooltip"
         ele.select("legend").select(".error-notification").text mustBe message
       }.getOrElse(succeed)
     }

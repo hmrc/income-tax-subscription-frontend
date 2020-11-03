@@ -128,7 +128,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
       val pageContent: Element = Jsoup.parse(response.body).content
 
-      pageContent.select("span[class=error-notification]").text shouldBe AccountingPeriodCheckMessages.invalidError
+      pageContent.select("span[class=error-notification bold]").text shouldBe AccountingPeriodCheckMessages.invalidError
       pageContent.select(s"a[href=#${AccountingPeriodCheckForm.accountingPeriodCheck}]").text shouldBe AccountingPeriodCheckMessages.invalidError
     }
 

@@ -28,7 +28,7 @@
 <div class="form-group@if(hasError) { form-field--error}">
 
     @if(hasError){
-    <span class="error-notification" role="tooltip" id="error-message-@field.name">
+    <span class="error-notification bold" id="error-message-@field.name">
         @Messages(s"${parentForm.error(field.name).get.message}")
     </span>
     }
