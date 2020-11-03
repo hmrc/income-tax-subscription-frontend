@@ -30,7 +30,7 @@
 
 @errorNotification = @{
     field.error.map { error =>
-        <span class="error-notification" role="tooltip" id="error-message-@field.name">{messages(error.message, error.args: _*)}</span>
+        <span class="error-notification bold" id="error-message-@field.name">{messages(error.message, error.args: _*)}</span>
     }
 }
 

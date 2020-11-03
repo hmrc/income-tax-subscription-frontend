@@ -133,7 +133,7 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
 
       val pageContent: Element = Jsoup.parse(response.body).content
 
-      pageContent.select("span[class=error-notification]").text shouldBe Covid19ClaimCheckMessages.error
+      pageContent.select("span[class=error-notification bold]").text shouldBe Covid19ClaimCheckMessages.error
       pageContent.select(s"a[href=#${Covid19ClaimCheckForm.fieldName}]").text shouldBe Covid19ClaimCheckMessages.error
     }
   }

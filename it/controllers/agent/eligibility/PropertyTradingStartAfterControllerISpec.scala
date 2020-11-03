@@ -136,7 +136,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
       val pageContent: Element = Jsoup.parse(response.body).content
 
-      pageContent.select("span[class=error-notification]").text shouldBe PropertyStartAfterMessage.error(date)
+      pageContent.select("span[class=error-notification bold]").text shouldBe PropertyStartAfterMessage.error(date)
       pageContent.select(s"a[href=#${PropertyTradingStartDateForm.fieldName}]").text shouldBe PropertyStartAfterMessage.error(date)
     }
 

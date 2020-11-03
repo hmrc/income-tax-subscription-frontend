@@ -77,7 +77,7 @@
 
     <div class="form-group @if(field.error.isDefined) { form-field--error}">
         @field.error.map { error =>
-            <span class="error-notification" role="tooltip" id="error-message-@field.name">
+            <span class="error-notification bold" id="error-message-@field.name">
             @messages(error.message, error.args: _*)
             </span>
         }
