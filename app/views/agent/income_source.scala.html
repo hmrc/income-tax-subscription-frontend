@@ -38,9 +38,9 @@
      role="alert"
      aria-labelledby="error-summary-heading"
      tabindex="-1">
-        <h2 id="error-summary-heading" class="h3-heading">@Messages("base.error_heading")</h2>
+        <h2 id="error-summary-heading" class="heading-medium">@Messages("base.error_heading")</h2>
             <ul>
-                <li>
+                <li class="bold">
                     <a id="error-summary-heading-href" href="#@IncomeSourceForm.business">
                         @if(foreignProperty){
                             @Messages("agent.error.income_source_foreignProperty.invalid")
@@ -58,7 +58,7 @@
 
     @form(action = postAction) {
         @if(incomeSourceForm.hasErrors){
-            <div class="form-group form-field-group--error">
+            <div class="form-group form-field--error">
             <span class="error-notification bold">
                 @if(foreignProperty){
                     @Messages("agent.error.income_source_foreignProperty.invalid")
