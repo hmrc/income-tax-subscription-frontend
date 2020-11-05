@@ -14,12 +14,14 @@
  * limitations under the License.
  *@
 
+@import java.time.LocalDate
 @import config.AppConfig
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import models.AgentSummary
 @import views.html.templates.main_template
+@import views.html.helpers._
 
-@(summary: AgentSummary, postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summary: AgentSummary, clientName: String, endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)], postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @dataHelper(metricId:String, optFieldValue:Option[String]) = {
         @for(value <- optFieldValue) {
@@ -27,31 +29,35 @@
         }
     }
 
-    @main_template(title = Messages("agent.sign-up-complete.title")) {
+    @main_template(title = Messages("agent.sign-up-complete.title", clientName)) {
 
         @dataHelper("self-employment", summary.incomeSource.map(_.selfEmployment.toString))
         @dataHelper("uk-property", summary.incomeSource.map(_.ukProperty.toString))
         @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod.toString))
 
         <div class="form-group">
-            <section id="confirmation-heading" class="govuk-box-highlight">
-                <h1 class="heading-large">@Messages("agent.sign-up-complete.heading")</h1>
+            <section id="confirmation-heading" class="govuk-panel--confirmation">
+                <h1 class="transaction-banner__heading" style="font-size: 42px">@Html(Messages("agent.sign-up-complete.heading", clientName))</h1>
             </section>
         </div>
 
+
         <section class="form-group" id="whatNext">
-            <h2>@Messages("agent.sign-up-complete.whatNext.heading")</h2>
-            <p>@Messages("agent.sign-up-complete.whatNext.para1")</p>
+            <h2>@Messages("agent.sign-up-complete.whatNow.heading")</h2>
+            <p>@Messages("agent.sign-up-complete.whatNow.para1")</p>
 
             <ol class="list list-number">
-                <li>@Html(Messages("agent.sign-up-complete.whatNext.number1", appConfig.softwareUrl))</li>
-                <li>@Messages("agent.sign-up-complete.whatNext.number2")</li>
-                <li>@Messages("agent.sign-up-complete.whatNext.number3")</li>
-                <li>@Messages("agent.sign-up-complete.whatNext.number4")</li>
-                <li>@Messages("agent.sign-up-complete.whatNext.number5")</li>
+                <li>@Html(Messages("agent.sign-up-complete.whatNow.number1",
+                    <a id="compatibleSoftware" href={appConfig.softwareUrl} target="_blank">{messages("agent.sign-up-complete.whatNow.number1.link")}</a>))
+                </li>
+                @if(summary.selectedTaxYear.exists(_.accountingYear == Next)) {
+                    @signUpCompleteNextTaxYearHelper(endYearOfCurrentTaxPeriod)
+                } else {
+                    @signUpCompleteCurrentTaxYearHelper(endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter)
+                }
             </ol>
 
-            <p>@Messages("agent.sign-up-complete.whatNext.para2")</p>
+                <p>@Messages("agent.sign-up-complete.whatNow.para2")</p>
 
         </section>
 
@@ -61,5 +67,7 @@
             <button formnovalidate class="button" type="submit" id="add-another-button">@Messages("agent.base.sign_up_another_client")</button>
         }
         </div>
+
+        @signOutLink()
 
 }

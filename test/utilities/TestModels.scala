@@ -201,4 +201,11 @@ object TestModels extends Implicits {
     accountingMethodProperty = Some(testAccountingMethodProperty)
   )
 
+  lazy val testAgentSummaryDataNextTaxYear = AgentSummary(
+    incomeSource = Some(testAgentIncomeSourceBusiness),
+    businessName = Some(testBusinessName),
+    selectedTaxYear = Some(testSelectedTaxYearNext),
+    accountingMethod = Some(testAccountingMethod)
+  )
+
 }

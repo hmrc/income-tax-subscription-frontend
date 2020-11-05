@@ -61,6 +61,14 @@ object TestModels extends Implicits {
       accountingMethod = testAccountingMethod,
       accountingMethodProperty = testAccountingMethodProperty)
 
+  val testCurrentCacheMap: CacheMap =
+    testCacheMap(
+      incomeSource = testIncomeSourceBusinessAndUkProperty,
+      selectedTaxYear = testSelectedTaxYearCurrent,
+      businessName = testBusinessName,
+      accountingMethod = testAccountingMethod,
+      accountingMethodProperty = testAccountingMethodProperty)
+
   def testCacheMapCustom(
                           incomeSource: Option[IncomeSourceModel] = testIncomeSourceBusinessAndUkProperty,
                           selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,

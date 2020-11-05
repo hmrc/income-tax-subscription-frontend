@@ -22,6 +22,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuthService, SubscriptionDetailsService}
+import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
 
 import scala.concurrent.ExecutionContext
 
@@ -39,6 +40,7 @@ class AddAnotherClientController @Inject()(val authService: AuthService, appConf
         Redirect(eligibility.routes.Covid19ClaimCheckController.show())
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
           .removingFromSession(ITSASessionKeys.clientData: _*)
+          .clearUserName
       }
   }
 

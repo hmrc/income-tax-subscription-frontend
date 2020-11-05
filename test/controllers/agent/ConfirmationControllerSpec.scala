@@ -16,23 +16,37 @@
 
 package controllers.agent
 
+import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
+import utilities.TestModels
 import utilities.agent.TestModels._
+import uk.gov.hmrc.http.InternalServerException
+import utilities.agent.TestConstants.testException
+
+
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService {
+  with MockSubscriptionDetailsService with MockAccountingPeriodService with MockUserMatchingService {
 
   object TestConfirmationController extends ConfirmationController(
     mockAuthService,
+    mockAccountingPeriodService,
     MockSubscriptionDetailsService
   )(executionContext, appConfig, mockMessagesControllerComponents)
+
+  val userDetails: UserDetailsModel = TestModels.testUserDetails
+
+  val taxQuarter1 = ("agent.sign-up.complete.julyUpdate", "2020")
+  val taxQuarter2 = ("agent.sign-up.complete.octoberUpdate", "2020")
+  val taxQuarter3 = ("agent.sign-up.complete.januaryUpdate", "2021")
+  val taxQuarter4 = ("agent.sign-up.complete.aprilUpdate", "2021")
 
   implicit val request: Request[_] = FakeRequest()
 
@@ -55,8 +69,23 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
       "return OK" in {
         mockFetchAllFromSubscriptionDetails(testCacheMap)
 
-        val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
+        mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
+        mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
+
+        val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any").buildRequest(userDetails))
         status(result) shouldBe OK
+      }
+    }
+
+    "no client details in session" should {
+      "return an exception" in {
+        mockFetchAllFromSubscriptionDetails(testCacheMap)
+
+        mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
+        mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
+
+        val exception = intercept[Exception](await(TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))))
+        exception.getMessage shouldBe "[ConfirmationController][show]-could not retrieve client name from session"
       }
     }
 
@@ -64,14 +93,20 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
       "return OK" in {
         mockFetchAllFromSubscriptionDetails(testCacheMap)
 
+        mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
+        mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
+
+        val clientName = userDetails.firstName + " " + userDetails.lastName
+
         val result = TestConfirmationController.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")
+            .buildRequest(userDetails)
         )
         val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         status(result) shouldBe OK
 
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title") + serviceNameGovUk
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title", clientName) + serviceNameGovUk
       }
     }
 

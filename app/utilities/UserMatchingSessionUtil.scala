@@ -41,7 +41,7 @@ object UserMatchingSessionUtil {
         nino -> userDetails.nino
       )
 
-    def clearUserDetails(implicit request: Request[AnyContent]): Result =
+    def clearAllUserDetails(implicit request: Request[AnyContent]): Result =
       result.removingFromSession(
         firstName,
         lastName,
@@ -49,6 +49,20 @@ object UserMatchingSessionUtil {
         dobM,
         dobY,
         nino
+      )
+
+    def clearUserDetailsExceptName(implicit request: Request[AnyContent]): Result =
+      result.removingFromSession(
+        dobD,
+        dobM,
+        dobY,
+        nino
+      )
+
+    def clearUserName(implicit request: Request[AnyContent]): Result =
+      result.removingFromSession(
+        firstName,
+        lastName
       )
   }
 
@@ -62,6 +76,14 @@ object UserMatchingSessionUtil {
         request.session.get(nino)) match {
         case (Some(f), Some(l), Some(dd), Some(dm), Some(dy), Some(n)) =>
           Some(UserDetailsModel(firstName = f, lastName = l, nino = n, dateOfBirth = DateModel(dd, dm, dy)))
+        case _ => None
+      }
+
+    def fetchClientName: Option[String] =
+      (request.session.get(firstName),
+        request.session.get(lastName)) match {
+        case (Some(f), Some(l)) =>
+          Some(f + " " + l)
         case _ => None
       }
   }

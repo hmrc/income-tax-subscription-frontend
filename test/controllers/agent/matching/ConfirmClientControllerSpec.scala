@@ -196,7 +196,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
             session.get(ITSASessionKeys.NINO) mustBe Some(nino)
             session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-            result.verifyStoredUserDetailsIs(None)(request)
           }
         }
         "the client is ineligible" should {

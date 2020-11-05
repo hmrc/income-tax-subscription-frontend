@@ -117,7 +117,6 @@ class ConfirmUserController @Inject()(val authService: AuthService, lockOutServi
             .addingToSession(NINO -> matchedDetails.nino)
         )
     }
-    }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearUserDetails)
+    }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearAllUserDetails)
 
 }
-

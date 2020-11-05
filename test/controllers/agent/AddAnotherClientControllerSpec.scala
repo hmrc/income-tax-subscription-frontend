@@ -19,14 +19,15 @@ package controllers.agent
 import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching {
+  with MockSubscriptionDetailsService with FeatureSwitching with MockUserLockoutService
+{
 
   override val controllerName: String = "addAnotherClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -58,6 +59,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
       result.session(request).get(ITSASessionKeys.UTR) mustBe None
       result.session(request).get(ITSASessionKeys.NINO) mustBe None
+      result.verifyStoredUserDetailsIs(None)(request)
 
       verifySubscriptionDetailsDeleteAll(1)
     }

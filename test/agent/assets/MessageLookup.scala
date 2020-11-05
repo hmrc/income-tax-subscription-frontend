@@ -271,19 +271,30 @@ object MessageLookup {
   }
 
   object SignUpComplete {
-    val title = "You have signed up your client for the Use software to send Income Tax updates pilot"
+    val title = "You have signed up Test User to use software to send Income Tax updates"
     val heading: String = title
 
     object whatNext {
       val heading = "What you need to do next"
       val para1 = "Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other."
-      val linkText = "Choose relevant software (opens in a new window)"
-      val number1 = s"$linkText if you haven’t already."
-      val number2 = "Allow your software to interact with HMRC."
-      val number3 = "Add all income and expenses your client has already received or paid out from the start of their tax year into the software."
-      val number4 = "Continue to record your client’s income and expenses using software and send a quarterly report to HMRC."
-      val number5 = "Send your client’s final report by 31 January after the end of the tax year you’re signing them up for."
-      val para2 = "After you’ve sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report."
+      val para1linkText = "find software thats compatible with Making Tax Digital for Income Tax (opens in new tab)"
+      val number1 = s"If you have not already, $para1linkText and allow it interact with HMRC."
+      val nextTaxYearNumber2LinkText = "Business Tax account"
+      val nextTaxYearNumber2 = s"Log in to your $nextTaxYearNumber2LinkText to find out when your first update is due."
+      val nextTaxYearNumber3 = "Send quarterly updates by:"
+      val nextTaxYearJulyUpdate = "5 July 2021"
+      val nextTaxYearOcoberUpdate = "5 October 2021"
+      val nextTaxYearJanuaryUpdate = "5 January 2022"
+      val nextTaxYearAprilUpdate = "5 April 2022"
+      val nextTaxYearNumber4 ="Submit your client’s annual updates and declare for the tax year by 31 January 2023."
+      val currentTaxYearPreviousUpdates = "Add any income and expenses your client has for previous updates:"
+      val currentYaxYearQuarterlyUpdates = "Send quarterly updates by:"
+      val currentTaxYearJulyUpdate = "5 July 2020"
+      val currentTaxYearOctoberUpdate = "5 October 2020"
+      val currentTaxYearJanuaryUpdate = "5 January 2021"
+      val currentTaxYearAprilUpdate = "5 April 2021"
+      val currentTaxYearAnnualUpdates = "Submit your client’s annual updates and declare for the tax year by 31 January 2022."
+      val para2 = "After you’ve sent an update, your client will get an Income Tax year-to-date estimate. They can see what they owe for the tax year after you’ve sent their final update."
     }
 
   }

@@ -224,11 +224,11 @@ trait ComponentSpecBase extends UnitSpec
 
     def showClientDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def showConfirmation(hasSubmitted: Boolean): WSResponse =
+    def showConfirmation(hasSubmitted: Boolean, storedUserDetails: UserDetailsModel): WSResponse =
       if (hasSubmitted)
-        get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMTDID))
+        get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMTDID).addUserDetails(Some(storedUserDetails)))
       else
-        get("/confirmation")
+        get("/confirmation", Map[String, String]().addUserDetails(Some(storedUserDetails)))
 
     def feedback(): WSResponse = get("/feedback-submitted")
 
