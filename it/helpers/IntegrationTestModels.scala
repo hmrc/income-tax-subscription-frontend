@@ -38,7 +38,19 @@ import utilities.individual.Constants.GovernmentGateway._
                            endDate: DateModel = testEndDate): AccountingPeriodModel =
     AccountingPeriodModel(startDate, endDate)
 
-  val testBusinessName = BusinessNameModel("test business")
+  val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
+  val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")
+  val testBusinessAddress: BusinessAddressModel = BusinessAddressModel(
+    "",
+    Address(
+      lines = Seq(
+        "1 long road",
+        "lonely town",
+        "quiet county"
+      ),
+      postcode = "ZZ11ZZ"
+    )
+  )
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testAccountingMethodForeignProperty = OverseasAccountingMethodPropertyModel(Cash)
@@ -47,7 +59,13 @@ import utilities.individual.Constants.GovernmentGateway._
   val testPropertyCommencementDate = PropertyCommencementDateModel(testValidStartDate)
   val testForeignPropertyCommencementDate = OverseasPropertyCommencementDateModel(testValidStartDate)
   val testInvalidCommencementDate = PropertyCommencementDateModel(testInvalidStartDate)
-  val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData("businessId", businessName = Some(testBusinessName)))
+  val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData(
+    id = "businessId",
+    businessStartDate = Some(BusinessStartDate(DateModel("19", "03", "1999"))),
+    businessName = Some(testBusinessName),
+    businessTradeName = Some(testBusinessTrade),
+    businessAddress = Some(testBusinessAddress)
+  ))
   val testInvalidForeignPropertyCommencementDate = OverseasPropertyCommencementDateModel(testInvalidStartDate)
 
   lazy val fullSubscriptionDataBothPost: Map[String, JsValue] =

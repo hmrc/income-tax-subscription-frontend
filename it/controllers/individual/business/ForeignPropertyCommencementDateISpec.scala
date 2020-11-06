@@ -21,7 +21,7 @@ class ForeignPropertyCommencementDateISpec extends ComponentSpecBase {
       "show the foreign property commencement date page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionAllPost()
+        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionGet()
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyCommencementDate()

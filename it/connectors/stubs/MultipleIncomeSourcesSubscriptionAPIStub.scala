@@ -24,7 +24,7 @@ object MultipleIncomeSourcesSubscriptionAPIStub extends WireMockMethods {
 
   def stubPostSubscription(mtdbsa: String, request: BusinessSubscriptionDetailsModel)
                           (responseCode: Int,
-                           response: JsValue = Json.parse("{}")): StubMapping = {
+                           response: JsValue = Json.obj()): StubMapping = {
     when (
       method = POST,
       uri = createIncomeSourcesUri(mtdbsa),

@@ -24,7 +24,6 @@ object SubscriptionDataKeys {
   val BusinessName = "BusinessName"
   val BusinessPhoneNumber = "BusinessPhoneNumber"
   val BusinessAddress = "BusinessAddress"
-  val BusinessStartDate = "BusinessStartDate"
   val SelectedTaxYear = "SelectedTaxYear"
   val AccountingMethod = "AccountingMethod"
   val PropertyAccountingMethod = "PropertyAccountingMethod"

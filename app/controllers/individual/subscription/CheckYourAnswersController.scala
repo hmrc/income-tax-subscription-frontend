@@ -18,7 +18,7 @@ package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
@@ -32,10 +32,9 @@ import services.individual.SubscriptionOrchestrationService
 import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.ITSASessionKeys
+import utilities.{ITSASessionKeys, ImplicitDateFormatterImpl}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
-import utilities.ImplicitDateFormatterImpl
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,8 +43,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
                                            subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
                                            incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                           implicitDateFormatter: ImplicitDateFormatterImpl
-                                          )
+                                           implicitDateFormatter: ImplicitDateFormatterImpl)
                                           (implicit val ec: ExecutionContext,
                                            appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
@@ -82,7 +80,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
         val nino = user.nino.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
         getSummaryModel(cache).flatMap { summaryModel =>
-          subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour))(headerCarrier).flatMap {
+          subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour), isEnabled(PropertyNextTaxYear))(headerCarrier).flatMap {
             case Right(SubscriptionSuccess(id)) =>
               subscriptionDetailsService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
             case Left(failure) =>

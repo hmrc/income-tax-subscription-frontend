@@ -30,7 +30,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
   with FeatureSwitching
   with BeforeAndAfterEach {
 
-  "CacheUtil" should {
+  "SubscriptionDataUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
       emptyCacheMap.getIncomeSource shouldBe None
@@ -81,7 +81,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod,
             accountingMethodProperty = testAccountingMethodProperty,
-            overseasAccountingMethodProperty = testOverseasAccountingMethodProperty
+            overseasAccountingMethodProperty = testOverseasAccountingMethodProperty,
+            selectedTaxYear = testSelectedTaxYearNext
           )
       }
       "income source is neither property or business" in {

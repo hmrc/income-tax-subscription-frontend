@@ -106,7 +106,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), false)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = false, isPropertyNextTaxYearEnabled = false)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -127,7 +127,28 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), true)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = false)
+        status(result) must be(Status.SEE_OTHER)
+        await(result)
+        verifySubscriptionDetailsSave(MtditId, 1)
+        verifySubscriptionDetailsFetchAll(2)
+      }
+
+      s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
+        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show().url)
+      }
+    }
+
+    "When the submission is successful and release four + property next tax year is enabled" should {
+      lazy val result = call
+
+      "return a redirect status (SEE_OTHER - 303)" in {
+        enable(ReleaseFour)
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchAllFromSubscriptionDetails(testCacheMap)
+        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+        mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = true)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -147,7 +168,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(), false)
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = false, isPropertyNextTaxYearEnabled = false)
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifySubscriptionDetailsFetchAll(1)
         verifySubscriptionDetailsSave(MtditId, 0)
@@ -159,17 +180,17 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "The back url" when {
     s"point to the ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url} when the income source is Business" in {
-      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(true, false, false)) mustBe
+      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)) mustBe
         controllers.individual.business.routes.BusinessAccountingMethodController.show().url
     }
 
     s"point to the ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url} when the income source is Both" in {
-      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(true, true, false)) mustBe
+      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)) mustBe
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }
 
     s"point to the ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url} when the income source is Property" in {
-      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(false, true, false)) mustBe
+      TestCheckYourAnswersController.backUrl(incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)) mustBe
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }
   }
