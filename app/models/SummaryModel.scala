@@ -52,7 +52,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
                              overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None,
                              overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None) extends SummaryModel {
 
-  lazy val toBusinessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = {
+  def toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled: Boolean): BusinessSubscriptionDetailsModel = {
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
     val useUkProperty = incomeSource.exists(_.ukProperty)
     val useForeignProperty = incomeSource.exists(_.foreignProperty)
@@ -67,12 +67,20 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     if (!hasValidForeignProperty) throw new Exception("Missing data items for valid foreign property submission")
     if (!hasValidSelfEmployments) throw new Exception("Missing data items for valid self employments submission")
 
-    val accountingPeriodVal: Option[AccountingPeriodModel] =
-      if (incomeSource.exists(sources => sources.ukProperty || sources.foreignProperty)) Some(getCurrentTaxYear)
-      else selectedTaxYear map {
-        case AccountingYearModel(Next) => getNextTaxYear
-        case AccountingYearModel(Current) => getCurrentTaxYear
+    val accountingPeriodVal: Option[AccountingPeriodModel] = {
+      if(isPropertyNextTaxYearEnabled) {
+        selectedTaxYear map {
+          case AccountingYearModel(Next) => getNextTaxYear
+          case AccountingYearModel(Current) => getCurrentTaxYear
+        }
+      } else {
+        if (incomeSource.exists(sources => sources.ukProperty || sources.foreignProperty)) Some(getCurrentTaxYear)
+        else selectedTaxYear map {
+          case AccountingYearModel(Next) => getNextTaxYear
+          case AccountingYearModel(Current) => getCurrentTaxYear
+        }
       }
+    }
 
     BusinessSubscriptionDetailsModel(
       accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),

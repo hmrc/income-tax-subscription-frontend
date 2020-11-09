@@ -39,7 +39,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionDataBothPost))
   }
 
-  def stubFullSubscriptionAllPost(): Unit = stubSubscriptionData(fullSubscriptionDataAllPost)
+  def stubFullSubscriptionGet(): Unit = stubSubscriptionData(fullSubscriptionDataAllPost)
 
   def stubFullSubscriptionBothPost(): Unit = stubSubscriptionData(fullSubscriptionDataBothPost)
 

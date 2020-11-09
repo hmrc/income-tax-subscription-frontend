@@ -56,11 +56,12 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
     when(mockSubscriptionService.signUpIncomeSources(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  private def mockCreateIncomeSources(mtdbsa: String, individualSummary: IndividualSummary)
+  private def mockCreateIncomeSources(mtdbsa: String, individualSummary: IndividualSummary, isPropertyNextTaxYearEnabled: Boolean)
                                      (result: Future[PostCreateIncomeSourceResponse]): Unit =
     when(mockSubscriptionService.createIncomeSources(
       ArgumentMatchers.eq(mtdbsa),
-      ArgumentMatchers.eq(individualSummary)
+      ArgumentMatchers.eq(individualSummary),
+      ArgumentMatchers.eq(isPropertyNextTaxYearEnabled)
     )(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
@@ -73,14 +74,14 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
   def mockSignUpIncomeSourcesException(nino: String): Unit =
     mockSignUpIncomeSources(nino)(Future.failed(testException))
 
-  def mockCreateIncomeSourcesSuccess(mtdbsa: String, individualSummary: IndividualSummary): Unit =
-    mockCreateIncomeSources(mtdbsa, individualSummary)(Future.successful(testCreateIncomeSourcesSuccess))
+  def mockCreateIncomeSourcesSuccess(mtdbsa: String, individualSummary: IndividualSummary, isPropertyNextTaxYearEnabled: Boolean): Unit =
+    mockCreateIncomeSources(mtdbsa, individualSummary, isPropertyNextTaxYearEnabled)(Future.successful(testCreateIncomeSourcesSuccess))
 
-  def mockCreateIncomeSourcesFailure(mtdbsa: String, individualSummary: IndividualSummary): Unit =
-    mockCreateIncomeSources(mtdbsa, individualSummary)(Future.successful(testCreateIncomeSourcesFailure))
+  def mockCreateIncomeSourcesFailure(mtdbsa: String, individualSummary: IndividualSummary, isPropertyNextTaxYearEnabled: Boolean): Unit =
+    mockCreateIncomeSources(mtdbsa, individualSummary, isPropertyNextTaxYearEnabled)(Future.successful(testCreateIncomeSourcesFailure))
 
-  def mockCreateIncomeSourcesException(mtdbsa: String, individualSummary: IndividualSummary): Unit =
-    mockCreateIncomeSources(mtdbsa, individualSummary)(Future.failed(testException))
+  def mockCreateIncomeSourcesException(mtdbsa: String, individualSummary: IndividualSummary, isPropertyNextTaxYearEnabled: Boolean): Unit =
+    mockCreateIncomeSources(mtdbsa, individualSummary, isPropertyNextTaxYearEnabled)(Future.failed(testException))
 
   def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, arn: Option[String]): Unit =
     mockCreateSubscription(nino, summaryModel, arn)(Future.successful(testSubscriptionSuccess))

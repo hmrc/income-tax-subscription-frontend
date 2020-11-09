@@ -60,8 +60,6 @@ object SubscriptionStub extends WireMockMethods {
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 
-
-
   def stubGetSubscriptionFound(): Unit = {
     when(method = GET, uri = subscriptionURI(testNino))
       .thenReturn(Status.OK, successfulSubscriptionResponse)

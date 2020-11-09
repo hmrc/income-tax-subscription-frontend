@@ -32,10 +32,10 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                  enrolmentService: EnrolmentService
                                                 )(implicit ec: ExecutionContext) {
 
-  def createSubscription(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false)
+  def createSubscription(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false, isPropertyNextTaxYearEnabled: Boolean)
                         (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     if(isReleaseFourEnabled) {
-      signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[IndividualSummary])
+      signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[IndividualSummary], isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
     } else {
       createSubscriptionCore(nino, summaryModel)
     }
@@ -61,12 +61,12 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     res.value
   }
 
-  private[services] def signUpAndCreateIncomeSources(nino: String, individualSummary: IndividualSummary)
+  private[services] def signUpAndCreateIncomeSources(nino: String, individualSummary: IndividualSummary, isPropertyNextTaxYearEnabled: Boolean)
                                                     (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     val res = for {
       signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
       mtdbsa = signUpResponse.mtdbsa
-      _ <- EitherT(subscriptionService.createIncomeSources(mtdbsa, individualSummary))
+      _ <- EitherT(subscriptionService.createIncomeSources(mtdbsa, individualSummary, isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled))
       _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))
       _ <- EitherT(enrolAndRefresh(mtdbsa, nino))
     } yield SubscriptionSuccess(mtdbsa)

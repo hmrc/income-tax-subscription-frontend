@@ -48,7 +48,7 @@ object SubscriptionDataUtil {
 
     def getSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                    selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None
-                  )(implicit appConfig: AppConfig): IndividualSummary = {
+                  ): IndividualSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
@@ -65,19 +65,19 @@ object SubscriptionDataUtil {
     def getAgentSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                         selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                         isReleaseFourEnabled: Boolean = false
-                       )(implicit appConfig: AppConfig): AgentSummary = {
+                       ): AgentSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
             applyPropertyData(
-              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, true).asInstanceOf[AgentSummary],
+              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, isAgent = true).asInstanceOf[AgentSummary],
               hasProperty,
-              true,
-              isReleaseFourEnabled
+              isAgent = true,
+              isReleaseFourEnabled = isReleaseFourEnabled
             ).asInstanceOf[AgentSummary],
             hasForeignProperty,
-            true,
-            isReleaseFourEnabled
+            isAgent = true,
+            isReleaseFourEnabled = isReleaseFourEnabled
           ).asInstanceOf[AgentSummary]
         case _ => AgentSummary()
       }
@@ -153,8 +153,7 @@ object SubscriptionDataUtil {
         } else {
           summaryModel.asInstanceOf[IndividualSummary].copy(
             propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod,
-            selectedTaxYear = None
+            accountingMethodProperty = getPropertyAccountingMethod
           )
         }
       } else summaryModel
@@ -176,7 +175,6 @@ object SubscriptionDataUtil {
           summaryModel.asInstanceOf[IndividualSummary].copy(
             overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
             overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
-            selectedTaxYear = None
           )
         }
       } else summaryModel

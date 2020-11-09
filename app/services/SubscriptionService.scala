@@ -114,11 +114,11 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
     multipleIncomeSourcesSubscriptionConnector.signUp(nino)
   }
 
-  def createIncomeSources(mtdbsa: String, individualSummary: IndividualSummary)
+  def createIncomeSources(mtdbsa: String, individualSummary: IndividualSummary, isPropertyNextTaxYearEnabled: Boolean)
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
     Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
     val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel =
-      individualSummary.toBusinessSubscriptionDetailsModel
+      individualSummary.toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
 
     multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
   }

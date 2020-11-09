@@ -36,6 +36,24 @@ class SummaryModelSpec extends UnitSpec {
 
     "convert correctly to a BusinessSubscriptionDetailsModel" when {
 
+      "the isPropertyNextTaxYearEnabled flag is true" in {
+        val summary = IndividualSummary(
+          incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
+          selectedTaxYear = Some(AccountingYearModel(Next)),
+          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash))
+        )
+
+        val expectedModel = BusinessSubscriptionDetailsModel(
+          incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
+          accountingPeriod = getNextTaxYear,
+          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          propertyAccountingMethod = Some(AccountingMethodPropertyModel(Cash))
+        )
+
+        summary.toBusinessSubscriptionDetailsModel(true) shouldBe expectedModel
+      }
+
       "provided with a valid set of data for SE" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
@@ -51,7 +69,7 @@ class SummaryModelSpec extends UnitSpec {
           accountingMethod = Some(Cash)
         )
 
-        summary.toBusinessSubscriptionDetailsModel shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
       }
 
       "provided with a valid set of data for SE filtering out incomplete sets" in {
@@ -69,7 +87,7 @@ class SummaryModelSpec extends UnitSpec {
           accountingMethod = Some(Cash)
         )
 
-        summary.toBusinessSubscriptionDetailsModel shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
       }
 
       "provided with a valid set of data for uk property" in {
@@ -86,7 +104,7 @@ class SummaryModelSpec extends UnitSpec {
           propertyAccountingMethod = Some(AccountingMethodPropertyModel(Cash))
         )
 
-        summary.toBusinessSubscriptionDetailsModel shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
       }
 
       "provided with a valid set of data for foreign property" in {
@@ -103,7 +121,7 @@ class SummaryModelSpec extends UnitSpec {
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
-        summary.toBusinessSubscriptionDetailsModel shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
       }
 
       "provided with a valid set of all data" in {
@@ -128,7 +146,7 @@ class SummaryModelSpec extends UnitSpec {
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
-        summary.toBusinessSubscriptionDetailsModel shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
       }
 
       "provided with valid data including data not selected as an income source" in {
@@ -148,7 +166,7 @@ class SummaryModelSpec extends UnitSpec {
           accountingPeriod = getCurrentTaxYear
         )
 
-        summary.toBusinessSubscriptionDetailsModel shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
       }
     }
 
@@ -160,21 +178,21 @@ class SummaryModelSpec extends UnitSpec {
           selectedTaxYear = Some(AccountingYearModel(Next))
         )
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "Missing data items for valid self employments submission"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "Missing data items for valid self employments submission"
       }
 
       "incomplete property data is submitted when required" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)))
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "Missing data items for valid property submission"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "Missing data items for valid property submission"
       }
 
       "incomplete foreign property data is submitted when required" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)))
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "Missing data items for valid foreign property submission"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "Missing data items for valid foreign property submission"
       }
 
       "accounting year selection is missing when se employments are the only income" in {
@@ -184,7 +202,7 @@ class SummaryModelSpec extends UnitSpec {
           accountingMethod = Some(AccountingMethodModel(Cash))
         )
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "Accounting period not defined for BusinessSubscriptionDetailsModel"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "Accounting period not defined for BusinessSubscriptionDetailsModel"
       }
 
       "income source model is missing on any submission" in {
@@ -194,7 +212,7 @@ class SummaryModelSpec extends UnitSpec {
           selectedTaxYear = Some(AccountingYearModel(Next))
         )
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel should have message "IncomeSource model not defined for BusinessSubscriptionDetailsModel"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "IncomeSource model not defined for BusinessSubscriptionDetailsModel"
       }
     }
   }
