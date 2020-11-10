@@ -41,7 +41,7 @@ sealed trait SummaryModel {
   def overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel]
 }
 
-
+//scalastyle:off
 case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
                              businessName: Option[BusinessNameModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
@@ -105,4 +105,40 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
                         overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None,
                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None,
                         selfEmployments: Option[Seq[SelfEmploymentData]] = None
-                       ) extends SummaryModel
+                       ) extends SummaryModel {
+
+  lazy val toBusinessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = {
+    val useSelfEmployments = incomeSource.exists(_.selfEmployment)
+    val useUkProperty = incomeSource.exists(_.ukProperty)
+    val useForeignProperty = incomeSource.exists(_.foreignProperty)
+
+    val hasValidProperty: Boolean = if (useUkProperty) propertyCommencementDate.isDefined && accountingMethodProperty.isDefined else true
+
+    val hasValidForeignProperty: Boolean = if (useForeignProperty) overseasPropertyCommencementDate.isDefined && overseasAccountingMethodProperty.isDefined else true
+
+    val hasValidSelfEmployments: Boolean = if (useSelfEmployments) selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined else true
+
+    if (!hasValidProperty) throw new Exception("Missing data items for valid property submission")
+    if (!hasValidForeignProperty) throw new Exception("Missing data items for valid foreign property submission")
+    if (!hasValidSelfEmployments) throw new Exception("Missing data items for valid self employments submission")
+
+    val accountingPeriodVal: Option[AccountingPeriodModel] =
+      if (useUkProperty || useForeignProperty) Some(getCurrentTaxYear)
+      else selectedTaxYear map {
+        case AccountingYearModel(Next) => getNextTaxYear
+        case AccountingYearModel(Current) => getCurrentTaxYear
+      }
+
+    BusinessSubscriptionDetailsModel(
+      accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),
+      if (useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
+      if (useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
+      incomeSource.getOrElse(throw new Exception("IncomeSource model not defined for BusinessSubscriptionDetailsModel")),
+      if (useUkProperty) propertyCommencementDate else None,
+      if (useUkProperty) accountingMethodProperty else None,
+      if (useForeignProperty) overseasPropertyCommencementDate else None,
+      if (useForeignProperty) overseasAccountingMethodProperty else None
+    )
+  }
+
+}

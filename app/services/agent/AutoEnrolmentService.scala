@@ -22,6 +22,7 @@ import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UsersFound
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
 import connectors.agent.{EnrolmentStoreProxyConnector, UsersGroupsSearchConnector}
 import javax.inject.{Inject, Singleton}
+import models.ConnectorError
 import play.api.Logger
 import services.agent.AutoEnrolmentService._
 import uk.gov.hmrc.auth.core.User
@@ -166,7 +167,7 @@ object AutoEnrolmentService {
 
   case object UpsertEnrolmentSuccess extends AutoClaimEnrolmentSuccess
 
-  sealed trait AutoClaimEnrolmentFailure
+  sealed trait AutoClaimEnrolmentFailure extends ConnectorError
 
   case object NoUsersFound extends AutoClaimEnrolmentFailure
 

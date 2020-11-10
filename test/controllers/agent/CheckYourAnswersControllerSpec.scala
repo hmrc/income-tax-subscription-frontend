@@ -122,7 +122,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         lazy val result = call(authorisedAgentRequest)
 
-        "return a redirect status (SEE_OTHER - 303)" in {
+        "return a redirect status (SEE_OTHER - 303) when release four is disabled" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testSummary)
 
@@ -132,6 +132,16 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           await(result)
           verifySubscriptionDetailsSave(MtditId, 1)
           verifySubscriptionDetailsFetchAll(2)
+        }
+
+        "return a redirect status (SEE_OTHER - 303) when release four is enabled" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllFromSubscriptionDetails(testSummary)
+
+          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary(), true)
+
+          status(result) must be(Status.SEE_OTHER)
+          await(result)
         }
 
         s"redirect to '${controllers.agent.routes.ConfirmationController.show().url}'" in {
