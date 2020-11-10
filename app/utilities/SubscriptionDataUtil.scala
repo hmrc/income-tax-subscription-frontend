@@ -174,7 +174,7 @@ object SubscriptionDataUtil {
         } else {
           summaryModel.asInstanceOf[IndividualSummary].copy(
             overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
           )
         }
       } else summaryModel
