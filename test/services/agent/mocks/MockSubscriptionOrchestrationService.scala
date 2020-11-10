@@ -16,7 +16,7 @@
 
 package services.agent.mocks
 
-import models.SummaryModel
+import models.{AgentSummary, SummaryModel}
 import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -41,25 +41,36 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
   private def mockCreateSubscription(arn: String,
                                      nino: String,
                                      utr: String,
-                                     summaryModel: SummaryModel
+                                     agentSummary: AgentSummary,
+                                     isReleaseFourEnabled: Boolean = false
                                     )(result: Future[Either[SubscriptionFailure, SubscriptionSuccess]]): Unit = {
     when(mockSubscriptionOrchestrationService.createSubscription(
       ArgumentMatchers.eq(arn),
       ArgumentMatchers.eq(nino),
       ArgumentMatchers.eq(utr),
-      ArgumentMatchers.eq(summaryModel)
+      ArgumentMatchers.eq(agentSummary),
+      ArgumentMatchers.eq(isReleaseFourEnabled),
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn result
   }
 
-  def mockCreateSubscriptionSuccess(arn: String, nino: String, utr: String, summaryModel: SummaryModel): Unit = {
-    mockCreateSubscription(arn, nino, utr, summaryModel)(Future.successful(testSubscriptionSuccess))
+  def mockCreateSubscriptionSuccess(arn: String, nino: String, utr: String,
+                                    agentSummary: AgentSummary,
+                                    isReleaseFourEnabled: Boolean = false
+                                   ): Unit = {
+    mockCreateSubscription(arn, nino, utr, agentSummary, isReleaseFourEnabled)(Future.successful(testSubscriptionSuccess))
   }
 
-  def mockCreateSubscriptionFailure(arn: String, nino: String, utr: String, summaryModel: SummaryModel): Unit = {
-    mockCreateSubscription(arn, nino, utr, summaryModel)(Future.successful(testSubscriptionFailure))
+  def mockCreateSubscriptionFailure(arn: String, nino: String, utr: String,
+                                    agentSummary: AgentSummary,
+                                    isReleaseFourEnabled: Boolean = false
+                                   ): Unit = {
+    mockCreateSubscription(arn, nino, utr, agentSummary, isReleaseFourEnabled)(Future.successful(testSubscriptionFailure))
   }
 
-  def mockCreateSubscriptionException(arn: String, nino: String, utr: String, summaryModel: SummaryModel): Unit = {
-    mockCreateSubscription(arn, nino, utr, summaryModel)(Future.failed(testException))
+  def mockCreateSubscriptionException(arn: String, nino: String, utr: String,
+                                      agentSummary: AgentSummary,
+                                      isReleaseFourEnabled: Boolean = false
+                                     ): Unit = {
+    mockCreateSubscription(arn, nino, utr, agentSummary, isReleaseFourEnabled)(Future.failed(testException))
   }
 }

@@ -16,10 +16,11 @@
 
 package services.agent
 
+import models.ConnectorError
 import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess}
 import play.api.test.Helpers._
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
-import utilities.TestModels.testSummaryData
+import utilities.TestModels.{testAgentSummaryData, testSummaryData}
 import utilities.agent.TestConstants._
 
 import scala.concurrent.Future
@@ -31,21 +32,21 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
     mockAutoEnrolmentService
   )
 
-  "createSubscription" should {
+  "createSubscription when release four is disabled" should {
 
-    def res: Future[Either[SubscriptionFailure, SubscriptionSuccess]] = {
-      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testSummaryData)
+    def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
+      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testAgentSummaryData)
     }
 
     "return a success" when {
       "all services succeed" in {
-        mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
+        mockCreateSubscriptionSuccess(testNino, testAgentSummaryData, testARN)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
 
         await(res) mustBe testSubscriptionSuccess
       }
       "the auto enrolment service returns a failure response" in {
-        mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
+        mockCreateSubscriptionSuccess(testNino, testAgentSummaryData, testARN)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
 
         await(res) mustBe testSubscriptionSuccess
@@ -54,7 +55,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
     "return a failure" when {
       "create subscription returns an error" in {
-        mockCreateSubscriptionFailure(testNino, testSummaryData, testARN)
+        mockCreateSubscriptionFailure(testNino, testAgentSummaryData, testARN)
 
         await(res) mustBe testSubscriptionFailure
       }
@@ -62,4 +63,46 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
     }
   }
 
+  "createSubscription when release four is enabled" should {
+
+    def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
+      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testAgentSummaryData, true)
+    }
+
+    "return a success" when {
+      "all services succeed" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesSuccess(testMTDID, testAgentSummaryData, false)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
+
+        await(res) mustBe testSubscriptionSuccess
+      }
+    }
+
+    "return a failure" when {
+      "create income sources returns an error when sign up income sources request fail" in {
+        mockSignUpIncomeSourcesFailure(testNino)
+
+        await(res) mustBe testSignUpIncomeSourcesFailure
+
+      }
+
+      "create income sources returns an error when create income sources request fail" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesFailure(testMTDID, testAgentSummaryData, false)
+
+        await(res) mustBe testCreateIncomeSourcesFailure
+      }
+
+      "the auto enrolment service returns a failure response" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesSuccess(testMTDID, testAgentSummaryData, false)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
+
+        await(res) mustBe Left(AutoEnrolmentService.NoUsersFound)
+      }
+
+
+    }
+  }
 }

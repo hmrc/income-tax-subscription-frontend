@@ -59,6 +59,10 @@ object TestConstants {
 
   val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
 
+  val testSignUpIncomeSourcesFailure = Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+
+  val testCreateIncomeSourcesFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+
   val testKnownFactsSuccess = Right(KnownFactsSuccess)
 
   val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))

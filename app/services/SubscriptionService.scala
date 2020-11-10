@@ -26,7 +26,7 @@ import javax.inject.{Inject, Singleton}
 import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel}
 import models.individual.business.BusinessSubscriptionDetailsModel
 import models.individual.subscription._
-import models.{IndividualSummary, Next, SummaryModel, Yes}
+import models.{AgentSummary, IndividualSummary, Next, SummaryModel, Yes}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
@@ -114,12 +114,16 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
     multipleIncomeSourcesSubscriptionConnector.signUp(nino)
   }
 
-  def createIncomeSources(mtdbsa: String, individualSummary: IndividualSummary, isPropertyNextTaxYearEnabled: Boolean)
+
+  def createIncomeSources(mtdbsa: String, summaryModel: SummaryModel, isPropertyNextTaxYearEnabled: Boolean)
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
     Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
     val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel =
-      individualSummary.toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
-
+      if(summaryModel.isInstanceOf[IndividualSummary]) {
+        summaryModel.asInstanceOf[IndividualSummary].toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
+      } else {
+        summaryModel.asInstanceOf[AgentSummary].toBusinessSubscriptionDetailsModel
+      }
     multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
   }
 }
