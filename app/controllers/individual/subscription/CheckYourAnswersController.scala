@@ -95,7 +95,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
     } yield {
       if (isEnabled(ReleaseFour)) {
-        cacheMap.getSummary(businesses, businessAccountingMethod)
+        cacheMap.getSummary(businesses, businessAccountingMethod, isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = isEnabled(PropertyNextTaxYear))
       } else {
         cacheMap.getSummary()
       }

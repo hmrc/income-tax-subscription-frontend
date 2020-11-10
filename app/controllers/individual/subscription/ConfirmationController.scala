@@ -21,6 +21,8 @@ import java.time.temporal.ChronoUnit
 
 import auth.individual.PostSubmissionController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitching
 import javax.inject.{Inject, Singleton}
 import models.Next
 import models.common.AccountingYearModel
@@ -36,7 +38,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ConfirmationController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends PostSubmissionController {
+                                       mcc: MessagesControllerComponents) extends PostSubmissionController with FeatureSwitching {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -48,7 +50,9 @@ class ConfirmationController @Inject()(val authService: AuthService, subscriptio
       val declarationNextYear = (AccountingPeriodUtil.getNextTaxYear.taxEndYear + 1).toString
 
 
-      subscriptionDetailsService.fetchAll() map (_.getSummary()) map { summary =>
+      subscriptionDetailsService.fetchAll() map { cacheMap =>
+        cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour), isPropertyNextTaxYearEnabled = isEnabled(PropertyNextTaxYear))
+      } map { summary =>
         summary.incomeSource match {
           case Some(_) => {
             summary.selectedTaxYear match {

@@ -719,7 +719,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           And("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
+            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
             selectedTaxYear = Some(AccountingYearModel(Next)),
             businessName = None,
             accountingMethod = None,
@@ -728,17 +728,17 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
             overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
           ))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
             mtdbsa = testMtdId,
             request = BusinessSubscriptionDetailsModel(
               accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-              selfEmploymentsData = Some(testBusinesses),
-              accountingMethod = Some(testAccountingMethod.accountingMethod),
-              incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
+              selfEmploymentsData = None,
+              accountingMethod = None,
+              incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true),
               propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
               propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
               overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
