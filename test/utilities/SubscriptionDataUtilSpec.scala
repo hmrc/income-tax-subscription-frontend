@@ -74,8 +74,18 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
             overseasAccountingMethodProperty = testOverseasAccountingMethodProperty
           )
       }
-      "income source is all property and business" in {
+      "income source is all property and business and the feature switches are disabled" in {
         testCacheMapCustom(incomeSource = testIncomeSourceAll).getSummary() shouldBe
+          IndividualSummary(
+            incomeSource = testIncomeSourceAll,
+            businessName = testBusinessName,
+            accountingMethod = testAccountingMethod,
+            accountingMethodProperty = testAccountingMethodProperty,
+            overseasAccountingMethodProperty = testOverseasAccountingMethodProperty
+          )
+      }
+      "income source is all property and business and the feature switches are enabled" in {
+        testCacheMapCustom(incomeSource = testIncomeSourceAll).getSummary(isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = true) shouldBe
           IndividualSummary(
             incomeSource = testIncomeSourceAll,
             businessName = testBusinessName,

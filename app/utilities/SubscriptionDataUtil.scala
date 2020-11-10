@@ -16,7 +16,6 @@
 
 package utilities
 
-import config.AppConfig
 import models.common._
 import models.individual.business._
 import models.{AgentSummary, IndividualSummary, SummaryModel}
@@ -47,16 +46,21 @@ object SubscriptionDataUtil {
       cacheMap.getEntry[OverseasAccountingMethodPropertyModel](OverseasPropertyAccountingMethod)
 
     def getSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
-                   selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None
-                  ): IndividualSummary = {
+                   selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
+                   isReleaseFourEnabled: Boolean = false,
+                   isPropertyNextTaxYearEnabled: Boolean = false): IndividualSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
             applyPropertyData(
               applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment).asInstanceOf[IndividualSummary],
-              hasProperty
+              hasProperty,
+              isReleaseFourEnabled = isReleaseFourEnabled,
+              isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled
             ).asInstanceOf[IndividualSummary],
-            hasForeignProperty
+            hasForeignProperty,
+            isReleaseFourEnabled = isReleaseFourEnabled,
+            isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled
           ).asInstanceOf[IndividualSummary]
         case _ => IndividualSummary()
       }
@@ -64,8 +68,7 @@ object SubscriptionDataUtil {
 
     def getAgentSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                         selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
-                        isReleaseFourEnabled: Boolean = false
-                       ): AgentSummary = {
+                        isReleaseFourEnabled: Boolean = false): AgentSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
@@ -89,7 +92,7 @@ object SubscriptionDataUtil {
                                          isAgent: Boolean = false): SummaryModel = {
       if (hasSelfEmployments) {
         if (selfEmploymentsAccountingMethod.isDefined) {
-          if(isAgent) {
+          if (isAgent) {
             AgentSummary(
               selectedTaxYear = getSelectedTaxYear,
               businessName = getBusinessName,
@@ -107,7 +110,7 @@ object SubscriptionDataUtil {
             )
           }
         } else {
-          if(isAgent) {
+          if (isAgent) {
             AgentSummary(
               selectedTaxYear = getSelectedTaxYear,
               businessName = getBusinessName,
@@ -126,7 +129,7 @@ object SubscriptionDataUtil {
           }
         }
       } else {
-        if(isAgent) {
+        if (isAgent) {
           AgentSummary(
             incomeSource = getIncomeSource
           )
@@ -141,19 +144,21 @@ object SubscriptionDataUtil {
     private def applyPropertyData(summaryModel: SummaryModel,
                                   hasProperty: Boolean,
                                   isAgent: Boolean = false,
-                                  isReleaseFourEnabled: Boolean = false
+                                  isReleaseFourEnabled: Boolean = false,
+                                  isPropertyNextTaxYearEnabled: Boolean = false
                                  ): SummaryModel = {
       if (hasProperty) {
-        if(isAgent) {
+        if (isAgent) {
           summaryModel.asInstanceOf[AgentSummary].copy(
             propertyCommencementDate = getPropertyCommencementDate,
             accountingMethodProperty = getPropertyAccountingMethod,
-            selectedTaxYear = if(isReleaseFourEnabled) getSelectedTaxYear else None
+            selectedTaxYear = if (isReleaseFourEnabled) getSelectedTaxYear else None
           )
         } else {
           summaryModel.asInstanceOf[IndividualSummary].copy(
             propertyCommencementDate = getPropertyCommencementDate,
-            accountingMethodProperty = getPropertyAccountingMethod
+            accountingMethodProperty = getPropertyAccountingMethod,
+            selectedTaxYear = if (isReleaseFourEnabled && isPropertyNextTaxYearEnabled) getSelectedTaxYear else None
           )
         }
       } else summaryModel
@@ -162,19 +167,21 @@ object SubscriptionDataUtil {
     private def applyForeignPropertyData(summaryModel: SummaryModel,
                                          hasForeignProperty: Boolean,
                                          isAgent: Boolean = false,
-                                         isReleaseFourEnabled: Boolean = false
+                                         isReleaseFourEnabled: Boolean = false,
+                                         isPropertyNextTaxYearEnabled: Boolean = false
                                         ): SummaryModel = {
       if (hasForeignProperty) {
-        if(isAgent) {
+        if (isAgent) {
           summaryModel.asInstanceOf[AgentSummary].copy(
             overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
             overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
-            selectedTaxYear = if(isReleaseFourEnabled) getSelectedTaxYear else None
+            selectedTaxYear = if (isReleaseFourEnabled) getSelectedTaxYear else None
           )
         } else {
           summaryModel.asInstanceOf[IndividualSummary].copy(
             overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod
+            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+            selectedTaxYear = if (isReleaseFourEnabled && isPropertyNextTaxYearEnabled) getSelectedTaxYear else None
           )
         }
       } else summaryModel
