@@ -776,15 +776,16 @@ not_eligible_for_income_tax.heading                             = You cannot use
 not_eligible_for_income_tax.para1                               = This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service in the future.
 
 # Agent Covid-19 page
-agent.covid_19_claim_check.title                                = Has your client ever claimed a coronavirus (COVID‑19) grant or intend to do so in the future?
-agent.covid_19_claim_check.heading                              = Has your client ever claimed a coronavirus (COVID‑19) grant or intend to do so in the future?
-agent.covid_19_claim_check.join_pilot                           = You are unable to sign up your client to this pilot if they:
-agent.covid_19_claim_check.join_pilot_point1                    = have claimed through the {0} for sole traders
-agent.covid_19_claim_check.join_pilot_point1.link               = Self-Employment Support Scheme (opens in new tab)
-agent.covid_19_claim_check.join_pilot_point2                    = are an employer and have furloughed one or more of their employees using the {0}
-agent.covid_19_claim_check.join_pilot_point2.link               = Coronavirus Job Retention Scheme (opens in new tab)
-agent.covid_19_claim_check.claim_sick_pay                       = If your client has claimed a rebate through the {0} and has not or will not make a claim for the Self Employment Support Scheme or Coronavirus Job Retention Scheme, you can still sign them up for the pilot.
-agent.covid_19_claim_check.claim_sick_pay.link                  = Coronavirus Statutory Sick Pay Rebate Scheme (opens in new tab)
+agent.covid_19_claim_check.title                                = Has your client ever claimed a coronavirus (COVID-19) grant or will they in the future?
+agent.covid_19_claim_check.heading                              = Has your client ever claimed a coronavirus (COVID-19) grant or will they in the future?
+agent.covid_19_claim_check.join_pilot                           = Your client cannot currently join the pilot if they have claimed one or more of these grants (the following links open in a new tab):
+agent.covid_19_claim_check.join_pilot_support_scheme_point      = {0} for sole traders
+agent.covid_19_claim_check.join_pilot_support_scheme_point.link = Self-Employment Support Scheme
+agent.covid_19_claim_check.join_pilot_retention_scheme.link     = Coronavirus Job Retention Scheme
+agent.covid_19_claim_check.join_pilot_eat_out_scheme.link       = Eat out to Help Out Scheme
+agent.covid_19_claim_check.still_sign_your_client               = You can still sign your client up if you’ve only claimed a rebate through the:
+agent.covid_19_claim_check.claim_sick_pay.link                  = Coronavirus Statutory Sick Pay Rebate Scheme
+agent.covid_19_claim_check.test_and_trace_support_pay.link      = Test and Trace Support Payment Scheme
 agent.covid_19_claim_check.error                                = Select yes if your client has ever claimed or intends to claim a coronavirus (COVID‑19) grant
 
 

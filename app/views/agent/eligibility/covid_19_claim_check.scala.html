@@ -41,24 +41,26 @@
     <ul class="list list-bullet">
         <li>
             @Html(messages(
-            "agent.covid_19_claim_check.join_pilot_point1",
-            <a id="supportScheme" href="https://www.gov.uk/guidance/claim-a-grant-through-the-coronavirus-covid-19-self-employment-income-support-scheme" target="_blank">{messages("agent.covid_19_claim_check.join_pilot_point1.link")}</a>
+            "agent.covid_19_claim_check.join_pilot_support_scheme_point",
+            <a id="supportScheme" href="https://www.gov.uk/guidance/claim-a-grant-through-the-coronavirus-covid-19-self-employment-income-support-scheme" target="_blank">{messages("agent.covid_19_claim_check.join_pilot_support_scheme_point.link")}</a>
             ))
         </li>
         <li>
-            @Html(messages(
-            "agent.covid_19_claim_check.join_pilot_point2",
-            <a id="retentionScheme" href="https://www.gov.uk/guidance/claim-for-wage-costs-through-the-coronavirus-job-retention-scheme" target="_blank">{messages("agent.covid_19_claim_check.join_pilot_point2.link")}</a>
-            ))
+            <a id="retentionScheme" href="https://www.gov.uk/guidance/claim-for-wage-costs-through-the-coronavirus-job-retention-scheme" target="_blank">@messages("agent.covid_19_claim_check.join_pilot_retention_scheme.link")</a>
         </li>
     </ul>
 
-    <p>
-        @Html(messages(
-        "agent.covid_19_claim_check.claim_sick_pay",
-        <a id="sickPayRebateScheme" href="https://www.gov.uk/guidance/claim-back-statutory-sick-pay-paid-to-employees-due-to-coronavirus-covid-19" target="_blank">{messages("agent.covid_19_claim_check.claim_sick_pay.link")}</a>
-        ))
-    </p>
+    <p>@messages("agent.covid_19_claim_check.still_sign_your_client")</p>
+
+    <ul class="list list-bullet">
+        <li>
+            <a id="sickPayRebateScheme" href="https://www.gov.uk/guidance/claim-back-statutory-sick-pay-paid-to-employees-due-to-coronavirus-covid-19" target="_blank">@messages("agent.covid_19_claim_check.claim_sick_pay.link")</a>
+        </li>
+        <li>
+            <a id="testAndTraceSupportPayScheme" href="https://www.gov.uk/government/publications/test-and-trace-support-payment-scheme-claiming-financial-support/claiming-financial-support-under-the-test-and-trace-support-payment-scheme" target="_blank">@messages("agent.covid_19_claim_check.test_and_trace_support_pay.link")</a>
+        </li>
+    </ul>
+
 
     @form(action = postAction) {
 
