@@ -21,12 +21,14 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
   }
 
   object Covid19ClaimCheckMessages {
-    val title: String = "Has your client ever claimed a coronavirus (COVID‑19) grant or intend to do so in the future?"
-    val heading: String = "Has your client ever claimed a coronavirus (COVID‑19) grant or intend to do so in the future?"
-    val join_pilot: String = "You are unable to sign up your client to this pilot if they:"
-    val join_pilot_point_1: String = "have claimed through the Self-Employment Support Scheme (opens in new tab) for sole traders"
-    val join_pilot_point_2: String = "are an employer and have furloughed one or more of their employees using the Coronavirus Job Retention Scheme (opens in new tab)"
-    val claim_sick_pay: String = "If your client has claimed a rebate through the Coronavirus Statutory Sick Pay Rebate Scheme (opens in new tab) and has not or will not make a claim for the Self Employment Support Scheme or Coronavirus Job Retention Scheme, you can still sign them up for the pilot."
+    val title: String = "Has your client ever claimed a coronavirus (COVID-19) grant or will they in the future?"
+    val heading: String = "Has your client ever claimed a coronavirus (COVID-19) grant or will they in the future?"
+    val join_pilot: String = "Your client cannot currently join the pilot if they have claimed one or more of these grants (the following links open in a new tab):"
+    val join_pilot_point_1: String = "Self-Employment Support Scheme for sole traders"
+    val join_pilot_point_2: String = "Coronavirus Job Retention Scheme"
+    val still_sign_up_your_client: String = "You can still sign your client up if you’ve only claimed a rebate through the:"
+    val claim_sick_pay: String = "Coronavirus Statutory Sick Pay Rebate Scheme"
+    val test_and_support_pay_scheme: String = "Test and Trace Support Payment Scheme"
     val error: String = "Select yes if your client has ever claimed or intends to claim a coronavirus (COVID‑19) grant"
 
     val yes: String = "Yes"
@@ -60,8 +62,13 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
       pageContent.getNthUnorderedList(1).getNthListItem(2).text shouldBe Covid19ClaimCheckMessages.join_pilot_point_2
     }
 
-    "have a paragraph stating about Coronavirus SSP Scheme" in new GetSetup {
-      pageContent.getNthParagraph(2).text shouldBe Covid19ClaimCheckMessages.claim_sick_pay
+    "have a paragraph stating about additional conditions for signing up your client" in new GetSetup {
+      pageContent.getNthParagraph(2).text shouldBe Covid19ClaimCheckMessages.still_sign_up_your_client
+    }
+
+    "have a bullet point list of additional conditions for signing up your client " in new GetSetup {
+      pageContent.getNthUnorderedList(2).getNthListItem(1).text shouldBe Covid19ClaimCheckMessages.claim_sick_pay
+      pageContent.getNthUnorderedList(2).getNthListItem(2).text shouldBe Covid19ClaimCheckMessages.test_and_support_pay_scheme
     }
 
     "have a form" in new GetSetup {

@@ -782,13 +782,14 @@ not_eligible_for_income_tax.para1                               = Mae hwn yn was
 # Agent Covid-19 page
 agent.covid_19_claim_check.title                                = A yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu a yw’n bwriadu gwneud hynny yn y dyfodol?
 agent.covid_19_claim_check.heading                              = A yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu a yw’n bwriadu gwneud hynny yn y dyfodol?
-agent.covid_19_claim_check.join_pilot                           = Ni allwch gofrestru’ch cleient ar gyfer y cynllun peilot hwn os:
-agent.covid_19_claim_check.join_pilot_point1                    = wedi hawlio trwy’r {0} ar gyfer unig fasnachwyr
-agent.covid_19_claim_check.join_pilot_point1.link               = Cynllun Cymorth Hunangyflogaeth (yn agor mewn tab newydd)
-agent.covid_19_claim_check.join_pilot_point2                    = yw’n gyflogwr a’i fod wedi rhoi un neu fwy o’i gyflogeion ar ffyrlo gan ddefnyddio’r {0}
-agent.covid_19_claim_check.join_pilot_point2.link               = Cynllun Cadw Swyddi yn sgil Coronafeirws (yn agor mewn tab newydd)
-agent.covid_19_claim_check.claim_sick_pay                       = Os yw’ch cleient wedi hawlio ad-daliad trwy’r {0}, ac nad yw wedi cyflwyno hawliad – nac yn mynd i gyflwyno hawliad – ar gyfer y Cynllun Cymhorthdal Hunangyflogaeth na’r Cynllun Cadw Swyddi yn sgil Coronafeirws, gallwch ei gofrestru ar gyfer y cynllun peilot hwn o hyd.
-agent.covid_19_claim_check.claim_sick_pay.link                  = Cynllun Ad-dalu Tâl Salwch Statudol Coronafeirws (yn agor mewn tab newydd)
+agent.covid_19_claim_check.join_pilot                           = Ni all eich cleient ymuno â’r cynllun peilot ar hyn o bryd os yw wedi hawlio un neu ragor o’r grantiau hyn (mae’r cysylltiadau canlynol yn agor tab newydd):
+agent.covid_19_claim_check.join_pilot_support_scheme_point      = {0} ar gyfer unig fasnachwyr
+agent.covid_19_claim_check.join_pilot_support_scheme_point.link = Cynllun Cymhorthdal Incwm Hunangyflogaeth
+agent.covid_19_claim_check.join_pilot_retention_scheme.link     = Cynllun Cadw Swyddi yn sgil Coronafeirws
+agent.covid_19_claim_check.join_pilot_eat_out_scheme.link       = Cynllun Bwyta Allan i Helpu Allan
+agent.covid_19_claim_check.still_sign_your_client               = Gallwch gofrestru’ch cleient o hyd os yw dim ond wedi hawlio drwy’r:
+agent.covid_19_claim_check.claim_sick_pay.link                  = Cynllun Ad-dalu Tâl Salwch Statudol Coronafeirws
+agent.covid_19_claim_check.test_and_trace_support_pay.link      = Cynllun Taliadau Cymorth Profi ac Olrhain
 agent.covid_19_claim_check.error                                = Dewiswch ‘Iawn’ os yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu’n bwriadu gwneud hynny
 
 # Covid Cannot Sign Up page
