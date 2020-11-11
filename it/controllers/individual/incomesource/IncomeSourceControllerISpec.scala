@@ -16,6 +16,7 @@
 
 package controllers.individual.incomesource
 
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -231,4 +232,163 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
     }
   }
 
+  "POST /report-quarterly/income-and-expenses/sign-up/details/income-receive" when {
+    "propertyNextTaxYear is enabled and releaseFour is enabled" when {
+      "the user is self-employed, doesn't have uk and foreign property " in {
+
+        Given("I set the required feature switches")
+        enable(ReleaseFour)
+        enable(PropertyNextTaxYear)
+
+        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+
+        When("POST /details/income-receive is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of business name page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
+      "the user is self-employed and has uk property but doesn't have foreign property" in {
+
+        Given("I set the required feature switches")
+        enable(ReleaseFour)
+        enable(PropertyNextTaxYear)
+
+        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+
+        When("POST /details/income-receive is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of business name page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
+      "the user is self-employed and has uk and foreign property " in {
+
+        Given("I set the required feature switches")
+        enable(ReleaseFour)
+        enable(PropertyNextTaxYear)
+
+        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, true)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+
+        When("POST /details/income-receive is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of business name page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
+      "the user is self-employed and has foreign property but doesn't have uk property " in {
+
+        Given("I set the required feature switches")
+        enable(ReleaseFour)
+        enable(PropertyNextTaxYear)
+
+        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, true)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+
+        When("POST /details/income-receive is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of business name page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
+      "the user rents a uk property, is not self-employed and doesn't have foreign property" in {
+
+        Given("I set the required feature switches")
+        enable(ReleaseFour)
+        enable(PropertyNextTaxYear)
+
+        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+
+        When("POST /details/income-receive is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of property commencement date page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
+      "the user rents a uk property and has foreign property but is not self-employed" in {
+
+        Given("I set the required feature switches")
+        enable(ReleaseFour)
+        enable(PropertyNextTaxYear)
+
+        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, true)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+
+
+        When("POST /details/income-receive is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of property commencement date page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
+      "the user rents a foreign property, is not self-employed and doesn't have uk property" in {
+
+        Given("I set the required feature switches")
+        enable(ReleaseFour)
+        enable(PropertyNextTaxYear)
+
+        val userInput: IncomeSourceModel = IncomeSourceModel(false, false, true)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+
+        When("POST /details/income-receive is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of overseas property commencement date")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
+    }
+  }
 }

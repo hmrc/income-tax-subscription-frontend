@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import controllers.utils.IndividualAnswers._
 import controllers.utils.OptionalAnswers._
@@ -99,7 +99,7 @@ class OverseasPropertyCommencementDateController @Inject()(val authService: Auth
           else controllers.individual.business.routes.BusinessAccountingMethodController.show().url
         }
         case _ => {
-          if (isEnabled(ReleaseFour)) controllers.individual.business.routes.WhatYearToSignUpController.show().url
+          if (isEnabled(PropertyNextTaxYear)) controllers.individual.business.routes.WhatYearToSignUpController.show().url
           else controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }
       }

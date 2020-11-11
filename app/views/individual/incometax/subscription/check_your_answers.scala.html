@@ -29,7 +29,8 @@
 @import models.common.PropertyCommencementDateModel
 @import models.common.OverseasPropertyCommencementDateModel
 
-@(summaryModel: IndividualSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter, releaseFour: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@(summaryModel: IndividualSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter, releaseFour: Boolean, propertyNextTaxYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
 <div class="govuk-summary-list__row" id="@field-row">
@@ -77,11 +78,13 @@
     val rowName = SelectedTaxYearId
     val rowQuestion = Messages("summary.selected_year")
     val rowAnswer = accountingYearText(selectedTaxYear.fold(AccountingYearModel(Current))(identity))
-    val rowUrl = if(summaryModel.incomeSource.exists(sources => !sources.ukProperty && !sources.foreignProperty)) {
-        Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url)
-    } else {
-        None
-    }
+    val rowUrl = if (propertyNextTaxYear) {
+                    Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url)
+                }else if(summaryModel.incomeSource.exists(sources => !sources.ukProperty && !sources.foreignProperty)) {
+                    Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url)
+                }else{
+                    None
+                }
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 

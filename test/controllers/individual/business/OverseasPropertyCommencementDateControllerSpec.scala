@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import services.mocks.MockSubscriptionDetailsService
 import controllers.ControllerBaseSpec
@@ -214,6 +214,7 @@ class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec
       "the user has a foreign property and it is the only income source" should {
         "redirect to income source page" in new Test {
           enable(ReleaseFour)
+          enable(PropertyNextTaxYear)
           controller.backUrl(isEditMode = false, incomeSourceOverseasPropertyOnly) mustBe
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
         }

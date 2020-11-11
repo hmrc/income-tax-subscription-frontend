@@ -79,17 +79,18 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
-  def page(testSummaryModel: IndividualSummary, releaseFour: Boolean = false): HtmlFormat.Appendable =
+  def page(testSummaryModel: IndividualSummary, releaseFour: Boolean = false, propertyNextTaxYear: Boolean = false): HtmlFormat.Appendable =
     views.html.individual.incometax.subscription.check_your_answers(
       summaryModel = testSummaryModel,
       postAction = postAction,
       backUrl = backUrl,
       dateFormatter,
-      releaseFour = releaseFour
+      releaseFour = releaseFour,
+      propertyNextTaxYear = propertyNextTaxYear
     )(FakeRequest(), implicitly, appConfig)
 
-  def document(testSummaryModel: IndividualSummary = testSummary, releaseFour: Boolean = false): Document =
-    page(testSummaryModel, releaseFour).doc
+  def document(testSummaryModel: IndividualSummary = testSummary, releaseFour: Boolean = false, propertyNextTaxYear: Boolean = false): Document =
+    page(testSummaryModel, releaseFour, propertyNextTaxYear).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -144,8 +145,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     }
 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
-                    testSummaryModel: IndividualSummary = testSummary, releaseFour: Boolean = false): Unit = {
-      val doc = document(testSummaryModel, releaseFour)
+                    testSummaryModel: IndividualSummary = testSummary, releaseFour: Boolean = false, propertyNextTaxYear: Boolean = false): Unit = {
+      val doc = document(testSummaryModel, releaseFour, propertyNextTaxYear)
       val section = doc.getElementById(sectionId)
       val question = doc.getElementById(questionId(sectionId))
       val answer = doc.getElementById(answerId(sectionId))
@@ -245,6 +246,45 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
             expectedEditLink = expectedEditLink,
             testSummaryModel = customTestSummary(
               incomeSource = TestModels.testIncomeSourceBusiness,
+              selectedTaxYear = TestModels.testSelectedTaxYearNext
+            )
+          )
+        }
+
+        "selected year is current, propertyNextTaxYear is true, and the user has property income" in {
+          val sectionId = SelectedTaxYearId
+          val expectedQuestion = messages.selected_tax_year
+          val expectedAnswer = messages.SelectedTaxYear.current(getCurrentTaxEndYear - 1, getCurrentTaxEndYear)
+          val expectedEditLink = controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+          sectionTest(
+            sectionId = sectionId,
+            releaseFour = true,
+            propertyNextTaxYear = true,
+            expectedQuestion = expectedQuestion,
+            expectedAnswer = expectedAnswer,
+            expectedEditLink = expectedEditLink,
+            testSummaryModel = customTestSummary(
+              incomeSource = TestModels.testIncomeSourceBoth,
+              selectedTaxYear = TestModels.testSelectedTaxYearCurrent
+            )
+          )
+        }
+        "selected year is next, propertyNextTaxYear is true, and the user has property income" in {
+          val sectionId = SelectedTaxYearId
+          val expectedQuestion = messages.selected_tax_year
+          val expectedAnswer = messages.SelectedTaxYear.next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
+          val expectedEditLink = controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+          sectionTest(
+            sectionId = sectionId,
+            releaseFour = true,
+            propertyNextTaxYear = true,
+            expectedQuestion = expectedQuestion,
+            expectedAnswer = expectedAnswer,
+            expectedEditLink = expectedEditLink,
+            testSummaryModel = customTestSummary(
+              incomeSource = TestModels.testIncomeSourceBoth,
               selectedTaxYear = TestModels.testSelectedTaxYearNext
             )
           )
