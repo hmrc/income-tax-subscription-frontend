@@ -58,7 +58,10 @@ object TestModels extends Implicits {
   val testAccountingMethodAccrual = AccountingMethodModel(Accruals)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testOverseasAccountingMethodProperty = OverseasAccountingMethodPropertyModel(Cash)
-
+  val testBusinessTradeName = BusinessTradeNameModel("test trade name")
+  val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
+  val testBusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
+  val testId = "testId"
 
   val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
   val testPropertyCommencementDateModel: PropertyCommencementDateModel = PropertyCommencementDateModel(testValidStartDate)
@@ -93,15 +96,19 @@ object TestModels extends Implicits {
                    businessName: Option[BusinessNameModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
+                   ukPropertyCommencementDate: Option[PropertyCommencementDateModel] = None,
                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                   overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None,
                    overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
+      ukPropertyCommencementDate.fold(emptyMap)(model => Map(PropertyCommencementDate -> PropertyCommencementDateModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
       accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))) ++
+      overseasPropertyCommencementDate.fold(emptyMap)(model => Map(OverseasPropertyCommencementDate -> OverseasPropertyCommencementDateModel.format.writes(model))) ++
       overseasPropertyAccountingMethod.fold(emptyMap)(model => Map(OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)))
     CacheMap("", map)
   }
@@ -147,6 +154,17 @@ object TestModels extends Implicits {
     selectedTaxYear = None,
     accountingMethod = testAccountingMethod
   )
+
+  lazy val testSummaryDataSelfEmploymentData =
+    Seq(SelfEmploymentData
+    (
+      id = testId,
+      businessStartDate = testBusinessStartDate,
+      businessName = testBusinessName,
+      businessTradeName = Some(testBusinessTradeName),
+      businessAddress = Some(testBusinessAddressModel)
+    )
+    )
 
   lazy val testSummaryData = IndividualSummary(
     testIncomeSourceBoth,

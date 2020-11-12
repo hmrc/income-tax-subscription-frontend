@@ -71,7 +71,6 @@ object IntegrationTestConstants {
   val propertyCommencementDateURI = s"$baseURI/business/property-commencement-date"
   val overseasPropertyCommencementDateURI = s"$baseURI/business/overseas-property-start-date"
   val accountingMethodForeignPropertyURI = s"$baseURI/business/overseas-property-accounting-method"
-
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val preferencesURI = s"$baseURI/preferences"
   val choosePaperlessURI = s"/paperless/choose?returnUrl"

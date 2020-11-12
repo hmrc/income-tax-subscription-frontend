@@ -20,7 +20,6 @@ import java.time.LocalDate
 
 import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
-import services.mocks.MockSubscriptionDetailsService
 import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyCommencementDateForm
 import models.DateModel
@@ -29,6 +28,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.OverseasPropertyCommencementDate
 import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceOverseasProperty}
@@ -37,6 +37,12 @@ import scala.concurrent.Future
 
 class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService with MockAuthService with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    disable(PropertyNextTaxYear)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "OverseasPropertyCommencementDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -73,7 +79,7 @@ class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec
 
 
   "show" should {
-    "display the foreign property commencement date view and return OK (200)" in new Test{
+    "display the foreign property commencement date view and return OK (200)" in new Test {
       lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockIndividualWithNoEnrolments()
@@ -177,9 +183,7 @@ class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec
 
     "The back url is not in edit mode and release four is disabled" when {
       "the user has a foreign property and it is the only income source" should {
-        disable(ReleaseFour)
         "redirect to income source page" in new Test {
-          disable(ReleaseFour)
           controller.backUrl(isEditMode = false, incomeSourceOverseasPropertyOnly) mustBe
             controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }
@@ -194,7 +198,6 @@ class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec
 
       "the user has a UK and a foreign property" should {
         "redirect to business accounting method page" in new Test {
-          disable(ReleaseFour)
           controller.backUrl(isEditMode = false, incomeSourceUkAndOverseasProperty) mustBe
             controllers.individual.business.routes.PropertyAccountingMethodController.show().url
         }
@@ -202,7 +205,6 @@ class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec
 
       "the user has a business, a UK and a foreign property" should {
         "redirect to property accounting method page" in new Test {
-          disable(ReleaseFour)
           controller.backUrl(isEditMode = false, incomeSourceAllTypes) mustBe
             controllers.individual.business.routes.PropertyAccountingMethodController.show().url
         }

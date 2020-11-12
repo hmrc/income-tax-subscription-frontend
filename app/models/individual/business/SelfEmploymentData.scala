@@ -25,7 +25,7 @@ case class SelfEmploymentData(id: String,
                               businessTradeName: Option[BusinessTradeNameModel] = None,
                               businessAddress: Option[BusinessAddressModel] = None) {
 
-  val isComplete: Boolean = businessStartDate.isDefined && businessName.isDefined && businessTradeName.isDefined
+  val isComplete: Boolean = businessStartDate.isDefined && businessName.isDefined && businessTradeName.isDefined && businessAddress.isDefined
 
 }
 

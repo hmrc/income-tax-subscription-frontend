@@ -16,9 +16,9 @@
 
 package utilities
 
+import config.featureswitch.FeatureSwitch.PropertyNextTaxYear
 import config.featureswitch.FeatureSwitching
-import models.common.{AccountingYearModel, IncomeSourceModel}
-import models.individual.business.{BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.common.IncomeSourceModel
 import models.{AgentSummary, IndividualSummary}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
@@ -52,10 +52,12 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
 
     "The getSummary should populate the Summary model correctly" when {
       "income source is just uk property" in {
+        enable(PropertyNextTaxYear)
         testCacheMapCustom(incomeSource = testIncomeSourceProperty).getSummary() shouldBe
           IndividualSummary(
             incomeSource = testIncomeSourceProperty,
-            accountingMethodProperty = testAccountingMethodProperty
+            accountingMethodProperty = testAccountingMethodProperty,
+            selectedTaxYear = None
           )
       }
       "income source is just business" in {
@@ -68,9 +70,11 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           )
       }
       "income source is only foreign property" in {
+        enable(PropertyNextTaxYear)
         testCacheMapCustom(incomeSource = testIncomeSourceOverseasProperty).getSummary() shouldBe
           IndividualSummary(
             incomeSource = testIncomeSourceOverseasProperty,
+            selectedTaxYear = None,
             overseasAccountingMethodProperty = testOverseasAccountingMethodProperty
           )
       }
@@ -79,11 +83,13 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           IndividualSummary(
             incomeSource = testIncomeSourceAll,
             businessName = testBusinessName,
+            selectedTaxYear = None,
             accountingMethod = testAccountingMethod,
             accountingMethodProperty = testAccountingMethodProperty,
             overseasAccountingMethodProperty = testOverseasAccountingMethodProperty
           )
       }
+
       "income source is all property and business and the feature switches are enabled" in {
         testCacheMapCustom(incomeSource = testIncomeSourceAll).getSummary(isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = true) shouldBe
           IndividualSummary(
@@ -146,15 +152,15 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceProperty)
         ).getAgentSummary(
-            selfEmployments = testSelfEmployments,
-            selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
-            isReleaseFourEnabled = true
+          selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true
         ) shouldBe AgentSummary(
-              incomeSource = Some(testAgentIncomeSourceProperty),
-              selectedTaxYear = testSelectedTaxYearNext,
-              businessName = None,
-              accountingMethod = None,
-              accountingMethodProperty = Some(testAccountingMethodProperty)
+          incomeSource = Some(testAgentIncomeSourceProperty),
+          selectedTaxYear = testSelectedTaxYearNext,
+          businessName = None,
+          accountingMethod = None,
+          accountingMethodProperty = Some(testAccountingMethodProperty)
         )
       }
 
@@ -226,12 +232,12 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         ).getAgentSummary(selfEmployments = testSelfEmployments,
           selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
           isReleaseFourEnabled = true) shouldBe AgentSummary(
-            incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
-            selectedTaxYear = Some(testSelectedTaxYearNext),
-            businessName = None,
-            accountingMethod = None,
-            accountingMethodProperty = Some(testAccountingMethodProperty),
-            overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+          incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
+          selectedTaxYear = Some(testSelectedTaxYearNext),
+          businessName = None,
+          accountingMethod = None,
+          accountingMethodProperty = Some(testAccountingMethodProperty),
+          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
         )
       }
 

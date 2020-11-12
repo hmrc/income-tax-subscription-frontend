@@ -16,14 +16,14 @@
 
 package utilities
 
+import config.featureswitch.FeatureSwitching
 import models.common._
 import models.individual.business._
 import models.{AgentSummary, IndividualSummary, SummaryModel}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys._
 
-//scalastyle:off
-object SubscriptionDataUtil {
+object SubscriptionDataUtil extends FeatureSwitching {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 
@@ -159,6 +159,7 @@ object SubscriptionDataUtil {
             propertyCommencementDate = getPropertyCommencementDate,
             accountingMethodProperty = getPropertyAccountingMethod,
             selectedTaxYear = if (isReleaseFourEnabled && isPropertyNextTaxYearEnabled) getSelectedTaxYear else None
+
           )
         }
       } else summaryModel
@@ -182,6 +183,7 @@ object SubscriptionDataUtil {
             overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
             overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
             selectedTaxYear = if (isReleaseFourEnabled && isPropertyNextTaxYearEnabled) getSelectedTaxYear else None
+
           )
         }
       } else summaryModel

@@ -20,18 +20,26 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
+import connectors.IncomeTaxSubscriptionConnector
 import forms.individual.incomesource.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
-import models.common.IncomeSourceModel
+import models.IndividualSummary
+import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.individual.business.SelfEmploymentData
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.CacheMap
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeSourceController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
+class IncomeSourceController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService,
+                                       incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
@@ -61,15 +69,51 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           if (!isEditMode) {
             linearJourney(incomeSource)
           } else {
-            subscriptionDetailsService.fetchIncomeSource() flatMap {
-              case Some(`incomeSource`) => Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
-              case _ => linearJourney(incomeSource)
-            }
+            editJourney(incomeSource)
           }
         }
       )
   }
 
+  private[controllers] def editJourney(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier) = {
+    for {
+      _ <- subscriptionDetailsService.saveIncomeSource(incomeSource)
+      cacheMap <- subscriptionDetailsService.fetchAll()
+      summaryModel <- getSummaryModel(cacheMap)
+    } yield {
+      if (incomeSource.selfEmployment && !summaryModel.selfEmploymentComplete(isEnabled(ReleaseFour))) {
+        if (!isEnabled(PropertyNextTaxYear) && cacheMap.getSelectedTaxYear.isEmpty) {
+          Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+        } else if (isEnabled(ReleaseFour)) {
+          Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+        } else if (incomeSource.selfEmployment && !incomeSource.ukProperty && !incomeSource.foreignProperty) {
+          Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+        } else {
+          Redirect(controllers.individual.business.routes.BusinessNameController.show())
+        }
+      } else if (incomeSource.ukProperty && !summaryModel.ukPropertyComplete(isEnabled(ReleaseFour))) {
+        if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+        else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+      } else if (incomeSource.foreignProperty && !summaryModel.foreignPropertyComplete) {
+        Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+      } else {
+        Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+      }
+    }
+  }
+
+  private def getSummaryModel(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[IndividualSummary] = {
+    for {
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
+      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+    } yield {
+      if (isEnabled(ReleaseFour)) {
+        cacheMap.getSummary(businesses, businessAccountingMethod)
+      } else {
+        cacheMap.getSummary()
+      }
+    }
+  }
 
   private def linearJourney(incomeSource: IncomeSourceModel)(implicit request: Request[_]): Future[Result] = {
     subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>

@@ -19,8 +19,9 @@ package utilities.individual
 import java.net.URLEncoder
 import java.time.OffsetDateTime
 import java.util.UUID
+
 import models.common.{AccountingMethodModel, AccountingYearModel, IncomeSourceModel}
-import models.individual.business.{BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.individual.business._
 import models.individual.subscription._
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import models.{Cash, Current, DateModel, IndividualSummary}
@@ -126,7 +127,7 @@ object TestConstants {
   val testIndividualSummary: IndividualSummary = IndividualSummary(
     incomeSource = Some(IncomeSourceModel(true, false, false)),
     selfEmployments = Some(Seq(SelfEmploymentData("1", Some(BusinessStartDate(startDate)), Some(testBusinessName),
-      Some(BusinessTradeNameModel("plumbing"))))),
+      Some(BusinessTradeNameModel("plumbing")), Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))))),
     accountingMethod = Some(AccountingMethodModel(Cash)),
     selectedTaxYear = Some(AccountingYearModel(Current))
   )
