@@ -16,6 +16,8 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -30,7 +32,13 @@ import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
+class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    disable(PropertyNextTaxYear)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "ForeignPropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -149,7 +157,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec 
 
     "The back url is not in edit mode" when {
       "the user has foreign property and it is the only income source" should {
-        "redirect to income source page" in {
+        "redirect to overseas property commencement date page" in {
           mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
           TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
             controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url

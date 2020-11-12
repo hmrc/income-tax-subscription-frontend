@@ -16,7 +16,7 @@ import utilities.individual.Constants
 import utilities.individual.Constants.GovernmentGateway._
 
 
-  object IntegrationTestModels {
+object IntegrationTestModels {
 
   import utilities.SubscriptionDataKeys._
 
@@ -67,6 +67,11 @@ import utilities.individual.Constants.GovernmentGateway._
     businessAddress = Some(testBusinessAddress)
   ))
   val testInvalidForeignPropertyCommencementDate = OverseasPropertyCommencementDateModel(testInvalidStartDate)
+
+  val testBusinessTradeName = BusinessTradeNameModel("test trade name")
+  val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
+  val testBusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
+  val testId = "testId"
 
   lazy val fullSubscriptionDataBothPost: Map[String, JsValue] =
     subscriptionData(
@@ -130,4 +135,14 @@ import utilities.individual.Constants.GovernmentGateway._
 
   lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMtdId)
 
+  lazy val testSummaryDataSelfEmploymentData =
+    Seq(SelfEmploymentData
+    (
+      id = testId,
+      businessStartDate = Some(testBusinessStartDate),
+      businessName = Some(testBusinessName),
+      businessTradeName = Some(testBusinessTradeName),
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
+    )
+    )
 }

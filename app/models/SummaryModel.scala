@@ -52,6 +52,29 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
                              overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None,
                              overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None) extends SummaryModel {
 
+
+  lazy val foreignPropertyComplete: Boolean = {
+    overseasPropertyCommencementDate.isDefined && overseasAccountingMethodProperty.isDefined
+  }
+
+  def ukPropertyComplete(releaseFourEnabled: Boolean): Boolean = {
+    if (releaseFourEnabled) {
+      propertyCommencementDate.isDefined && accountingMethodProperty.isDefined
+    }
+    else {
+      accountingMethodProperty.isDefined
+    }
+  }
+
+  def selfEmploymentComplete(releaseFourEnabled: Boolean): Boolean = {
+    if (releaseFourEnabled) {
+      selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+    }
+    else {
+      selectedTaxYear.isDefined && businessName.isDefined && accountingMethod.isDefined
+    }
+  }
+
   def toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled: Boolean): BusinessSubscriptionDetailsModel = {
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
     val useUkProperty = incomeSource.exists(_.ukProperty)
@@ -68,7 +91,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     if (!hasValidSelfEmployments) throw new Exception("Missing data items for valid self employments submission")
 
     val accountingPeriodVal: Option[AccountingPeriodModel] = {
-      if(isPropertyNextTaxYearEnabled) {
+      if (isPropertyNextTaxYearEnabled) {
         selectedTaxYear map {
           case AccountingYearModel(Next) => getNextTaxYear
           case AccountingYearModel(Current) => getCurrentTaxYear

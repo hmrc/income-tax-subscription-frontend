@@ -41,13 +41,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     id = id,
     businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "2018"))),
     businessName = Some(BusinessNameModel(s"ABC Limited $id")),
-    businessTradeName = Some(BusinessTradeNameModel(s"Plumbing $id"))
+    businessTradeName = Some(BusinessTradeNameModel(s"Plumbing $id")),
+    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
   )
 
   val testBusinessName: BusinessNameModel = BusinessNameModel("test business name")
   val testSelfEmployments: Seq[SelfEmploymentData] = Seq(selfEmploymentData("1"), selfEmploymentData("2"))
-
-
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
@@ -59,11 +58,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   def customTestSummary(incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
+                        businessName: Option[BusinessNameModel] = testBusinessName,
+                        selfEmployments: Option[Seq[SelfEmploymentData]] = Some(testSelfEmployments),
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                        accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
                         propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencement,
-                        overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = testOverseasAccountingPropertyModel,
-                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testOverseasPropertyCommencement
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testOverseasPropertyCommencement,
+                        overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = testOverseasAccountingPropertyModel
+
                        ): IndividualSummary = IndividualSummary(
     incomeSource = incomeSource,
     businessName = testBusinessName,

@@ -29,7 +29,9 @@ object GetSubscriptionDetailsHttpParser {
         response.status match {
           case OK => response.json.validate[T] match {
             case JsSuccess(value, _) => Some(value)
-            case _ => throw new Exception ("Invalid Json for getSubscriptionDetailsHttpReads")
+            case _ => {
+              throw new Exception("Invalid Json for getSubscriptionDetailsHttpReads")
+            }
           }
           case NO_CONTENT => None
           case status => throw new Exception (s"Unexpected status: $status")

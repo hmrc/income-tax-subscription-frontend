@@ -12,7 +12,7 @@ import helpers.servicemocks.WireMockMethods
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.subscriptionId
+import utilities.SubscriptionDataKeys.{subscriptionId, BusinessesKey}
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
@@ -56,6 +56,13 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK, body)
   }
 
+  def stubBusinessesData: Unit = {
+    val body = testSummaryDataSelfEmploymentData
+
+    when(method = GET, uri = subscriptionUri(BusinessesKey))
+      .thenReturn(Status.OK, body)
+  }
+
   def stubSubscriptionDeleteAll(): Unit = {
     when(method = DELETE, uri = subscriptionDeleteUri)
       .thenReturn(Status.OK, "")
@@ -85,7 +92,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionData + (id -> Json.toJson(testMtdId))))
   }
 
-  def postUri(key: String) = s"${subscriptionUri(subscriptionId)}/$key"
+  def postUri(key: String) = s"${subscriptionUri(subscriptionId)}"
 
 
   case class SubscriptionData(id: String, data: Map[String, JsValue])

@@ -19,7 +19,7 @@ package views.agent
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import models.common._
-import models.individual.business.{BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.individual.business.{Address, BusinessAddressModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import models.{AgentSummary, Current, DateModel, Next}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -42,7 +42,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     id = id,
     businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "2018"))),
     businessName = Some(BusinessNameModel(s"ABC Limited $id")),
-    businessTradeName = Some(BusinessTradeNameModel(s"Plumbing $id"))
+    businessTradeName = Some(BusinessTradeNameModel(s"Plumbing $id")),
+    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
   )
 
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext

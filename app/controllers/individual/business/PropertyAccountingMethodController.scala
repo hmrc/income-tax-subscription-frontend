@@ -45,6 +45,7 @@ import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.SubscriptionDataUtil._
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
