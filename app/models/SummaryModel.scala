@@ -66,12 +66,20 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     }
   }
 
-  def selfEmploymentComplete(releaseFourEnabled: Boolean): Boolean = {
+  def selfEmploymentComplete(releaseFourEnabled: Boolean, ignoreSelectedTaxYear: Boolean): Boolean = {
     if (releaseFourEnabled) {
-      selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+      if (ignoreSelectedTaxYear) {
+        selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+      } else {
+        selectedTaxYear.isDefined && selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+      }
     }
     else {
-      selectedTaxYear.isDefined && businessName.isDefined && accountingMethod.isDefined
+      if (ignoreSelectedTaxYear) {
+        businessName.isDefined && accountingMethod.isDefined
+      } else {
+        selectedTaxYear.isDefined && businessName.isDefined && accountingMethod.isDefined
+      }
     }
   }
 

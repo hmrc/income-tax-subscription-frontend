@@ -237,7 +237,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
 
         "FS PropertyNextTaxYear is disabled and selected tax year page has been completed before and ReleaseFour is enabled" should {
-          s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl}" in {
+          s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
             enable(ReleaseFour)
             val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
 
@@ -261,7 +261,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             Then(s"Should return $SEE_OTHER with a redirect location of self-employment frontend initialise")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+              redirectURI(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
             )
           }
         }
@@ -389,6 +389,38 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           }
         }
 
+
+        "FS PropertyNextTaxYear and FS ReleaseFour both are enabled and selected tax year page has not been completed before " +
+          "and the user has no uk property and no overseas property income" should {
+          s" redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
+            enable(ReleaseFour)
+            enable(PropertyNextTaxYear)
+            val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+            Given("I setup the wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+              subscriptionData(
+                incomeSource = Some(IncomeSourceModel(true, false, false)),
+                propertyCommencementDate = Some(testPropertyCommencementDate),
+                propertyAccountingMethod = Some(testAccountingMethodProperty)
+              )
+            )
+
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+
+            When("POST /details/income-receive is called")
+            val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
+
+            Then(s"Should return $SEE_OTHER with a redirect location of self-employment Frontend Initialise")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
+            )
+          }
+        }
+
       }
 
       "the user selected UK property and UK property journey has not been completed before" when {
@@ -491,6 +523,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(true, false, false)),
+              selectedTaxYear = Some(testAccountingYearCurrent),
               propertyCommencementDate = Some(testPropertyCommencementDate),
               propertyAccountingMethod = Some(testAccountingMethodProperty)
             )
