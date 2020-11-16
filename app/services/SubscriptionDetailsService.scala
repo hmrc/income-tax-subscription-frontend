@@ -20,7 +20,7 @@ import connectors.IncomeTaxSubscriptionConnector
 import javax.inject._
 import models.common._
 import models.individual.business._
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys._
@@ -37,13 +37,16 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
   private[services] def fetch[T](location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): FO[T] =
     subscriptionDetailsSession.getSubscriptionDetails[CacheMap](subscriptionId).map(_.flatMap(cache => cache.getEntry(location)))
 
-  private[services] def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): FA = {
-    subscriptionDetailsSession.getSubscriptionDetails[CacheMap](subscriptionId).map { optCache =>
+  private[services] def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): Future[CacheMap] = {
+    subscriptionDetailsSession.getSubscriptionDetails[CacheMap](subscriptionId).flatMap { optCache =>
       val newCache = optCache match {
         case None => CacheMap("", Map(location -> Json.toJson(obj)))
         case Some(cache) => CacheMap("", cache.data.updated(location, Json.toJson(obj)))
       }
-      subscriptionDetailsSession.saveSubscriptionDetails(subscriptionId, newCache)
+      subscriptionDetailsSession.saveSubscriptionDetails(subscriptionId, newCache) map {
+        case Right(_) => newCache
+        case Left(_) => CacheMap("", Map.empty[String, JsValue])
+      }
     }
   }
 
@@ -54,10 +57,10 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
 
   def deleteAll()(implicit hc: HeaderCarrier): Future[HttpResponse] = subscriptionDetailsSession.deleteAll()
 
-  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
+  def fetchIncomeSource()(implicit hc: HeaderCarrier): FO[IncomeSourceModel] =
     fetch[IncomeSourceModel](IncomeSource)
 
-  def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FA =
+  def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
     save[IncomeSourceModel](IncomeSource, incomeSource)
 
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =

@@ -68,11 +68,12 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       ArgumentMatchers.any(), ArgumentMatchers.any()))
 
 
-  protected final def setupMockSubscriptionDetailsSaveFunctions(): Unit =
+  protected final def setupMockSubscriptionDetailsSaveFunctions(): Unit = {
     mockFetchFromSubscriptionDetails[String]("fakeKey", None)
 
-  when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.any())(
-    ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
+    when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.any())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
+  }
 
   protected final def mockFetchIncomeSourceFromSubscriptionDetails(fetchIncomeSource: Option[IncomeSourceModel]): Unit = {
     mockFetchFromSubscriptionDetails[IncomeSourceModel](IncomeSource, fetchIncomeSource)

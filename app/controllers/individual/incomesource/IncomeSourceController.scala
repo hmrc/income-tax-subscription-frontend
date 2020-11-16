@@ -75,29 +75,53 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
       )
   }
 
-  private[controllers] def editJourney(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier) = {
+  private[controllers] def editJourney(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier): Future[Result] = {
     for {
-      _ <- subscriptionDetailsService.saveIncomeSource(incomeSource)
-      cacheMap <- subscriptionDetailsService.fetchAll()
+      cacheMap <- subscriptionDetailsService.saveIncomeSource(incomeSource)
       summaryModel <- getSummaryModel(cacheMap)
     } yield {
-      if (incomeSource.selfEmployment && !summaryModel.selfEmploymentComplete(isEnabled(ReleaseFour))) {
-        if (!isEnabled(PropertyNextTaxYear) && cacheMap.getSelectedTaxYear.isEmpty) {
-          Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
-        } else if (isEnabled(ReleaseFour)) {
-          Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
-        } else if (incomeSource.selfEmployment && !incomeSource.ukProperty && !incomeSource.foreignProperty) {
-          Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+      if (isEnabled(ReleaseFour) && isEnabled(PropertyNextTaxYear)) {
+        if (cacheMap.getSelectedTaxYear.isDefined) {
+          incomeSource match {
+            case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true, ignoreSelectedTaxYear = true) =>
+              Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+            case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(true) =>
+              Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+            case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
+              Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+            case _ =>
+              Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+          }
         } else {
-          Redirect(controllers.individual.business.routes.BusinessNameController.show())
+          Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
         }
-      } else if (incomeSource.ukProperty && !summaryModel.ukPropertyComplete(isEnabled(ReleaseFour))) {
-        if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
-        else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-      } else if (incomeSource.foreignProperty && !summaryModel.foreignPropertyComplete) {
-        Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+
+      } else if (isEnabled(ReleaseFour)) {
+
+        incomeSource match {
+          case IncomeSourceModel(true, false, false) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true, ignoreSelectedTaxYear = false) =>
+            Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+          case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true, ignoreSelectedTaxYear = true) =>
+            Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+          case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(true) =>
+            Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+          case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
+            Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+          case _ =>
+            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+        }
+
       } else {
-        Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+        incomeSource match {
+          case IncomeSourceModel(true, false, false) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = false, ignoreSelectedTaxYear = false) =>
+            Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+          case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = false, ignoreSelectedTaxYear = true) =>
+            Redirect(controllers.individual.business.routes.BusinessNameController.show())
+          case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(false) =>
+            Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+          case _ =>
+            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+        }
       }
     }
   }
