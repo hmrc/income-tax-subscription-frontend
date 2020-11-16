@@ -86,7 +86,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
     "have a successful transaction confirmation banner" which {
 
       "has a turquoise background" in {
-        documentNextTaxYear.select("#confirmation-heading").hasClass("govuk-box-highlight") mustBe true
+        documentNextTaxYear.select("#confirmation-heading").hasClass("govuk-panel--confirmation") mustBe true
       }
 
       s"has a heading (H1)" which {
@@ -97,7 +97,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
         }
 
         "has the class 'heading-large'" in {
-          heading.hasClass("heading-large") mustBe true
+          heading.hasClass("transaction-banner__heading") mustBe true
         }
       }
 
