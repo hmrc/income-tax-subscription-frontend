@@ -74,7 +74,7 @@ class ConfirmClientController @Inject()(val authService: AuthService, agentQuali
           .addingToSession(FailedClientMatching -> newCount.toString))
       case Right(LockoutUpdate(_: LockedOut, _)) =>
         successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show())
-          .removingFromSession(FailedClientMatching).clearUserDetails)
+          .removingFromSession(FailedClientMatching).clearAllUserDetails)
       case _ => failed(new InternalServerException("ConfirmClientController.lockUser failure"))
     }
   }
@@ -109,11 +109,11 @@ class ConfirmClientController @Inject()(val authService: AuthService, agentQuali
                   .addingToSession(ITSASessionKeys.NINO -> nino)
                   .addingToSession(ITSASessionKeys.UTR -> utr)
                   .removingFromSession(FailedClientMatching)
-                  .clearUserDetails
+                  .clearUserDetailsExceptName
               case Right(Ineligible) =>
                 Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
                   .removingFromSession(FailedClientMatching)
-                  .clearUserDetails
+                  .clearAllUserDetails
               case Left(error) =>
                 throw new InternalServerException(s"Call to eligibility service failed with ${error.httpResponse}")
             }
@@ -122,7 +122,7 @@ class ConfirmClientController @Inject()(val authService: AuthService, agentQuali
               .withJourneyState(AgentUserMatched)
               .addingToSession(ITSASessionKeys.NINO -> nino)
               .removingFromSession(FailedClientMatching)
-              .clearUserDetails)
+              .clearUserDetailsExceptName)
         }
       }
   }

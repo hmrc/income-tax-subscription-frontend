@@ -663,16 +663,22 @@ agent.summary.income_type_overseas_property                     = Accounting met
 agent.summary.self_employments                                  = Number of businesses signed up
 
 ## Sign Up Complete page ##
-agent.sign-up-complete.title                                    = You have signed up your client for the Use software to send Income Tax updates pilot
-agent.sign-up-complete.heading                                  = You have signed up your client for the Use software to send Income Tax updates pilot
-agent.sign-up-complete.whatNext.heading                         = What you need to do next
-agent.sign-up-complete.whatNext.para1                           = Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other.
-agent.sign-up-complete.whatNext.number1                         = <a id="accountingSoftware" href="{0}">Choose relevant software (opens in a new window)</a> if you haven’t already.
-agent.sign-up-complete.whatNext.number2                         = Allow your software to interact with HMRC.
-agent.sign-up-complete.whatNext.number3                         = Add all income and expenses your client has already received or paid out from the start of their tax year into the software.
-agent.sign-up-complete.whatNext.number4                         = Continue to record your client’s income and expenses using software and send a quarterly report to HMRC.
-agent.sign-up-complete.whatNext.number5                         = Send your client’s final report by 31 January after the end of the tax year you’re signing them up for.
-agent.sign-up-complete.whatNext.para2                           = After you’ve sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report.
+agent.sign-up-complete.title                                    = You have signed up {0} to use software to send Income Tax updates
+agent.sign-up-complete.heading                                  = You have signed up {0} to use software to send Income Tax updates
+agent.sign-up-complete.whatNow.heading                          = What you need to do next
+agent.sign-up-complete.whatNow.para1                            = Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other.
+agent.sign-up-complete.whatNow.number1                          = If you have not already, {0} and allow it interact with HMRC.
+agent.sign-up-complete.whatNow.number1.link                     = find software that's compatible with Making Tax Digital for Income Tax (opens in new tab)
+agent.sign-up.complete.nextTax.number2                          = Log in to your {0} to find out when your first update is due.
+agent.sign-up.complete.nextTax.number2.link                     = Business Tax account
+agent.sign-up.complete.sendQuarterly                            = Send quarterly updates by:
+agent.sign-up.complete.sendPreviousUpdates                      = Add any income and expenses your client has for previous updates:
+agent.sign-up.complete.submitAnnualUpdates                      = Submit your client’s annual updates and declare for the tax year by 31 January {0}.
+agent.sign-up.complete.julyUpdate                               = 5 July {0}
+agent.sign-up.complete.octoberUpdate                            = 5 October {0}
+agent.sign-up.complete.januaryUpdate                            = 5 January {0}
+agent.sign-up.complete.aprilUpdate                              = 5 April {0}
+agent.sign-up-complete.whatNow.para2                            = After you’ve sent an update, your client will get an Income Tax year-to-date estimate. They can see what they owe for the tax year after you’ve sent their final update.
 
 ## Errors ##
 agent.error.back_to_preferences.empty                           = You must select an option to continue

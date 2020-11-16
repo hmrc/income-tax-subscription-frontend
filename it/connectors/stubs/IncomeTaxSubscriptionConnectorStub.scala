@@ -12,7 +12,7 @@ import helpers.servicemocks.WireMockMethods
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.{subscriptionId, BusinessesKey}
+import utilities.SubscriptionDataKeys.{BusinessesKey, subscriptionId}
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
@@ -91,6 +91,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     when(method = POST, uri = subscriptionUri(subscriptionId))
       .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionData + (id -> Json.toJson(testMtdId))))
   }
+
 
   def postUri(key: String) = s"${subscriptionUri(subscriptionId)}"
 

@@ -669,16 +669,22 @@ agent.summary.income_type_overseas_property                     = Dull cyfrifydd
 agent.summary.self_employments                                  = Nifer y busnesau sydd wedi’u cofrestru
 
 ## Sign Up Complete page ##
-agent.sign-up-complete.title                                    = Rydych wedi cofrestru eich cleient ar gyfer y peilot ‘Defnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm’
-agent.sign-up-complete.heading                                  = Rydych wedi cofrestru eich cleient ar gyfer y peilot ‘Defnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm’
-agent.sign-up-complete.whatNext.heading                         = Yr hyn y mae angen i chi ei wneud nesaf
-agent.sign-up-complete.whatNext.para1                           = Rhaid i chi neu’ch cleient gwblhau’r camau isod. Os yw’r ddau ohonoch yn defnyddio’r feddalwedd, mae’n bwysig dewis pecynnau sydd yn gallu rhyngweithio a’i gilydd.
-agent.sign-up-complete.whatNext.number1                         = <a id="accountingSoftware" href="{0}">Dewiswch feddalwedd perthnasol (yn agor ffenestr newydd)</a> os nad ydych wedi gwneud hynny eisoes.
-agent.sign-up-complete.whatNext.number2                         = Caniatewch i’ch meddalwedd ryngweithio â CThEM.
-agent.sign-up-complete.whatNext.number3                         = Ychwanegwch holl incwm a threuliau mae eich cleient eisoes wedi’u cael neu wedi’u talu allan ers dechrau ei flwyddyn dreth i mewn i’r feddalwedd.
-agent.sign-up-complete.whatNext.number4                         = Parhewch i gofnodi incwm a threuliau’ch cleient drwy ddefnyddio meddalwedd, ac anfonwch adroddiad chwarterol i CThEM.
-agent.sign-up-complete.whatNext.number5                         = Anfonwch adroddiad terfynol eich cleient erbyn 31 Ionawr ar ôl diwedd y flwyddyn dreth yr ydych yn ei gofrestru ar ei chyfer.
-agent.sign-up-complete.whatNext.para2                           = Wedi i chi anfon adroddiad, bydd eich cleient yn cael amcangyfrif o Dreth Incwm. Bydd yn gallu gweld yr hyn sy’n ddyledus ganddo ar gyfer y flwyddyn dreth wedi i chi anfon ei adroddiad terfynol.
+agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
+agent.sign-up-complete.heading                                  = Rydych wedi cofrestru {0} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
+agent.sign-up-complete.whatNow.heading                          = Yr hyn y mae angen i chi ei wneud nesaf
+agent.sign-up-complete.whatNow.para1                            = Rhaid i chi neu’ch cleient gwblhau’r camau isod. Os yw’r ddau ohonoch yn defnyddio’r feddalwedd, mae’n bwysig dewis pecynnau sydd yn gallu rhyngweithio a’i gilydd.
+agent.sign-up-complete.whatNow.number1                          = Os nad ydych eisoes wedi’i wneud, {0} a chaniatáu iddi ryngweithio â CThEM.
+agent.sign-up-complete.whatNow.number1.link                     = ewch ati i ddod o hyd i feddalwedd sy’n cydweddu â Throi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor tab newydd)
+agent.sign-up.complete.nextTax.number2                          = Mewngofnodwch i’ch {0} er mwyn cael gwybod pryd y bydd disgwyl i chi gyflwyno’ch diweddariad cyntaf.
+agent.sign-up.complete.nextTax.number2.link                     = cyfrif Treth Busnes
+agent.sign-up.complete.sendQuarterly                            = Anfonwch y diweddariadau chwarterol nesaf erbyn:
+agent.sign-up.complete.sendPreviousUpdates                      = Ychwanegwch unrhyw incwm a threuliau sydd gan eich cleient ar gyfer diweddariadau blaenorol:
+agent.sign-up.complete.submitAnnualUpdates                      = Cyflwynwch ddiweddariadau blynyddol eich cleient a datganwch ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
+agent.sign-up.complete.julyUpdate                               = 5 Gorffennaf {0}
+agent.sign-up.complete.octoberUpdate                            = 5 Hydref {0}
+agent.sign-up.complete.januaryUpdate                            = 5 Ionawr {0}
+agent.sign-up.complete.aprilUpdate                              = 5 Ebrill {0}
+agent.sign-up-complete.whatNow.para2                            = Ar ôl i chi anfon diweddariad, bydd eich cleient yn cael amcangyfrif o’i Dreth Incwm ar gyfer y flwyddyn hyd yn hyn. Gall weld yr hyn sydd arno ar gyfer y flwyddyn dreth ar ôl i chi anfon ei ddiweddariad terfynol.
 
 ## Errors ##
 agent.error.back_to_preferences.empty                           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
