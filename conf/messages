@@ -789,10 +789,12 @@ agent.covid_19_claim_check.join_pilot_support_scheme_point      = {0} for sole t
 agent.covid_19_claim_check.join_pilot_support_scheme_point.link = Self-Employment Support Scheme
 agent.covid_19_claim_check.join_pilot_retention_scheme.link     = Coronavirus Job Retention Scheme
 agent.covid_19_claim_check.join_pilot_eat_out_scheme.link       = Eat out to Help Out Scheme
+agent.covid_19_claim_check.join_pilot_eat_out_scheme.text       = for businesses in the hospitality sector
 agent.covid_19_claim_check.still_sign_your_client               = You can still sign your client up if you’ve only claimed a rebate through the:
 agent.covid_19_claim_check.claim_sick_pay.link                  = Coronavirus Statutory Sick Pay Rebate Scheme
 agent.covid_19_claim_check.test_and_trace_support_pay.link      = Test and Trace Support Payment Scheme
 agent.covid_19_claim_check.error                                = Select yes if your client has ever claimed or intends to claim a coronavirus (COVID‑19) grant
+agent.covid_19_claim_check.local_authority_grants.link          = Local Authority grants
 
 
 # Covid Cannot Sign Up page

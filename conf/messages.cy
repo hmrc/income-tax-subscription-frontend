@@ -793,10 +793,12 @@ agent.covid_19_claim_check.join_pilot_support_scheme_point      = {0} ar gyfer u
 agent.covid_19_claim_check.join_pilot_support_scheme_point.link = Cynllun Cymhorthdal Incwm Hunangyflogaeth
 agent.covid_19_claim_check.join_pilot_retention_scheme.link     = Cynllun Cadw Swyddi yn sgil Coronafeirws
 agent.covid_19_claim_check.join_pilot_eat_out_scheme.link       = Cynllun Bwyta Allan i Helpu Allan
+agent.covid_19_claim_check.join_pilot_eat_out_scheme.text       = ar gyfer busnesau yn y sector lletygarwch
 agent.covid_19_claim_check.still_sign_your_client               = Gallwch gofrestru’ch cleient o hyd os yw dim ond wedi hawlio drwy’r:
 agent.covid_19_claim_check.claim_sick_pay.link                  = Cynllun Ad-dalu Tâl Salwch Statudol Coronafeirws
 agent.covid_19_claim_check.test_and_trace_support_pay.link      = Cynllun Taliadau Cymorth Profi ac Olrhain
 agent.covid_19_claim_check.error                                = Dewiswch ‘Iawn’ os yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu’n bwriadu gwneud hynny
+agent.covid_19_claim_check.local_authority_grants.link          = Grantiau Awdurdodau Lleol
 
 # Covid Cannot Sign Up page
 agent.covid_cannot_sign_up.title                                = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
