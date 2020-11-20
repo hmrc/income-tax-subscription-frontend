@@ -154,7 +154,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(foreignPropertyComencementDateURI)
+            redirectURI(foreignPropertyCommencementDateURI)
           )
         }
       }

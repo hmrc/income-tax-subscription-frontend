@@ -99,7 +99,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
         mockCreateIncomeSourcesSuccess(testMTDID, testAgentSummaryData, false)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
 
-        await(res) mustBe Left(AutoEnrolmentService.NoUsersFound)
+        await(res) mustBe Right(SubscriptionSuccess(testMTDID))
       }
 
 

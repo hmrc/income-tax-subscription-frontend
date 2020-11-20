@@ -18,9 +18,11 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
 import forms.agent.AccountingYearForm
 import javax.inject.{Inject, Singleton}
-import models.common.AccountingYearModel
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -33,7 +35,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
                                            accountingPeriodService: AccountingPeriodService,
                                            subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                           appConfig: AppConfig) extends AuthenticatedController {
+                                           appConfig: AppConfig) extends AuthenticatedController  with FeatureSwitching {
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
@@ -67,11 +69,19 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(accountingYear)) map { _ =>
+          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(accountingYear)) flatMap { _ =>
             if (isEditMode) {
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+              Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
             } else {
-              Redirect(controllers.agent.business.routes.BusinessNameController.show())
+              subscriptionDetailsService.fetchIncomeSource() map {
+                case Some(IncomeSourceModel(true, _, _)) =>
+                  if (isEnabled(ReleaseFour)) Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
+                  else Redirect(controllers.agent.business.routes.BusinessNameController.show())
+                case Some(IncomeSourceModel(_, true, _)) =>
+                  Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
+                case Some(IncomeSourceModel(_, _, true)) =>
+                  Redirect(controllers.agent.business.routes.OverseasPropertyCommencementDateController.show())
+              }
             }
           }
         }

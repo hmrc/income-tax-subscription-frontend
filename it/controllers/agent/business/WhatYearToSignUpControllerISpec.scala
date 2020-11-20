@@ -18,17 +18,26 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
+import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.subscriptionData
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
-import models.common.AccountingYearModel
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.{Current, Next}
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
-class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
+class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    disable(ForeignProperty)
+    disable(PropertyNextTaxYear)
+    super.beforeEach()
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up//client/business/what-year-to-sign-up" when {
 
@@ -81,21 +90,79 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
     "not in edit mode" should {
 
-      "select the Current Year radio button on the What Year To Sign Up page" in {
-        val userInput = AccountingYearModel(Current)
+      "select the Current Year radio button on the What Year To Sign Up page" should {
+        "self employed selected in income source with release4 enabled" in {
+          val userInput = AccountingYearModel(Current)
+          enable(ReleaseFour)
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, false))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
-        When("POST /client/business/what-year-to-sign-up is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+          When("POST /client/business/what-year-to-sign-up is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(businessNameURI)
-        )
+          Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI("http://localhost:9563/report-quarterly/income-and-expenses/sign-up/self-employments/client/details")
+          )
+        }
+
+        "self employed selected in income source with release4 disabled" in {
+          val userInput = AccountingYearModel(Current)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, false))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+
+          When("POST /client/business/what-year-to-sign-up is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(businessNameURI)
+          )
+        }
+
+        "UK Property selected in income source" in {
+          val userInput = AccountingYearModel(Current)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(false, true, false))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+
+          When("POST /client/business/what-year-to-sign-up is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(propertyCommencementDateURI)
+          )
+        }
+
+        "Only Foreign UK Property selected in income source" in {
+          val userInput = AccountingYearModel(Current)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(false, false, true))))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+
+          When("POST /client/business/what-year-to-sign-up is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(foreignPropertyCommencementDateURI)
+          )
+        }
       }
 
       "select the Next radio button on the What Year To Sign Up page" in {
@@ -103,6 +170,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, true))))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
@@ -119,6 +187,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     "not select an option on the accounting year page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, true))))
       IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, "")
 
       When("POST /client/business/what-year-to-sign-up is called")
@@ -144,8 +213,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent))
-        )
+          subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent),
+            incomeSource = Some(IncomeSourceModel(true, false, true))))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
@@ -168,7 +237,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
           subscriptionData(
-            selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent)
+            selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent),
+            incomeSource = Some(IncomeSourceModel(true, false, true))
           )
         )
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)

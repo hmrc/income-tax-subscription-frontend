@@ -17,7 +17,10 @@
 package controllers.agent
 
 
-import models.common.IncomeSourceModel
+import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitching
+import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.individual.business.SelfEmploymentData
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
@@ -38,7 +41,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockClientRelationshipService
   with MockSubscriptionOrchestrationService
-  with MockIncomeTaxSubscriptionConnector {
+  with MockIncomeTaxSubscriptionConnector
+  with FeatureSwitching {
 
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
 
@@ -77,6 +81,19 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
 
         status(call()) must be(Status.OK)
+      }
+
+      "There are both a matched nino and terms in Subscription Details with release four enabled" should {
+        "return ok (200)" in {
+          enable(ReleaseFour)
+          mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
+          mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
+          mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+          mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+
+          status(call()) must be(Status.OK)
+          disable(ReleaseFour)
+        }
       }
     }
 
@@ -135,13 +152,17 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         }
 
         "return a redirect status (SEE_OTHER - 303) when release four is enabled" in {
+          enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testSummary)
+          mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+          mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
 
           mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary(), true)
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
+          disable(ReleaseFour)
         }
 
         s"redirect to '${controllers.agent.routes.ConfirmationController.show().url}'" in {

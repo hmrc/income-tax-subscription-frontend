@@ -19,10 +19,9 @@ package services.agent
 import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
+import models.individual.subscription.{CreateIncomeSourcesSuccess, SubscriptionSuccess}
 import models.{AgentSummary, ConnectorError, SummaryModel}
-import models.individual.subscription.{CreateIncomeSourcesFailure, SubscriptionFailure, SubscriptionSuccess}
 import services.SubscriptionService
-import services.agent.AutoEnrolmentService.{AutoClaimEnrolmentFailure, AutoClaimEnrolmentSuccess}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,26 +35,34 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                         (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
 
     if(isReleaseFourEnabled) {
-      signUpAndCreateIncomeSources(nino, utr, summaryModel.asInstanceOf[AgentSummary])
+      signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[AgentSummary]) flatMap {
+        case right@Right(subscriptionSuccess) => {
+          autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map { _ =>
+            right
+          }
+        }
+        case left => Future.successful(left)
+      }
     }
     else {
       subscriptionService.submitSubscription(nino, summaryModel, Some(arn)) flatMap {
-        case right@Right(subscriptionSuccess) => autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map { _ =>
-          right
+        case right@Right(subscriptionSuccess) => {
+          autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map { _ =>
+            right
+          }
         }
         case left => Future.successful(left)
       }
     }
   }
 
-  private[services] def signUpAndCreateIncomeSources(nino: String, utr: String, agentSummary: AgentSummary)
+  private[services] def signUpAndCreateIncomeSources(nino: String, agentSummary: AgentSummary)
                                                     (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
 
     val res = for {
       signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
       mtdbsa = signUpResponse.mtdbsa
-      _ <- EitherT(subscriptionService.createIncomeSources(mtdbsa, agentSummary, false))
-      _ <- EitherT[Future, ConnectorError, AutoClaimEnrolmentSuccess](autoEnrolmentService.autoClaimEnrolment(utr, nino, mtdbsa))
+      _ <- EitherT[Future, ConnectorError, CreateIncomeSourcesSuccess](subscriptionService.createIncomeSources(mtdbsa, agentSummary, false))
     } yield SubscriptionSuccess(mtdbsa)
 
     res.value

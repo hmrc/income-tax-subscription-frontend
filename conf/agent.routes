@@ -105,3 +105,6 @@ POST        /business/overseas-commencement-date                controllers.agen
 #Foreign Property Accounting Method Routes
 GET         /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+
+#Routing controller
+GET         /business/routing                                    controllers.agent.business.RoutingController.show(editMode: Boolean ?= false)
