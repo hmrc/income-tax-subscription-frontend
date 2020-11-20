@@ -18,6 +18,7 @@ package services
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import play.api.libs.json.Json
 import play.api.mvc.Request
 import services.AuditingService.toDataEvent
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,14 +43,17 @@ object AuditingService {
 
   def toDataEvent(appName: String, auditModel: AuditModel, path: String)(implicit hc: HeaderCarrier): DataEvent = {
     val auditType: String = auditModel.auditType
-    val transactionName: String = auditModel.transactionName
+    val transactionName: Option[String] = auditModel.transactionName
     val detail: Map[String, String] = auditModel.detail
     val tags: Map[String, String] = Map.empty[String, String]
 
     DataEvent(
       auditSource = appName,
       auditType = auditType,
-      tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags(transactionName, path) ++ tags,
+      tags = transactionName match {
+        case Some(transaction) => AuditExtensions.auditHeaderCarrier(hc).toAuditTags(transaction, path) ++ tags
+        case None => AuditExtensions.auditHeaderCarrier(hc).toAuditTags(path) ++ tags
+      },
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails(detail.toSeq: _*)
     )
   }
@@ -57,7 +61,7 @@ object AuditingService {
 }
 
 trait AuditModel {
-  val transactionName: String
+  val transactionName: Option[String]
   val detail: Map[String, String]
   val auditType: String
 }

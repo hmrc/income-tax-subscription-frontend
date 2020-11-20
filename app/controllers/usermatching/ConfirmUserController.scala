@@ -21,10 +21,11 @@ import auth.individual.JourneyState._
 import auth.individual.{UserMatched, UserMatchingController}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.audits.EnterDetailsAuditing
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuthService, LockoutUpdate, UserLockoutService, UserMatchingService}
+import services.{AuditingService, AuthService, LockoutUpdate, UserLockoutService, UserMatchingService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys._
 
@@ -33,7 +34,10 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
 
 @Singleton
-class ConfirmUserController @Inject()(val authService: AuthService, lockOutService: UserLockoutService, userMatching: UserMatchingService)
+class ConfirmUserController @Inject()(auditService: AuditingService,
+                                      val authService: AuthService,
+                                      lockOutService: UserLockoutService,
+                                      userMatching: UserMatchingService)
                                      (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                       mcc: MessagesControllerComponents) extends UserMatchingController {
 
@@ -81,9 +85,11 @@ class ConfirmUserController @Inject()(val authService: AuthService, lockOutServi
     val currentCount = request.session.get(FailedUserMatching).fold(0)(_.toInt)
     lockOutService.incrementLockout(bearerToken, currentCount).flatMap {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
+        ??? // audit enter details - locked out false, count = newCount
         successful(Redirect(controllers.usermatching.routes.UserDetailsErrorController.show())
           .addingToSession(FailedUserMatching -> newCount.toString))
-      case Right(LockoutUpdate(_: LockedOut, _)) =>
+      case Right(LockoutUpdate(_: LockedOut, Some(newCount))) =>
+        ??? // audit enter details - locked out true, count = newCount
         successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show())
           .removingFromSession(FailedUserMatching))
       case _ => failed(new InternalServerException("ConfirmUserController.lockUser"))
@@ -101,8 +107,9 @@ class ConfirmUserController @Inject()(val authService: AuthService, lockOutServi
 
   lazy val backUrl: String = controllers.usermatching.routes.UserDetailsController.show().url
 
-  private def handleMatchedUser(matchedDetails: UserMatchSuccessResponseModel)(implicit request: Request[AnyContent]): Future[Result] = {
-    matchedDetails match {
+  private def handleMatchedUser(userDetails: UserDetailsModel, matchedDetails: UserMatchSuccessResponseModel)
+                               (implicit request: Request[AnyContent]): Future[Result] =
+    {matchedDetails match {
       case UserMatchSuccessResponseModel(_, _, _, nino, Some(utr)) =>
         Future.successful(
           Redirect(routes.HomeController.index())
@@ -116,7 +123,10 @@ class ConfirmUserController @Inject()(val authService: AuthService, lockOutServi
           Redirect(routes.HomeController.index())
             .addingToSession(NINO -> matchedDetails.nino)
         )
+    }}.map { result =>
+      val currentCount = request.session.get(FailedUserMatching).fold(0)(_.toInt)
+      auditService.audit(EnterDetailsAuditing.EnterDetailsAuditModel("individual", None, userDetails, currentCount, false))
+      result.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearAllUserDetails
     }
-    }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearAllUserDetails)
 
 }
