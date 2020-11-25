@@ -59,7 +59,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
   type ReturnType = Either[UnqualifiedAgent, QualifiedAgent]
 
   private[services]
-  def matchClient(arn: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] = {
+  def matchClient(agentReferenceNumber: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] = {
     val clientDetails: Future[Either[UnqualifiedAgent, UserDetailsModel]] = request.fetchUserDetails match {
       case Some(cd) => Right(cd)
       case _ => Left(NoClientDetails)
@@ -71,10 +71,10 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
         clientMatchingService.matchUser(cd)
           .collect {
             case Right(Some(matchedClient)) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true))
+              auditingService.audit(ClientMatchingAuditModel(agentReferenceNumber, cd, isSuccess = true))
               Right(ApprovedAgent(matchedClient.nino, matchedClient.saUtr))
             case Right(None) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false))
+              auditingService.audit(ClientMatchingAuditModel(agentReferenceNumber, cd, isSuccess = false))
               Left(NoClientMatched)
           }.recoverWith { case _ => Left(UnexpectedFailure) }
     }
@@ -92,11 +92,11 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
     }.recoverWith { case _ => Left(UnexpectedFailure) }
 
   private[services]
-  def checkClientRelationship(arn: String,
+  def checkClientRelationship(agentReferenceNumber: String,
                               matchedClient: QualifiedAgent
                              )(implicit hc: HeaderCarrier): Future[ReturnType] = {
     for {
-      isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(arn, matchedClient.clientNino)
+      isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(agentReferenceNumber, matchedClient.clientNino)
     } yield
       if (isPreExistingRelationship) Right(matchedClient)
       else Right(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
@@ -110,10 +110,10 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       }
   }
 
-  def orchestrateAgentQualification(arn: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
-    matchClient(arn)
+  def orchestrateAgentQualification(agentReferenceNumber: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
+    matchClient(agentReferenceNumber)
       .flatMapRight(checkExistingSubscription)
-      .flatMapRight(checkClientRelationship(arn, _))
+      .flatMapRight(checkClientRelationship(agentReferenceNumber, _))
 }
 
 

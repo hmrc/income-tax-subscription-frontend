@@ -24,10 +24,10 @@ object ClientMatchingAuditing {
   val clientMatchingTransactionName = "ITSAMatchingRequest"
   val clientMatchingAuditType = "ClientMatchingCheckSubmitted"
 
-  case class ClientMatchingAuditModel(arn: String, userDetailsModel: UserDetailsModel, isSuccess: Boolean) extends AuditModel {
+  case class ClientMatchingAuditModel(agentReferenceNumber: String, userDetailsModel: UserDetailsModel, isSuccess: Boolean) extends AuditModel {
     override val transactionName: String = clientMatchingTransactionName
     override val detail: Map[String, String] = Map(
-      "arn" -> arn,
+      "agentReferenceNumber" -> agentReferenceNumber,
       "firstName" -> userDetailsModel.firstName,
       "lastName" -> userDetailsModel.lastName,
       "nino" -> userDetailsModel.ninoInBackendFormat,
