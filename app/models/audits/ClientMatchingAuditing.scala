@@ -25,7 +25,7 @@ object ClientMatchingAuditing {
   val clientMatchingAuditType = "ClientMatchingCheckSubmitted"
 
   case class ClientMatchingAuditModel(agentReferenceNumber: String, userDetailsModel: UserDetailsModel, isSuccess: Boolean) extends AuditModel {
-    override val transactionName: String = clientMatchingTransactionName
+    override val transactionName: Option[String] = Some(clientMatchingTransactionName)
     override val detail: Map[String, String] = Map(
       "agentReferenceNumber" -> agentReferenceNumber,
       "firstName" -> userDetailsModel.firstName,
