@@ -68,11 +68,15 @@ trait MockUserLockoutService extends UnitTestTrait with MockitoSugar with Before
     ).thenReturn(result)
   }
 
-  def setupIncrementNotLockedOut(token: String, currentFailedMatches: Int): Unit =
-    mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(NotLockedOut, Some(currentFailedMatches + 1)))))
+  def setupIncrementNotLockedOut(token: String, currentFailedMatches: Int): Unit = {
+    val returnedFailures: Option[Int] = if(appConfig.matchingAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
+    mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(NotLockedOut, returnedFailures))))
+  }
 
-  def setupIncrementLockedOut(token: String, currentFailedMatches: Int): Unit =
-    mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(testLockoutResponse, None))))
+  def setupIncrementLockedOut(token: String, currentFailedMatches: Int): Unit = {
+    val returnedFailures: Option[Int] = if(appConfig.matchingAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
+    mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(testLockoutResponse, returnedFailures))))
+  }
 
   def verifyIncrementLockout(token: String, count: Int): Unit =
     verify(mockUserLockoutService, times(count)).incrementLockout(ArgumentMatchers.eq(token),

@@ -16,8 +16,11 @@
 
 package controllers.usermatching
 
+import agent.audit.mocks.MockAuditingService
 import auth.individual.{UserMatched, UserMatching}
 import controllers.ControllerBaseSpec
+import models.audits.EnterDetailsAuditing
+import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.UserDetailsModel
 import org.scalatest.OptionValues
 import play.api.http.Status
@@ -33,7 +36,7 @@ import utilities.{ITSASessionKeys, TestModels}
 import scala.concurrent.Future
 
 class ConfirmUserControllerSpec extends ControllerBaseSpec
-  with MockUserLockoutService with MockUserMatchingService with MockSubscriptionDetailsService
+  with MockUserLockoutService with MockUserMatchingService with MockSubscriptionDetailsService with MockAuditingService
   with OptionValues {
 
   override val controllerName: String = "ConfirmUserController"
@@ -43,6 +46,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   )
 
   object TestConfirmUserController extends ConfirmUserController(
+    mockAuditingService,
     mockAuthService,
     mockUserLockoutService,
     mockUserMatchingService
@@ -127,16 +131,17 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
         val r = request.buildRequest(userDetails)
 
-        val fresult = callSubmit(r)
-        val result = await(fresult)
-        status(fresult) mustBe SEE_OTHER
-        redirectLocation(fresult) mustBe Some(routes.HomeController.index().url)
+        val result = await(callSubmit(r))
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.HomeController.index().url)
 
         val session = result.session(request)
         session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
         session.get(ITSASessionKeys.UTR) must contain(TestConstants.testUtr)
         session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
         result.verifyStoredUserDetailsIs(None)(r)
+
+        verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsIndividual, None, userDetails, 0, lockedOut = false))
       }
     }
 
@@ -147,39 +152,43 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
         val r = request.buildRequest(userDetails)
 
-        val result = callSubmit(r)
+        val result = await(callSubmit(r))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.HomeController.index().url)
 
-        val session = await(result).session(request)
+        val session = result.session(request)
         session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
         session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
+
+        verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsIndividual, None, userDetails, 0, lockedOut = false))
       }
     }
 
     "UserMatchingService returns nothing" when {
       "not locked out is returned by the service" should {
-        "redirect to the user details page and apply the new counter to session" in {
+        "redirect to the user details error page and apply the new counter to session" in {
           mockUserMatchNotFound(userDetails)
           setupMockNotLockedOut(testCredId)
           setupIncrementNotLockedOut(testCredId, 0)
 
           val r = request.buildRequest(userDetails)
 
-          val result = callSubmit(r)
+          val result = await(callSubmit(r))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.usermatching.routes.UserDetailsErrorController.show().url)
 
-          val session = await(result).session(request)
+          val session = result.session(request)
           session.get(ITSASessionKeys.FailedUserMatching) must contain("1")
+
+          verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsIndividual, None, userDetails, 1, lockedOut = false))
         }
       }
 
       "locked out is returned by the service" should {
         "remove the counter from the session, lockout the user then redirect to the locked out page" in {
-          val currentFailedMatches = 3
+          val currentFailedMatches = appConfig.matchingAttempts - 1
           implicit val requestWithLockout: FakeRequest[AnyContentAsEmpty.type] = request.withSession(
             SessionKeys.userId -> testCredId,
             ITSASessionKeys.FailedUserMatching -> currentFailedMatches.toString
@@ -192,15 +201,16 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
           val r = requestWithLockout.buildRequest(userDetails)
 
-          val result = TestConfirmUserController.submit()(r)
+          val result = await(TestConfirmUserController.submit()(r))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.usermatching.routes.UserDetailsLockoutController.show().url)
 
-          val session = await(result).session
-          session.get(ITSASessionKeys.FailedUserMatching) mustBe empty
+          val session = result.session
+          session.get(ITSASessionKeys.FailedUserMatching) mustBe None
 
           verifyIncrementLockout(testCredId, 1)
+          verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsIndividual, None, userDetails, 0, lockedOut = true))
         }
       }
     }

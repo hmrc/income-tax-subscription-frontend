@@ -29,8 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait UnqualifiedAgent
 
-case object NoClientDetails extends UnqualifiedAgent
-
 case object NoClientMatched extends UnqualifiedAgent
 
 case object ClientAlreadySubscribed extends UnqualifiedAgent
@@ -54,30 +52,19 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
                                           auditingService: AuditingService)
                                          (implicit ec: ExecutionContext) {
 
-  import utilities.UserMatchingSessionUtil._
-
   type ReturnType = Either[UnqualifiedAgent, QualifiedAgent]
 
   private[services]
-  def matchClient(agentReferenceNumber: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] = {
-    val clientDetails: Future[Either[UnqualifiedAgent, UserDetailsModel]] = request.fetchUserDetails match {
-      case Some(cd) => Right(cd)
-      case _ => Left(NoClientDetails)
-    }
-
-    clientDetails.flatMap {
-      case Left(x) => Left(x)
-      case Right(cd) =>
-        clientMatchingService.matchUser(cd)
-          .collect {
-            case Right(Some(matchedClient)) =>
-              auditingService.audit(ClientMatchingAuditModel(agentReferenceNumber, cd, isSuccess = true))
-              Right(ApprovedAgent(matchedClient.nino, matchedClient.saUtr))
-            case Right(None) =>
-              auditingService.audit(ClientMatchingAuditModel(agentReferenceNumber, cd, isSuccess = false))
-              Left(NoClientMatched)
-          }.recoverWith { case _ => Left(UnexpectedFailure) }
-    }
+  def matchClient(clientDetails: UserDetailsModel, agentReferenceNumber: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] = {
+    clientMatchingService.matchUser(clientDetails)
+      .collect {
+        case Right(Some(matchedClient)) =>
+          auditingService.audit(ClientMatchingAuditModel(agentReferenceNumber, clientDetails, isSuccess = true))
+          Right(ApprovedAgent(matchedClient.nino, matchedClient.saUtr))
+        case Right(None) =>
+          auditingService.audit(ClientMatchingAuditModel(agentReferenceNumber, clientDetails, isSuccess = false))
+          Left(NoClientMatched)
+      }.recoverWith { case _ => Left(UnexpectedFailure) }
   }
 
   private[services]
@@ -89,7 +76,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
           case Right(Some(SubscriptionSuccess(_))) => Left(ClientAlreadySubscribed)
         }
     } yield agentClientResponse
-    }.recoverWith { case _ => Left(UnexpectedFailure) }
+  }.recoverWith { case _ => Left(UnexpectedFailure) }
 
   private[services]
   def checkClientRelationship(agentReferenceNumber: String,
@@ -100,7 +87,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
     } yield
       if (isPreExistingRelationship) Right(matchedClient)
       else Right(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
-    }.recoverWith { case _ => Left(UnexpectedFailure) }
+  }.recoverWith { case _ => Left(UnexpectedFailure) }
 
   private implicit class Util[A, B](first: Future[Either[A, B]]) {
     def flatMapRight(next: B => Future[Either[A, B]]): Future[Either[A, B]] =
@@ -110,8 +97,9 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       }
   }
 
-  def orchestrateAgentQualification(agentReferenceNumber: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
-    matchClient(agentReferenceNumber)
+  def orchestrateAgentQualification(clientDetails: UserDetailsModel, agentReferenceNumber: String)
+                                   (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
+    matchClient(clientDetails, agentReferenceNumber)
       .flatMapRight(checkExistingSubscription)
       .flatMapRight(checkClientRelationship(agentReferenceNumber, _))
 }

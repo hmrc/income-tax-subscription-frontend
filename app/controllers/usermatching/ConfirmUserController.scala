@@ -16,15 +16,16 @@
 
 package controllers.usermatching
 
-import auth.individual.IncomeTaxSAUser
-import auth.individual.JourneyState._
-import auth.individual.{UserMatched, UserMatchingController}
+import auth.individual.JourneyState.ResultFunctions
+import auth.individual.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.audits.EnterDetailsAuditing
+import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuthService, LockoutUpdate, UserLockoutService, UserMatchingService}
+import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys._
 
@@ -33,7 +34,10 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
 
 @Singleton
-class ConfirmUserController @Inject()(val authService: AuthService, lockOutService: UserLockoutService, userMatching: UserMatchingService)
+class ConfirmUserController @Inject()(auditService: AuditingService,
+                                      val authService: AuthService,
+                                      lockOutService: UserLockoutService,
+                                      userMatching: UserMatchingService)
                                      (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                       mcc: MessagesControllerComponents) extends UserMatchingController {
 
@@ -77,31 +81,37 @@ class ConfirmUserController @Inject()(val authService: AuthService, lockOutServi
       }
   }
 
-  private def handleFailedMatch(bearerToken: String)(implicit request: Request[AnyContent]): Future[Result] = {
+  private def handleFailedMatch(userDetails: UserDetailsModel, bearerToken: String)(implicit request: Request[AnyContent]): Future[Result] = {
     val currentCount = request.session.get(FailedUserMatching).fold(0)(_.toInt)
     lockOutService.incrementLockout(bearerToken, currentCount).flatMap {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
+        auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsIndividual, None, userDetails, newCount, lockedOut = false))
         successful(Redirect(controllers.usermatching.routes.UserDetailsErrorController.show())
           .addingToSession(FailedUserMatching -> newCount.toString))
-      case Right(LockoutUpdate(_: LockedOut, _)) =>
+      case Right(LockoutUpdate(_: LockedOut, None)) =>
+        auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsIndividual, None, userDetails, 0, lockedOut = true))
         successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show())
           .removingFromSession(FailedUserMatching))
       case _ => failed(new InternalServerException("ConfirmUserController.lockUser"))
     }
   }
 
-  private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent], saUser: IncomeTaxSAUser ): Future[Result] = for {
+  private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent], saUser: IncomeTaxSAUser): Future[Result] = for {
     user <- userMatching.matchUser(userDetails)
     result <- user match {
-      case Right(Some(matchedDetails)) => handleMatchedUser(matchedDetails)
-      case Right(None) => handleFailedMatch(saUser.userId)
+      case Right(Some(matchedDetails)) =>
+        val currentCount = request.session.get(FailedUserMatching).fold(0)(_.toInt)
+        auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsIndividual, None, userDetails, currentCount, lockedOut = false))
+        handleMatchedUser(matchedDetails)
+      case Right(None) => handleFailedMatch(userDetails, saUser.userId)
       case Left(error) => throw new InternalServerException(error.errors)
     }
   } yield result
 
   lazy val backUrl: String = controllers.usermatching.routes.UserDetailsController.show().url
 
-  private def handleMatchedUser(matchedDetails: UserMatchSuccessResponseModel)(implicit request: Request[AnyContent]): Future[Result] = {
+  private def handleMatchedUser(matchedDetails: UserMatchSuccessResponseModel)
+                               (implicit request: Request[AnyContent]): Future[Result] = {
     matchedDetails match {
       case UserMatchSuccessResponseModel(_, _, _, nino, Some(utr)) =>
         Future.successful(
@@ -117,6 +127,6 @@ class ConfirmUserController @Inject()(val authService: AuthService, lockOutServi
             .addingToSession(NINO -> matchedDetails.nino)
         )
     }
-    }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearAllUserDetails)
+  }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearAllUserDetails)
 
 }

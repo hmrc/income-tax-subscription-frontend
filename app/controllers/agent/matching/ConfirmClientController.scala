@@ -23,11 +23,13 @@ import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.ITSASessionKeys
 import controllers.agent.ITSASessionKeys.FailedClientMatching
 import javax.inject.{Inject, Singleton}
+import models.audits.EnterDetailsAuditing
+import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
 import play.api.mvc._
 import play.twirl.api.Html
+import services._
 import services.agent._
-import services.{AuthService, GetEligibilityStatusService, LockoutUpdate, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future.{failed, successful}
@@ -36,9 +38,13 @@ import scala.util.Left
 
 
 @Singleton
-class ConfirmClientController @Inject()(val authService: AuthService, agentQualificationService: AgentQualificationService,
-                                        eligibilityService: GetEligibilityStatusService, lockOutService: UserLockoutService)
-                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
+class ConfirmClientController @Inject()(auditService: AuditingService,
+                                        val authService: AuthService,
+                                        agentQualificationService: AgentQualificationService,
+                                        eligibilityService: GetEligibilityStatusService,
+                                        lockOutService: UserLockoutService)
+                                       (implicit val ec: ExecutionContext,
+                                        appConfig: AppConfig,
                                         mcc: MessagesControllerComponents) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
@@ -66,13 +72,15 @@ class ConfirmClientController @Inject()(val authService: AuthService, agentQuali
       }
   }
 
-  private def handleFailedMatch(arn: String)(implicit request: Request[AnyContent]) = {
+  private def handleFailedMatch(userDetails: UserDetailsModel, arn: String)(implicit request: Request[AnyContent]) = {
     val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
     lockOutService.incrementLockout(arn, currentCount).flatMap {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
+        auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), userDetails, newCount, lockedOut = false))
         successful(Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show())
           .addingToSession(FailedClientMatching -> newCount.toString))
-      case Right(LockoutUpdate(_: LockedOut, _)) =>
+      case Right(LockoutUpdate(_: LockedOut, None)) =>
+        auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), userDetails, 0, lockedOut = true))
         successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show())
           .removingFromSession(FailedClientMatching).clearAllUserDetails)
       case _ => failed(new InternalServerException("ConfirmClientController.lockUser failure"))
@@ -86,43 +94,46 @@ class ConfirmClientController @Inject()(val authService: AuthService, agentQuali
 
         import ITSASessionKeys.FailedClientMatching
 
-        import scala.concurrent.Future.successful
+        val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
 
-        agentQualificationService.orchestrateAgentQualification(arn).flatMap {
-          case Left(NoClientDetails) => successful(Redirect(routes.ClientDetailsController.show()))
-          case Left(NoClientMatched) => handleFailedMatch(arn)
-          case Left(ClientAlreadySubscribed) => successful(
-            Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show())
-              .removingFromSession(FailedClientMatching)
-          )
-          case Left(UnexpectedFailure) =>
-            throw new InternalServerException("[ConfirmClientController][submit] orchestrate agent qualification failed with an unexpected failure")
-          case Right(_: UnApprovedAgent) =>
-            successful(
-              Redirect(controllers.agent.routes.NoClientRelationshipController.show())
-                .removingFromSession(FailedClientMatching))
-          case Right(ApprovedAgent(nino, Some(utr))) =>
-            eligibilityService.getEligibilityStatus(utr) map {
-              case Right(Eligible) =>
-                Redirect(controllers.agent.routes.HomeController.index())
-                  .withJourneyState(AgentUserMatched)
-                  .addingToSession(ITSASessionKeys.NINO -> nino)
-                  .addingToSession(ITSASessionKeys.UTR -> utr)
-                  .removingFromSession(FailedClientMatching)
-                  .clearUserDetailsExceptName
-              case Right(Ineligible) =>
-                Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
-                  .removingFromSession(FailedClientMatching)
-                  .clearAllUserDetails
-              case Left(error) =>
-                throw new InternalServerException(s"Call to eligibility service failed with ${error.httpResponse}")
-            }
-          case Right(ApprovedAgent(nino, None)) =>
-            Future.successful(Redirect(controllers.agent.routes.HomeController.index())
-              .withJourneyState(AgentUserMatched)
-              .addingToSession(ITSASessionKeys.NINO -> nino)
-              .removingFromSession(FailedClientMatching)
-              .clearUserDetailsExceptName)
+        request.fetchUserDetails match {
+          case Some(clientDetails) => agentQualificationService.orchestrateAgentQualification(clientDetails, arn).flatMap {
+            case Left(NoClientMatched) => handleFailedMatch(clientDetails, arn)
+            case Left(ClientAlreadySubscribed) =>
+              auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
+              successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show()).removingFromSession(FailedClientMatching))
+            case Left(UnexpectedFailure) =>
+              auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
+              throw new InternalServerException("[ConfirmClientController][submit] orchestrate agent qualification failed with an unexpected failure")
+            case Right(_: UnApprovedAgent) =>
+              auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
+              successful(Redirect(controllers.agent.routes.NoClientRelationshipController.show()).removingFromSession(FailedClientMatching))
+            case Right(ApprovedAgent(nino, Some(utr))) =>
+              auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
+              eligibilityService.getEligibilityStatus(utr) map {
+                case Right(Eligible) =>
+                  Redirect(controllers.agent.routes.HomeController.index())
+                    .withJourneyState(AgentUserMatched)
+                    .addingToSession(ITSASessionKeys.NINO -> nino)
+                    .addingToSession(ITSASessionKeys.UTR -> utr)
+                    .removingFromSession(FailedClientMatching)
+                    .clearUserDetailsExceptName
+                case Right(Ineligible) =>
+                  Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
+                    .removingFromSession(FailedClientMatching)
+                    .clearAllUserDetails
+                case Left(error) =>
+                  throw new InternalServerException(s"Call to eligibility service failed with ${error.httpResponse}")
+              }
+            case Right(ApprovedAgent(nino, None)) =>
+              auditService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
+              Future.successful(Redirect(controllers.agent.routes.HomeController.index())
+                .withJourneyState(AgentUserMatched)
+                .addingToSession(ITSASessionKeys.NINO -> nino)
+                .removingFromSession(FailedClientMatching)
+                .clearUserDetailsExceptName)
+          }
+          case None => successful(Redirect(routes.ClientDetailsController.show()))
         }
       }
   }
