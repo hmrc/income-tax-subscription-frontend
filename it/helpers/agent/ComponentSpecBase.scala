@@ -355,6 +355,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def noSA(): WSResponse = get("/register-for-SA")
 
+    def getRouting(editMode: Boolean = false): WSResponse = get(s"/business/routing?editMode=$editMode")
+
     def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
 
     def submitCannotReportYet(editMode: Boolean): WSResponse =

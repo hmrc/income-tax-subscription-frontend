@@ -94,6 +94,7 @@ trait AppConfig extends FeatureSwitching {
 
   def incomeTaxSelfEmploymentsFrontendUrl: String
   def incomeTaxSelfEmploymentsFrontendInitialiseUrl: String
+  def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
 
   val eligibilityFeatureSwitchUrl: String
 
@@ -232,6 +233,11 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = {
     s"$incomeTaxSelfEmploymentsFrontendUrl/details"
   }
+
+  override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = {
+    s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
+  }
+
   override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
 
   lazy val taxEnrolments: String = config.baseUrl("tax-enrolments")

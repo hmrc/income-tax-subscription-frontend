@@ -59,36 +59,39 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
         formWithErrors =>
           Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource => {
-          lazy val linearJourney: Future[Result] =
-            subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
-              incomeSource match {
-								case IncomeSourceModel(_, _, _) if isEnabled(PropertyNextTaxYear) =>
-									Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
-                case IncomeSourceModel(true, false, false) =>
-                  Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
-                case IncomeSourceModel(true, _, _) =>
-                  Redirect(controllers.agent.business.routes.BusinessNameController.show())
-                case IncomeSourceModel(_, true, _) =>
-                  if (isEnabled(ReleaseFour)) Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
-                  else Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
-                case IncomeSourceModel(_, _, true) =>
-                  Redirect(controllers.agent.business.routes.OverseasPropertyCommencementDateController.show())
-                case _ =>
-                  throw new InternalServerException("User is missing income source type in Subscription Details")
-              }
-            }
-
           if (!isEditMode) {
-            linearJourney
+            linearJourney(incomeSource)
           } else {
             subscriptionDetailsService.fetchIncomeSource() flatMap {
               case Some(`incomeSource`) =>
                 Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.submit()))
-              case _ => linearJourney
+              case _ => linearJourney(incomeSource)
             }
           }
         }
       )
+  }
+
+
+  private def linearJourney(incomeSource: IncomeSourceModel)(implicit request: Request[_]): Future[Result] = {
+    subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
+      incomeSource match {
+        case IncomeSourceModel(_, _, _) if isEnabled(PropertyNextTaxYear) =>
+          Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
+        case IncomeSourceModel(true, false, false) =>
+          Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
+        case IncomeSourceModel(true, _, _) =>
+          if(isEnabled(ReleaseFour)) Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
+          else Redirect(controllers.agent.business.routes.BusinessNameController.show())
+        case IncomeSourceModel(_, true, _) =>
+          if (isEnabled(ReleaseFour)) Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
+          else Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+        case IncomeSourceModel(_, _, true) =>
+          Redirect(controllers.agent.business.routes.OverseasPropertyCommencementDateController.show())
+        case _ =>
+          throw new InternalServerException("User is missing income source type in Subscription Details")
+      }
+    }
   }
 
   lazy val backUrl: String =

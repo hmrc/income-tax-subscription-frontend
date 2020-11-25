@@ -124,6 +124,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
       } else {
         summaryModel.asInstanceOf[AgentSummary].toBusinessSubscriptionDetailsModel
       }
+
     multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
   }
 }

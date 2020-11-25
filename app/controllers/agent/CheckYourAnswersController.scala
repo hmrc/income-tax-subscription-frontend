@@ -73,14 +73,20 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, val sub
     }
   }
 
+  private def getSelfEmploymentsData()(implicit request: Request[AnyContent]): Future[(Option[Seq[SelfEmploymentData]], Option[AccountingMethodModel])] = {
+    for {
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
+      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+    } yield (businesses, businessAccountingMethod)
+  }
+
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
         if(isEnabled(ReleaseFour)) {
           require(incomeSourceModelAnswer) { incomeSource =>
             for {
-              businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
-              businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+              (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
             } yield {
               Ok(views.html.agent.check_your_answers(
                 cache.getAgentSummary(businesses, businessAccountingMethod, true),
@@ -116,6 +122,21 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, val sub
     } yield Redirect(controllers.agent.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }
 
+  private def submitForAuthorisedAgentWithReleaseFourEnabled(arn: String, nino: String, utr: String)
+                                                            (implicit user: IncomeTaxAgentUser, request: Request[AnyContent],
+                                                             cache: CacheMap): Future[Result] = {
+    val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+    for {
+      (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
+      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr,
+        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod,true), true)(headerCarrier)
+        .collect { case Right(SubscriptionSuccess(id)) => id }
+        .recoverWith { case _ => error("Successful response not received from submission") }
+      _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)
+        .recoverWith { case _ => error("Failed to save to Subscription Details ") }
+    } yield Redirect(controllers.agent.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
+  }
+
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       implicit cache =>
@@ -128,7 +149,11 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, val sub
         val utr: String = user.clientUtr.getOrElse(
           throw new InternalServerException("[CheckYourAnswersController][submit] - Client utr not found")
         )
-        submitForAuthorisedAgent(arn = arn, nino = nino, utr = utr)
+        if (isEnabled(ReleaseFour)) {
+          submitForAuthorisedAgentWithReleaseFourEnabled(arn = arn, nino = nino, utr = utr)
+        } else {
+          submitForAuthorisedAgent(arn = arn, nino = nino, utr = utr)
+        }
 
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any Subscription Details  cached data")
 

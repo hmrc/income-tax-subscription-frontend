@@ -41,7 +41,7 @@ object IntegrationTestConstants {
   val propertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
   val foreignPropertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
   val propertyCommencementDateURI = s"$baseURI/business/property-commencement-date"
-  val foreignPropertyComencementDateURI = s"$baseURI/business/overseas-commencement-date"
+  val foreignPropertyCommencementDateURI = s"$baseURI/business/overseas-commencement-date"
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"

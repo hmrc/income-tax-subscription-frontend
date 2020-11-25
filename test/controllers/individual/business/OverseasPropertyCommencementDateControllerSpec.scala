@@ -184,6 +184,8 @@ class OverseasPropertyCommencementDateControllerSpec extends ControllerBaseSpec
     "The back url is not in edit mode and release four is disabled" when {
       "the user has a foreign property and it is the only income source" should {
         "redirect to income source page" in new Test {
+          disable(ReleaseFour)
+					disable(PropertyNextTaxYear)
           controller.backUrl(isEditMode = false, incomeSourceOverseasPropertyOnly) mustBe
             controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }

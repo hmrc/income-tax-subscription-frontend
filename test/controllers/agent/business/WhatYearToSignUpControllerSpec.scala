@@ -20,7 +20,7 @@ import controllers.agent.AgentControllerBaseSpec
 import config.featureswitch.FeatureSwitching
 import forms.agent.AccountingYearForm
 import models.Current
-import models.common.AccountingYearModel
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -90,6 +90,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
@@ -100,7 +101,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
       "redirect to business accounting period page" in {
         setupMockSubscriptionDetailsSaveFunctions()
-
+        mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessNameController.show().url)

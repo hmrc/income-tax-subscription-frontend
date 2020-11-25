@@ -89,7 +89,11 @@
     val rowName = AccountingMethodId
     val rowQuestion = Messages("agent.summary.income_type")
     val rowAnswer = accountingMethodText(accountingModel.accountingMethod)
-    val rowUrl = controllers.agent.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+    val rowUrl = if (releaseFour) {
+                    appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method?isEditMode=true"
+                } else {
+                    controllers.agent.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+                }
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

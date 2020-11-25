@@ -17,6 +17,7 @@
 package utilities
 
 import config.featureswitch.FeatureSwitch.PropertyNextTaxYear
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import models.common.IncomeSourceModel
 import models.{AgentSummary, IndividualSummary}
@@ -131,6 +132,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is both" in {
+				disable(PropertyNextTaxYear)
+				disable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceBusinessProperty)
         ).getAgentSummary() shouldBe
@@ -156,11 +159,29 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
           isReleaseFourEnabled = true
         ) shouldBe AgentSummary(
-          incomeSource = Some(testAgentIncomeSourceProperty),
-          selectedTaxYear = testSelectedTaxYearNext,
-          businessName = None,
-          accountingMethod = None,
-          accountingMethodProperty = Some(testAccountingMethodProperty)
+              incomeSource = Some(testAgentIncomeSourceProperty),
+              selectedTaxYear = None,
+              businessName = None,
+              accountingMethod = None,
+              accountingMethodProperty = Some(testAccountingMethodProperty)
+        )
+      }
+
+			"the income type is property with the property tax year feature switch enabled" in {
+				enable(PropertyNextTaxYear)
+				enable(ReleaseFour)
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceProperty)
+        ).getAgentSummary(
+            selfEmployments = testSelfEmployments,
+            selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+            isReleaseFourEnabled = true
+        ) shouldBe AgentSummary(
+              incomeSource = Some(testAgentIncomeSourceProperty),
+              selectedTaxYear = testSelectedTaxYearNext,
+              businessName = None,
+              accountingMethod = None,
+              accountingMethodProperty = Some(testAccountingMethodProperty)
         )
       }
 
@@ -180,6 +201,25 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is foreign property" in {
+				disable(PropertyNextTaxYear)
+				disable(ReleaseFour)
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceForeignProperty)
+        ).getAgentSummary(selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true) shouldBe AgentSummary(
+          incomeSource = Some(testAgentIncomeSourceForeignProperty),
+          selectedTaxYear = None,
+          businessName = None,
+          accountingMethod = None,
+          accountingMethodProperty = None,
+          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+        )
+      }
+
+			"the income type is foreign property with the property tax year feature switch enabled" in {
+				enable(PropertyNextTaxYear)
+				enable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceForeignProperty)
         ).getAgentSummary(selfEmployments = testSelfEmployments,
@@ -227,6 +267,25 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is both UK property and overseas property" in {
+				disable(PropertyNextTaxYear)
+				disable(ReleaseFour)
+        testCacheMapCustom(
+          incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)
+        ).getAgentSummary(selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true) shouldBe AgentSummary(
+            incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
+            selectedTaxYear = None,
+            businessName = None,
+            accountingMethod = None,
+            accountingMethodProperty = Some(testAccountingMethodProperty),
+            overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+        )
+      }
+
+			"the income type is both UK property and overseas property with the property feature switch enabled" in {
+				enable(PropertyNextTaxYear)
+				enable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)
         ).getAgentSummary(selfEmployments = testSelfEmployments,
