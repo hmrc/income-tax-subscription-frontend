@@ -22,9 +22,11 @@ import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.PropertyTradingStartDateForm.propertyTradingStartDateForm
 import javax.inject.{Inject, Singleton}
+import models.audits.EligibilityAnswerAuditing
+import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
+import services.{AuditingService, AuthService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.agent.eligibility.property_trading_after
@@ -32,7 +34,8 @@ import views.html.agent.eligibility.property_trading_after
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class PropertyTradingStartAfterController @Inject()(val authService: AuthService,
+class PropertyTradingStartAfterController @Inject()(auditService: AuditingService,
+                                                    val authService: AuthService,
                                                     val languageUtils: LanguageUtils)
                                                    (implicit appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents,
@@ -50,11 +53,18 @@ class PropertyTradingStartAfterController @Inject()(val authService: AuthService
 
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
+      val arn: Option[String] = user.arn
       propertyTradingStartDateForm(startDateLimit.toLongDate).bindFromRequest.fold(
         formWithErrors => BadRequest(property_trading_after(
           formWithErrors, routes.PropertyTradingStartAfterController.submit(), startDateLimit.toLongDate, backUrl)), {
-          case Yes => Redirect(routes.CannotTakePartController.show())
-          case No => Redirect(routes.AccountingPeriodCheckController.show())
+          case Yes =>
+            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, false, "yes",
+              "propertyBusinessStartDate", arn))
+            Redirect(routes.CannotTakePartController.show())
+          case No =>
+            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, true, "no",
+              "propertyBusinessStartDate", arn))
+            Redirect(routes.AccountingPeriodCheckController.show())
         }
       )
   }

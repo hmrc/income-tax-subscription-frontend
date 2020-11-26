@@ -20,15 +20,18 @@ import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.AccountingPeriodCheckForm.accountingPeriodCheckForm
 import javax.inject.{Inject, Singleton}
+import models.audits.EligibilityAnswerAuditing
+import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
+import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.accounting_period_check
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AccountingPeriodCheckController @Inject()(val authService: AuthService)
+class AccountingPeriodCheckController @Inject()(auditService: AuditingService,
+                                                 val authService: AuthService)
                                                (implicit appConfig: AppConfig,
                                                 mcc: MessagesControllerComponents,
                                                 val ec: ExecutionContext) extends StatelessController {
@@ -40,11 +43,18 @@ class AccountingPeriodCheckController @Inject()(val authService: AuthService)
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
+      val arn: Option[String] = user.arn
       accountingPeriodCheckForm.bindFromRequest.fold(
         formWithErrors => BadRequest(accounting_period_check(formWithErrors, routes.AccountingPeriodCheckController.submit(), backLink)),
         {
-          case Yes => Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
-          case No => Redirect(routes.CannotTakePartController.show())
+          case Yes =>
+            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, true, "yes",
+              "standardAccountingPeriod", arn))
+            Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+          case No =>
+            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, false, "no",
+              "standardAccountingPeriod", arn))
+            Redirect(routes.CannotTakePartController.show())
         }
       )
   }

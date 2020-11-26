@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter
 import forms.agent.SoleTraderForm
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -25,17 +26,19 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
   val date: String = LocalDate.now().minusYears(2).format(DateTimeFormatter.ofPattern("d MMMM y"))
 
-object SoleTraderPageMessages {
-  val back: String = "Back"
+  object SoleTraderPageMessages {
+    val back: String = "Back"
 
-  def title(date: String) = s"Is your client a sole trader that began trading on or after $date?"
-  def heading(date: String) = s"Is your client a sole trader that began trading on or after $date?"
-  def invalidError(date: String) = s"Select yes if your client is a sole trader that began trading on or after $date?"
+    def title(date: String) = s"Is your client a sole trader that began trading on or after $date?"
 
-  val yes: String = "Yes"
-  val no: String = "No"
-  val continue: String = "Continue"
-}
+    def heading(date: String) = s"Is your client a sole trader that began trading on or after $date?"
+
+    def invalidError(date: String) = s"Select yes if your client is a sole trader that began trading on or after $date?"
+
+    val yes: String = "Yes"
+    val no: String = "No"
+    val continue: String = "Continue"
+  }
 
   "GET /eligibility/sole-trader-start-date" should {
 
@@ -109,15 +112,16 @@ object SoleTraderPageMessages {
 
     "POST /eligibility/other-income" should {
 
-      "return SEE_OTHER when selecting yes" in new PostSetup(Some(Yes)) {
+      "return SEE_OTHER when selecting yes and an audit has been sent" in new PostSetup(Some(Yes)) {
+        verifyAudit()
         response should have(
           httpStatus(SEE_OTHER),
           redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
         )
       }
 
-      "return SEE_OTHER when selecting No" in new PostSetup(Some(No)) {
-
+      "return SEE_OTHER when selecting No and an audit has been sent" in new PostSetup(Some(No)) {
+        verifyAudit()
         response should have(
           httpStatus(SEE_OTHER),
           redirectURI(controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show().url)

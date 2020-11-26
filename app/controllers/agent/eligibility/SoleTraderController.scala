@@ -23,9 +23,11 @@ import config.AppConfig
 import forms.agent.SoleTraderForm.soleTraderForm
 import javax.inject.{Inject, Singleton}
 import models._
+import models.audits.EligibilityAnswerAuditing
+import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
+import services.{AuditingService, AuthService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.agent.eligibility.are_you_a_sole_trader
@@ -33,7 +35,8 @@ import views.html.agent.eligibility.are_you_a_sole_trader
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SoleTraderController @Inject()(val authService: AuthService)
+class SoleTraderController @Inject()(auditService: AuditingService,
+                                     val authService: AuthService)
                                     (implicit appConfig: AppConfig,
                                      mcc: MessagesControllerComponents,
                                      override val languageUtils: LanguageUtils,
@@ -50,11 +53,18 @@ class SoleTraderController @Inject()(val authService: AuthService)
 
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
+      val arn: Option[String] = user.arn
       soleTraderForm(startDateLimit.toLongDate).bindFromRequest.fold(
         formWithErrors => BadRequest(are_you_a_sole_trader(formWithErrors, routes.SoleTraderController.submit(), startDateLimit.toLongDate, backUrl)),
         {
-          case Yes => Redirect(routes.CannotTakePartController.show())
-          case No => Redirect(routes.PropertyTradingStartAfterController.show())
+          case Yes =>
+            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, false, "yes",
+              "soleTraderBusinessStartDate", arn))
+            Redirect(routes.CannotTakePartController.show())
+          case No =>
+            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, true, "no",
+              "soleTraderBusinessStartDate", arn))
+            Redirect(routes.PropertyTradingStartAfterController.show())
         }
       )
   }
