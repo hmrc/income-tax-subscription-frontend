@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter
 import forms.agent.PropertyTradingStartDateForm
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -113,16 +114,16 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
   "POST /eligibility/property-start-date" should {
 
-    "return SEE_OTHER when selecting yes" in new PostSetup(Some(Yes)) {
-
+    "return SEE_OTHER when selecting yes and an audit has been sent" in new PostSetup(Some(Yes)) {
+      verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
       )
     }
 
-    "return SEE_OTHER when selecting No" in new PostSetup(Some(No)) {
-
+    "return SEE_OTHER when selecting No and an audit has been sent" in new PostSetup(Some(No)) {
+      verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show().url)

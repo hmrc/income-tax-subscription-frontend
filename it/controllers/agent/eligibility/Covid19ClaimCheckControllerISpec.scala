@@ -4,6 +4,7 @@ package controllers.agent.eligibility
 import forms.agent.Covid19ClaimCheckForm
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -116,29 +117,31 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
 
   }
 
-  class PostSetup(answer: Option[YesNo]){
+  class PostSetup(answer: Option[YesNo]) {
     AuthStub.stubAuthSuccess()
 
     val response: WSResponse = IncomeTaxSubscriptionFrontend.submitCovid19ClaimCheck(answer)
   }
 
   "POST /eligibility/covid-19" should {
-    "return SEE_OTHER when selecting Yes" in new PostSetup(Some(Yes)) {
-      response should have (
+    "return SEE_OTHER when selecting Yes and an audit has been sent" in new PostSetup(Some(Yes)) {
+      verifyAudit()
+      response should have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.eligibility.routes.CovidCannotSignUpController.show().url)
       )
     }
 
-    "return SEE_OTHER when selecting No" in new PostSetup(Some(No)) {
-      response should have (
+    "return SEE_OTHER when selecting No and an audit has been sent" in new PostSetup(Some(No)) {
+      verifyAudit()
+      response should have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show().url)
       )
     }
 
     "return a BAD_REQUEST when no answer is selected" in new PostSetup(None) {
-      response should have (
+      response should have(
         httpStatus(BAD_REQUEST)
       )
 

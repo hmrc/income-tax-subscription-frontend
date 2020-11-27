@@ -4,6 +4,7 @@ package controllers.agent.eligibility
 import forms.agent.AccountingPeriodCheckForm
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -107,14 +108,16 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
   "POST /client/eligibility/accounting-period-check" should {
 
-    "return SEE_OTHER when selecting yes" in new PostSetup(Some(Yes)) {
+    "return SEE_OTHER when selecting yes and an audit has been sent" in new PostSetup(Some(Yes)) {
+      verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
       )
     }
 
-    "return SEE_OTHER when selecting No" in new PostSetup(Some(No)) {
+    "return SEE_OTHER when selecting No and an audit has been sent" in new PostSetup(Some(No)) {
+      verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
         redirectURI(routes.CannotTakePartController.show().url)
