@@ -20,7 +20,7 @@ import services.AuditModel
 
 object EligibilityAnswerAuditing {
 
-  val eligibilityAnswerAuditType: String = "EligibilityAnswer"
+  val eligibilityAnswerAuditType: String = "Eligibility"
   val eligibilityAnswerIndividual: String = "individual"
   val eligibilityAnswerAgent: String = "agent"
 
