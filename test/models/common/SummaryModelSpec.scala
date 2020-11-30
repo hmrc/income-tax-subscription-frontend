@@ -20,11 +20,12 @@ import models._
 import models.individual.business._
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.AccountingPeriodUtil._
+import utilities.individual.TestConstants.testNino
 
 class SummaryModelSpec extends UnitSpec {
 
-  val date = DateModel("1", "2", "1980")
-  val completeSeModel = SelfEmploymentData(
+  val date: DateModel = DateModel("1", "2", "1980")
+  val completeSeModel: SelfEmploymentData = SelfEmploymentData(
     id = "",
     businessStartDate = Some(BusinessStartDate(date)),
     businessName = Some(BusinessNameModel("Fake Name")),
@@ -45,13 +46,14 @@ class SummaryModelSpec extends UnitSpec {
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
+          nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
           accountingPeriod = getNextTaxYear,
           propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
           propertyAccountingMethod = Some(AccountingMethodPropertyModel(Cash))
         )
 
-        summary.toBusinessSubscriptionDetailsModel(true) shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true) shouldBe expectedModel
       }
 
       "provided with a valid set of data for SE" in {
@@ -63,13 +65,14 @@ class SummaryModelSpec extends UnitSpec {
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
+          nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
           accountingPeriod = getNextTaxYear,
           selfEmploymentsData = Some(Seq(completeSeModel)),
           accountingMethod = Some(Cash)
         )
 
-        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) shouldBe expectedModel
       }
 
       "provided with a valid set of data for SE filtering out incomplete sets" in {
@@ -81,13 +84,14 @@ class SummaryModelSpec extends UnitSpec {
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
+          nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
           accountingPeriod = getNextTaxYear,
           selfEmploymentsData = Some(Seq(completeSeModel)),
           accountingMethod = Some(Cash)
         )
 
-        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) shouldBe expectedModel
       }
 
       "provided with a valid set of data for uk property" in {
@@ -98,13 +102,14 @@ class SummaryModelSpec extends UnitSpec {
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
+          nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
           accountingPeriod = getCurrentTaxYear,
           propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
           propertyAccountingMethod = Some(AccountingMethodPropertyModel(Cash))
         )
 
-        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) shouldBe expectedModel
       }
 
       "provided with a valid set of data for foreign property" in {
@@ -115,13 +120,14 @@ class SummaryModelSpec extends UnitSpec {
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
+          nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true),
           accountingPeriod = getCurrentTaxYear,
           overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
-        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) shouldBe expectedModel
       }
 
       "provided with a valid set of all data" in {
@@ -136,6 +142,7 @@ class SummaryModelSpec extends UnitSpec {
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
+          nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
           accountingPeriod = getCurrentTaxYear,
           selfEmploymentsData = Some(Seq(completeSeModel)),
@@ -146,7 +153,7 @@ class SummaryModelSpec extends UnitSpec {
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
-        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) shouldBe expectedModel
       }
 
       "provided with valid data including data not selected as an income source" in {
@@ -162,11 +169,12 @@ class SummaryModelSpec extends UnitSpec {
         )
 
         val expectedModel = BusinessSubscriptionDetailsModel(
+          nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = false),
           accountingPeriod = getCurrentTaxYear
         )
 
-        summary.toBusinessSubscriptionDetailsModel(false) shouldBe expectedModel
+        summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) shouldBe expectedModel
       }
     }
 
@@ -178,21 +186,21 @@ class SummaryModelSpec extends UnitSpec {
           selectedTaxYear = Some(AccountingYearModel(Next))
         )
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "Missing data items for valid self employments submission"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) should have message "Missing data items for valid self employments submission"
       }
 
       "incomplete property data is submitted when required" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)))
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "Missing data items for valid property submission"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) should have message "Missing data items for valid property submission"
       }
 
       "incomplete foreign property data is submitted when required" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)))
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "Missing data items for valid foreign property submission"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) should have message "Missing data items for valid foreign property submission"
       }
 
       "accounting year selection is missing when se employments are the only income" in {
@@ -202,7 +210,7 @@ class SummaryModelSpec extends UnitSpec {
           accountingMethod = Some(AccountingMethodModel(Cash))
         )
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "Accounting period not defined for BusinessSubscriptionDetailsModel"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) should have message "Accounting period not defined for BusinessSubscriptionDetailsModel"
       }
 
       "income source model is missing on any submission" in {
@@ -212,7 +220,7 @@ class SummaryModelSpec extends UnitSpec {
           selectedTaxYear = Some(AccountingYearModel(Next))
         )
 
-        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(false) should have message "IncomeSource model not defined for BusinessSubscriptionDetailsModel"
+        the[Exception] thrownBy summary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = false) should have message "IncomeSource model not defined for BusinessSubscriptionDetailsModel"
       }
     }
   }

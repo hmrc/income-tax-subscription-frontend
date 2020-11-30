@@ -136,7 +136,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
       "convert the user's data into the correct format when they are self employed and they are signing up in next Tax year" in {
         val nino = TestModels.newNino
-        val request = TestSubscriptionService.buildRequestPost(nino,testSummaryDataBusinessNextTaxYear, None)
+        val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusinessNextTaxYear, None)
 
         val expectedTaxYear = AccountingPeriodUtil.getNextTaxYear
 
@@ -153,27 +153,27 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
   "SubscriptionService.submitSubscription" should {
 
-      def call: SubscriptionResponse = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
+    def call: SubscriptionResponse = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
 
-      "return the safeId when the subscription is successful" in {
-        setupMockSubscribeSuccess(testSubmissionRequest)
-        call.right.value shouldBe SubscriptionSuccess(testMTDID)
-      }
+    "return the safeId when the subscription is successful" in {
+      setupMockSubscribeSuccess(testSubmissionRequest)
+      call.right.value shouldBe SubscriptionSuccess(testMTDID)
+    }
 
-      "return the error if subscription fails on bad request" in {
-        setupMockSubscribeFailure(testSubmissionRequest)
-        call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
-      }
+    "return the error if subscription fails on bad request" in {
+      setupMockSubscribeFailure(testSubmissionRequest)
+      call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
+    }
 
-      "return the error if subscription fails on bad formatting" in {
-        setupMockSubscribeBadFormatting(testSubmissionRequest)
-        call.left.value shouldBe BadlyFormattedSubscriptionResponse
-      }
+    "return the error if subscription fails on bad formatting" in {
+      setupMockSubscribeBadFormatting(testSubmissionRequest)
+      call.left.value shouldBe BadlyFormattedSubscriptionResponse
+    }
 
-      "return the error if subscription throws an exception" in {
-        setupMockSubscribeException(testSubmissionRequest)
-        intercept[Exception](call) shouldBe testException
-      }
+    "return the error if subscription throws an exception" in {
+      setupMockSubscribeException(testSubmissionRequest)
+      intercept[Exception](call) shouldBe testException
+    }
   }
 
   "SubscriptionService.getSubscription" should {
@@ -228,29 +228,31 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
   "SubscriptionService.createIncomeSources" should {
 
-    def call: PostCreateIncomeSourceResponse = await(TestSubscriptionService.createIncomeSources(mtdbsa = testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = true))
+    def call: PostCreateIncomeSourceResponse = await(TestSubscriptionService.createIncomeSources(
+      nino = testNino, mtdbsa = testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = true
+    ))
 
     "return the list of income source ids when the create is successful" in {
       setupMockCreateIncomeSourcesSuccess(testMTDID,
-        testIndividualSummary.toBusinessSubscriptionDetailsModel(true).copy(accountingPeriod = getCurrentTaxYear))
+        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true).copy(accountingPeriod = getCurrentTaxYear))
       call.right.value shouldBe CreateIncomeSourcesSuccess()
     }
 
     "return the error if create fails on bad request" in {
       setupMockCreateIncomeSourcesFailure(testMTDID,
-        testIndividualSummary.toBusinessSubscriptionDetailsModel(true).copy(accountingPeriod = getCurrentTaxYear))
+        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true).copy(accountingPeriod = getCurrentTaxYear))
       call.left.value shouldBe CreateIncomeSourcesFailureResponse(BAD_REQUEST)
     }
 
     "return the error if create fails on bad formatting" in {
       setupMockCreateIncomeSourcesBadFormatting(testMTDID,
-        testIndividualSummary.toBusinessSubscriptionDetailsModel(true).copy(accountingPeriod = getCurrentTaxYear))
+        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true).copy(accountingPeriod = getCurrentTaxYear))
       call.left.value shouldBe BadlyFormattedCreateIncomeSourcesResponse
     }
 
     "return the error if subscription throws an exception" in {
       setupMockCreateIncomeSourcesException(testMTDID,
-        testIndividualSummary.toBusinessSubscriptionDetailsModel(true).copy(accountingPeriod = getCurrentTaxYear))
+        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true).copy(accountingPeriod = getCurrentTaxYear))
       intercept[Exception](call) shouldBe testException
     }
   }

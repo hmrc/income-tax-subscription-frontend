@@ -27,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel}
 import models.individual.business.BusinessSubscriptionDetailsModel
 import models.individual.subscription._
-import models.{AgentSummary, IndividualSummary, Next, SummaryModel, Yes}
+import models.{AgentSummary, IndividualSummary, Next, SummaryModel}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
@@ -41,11 +41,11 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
 
 
   private[services] def getAccountingPeriod(summaryData: SummaryModel): Option[AccountingPeriodModel] = {
-      (summaryData.incomeSource.get, summaryData.selectedTaxYear) match {
-        case (IncomeSourceModel(true, false, _), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
-        case (IncomeSourceModel(true, _, _), _) => Some(getCurrentTaxYear)
-        case _ => None
-      }
+    (summaryData.incomeSource.get, summaryData.selectedTaxYear) match {
+      case (IncomeSourceModel(true, false, _), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
+      case (IncomeSourceModel(true, _, _), _) => Some(getCurrentTaxYear)
+      case _ => None
+    }
 
   }
 
@@ -116,16 +116,15 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
   }
 
 
-  def createIncomeSources(mtdbsa: String, summaryModel: SummaryModel, isPropertyNextTaxYearEnabled: Boolean)
+  def createIncomeSources(nino: String, mtdbsa: String, summaryModel: SummaryModel, isPropertyNextTaxYearEnabled: Boolean)
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
     Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
-    val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel =
-      summaryModel match {
-				case summary: IndividualSummary =>
-					summary.toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
-				case summary: AgentSummary =>
-					summary.toBusinessSubscriptionDetailsModel(isEnabled(PropertyNextTaxYear))
-			}
+    val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = summaryModel match {
+      case summary: IndividualSummary =>
+        summary.toBusinessSubscriptionDetailsModel(nino, isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
+      case summary: AgentSummary =>
+        summary.toBusinessSubscriptionDetailsModel(nino, isEnabled(PropertyNextTaxYear))
+    }
 
     multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
   }

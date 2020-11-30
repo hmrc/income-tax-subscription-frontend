@@ -66,7 +66,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     val res = for {
       signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
       mtdbsa = signUpResponse.mtdbsa
-      _ <- EitherT(subscriptionService.createIncomeSources(mtdbsa, individualSummary, isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled))
+      _ <- EitherT(subscriptionService.createIncomeSources(nino, mtdbsa, individualSummary, isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled))
       _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))
       _ <- EitherT(enrolAndRefresh(mtdbsa, nino))
     } yield SubscriptionSuccess(mtdbsa)

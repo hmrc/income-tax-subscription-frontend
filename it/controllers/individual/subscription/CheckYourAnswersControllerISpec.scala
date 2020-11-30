@@ -111,6 +111,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
+                  nino = testNino,
                   accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -160,6 +161,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
+                  nino = testNino,
                   accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -212,6 +214,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
+                  nino = testNino,
                   accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                   selfEmploymentsData = None,
                   accountingMethod = None,
@@ -261,6 +264,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
+                  nino = testNino,
                   accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                   selfEmploymentsData = None,
                   accountingMethod = None,
@@ -313,6 +317,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
+                  nino = testNino,
                   accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                   selfEmploymentsData = None,
                   accountingMethod = None,
@@ -363,6 +368,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
+                  nino = testNino,
                   accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                   selfEmploymentsData = None,
                   accountingMethod = None,
@@ -414,6 +420,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
               mtdbsa = testMtdId,
               request = BusinessSubscriptionDetailsModel(
+                nino = testNino,
                 accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                 selfEmploymentsData = Some(testBusinesses),
                 accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -466,6 +473,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
               mtdbsa = testMtdId,
               request = BusinessSubscriptionDetailsModel(
+                nino = testNino,
                 accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                 selfEmploymentsData = Some(testBusinesses),
                 accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -516,6 +524,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
               mtdbsa = testMtdId,
               request = BusinessSubscriptionDetailsModel(
+                nino = testNino,
                 accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                 selfEmploymentsData = Some(testBusinesses),
                 accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -566,6 +575,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
               mtdbsa = testMtdId,
               request = BusinessSubscriptionDetailsModel(
+                nino = testNino,
                 accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                 selfEmploymentsData = Some(testBusinesses),
                 accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -616,6 +626,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
               mtdbsa = testMtdId,
               request = BusinessSubscriptionDetailsModel(
+                nino = testNino,
                 accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
                 selfEmploymentsData = Some(testBusinesses),
                 accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -690,6 +701,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
             mtdbsa = testMtdId,
             request = BusinessSubscriptionDetailsModel(
+              nino = testNino,
               accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
               selfEmploymentsData = Some(testBusinesses),
               accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -735,6 +747,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
             mtdbsa = testMtdId,
             request = BusinessSubscriptionDetailsModel(
+              nino = testNino,
               accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
               selfEmploymentsData = None,
               accountingMethod = None,
