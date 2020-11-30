@@ -62,7 +62,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     val res = for {
       signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
       mtdbsa = signUpResponse.mtdbsa
-      _ <- EitherT[Future, ConnectorError, CreateIncomeSourcesSuccess](subscriptionService.createIncomeSources(mtdbsa, agentSummary, false))
+      _ <- EitherT[Future, ConnectorError, CreateIncomeSourcesSuccess](subscriptionService.createIncomeSources(nino, mtdbsa, agentSummary, false))
     } yield SubscriptionSuccess(mtdbsa)
 
     res.value

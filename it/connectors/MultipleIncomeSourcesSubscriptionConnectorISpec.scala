@@ -16,7 +16,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
-  implicit val hc = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val TestMisSubscriptionConnector: MultipleIncomeSourcesSubscriptionConnector = app.injector.instanceOf[MultipleIncomeSourcesSubscriptionConnector]
 
@@ -46,6 +46,7 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
   "MultipleIncomeSourcesSubscription createIncomeSources" should {
     val businessDetailsModel = BusinessSubscriptionDetailsModel(
+      nino = testNino,
       accountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2018"), DateModel("5", "4", "2019")),
       selfEmploymentsData = Some(Seq(SelfEmploymentData(
         id = "id1",

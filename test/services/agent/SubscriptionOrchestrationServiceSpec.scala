@@ -17,10 +17,10 @@
 package services.agent
 
 import models.ConnectorError
-import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess}
+import models.individual.subscription.SubscriptionSuccess
 import play.api.test.Helpers._
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
-import utilities.TestModels.{testAgentSummaryData, testSummaryData}
+import utilities.TestModels.testAgentSummaryData
 import utilities.agent.TestConstants._
 
 import scala.concurrent.Future
@@ -66,13 +66,13 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
   "createSubscription when release four is enabled" should {
 
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
-      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testAgentSummaryData, true)
+      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testAgentSummaryData, isReleaseFourEnabled = true)
     }
 
     "return a success" when {
       "all services succeed" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testMTDID, testAgentSummaryData, false)
+        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData, isPropertyNextTaxYearEnabled = false)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
 
         await(res) mustBe testSubscriptionSuccess
@@ -89,14 +89,14 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
       "create income sources returns an error when create income sources request fail" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesFailure(testMTDID, testAgentSummaryData, false)
+        mockCreateIncomeSourcesFailure(testNino, testMTDID, testAgentSummaryData, isPropertyNextTaxYearEnabled = false)
 
         await(res) mustBe testCreateIncomeSourcesFailure
       }
 
       "the auto enrolment service returns a failure response" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testMTDID, testAgentSummaryData, false)
+        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData, isPropertyNextTaxYearEnabled = false)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
 
         await(res) mustBe Right(SubscriptionSuccess(testMTDID))
