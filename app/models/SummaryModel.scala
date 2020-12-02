@@ -138,7 +138,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
                         selfEmployments: Option[Seq[SelfEmploymentData]] = None
                        ) extends SummaryModel {
 
-  lazy val toBusinessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = {
+  def toBusinessSubscriptionDetailsModel(propertyNextTaxYear: Boolean): BusinessSubscriptionDetailsModel = {
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
     val useUkProperty = incomeSource.exists(_.ukProperty)
     val useForeignProperty = incomeSource.exists(_.foreignProperty)
@@ -154,7 +154,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
     if (!hasValidSelfEmployments) throw new Exception("Missing data items for valid self employments submission")
 
     val accountingPeriodVal: Option[AccountingPeriodModel] =
-      if (useUkProperty || useForeignProperty) Some(getCurrentTaxYear)
+      if (!propertyNextTaxYear && (useUkProperty || useForeignProperty)) Some(getCurrentTaxYear)
       else selectedTaxYear map {
         case AccountingYearModel(Next) => getNextTaxYear
         case AccountingYearModel(Current) => getCurrentTaxYear

@@ -16,6 +16,7 @@
 
 package services
 
+import config.featureswitch.FeatureSwitch.PropertyNextTaxYear
 import config.featureswitch.FeatureSwitching
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
@@ -119,11 +120,12 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
     Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
     val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel =
-      if(summaryModel.isInstanceOf[IndividualSummary]) {
-        summaryModel.asInstanceOf[IndividualSummary].toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
-      } else {
-        summaryModel.asInstanceOf[AgentSummary].toBusinessSubscriptionDetailsModel
-      }
+      summaryModel match {
+				case summary: IndividualSummary =>
+					summary.toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
+				case summary: AgentSummary =>
+					summary.toBusinessSubscriptionDetailsModel(isEnabled(PropertyNextTaxYear))
+			}
 
     multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
   }

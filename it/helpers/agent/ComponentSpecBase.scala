@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import config.featureswitch.FeatureSwitching
 import controllers.agent.ITSASessionKeys
 import forms.agent._
 import helpers.UserMatchingIntegrationRequestSupport
@@ -43,7 +44,7 @@ trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
   with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
-  with CustomMatchers with WireMockMethods with SessionCookieBaker {
+  with CustomMatchers with WireMockMethods with SessionCookieBaker with FeatureSwitching {
 
   lazy val ws = app.injector.instanceOf[WSClient]
 

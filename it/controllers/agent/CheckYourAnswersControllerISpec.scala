@@ -16,21 +16,31 @@
 
 package controllers.agent
 
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
-import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, UsersGroupsSearchStub}
-import helpers.IntegrationTestConstants.{testCredentialId, testCredentialId2, testGroupId, testUtr}
-import helpers.IntegrationTestModels.{testAccountingMethod, testBusinesses, testEnrolmentKey}
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, UsersGroupsSearchStub}
+import helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, incomeSourceURI => _, testNino => _, testUtr => _, _}
+import helpers.IntegrationTestModels.{subscriptionData, testAccountingMethod, testBusinesses}
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
-import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub, TaxEnrolmentsStub}
-import play.api.http.Status._
+import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub}
+import models.{Accruals, Cash, DateModel, Next}
+import models.common.{AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel, OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
+import models.individual.business.BusinessSubscriptionDetailsModel
+import play.api.http.Status.{OK, _}
 import play.api.libs.json.Json
-import play.api.test.Helpers.OK
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
+class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    disable(PropertyNextTaxYear)
+    super.beforeEach()
+  }
 
   "GET /check-your-answers" when {
 
@@ -89,165 +99,982 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       }
     }
 
-    "redirect to the confirmation page" when {
-      "The whole subscription process was successful" in {
+    "release four is disabled" when {
+      "property next tax year feature switch is disabled" when {
+        "redirect to the confirmation page" when {
+          "The whole subscription process was successful" in {
 
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
-        SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+            Given("I setup the wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+            SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+            IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
-        And("The wiremock stubs for auto enrolment")
-        EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
-        EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-        UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-        EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
-        EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
-        EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
-        EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
+            And("The wiremock stubs for auto enrolment")
+            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+            UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+            EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+            EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+            EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+            EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
 
-        When("I call POST /check-your-answers")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+            When("I call POST /check-your-answers")
+            val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-        Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(confirmationURI)
-        )
+            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(confirmationURI)
+            )
 
-        val cookieMap = getSessionMap(res)
-        cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            val cookieMap = getSessionMap(res)
+            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
 
+          }
+
+          "subscription was successful but auto enrolment failed" when {
+            "getting the group id the enrolment is allocated was not successful" in {
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+              SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(NO_CONTENT)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "getting the users assigned to the enrolment was not successful" in {
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+              SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(NO_CONTENT)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "getting the admin in a group was not successful" in {
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+              SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NOT_FOUND)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "upserting the known facts was not successful" in {
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+              SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NOT_FOUND)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "allocating the enrolment to a group was not successful" in {
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+              SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(NOT_FOUND)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "assigning all the users to the enrolment was not successful" in {
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+              SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(NOT_FOUND)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+          }
+        }
+      }
+    }
+
+    "release four is enabled" when {
+      "property next tax year feature switch is disabled" when {
+        "redirect to the confirmation page" should {
+          "The whole subscription process was successful" when {
+            "only self-employments selected and no other data" in {
+
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyAccountingMethod = None,
+                overseasPropertyCommencementDate = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+            }
+
+            "only self-employments selected and everything else answered" in {
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+                overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
+                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+            }
+
+            "only UK property is answered" in {
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
+                selectedTaxYear = None,
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+                overseasPropertyAccountingMethod = None,
+                overseasPropertyCommencementDate = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  selfEmploymentsData = None,
+                  accountingMethod = None,
+                  incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
+                  propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                  propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+            }
+
+            "everything has been answered but the user has only got uk property selected" in {
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+                overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
+                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  selfEmploymentsData = None,
+                  accountingMethod = None,
+                  incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
+                  propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                  propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+            }
+
+            "only foreign property has been answered" in {
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
+                selectedTaxYear = None,
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
+                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  selfEmploymentsData = None,
+                  accountingMethod = None,
+                  incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
+                  overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
+                )
+              )(NO_CONTENT)
+
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+            }
+
+            "everything has been answered but the user has only got foreign property selected" in {
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+                overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
+                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  selfEmploymentsData = None,
+                  accountingMethod = None,
+                  incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
+                  overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
+                )
+              )(NO_CONTENT)
+
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+            }
+
+            "successfully send the correct details to the backend for a user with all income" in {
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+                overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
+                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
+                  propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                  propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+                  overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
+                  overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
+                )
+              )(NO_CONTENT)
+
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+            }
+          }
+          "subscription was successful but auto enrolment failed" when {
+            "getting the group id the enrolment is allocated was not successful" in {
+
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyAccountingMethod = None,
+                overseasPropertyCommencementDate = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(NO_CONTENT)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "getting the users assigned to the enrolment was not successful" in {
+
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyAccountingMethod = None,
+                overseasPropertyCommencementDate = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(NO_CONTENT)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "getting the admin in a group was not successful" in {
+
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyAccountingMethod = None,
+                overseasPropertyCommencementDate = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NOT_FOUND)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "upserting the known facts was not successful" in {
+
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyAccountingMethod = None,
+                overseasPropertyCommencementDate = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NOT_FOUND)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "allocating the enrolment to a group was not successful" in {
+
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyAccountingMethod = None,
+                overseasPropertyCommencementDate = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(NOT_FOUND)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+            "assigning all the users to the enrolment was not successful" in {
+
+              Given("I set the required feature switches")
+              enable(ReleaseFour)
+
+              Given("I setup the wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(AccountingYearModel(Next)),
+                businessName = None,
+                accountingMethod = None,
+                propertyCommencementDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyAccountingMethod = None,
+                overseasPropertyCommencementDate = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+                mtdbsa = testMtdId,
+                request = BusinessSubscriptionDetailsModel(
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                  selfEmploymentsData = Some(testBusinesses),
+                  accountingMethod = Some(testAccountingMethod.accountingMethod),
+                  incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                  propertyCommencementDate = None,
+                  propertyAccountingMethod = None,
+                  overseasPropertyCommencementDate = None,
+                  overseasAccountingMethodProperty = None
+                )
+              )(NO_CONTENT)
+
+              And("The wiremock stubs for auto enrolment")
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+              UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+              EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
+              EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(NOT_FOUND)
+
+              When("I call POST /check-your-answers")
+              val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+              Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val cookieMap = getSessionMap(res)
+              cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            }
+          }
+        }
       }
 
-      "subscription was successful but auto enrolment failed" when {
-        "getting the group id the enrolment is allocated was not successful" in {
+      "the property next tax year feature switch is enabled" when {
+        "the signup of a user with next tax year property income is successful and creating of the enrolment is successful" in {
+
+          Given("I set the required feature switches")
+          enable(ReleaseFour)
+          enable(PropertyNextTaxYear)
+
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
-          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
-          And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
+            selectedTaxYear = Some(AccountingYearModel(Next)),
+            businessName = None,
+            accountingMethod = None,
+            propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+            propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+            overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
+            overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+          ))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
 
-          When("I call POST /check-your-answers")
-          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+            mtdbsa = testMtdId,
+            request = BusinessSubscriptionDetailsModel(
+              accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+              selfEmploymentsData = None,
+              accountingMethod = None,
+              incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true),
+              propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+              propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+              overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
+              overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
+            )
+          )(NO_CONTENT)
 
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
-          )
-
-          val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
-        }
-        "getting the users assigned to the enrolment was not successful" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
-          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
-
-          And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(NO_CONTENT)
-
-          When("I call POST /check-your-answers")
-          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
-          )
-
-          val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
-        }
-        "getting the admin in a group was not successful" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
-          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
-
-          And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NOT_FOUND)
-
-          When("I call POST /check-your-answers")
-          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
-          )
-
-          val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
-        }
-        "upserting the known facts was not successful" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
-          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
-
-          And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NOT_FOUND)
-
-          When("I call POST /check-your-answers")
-          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
-          )
-
-          val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
-        }
-        "allocating the enrolment to a group was not successful" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
-          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
-
-          And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(NOT_FOUND)
-
-          When("I call POST /check-your-answers")
-          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
-          )
-
-          val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
-        }
-        "assigning all the users to the enrolment was not successful" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
-          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
@@ -256,7 +1083,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
           EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
           EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(NOT_FOUND)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
 
           When("I call POST /check-your-answers")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
