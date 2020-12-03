@@ -83,7 +83,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     }
   }
 
-  def toBusinessSubscriptionDetailsModel(isPropertyNextTaxYearEnabled: Boolean): BusinessSubscriptionDetailsModel = {
+  def toBusinessSubscriptionDetailsModel(nino: String, isPropertyNextTaxYearEnabled: Boolean): BusinessSubscriptionDetailsModel = {
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
     val useUkProperty = incomeSource.exists(_.ukProperty)
     val useForeignProperty = incomeSource.exists(_.foreignProperty)
@@ -114,6 +114,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     }
 
     BusinessSubscriptionDetailsModel(
+      nino,
       accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),
       if (useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
       if (useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
@@ -138,7 +139,8 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
                         selfEmployments: Option[Seq[SelfEmploymentData]] = None
                        ) extends SummaryModel {
 
-  def toBusinessSubscriptionDetailsModel(propertyNextTaxYear: Boolean): BusinessSubscriptionDetailsModel = {
+  def toBusinessSubscriptionDetailsModel(nino: String, propertyNextTaxYear: Boolean): BusinessSubscriptionDetailsModel = {
+
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
     val useUkProperty = incomeSource.exists(_.ukProperty)
     val useForeignProperty = incomeSource.exists(_.foreignProperty)
@@ -161,6 +163,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
       }
 
     BusinessSubscriptionDetailsModel(
+      nino,
       accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),
       if (useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
       if (useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,

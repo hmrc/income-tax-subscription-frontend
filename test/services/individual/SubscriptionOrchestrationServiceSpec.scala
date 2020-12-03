@@ -81,7 +81,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
     "return a success when all incometax.business.services succeed" in {
       mockSignUpIncomeSourcesSuccess(testNino)
-      mockCreateIncomeSourcesSuccess(testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
+      mockCreateIncomeSourcesSuccess(testNino, testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
       mockAddKnownFactsSuccess(testMTDID, testNino)
       mockEnrolSuccess(testMTDID, testNino)
 
@@ -97,7 +97,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
       "create income sources returns an error when create income sources request fail" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesFailure(testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
+        mockCreateIncomeSourcesFailure(testNino, testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
 
         whenReady(res)(_ mustBe testCreateIncomeSourcesFailure)
       }
@@ -110,14 +110,14 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
       "create income sources returns an exception when create income sources throws an exception" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesException(testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
+        mockCreateIncomeSourcesException(testNino, testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
 
         whenReady(res.failed)(_ mustBe testException)
       }
 
       "add known facts returns an error" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
+        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
         mockAddKnownFactsFailure(testMTDID, testNino)
 
         whenReady(res)(_ mustBe testKnownFactsFailure)
@@ -125,7 +125,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
       "add known facts returns an exception" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
+        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = false)
         mockAddKnownFactsException(testMTDID, testNino)
 
         whenReady(res.failed)(_ mustBe testException)

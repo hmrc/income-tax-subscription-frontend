@@ -20,7 +20,8 @@ import models.AccountingMethod
 import models.common._
 import play.api.libs.json.Json
 
-case class BusinessSubscriptionDetailsModel(accountingPeriod: AccountingPeriodModel,
+case class BusinessSubscriptionDetailsModel(nino: String,
+                                            accountingPeriod: AccountingPeriodModel,
                                             selfEmploymentsData: Option[Seq[SelfEmploymentData]] = None,
                                             accountingMethod: Option[AccountingMethod] = None,
                                             incomeSource: IncomeSourceModel,
