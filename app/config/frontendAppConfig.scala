@@ -94,6 +94,7 @@ trait AppConfig extends FeatureSwitching {
 
   def incomeTaxSelfEmploymentsFrontendUrl: String
   def incomeTaxSelfEmploymentsFrontendInitialiseUrl: String
+  def incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
 
   val eligibilityFeatureSwitchUrl: String
@@ -234,6 +235,10 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
     s"$incomeTaxSelfEmploymentsFrontendUrl/details"
   }
 
+  override val incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String = {
+    s"$incomeTaxSelfEmploymentsFrontendUrl/details/business-accounting-method"
+  }
+
   override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = {
     s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
   }
@@ -268,6 +273,4 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val betaFeedbackUnauthenticatedUrl: String =
     s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
-
 }
-
