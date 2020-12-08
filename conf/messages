@@ -13,7 +13,7 @@ base.endDate                                                    = End date
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
-base.error_heading                                              = There’s a problem
+base.error_heading                                              = There is a problem
 base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
@@ -66,14 +66,14 @@ are_you_selfemployed.heading                                    = Are you self-e
 are_you_selfemployed.para1                                      = This does not include if your business is a limited company or partnership.
 
 ## Individual income source page
-income_source.title                                             = How do you receive your income?
-income_source.heading                                           = How do you receive your income?
-income_source.para1                                             = Renting out a property in the UK includes using a letting agency.
-income_source.selfEmployed                                      = Self-employed
-income_source.rentUkProperty                                    = Rent out a property in the UK
-income_source.foreignProperty                                   = Rent out a foreign property outside the UK
-individual.error.income_source.invalid                          = Select if you receive your income from self employment or UK property
-individual.error.income_source_foreignProperty.invalid          = Select if you receive your income from self employment, UK property or foreign property
+income_source.title                                             = What are your sources of income?
+income_source.heading                                           = What are your sources of income?
+income_source.para1                                             = Renting out a property includes using a letting agency.
+income_source.selfEmployed                                      = Sole trader with one or more businesses
+income_source.rentUkProperty                                    = Rent out UK properties
+income_source.foreignProperty                                   = Rent out overseas properties
+individual.error.income_source.invalid                          = Select your sources of income
+individual.error.income_source_foreignProperty.invalid          = Select your sources of income
 income_source.checkbox.hint                                     = Select all that apply
 
 
@@ -94,15 +94,15 @@ cannot-use-service.heading                                      = You cannot use
 cannot-use-service.line1                                        = You can only sign up if you are an administrator.
 
 # What year to sign up
-business.what_year_to_sign_up.title.signup                      = What tax year do you want to sign up for?
-business.what_year_to_sign_up.heading.signup                    = What tax year do you want to sign up for?
-business.what_year_to_sign_up.line_1.signup                     = You can sign up for the current tax year or the next tax year. It will not affect the amount of tax you will pay.
+business.what_year_to_sign_up.title.signup                      = For which tax year do you want to start using software to file updates?
+business.what_year_to_sign_up.heading.signup                    = For which tax year do you want to start using software to file updates?
+business.what_year_to_sign_up.line_1.signup                     = You can start sending income tax updates for the current tax year or the next tax year. It will not affect the amount of tax you will pay.
 business.what_year_to_sign_up.option_1.signup                   = Current tax year (6 April {0} to 5 April {1})
 business.what_year_to_sign_up.option_2.signup                   = Next tax year (6 April {0} to 5 April {1})
-business.what_year_to_sign_up.conditional.1.line_1.signup       = You will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You need to send a quarterly update for:
-business.what_year_to_sign_up.conditional.1.line_2.signup       = You need to send a final declaration by the 31 January {0}.
-business.what_year_to_sign_up.conditional.2.line_1.signup       = You need to send a quarterly update for:
-business.what_year_to_sign_up.conditional.2.line_2.signup       = You need to send a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
+business.what_year_to_sign_up.conditional.1.line_1.signup       = You will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You will need to send quarterly filing updates for:
+business.what_year_to_sign_up.conditional.1.line_2.signup       = You need to submit a final declaration by the 31 January {0}.
+business.what_year_to_sign_up.conditional.2.line_1.signup       = You will need to send quarterly filing updates for:
+business.what_year_to_sign_up.conditional.2.line_2.signup       = You will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
 business.what_year_to_sign_up.quarterly.date_1                  = 5 July {0}
 business.what_year_to_sign_up.quarterly.date_2                  = 5 October {0}
 business.what_year_to_sign_up.quarterly.date_3                  = 5 January {0}
@@ -286,8 +286,8 @@ sign-up-complete.whatHappensNow.signOut                         = Finish and sig
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
 
-error.what-year.empty                                           = You must select an option to continue
-error.what-year.invalid                                         = You must select an option to continue
+error.what-year.empty                                           = Select the tax year you want to sign up for
+error.what-year.invalid                                         = Select the tax year you want to sign up for
 
 error.income_source.empty                                       = You must select an option to continue
 error.income_source.invalid                                     = You must select an option to continue

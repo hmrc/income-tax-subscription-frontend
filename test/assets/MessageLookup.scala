@@ -31,7 +31,7 @@ object MessageLookup {
     val day = "Day"
     val month = "Month"
     val year = "Year"
-    val errorHeading = "There’s a problem"
+    val errorHeading = "There is a problem"
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
@@ -84,15 +84,14 @@ object MessageLookup {
   }
 
   object IndividualIncomeSource {
-    val title = "How do you receive your income?"
+    val title = "What are your sources of income?"
     val heading: String = title
-    val line_1: String = "Renting out a property in the UK includes using a letting agency."
-    val business = "Self-employed"
-    val ukProperty = "Rent out a property in the UK"
-    val foreignProperty = "Rent out a foreign property outside the UK"
-    val errorHeading ="There’s a problem"
-    val errorSummary = "Select if you receive your income from self employment or UK property"
-    val errorSummaryForeignProperty = "Select if you receive your income from self employment, UK property or foreign property"
+    val line_1: String = "Renting out a property includes using a letting agency."
+    val business = "Sole trader with one or more businesses"
+    val ukProperty = "Rent out UK properties"
+    val foreignProperty = "Rent out overseas properties"
+    val errorHeading = "There is a problem"
+    val errorSummary = "Select your sources of income"
   }
 
 
@@ -532,17 +531,17 @@ object MessageLookup {
   }
 
   object WhatYearToSignUp {
-    val title = "What tax year do you want to sign up for?"
+    val title = "For which tax year do you want to start using software to file updates?"
     val heading: String = title
-    val line1 = "You can sign up for the current tax year or the next tax year. It will not affect the amount of tax you will pay."
+    val line1 = "You can start sending income tax updates for the current tax year or the next tax year. It will not affect the amount of tax you will pay."
 
-    def option1ConditionalExample1: String = "You will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You need to send a quarterly update for:"
+    def option1ConditionalExample1: String = "You will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You will need to send quarterly filing updates for:"
 
-    def option1ConditionalExample2(year: String): String = s"You need to send a final declaration by the 31 January $year."
+    def option1ConditionalExample2(year: String): String = s"You need to submit a final declaration by the 31 January $year."
 
-    def option2ConditionalExample1: String = "You need to send a quarterly update for:"
+    def option2ConditionalExample1: String = "You will need to send quarterly filing updates for:"
 
-    def option2ConditionalExample2(year: String): String = s"You need to send a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
+    def option2ConditionalExample2(year: String): String = s"You will need to submit a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
 
     def option1(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
 

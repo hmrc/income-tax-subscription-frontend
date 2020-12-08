@@ -61,7 +61,7 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
       paragraphs.get(1).text() mustBe messages.option1ConditionalExample1
       paragraphs.get(2).text() mustBe messages.option1ConditionalExample2((taxYearEnd + 1).toString)
       paragraphs.get(3).text() mustBe messages.option2ConditionalExample1
-      paragraphs.get(4).text() mustBe messages.option2ConditionalExample2(taxYearEnd.toString)
+      paragraphs.get(4).text() mustBe messages.option2ConditionalExample2((taxYearEnd + 2).toString)
 
       uls.get(0).text() mustBe messages.conditionalDate1((taxYearEnd - 1).toString)
       uls.get(1).text() mustBe messages.conditionalDate2((taxYearEnd - 1).toString)
