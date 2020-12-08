@@ -302,7 +302,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         Option(doc.getElementById(sectionId)) mustBe None
       }
 
-      "display the correct info for the accounting method" in {
+      "display the correct info for the accounting method when releaseFour is not enabled" in {
         val sectionId = AccountingMethodId
         val expectedQuestion = messages.income_type
         val expectedAnswer = messages.AccountingMethod.cash
@@ -313,6 +313,22 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink
+        )
+      }
+
+      "display the correct info for the accounting method releaseFour is enabled" in {
+        val sectionId = AccountingMethodId
+        val expectedQuestion = messages.income_type
+        val expectedAnswer = messages.AccountingMethod.cash
+        val expectedEditLink = appConfig.incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl+"?isEditMode=true"
+
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          releaseFour = true
         )
       }
 
