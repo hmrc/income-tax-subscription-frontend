@@ -18,7 +18,7 @@ package services.agent
 
 import javax.inject.{Inject, Singleton}
 import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
-import models.individual.subscription.SubscriptionSuccess
+import models.common.subscription.SubscriptionSuccess
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request}
 import services.{AuditingService, SubscriptionService, UserMatchingService}

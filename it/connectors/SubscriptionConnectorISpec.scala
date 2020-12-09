@@ -6,7 +6,7 @@ import connectors.stubs.SubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
 import models.common.AccountingPeriodModel
-import models.individual.subscription._
+import models.common.subscription.{BadlyFormattedSubscriptionResponse, BusinessIncomeModel, PropertyIncomeModel, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import models.{Cash, DateModel}
 import org.scalatest.Matchers
 import play.api.libs.json.Json

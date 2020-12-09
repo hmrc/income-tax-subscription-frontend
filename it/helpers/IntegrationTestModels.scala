@@ -6,8 +6,8 @@ import java.time.LocalDate
 import helpers.IntegrationTestConstants._
 import models._
 import models.common._
-import models.individual.business._
-import models.individual.subscription._
+import models.common.business._
+import models.common.subscription.EnrolmentKey
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
@@ -90,8 +90,10 @@ object IntegrationTestModels {
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
       propertyCommencementDate = Some(testPropertyCommencementDate),
+      propertyAccountingMethod = Some(testAccountingMethodProperty),
       overseasPropertyCommencementDate = Some(testForeignPropertyCommencementDate),
-      propertyAccountingMethod = Some(testAccountingMethodProperty)
+      overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
+
     )
 
   lazy val fullSubscriptionDataPropertyPost: Map[String, JsValue] =

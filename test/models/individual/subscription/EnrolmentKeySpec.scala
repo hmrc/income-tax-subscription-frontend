@@ -16,6 +16,7 @@
 
 package models.individual.subscription
 
+import models.common.subscription.EnrolmentKey
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.individual.Constants.GovernmentGateway._
 import utilities.individual.Constants._

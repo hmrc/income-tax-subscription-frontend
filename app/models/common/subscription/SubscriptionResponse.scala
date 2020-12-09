@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.subscription
 
 import models.ConnectorError
+import play.api.libs.json.{Json, OFormat}
 
-case class CreateIncomeSourcesSuccess()
+case class SubscriptionSuccess(mtditId: String)
 
-sealed trait CreateIncomeSourcesFailure extends ConnectorError
+object SubscriptionSuccess {
+  implicit val format: OFormat[SubscriptionSuccess] = Json.format[SubscriptionSuccess]
+}
 
-case object BadlyFormattedCreateIncomeSourcesResponse extends CreateIncomeSourcesFailure
+sealed trait SubscriptionFailure extends ConnectorError
 
-case class CreateIncomeSourcesFailureResponse(status: Int) extends CreateIncomeSourcesFailure
+object BadlyFormattedSubscriptionResponse extends SubscriptionFailure
+
+case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure

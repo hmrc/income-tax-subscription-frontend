@@ -21,7 +21,8 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
-import models.common.{BusinessNameModel, IncomeSourceModel}
+import models.common.IncomeSourceModel
+import models.common.business.BusinessNameModel
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 

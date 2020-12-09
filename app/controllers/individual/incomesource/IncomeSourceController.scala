@@ -24,8 +24,8 @@ import connectors.IncomeTaxSubscriptionConnector
 import forms.individual.incomesource.IncomeSourceForm
 import javax.inject.{Inject, Singleton}
 import models.IndividualSummary
-import models.common.{AccountingMethodModel, IncomeSourceModel}
-import models.individual.business.SelfEmploymentData
+import models.common.IncomeSourceModel
+import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html

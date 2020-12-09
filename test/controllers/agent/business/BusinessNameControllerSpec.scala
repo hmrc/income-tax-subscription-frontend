@@ -19,7 +19,8 @@ package controllers.agent.business
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.BusinessNameForm
-import models.common.{BusinessNameModel, IncomeSourceModel}
+import models.common.IncomeSourceModel
+import models.common.business.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._

@@ -16,8 +16,8 @@
 
 package services.agent.mocks
 
-import models.{AgentSummary, SummaryModel}
-import models.individual.subscription.{SubscriptionFailure, SubscriptionSuccess}
+import models.common.subscription.{SubscriptionFailure, SubscriptionSuccess}
+import models.AgentSummary
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach

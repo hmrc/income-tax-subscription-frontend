@@ -16,7 +16,7 @@
 
 package services
 
-import models.common.BusinessNameModel
+import models.common.business.BusinessNameModel
 import org.scalatest.Matchers._
 import play.api.http.Status
 import play.api.test.Helpers._

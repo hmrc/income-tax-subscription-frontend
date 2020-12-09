@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseHttpParser._
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser._
 import javax.inject.Inject
-import models.individual.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
+import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 

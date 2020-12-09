@@ -204,7 +204,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
     }
 
-    "When it is in edit mode" should {
+    "it is in edit mode" should {
 
       "the user selects self-employment and self-employment journey has not been completed before" when {
         "FS PropertyNextTaxYear is disabled and selected tax year page has not been completed before" should {

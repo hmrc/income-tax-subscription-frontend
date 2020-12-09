@@ -18,14 +18,14 @@ package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ReleaseFour, PropertyNextTaxYear}
+import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
 import models.IndividualSummary
-import models.common.{AccountingMethodModel, IncomeSourceModel}
-import models.individual.business.SelfEmploymentData
-import models.individual.subscription._
+import models.common.IncomeSourceModel
+import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.subscription.SubscriptionSuccess
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, Request, Result, _}
 import services.individual.SubscriptionOrchestrationService

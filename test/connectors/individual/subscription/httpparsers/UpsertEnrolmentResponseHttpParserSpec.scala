@@ -17,7 +17,7 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponseHttpReads
-import models.individual.subscription.{KnownFactsFailure, KnownFactsSuccess}
+import models.common.subscription.{KnownFactsFailure, KnownFactsSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json

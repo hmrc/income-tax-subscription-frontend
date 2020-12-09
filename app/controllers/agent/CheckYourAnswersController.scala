@@ -24,9 +24,9 @@ import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.AgentAnswers._
 import controllers.utils.RequireAnswer
 import javax.inject.{Inject, Singleton}
-import models.common.{AccountingMethodModel, IncomeSourceModel}
-import models.individual.business.SelfEmploymentData
-import models.individual.subscription._
+import models.common.IncomeSourceModel
+import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.subscription.SubscriptionSuccess
 import play.api.Logger
 import play.api.mvc._
 import services.agent.SubscriptionOrchestrationService

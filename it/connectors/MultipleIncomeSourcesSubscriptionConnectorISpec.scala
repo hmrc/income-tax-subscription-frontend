@@ -6,8 +6,8 @@ import connectors.stubs.MultipleIncomeSourcesSubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
 import models.common._
-import models.individual.business._
-import models.individual.subscription._
+import models.common.business._
+import models.common.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
 import models.{Accruals, Cash, DateModel}
 import org.scalatest.Matchers
 import play.api.libs.json.Json

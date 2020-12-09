@@ -22,7 +22,7 @@ import config.AppConfig
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import javax.inject.{Inject, Singleton}
-import models.individual.subscription.SubscriptionSuccess
+import models.common.subscription.SubscriptionSuccess
 import play.api.mvc._
 import services.individual._
 import services.{AuthService, GetEligibilityStatusService, SubscriptionDetailsService, SubscriptionService}

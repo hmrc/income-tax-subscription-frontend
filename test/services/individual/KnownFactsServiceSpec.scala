@@ -16,7 +16,7 @@
 
 package services.individual
 
-import models.individual.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
+import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import services.individual.mocks.TestKnownFactsService
 import utilities.UnitTestTrait

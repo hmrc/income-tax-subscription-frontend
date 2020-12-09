@@ -16,7 +16,7 @@
 
 package connectors.individual.subscription.httpparsers
 
-import models.individual.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailure, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
+import models.common.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailure, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

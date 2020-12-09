@@ -21,7 +21,8 @@ import config.featureswitch.FeatureSwitching
 import utilities.agent.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodForm
-import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.common.business.AccountingMethodModel
+import models.common.IncomeSourceModel
 import models.{Cash, No, Yes, common}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -70,7 +71,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "the user has entered the answer previously" in new Test {
         mockFetchAllFromSubscriptionDetails(testCacheMap(
             incomeSource = Some(IncomeSourceModel(true, false, false)),
-            accountingMethod = Some(common.AccountingMethodModel(Cash))
+            accountingMethod = Some(AccountingMethodModel(Cash))
           )
         )
 

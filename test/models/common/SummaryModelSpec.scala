@@ -17,7 +17,7 @@
 package models.common
 
 import models._
-import models.individual.business._
+import models.common.business._
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.AccountingPeriodUtil._
 import utilities.individual.TestConstants.testNino

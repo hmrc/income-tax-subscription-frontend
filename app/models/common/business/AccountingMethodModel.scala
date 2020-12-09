@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.business
 
-import models.ConnectorError
+import models.AccountingMethod
+import play.api.libs.json.{Json, OFormat}
 
-sealed trait RefreshProfileResult
+case class AccountingMethodModel(accountingMethod: AccountingMethod)
 
-case object RefreshProfileSuccess extends RefreshProfileResult
-
-case object RefreshProfileFailure extends RefreshProfileResult with ConnectorError
+object AccountingMethodModel {
+  implicit val format: OFormat[AccountingMethodModel] = Json.format[AccountingMethodModel]
+}

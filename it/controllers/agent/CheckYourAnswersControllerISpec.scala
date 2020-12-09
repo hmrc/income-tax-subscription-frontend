@@ -28,7 +28,7 @@ import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub}
 import models.{Accruals, Cash, DateModel, Next}
 import models.common.{AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel, OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
-import models.individual.business.BusinessSubscriptionDetailsModel
+import models.common.business.BusinessSubscriptionDetailsModel
 import play.api.http.Status.{OK, _}
 import play.api.libs.json.Json
 import utilities.AccountingPeriodUtil

@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import models._
 import models.common.{IncomeSourceModel, _}
-import models.individual.business._
+import models.common.business._
 import models.usermatching.{UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator

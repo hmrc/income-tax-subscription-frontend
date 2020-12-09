@@ -20,7 +20,7 @@ import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import config.featureswitch.FeatureSwitching
 import models.common.{IncomeSourceModel, _}
-import models.individual.business._
+import models.common.business._
 import models.{DateModel, IndividualSummary}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._

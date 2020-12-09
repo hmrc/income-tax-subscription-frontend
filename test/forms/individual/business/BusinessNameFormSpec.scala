@@ -18,7 +18,7 @@ package forms.individual.business
 
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import models.common.BusinessNameModel
+import models.common.business.BusinessNameModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

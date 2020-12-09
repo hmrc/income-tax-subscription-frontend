@@ -20,8 +20,9 @@ import java.net.URLEncoder
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import models.common.{AccountingMethodModel, AccountingYearModel, IncomeSourceModel}
-import models.individual.business._
+import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.common.business._
+import models.common.subscription.{BusinessIncomeModel, CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess, EmacEnrolmentRequest, EnrolFailure, EnrolRequest, EnrolSuccess, EnrolmentKey, KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, PropertyIncomeModel, RefreshProfileFailure, RefreshProfileSuccess, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess, TypeValuePair}
 import models.individual.subscription._
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import models.{Cash, Current, DateModel, IndividualSummary}

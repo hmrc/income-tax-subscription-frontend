@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package models.common
+package models.common.subscription
 
-import models.AccountingMethod
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{JsValue, Json, Writes}
 
-case class AccountingMethodModel(accountingMethod: AccountingMethod)
+case class EnrolmentVerifiers(verifiers: (String, String)*)
 
-object AccountingMethodModel {
-  implicit val format: OFormat[AccountingMethodModel] = Json.format[AccountingMethodModel]
+object EnrolmentVerifiers {
+  implicit val writer: Writes[EnrolmentVerifiers] = new Writes[EnrolmentVerifiers] {
+    override def writes(verifiers: EnrolmentVerifiers): JsValue =
+      Json.obj("verifiers" ->
+        (verifiers.verifiers map {
+          case (key, value) =>
+            Json.obj(
+              "key" -> key,
+              "value" -> value
+            )
+        })
+      )
+  }
 }
+
+

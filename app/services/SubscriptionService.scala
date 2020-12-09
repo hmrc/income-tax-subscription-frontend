@@ -24,9 +24,9 @@ import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesRespons
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.{MultipleIncomeSourcesSubscriptionConnector, SubscriptionConnector}
 import javax.inject.{Inject, Singleton}
-import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel}
-import models.individual.business.BusinessSubscriptionDetailsModel
-import models.individual.subscription._
+import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel, subscription}
+import models.common.business.BusinessSubscriptionDetailsModel
+import models.common.subscription.{BusinessIncomeModel, PropertyIncomeModel, SubscriptionRequest}
 import models.{AgentSummary, IndividualSummary, Next, SummaryModel}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
@@ -68,7 +68,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
       }
 
 
-      SubscriptionRequest(nino, arn, businessSection, propertySection)
+      subscription.SubscriptionRequest(nino, arn, businessSection, propertySection)
     }
     else {
 
@@ -89,7 +89,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
       }
 
 
-      SubscriptionRequest(nino, arn, businessSection, propertySection)
+      subscription.SubscriptionRequest(nino, arn, businessSection, propertySection)
     }
 
   }

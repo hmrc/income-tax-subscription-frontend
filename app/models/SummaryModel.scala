@@ -17,8 +17,8 @@
 package models
 
 
+import models.common.business._
 import models.common.{IncomeSourceModel, _}
-import models.individual.business._
 import utilities.AccountingPeriodUtil._
 
 
@@ -138,6 +138,36 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None,
                         selfEmployments: Option[Seq[SelfEmploymentData]] = None
                        ) extends SummaryModel {
+
+  lazy val foreignPropertyComplete: Boolean = {
+    overseasPropertyCommencementDate.isDefined && overseasAccountingMethodProperty.isDefined
+  }
+
+  def ukPropertyComplete(releaseFourEnabled: Boolean): Boolean = {
+    if (releaseFourEnabled) {
+      propertyCommencementDate.isDefined && accountingMethodProperty.isDefined
+    }
+    else {
+      accountingMethodProperty.isDefined
+    }
+  }
+
+  def selfEmploymentComplete(releaseFourEnabled: Boolean, ignoreSelectedTaxYear: Boolean): Boolean = {
+    if (releaseFourEnabled) {
+      if (ignoreSelectedTaxYear) {
+        selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+      } else {
+        selectedTaxYear.isDefined && selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+      }
+    }
+    else {
+      if (ignoreSelectedTaxYear) {
+        businessName.isDefined && accountingMethod.isDefined
+      } else {
+        selectedTaxYear.isDefined && businessName.isDefined && accountingMethod.isDefined
+      }
+    }
+  }
 
   def toBusinessSubscriptionDetailsModel(nino: String, propertyNextTaxYear: Boolean): BusinessSubscriptionDetailsModel = {
 

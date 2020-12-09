@@ -23,7 +23,7 @@ import helpers.IntegrationTestModels._
 import helpers._
 import helpers.servicemocks._
 import models.common._
-import models.individual.business.BusinessSubscriptionDetailsModel
+import models.common.business.BusinessSubscriptionDetailsModel
 import models.{Accruals, Cash, DateModel, Next}
 import play.api.http.Status._
 import play.api.libs.json.Json

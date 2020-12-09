@@ -17,8 +17,8 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponseHttpReads
+import models.common.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
 import utilities.individual.TestConstants._
-import models.individual.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
