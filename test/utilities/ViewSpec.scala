@@ -148,7 +148,7 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       element.getErrorSummary.attr("aria-labelledby") mustBe "error-summary-heading"
       element.getErrorSummary.attr("tabindex") mustBe "-1"
       element.getErrorSummary.select("h2").attr("id") mustBe "error-summary-heading"
-      element.getErrorSummary.select("h2").text mustBe "There’s a problem"
+      element.getErrorSummary.select("h2").text mustBe "There is a problem"
       element.getErrorSummary.select("ul > li").text mustBe errors.mkString(" ")
     }
 

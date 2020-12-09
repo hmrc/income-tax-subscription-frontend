@@ -104,10 +104,10 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
       errorHeading.text() mustBe messages.errorHeading
 
       val summaryError = document.getElementById("error-summary-heading-href")
-      summaryError.text() mustBe messages.errorSummaryForeignProperty
+      summaryError.text() mustBe messages.errorSummary
 
       val summaryNotification = document.getElementsByClass("error-notification bold")
-      summaryNotification.text() mustBe messages.errorSummaryForeignProperty
+      summaryNotification.text() mustBe messages.errorSummary
     }
   }
 }
