@@ -92,13 +92,13 @@ POST        /business/accounting-method-property        controllers.individual.b
 GET         /business/overseas-property-accounting-method        controllers.individual.business.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-accounting-method        controllers.individual.business.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
-#Property Commencement Date Routes
-GET         /business/property-commencement-date        controllers.individual.business.PropertyCommencementDateController.show(editMode: Boolean ?= false)
-POST        /business/property-commencement-date        controllers.individual.business.PropertyCommencementDateController.submit(editMode: Boolean ?= false)
+#Property Start Date Routes
+GET         /business/property-commencement-date        controllers.individual.business.PropertyStartDateController.show(editMode: Boolean ?= false)
+POST        /business/property-commencement-date        controllers.individual.business.PropertyStartDateController.submit(editMode: Boolean ?= false)
 
-#Foreign Property Commencement Date Routes
-GET         /business/overseas-property-start-date      controllers.individual.business.OverseasPropertyCommencementDateController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-start-date      controllers.individual.business.OverseasPropertyCommencementDateController.submit(editMode: Boolean ?= false)
+#Foreign Property Start Date Routes
+GET         /business/overseas-property-start-date      controllers.individual.business.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-start-date      controllers.individual.business.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)
 
 #Routing controller
 GET         /business/routing                           controllers.individual.business.RoutingController.show

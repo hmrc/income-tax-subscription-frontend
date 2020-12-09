@@ -16,7 +16,7 @@ import utilities.SubscriptionDataKeys.{BusinessesKey, subscriptionId}
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
-  implicit val kSubscriptionDetailsFormat: OFormat[SubscriptionData] = Json.format[SubscriptionData]
+  implicit val SubscriptionDetailsFormat: OFormat[SubscriptionData] = Json.format[SubscriptionData]
 
   private def subscriptionUri(id: String) = s"/income-tax-subscription/self-employments/id/$id"
 

@@ -17,7 +17,7 @@
 package forms.usermatching
 
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
-import forms.submapping.DateMapping.dateMapping
+import forms.formatters.DateModelMapping.dateMapping
 import forms.validation.Constraints._
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._

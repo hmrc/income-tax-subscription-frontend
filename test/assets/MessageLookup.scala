@@ -158,7 +158,7 @@ object MessageLookup {
 
   }
 
-  object PropertyCommencementDateMessages {
+  object PropertyStartDateMessages {
     val title = "When did your UK property business start trading?"
     val heading: String = title
     val exampleStartDate = "For example, 1 4 2018"
@@ -213,9 +213,9 @@ object MessageLookup {
     val selfEmployment = "Self-employment"
     val ukProperty = "UK property"
     val accountingMethodProperty = "Accounting method for UK property income"
-    val propertyCommencement = "Trading start date of your UK property business"
+    val propertyStart = "Trading start date of your UK property business"
     val selfEmployments = "Number of businesses signed up"
-    val foreignPropertyCommencement = "Trading start date of your foreign property business"
+    val overseasPropertyStartDate = "Trading start date of your foreign property business"
     val accountingMethodForeignProperty = "Accounting method for foreign property income"
 
     object IncomeSource {

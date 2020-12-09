@@ -75,7 +75,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
               if (isEditMode || !incomeSource.foreignProperty) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show())
               } else {
-                Redirect(routes.OverseasPropertyCommencementDateController.show())
+                Redirect(routes.OverseasPropertyStartDateController.show())
               }
             }
           }
@@ -87,7 +87,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
     if (isEditMode) {
       controllers.agent.routes.CheckYourAnswersController.show().url
     } else if (isEnabled(ReleaseFour)) {
-      controllers.agent.business.routes.PropertyCommencementDateController.show().url
+      controllers.agent.business.routes.PropertyStartDateController.show().url
     } else {
       incomeSource match {
         case IncomeSourceModel(true, _, _) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url

@@ -30,7 +30,8 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource}
-import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testOverseasAccountingMethodProperty, testOverseasPropertyCommencementDateModel, testPropertyCommencementDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testOverseasAccountingMethodProperty,
+	testOverseasPropertyStartDateModel, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
 
 import scala.concurrent.Future
 
@@ -158,13 +159,13 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
 
         "Release Four feature switch is enabled" should {
-          "redirect to the Property Commencement Date page" in {
+          "redirect to the Property Start Date page" in {
             enable(ReleaseFour)
             setupMockSubscriptionDetailsSaveFunctions()
             val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyCommencementDateController.show().url)
+            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyStartDateController.show().url)
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -236,7 +237,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
               selectedTaxYear = Some(AccountingYearModel(Current)),
-              ukPropertyCommencementDate = testPropertyCommencementDateModel,
+              ukPropertyStartDate = testPropertyStartDateModel,
               accountingMethodProperty = testAccountingMethodProperty
             )))
 
@@ -259,7 +260,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
             mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-              ukPropertyCommencementDate = testPropertyCommencementDateModel,
+              ukPropertyStartDate = testPropertyStartDateModel,
               accountingMethodProperty = testAccountingMethodProperty
             )))
 
@@ -284,7 +285,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
               selectedTaxYear = Some(AccountingYearModel(Current)),
-              ukPropertyCommencementDate = testPropertyCommencementDateModel,
+              ukPropertyStartDate = testPropertyStartDateModel,
               accountingMethodProperty = testAccountingMethodProperty
             )))
 
@@ -397,7 +398,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
       "the user selected UK property and UK property journey has not been completed before" when {
         "when ReleaseFour and PropertyNextTaxYear are enabled" should {
-          s" redirect to ${controllers.agent.business.routes.PropertyCommencementDateController.show()}" in {
+          s" redirect to ${controllers.agent.business.routes.PropertyStartDateController.show()}" in {
             enable(ReleaseFour)
             enable(PropertyNextTaxYear)
             setupMockSubscriptionDetailsSaveFunctions()
@@ -412,7 +413,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = true)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyCommencementDateController.show().url
+            redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -446,7 +447,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
       "the user selected overseas property and overseas property journey has not been completed before" when {
         "when ReleaseFour and PropertyNextTaxYear are enabled" should {
-          s" redirect to ${controllers.agent.business.routes.OverseasPropertyCommencementDateController.show().url}" in {
+          s" redirect to ${controllers.agent.business.routes.OverseasPropertyStartDateController.show().url}" in {
             enable(ReleaseFour)
             enable(PropertyNextTaxYear)
             setupMockSubscriptionDetailsSaveFunctions()
@@ -461,7 +462,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = true)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.OverseasPropertyCommencementDateController.show().url
+            redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -503,7 +504,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)),
-            ukPropertyCommencementDate = testPropertyCommencementDateModel,
+            ukPropertyStartDate = testPropertyStartDateModel,
             accountingMethodProperty = testAccountingMethodProperty
           )))
 
@@ -526,7 +527,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)),
-            ukPropertyCommencementDate = testPropertyCommencementDateModel,
+            ukPropertyStartDate = testPropertyStartDateModel,
             accountingMethodProperty = testAccountingMethodProperty
           )))
 
@@ -551,7 +552,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)),
             selectedTaxYear = Some(AccountingYearModel(Current)),
-            overseasPropertyCommencementDate = Some(testOverseasPropertyCommencementDateModel),
+            overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel),
             overseasPropertyAccountingMethod = Some(testOverseasAccountingMethodProperty)
           )))
 
@@ -576,9 +577,9 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
             selectedTaxYear = Some(AccountingYearModel(Current)),
-            ukPropertyCommencementDate = testPropertyCommencementDateModel,
+            ukPropertyStartDate = testPropertyStartDateModel,
             accountingMethodProperty = testAccountingMethodProperty,
-            overseasPropertyCommencementDate = testOverseasPropertyCommencementDateModel,
+            overseasPropertyStartDate = testOverseasPropertyStartDateModel,
             overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty
           )))
 
@@ -601,7 +602,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-            ukPropertyCommencementDate = testPropertyCommencementDateModel,
+            ukPropertyStartDate = testPropertyStartDateModel,
             accountingMethodProperty = testAccountingMethodProperty
           )))
 
@@ -624,7 +625,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-            overseasPropertyCommencementDate = testOverseasPropertyCommencementDateModel,
+            overseasPropertyStartDate = testOverseasPropertyStartDateModel,
             overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty
           )))
 
@@ -647,9 +648,9 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
-            ukPropertyCommencementDate = testPropertyCommencementDateModel,
+            ukPropertyStartDate = testPropertyStartDateModel,
             accountingMethodProperty = testAccountingMethodProperty,
-            overseasPropertyCommencementDate = testOverseasPropertyCommencementDateModel,
+            overseasPropertyStartDate = testOverseasPropertyStartDateModel,
             overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty
           )))
 

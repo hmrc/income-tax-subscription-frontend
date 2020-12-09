@@ -32,34 +32,33 @@ sealed trait SummaryModel {
 
   def accountingMethod: Option[AccountingMethodModel]
 
-  def propertyCommencementDate: Option[PropertyCommencementDateModel]
+  def propertyStartDate: Option[PropertyStartDateModel]
 
   def accountingMethodProperty: Option[AccountingMethodPropertyModel]
 
-  def overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel]
+  def overseasPropertyStartDate: Option[OverseasPropertyStartDateModel]
 
   def overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel]
 }
 
-//scalastyle:off
 case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
                              businessName: Option[BusinessNameModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
                              selfEmployments: Option[Seq[SelfEmploymentData]] = None,
-                             propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
+                             propertyStartDate: Option[PropertyStartDateModel] = None,
                              accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                             overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None,
+                             overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
                              overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None) extends SummaryModel {
 
 
   lazy val foreignPropertyComplete: Boolean = {
-    overseasPropertyCommencementDate.isDefined && overseasAccountingMethodProperty.isDefined
+    overseasPropertyStartDate.isDefined && overseasAccountingMethodProperty.isDefined
   }
 
   def ukPropertyComplete(releaseFourEnabled: Boolean): Boolean = {
     if (releaseFourEnabled) {
-      propertyCommencementDate.isDefined && accountingMethodProperty.isDefined
+      propertyStartDate.isDefined && accountingMethodProperty.isDefined
     }
     else {
       accountingMethodProperty.isDefined
@@ -88,9 +87,9 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     val useUkProperty = incomeSource.exists(_.ukProperty)
     val useForeignProperty = incomeSource.exists(_.foreignProperty)
 
-    val hasValidProperty: Boolean = if (useUkProperty) propertyCommencementDate.isDefined && accountingMethodProperty.isDefined else true
+    val hasValidProperty: Boolean = if (useUkProperty) propertyStartDate.isDefined && accountingMethodProperty.isDefined else true
 
-    val hasValidForeignProperty: Boolean = if (useForeignProperty) overseasPropertyCommencementDate.isDefined && overseasAccountingMethodProperty.isDefined else true
+    val hasValidForeignProperty: Boolean = if (useForeignProperty) overseasPropertyStartDate.isDefined && overseasAccountingMethodProperty.isDefined else true
 
     val hasValidSelfEmployments: Boolean = if (useSelfEmployments) selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined else true
 
@@ -119,9 +118,9 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
       if (useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
       if (useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
       incomeSource.getOrElse(throw new Exception("IncomeSource model not defined for BusinessSubscriptionDetailsModel")),
-      if (useUkProperty) propertyCommencementDate else None,
+      if (useUkProperty) propertyStartDate else None,
       if (useUkProperty) accountingMethodProperty else None,
-      if (useForeignProperty) overseasPropertyCommencementDate else None,
+      if (useForeignProperty) overseasPropertyStartDate else None,
       if (useForeignProperty) overseasAccountingMethodProperty else None
     )
   }
@@ -132,20 +131,20 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
-                        propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
+                        propertyStartDate: Option[PropertyStartDateModel] = None,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None,
+                        overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None,
                         selfEmployments: Option[Seq[SelfEmploymentData]] = None
                        ) extends SummaryModel {
 
   lazy val foreignPropertyComplete: Boolean = {
-    overseasPropertyCommencementDate.isDefined && overseasAccountingMethodProperty.isDefined
+    overseasPropertyStartDate.isDefined && overseasAccountingMethodProperty.isDefined
   }
 
   def ukPropertyComplete(releaseFourEnabled: Boolean): Boolean = {
     if (releaseFourEnabled) {
-      propertyCommencementDate.isDefined && accountingMethodProperty.isDefined
+      propertyStartDate.isDefined && accountingMethodProperty.isDefined
     }
     else {
       accountingMethodProperty.isDefined
@@ -175,9 +174,9 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
     val useUkProperty = incomeSource.exists(_.ukProperty)
     val useForeignProperty = incomeSource.exists(_.foreignProperty)
 
-    val hasValidProperty: Boolean = if (useUkProperty) propertyCommencementDate.isDefined && accountingMethodProperty.isDefined else true
+    val hasValidProperty: Boolean = if (useUkProperty) propertyStartDate.isDefined && accountingMethodProperty.isDefined else true
 
-    val hasValidForeignProperty: Boolean = if (useForeignProperty) overseasPropertyCommencementDate.isDefined && overseasAccountingMethodProperty.isDefined else true
+    val hasValidForeignProperty: Boolean = if (useForeignProperty) overseasPropertyStartDate.isDefined && overseasAccountingMethodProperty.isDefined else true
 
     val hasValidSelfEmployments: Boolean = if (useSelfEmployments) selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined else true
 
@@ -198,9 +197,9 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
       if (useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
       if (useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
       incomeSource.getOrElse(throw new Exception("IncomeSource model not defined for BusinessSubscriptionDetailsModel")),
-      if (useUkProperty) propertyCommencementDate else None,
+      if (useUkProperty) propertyStartDate else None,
       if (useUkProperty) accountingMethodProperty else None,
-      if (useForeignProperty) overseasPropertyCommencementDate else None,
+      if (useForeignProperty) overseasPropertyStartDate else None,
       if (useForeignProperty) overseasAccountingMethodProperty else None
     )
   }

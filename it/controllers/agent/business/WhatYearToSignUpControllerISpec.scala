@@ -142,7 +142,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
           Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyCommencementDateURI)
+            redirectURI(propertyStartDateURI)
           )
         }
 
@@ -160,7 +160,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
           Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(foreignPropertyCommencementDateURI)
+            redirectURI(overseasPropertyStartDateURI)
           )
         }
       }

@@ -25,9 +25,9 @@ case class BusinessSubscriptionDetailsModel(nino: String,
                                             selfEmploymentsData: Option[Seq[SelfEmploymentData]] = None,
                                             accountingMethod: Option[AccountingMethod] = None,
                                             incomeSource: IncomeSourceModel,
-                                            propertyCommencementDate: Option[PropertyCommencementDateModel] = None,
+                                            propertyStartDate: Option[PropertyStartDateModel] = None,
                                             propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None,
-                                            overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None,
+                                            overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
                                             overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None
                                            )
 

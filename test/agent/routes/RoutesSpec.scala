@@ -16,9 +16,10 @@
 
 package agent.routes
 
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerTest
 
-class RoutesSpec extends PlaySpec with OneAppPerTest {
+class RoutesSpec extends PlaySpec with GuiceOneAppPerTest {
 
   val contextRoute: String = "/report-quarterly/income-and-expenses/sign-up/client"
 

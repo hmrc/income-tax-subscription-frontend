@@ -16,7 +16,7 @@
 
 package forms.usermatching
 
-import forms.submapping.DateMapping._
+import forms.formatters.DateModelMapping._
 import forms.validation.testutils._
 import models.DateModel
 import models.usermatching.UserDetailsModel
@@ -40,9 +40,9 @@ class UserDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
                     dob: DateModel = dob
                    ): Map[String, String] = {
     Map(
-      userDateOfBirth * dateDay -> dob.day,
-      userDateOfBirth * dateMonth -> dob.month,
-      userDateOfBirth * dateYear -> dob.year,
+      userDateOfBirth * day -> dob.day,
+      userDateOfBirth * month -> dob.month,
+      userDateOfBirth * year -> dob.year,
       userFirstName -> fname,
       userNino -> nino,
       userLastName -> lname

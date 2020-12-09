@@ -70,9 +70,9 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
                   case Some(IncomeSourceModel(true, _, _)) =>
                     Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
                   case Some(IncomeSourceModel(_, true, _)) =>
-                    Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+                    Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
                   case Some(IncomeSourceModel(_, _, true)) =>
-                    Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+                    Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
                 }
               } else {
                 Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show()))

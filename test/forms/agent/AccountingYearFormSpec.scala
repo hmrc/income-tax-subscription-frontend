@@ -22,10 +22,11 @@ import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Current
 import models.common.AccountingYearModel
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerTest
+import org.scalatestplus.play.PlaySpec
 import play.api.data.FormError
 
-class AccountingYearFormSpec extends PlaySpec with OneAppPerTest {
+class AccountingYearFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
   "The AccountingYearForm" should {
     "transform the request to the form case class" in {

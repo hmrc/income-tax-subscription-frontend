@@ -18,28 +18,28 @@
 @import config.AppConfig
 @import views.html.templates.main_template
 @import views.html.helpers._
-@import views.individual.helpers._
+@import views.agent.helpers._
 
-@import models.common.OverseasPropertyCommencementDateModel
-@import forms.individual.business.OverseasPropertyCommencementDateForm._
+@import models.common.PropertyStartDateModel
+@import forms.agent.PropertyStartDateForm._
 
-@(overseasPropertyCommencementDateForm: Form[OverseasPropertyCommencementDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(propertyStartDateForm: Form[PropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("foreign.property.name.title"), form = Some(overseasPropertyCommencementDateForm)) {
+@main_template(title = Messages("agent.property.name.heading"), form = Some(propertyStartDateForm)) {
     @back_link(backUrl)
 
-    @summaryErrorHelper(overseasPropertyCommencementDateForm)
+    @summaryErrorHelper(propertyStartDateForm)
 
-    <h1 class="heading-large">@Messages("foreign.property.name.heading")</h1>
+    <h1 class="heading-large">@Messages("agent.property.name.heading")</h1>
 
-    <p>@Messages("foreign.property.line_1")</p>
+    <p>@Messages("agent.property.line_1")</p>
 
     @form(action = postAction) {
 
         @dateHelper(
-            field = overseasPropertyCommencementDateForm(startDate),
-            parentForm = overseasPropertyCommencementDateForm,
-            hintText = Some(messages("foreign.property.start_date.exampleStartDate"))
+            field = propertyStartDateForm(startDate),
+            parentForm = propertyStartDateForm,
+            hintText = Some(messages("agent.property.start_date.exampleStartDate"))
         )
 
         @if(isEditMode) {

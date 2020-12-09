@@ -151,10 +151,10 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
     "The back url is not in edit mode" when {
       "the user clicks the back link" should {
-        "redirect to the Overseas Property Commencement Date page" in {
+        "redirect to the Overseas Property Start Date page" in {
           mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
           TestOverseasPropertyAccountingMethodController.backUrl(false) mustBe
-            controllers.agent.business.routes.OverseasPropertyCommencementDateController.show().url
+            controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
         }
       }
     }

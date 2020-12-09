@@ -277,28 +277,30 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def propertyCommencementDate(): WSResponse = get("/business/property-commencement-date")
+    def propertyStartDate(): WSResponse = get("/business/property-commencement-date")
 
-    def overseasPropertyCommencementDate(): WSResponse = get("/business/overseas-property-start-date")
+    def overseasPropertyStartDate(): WSResponse = get("/business/overseas-property-start-date")
 
-    def submitpropertyCommencementDate(inEditMode: Boolean, request: Option[PropertyCommencementDateModel]): WSResponse = {
-      val testValidStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
+    def submitpropertyStartDate(inEditMode: Boolean, request: Option[PropertyStartDateModel]): WSResponse = {
+      val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
+      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900,1,1)).toString
       val uri = s"/business/property-commencement-date?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            PropertyCommencementDateForm.propertyCommencementDateForm(testValidStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate,testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
 
-    def submitForeignPropertyCommencementDate(inEditMode: Boolean, request: Option[OverseasPropertyCommencementDateModel]): WSResponse = {
-      val testValidStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
+    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[OverseasPropertyStartDateModel]): WSResponse = {
+      val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
+      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900,1,1)).toString
       val uri = s"/business/overseas-property-start-date?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            OverseasPropertyCommencementDateForm.overseasPropertyCommencementDateForm(testValidStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate,testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

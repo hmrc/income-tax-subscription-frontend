@@ -131,7 +131,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
             Then("Should return a SEE_OTHER with a redirect location of check your answers")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(propertyCommencementDateURI)
+              redirectURI(propertyStartDateURI)
             )
 
             IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave(SubscriptionDataKeys.AccountingMethod, expectedCacheMap, Some(1))
@@ -155,7 +155,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(foreignPropertyCommencementDateURI)
+            redirectURI(overseasPropertyStartDateURI)
           )
         }
       }
@@ -213,7 +213,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyCommencementDateURI)
+            redirectURI(propertyStartDateURI)
           )
         }
 
@@ -232,7 +232,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyCommencementDateURI)
+            redirectURI(propertyStartDateURI)
           )
         }
       }

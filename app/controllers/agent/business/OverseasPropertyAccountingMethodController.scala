@@ -71,7 +71,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val authService: Auth
     if (isEditMode) {
       controllers.agent.routes.CheckYourAnswersController.show().url
     } else {
-      controllers.agent.business.routes.OverseasPropertyCommencementDateController.show().url
+      controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
     }
   }
 }

@@ -17,7 +17,7 @@
 package views.helpers
 
 import assets.MessageLookup
-import forms.submapping.DateMapping._
+import forms.formatters.DateModelMapping.dateMapping
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import org.scalatest.Matchers._

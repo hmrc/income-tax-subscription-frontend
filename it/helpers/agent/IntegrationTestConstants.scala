@@ -24,6 +24,7 @@ object IntegrationTestConstants {
   val testUserIdEncoded: String = URLEncoder.encode(userId, "UTF-8")
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up/client"
+  val baseSEURI ="http://localhost:9563/report-quarterly/income-and-expenses/sign-up/self-employments/client"
   val indexURI = s"$baseURI/index"
   val userDetailsURI = "/user-details"
   val confirmDetailsURI = "/confirm-details"
@@ -36,11 +37,12 @@ object IntegrationTestConstants {
   val noClientRelationshipURI = s"$baseURI/error/no-client-relationship"
   val incomeSourceURI = s"$baseURI/income"
   val businessNameURI = s"$baseURI/business/name"
+  val businessNameSEURI = s"$baseSEURI/details"
   val businessAccountingMethodURI = s"$baseURI/business/accounting-method"
   val propertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
-  val foreignPropertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
-  val propertyCommencementDateURI = s"$baseURI/business/property-commencement-date"
-  val foreignPropertyCommencementDateURI = s"$baseURI/business/overseas-commencement-date"
+  val overseasPropertyAccountingMethod = s"$baseURI/business/overseas-property-accounting-method"
+  val propertyStartDateURI = s"$baseURI/business/property-commencement-date"
+  val overseasPropertyStartDateURI = s"$baseURI/business/overseas-commencement-date"
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"

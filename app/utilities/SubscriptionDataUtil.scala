@@ -16,10 +16,8 @@
 
 package utilities
 
-import config.featureswitch.FeatureSwitching
-import config.AppConfig
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitching
 import models.common._
 import models.common.business._
 import models.{AgentSummary, IndividualSummary, SummaryModel}
@@ -41,10 +39,10 @@ object SubscriptionDataUtil extends FeatureSwitching {
 
 		def getPropertyAccountingMethod: Option[AccountingMethodPropertyModel] = cacheMap.getEntry[AccountingMethodPropertyModel](PropertyAccountingMethod)
 
-		def getPropertyCommencementDate: Option[PropertyCommencementDateModel] = cacheMap.getEntry[PropertyCommencementDateModel](PropertyCommencementDate)
+		def getPropertyStartDate: Option[PropertyStartDateModel] = cacheMap.getEntry[PropertyStartDateModel](PropertyStartDate)
 
-		def getOverseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] =
-			cacheMap.getEntry[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate)
+		def getOverseasPropertyStartDate: Option[OverseasPropertyStartDateModel] =
+			cacheMap.getEntry[OverseasPropertyStartDateModel](OverseasPropertyStartDate)
 
 		def getOverseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] =
 			cacheMap.getEntry[OverseasAccountingMethodPropertyModel](OverseasPropertyAccountingMethod)
@@ -155,13 +153,13 @@ object SubscriptionDataUtil extends FeatureSwitching {
 			if (hasProperty) {
 				if (isAgent) {
 					summaryModel.asInstanceOf[AgentSummary].copy(
-						propertyCommencementDate = getPropertyCommencementDate,
+						propertyStartDate = getPropertyStartDate,
 						accountingMethodProperty = getPropertyAccountingMethod,
 						selectedTaxYear = if (isEnabled(ReleaseFour) && isEnabled(PropertyNextTaxYear)) summaryModel.selectedTaxYear else None
 					)
 				} else {
 					summaryModel.asInstanceOf[IndividualSummary].copy(
-						propertyCommencementDate = getPropertyCommencementDate,
+						propertyStartDate = getPropertyStartDate,
 						accountingMethodProperty = getPropertyAccountingMethod,
 						selectedTaxYear = if (isReleaseFourEnabled && isPropertyNextTaxYearEnabled) getSelectedTaxYear else None
 					)
@@ -178,13 +176,13 @@ object SubscriptionDataUtil extends FeatureSwitching {
 			if (hasForeignProperty) {
 				if (isAgent) {
 					summaryModel.asInstanceOf[AgentSummary].copy(
-						overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+						overseasPropertyStartDate = getOverseasPropertyStartDate,
 						overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
 						selectedTaxYear = if (isEnabled(ReleaseFour) && isEnabled(PropertyNextTaxYear)) summaryModel.selectedTaxYear else None
 					)
 				} else {
 					summaryModel.asInstanceOf[IndividualSummary].copy(
-						overseasPropertyCommencementDate = getOverseasPropertyCommencementDate,
+						overseasPropertyStartDate = getOverseasPropertyStartDate,
 						overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
 						selectedTaxYear = if (isReleaseFourEnabled && isPropertyNextTaxYearEnabled) getSelectedTaxYear else None
 					)

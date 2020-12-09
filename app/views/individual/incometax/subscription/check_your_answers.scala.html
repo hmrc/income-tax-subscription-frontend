@@ -26,8 +26,8 @@
 @import views.individual.helpers.SummaryHelper._
 @import views.individual.helpers.SummaryIdConstants._
 @import utilities.ImplicitDateFormatter
-@import models.common.PropertyCommencementDateModel
-@import models.common.OverseasPropertyCommencementDateModel
+@import models.common.PropertyStartDateModel
+@import models.common.OverseasPropertyStartDateModel
 
 
 @(summaryModel: IndividualSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter, releaseFour: Boolean, propertyNextTaxYear: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -100,12 +100,12 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@propertyCommencement(propertyCommencementDateModel: PropertyCommencementDateModel) = @{
+@propertyStart(propertyStartDateModel: PropertyStartDateModel) = @{
     import implicitDateFormatter.LongDate
-    val rowName = PropertyCommencementId
-    val rowQuestion = messages("summary.property_commencement_date")
-    val rowAnswer = propertyCommencementDateModel.startDate.toLocalDate.toLongDate
-    val rowUrl = controllers.individual.business.routes.PropertyCommencementDateController.show(editMode = true).url
+    val rowName = PropertyStartId
+    val rowQuestion = messages("summary.property_start_date")
+    val rowAnswer = propertyStartDateModel.startDate.toLocalDate.toLongDate
+    val rowUrl = controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -117,12 +117,12 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@foreignPropertyCommencement(overseasPropertyCommencementDateModel: OverseasPropertyCommencementDateModel) = @{
+@overseasPropertyStart(overseasPropertyStartDateModel: OverseasPropertyStartDateModel) = @{
     import implicitDateFormatter.LongDate
-    val rowName = ForeignPropertyCommencementId
-    val rowQuestion = messages("summary.foreign_property_commencement_date")
-    val rowAnswer = overseasPropertyCommencementDateModel.startDate.toLocalDate.toLongDate
-    val rowUrl = controllers.individual.business.routes.OverseasPropertyCommencementDateController.show(editMode = true).url
+    val rowName = OverseasPropertyStartId
+    val rowQuestion = messages("summary.overseas_property_start_date")
+    val rowAnswer = overseasPropertyStartDateModel.startDate.toLocalDate.toLongDate
+    val rowUrl = controllers.individual.business.routes.OverseasPropertyStartDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -154,9 +154,9 @@
             @summaryModel.businessName.map(businessName)
         }
         @summaryModel.accountingMethod.map(accountingMethod)
-        @summaryModel.propertyCommencementDate.map(propertyCommencement)
+        @summaryModel.propertyStartDate.map(propertyStart)
         @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
-        @summaryModel.overseasPropertyCommencementDate.map(foreignPropertyCommencement)
+        @summaryModel.overseasPropertyStartDate.map(overseasPropertyStart)
         @summaryModel.overseasAccountingMethodProperty.map(accountingMethodForeignProperty)
     </dl>
 </div>

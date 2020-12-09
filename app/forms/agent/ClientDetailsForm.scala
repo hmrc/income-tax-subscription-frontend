@@ -17,7 +17,7 @@
 package forms.agent
 
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
-import forms.submapping.DateMapping.dateMapping
+import forms.formatters.DateModelMapping.dateMapping
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._

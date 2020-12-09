@@ -27,7 +27,8 @@ import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub}
 import models.{Accruals, Cash, DateModel, Next}
-import models.common.{AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel, OverseasPropertyCommencementDateModel, PropertyCommencementDateModel}
+import models.common.{AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel,
+  OverseasAccountingMethodPropertyModel, OverseasPropertyStartDateModel, PropertyStartDateModel}
 import models.common.business.BusinessSubscriptionDetailsModel
 import play.api.http.Status.{OK, _}
 import play.api.libs.json.Json
@@ -303,10 +304,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = None,
+                propertyStartDate = None,
                 propertyAccountingMethod = None,
                 overseasPropertyAccountingMethod = None,
-                overseasPropertyCommencementDate = None
+                overseasPropertyStartDate = None
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -321,9 +322,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -363,10 +364,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
                 propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
                 overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
-                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+                overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010")))
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -381,9 +382,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -424,10 +425,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = None,
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
                 propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
                 overseasPropertyAccountingMethod = None,
-                overseasPropertyCommencementDate = None
+                overseasPropertyStartDate = None
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
@@ -442,9 +443,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = None,
                   accountingMethod = None,
                   incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
-                  propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                  propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
                   propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -485,10 +486,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
                 propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
                 overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
-                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+                overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010")))
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -503,9 +504,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = None,
                   accountingMethod = None,
                   incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
-                  propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                  propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
                   propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -546,10 +547,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = None,
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = None,
+                propertyStartDate = None,
                 propertyAccountingMethod = None,
                 overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
-                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+                overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010")))
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
@@ -564,9 +565,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = None,
                   accountingMethod = None,
                   incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
+                  overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010"))),
                   overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
                 )
               )(NO_CONTENT)
@@ -607,10 +608,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
                 propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
                 overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
-                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+                overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010")))
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -625,9 +626,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = None,
                   accountingMethod = None,
                   incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
+                  overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010"))),
                   overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
                 )
               )(NO_CONTENT)
@@ -668,10 +669,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
                 propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
                 overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
-                overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+                overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010")))
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -686,9 +687,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
-                  propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+                  propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
                   propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
-                  overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
+                  overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010"))),
                   overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
                 )
               )(NO_CONTENT)
@@ -730,10 +731,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = None,
+                propertyStartDate = None,
                 propertyAccountingMethod = None,
                 overseasPropertyAccountingMethod = None,
-                overseasPropertyCommencementDate = None
+                overseasPropertyStartDate = None
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -748,9 +749,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -782,10 +783,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = None,
+                propertyStartDate = None,
                 propertyAccountingMethod = None,
                 overseasPropertyAccountingMethod = None,
-                overseasPropertyCommencementDate = None
+                overseasPropertyStartDate = None
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -800,9 +801,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -835,10 +836,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = None,
+                propertyStartDate = None,
                 propertyAccountingMethod = None,
                 overseasPropertyAccountingMethod = None,
-                overseasPropertyCommencementDate = None
+                overseasPropertyStartDate = None
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -853,9 +854,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -889,10 +890,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = None,
+                propertyStartDate = None,
                 propertyAccountingMethod = None,
                 overseasPropertyAccountingMethod = None,
-                overseasPropertyCommencementDate = None
+                overseasPropertyStartDate = None
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -907,9 +908,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -944,10 +945,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = None,
+                propertyStartDate = None,
                 propertyAccountingMethod = None,
                 overseasPropertyAccountingMethod = None,
-                overseasPropertyCommencementDate = None
+                overseasPropertyStartDate = None
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -962,9 +963,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -1000,10 +1001,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
-                propertyCommencementDate = None,
+                propertyStartDate = None,
                 propertyAccountingMethod = None,
                 overseasPropertyAccountingMethod = None,
-                overseasPropertyCommencementDate = None
+                overseasPropertyStartDate = None
               ))
 
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -1018,9 +1019,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-                  propertyCommencementDate = None,
+                  propertyStartDate = None,
                   propertyAccountingMethod = None,
-                  overseasPropertyCommencementDate = None,
+                  overseasPropertyStartDate = None,
                   overseasAccountingMethodProperty = None
                 )
               )(NO_CONTENT)
@@ -1065,10 +1066,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             selectedTaxYear = Some(AccountingYearModel(Next)),
             businessName = None,
             accountingMethod = None,
-            propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+            propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
             propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
             overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
-            overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010")))
+            overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010")))
           ))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
@@ -1082,9 +1083,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               selfEmploymentsData = None,
               accountingMethod = None,
               incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true),
-              propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("20", "03", "2000"))),
+              propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
               propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
-              overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("21", "03", "2010"))),
+              overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010"))),
               overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
             )
           )(NO_CONTENT)

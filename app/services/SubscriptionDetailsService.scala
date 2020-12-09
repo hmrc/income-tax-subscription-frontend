@@ -105,18 +105,18 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
   def savePaperlessPreferenceToken(token: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FA =
     save[String](PaperlessPreferenceToken, token)
 
-  def fetchPropertyCommencementDate()(implicit hc: HeaderCarrier, reads: Reads[PropertyCommencementDateModel]): FO[PropertyCommencementDateModel] =
-    fetch[PropertyCommencementDateModel](PropertyCommencementDate)
+  def fetchPropertyStartDate()(implicit hc: HeaderCarrier, reads: Reads[PropertyStartDateModel]): FO[PropertyStartDateModel] =
+    fetch[PropertyStartDateModel](PropertyStartDate)
 
-  def savePropertyCommencementDate(propertyCommencementDate: PropertyCommencementDateModel)
-                                  (implicit hc: HeaderCarrier, reads: Reads[PropertyCommencementDateModel]): FA =
-    save[PropertyCommencementDateModel](PropertyCommencementDate, propertyCommencementDate)
+  def savePropertyStartDate(propertyStartDate: PropertyStartDateModel)
+                           (implicit hc: HeaderCarrier, reads: Reads[PropertyStartDateModel]): FA =
+    save[PropertyStartDateModel](PropertyStartDate, propertyStartDate)
 
-  def fetchOverseasPropertyCommencementDate()(implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyCommencementDateModel]):
-  FO[OverseasPropertyCommencementDateModel] = fetch[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate)
+  def fetchOverseasPropertyStartDate()(implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyStartDateModel]):
+  FO[OverseasPropertyStartDateModel] = fetch[OverseasPropertyStartDateModel](OverseasPropertyStartDate)
 
-  def saveOverseasPropertyCommencementDate(foreignPropertyCommencementDate: OverseasPropertyCommencementDateModel)
-                                          (implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyCommencementDateModel]): FA =
-    save[OverseasPropertyCommencementDateModel](OverseasPropertyCommencementDate, foreignPropertyCommencementDate)
+  def saveOverseasPropertyStartDate(overseasPropertyStartDate: OverseasPropertyStartDateModel)
+                                   (implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyStartDateModel]): FA =
+    save[OverseasPropertyStartDateModel](OverseasPropertyStartDate, overseasPropertyStartDate)
 }
 

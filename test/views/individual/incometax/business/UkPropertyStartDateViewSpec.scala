@@ -16,8 +16,8 @@
 
 package views.individual.incometax.business
 
-import forms.individual.business.OverseasPropertyCommencementDateForm
-import models.common.OverseasPropertyCommencementDateModel
+import forms.individual.business.PropertyStartDateForm
+import models.common.PropertyStartDateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
@@ -26,10 +26,11 @@ import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 
-class ForeignPropertyCommencementDateViewSpec extends ViewSpec {
 
-  object ForeignPropertyCommencementDateMessages {
-    val title = "When did your foreign property business start trading?"
+class UkPropertyStartDateViewSpec extends ViewSpec  {
+
+  object PropertyStartDateMessages {
+    val title = "When did your UK property business start trading?"
     val heading: String = title
     val exampleStartDate = "For example, 1 8 2014"
     val continue = "Continue"
@@ -43,11 +44,10 @@ class ForeignPropertyCommencementDateViewSpec extends ViewSpec {
   val taxYearEnd: Int = 2020
   val testError: FormError = FormError("startDate", "testError")
 
-  class Setup(isEditMode: Boolean = false, foreignPropertyCommencementDateForm: Form[OverseasPropertyCommencementDateModel] =
-  OverseasPropertyCommencementDateForm.overseasPropertyCommencementDateForm("testMessage")) {
-
-    val page: HtmlFormat.Appendable = views.html.individual.incometax.business.overseas_property_commencement_date(
-      foreignPropertyCommencementDateForm,
+  class Setup(isEditMode: Boolean = false,
+              propertyStartDateForm: Form[PropertyStartDateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")) {
+    val page: HtmlFormat.Appendable = views.html.individual.incometax.business.property_start_date(
+      propertyStartDateForm,
       testCall,
       isEditMode,
       testBackUrl
@@ -57,38 +57,40 @@ class ForeignPropertyCommencementDateViewSpec extends ViewSpec {
   }
 
 
-  "foreign property commencement date page" must {
+  "UK property business start" must {
 
     "have a title" in new Setup {
       val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
-      document.title mustBe ForeignPropertyCommencementDateMessages.title + serviceNameGovUk
+      document.title mustBe PropertyStartDateMessages.title + serviceNameGovUk
     }
     "have a heading" in new Setup {
-      document.getH1Element.text mustBe ForeignPropertyCommencementDateMessages.heading
+      document.getH1Element.text mustBe PropertyStartDateMessages.heading
     }
     "have a Form" in new Setup {
       document.getForm.attr("method") mustBe testCall.method
       document.getForm.attr("action") mustBe testCall.url
     }
     "have a fieldset with dateInputs" in new Setup {
-      document.mustHaveDateField("startDate", "", ForeignPropertyCommencementDateMessages.exampleStartDate)
+      document.mustHaveDateField("startDate", "", PropertyStartDateMessages.exampleStartDate)
     }
     "have a continue button when not in edit mode" in new Setup {
-      document.getSubmitButton.text mustBe ForeignPropertyCommencementDateMessages.continue
+      document.getSubmitButton.text mustBe PropertyStartDateMessages.continue
     }
     "have update button when in edit mode" in new Setup(true) {
-      document.getSubmitButton.text mustBe ForeignPropertyCommencementDateMessages.update
+      document.getSubmitButton.text mustBe PropertyStartDateMessages.update
     }
     "have a backlink " in new Setup {
-      document.getBackLink.text mustBe ForeignPropertyCommencementDateMessages.backLink
+      document.getBackLink.text mustBe PropertyStartDateMessages.backLink
       document.getBackLink.attr("href") mustBe testBackUrl
     }
-    "must display form error on page" in new Setup(false, OverseasPropertyCommencementDateForm.overseasPropertyCommencementDateForm(
-      "testMessage").withError(testError)) {
+    "must display form error on page" in new Setup(false, PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage").withError(testError)) {
       document.mustHaveErrorSummary(List[String](testError.message))
-      document.mustHaveDateField("startDate", "", ForeignPropertyCommencementDateMessages.exampleStartDate, Some(testError.message))
+      document.mustHaveDateField("startDate", "", PropertyStartDateMessages.exampleStartDate, Some(testError.message))
     }
 
   }
+
+
+
 
 }

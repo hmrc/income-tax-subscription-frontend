@@ -64,8 +64,8 @@ object TestModels extends Implicits {
   val testId = "testId"
 
   val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
-  val testPropertyCommencementDateModel: PropertyCommencementDateModel = PropertyCommencementDateModel(testValidStartDate)
-  val testOverseasPropertyCommencementDateModel: OverseasPropertyCommencementDateModel = OverseasPropertyCommencementDateModel(testValidStartDate)
+  val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
+  val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidStartDate)
 
   val emptyCacheMap = CacheMap("", Map())
 
@@ -96,19 +96,19 @@ object TestModels extends Implicits {
                    businessName: Option[BusinessNameModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   ukPropertyCommencementDate: Option[PropertyCommencementDateModel] = None,
+                   ukPropertyStartDate: Option[PropertyStartDateModel] = None,
                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                   overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = None,
+                   overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
                    overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
-      ukPropertyCommencementDate.fold(emptyMap)(model => Map(PropertyCommencementDate -> PropertyCommencementDateModel.format.writes(model))) ++
+      ukPropertyStartDate.fold(emptyMap)(model => Map(PropertyStartDate -> PropertyStartDateModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
       accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))) ++
-      overseasPropertyCommencementDate.fold(emptyMap)(model => Map(OverseasPropertyCommencementDate -> OverseasPropertyCommencementDateModel.format.writes(model))) ++
+      overseasPropertyStartDate.fold(emptyMap)(model => Map(OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model))) ++
       overseasPropertyAccountingMethod.fold(emptyMap)(model => Map(OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)))
     CacheMap("", map)
   }
@@ -178,8 +178,8 @@ object TestModels extends Implicits {
     businessName = Some(testBusinessName),
     accountingMethod = Some(testAccountingMethod),
     accountingMethodProperty = Some(testAccountingMethodProperty),
-    propertyCommencementDate = Some(testPropertyCommencementDateModel),
-    overseasPropertyCommencementDate = Some(testOverseasPropertyCommencementDateModel),
+    propertyStartDate = Some(testPropertyStartDateModel),
+    overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel),
     overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
   )
 

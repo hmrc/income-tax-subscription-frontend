@@ -17,9 +17,9 @@
 package forms.validation.testutils
 
 import forms.agent.AccountingMethodOverseasPropertyForm
+import forms.formatters.DateModelMapping
 import forms.individual.business.BusinessNameForm._
 import forms.individual.business.{AccountingMethodForm, AccountingYearForm}
-import forms.submapping.DateMapping._
 import forms.validation.utils.ConstraintUtil._
 import play.api.data.validation._
 
@@ -34,7 +34,7 @@ object DataMap {
     def DataMap(elems: (String, String)*): DataMap = Map(elems: _*)
 
     def date(prefix: String)(day: String, month: String, year: String): DataMap =
-      Map(prefix * dateDay -> day, prefix * dateMonth -> month, prefix * dateYear -> year)
+      Map(s"$prefix.${DateModelMapping.day}" -> day, s"$prefix.${DateModelMapping.month}" -> month, s"$prefix.${DateModelMapping.year}" -> year)
 
     val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
 
