@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.subscription
 
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{Json, OFormat}
 
-case class EnrolmentVerifiers(verifiers: (String, String)*)
 
-object EnrolmentVerifiers {
-  implicit val writer: Writes[EnrolmentVerifiers] = new Writes[EnrolmentVerifiers] {
-    override def writes(verifiers: EnrolmentVerifiers): JsValue =
-      Json.obj("verifiers" ->
-        (verifiers.verifiers map {
-          case (key, value) =>
-            Json.obj(
-              "key" -> key,
-              "value" -> value
-            )
-        })
-      )
-  }
+case class EnrolRequest(portalId: String,
+                        serviceName: String,
+                        friendlyName: String,
+                        knownFacts: List[String])
+
+object EnrolRequest {
+  implicit val format: OFormat[EnrolRequest] = Json.format[EnrolRequest]
 }
-
-

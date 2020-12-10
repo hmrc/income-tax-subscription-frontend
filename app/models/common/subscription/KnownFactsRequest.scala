@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.subscription
 
-import models.ConnectorError
+import play.api.libs.json.{Json, OFormat}
 
-sealed trait KnownFactsResponse
 
-object KnownFactsSuccess extends KnownFactsResponse
+case class KnownFactsRequest(facts: List[TypeValuePair])
 
-case class KnownFactsFailure(message: String) extends KnownFactsResponse with ConnectorError
+object KnownFactsRequest {
+  implicit val formats: OFormat[KnownFactsRequest] = Json.format[KnownFactsRequest]
+}

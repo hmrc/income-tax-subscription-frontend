@@ -22,7 +22,8 @@ import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
-import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.common.IncomeSourceModel
+import models.common.business.AccountingMethodModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html

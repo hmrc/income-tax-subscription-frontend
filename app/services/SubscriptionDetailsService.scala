@@ -19,7 +19,7 @@ package services
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject._
 import models.common._
-import models.individual.business._
+import models.common.business._
 import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}

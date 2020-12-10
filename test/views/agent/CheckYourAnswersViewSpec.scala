@@ -19,7 +19,7 @@ package views.agent
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import models.common._
-import models.individual.business.{Address, BusinessAddressModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.common.business.{AccountingMethodModel, Address, BusinessAddressModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import models.{AgentSummary, Current, DateModel, Next}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._

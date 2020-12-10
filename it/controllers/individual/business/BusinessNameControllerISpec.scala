@@ -21,7 +21,8 @@ import helpers.IntegrationTestConstants.{accountingYearURI, businessAccountingMe
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
-import models.common.{BusinessNameModel, IncomeSourceModel}
+import models.common.IncomeSourceModel
+import models.common.business.BusinessNameModel
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 

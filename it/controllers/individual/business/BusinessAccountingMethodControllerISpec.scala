@@ -21,7 +21,8 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
-import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.common.IncomeSourceModel
+import models.common.business.AccountingMethodModel
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys

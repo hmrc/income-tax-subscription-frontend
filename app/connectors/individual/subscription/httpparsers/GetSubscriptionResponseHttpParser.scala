@@ -16,7 +16,7 @@
 
 package connectors.individual.subscription.httpparsers
 
-import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
+import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

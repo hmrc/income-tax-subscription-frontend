@@ -18,7 +18,7 @@ package services.individual.mocks
 
 import config.MockConfig
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
-import models.individual.subscription.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
+import models.common.subscription.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach

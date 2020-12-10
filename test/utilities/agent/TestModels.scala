@@ -17,8 +17,8 @@
 package utilities.agent
 
 
-import models.common.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, AccountingYearModel, BusinessNameModel, _}
-import models.individual.business.{BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.common.{AccountingMethodPropertyModel, AccountingPeriodModel, AccountingYearModel, _}
+import models.common.business.{AccountingMethodModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import models.usermatching.UserDetailsModel
 import models.{AccountingMethod => _, _}
 import play.api.libs.json.JsValue

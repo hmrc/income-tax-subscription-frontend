@@ -17,8 +17,7 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostMultipleIncomeSourcesSignUpResponseHttpReads
-import models.individual.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailure}
-import models.individual.subscription.{SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
+import models.common.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json

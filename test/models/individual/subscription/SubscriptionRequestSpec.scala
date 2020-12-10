@@ -17,6 +17,7 @@
 package models.individual.subscription
 
 import models.common.IncomeSourceModel
+import models.common.subscription.SubscriptionRequest
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.individual.TestConstants

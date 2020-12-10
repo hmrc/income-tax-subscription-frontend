@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.agent.ITSASessionKeys
 import forms.agent._
@@ -18,6 +19,7 @@ import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import models.YesNo
 import models.common._
+import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -99,6 +101,8 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.users-groups-search.host" -> mockHost,
     "microservice.services.users-groups-search.port" -> mockPort
   )
+
+  implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

@@ -20,6 +20,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 import models.DateModel
+import models.common.subscription.{CreateIncomeSourcesFailureResponse, KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, SignUpIncomeSourcesFailureResponse, SubscriptionFailureResponse, SubscriptionSuccess, TypeValuePair}
 import models.individual.subscription._
 import models.usermatching.LockedOut
 import play.api.http.Status.INTERNAL_SERVER_ERROR

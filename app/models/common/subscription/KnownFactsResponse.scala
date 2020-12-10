@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.subscription
 
-case class EnrolmentKey(serviceName: String, identifiers: (String, String)*){
-  def asString: String = {
-    val formattedIdentifiers = identifiers map { case (key, value) => s"$key~$value" }
+import models.ConnectorError
 
-    serviceName +: formattedIdentifiers mkString "~"
-  }
-}
+sealed trait KnownFactsResponse
+
+object KnownFactsSuccess extends KnownFactsResponse
+
+case class KnownFactsFailure(message: String) extends KnownFactsResponse with ConnectorError

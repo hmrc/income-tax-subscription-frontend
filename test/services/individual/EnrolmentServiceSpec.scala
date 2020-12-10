@@ -16,7 +16,7 @@
 
 package services.individual
 
-import models.individual.subscription.{EnrolFailure, EnrolSuccess}
+import models.common.subscription.{EnrolFailure, EnrolSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import services.individual.mocks.TestEnrolmentService
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate

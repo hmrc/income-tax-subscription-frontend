@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.common
+package models.common.subscription
 
-import play.api.libs.json.{Json, OFormat}
+import models.ConnectorError
 
-case class BusinessNameModel(businessName: String)
+sealed trait EnrolResponse
 
-object BusinessNameModel {
-  implicit val format: OFormat[BusinessNameModel] = Json.format[BusinessNameModel]
-}
+object EnrolSuccess extends EnrolResponse
+
+case class EnrolFailure(message: String) extends EnrolResponse with ConnectorError

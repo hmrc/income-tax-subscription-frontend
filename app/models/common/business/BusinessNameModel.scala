@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.business
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Identifier(key: String, value: String)
+case class BusinessNameModel(businessName: String)
 
-object Identifier {
-  implicit val formats: OFormat[Identifier] = Json.format[Identifier]
+object BusinessNameModel {
+  implicit val format: OFormat[BusinessNameModel] = Json.format[BusinessNameModel]
 }

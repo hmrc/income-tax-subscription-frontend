@@ -25,7 +25,7 @@ import controllers.utils.OptionalAnswers.optAccountingMethodAnswer
 import controllers.utils.RequireAnswer
 import forms.agent.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
-import models.common.AccountingMethodModel
+import models.common.business.AccountingMethodModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html

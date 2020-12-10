@@ -19,7 +19,7 @@ package helpers.servicemocks
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
 import models.common.AccountingPeriodModel
-import models.individual.subscription.SubscriptionSuccess
+import models.common.subscription.SubscriptionSuccess
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
 import utilities.JsonUtils._

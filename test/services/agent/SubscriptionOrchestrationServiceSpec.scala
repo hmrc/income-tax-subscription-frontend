@@ -17,7 +17,7 @@
 package services.agent
 
 import models.ConnectorError
-import models.individual.subscription.SubscriptionSuccess
+import models.common.subscription.SubscriptionSuccess
 import play.api.test.Helpers._
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
 import utilities.TestModels.testAgentSummaryData

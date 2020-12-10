@@ -17,7 +17,7 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourcesResponseHttpReads
-import models.individual.subscription.{CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess}
+import models.common.subscription.{CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import uk.gov.hmrc.http.HttpResponse

@@ -23,8 +23,8 @@ import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
 import forms.individual.incomesource.IncomeSourceForm
 import models.Current
-import models.common.{AccountingMethodModel, AccountingYearModel, IncomeSourceModel}
-import models.individual.business.SelfEmploymentData
+import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Result}

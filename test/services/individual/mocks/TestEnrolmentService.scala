@@ -19,7 +19,7 @@ package services.individual.mocks
 import auth.MockAuth
 import config.MockConfig
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
-import models.individual.subscription.{EnrolFailure, EnrolRequest, EnrolSuccess}
+import models.common.subscription.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach

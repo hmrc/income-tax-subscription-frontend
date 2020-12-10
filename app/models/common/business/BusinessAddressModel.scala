@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.individual.business
+package models.common.business
 
 import play.api.libs.json.{Json, OFormat}
 

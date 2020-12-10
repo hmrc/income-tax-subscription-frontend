@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import controllers.ControllerBaseSpec
 import forms.individual.business.BusinessNameForm
-import models.common.BusinessNameModel
+import models.common.business.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._

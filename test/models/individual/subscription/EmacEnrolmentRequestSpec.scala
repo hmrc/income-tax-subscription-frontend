@@ -16,6 +16,7 @@
 
 package models.individual.subscription
 
+import models.common.subscription.EmacEnrolmentRequest
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.individual.Constants.GovernmentGateway._

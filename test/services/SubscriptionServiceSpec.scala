@@ -21,7 +21,7 @@ import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHtt
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import models.Cash
-import models.individual.subscription._
+import models.common.subscription.{BadlyFormattedCreateIncomeSourcesResponse, BadlyFormattedSignUpIncomeSourcesResponse, BadlyFormattedSubscriptionResponse, CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess, SubscriptionFailureResponse, SubscriptionSuccess}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._

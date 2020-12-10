@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.business
 
 import play.api.libs.json.{Json, OFormat}
 
+case class BusinessTradeNameModel(businessTradeName: String)
 
-case class EnrolRequest(portalId: String,
-                        serviceName: String,
-                        friendlyName: String,
-                        knownFacts: List[String])
-
-object EnrolRequest {
-  implicit val format: OFormat[EnrolRequest] = Json.format[EnrolRequest]
+object BusinessTradeNameModel {
+  implicit val format: OFormat[BusinessTradeNameModel] = Json.format[BusinessTradeNameModel]
 }

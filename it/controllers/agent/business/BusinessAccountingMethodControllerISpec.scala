@@ -23,7 +23,8 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.AuthStub
-import models.common.{AccountingMethodModel, IncomeSourceModel}
+import models.common.IncomeSourceModel
+import models.common.business.AccountingMethodModel
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.libs.json.Json

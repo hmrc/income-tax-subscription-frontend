@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.subscription
 
 import models.ConnectorError
 
-sealed trait EnrolResponse
+case class CreateIncomeSourcesSuccess()
 
-object EnrolSuccess extends EnrolResponse
+sealed trait CreateIncomeSourcesFailure extends ConnectorError
 
-case class EnrolFailure(message: String) extends EnrolResponse with ConnectorError
+case object BadlyFormattedCreateIncomeSourcesResponse extends CreateIncomeSourcesFailure
+
+case class CreateIncomeSourcesFailureResponse(status: Int) extends CreateIncomeSourcesFailure

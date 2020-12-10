@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package models.individual.business
+package models.common.business
 
-import models.common.BusinessNameModel
 import play.api.libs.json._
 
 case class SelfEmploymentData(id: String,

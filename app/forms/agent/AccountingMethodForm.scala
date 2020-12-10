@@ -17,7 +17,7 @@
 package forms.agent
 
 import forms.submapping.AccountingMethodMapping
-import models.common.AccountingMethodModel
+import models.common.business.AccountingMethodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid

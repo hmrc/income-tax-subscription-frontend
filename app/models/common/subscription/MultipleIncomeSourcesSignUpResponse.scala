@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package models.individual.business
+package models.common.subscription
 
-import models.DateModel
+import models.ConnectorError
 import play.api.libs.json.{Json, OFormat}
 
-case class BusinessStartDate(startDate: DateModel)
+case class SignUpIncomeSourcesSuccess(mtdbsa: String)
 
-object BusinessStartDate {
-  implicit val format: OFormat[BusinessStartDate] = Json.format[BusinessStartDate]
+object SignUpIncomeSourcesSuccess {
+  implicit val format: OFormat[SignUpIncomeSourcesSuccess] = Json.format[SignUpIncomeSourcesSuccess]
 }
+
+sealed trait SignUpIncomeSourcesFailure extends ConnectorError
+
+case object BadlyFormattedSignUpIncomeSourcesResponse extends SignUpIncomeSourcesFailure
+
+case class SignUpIncomeSourcesFailureResponse(status: Int) extends SignUpIncomeSourcesFailure

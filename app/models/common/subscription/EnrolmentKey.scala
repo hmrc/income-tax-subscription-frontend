@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package models.individual.subscription
+package models.common.subscription
 
-import play.api.libs.json.{Json, OFormat}
+case class EnrolmentKey(serviceName: String, identifiers: (String, String)*){
+  def asString: String = {
+    val formattedIdentifiers = identifiers map { case (key, value) => s"$key~$value" }
 
-
-case class KnownFactsRequest(facts: List[TypeValuePair])
-
-object KnownFactsRequest {
-  implicit val formats: OFormat[KnownFactsRequest] = Json.format[KnownFactsRequest]
+    serviceName +: formattedIdentifiers mkString "~"
+  }
 }

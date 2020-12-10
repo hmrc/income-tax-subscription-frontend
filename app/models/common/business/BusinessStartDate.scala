@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models.individual.business
+package models.common.business
 
+import models.DateModel
 import play.api.libs.json.{Json, OFormat}
 
-case class BusinessTradeNameModel(businessTradeName: String)
+case class BusinessStartDate(startDate: DateModel)
 
-object BusinessTradeNameModel {
-  implicit val format: OFormat[BusinessTradeNameModel] = Json.format[BusinessTradeNameModel]
+object BusinessStartDate {
+  implicit val format: OFormat[BusinessStartDate] = Json.format[BusinessStartDate]
 }

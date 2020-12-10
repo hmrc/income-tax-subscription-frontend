@@ -20,7 +20,8 @@ import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
-import models.common.{BusinessNameModel, IncomeSourceModel}
+import models.common.IncomeSourceModel
+import models.common.business.BusinessNameModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html

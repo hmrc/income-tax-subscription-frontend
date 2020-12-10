@@ -21,7 +21,7 @@ import config.AppConfig
 import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import models.individual.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
+import models.common.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar

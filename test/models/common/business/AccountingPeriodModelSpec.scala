@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.individual.business
+package models.common.business
 
 import models.DateModel
 import models.common.AccountingPeriodModel

@@ -16,8 +16,8 @@
 
 package controllers.utils
 
-import models.common.AccountingMethodModel
 import models.Cash
+import models.common.business.AccountingMethodModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.{MustMatchers, WordSpecLike}

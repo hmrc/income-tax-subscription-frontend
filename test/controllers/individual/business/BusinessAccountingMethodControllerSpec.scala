@@ -18,8 +18,8 @@ package controllers.individual.business
 
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodForm
-import models.common.AccountingMethodModel
 import models.common.IncomeSourceModel
+import models.common.business.AccountingMethodModel
 import models.{Cash, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

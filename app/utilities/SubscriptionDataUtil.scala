@@ -21,7 +21,7 @@ import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import models.common._
-import models.individual.business._
+import models.common.business._
 import models.{AgentSummary, IndividualSummary, SummaryModel}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys._

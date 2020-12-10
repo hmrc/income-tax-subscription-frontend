@@ -16,6 +16,7 @@
 
 package models.individual.subscription
 
+import models.common.subscription.EnrolmentVerifiers
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
 

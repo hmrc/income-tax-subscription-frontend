@@ -19,8 +19,8 @@ package controllers.individual.subscription
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-import models.common.{AccountingMethodModel, IncomeSourceModel}
-import models.individual.business.SelfEmploymentData
+import models.common.IncomeSourceModel
+import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
