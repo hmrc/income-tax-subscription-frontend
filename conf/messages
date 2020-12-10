@@ -335,12 +335,17 @@ error.user_details.last_name.invalid                            = Enter a valid 
 error.user_details.first_name.maxLength                         = Enter a first name that’s 105 characters or less
 error.user_details.last_name.maxLength                          = Enter a last name that’s 105 characters or less
 
-error.nino.invalid                                              = Enter a valid National Insurance number
+error.nino.invalid                                              = Enter a National Insurance number in the correct format
 error.nino.empty                                                = Enter your National Insurance number
 
-error.dob_date.empty                                            = Enter a date of birth
-error.dob_date.invalid_chars                                    = Enter a date of birth using numbers 0 to 9
-error.dob_date.invalid                                          = Enter a real date of birth
+error.user_details.date_of_birth.date.empty                     = Enter your date of birth
+error.user_details.date_of_birth.day.empty                      = Your date of birth must include a day
+error.user_details.date_of_birth.month.empty                    = Your date of birth must include a month
+error.user_details.date_of_birth.year.empty                     = Your date of birth must include a year
+error.user_details.date_of_birth.day_month.empty                = Your date of birth must include a day and a month
+error.user_details.date_of_birth.day_year.empty                 = Your date of birth must include a day and a year
+error.user_details.date_of_birth.month_year.empty               = Your date of birth must include a month and a year
+error.user_details.date_of_birth.not_in_past                    = Your date of birth must be in the past
 
 error.not-eligible.empty                                        = You must select an option to continue
 error.not-eligible.invalid                                      = You must select an option to continue
@@ -364,14 +369,14 @@ eligible.line_1                                                 = Your answers m
 eligible.line_2                                                 = You just need to enter a few more details.
 
 ## User Details ##
-user-details.title                                              = Enter your details
-user-details.heading                                            = Enter your details
-user-details.line_1                                             = We will attempt to match these details against information we currently hold.
+user-details.title                                              = Confirm your details
+user-details.heading                                            = Confirm your details
+user-details.line_1                                             = We will check these details with information we currently have.
 user-details.field_1                                            = First name
 user-details.field_2                                            = Last name
 user-details.field_3                                            = National Insurance number
 user-details.field_4                                            = Date of birth
-user_details.formhint.1.line_1                                  = For example, ‘QQ 12 34 56 C’.
+user_details.formhint.1.line_1                                  = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 user-details.formhint.2                                         = For example, 10 12 1990
 
 # User details page
@@ -385,9 +390,8 @@ user-details-lockout.heading                                    = You’ve been 
 user-details-lockout.line_1                                     = To sign up for quarterly reporting, you’ll have to try again in {0}.
 
 # Check your details page
-user-details.summary.title                                      = Confirm your details
+user-details.summary.title                                      = Check your answers
 user-details.summary.heading                                    = Check your answers
-user-details.summary.heading_hidden                             = before looking up your details
 user-details.summary.first_name                                 = First name
 user-details.summary.last_name                                  = Last name
 user-details.summary.nino                                       = National Insurance number

@@ -345,12 +345,17 @@ error.user_details.last_name.invalid                            = Nodwch enw ola
 error.user_details.first_name.maxLength                         = Nodwch enw cyntaf sy’n 105 o gymeriadau neu lai
 error.user_details.last_name.maxLength                          = Nodwch enw olaf sy’n 105 o gymeriadau neu lai
 
-error.nino.invalid                                              = Nodwch rif Yswiriant Gwladol dilys
+error.nino.invalid                                              = Nodwch rif Yswiriant Gwladol yn y fformat cywir
 error.nino.empty                                                = Nodwch eich rhif Yswiriant Gwladol
 
-error.dob_date.empty                                            = Nodwch ddyddiad geni
-error.dob_date.invalid_chars                                    = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
-error.dob_date.invalid                                          = Nodwch ddyddiad geni go iawn
+error.user_details.date_of_birth.date.empty                     = Nodwch eich dyddiad geni
+error.user_details.date_of_birth.day.empty                      = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod
+error.user_details.date_of_birth.month.empty                    = Mae’n rhaid i’ch dyddiad geni gynnwys mis
+error.user_details.date_of_birth.year.empty                     = Mae’n rhaid i’ch dyddiad geni gynnwys blwyddyn
+error.user_details.date_of_birth.day_month.empty                = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod a mis
+error.user_details.date_of_birth.day_year.empty                 = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod a blwyddyn
+error.user_details.date_of_birth.month_year.empty               = Mae’n rhaid i’ch dyddiad geni gynnwys mis a blwyddyn
+error.user_details.date_of_birth.not_in_past                    = Mae’n rhaid i’ch dyddiad geni fod yn y gorffennol
 
 error.not-eligible.empty                                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.not-eligible.invalid                                      = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -374,14 +379,14 @@ eligible.line_1                                                 = Mae’ch atebi
 eligible.line_2                                                 = Dim ond ychydig o fanylion eraill sydd angen i chi eu rhoi.
 
 ## User Details ##
-user-details.title                                              = Nodwch eich manylion
-user-details.heading                                            = Nodwch eich manylion
-user-details.line_1                                             = Byddwn yn ceisio paru’r manylion hyn â’r wybodaeth sydd gennym ar hyn o bryd.
+user-details.title                                              = Cadarnhau’ch manylion
+user-details.heading                                            = Cadarnhau’ch manylion
+user-details.line_1                                             = Byddwn yn gwirio’r manylion hyn yn ôl yr wybodaeth sydd gennym ar hyn o bryd
 user-details.field_1                                            = Enw cyntaf
 user-details.field_2                                            = Enw olaf
 user-details.field_3                                            = Rhif Yswiriant Gwladol
 user-details.field_4                                            = Dyddiad geni
-user_details.formhint.1.line_1                                  = Er enghraifft, ‘QQ 12 34 56 C’.
+user_details.formhint.1.line_1                                  = Mae hwn ar eich cerdyn Yswiriant Gwladol, llythyr ynghylch budd-daliadau, slip cyflog neu P60. Er enghraifft, ‘QQ 12 34 56 C’.
 user-details.formhint.2                                         = Er enghraifft, 10 12 1990
 
 # User details page
@@ -395,9 +400,8 @@ user-details-lockout.heading                                    = Rydych wedi ca
 user-details-lockout.line_1                                     = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi roi cynnig arall arni ymhen {0}.
 
 # Check your details page
-user-details.summary.title                                      = Cadarnhau’ch manylion
+user-details.summary.title                                      = Gwiriwch eich atebion
 user-details.summary.heading                                    = Gwiriwch eich atebion
-user-details.summary.heading_hidden                             = cyn edrych am eich manylion
 user-details.summary.first_name                                 = Enw cyntaf
 user-details.summary.last_name                                  = Enw olaf
 user-details.summary.nino                                       = Rhif Yswiriant Gwladol
