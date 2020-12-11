@@ -23,21 +23,30 @@
         divClass: Option[String] = None,
         labelClass: Option[String] = None,
         isNumeric: Boolean = false,
-        formHint: Option[Seq[String]] = None
+        formHint: Option[Seq[String]] = None,
+        showErrors: Boolean = true
 )(implicit messages: Messages)
 
+@errors = @{
+    field.errors
+}
+
+@errMsg(err: FormError) = {
+    @if(showErrors) {
+    <span class="error-notification">@{messages(s"${err.message}",err.args:_*)}</span>
+    }
+}
 
 @hintText(hint: String) = {
-    <span class="form-hint" id="input-helper-hint">
+    <span class="form-hint" id="hint-@field.name">
     @hint
     </span>
 }
 
-@hasError = @{parentForm.errors(field.name).nonEmpty}
+@hasError = @{showErrors && parentForm.errors(field.name).nonEmpty}
 
 @errorNotification = @{
-    if(hasError)
-    <span class="error-notification bold" id="error-message-@field.name">{Messages(s"${parentForm.error(field.name).get.message}")}</span>
+errors.map(errMsg)
 }
 
 <div class="form-group form-field@divClass.map(cls => s" $cls")@if(hasError) { form-field--error}">

@@ -129,7 +129,7 @@ business.accounting_method.accordion                            = Rhowch enghrai
 business.accounting_method.accordion.line_1                     = Rhoesoch anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Petaech yn rhoi gwybod i Gyllid a Thollau EM eich bod wedi cael yr incwm hwn ym:
 business.accounting_method.accordion.bullet_1                   = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ‘sail arian parod’
 business.accounting_method.accordion.bullet_2                   = mis Mawrth 2017, buasech yn defnyddio’r ‘sail croniadau’
-business.accounting_method.cash                                 = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn cael arian neu’n talu bil. Mae’r rhan fwyaf o unig fasnachwyr a busnesau bach yn defnyddio'r dull hwn.
+business.accounting_method.cash                                 = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn cael arian neu’n talu bil. Mae’r rhan fwyaf o unig fasnachwyr a busnesau bach yn defnyddio’r dull hwn.
 business.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu’n cael anfoneb, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
 
 # Property Accounting Method Page
@@ -157,57 +157,61 @@ business.name.title                                             = Enw’r busnes
 business.name.heading                                           = Beth yw enw’ch busnes?
 business.name.signup.line_1                                     = Dyma enw’r busnes a ddefnyddioch i gofrestru ar gyfer Hunanasesiad. Os nad oes enw ar eich busnes, nodwch eich enw’ch hun.
 
-## Property Commencement Date Date
+## Property Start Date Date
 business.property.name.title                                    = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
 business.property.name.heading                                  = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
-business.property.line_1                                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
+business.property.line_1                                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo yn y DU ar osod yn y lle cyntaf.
 business.property.start_date.exampleStartDate                   = Er enghraifft, 1 8 2014
 
-# Property Commencement Date errors
-property.error.date.empty                                       = Nodwch y dyddiad y gwnaeth eich busnes ddechrau masnachu
-property.error.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-property.error.month.empty                                      = Mae’n rhaid i’r dyddiad gynnwys mis
-property.error.year.empty                                       = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-property.error.day.month.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-property.error.day.year.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-property.error.month.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-property.error.property_accounting_period.minStartDate          = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+# Property Start Date errors
+error.property.date.empty                                       = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
+error.property.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+error.property.month.empty                                      = Mae’n rhaid i’r dyddiad gynnwys mis
+error.property.year.empty                                       = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+error.property.day_month.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+error.property.day_year.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+error.property.month_year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+error.property.start_date.maxStartDate                          = Mae’n rhaid i’r dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu fod ar yr un diwrnod â {0}, neu cyn hynny
+error.property.start_date.minStartDate                          = Rhaid i’r dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu fod ar neu ar ôl {0}
 
-# Agent Property Commencement Date Date
+# Agent Property Start Date Date
 agent.property.name.heading                                     = Pryd y dechreuodd busnes eiddo yn y DU eich cleient fasnachu?
 agent.property.line_1                                           = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
 agent.property.start_date.exampleStartDate                      = Er enghraifft, 1 8 2014
 
-# Agent Property Commencement Date errors
-agent.property.error.date.empty                                  = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
-agent.property.error.day.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-agent.property.error.month.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis
-agent.property.error.year.empty                                  = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-agent.property.error.day.month.empty                             = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-agent.property.error.day.year.empty                              = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-agent.property.error.month.year.empty                            = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-agent.property.error.property_accounting_period.minStartDate     = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+# Agent Property Start Date errors
+agent.error.property.date.empty                                 = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
+agent.error.property.day.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+agent.error.property.month.empty                                = Mae’n rhaid i’r dyddiad gynnwys mis
+agent.error.property.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+agent.error.property.day_month.empty                            = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+agent.error.property.day_year.empty                             = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+agent.error.property.month_year.empty                           = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+agent.error.property.start_date.maxStartDate                    = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+agent.error.property.start_date.minStartDate                    = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
 
-## Foreign Property Commencement Date
-foreign.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
-foreign.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
-foreign.property.line_1                                         = Dyma’r dyddiad y dechreuoch roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
-foreign.property.start_date.exampleStartDate                    = Er enghraifft, 1 8 2014
 
-# Agent Foreign Property Commencement Date
+## Overseas Property Start Date
+overseas.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
+overseas.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
+overseas.property.line_1                                         = Dyma’r dyddiad y dechreuwyd rhoi unrhyw eiddo tramor ar osod yn y lle cyntaf.
+overseas.property.start_date.exampleStartDate                    = Er enghraifft, 1 8 2014
+
+# Agent Overseas Property Start Date
 agent.overseas.property.name.heading                            = Pryd y dechreuodd busnes eiddo tramor eich cleient fasnachu?
 agent.overseas.property.line_1                                  = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
 agent.overseas.property.start_date.exampleStartDate             = Er enghraifft, 1 8 2014
 
-# Foreign Property Commencement Date errors
-foreign.property.error.date.empty                                       = Nodwch y dyddiad y gwnaeth eich busnes ddechrau masnachu
-foreign.property.error.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-foreign.property.error.month.empty                                      = Mae’n rhaid i’r dyddiad gynnwys mis
-foreign.property.error.year.empty                                       = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-foreign.property.error.day.month.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-foreign.property.error.day.year.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-foreign.property.error.month.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-foreign.property.error.property_commencement_date.minStartDate          = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+# Overseas Property Start Date errors
+error.overseas.property.date.empty                               = Nodwch y dyddiad y dechreuodd eich busnes eiddo tramor fasnachu
+error.overseas.property.day.empty                                = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+error.overseas.property.month.empty                              = Mae’n rhaid i’r dyddiad gynnwys mis
+error.overseas.property.year.empty                               = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+error.overseas.property.day_month.empty                          = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+error.overseas.property.day_year.empty                           = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+error.overseas.property.month_year.empty                         = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+error.overseas.property.start_date.maxStartDate                  = Rhaid i’r dyddiad y dechreuodd eich busnes eiddo tramor fasnachu fod ar neu cyn {0}
+error.overseas.property.start_date.minStartDate                  = Rhaid i’r dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu fod ar neu ar ôl {0}
 
 ## Contact Email Address page ##
 contact_email.title                                             = Nodwch eich cyfeiriad e-bost
@@ -258,9 +262,9 @@ summary.accounting_method_property                              = Dull cyfrifydd
 summary.selected_year                                           = Y flwyddyn dreth yr ydych wedi cofrestru ar ei chyfer
 summary.selected_year.current                                   = Y flwyddyn dreth bresennol ({0} i {1})
 summary.selected_year.next                                      = Y flwyddyn dreth nesaf ({0} i {1})
-summary.property_commencement_date                              = Dyddiad dechrau masnachu’ch busnes eiddo yn y DU
+summary.property_start_date                              = Dyddiad dechrau masnachu’ch busnes eiddo yn y DU
 summary.self_employments                                        = Nifer y busnesau sydd wedi’u cofrestru
-summary.foreign_property_commencement_date                      = Dyddiad dechrau masnachu’ch busnes eiddo tramor
+summary.overseas_property_start_date                      = Dyddiad dechrau masnachu’ch busnes eiddo tramor
 summary.accounting_method_foreign_property                      = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
 
 ## Confirmation page ##
@@ -557,7 +561,7 @@ agent.income_source.checkbox.hint                               = Dewiswch bob u
 agent.income_source.selfEmployed                                = Hunangyflogedig
 agent.income_source.rentUkProperty                              = Rhoi eiddo ar osod yn y DU
 agent.income_source.foreignProperty                             = Rhoi eiddo tramor ar osod
-agent.error.income_source.invalid                               = Dewiswch a yw'ch cleient yn cael incwm ohono eiddo hunangyflogedig neu eiddo'r DU
+agent.error.income_source.invalid                               = Dewiswch a yw’ch cleient yn cael incwm ohono eiddo hunangyflogedig neu eiddo’r DU
 agent.error.income_source_foreignProperty.invalid               = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
 
 # Property income page
@@ -573,7 +577,7 @@ agent.business.what_year_to_sign_up.option_1                  = Blwyddyn dreth b
 agent.business.what_year_to_sign_up.option_2                  = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.what_year_to_sign_up.conditional.1.line_1      = Bydd angen i chi neu’ch cleient fewnbynnu yr holl incwm a threuliau busnes i’ch meddalwedd o ddechrau’r flwyddyn dreth bresennol. Mae angen i chi neu’ch cleient anfon diweddariad chwarterol ar gyfer:
 agent.business.what_year_to_sign_up.conditional.1.line_2      = Mae angen i chi neu’ch cleient anfon datganiad terfynol erbyn 31 Ionawr {0}.
-agent.business.what_year_to_sign_up.conditional.2.line_1      = Mae angen i chi neu'ch cleient anfon diweddariad chwarterol ar gyfer:
+agent.business.what_year_to_sign_up.conditional.2.line_1      = Mae angen i chi neu’ch cleient anfon diweddariad chwarterol ar gyfer:
 agent.business.what_year_to_sign_up.conditional.2.line_2      = Mae angen i chi neu’ch cleient anfon datganiad terfynol erbyn 31 Ionawr {0}, a bydd angen llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer..
 agent.business.what_year_to_sign_up.quarterly.date_1          = 5 Gorffennaf {0}
 agent.business.what_year_to_sign_up.quarterly.date_2          = 5 Hydref {0}
@@ -663,8 +667,8 @@ agent.summary.selected_year.next                                = Y flwyddyn dre
 agent.summary.selected_year.release4                            = Blwyddyn dreth i ddechrau cyflwyno diweddariadau
 agent.summary.selected_year.current.release4                    = Y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.summary.selected_year.next.release4                       = Y flwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-agent.summary.property_commencement_date                        = Dyddiad dechrau masnachu ar gyfer eiddo yn y DU
-agent.summary.overseas_property_commencement_date               = Dyddiad dechrau masnachu ar gyfer eiddo tramor
+agent.summary.property_start_date                        = Dyddiad dechrau masnachu ar gyfer eiddo yn y DU
+agent.summary.overseas_property_start_date               = Dyddiad dechrau masnachu ar gyfer eiddo tramor
 agent.summary.income_type_overseas_property                     = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
 agent.summary.self_employments                                  = Nifer y busnesau sydd wedi’u cofrestru
 
@@ -722,7 +726,6 @@ agent.error.contact_email.invalid                               = Mae’r e-bost
 
 agent.error.accounting-method.empty                             = Dewiswch ddull cyfrifyddu
 agent.error.accounting-method.invalid                           = Dewiswch ddull cyfrifyddu
-
 
 agent.error.accounting-method-property.invalid                  = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
 
@@ -811,18 +814,17 @@ agent.covid_cannot_sign_up.button                               = Cofrestru clei
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
 
-
-# Agent Overseas Property Commencement Date Page errors
-agent.overseas.property.error.date.empty                        = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
-agent.overseas.property.error.month.year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-agent.overseas.property.error.day.month.empty                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-agent.overseas.property.error.day.year.empty                    = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-agent.overseas.property.error.year.empty                        = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-agent.overseas.property.error.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-agent.overseas.property.error.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
-agent.overseas.property.error.accounting_period.minStartDate    = Mae’n rhaid i ddyddiad busnes eiddo tramor eich cleient fod ar neu cyn {0}
+# Agent Overseas Property Start Date Page errors
+agent.error.overseas.property.date.empty                        = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
+agent.error.overseas.property.month_year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+agent.error.overseas.property.day_month.empty                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+agent.error.overseas.property.day_year.empty                    = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+agent.error.overseas.property.year.empty                        = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+agent.error.overseas.property.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+agent.error.overseas.property.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
+agent.error.overseas.property.start_date.maxStartDate           = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
+agent.error.overseas.property.start_date.minStartDate           = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
 
 ## Title pattern
-titlePattern.serviceName.govUk = {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
-base.title.error               = Gwall: {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
-
+titlePattern.serviceName.govUk                                  = {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
+base.title.error                                                = Gwall: {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK

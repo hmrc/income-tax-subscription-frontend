@@ -123,7 +123,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      s"redirect to ${routes.PropertyCommencementDateController.show().url} when FS ReleaseFour is enabled" when {
+      s"redirect to ${routes.PropertyStartDateController.show().url} when FS ReleaseFour is enabled" when {
         "the user has property income" in new Test {
           enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
@@ -137,14 +137,14 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           )))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.PropertyCommencementDateController.show().url)
+          redirectLocation(result) mustBe Some(routes.PropertyStartDateController.show().url)
 
           verifySubscriptionDetailsFetchAll(2)
           verifySubscriptionDetailsSave(AccountingMethod, 1)
         }
       }
 
-      s"redirect to ${routes.OverseasPropertyCommencementDateController.show().url}" when {
+      s"redirect to ${routes.OverseasPropertyStartDateController.show().url}" when {
         "the user doesn't have uk property income and has foreign property income" in new Test {
           enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
@@ -158,7 +158,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           )))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.OverseasPropertyCommencementDateController.show().url)
+          redirectLocation(result) mustBe Some(routes.OverseasPropertyStartDateController.show().url)
 
           verifySubscriptionDetailsFetchAll(2)
           verifySubscriptionDetailsSave(AccountingMethod, 1)

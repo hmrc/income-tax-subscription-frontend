@@ -135,7 +135,7 @@ property.accounting_method.accordion.content.bullet2            = March 2017, yo
 property.accounting_method.cash                                 = <span class="heading-small">Cash accounting</span><br>You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method.
 property.accounting_method.accruals                             = <span class="heading-small">Standard accounting</span><br>You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’.
 
-#Overseas Property accounting method Page
+# Overseas Property accounting method Page
 overseas.property.accounting_method.title                        = How do you record your income and expenses for your foreign property business?
 overseas.property.accounting_method.heading                      = How do you record your income and expenses for your foreign property business?
 overseas.property.accounting_method.accordion.summary            = Show me an example
@@ -150,58 +150,60 @@ business.name.title                                             = Business name
 business.name.heading                                           = What’s the name of your business?
 business.name.signup.line_1                                     = This is the business name you used to register for Self Assessment. If your business doesn’t have a name, enter your own name.
 
-## Property Commencement Date Date
+## Property Start Date Date
 business.property.name.title                                    = When did your UK property business start trading?
 business.property.name.heading                                  = When did your UK property business start trading?
-business.property.line_1                                        = This is the date that letting or renting out any property first started.
+business.property.line_1                                        = This is the date that letting or renting out any UK property first started.
 business.property.start_date.exampleStartDate                   = For example, 1 8 2014
 
-# Property Commencement Date errors
-property.error.date.empty                                       = Enter the date your business started trading
-property.error.day.empty                                        = The date must include a day
-property.error.month.empty                                      = The date must include a month
-property.error.year.empty                                       = The date must include a year
-property.error.day.month.empty                                  = The date must include a day and a month
-property.error.day.year.empty                                   = The date must include a day and a year
-property.error.month.year.empty                                 = The date must include a month and a year
-property.error.property_accounting_period.minStartDate          = The date your business started trading must be the same as or before {0}
+# Property Start Date errors
+error.property.date.empty                                       = Enter the date your UK property business started trading
+error.property.day.empty                                        = The date must include a day
+error.property.month.empty                                      = The date must include a month
+error.property.year.empty                                       = The date must include a year
+error.property.day_month.empty                                  = The date must include a day and a month
+error.property.day_year.empty                                   = The date must include a day and a year
+error.property.month_year.empty                                 = The date must include a month and a year
+error.property.start_date.maxStartDate                          = The date your UK property business started trading must be the same as or before {0}
+error.property.start_date.minStartDate                          = The date your property business started must be on or after {0}
 
-# Agent Property Commencement Date Date
+# Agent Property Start Date Date
 agent.property.name.heading                                     = When did your client’s UK property business start trading?
 agent.property.line_1                                           = This is the date that letting or renting out any property first started.
 agent.property.start_date.exampleStartDate                      = For example, 1 8 2014
 
-# Agent Property Commencement Date errors
-agent.property.error.date.empty                                 = Enter the date your client’s UK property business started trading
-agent.property.error.day.empty                                  = The date must include a day
-agent.property.error.month.empty                                = The date must include a month
-agent.property.error.year.empty                                 = The date must include a year
-agent.property.error.day.month.empty                            = The date must include a day and a month
-agent.property.error.day.year.empty                             = The date must include a day and a year
-agent.property.error.month.year.empty                           = The date must include a month and a year
-agent.property.error.property_accounting_period.minStartDate    = The date the UK property business started trading must be on or before {0}
+# Agent Property Start Date errors
+agent.error.property.date.empty                                 = Enter the date your client’s UK property business started trading
+agent.error.property.day.empty                                  = The date must include a day
+agent.error.property.month.empty                                = The date must include a month
+agent.error.property.year.empty                                 = The date must include a year
+agent.error.property.day_month.empty                            = The date must include a day and a month
+agent.error.property.day_year.empty                             = The date must include a day and a year
+agent.error.property.month_year.empty                           = The date must include a month and a year
+agent.error.property.start_date.maxStartDate                    = The date the UK property business started trading must be on or before {0}
+agent.error.property.start_date.minStartDate                    = The date your client’s property business started trading must be on or after {0}
 
+## Overseas Property Start Date
+overseas.property.name.title                                    = When did your overseas property business start trading?
+overseas.property.name.heading                                  = When did your overseas property business start trading?
+overseas.property.line_1                                        = This is the date that letting or renting out any overseas property first started.
+overseas.property.start_date.exampleStartDate                   = For example, 1 8 2014
 
-## Foreign Property Commencement Date
-foreign.property.name.title                                     = When did your foreign property business start trading?
-foreign.property.name.heading                                   = When did your foreign property business start trading?
-foreign.property.line_1                                         = This is the date that letting or renting out any foreign property first started.
-foreign.property.start_date.exampleStartDate                    = For example, 1 8 2014
-
-# Agent Foreign Property Commencement Date
+# Agent Overseas Property Start Date
 agent.overseas.property.name.heading                            = When did your client’s foreign property business start trading?
 agent.overseas.property.line_1                                  = This is the date that letting or renting out any foreign property first started.
 agent.overseas.property.start_date.exampleStartDate             = For example, 1 8 2014
 
-# Foreign Property Commencement Date errors
-foreign.property.error.date.empty                               = Enter the date your business started trading
-foreign.property.error.day.empty                                = The date must include a day
-foreign.property.error.month.empty                              = The date must include a month
-foreign.property.error.year.empty                               = The date must include a year
-foreign.property.error.day.month.empty                          = The date must include a day and a month
-foreign.property.error.day.year.empty                           = The date must include a day and a year
-foreign.property.error.month.year.empty                         = The date must include a month and a year
-foreign.property.error.property_commencement_date.minStartDate  = The date your business started trading must be the same as or before {0}
+# Overseas Property Start Date errors
+error.overseas.property.date.empty                              = Enter the date your overseas property business started trading
+error.overseas.property.day.empty                               = The date must include a day
+error.overseas.property.month.empty                             = The date must include a month
+error.overseas.property.year.empty                              = The date must include a year
+error.overseas.property.day_month.empty                         = The date must include a day and a month
+error.overseas.property.day_year.empty                          = The date must include a day and a year
+error.overseas.property.month_year.empty                        = The date must include a month and a year
+error.overseas.property.start_date.maxStartDate                 = The date your overseas property business started trading must be the same as or before {0}
+error.overseas.property.start_date.minStartDate                 = The date your property business started must be on or after {0}
 
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
@@ -252,9 +254,9 @@ summary.accounting_method_property                              = Accounting met
 summary.selected_year                                           = Tax year signed up for
 summary.selected_year.current                                   = Current tax year ({0} to {1})
 summary.selected_year.next                                      = Next tax year ({0} to {1})
-summary.property_commencement_date                              = Trading start date of your UK property business
+summary.property_start_date                              = Trading start date of your UK property business
 summary.self_employments                                        = Number of businesses signed up
-summary.foreign_property_commencement_date                      = Trading start date of your foreign property business
+summary.overseas_property_start_date                      = Trading start date of your foreign property business
 summary.accounting_method_foreign_property                      = Accounting method for foreign property income
 
 
@@ -559,22 +561,22 @@ agent.property.income.line_1                                    = This is the am
 
 
 ## Accounting Year page
-agent.business.what_year_to_sign_up.title                     = Which tax year do you want to sign your client up for?
-agent.business.what_year_to_sign_up.heading                   = Which tax year do you want to sign your client up for?
-agent.business.what_year_to_sign_up.line_1                    = You can sign your client up for the current tax year or the next tax year.
-agent.business.what_year_to_sign_up.option_1                  = Current tax year (6 April {0} to 5 April {1})
-agent.business.what_year_to_sign_up.option_2                  = Next tax year (6 April {0} to 5 April {1})
-agent.business.what_year_to_sign_up.conditional.1.line_1      = You or your client will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You or your client need to send a quarterly update for:
-agent.business.what_year_to_sign_up.conditional.1.line_2      = You or your client need to send a final declaration by the 31 January {0}.
-agent.business.what_year_to_sign_up.conditional.2.line_1      = You or your client need to send a quarterly update for:
-agent.business.what_year_to_sign_up.conditional.2.line_2      = You or your client need to send a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
-agent.business.what_year_to_sign_up.quarterly.date_1          = 5 July {0}
-agent.business.what_year_to_sign_up.quarterly.date_2          = 5 October {0}
-agent.business.what_year_to_sign_up.quarterly.date_3          = 5 January {0}
-agent.business.what_year_to_sign_up.quarterly.date_4          = 5 April {0}
+agent.business.what_year_to_sign_up.title                       = Which tax year do you want to sign your client up for?
+agent.business.what_year_to_sign_up.heading                     = Which tax year do you want to sign your client up for?
+agent.business.what_year_to_sign_up.line_1                      = You can sign your client up for the current tax year or the next tax year.
+agent.business.what_year_to_sign_up.option_1                    = Current tax year (6 April {0} to 5 April {1})
+agent.business.what_year_to_sign_up.option_2                    = Next tax year (6 April {0} to 5 April {1})
+agent.business.what_year_to_sign_up.conditional.1.line_1        = You or your client will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You or your client need to send a quarterly update for:
+agent.business.what_year_to_sign_up.conditional.1.line_2        = You or your client need to send a final declaration by the 31 January {0}.
+agent.business.what_year_to_sign_up.conditional.2.line_1        = You or your client need to send a quarterly update for:
+agent.business.what_year_to_sign_up.conditional.2.line_2        = You or your client need to send a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
+agent.business.what_year_to_sign_up.quarterly.date_1            = 5 July {0}
+agent.business.what_year_to_sign_up.quarterly.date_2            = 5 October {0}
+agent.business.what_year_to_sign_up.quarterly.date_3            = 5 January {0}
+agent.business.what_year_to_sign_up.quarterly.date_4            = 5 April {0}
 
 # Agent Sole trader page
-agent.eligibility.sole_trader.heading                              = Is your client a sole trader that began trading on or after {0}?
+agent.eligibility.sole_trader.heading                           = Is your client a sole trader that began trading on or after {0}?
 
 ## Business Income page
 agent.business.accounting_method.title                          = What accounting method does your client use for their self-employed business?
@@ -657,8 +659,8 @@ agent.summary.selected_year.next                                = Next tax year 
 agent.summary.selected_year.release4                            = Tax year to start filing updates
 agent.summary.selected_year.current.release4                    = Current tax year (6 April {0} to 5 April {1})
 agent.summary.selected_year.next.release4                       = Next tax year (6 April {0} to 5 April {1})
-agent.summary.property_commencement_date                        = Trading start for UK property
-agent.summary.overseas_property_commencement_date               = Trading start for foreign property
+agent.summary.property_start_date                               = Trading start for UK property
+agent.summary.overseas_property_start_date                      = Trading start for foreign property
 agent.summary.income_type_overseas_property                     = Accounting method for foreign property income
 agent.summary.self_employments                                  = Number of businesses signed up
 
@@ -668,7 +670,7 @@ agent.sign-up-complete.heading                                  = You have signe
 agent.sign-up-complete.whatNow.heading                          = What you need to do next
 agent.sign-up-complete.whatNow.para1                            = Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other.
 agent.sign-up-complete.whatNow.number1                          = If you have not already, {0} and allow it interact with HMRC.
-agent.sign-up-complete.whatNow.number1.link                     = find software that's compatible with Making Tax Digital for Income Tax (opens in new tab)
+agent.sign-up-complete.whatNow.number1.link                     = find software that’s compatible with Making Tax Digital for Income Tax (opens in new tab)
 agent.sign-up.complete.nextTax.number2                          = Log in to your {0} to find out when your first update is due.
 agent.sign-up.complete.nextTax.number2.link                     = Business Tax account
 agent.sign-up.complete.sendQuarterly                            = Send quarterly updates by:
@@ -796,7 +798,6 @@ agent.covid_19_claim_check.test_and_trace_support_pay.link      = Test and Trace
 agent.covid_19_claim_check.error                                = Select yes if your client has ever claimed or intends to claim a coronavirus (COVID‑19) grant
 agent.covid_19_claim_check.local_authority_grants.link          = Local Authority grants
 
-
 # Covid Cannot Sign Up page
 agent.covid_cannot_sign_up.title                                = Your client cannot take part in this pilot
 agent.covid_cannot_sign_up.heading                              = Your client cannot take part in this pilot
@@ -804,18 +805,18 @@ agent.covid_cannot_sign_up.line1                                = You will not b
 agent.covid_cannot_sign_up.line2                                = You will need to send a {0} instead and you may be able to sign your client up in future.
 agent.covid_cannot_sign_up.line2.link                           = Self Assessment tax return
 
-
-# Agent Overseas Property Commencement Date Page errors
-agent.overseas.property.error.date.empty                        = Enter the date your client’s foreign property business started trading
-agent.overseas.property.error.month.year.empty                  = The date must include a month and a year
-agent.overseas.property.error.day.month.empty                   = The date must include a day and a month
-agent.overseas.property.error.day.year.empty                    = The date must include a day and a year
-agent.overseas.property.error.year.empty                        = The date must include a year
-agent.overseas.property.error.day.empty                         = The date must include a day
-agent.overseas.property.error.month.empty                       = The date must include a month
-agent.overseas.property.error.accounting_period.minStartDate    = The date the foreign property business started trading must be on or before {0}
+# Agent Overseas Property Start Date Page errors
+agent.error.overseas.property.date.empty                        = Enter the date your client’s overseas property business started trading
+agent.error.overseas.property.month_year.empty                  = The date must include a month and a year
+agent.error.overseas.property.day_month.empty                   = The date must include a day and a month
+agent.error.overseas.property.day_year.empty                    = The date must include a day and a year
+agent.error.overseas.property.year.empty                        = The date must include a year
+agent.error.overseas.property.day.empty                         = The date must include a day
+agent.error.overseas.property.month.empty                       = The date must include a month
+agent.error.overseas.property.start_date.maxStartDate           = The date the overseas property business started trading must be on or before {0}
+agent.error.overseas.property.start_date.minStartDate           = The date your client’s property business started trading must be on or after {0}
 
 ## Title pattern
-titlePattern.serviceName.govUk = {0} - Report your income and expenses quarterly - GOV.UK
-base.title.error               = Error: {0} - Report your income and expenses quarterly - GOV.UK
+titlePattern.serviceName.govUk                                  = {0} - Report your income and expenses quarterly - GOV.UK
+base.title.error                                                = Error: {0} - Report your income and expenses quarterly - GOV.UK
 

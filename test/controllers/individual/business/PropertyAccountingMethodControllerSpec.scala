@@ -170,11 +170,11 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
     "The back URL with Release Four enabled" when {
       "the user clicks the back url" should {
-        "redirect to the Property Commencement Date page" in {
+        "redirect to the Property Start Date page" in {
           enable(FeatureSwitch.switches.head)
           mockFetchAllFromSubscriptionDetails(bothIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
-            controllers.individual.business.routes.PropertyCommencementDateController.show().url
+            controllers.individual.business.routes.PropertyStartDateController.show().url
         }
       }
     }

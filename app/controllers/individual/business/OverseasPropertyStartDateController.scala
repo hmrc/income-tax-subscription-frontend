@@ -23,10 +23,10 @@ import config.featureswitch.FeatureSwitching
 import controllers.utils.IndividualAnswers._
 import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
-import forms.individual.business.OverseasPropertyCommencementDateForm
-import forms.individual.business.OverseasPropertyCommencementDateForm._
+import forms.individual.business.OverseasPropertyStartDateForm
+import forms.individual.business.OverseasPropertyStartDateForm._
 import javax.inject.{Inject, Singleton}
-import models.common.{IncomeSourceModel, OverseasPropertyCommencementDateModel}
+import models.common.{IncomeSourceModel, OverseasPropertyStartDateModel}
 import play.api.data.Form
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -39,18 +39,18 @@ import utilities.ImplicitDateFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyCommencementDateController @Inject()(val authService: AuthService,
-                                                           val subscriptionDetailsService: SubscriptionDetailsService,
-                                                           val languageUtils: LanguageUtils
+class OverseasPropertyStartDateController @Inject()(val authService: AuthService,
+                                                    val subscriptionDetailsService: SubscriptionDetailsService,
+                                                    val languageUtils: LanguageUtils
                                                           )(implicit val ec: ExecutionContext, appConfig: AppConfig,
                                                             mcc: MessagesControllerComponents)
   extends SignUpController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
 
-  def view(overseasPropertyCommencementDateForm: Form[OverseasPropertyCommencementDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
+  def view(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
-    views.html.individual.incometax.business.overseas_property_commencement_date(
-      overseasPropertyCommencementDateForm = overseasPropertyCommencementDateForm,
-      postAction = controllers.individual.business.routes.OverseasPropertyCommencementDateController.submit(editMode = isEditMode),
+    views.html.individual.incometax.business.overseas_property_start_date(
+      overseasPropertyStartDateForm = overseasPropertyStartDateForm,
+      postAction = controllers.individual.business.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode, incomeSourceModel)
     )
@@ -58,10 +58,10 @@ class OverseasPropertyCommencementDateController @Inject()(val authService: Auth
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optForeignPropertyCommencementDateAnswer and incomeSourceModelAnswer) {
-        case foreignPropertyCommencementDate ~ incomeSource =>
+      require(optOverseasPropertyStartDateAnswer and incomeSourceModelAnswer) {
+        case overseasPropertyStartDate ~ incomeSource =>
           Future.successful(Ok(view(
-            overseasPropertyCommencementDateForm = form.fill(foreignPropertyCommencementDate),
+            overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
             isEditMode = isEditMode,
             incomeSourceModel = incomeSource
           )))
@@ -74,10 +74,10 @@ class OverseasPropertyCommencementDateController @Inject()(val authService: Auth
         formWithErrors =>
           require(incomeSourceModelAnswer) {
             incomeSourceModel =>
-              Future.successful(BadRequest(view(overseasPropertyCommencementDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
+              Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
           },
         startDate =>
-          subscriptionDetailsService.saveOverseasPropertyCommencementDate(startDate) flatMap { _ =>
+          subscriptionDetailsService.saveOverseasPropertyStartDate(startDate) flatMap { _ =>
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             } else {
@@ -94,21 +94,19 @@ class OverseasPropertyCommencementDateController @Inject()(val authService: Auth
     } else {
       (incomeSourceModel.selfEmployment, incomeSourceModel.ukProperty) match {
         case (_, true) => controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-        case (true, false) => {
+        case (true, false) =>
           if (isEnabled(ReleaseFour)) appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
           else controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-        }
-        case _ => {
+        case _ =>
           if (isEnabled(PropertyNextTaxYear)) controllers.individual.business.routes.WhatYearToSignUpController.show().url
           else controllers.individual.incomesource.routes.IncomeSourceController.show().url
-        }
       }
     }
   }
 
 
-  def form(implicit request: Request[_]): Form[OverseasPropertyCommencementDateModel] = {
-    overseasPropertyCommencementDateForm(OverseasPropertyCommencementDateForm.overseasPropertyStartDate.toLongDate)
+  def form(implicit request: Request[_]): Form[OverseasPropertyStartDateModel] = {
+    overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate.toLongDate, OverseasPropertyStartDateForm.maxStartDate.toLongDate)
   }
 
 }

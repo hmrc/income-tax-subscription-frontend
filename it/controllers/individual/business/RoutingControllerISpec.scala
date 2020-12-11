@@ -33,7 +33,7 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
   "GET /report-quarterly/income-and-expenses/sign-up/business/routing" when {
 
     "the Subscription Details Connector returns all data" should {
-      "show the property commencement date page with UK property option selected" in {
+      "show the property start date page with UK property option selected" in {
         Given("I setup the Wiremock stubs")
 
         AuthStub.stubAuthSuccess()
@@ -45,13 +45,13 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
         val res = IncomeTaxSubscriptionFrontend.getRouting()
 
 
-        Then("Should return a SEE_OTHER with the property commencement date page")
+        Then("Should return a SEE_OTHER with the property start date page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(propertyCommencementDateURI)
+          redirectURI(propertyStartDateURI)
         )
       }
-      "show the overseas property commencement page with overseas property option selected" in {
+      "show the overseas property start page with overseas property option selected" in {
         Given("I setup the Wiremock stubs")
 
         enable(ForeignProperty)
@@ -64,10 +64,10 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
         val res = IncomeTaxSubscriptionFrontend.getRouting()
 
 
-        Then("Should return a SEE_OTHER with the overseas property commencement date page")
+        Then("Should return a SEE_OTHER with the overseas property start date page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(overseasPropertyCommencementDateURI)
+          redirectURI(overseasPropertyStartDateURI)
         )
       }
       "show the check your answers page with only self-employed option selected" in {

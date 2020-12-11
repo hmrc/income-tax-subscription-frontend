@@ -136,7 +136,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
           val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 
           status(goodRequest) mustBe Status.SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyCommencementDateController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyStartDateController.show().url)
 
           await(goodRequest)
           verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
@@ -193,7 +193,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
           TestPropertyAccountingMethodController.backUrl(
             incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
             isEditMode = false
-          ) mustBe controllers.agent.business.routes.PropertyCommencementDateController.show().url
+          ) mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
         }
       }
       "release four feature switch is not enabled" should {

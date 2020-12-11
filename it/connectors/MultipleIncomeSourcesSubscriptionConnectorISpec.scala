@@ -57,9 +57,9 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
       ))),
       accountingMethod = Some(Cash),
       incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
-      propertyCommencementDate = Some(PropertyCommencementDateModel(DateModel("6", "7", "2018"))),
+      propertyStartDate = Some(PropertyStartDateModel(DateModel("6", "7", "2018"))),
       propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
-      overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(DateModel("6", "8", "2018"))),
+      overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("6", "8", "2018"))),
       overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
     )
 

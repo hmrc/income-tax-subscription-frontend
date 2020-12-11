@@ -19,7 +19,8 @@ package controllers.agent
 import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.agent.IntegrationTestModels.{subscriptionData, testAccountingMethod, testAccountingMethodForeignProperty, testAccountingMethodProperty, testAccountingYearCurrent, testAccountingYearNext, testBusinessName, testForeignPropertyCommencementDate, testPropertyCommencementDate, testSummaryDataSelfEmploymentData}
+import helpers.agent.IntegrationTestModels.{subscriptionData, testAccountingMethod, testAccountingMethodForeignProperty,
+  testAccountingMethodProperty, testAccountingYearCurrent, testAccountingYearNext, testBusinessName, testOverseasPropertyStartDate, testPropertyStartDate, testSummaryDataSelfEmploymentData}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
@@ -27,6 +28,7 @@ import models.common.IncomeSourceModel
 import org.jsoup.Jsoup
 import play.api.http.Status._
 import play.api.libs.json.Json
+import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys
 
 class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitching {
@@ -251,7 +253,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
               subscriptionData(
                 incomeSource = Some(IncomeSourceModel(true, false, false)),
                 selectedTaxYear = Some(testAccountingYearNext),
-                propertyCommencementDate = Some(testPropertyCommencementDate),
+                propertyStartDate = Some(testPropertyStartDate),
                 accountingMethodProperty = Some(testAccountingMethodProperty)
               )
             )
@@ -282,7 +284,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
                 incomeSource = Some(IncomeSourceModel(true, false, false)),
-                propertyCommencementDate = Some(testPropertyCommencementDate),
+                propertyStartDate = Some(testPropertyStartDate),
                 accountingMethodProperty = Some(testAccountingMethodProperty)
               )
             )
@@ -306,7 +308,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user selected UK property and UK property journey has not been completed before" when {
         "when ReleaseFour is enabled" should {
-          s" redirect to ${controllers.agent.business.routes.PropertyCommencementDateController.show()}" in {
+          s" redirect to ${controllers.agent.business.routes.PropertyStartDateController.show()}" in {
             enable(ReleaseFour)
             val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
             Given("I setup the wiremock stubs")
@@ -314,7 +316,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
                 incomeSource = Some(IncomeSourceModel(false, true, false)),
-                overseasPropertyCommencementDate = Some(testForeignPropertyCommencementDate),
+                overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
                 overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
               )
             )
@@ -326,10 +328,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
-            Then(s"Should return $SEE_OTHER with a redirect location of property commencement date")
+            Then(s"Should return $SEE_OTHER with a redirect location of property start date")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(propertyCommencementDateURI)
+              redirectURI(propertyStartDateURI)
             )
           }
         }
@@ -365,7 +367,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user selected overseas property and overseas property journey has not been completed before" when {
         "when ReleaseFour is enabled" should {
-          s" redirect to ${controllers.agent.business.routes.OverseasPropertyCommencementDateController.show().url}" in {
+          s" redirect to ${controllers.agent.business.routes.OverseasPropertyStartDateController.show().url}" in {
             enable(ReleaseFour)
             val userInput: IncomeSourceModel = IncomeSourceModel(false, false, true)
             Given("I setup the wiremock stubs")
@@ -373,7 +375,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
                 incomeSource = Some(IncomeSourceModel(false, false, true)),
-                propertyCommencementDate = Some(testPropertyCommencementDate),
+                propertyStartDate = Some(testPropertyStartDate),
                 accountingMethodProperty = Some(testAccountingMethodProperty)
               )
             )
@@ -385,10 +387,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
-            Then(s"Should return $SEE_OTHER with a redirect location of overseas property commencement date")
+            Then(s"Should return $SEE_OTHER with a redirect location of overseas property start date")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(foreignPropertyCommencementDateURI)
+              redirectURI(overseasPropertyStartDateURI)
             )
           }
         }
@@ -405,7 +407,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(true, false, false)),
               selectedTaxYear = Some(testAccountingYearCurrent),
-              propertyCommencementDate = Some(testPropertyCommencementDate),
+              propertyStartDate = Some(testPropertyStartDate),
               accountingMethodProperty = Some(testAccountingMethodProperty)
             )
           )
@@ -435,7 +437,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(true, true, false)),
-              propertyCommencementDate = Some(testPropertyCommencementDate),
+              propertyStartDate = Some(testPropertyStartDate),
               accountingMethodProperty = Some(testAccountingMethodProperty)
             )
           )
@@ -464,7 +466,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(true, false, true)),
-              overseasPropertyCommencementDate = Some(testForeignPropertyCommencementDate),
+              overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
               overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
             )
           )
@@ -494,9 +496,9 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(true, true, true)),
-              propertyCommencementDate = Some(testPropertyCommencementDate),
+              propertyStartDate = Some(testPropertyStartDate),
               accountingMethodProperty = Some(testAccountingMethodProperty),
-              overseasPropertyCommencementDate = Some(testForeignPropertyCommencementDate),
+              overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
               overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
             )
           )
@@ -526,7 +528,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(false, true, false)),
-              propertyCommencementDate = Some(testPropertyCommencementDate),
+              propertyStartDate = Some(testPropertyStartDate),
               accountingMethodProperty = Some(testAccountingMethodProperty)
             )
           )
@@ -555,7 +557,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(false, false, true)),
-              overseasPropertyCommencementDate = Some(testForeignPropertyCommencementDate),
+              overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
               overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
             )
           )
@@ -584,9 +586,9 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(false, true, true)),
-              propertyCommencementDate = Some(testPropertyCommencementDate),
+              propertyStartDate = Some(testPropertyStartDate),
               accountingMethodProperty = Some(testAccountingMethodProperty),
-              overseasPropertyCommencementDate = Some(testForeignPropertyCommencementDate),
+              overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
               overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
             )
           )
@@ -767,11 +769,11 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         Then(s"Should return $INTERNAL_SERVER_ERROR with an internal server error page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(foreignPropertyCommencementDateURI)
+          redirectURI(overseasPropertyStartDateURI)
         )
       }
 
-      "the user has a UK property and has a foreign property" in {
+      "the user has a UK property and has a overseas property" in {
         enable(ForeignProperty)
         val userInput: IncomeSourceModel = IncomeSourceModel(false, true, true)
         Given("I setup the wiremock stubs")
@@ -789,7 +791,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         )
       }
 
-      "the user is self-employed and has a UK property and a foreign property" in {
+      "the user is self-employed and has a UK property and a overseas property" in {
         enable(ForeignProperty)
         val userInput: IncomeSourceModel = IncomeSourceModel(true, true, true)
         Given("I setup the wiremock stubs")
@@ -879,10 +881,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-        Then(s"Should return $SEE_OTHER with a redirect location of UK property commencement date page")
+        Then(s"Should return $SEE_OTHER with a redirect location of UK property start date page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(propertyCommencementDateURI)
+          redirectURI(propertyStartDateURI)
         )
       }
     }
@@ -979,10 +981,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-        Then(s"Should return $SEE_OTHER with a redirect location of UK property commencement date page")
+        Then(s"Should return $SEE_OTHER with a redirect location of UK property start date page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(propertyCommencementDateURI)
+          redirectURI(propertyStartDateURI)
         )
       }
 
@@ -998,10 +1000,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-        Then(s"Should return $SEE_OTHER with a redirect location of UK property commencement date page")
+        Then(s"Should return $SEE_OTHER with a redirect location of UK property start date page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(propertyCommencementDateURI)
+          redirectURI(propertyStartDateURI)
         )
       }
 
@@ -1020,7 +1022,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         Then(s"Should return $INTERNAL_SERVER_ERROR with an internal server error")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(foreignPropertyCommencementDateURI)
+          redirectURI(overseasPropertyStartDateURI)
         )
       }
     }

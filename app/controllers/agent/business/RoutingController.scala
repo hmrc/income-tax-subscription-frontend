@@ -38,9 +38,9 @@ class RoutingController @Inject()(val authService: AuthService, subscriptionDeta
       } else {
         subscriptionDetailsService.fetchIncomeSource() map {
           case Some(IncomeSourceModel(_, true, _)) =>
-            Redirect(routes.PropertyCommencementDateController.show())
+            Redirect(routes.PropertyStartDateController.show())
           case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
-            Redirect(routes.OverseasPropertyCommencementDateController.show())
+            Redirect(routes.OverseasPropertyStartDateController.show())
           case _ =>
             Redirect(controllers.agent.routes.CheckYourAnswersController.show())
         }

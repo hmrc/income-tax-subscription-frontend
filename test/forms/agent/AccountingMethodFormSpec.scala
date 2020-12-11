@@ -22,10 +22,11 @@ import forms.validation.testutils._
 import models.Cash
 import models.common.business.AccountingMethodModel
 import org.scalatest.Matchers._
+import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.data.FormError
 
-class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
+class AccountingMethodFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
   import forms.agent.AccountingMethodForm._
 

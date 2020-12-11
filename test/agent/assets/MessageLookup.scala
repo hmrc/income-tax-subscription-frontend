@@ -208,8 +208,8 @@ object MessageLookup {
     val income_type = "Accounting method for their self-employed business"
     val income_type_property = "Accounting method for their property business"
     val match_tax_year = "Accounting period matches tax year"
-    val propertyCommencementDate = "Trading start for UK property"
-    val overseasPropertyCommencementDate = "Trading start for foreign property"
+    val propertyStartDate = "Trading start for UK property"
+    val overseasPropertyStartDate = "Trading start for foreign property"
     val income_type_overseas_property = "Accounting method for foreign property income"
 
     object AccountingMethod {
@@ -277,7 +277,7 @@ object MessageLookup {
     object whatNext {
       val heading = "What you need to do next"
       val para1 = "Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other."
-      val para1linkText = "find software thats compatible with Making Tax Digital for Income Tax (opens in new tab)"
+      val para1linkText = "find software that’s compatible with Making Tax Digital for Income Tax (opens in new tab)"
       val number1 = s"If you have not already, $para1linkText and allow it interact with HMRC."
       val nextTaxYearNumber2LinkText = "Business Tax account"
       val nextTaxYearNumber2 = s"Log in to your $nextTaxYearNumber2LinkText to find out when your first update is due."

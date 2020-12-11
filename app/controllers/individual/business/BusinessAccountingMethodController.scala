@@ -70,7 +70,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
                 case Some(IncomeSourceModel(_, true, _)) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty)  =>
-                  Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+                  Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
               }

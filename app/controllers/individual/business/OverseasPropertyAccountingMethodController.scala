@@ -73,7 +73,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val authService: Auth
     if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
-      controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url
+      controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
     }
 
   }

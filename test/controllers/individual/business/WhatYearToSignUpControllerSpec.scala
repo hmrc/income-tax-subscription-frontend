@@ -131,27 +131,27 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
-      "redirect to Property commencement date page when only UK property is selected" in {
+      "redirect to Property start date page when only UK property is selected" in {
         enable(ReleaseFour)
         mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(false, true, false)))
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyStartDateController.show().url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
-      "redirect to Property commencement date page when only Overseas property is selected" in {
+      "redirect to Property start date page when only Overseas property is selected" in {
         enable(ReleaseFour)
         mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(false, false, true)))
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyStartDateController.show().url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)

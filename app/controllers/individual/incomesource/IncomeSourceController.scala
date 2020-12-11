@@ -86,9 +86,9 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
             case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true, ignoreSelectedTaxYear = true) =>
               Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
             case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(true) =>
-              Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+              Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
             case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
-              Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+              Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
             case _ =>
               Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
           }
@@ -104,9 +104,9 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true, ignoreSelectedTaxYear = true) =>
             Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
           case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(true) =>
-            Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+            Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
           case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
-            Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+            Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
           case _ =>
             Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
         }
@@ -151,11 +151,11 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           else Redirect(controllers.individual.business.routes.BusinessNameController.show())
         case IncomeSourceModel(false, true, _) =>
           if (isEnabled(ReleaseFour) && isEnabled(PropertyNextTaxYear)) Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
-          else if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyCommencementDateController.show())
+          else if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
           else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
         case IncomeSourceModel(false, _, true) =>
           if (isEnabled(PropertyNextTaxYear)) Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
-          else Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+          else Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
         case _ =>
           Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
       }

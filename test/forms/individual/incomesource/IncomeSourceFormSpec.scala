@@ -21,9 +21,10 @@ import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.common.IncomeSourceModel
 import org.scalatest.Matchers._
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerTest
 
-class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
+class IncomeSourceFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
   "The IncomeSource Form" should {
     "transform the request to the form case class when both checked values are bound to income source" in {

@@ -41,7 +41,7 @@ class SummaryModelSpec extends UnitSpec {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
           selectedTaxYear = Some(AccountingYearModel(Next)),
-          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          propertyStartDate = Some(PropertyStartDateModel(date)),
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash))
         )
 
@@ -49,7 +49,7 @@ class SummaryModelSpec extends UnitSpec {
           nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
           accountingPeriod = getNextTaxYear,
-          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          propertyStartDate = Some(PropertyStartDateModel(date)),
           propertyAccountingMethod = Some(AccountingMethodPropertyModel(Cash))
         )
 
@@ -97,7 +97,7 @@ class SummaryModelSpec extends UnitSpec {
       "provided with a valid set of data for uk property" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          propertyStartDate = Some(PropertyStartDateModel(date)),
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash))
         )
 
@@ -105,7 +105,7 @@ class SummaryModelSpec extends UnitSpec {
           nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
           accountingPeriod = getCurrentTaxYear,
-          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          propertyStartDate = Some(PropertyStartDateModel(date)),
           propertyAccountingMethod = Some(AccountingMethodPropertyModel(Cash))
         )
 
@@ -115,7 +115,7 @@ class SummaryModelSpec extends UnitSpec {
       "provided with a valid set of data for foreign property" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-          overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
+          overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(date)),
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
@@ -123,7 +123,7 @@ class SummaryModelSpec extends UnitSpec {
           nino = testNino,
           incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true),
           accountingPeriod = getCurrentTaxYear,
-          overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
+          overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(date)),
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
@@ -135,9 +135,9 @@ class SummaryModelSpec extends UnitSpec {
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
           selfEmployments = Some(Seq(completeSeModel)),
           accountingMethod = Some(AccountingMethodModel(Cash)),
-          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          propertyStartDate = Some(PropertyStartDateModel(date)),
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash)),
-          overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
+          overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(date)),
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
@@ -147,9 +147,9 @@ class SummaryModelSpec extends UnitSpec {
           accountingPeriod = getCurrentTaxYear,
           selfEmploymentsData = Some(Seq(completeSeModel)),
           accountingMethod = Some(Cash),
-          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          propertyStartDate = Some(PropertyStartDateModel(date)),
           propertyAccountingMethod = Some(AccountingMethodPropertyModel(Cash)),
-          overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
+          overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(date)),
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
         )
 
@@ -161,9 +161,9 @@ class SummaryModelSpec extends UnitSpec {
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = false)),
           selfEmployments = Some(Seq(completeSeModel)),
           accountingMethod = Some(AccountingMethodModel(Cash)),
-          propertyCommencementDate = Some(PropertyCommencementDateModel(date)),
+          propertyStartDate = Some(PropertyStartDateModel(date)),
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash)),
-          overseasPropertyCommencementDate = Some(OverseasPropertyCommencementDateModel(date)),
+          overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(date)),
           overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash)),
           selectedTaxYear = Some(AccountingYearModel(Current))
         )

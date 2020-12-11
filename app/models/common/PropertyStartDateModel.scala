@@ -19,8 +19,8 @@ package models.common
 import models.DateModel
 import play.api.libs.json.{Json, OFormat}
 
-case class PropertyCommencementDateModel(startDate: DateModel)
+case class PropertyStartDateModel(startDate: DateModel)
 
-object PropertyCommencementDateModel {
-  implicit val format: OFormat[PropertyCommencementDateModel] = Json.format[PropertyCommencementDateModel]
+object PropertyStartDateModel {
+  implicit val format: OFormat[PropertyStartDateModel] = Json.format[PropertyStartDateModel]
 }

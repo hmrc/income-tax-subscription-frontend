@@ -16,9 +16,8 @@
 
 @import play.api.data.Form
 @import play.api.data.Field
-@import forms.submapping.DateMapping._
+@import forms.formatters.DateModelMapping._
 @import views.html.helpers._
-@import play.twirl.api.HtmlFormat
 
 @(field: Field,
         label: Option[String] = None,
@@ -26,11 +25,13 @@
         parentForm: Form[_]
 )(implicit messages: Messages)
 
-@hasError = @{ parentForm.errors(field.name).nonEmpty }
+@dateErrors = @{
+    parentForm.errors(field.name) ++ parentForm.errors(s"${field.name}.$day") ++ parentForm.errors(s"${field.name}.$month") ++ parentForm.errors(s"${field.name}.$year")
+}
 
-@errorNotification = @{
-    field.error.map { error =>
-        <span class="error-notification bold" id="error-message-@field.name">{messages(error.message, error.args: _*)}</span>
+@errorNotification = {
+    @dateErrors.headOption.map { error =>
+        <span class="error-notification" id="error-message-@{error.key}">@{messages(error.message, error.args: _*)}</span>
     }
 }
 
@@ -42,13 +43,12 @@
     }
 }
 
-<div class="form-group form-field@if(hasError) { form-field--error}">
+<div class="form-group form-field@if(dateErrors.nonEmpty) { form-field--error}">
     @if(hintText.isDefined) {
         <fieldset id="@field.name" aria-describedby="date-helper-hint">
     } else {
         <fieldset id="@field.name">
     }
-
         <legend>
             <span class="form-label-bold">@label</span>
             @hintText.map(hint => Html(s"""<span id="date-helper-hint" class="form-hint">$hint</span>"""))
@@ -56,28 +56,31 @@
         </legend>
             <div class="form-date">
                 @inputHelper(
-                    field(dateDay),
+                    field(day),
                     parentForm = parentForm,
                     label = Some(Messages("base.day")),
                     divClass = Some(ifNotWelsh("form-group-day")),
                     maxLength = Some(2),
-                    isNumeric = true
+                    isNumeric = true,
+                    showErrors = false
                 )
                 @inputHelper(
-                    field(dateMonth),
+                    field(month),
                     parentForm = parentForm,
                     label = Some(Messages("base.month")),
                     divClass = Some(ifNotWelsh("form-group-month")),
                     maxLength = Some(2),
-                    isNumeric = true
+                    isNumeric = true,
+                    showErrors = false
                 )
                 @inputHelper(
-                    field(dateYear),
+                    field(year),
                     parentForm = parentForm,
                     label = Some(Messages("base.year")),
                     divClass = Some("form-group-year"),
                     maxLength = Some(4),
-                    isNumeric = true
+                    isNumeric = true,
+                    showErrors = false
                 )
             </div>
     </fieldset>

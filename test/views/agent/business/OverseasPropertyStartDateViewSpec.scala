@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package views.individual.incometax.business
+package views.agent.business
 
-import forms.individual.business.PropertyCommencementDateForm
-import models.common.PropertyCommencementDateModel
+import forms.individual.business.OverseasPropertyStartDateForm
+import models.common.OverseasPropertyStartDateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
@@ -26,71 +26,66 @@ import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 
+class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
-class UkPropertyCommencementDateViewSpec extends ViewSpec  {
-
-  object PropertyCommencementDateMessages {
-    val title = "When did your UK property business start trading?"
-    val heading: String = title
+  object OverseasPropertyStartDateMessages {
+    val heading = "When did your client’s foreign property business start trading?"
+    val para = "This is the date that letting or renting out any foreign property first started."
     val exampleStartDate = "For example, 1 8 2014"
     val continue = "Continue"
     val backLink = "Back"
-    val update = "Update"
   }
-
 
   val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
   val testError: FormError = FormError("startDate", "testError")
+  val titleSuffix = " - Report your income and expenses quarterly - GOV.UK"
 
-  class Setup(isEditMode: Boolean = false,
-              propertyCommencementDateForm: Form[PropertyCommencementDateModel] = PropertyCommencementDateForm.propertyCommencementDateForm("testMessage")) {
-    val page: HtmlFormat.Appendable = views.html.individual.incometax.business.property_commencement_date(
-      propertyCommencementDateForm,
-      testCall,
+  class Setup(isEditMode: Boolean = false, overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel] =
+  OverseasPropertyStartDateForm.overseasPropertyStartDateForm("minStartDateError", "maxStartDateError")) {
+
+    val page: HtmlFormat.Appendable = views.html.agent.business.overseas_property_start_date(
+      overseasPropertyStartDateForm,
+      action,
       isEditMode,
-      testBackUrl
+      backUrl
     )(FakeRequest(), implicitly, appConfig)
 
     val document: Document = Jsoup.parse(page.body)
   }
 
-
-  "UK property business start" must {
-
+  "Overseas Start Date page" must {
     "have a title" in new Setup {
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
-      document.title mustBe PropertyCommencementDateMessages.title + serviceNameGovUk
+      document.title mustBe OverseasPropertyStartDateMessages.heading + titleSuffix
     }
+
     "have a heading" in new Setup {
-      document.getH1Element.text mustBe PropertyCommencementDateMessages.heading
+      document.getH1Element.text mustBe OverseasPropertyStartDateMessages.heading
     }
+
     "have a Form" in new Setup {
       document.getForm.attr("method") mustBe testCall.method
       document.getForm.attr("action") mustBe testCall.url
     }
+
     "have a fieldset with dateInputs" in new Setup {
-      document.mustHaveDateField("startDate", "", PropertyCommencementDateMessages.exampleStartDate)
+      document.mustHaveDateField("startDate", "", OverseasPropertyStartDateMessages.exampleStartDate)
     }
+
     "have a continue button when not in edit mode" in new Setup {
-      document.getSubmitButton.text mustBe PropertyCommencementDateMessages.continue
+      document.getSubmitButton.text mustBe OverseasPropertyStartDateMessages.continue
     }
-    "have update button when in edit mode" in new Setup(true) {
-      document.getSubmitButton.text mustBe PropertyCommencementDateMessages.update
-    }
+
     "have a backlink " in new Setup {
-      document.getBackLink.text mustBe PropertyCommencementDateMessages.backLink
+      document.getBackLink.text mustBe OverseasPropertyStartDateMessages.backLink
       document.getBackLink.attr("href") mustBe testBackUrl
     }
-    "must display form error on page" in new Setup(false, PropertyCommencementDateForm.propertyCommencementDateForm("testMessage").withError(testError)) {
+
+    "must display form error on page" in new Setup(false, OverseasPropertyStartDateForm.overseasPropertyStartDateForm(
+      "minStartDateError", "maxStartDateError").withError(testError)) {
       document.mustHaveErrorSummary(List[String](testError.message))
-      document.mustHaveDateField("startDate", "", PropertyCommencementDateMessages.exampleStartDate, Some(testError.message))
+      document.mustHaveDateField("startDate", "", OverseasPropertyStartDateMessages.exampleStartDate, Some(testError.message))
     }
-
   }
-
-
-
-
 }

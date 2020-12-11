@@ -21,11 +21,12 @@ import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Cash
 import org.scalatest.Matchers._
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatestplus.play.PlaySpec
 import play.api.data.FormError
 import models.common.OverseasAccountingMethodPropertyModel
+import org.scalatestplus.play.guice.GuiceOneAppPerTest
 
-class AccountingMethodOverseasFormSpec extends PlaySpec with OneAppPerTest {
+class AccountingMethodOverseasFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
   import forms.agent.AccountingMethodOverseasPropertyForm._
 

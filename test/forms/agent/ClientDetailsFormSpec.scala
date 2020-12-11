@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import forms.submapping.DateMapping._
+import forms.formatters.DateModelMapping._
 import forms.validation.testutils._
 import models.DateModel
 import models.usermatching.UserDetailsModel
@@ -40,9 +40,9 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
                     dob: DateModel = dob
                    ): Map[String, String] = {
     Map(
-      clientDateOfBirth * dateDay -> dob.day,
-      clientDateOfBirth * dateMonth -> dob.month,
-      clientDateOfBirth * dateYear -> dob.year,
+      clientDateOfBirth * day -> dob.day,
+      clientDateOfBirth * month -> dob.month,
+      clientDateOfBirth * year -> dob.year,
       clientFirstName -> fname,
       clientNino -> nino,
       clientLastName -> lname

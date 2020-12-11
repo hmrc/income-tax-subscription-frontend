@@ -30,10 +30,10 @@ object SubscriptionDataKeys {
   val OverseasPropertyAccountingMethod = "OverseasPropertyAccountingMethod"
   val MtditId = "MtditId"
   val PaperlessPreferenceToken = "PaperlessPreferenceKey"
-  val PropertyCommencementDate = "PropertyStartDate"
+  val PropertyStartDate = "PropertyStartDate"
   val SelfEmployments = "SelfEmployments"
   val BusinessAccountingMethod = "BusinessAccountingMethod"
-  val OverseasPropertyCommencementDate = "OverseasPropertyStartDate"
+  val OverseasPropertyStartDate = "OverseasPropertyStartDate"
 
   val subscriptionId = "subscriptionId"
 

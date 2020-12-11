@@ -157,10 +157,10 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec 
 
     "The back url is not in edit mode" when {
       "the user has foreign property and it is the only income source" should {
-        "redirect to overseas property commencement date page" in {
+        "redirect to overseas property start date page" in {
           mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
           TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
-            controllers.individual.business.routes.OverseasPropertyCommencementDateController.show().url
+            controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
         }
       }
 

@@ -87,7 +87,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
             } else {
               subscriptionDetailsService.fetchIncomeSource() map {
                 case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
-                  Redirect(controllers.individual.business.routes.OverseasPropertyCommencementDateController.show())
+                  Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
               }
@@ -101,7 +101,7 @@ class PropertyAccountingMethodController @Inject()(val authService: AuthService,
     if (isEditMode) {
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     } else if (isEnabled(ReleaseFour)) {
-      Future.successful(controllers.individual.business.routes.PropertyCommencementDateController.show().url)
+      Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
     } else {
       subscriptionDetailsService.fetchAll() map { cacheMap =>
         cacheMap.getIncomeSource match {

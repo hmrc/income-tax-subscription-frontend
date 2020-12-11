@@ -18,7 +18,7 @@ package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import models.common.{PropertyCommencementDateModel, _}
+import models.common.{PropertyStartDateModel, _}
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -99,9 +99,9 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     mockFetchFromSubscriptionDetails[AccountingMethodPropertyModel](OverseasPropertyAccountingMethod, fetchForeignPropertyAccountingMethod)
   }
 
-  protected final def mockFetchPropertyCommencementDateFromSubscriptionDetails(fetchPropertyCommencementDateMethod:
-                                                                               Option[PropertyCommencementDateModel]): Unit = {
-    mockFetchFromSubscriptionDetails[PropertyCommencementDateModel](PropertyCommencementDate, fetchPropertyCommencementDateMethod)
+  protected final def mockFetchPropertyStartDateFromSubscriptionDetails(fetchPropertyStartDateMethod:
+                                                                               Option[PropertyStartDateModel]): Unit = {
+    mockFetchFromSubscriptionDetails[PropertyStartDateModel](PropertyStartDate, fetchPropertyStartDateMethod)
   }
 
   protected final def mockFetchSubscriptionIdFromSubscriptionDetails(fetchSubscriptionId: Option[String]): Unit = {

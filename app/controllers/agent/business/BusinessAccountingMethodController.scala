@@ -72,11 +72,11 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
               if (isEditMode || !incomeSourceModel.ukProperty && !incomeSourceModel.foreignProperty) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show())
               } else if (isEnabled(ReleaseFour) && incomeSourceModel.ukProperty) {
-                Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
+                Redirect(controllers.agent.business.routes.PropertyStartDateController.show())
               } else if (incomeSourceModel.ukProperty) {
                 Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
               } else {
-                Redirect(controllers.agent.business.routes.OverseasPropertyCommencementDateController.show())
+                Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
               }
             }
           }

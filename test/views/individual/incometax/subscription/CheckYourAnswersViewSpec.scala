@@ -52,8 +52,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
   val testOverseasAccountingPropertyModel: OverseasAccountingMethodPropertyModel = TestModels.testOverseasAccountingMethodProperty
   val testIncomeSourceBoth: IncomeSourceModel = TestModels.testIncomeSourceBoth
-  val testPropertyCommencement: PropertyCommencementDateModel = TestModels.testPropertyCommencementDateModel
-  val testOverseasPropertyCommencement: OverseasPropertyCommencementDateModel = TestModels.testOverseasPropertyCommencementDateModel
+  val testPropertyStart: PropertyStartDateModel = TestModels.testPropertyStartDateModel
+  val testOverseasPropertyStart: OverseasPropertyStartDateModel = TestModels.testOverseasPropertyStartDateModel
   val testSummary: IndividualSummary = customTestSummary()
   val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
@@ -62,9 +62,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
                         selfEmployments: Option[Seq[SelfEmploymentData]] = Some(testSelfEmployments),
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
-                        propertyCommencementDate: Option[PropertyCommencementDateModel] = testPropertyCommencement,
+                        propertyStartDate: Option[PropertyStartDateModel] = testPropertyStart,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                        overseasPropertyCommencementDate: Option[OverseasPropertyCommencementDateModel] = testOverseasPropertyCommencement,
+                        overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = testOverseasPropertyStart,
                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = testOverseasAccountingPropertyModel
 
                        ): IndividualSummary = IndividualSummary(
@@ -74,9 +74,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = accountingMethodProperty,
-    propertyCommencementDate = testPropertyCommencement,
+    propertyStartDate = testPropertyStart,
     overseasAccountingMethodProperty = overseasAccountingMethodProperty,
-    overseasPropertyCommencementDate = overseasPropertyCommencementDate
+    overseasPropertyStartDate = overseasPropertyStartDate
   )
 
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
@@ -349,33 +349,33 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       }
 
 
-      "display the correct info for the Property Commencement Date" in {
-        val sectionId = PropertyCommencementId
-        val expectedQuestion = messages.propertyCommencement
-        val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
-        val expectedEditLink = controllers.individual.business.routes.PropertyCommencementDateController.show(editMode = true).url
+      "display the correct info for the Property Start Date" in {
+        val sectionId = PropertyStartId
+        val expectedQuestion = messages.propertyStart
+        val expectedAnswer = testPropertyStart.startDate.toLocalDate.toLongDate
+        val expectedEditLink = controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
-          testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
+          testSummaryModel = customTestSummary(propertyStartDate = testPropertyStart)
         )
       }
 
-      "display the correct info for the Foreign Property Business Commencement" in {
-        val sectionId = ForeignPropertyCommencementId
-        val expectedQuestion = messages.foreignPropertyCommencement
-        val expectedAnswer = testPropertyCommencement.startDate.toLocalDate.toLongDate
-        val expectedEditLink = controllers.individual.business.routes.OverseasPropertyCommencementDateController.show(editMode = true).url
+      "display the correct info for the Overseas Property Business Start" in {
+        val sectionId = OverseasPropertyStartId
+        val expectedQuestion = messages.overseasPropertyStartDate
+        val expectedAnswer = testPropertyStart.startDate.toLocalDate.toLongDate
+        val expectedEditLink = controllers.individual.business.routes.OverseasPropertyStartDateController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
-          testSummaryModel = customTestSummary(propertyCommencementDate = testPropertyCommencement)
+          testSummaryModel = customTestSummary(propertyStartDate = testPropertyStart)
         )
       }
 

@@ -14,53 +14,44 @@
  * limitations under the License.
  */
 
-package controllers.agent.business
+package controllers.individual.business
 
 import java.time.LocalDate
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-import controllers.agent.AgentControllerBaseSpec
-import controllers.agent.business.PropertyCommencementDateController
-import forms.agent.PropertyCommencementDateForm
+import forms.individual.business.PropertyStartDateForm
 import models.DateModel
-import models.common.{IncomeSourceModel, PropertyCommencementDateModel}
+import models.common.{IncomeSourceModel, PropertyStartDateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.PropertyCommencementDate
+import utilities.SubscriptionDataKeys.PropertyStartDate
 import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceProperty}
 
 import scala.concurrent.Future
 
-class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec with MockSubscriptionDetailsService with FeatureSwitching {
+class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
 
-  override val controllerName: String = "PropertyCommencementDateController"
+  override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestPropertyCommencementDateController.show(isEditMode = false),
-    "submit" -> TestPropertyCommencementDateController.submit(isEditMode = false)
+    "show" -> TestPropertyStartDateController$.show(isEditMode = false),
+    "submit" -> TestPropertyStartDateController$.submit(isEditMode = false)
   )
 
-  object TestPropertyCommencementDateController extends PropertyCommencementDateController(
+  object TestPropertyStartDateController$ extends PropertyStartDateController(
     mockAuthService,
     MockSubscriptionDetailsService,
     mockLanguageUtils
   )
 
   trait Test {
-    val controller = new PropertyCommencementDateController(
+    val controller = new PropertyStartDateController(
       mockAuthService,
       MockSubscriptionDetailsService,
       mockLanguageUtils
     )
-  }
-
-  override def beforeEach(): Unit = {
-    disable(ReleaseFour)
-    super.beforeEach()
   }
 
   val incomeSourcePropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true,
@@ -83,6 +74,7 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
       ))
 
       status(result) must be(Status.OK)
+      verifySubscriptionDetailsSave(PropertyStartDate, 0)
       verifySubscriptionDetailsFetchAll(1)
 
     }
@@ -90,40 +82,41 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
 
   "submit" should {
 
-    val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-    val testPropertyCommencementDateModel: PropertyCommencementDateModel = PropertyCommencementDateModel(testValidStartDate)
+    val testValidMaxDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
+    val testValidMinDate: DateModel = DateModel.dateConvert(LocalDate.of(1900,1,1))
 
-    def callSubmit(isEditMode: Boolean): Future[Result] = TestPropertyCommencementDateController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(PropertyCommencementDateForm.propertyCommencementDateForm(testValidStartDate.toString), testPropertyCommencementDateModel)
+    val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(testValidMaxDate)
+
+    def callShow(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController$.submit(isEditMode = isEditMode)(
+      subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(testValidMinDate.toString, testValidMaxDate.toString), testPropertyStartDateModel)
     )
 
-    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyCommencementDateController.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController$.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockSubscriptionDetailsSaveFunctions()
-        val goodRequest = callSubmit(isEditMode = false)
+        val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
+        verifySubscriptionDetailsSave(PropertyStartDate, 1)
         verifySubscriptionDetailsFetchAll(1)
-        verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
-
       }
 
       "redirect to businessAccountingMethod page" in {
         setupMockSubscriptionDetailsSaveFunctions()
 
-        val goodRequest = callSubmit(isEditMode = false)
+        val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
         await(goodRequest)
+        verifySubscriptionDetailsSave(PropertyStartDate, 1)
         verifySubscriptionDetailsFetchAll(1)
-        verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
       }
 
     }
@@ -132,27 +125,25 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockSubscriptionDetailsSaveFunctions()
 
-        val goodRequest = callSubmit(isEditMode = true)
+        val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
+        verifySubscriptionDetailsSave(PropertyStartDate, 1)
         verifySubscriptionDetailsFetchAll(1)
-        verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
-
       }
 
       "redirect to checkYourAnswer page" in {
         setupMockSubscriptionDetailsSaveFunctions()
 
-        val goodRequest = callSubmit(isEditMode = true)
+        val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
+        verifySubscriptionDetailsSave(PropertyStartDate, 1)
         verifySubscriptionDetailsFetchAll(1)
-        verifySubscriptionDetailsSave(PropertyCommencementDate, 1)
-
 
       }
     }
@@ -162,49 +153,40 @@ class PropertyCommencementDateControllerSpec  extends AgentControllerBaseSpec wi
 
         mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
-        val badRequest = callSubmitWithErrorForm(isEditMode = false)
+        val badRequest = callShowWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
+        verifySubscriptionDetailsSave(PropertyStartDate, 0)
         verifySubscriptionDetailsFetchAll(1)
       }
     }
 
     "The back url is not in edit mode" when {
       "the user has rental property and it is the only income source" should {
-        "redirect to income source page when FS ReleaseFour is not enabled" in new Test {
+        "redirect to income source page" in new Test {
           controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
-            controllers.agent.routes.IncomeSourceController.show().url
-        }
-
-        "redirect to income source page when FS ReleaseFour is enabled" in new Test {
-          enable(ReleaseFour)
-          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
-            controllers.agent.routes.IncomeSourceController.show().url
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }
       }
 
       "the user has rental property and has a business" should {
-        "redirect to income source page when FS ReleaseFour is not enabled" in new Test {
+        "redirect to business accounting method page" in new Test {
           controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
-            controllers.agent.routes.IncomeSourceController.show().url
-        }
-        "redirect to Business Accounting Method page when FS ReleaseFour is enabled" in new Test {
-          enable(ReleaseFour)
-          controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
-            controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+            appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
         }
       }
-    }
 
+    }
     "The back url is in edit mode" when {
       "the user click back url" should {
         "redirect to check your answer page" in new Test {
           controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
-            controllers.agent.routes.CheckYourAnswersController.show().url
+            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
         }
       }
     }
   }
+
 }

@@ -78,9 +78,9 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
                   if (isEnabled(ReleaseFour)) Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
                   else Redirect(controllers.agent.business.routes.BusinessNameController.show())
                 case Some(IncomeSourceModel(_, true, _)) =>
-                  Redirect(controllers.agent.business.routes.PropertyCommencementDateController.show())
+                  Redirect(controllers.agent.business.routes.PropertyStartDateController.show())
                 case Some(IncomeSourceModel(_, _, true)) =>
-                  Redirect(controllers.agent.business.routes.OverseasPropertyCommencementDateController.show())
+                  Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
               }
             }
           }

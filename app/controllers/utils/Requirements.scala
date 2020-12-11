@@ -84,12 +84,12 @@ object OptionalAnswers {
     retrieveAnswer = _.getAccountingMethod
   )
 
-  val optPropertyCommencementDateAnswer: Answer[Option[PropertyCommencementDateModel]] = OptionalAnswer(
-    retrieveAnswer = _.getPropertyCommencementDate
+  val optPropertyStartDateAnswer: Answer[Option[PropertyStartDateModel]] = OptionalAnswer(
+    retrieveAnswer = _.getPropertyStartDate
   )
 
-  val optForeignPropertyCommencementDateAnswer: Answer[Option[OverseasPropertyCommencementDateModel]] = OptionalAnswer(
-    retrieveAnswer = _.getOverseasPropertyCommencementDate
+  val optOverseasPropertyStartDateAnswer: Answer[Option[OverseasPropertyStartDateModel]] = OptionalAnswer(
+    retrieveAnswer = _.getOverseasPropertyStartDate
   )
 
 }

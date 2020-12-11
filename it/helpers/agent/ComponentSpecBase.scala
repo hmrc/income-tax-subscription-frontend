@@ -1,6 +1,7 @@
 
 package helpers.agent
 
+import java.time.LocalDate
 import java.util.UUID
 
 import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
@@ -17,7 +18,7 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
-import models.YesNo
+import models.{DateModel, YesNo}
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
@@ -290,6 +291,20 @@ trait ComponentSpecBase extends UnitSpec
     def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
 
     def businessName(): WSResponse = get("/business/name")
+
+    def overseasPropertyStartDate(): WSResponse = get("/business/overseas-commencement-date")
+
+    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[OverseasPropertyStartDateModel]): WSResponse = {
+      val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
+      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900,1,1)).toString
+      val uri = s"/business/overseas-commencement-date?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate,testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
 
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
