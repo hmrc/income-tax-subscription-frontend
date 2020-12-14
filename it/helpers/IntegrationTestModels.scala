@@ -26,6 +26,7 @@ object IntegrationTestModels {
   def newNino: String = new Generator().nextNino.nino
 
   val testStartDate: DateModel = DateModel.dateConvert(LocalDate.now)
+  val testOneDayAgo: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(1))
   val testEndDate: DateModel = DateModel.dateConvert(LocalDate.now.plusYears(1).plusDays(-1))
   val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1).plusDays(-1)
   val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
@@ -132,7 +133,7 @@ object IntegrationTestModels {
 
   lazy val testIncomeSourceIndivProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
-  lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
+  lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testOneDayAgo)
 
   lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMtdId)
 

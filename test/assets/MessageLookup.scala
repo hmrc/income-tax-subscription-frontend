@@ -274,21 +274,20 @@ object MessageLookup {
   }
 
   object UserDetails {
-    val title = "Enter your details"
-    val heading = "Enter your details"
-    val line1 = "We will attempt to match these details against information we currently hold."
+    val title = "Confirm your details"
+    val heading = "Confirm your details"
+    val line1 = "We will check these details with information we currently have."
     val field1 = "First name"
     val field2 = "Last name"
     val field3 = "National Insurance number"
     val field4 = "Date of birth"
-    val formhint1_line1 = "For example, ‘QQ 12 34 56 C’."
+    val formhint1_line1 = "It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’."
     val formhint2 = "For example, 10 12 1990"
   }
 
   object ConfirmUser {
-    val title = "Confirm your details"
+    val title = "Check your answers"
     val heading = "Check your answers"
-    val heading_hidden = "before looking up your details"
     val firstName = "First name"
     val lastName = "Last name"
     val nino = "National Insurance number"

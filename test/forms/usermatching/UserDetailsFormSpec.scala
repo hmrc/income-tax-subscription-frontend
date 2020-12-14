@@ -16,6 +16,8 @@
 
 package forms.usermatching
 
+import java.time.LocalDate
+
 import forms.formatters.DateModelMapping._
 import forms.validation.testutils._
 import models.DateModel
@@ -131,51 +133,101 @@ class UserDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the DoB" should {
 
         "error if no DoB is supplied" in {
-          val errors = "error.dob_date.empty"
+          val errors = "error.user_details.date_of_birth.date.empty"
 
           val testInput = setupTestData(dob = DateModel("", "", ""))
-          userDetailsForm.bind(testInput).errors must contain(FormError(userDateOfBirth, errors))
+          userDetailsForm.bind(testInput).errors must contain(FormError(s"$userDateOfBirth.dateDay", errors))
+        }
+
+        "error if no day is supplied" in {
+          val errors = "error.user_details.date_of_birth.day.empty"
+
+          val testInput = setupTestData(dob = DateModel("", "1", "1980"))
+          userDetailsForm.bind(testInput).errors must contain(FormError(s"$userDateOfBirth.dateDay", errors))
+        }
+
+        "error if no month is supplied" in {
+          val errors = "error.user_details.date_of_birth.month.empty"
+
+          val testInput = setupTestData(dob = DateModel("1", "", "1980"))
+          userDetailsForm.bind(testInput).errors must contain(FormError(s"$userDateOfBirth.dateMonth", errors))
+        }
+
+        "error if no year is supplied" in {
+          val errors = "error.user_details.date_of_birth.year.empty"
+
+          val testInput = setupTestData(dob = DateModel("1", "1", ""))
+          userDetailsForm.bind(testInput).errors must contain(FormError(s"$userDateOfBirth.dateYear", errors))
+        }
+
+        "error if no day and month is supplied" in {
+          val errors = "error.user_details.date_of_birth.day_month.empty"
+
+          val testInput = setupTestData(dob = DateModel("", "", "1980"))
+          userDetailsForm.bind(testInput).errors must contain(FormError(s"$userDateOfBirth.dateDay", errors))
+        }
+
+        "error if no day and year is supplied" in {
+          val errors = "error.user_details.date_of_birth.day_year.empty"
+
+          val testInput = setupTestData(dob = DateModel("", "1", ""))
+          userDetailsForm.bind(testInput).errors must contain(FormError(s"$userDateOfBirth.dateDay", errors))
+        }
+
+        "error if no month and year is supplied" in {
+          val errors = "error.user_details.date_of_birth.month_year.empty"
+
+          val testInput = setupTestData(dob = DateModel("1", "", ""))
+          userDetailsForm.bind(testInput).errors must contain(FormError(s"$userDateOfBirth.dateMonth", errors))
         }
 
         "error if a none numeric day is supplied" in {
-          val errors = "error.dob_date.invalid_chars"
+          val errors = "error.user_details.date_of_birth.date.empty"
 
           val testInput = setupTestData(dob = DateModel("aa", "10", "1990"))
           userDetailsForm.bind(testInput).errors must contain(FormError(userDateOfBirth, errors))
         }
 
         "error if a none numeric month is supplied" in {
-          val errors = "error.dob_date.invalid_chars"
+          val errors = "error.user_details.date_of_birth.date.empty"
 
           val testInput = setupTestData(dob = DateModel("01", "aa", "1990"))
           userDetailsForm.bind(testInput).errors must contain(FormError(userDateOfBirth, errors))
         }
 
         "error if a none numeric year is supplied" in {
-          val errors = "error.dob_date.invalid_chars"
+          val errors = "error.user_details.date_of_birth.date.empty"
 
           val testInput = setupTestData(dob = DateModel("01", "12", "aa"))
           userDetailsForm.bind(testInput).errors must contain(FormError(userDateOfBirth, errors))
         }
 
         "error if an invalid numeric day is supplied" in {
-          val errors = "error.dob_date.invalid"
+          val errors = "error.user_details.date_of_birth.date.empty"
 
           val testInput = setupTestData(dob = DateModel("56", "10", "1990"))
           userDetailsForm.bind(testInput).errors must contain(FormError(userDateOfBirth, errors))
         }
 
         "error if an invalid numeric month is supplied" in {
-          val errors = "error.dob_date.invalid"
+          val errors = "error.user_details.date_of_birth.date.empty"
 
           val testInput = setupTestData(dob = DateModel("01", "15", "1990"))
           userDetailsForm.bind(testInput).errors must contain(FormError(userDateOfBirth, errors))
         }
 
         "error if an invalid numeric year is supplied" in {
-          val errors = "error.dob_date.invalid"
+          val errors = "error.user_details.date_of_birth.date.empty"
 
           val testInput = setupTestData(dob = DateModel("01", "12", "1234567899"))
+          userDetailsForm.bind(testInput).errors must contain(FormError(userDateOfBirth, errors))
+        }
+
+        "error if a date not in the past is supplied" in {
+          val errors = "error.user_details.date_of_birth.not_in_past"
+          val futureDate: LocalDate = LocalDate.now
+
+          val testInput = setupTestData(dob = DateModel.dateConvert(futureDate))
           userDetailsForm.bind(testInput).errors must contain(FormError(userDateOfBirth, errors))
         }
       }

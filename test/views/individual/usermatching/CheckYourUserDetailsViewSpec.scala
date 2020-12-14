@@ -35,7 +35,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
   val testLastName = "User"
   val testNino: String = TestConstants.testNino
   val testDob: DateModel = TestModels.testStartDate
-  val testUserDetails = UserDetailsModel(
+  val testUserDetails: UserDetailsModel = UserDetailsModel(
     testFirstName,
     testLastName,
     testNino,
@@ -74,7 +74,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
 
   "Confirm User page view" should {
 
-    s"have a back buttong pointed to $backUrl" in {
+    s"have a back button pointed to $backUrl" in {
       val backLink = document().select("#back")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
@@ -86,11 +86,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
     }
 
     s"have the heading (H1) '${messages.heading}'" in {
-      document().select("h1").text() must include(messages.heading)
-    }
-
-    s"have visually hidden text as part of the (H1) '${messages.heading_hidden}'" in {
-      document().select("h1 span").text() must include(messages.heading_hidden)
+      document().select("h1").text() mustBe messages.heading
     }
 
     "has a form" which {

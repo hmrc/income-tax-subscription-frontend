@@ -109,12 +109,12 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
       }
     }
     "accept a valid date" when {
-      "the date is exactly two years ago" in {
-        val twoYearsAgo: LocalDate = LocalDate.now.minusYears(2)
+      "the date is exactly one years ago" in {
+        val oneYearAgo: LocalDate = LocalDate.now.minusYears(1)
         val testData = DataMap.date(startDate)(
-          day = twoYearsAgo.getDayOfMonth.toString,
-          month = twoYearsAgo.getDayOfMonth.toString,
-          year = twoYearsAgo.getYear.toString
+          day = oneYearAgo.getDayOfMonth.toString,
+          month = oneYearAgo.getMonthValue.toString,
+          year = oneYearAgo.getYear.toString
         )
         val validated = form.bind(testData)
         validated.hasErrors shouldBe false
@@ -124,7 +124,7 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
         val earliestAllowedDate: LocalDate = LocalDate.of(1900, 1, 1)
         val testData = DataMap.date(startDate)(
           day = earliestAllowedDate.getDayOfMonth.toString,
-          month = earliestAllowedDate.getDayOfMonth.toString,
+          month = earliestAllowedDate.getMonthValue.toString,
           year = earliestAllowedDate.getYear.toString
         )
         val validated = form.bind(testData)
