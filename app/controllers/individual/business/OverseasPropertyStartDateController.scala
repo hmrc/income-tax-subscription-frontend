@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.utils.IndividualAnswers._
 import controllers.utils.OptionalAnswers._
@@ -42,8 +42,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class OverseasPropertyStartDateController @Inject()(val authService: AuthService,
                                                     val subscriptionDetailsService: SubscriptionDetailsService,
                                                     val languageUtils: LanguageUtils
-                                                          )(implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                                            mcc: MessagesControllerComponents)
+                                                   )(implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                                     mcc: MessagesControllerComponents)
   extends SignUpController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
 
   def view(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
@@ -93,17 +93,15 @@ class OverseasPropertyStartDateController @Inject()(val authService: AuthService
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
       (incomeSourceModel.selfEmployment, incomeSourceModel.ukProperty) match {
-        case (_, true) => controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-        case (true, false) =>
-          if (isEnabled(ReleaseFour)) appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
-          else controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+        case (_, true) =>
+          controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+        case (true, _) =>
+          appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
         case _ =>
-          if (isEnabled(PropertyNextTaxYear)) controllers.individual.business.routes.WhatYearToSignUpController.show().url
-          else controllers.individual.incomesource.routes.IncomeSourceController.show().url
+          controllers.individual.incomesource.routes.IncomeSourceController.show().url
       }
     }
   }
-
 
   def form(implicit request: Request[_]): Form[OverseasPropertyStartDateModel] = {
     overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate.toLongDate, OverseasPropertyStartDateForm.maxStartDate.toLongDate)

@@ -72,7 +72,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
     "return a success" when {
       "all services succeed" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData, isPropertyNextTaxYearEnabled = false)
+        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
 
         await(res) mustBe testSubscriptionSuccess
@@ -89,14 +89,14 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
       "create income sources returns an error when create income sources request fail" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesFailure(testNino, testMTDID, testAgentSummaryData, isPropertyNextTaxYearEnabled = false)
+        mockCreateIncomeSourcesFailure(testNino, testMTDID, testAgentSummaryData)
 
         await(res) mustBe testCreateIncomeSourcesFailure
       }
 
       "the auto enrolment service returns a failure response" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData, isPropertyNextTaxYearEnabled = false)
+        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
 
         await(res) mustBe Right(SubscriptionSuccess(testMTDID))

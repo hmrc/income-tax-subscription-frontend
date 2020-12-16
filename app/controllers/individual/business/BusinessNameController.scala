@@ -20,13 +20,11 @@ import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business.BusinessNameForm
 import javax.inject.{Inject, Singleton}
-import models.common.IncomeSourceModel
 import models.common.business.BusinessNameModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuthService, SubscriptionDetailsService}
-import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -55,18 +53,11 @@ class BusinessNameController @Inject()(val authService: AuthService, subscriptio
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessName =>
-          subscriptionDetailsService.saveBusinessName(businessName) flatMap { _ =>
+          subscriptionDetailsService.saveBusinessName(businessName) map { _ =>
             if (isEditMode) {
-              Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
-            }else {
-              for {
-                cacheMap <- subscriptionDetailsService.fetchAll()
-              } yield cacheMap.getIncomeSource match {
-                case Some(IncomeSourceModel(true, false, _)) =>
-                  Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
-                case _ =>
-                  Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())
-              }
+              Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+            } else {
+              Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())
             }
           }
       )

@@ -20,6 +20,7 @@ import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpPa
 import models.{ConnectorError, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.individual.SubscriptionOrchestrationService
 import services.mocks.MockSubscriptionService
@@ -41,31 +42,34 @@ trait TestSubscriptionOrchestrationService extends MockSubscriptionService
 
 }
 
-trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSugar {
+trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockSubscriptionOrchestrationService: SubscriptionOrchestrationService = mock[SubscriptionOrchestrationService]
 
+  override def beforeEach(): Unit = {
+    reset(mockSubscriptionOrchestrationService)
+    super.beforeEach()
+  }
+
   private def mockCreateSubscription(nino: String,
                                      summaryModel: SummaryModel,
-                                     isReleaseFourEnabled: Boolean = false,
-                                     isPropertyNextTaxYearEnabled: Boolean
+                                     isReleaseFourEnabled: Boolean = false
                                     )(result: Future[SubscriptionResponse]): Unit = {
     when(mockSubscriptionOrchestrationService.createSubscription(
       ArgumentMatchers.eq(nino),
       ArgumentMatchers.eq(summaryModel),
-      ArgumentMatchers.eq(isReleaseFourEnabled),
-      ArgumentMatchers.eq(isPropertyNextTaxYearEnabled)
+      ArgumentMatchers.eq(isReleaseFourEnabled)
     )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
   }
 
-  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean, isPropertyNextTaxYearEnabled: Boolean): Unit =
-    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled, isPropertyNextTaxYearEnabled)(Future.successful(testSubscriptionSuccess))
+  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
+    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.successful(testSubscriptionSuccess))
 
-  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean, isPropertyNextTaxYearEnabled: Boolean): Unit =
-    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled, isPropertyNextTaxYearEnabled)(Future.successful(testSubscriptionFailure))
+  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
+    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.successful(testSubscriptionFailure))
 
-  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean, isPropertyNextTaxYearEnabled: Boolean): Unit =
-    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled, isPropertyNextTaxYearEnabled)(Future.failed(testException))
+  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
+    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.failed(testException))
 
   private def mockEnrolAndRefresh(mtditId: String, nino: String)(result: Future[Either[ConnectorError, String]]): Unit =
     when(

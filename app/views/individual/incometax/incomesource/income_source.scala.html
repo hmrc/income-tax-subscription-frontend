@@ -25,9 +25,8 @@
 @(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, foreignProperty: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("income_source.title"), form = incomeSourceForm) {
-@if(isEditMode) {
+
 @back_link(backUrl)
-}
 
 @if(incomeSourceForm.hasErrors) {
 

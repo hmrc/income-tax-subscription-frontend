@@ -21,7 +21,7 @@ import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHtt
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import models.Cash
-import models.common.subscription.{BadlyFormattedCreateIncomeSourcesResponse, BadlyFormattedSignUpIncomeSourcesResponse, BadlyFormattedSubscriptionResponse, CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess, SubscriptionFailureResponse, SubscriptionSuccess}
+import models.common.subscription._
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
@@ -229,7 +229,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
   "SubscriptionService.createIncomeSources" should {
 
     def call: PostCreateIncomeSourceResponse = await(TestSubscriptionService.createIncomeSources(
-      nino = testNino, mtdbsa = testMTDID, testIndividualSummary, isPropertyNextTaxYearEnabled = true
+      nino = testNino, mtdbsa = testMTDID, testIndividualSummary
     ))
 
     "return the list of income source ids when the create is successful" in {

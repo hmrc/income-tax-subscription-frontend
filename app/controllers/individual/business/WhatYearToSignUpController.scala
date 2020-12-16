@@ -18,15 +18,14 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
-import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingYearForm
 import javax.inject.{Inject, Singleton}
-import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AccountingPeriodService, AuthService, SubscriptionDetailsService}
+import views.html.individual.incometax.business.what_year_to_sign_up
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,13 +34,13 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
                                            accountingPeriodService: AccountingPeriodService,
                                            subscriptionDetailsService: SubscriptionDetailsService
                                           )(implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                            mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
+                                            mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
-    views.html.individual.incometax.business.what_year_to_sign_up(
+    what_year_to_sign_up(
       accountingYearForm = accountingYearForm,
       postAction = controllers.individual.business.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
-      backUrl = backUrl(isEditMode),
+      backUrl = backUrl,
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode
     )
@@ -50,8 +49,7 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYear =>
-        Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm
-          .fill(accountingYear), isEditMode = isEditMode))
+        Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYear), isEditMode = isEditMode))
       }
   }
 
@@ -61,35 +59,17 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          subscriptionDetailsService.saveSelectedTaxYear(accountingYear) flatMap { _ =>
+          subscriptionDetailsService.saveSelectedTaxYear(accountingYear) map { _ =>
             if (isEditMode) {
-              Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
+              Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
             } else {
-              if (isEnabled(ReleaseFour)) {
-                subscriptionDetailsService.fetchIncomeSource() map {
-                  case Some(IncomeSourceModel(true, _, _)) =>
-                    Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
-                  case Some(IncomeSourceModel(_, true, _)) =>
-                    Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
-                  case Some(IncomeSourceModel(_, _, true)) =>
-                    Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
-                }
-              } else {
-                Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show()))
-              }
+              Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
             }
           }
         }
       )
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-    } else if (isEnabled(ReleaseFour)){
-      controllers.individual.incomesource.routes.IncomeSourceController.show().url
-    } else {
-      controllers.individual.business.routes.BusinessNameController.show().url
-    }
-  }
+  def backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+
 }

@@ -21,7 +21,7 @@ import java.time.temporal.ChronoUnit
 
 import auth.individual.PostSubmissionController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import javax.inject.{Inject, Singleton}
 import models.Next
@@ -51,17 +51,16 @@ class ConfirmationController @Inject()(val authService: AuthService, subscriptio
 
 
       subscriptionDetailsService.fetchAll() map { cacheMap =>
-        cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour), isPropertyNextTaxYearEnabled = isEnabled(PropertyNextTaxYear))
+        cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour))
       } map { summary =>
         summary.incomeSource match {
-          case Some(_) => {
+          case Some(_) =>
             summary.selectedTaxYear match {
               case Some(AccountingYearModel(Next)) =>
                 Ok(sign_up_complete(journeyDuration, summary, declarationNextYear))
               case _ =>
                 Ok(sign_up_complete(journeyDuration, summary, declarationCurrentYear))
             }
-          }
           case _ =>
             throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
         }
