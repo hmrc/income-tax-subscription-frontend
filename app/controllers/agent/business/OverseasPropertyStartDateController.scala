@@ -93,12 +93,8 @@ class OverseasPropertyStartDateController @Inject()(val authService: AuthService
     } else {
       (incomeSourceModel.selfEmployment, incomeSourceModel.ukProperty) match {
         case (_, true) => controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-        case (true, false) =>
-          if (isEnabled(ReleaseFour)) appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
-          else controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-        case _ =>
-          if (isEnabled(ReleaseFour)) controllers.agent.business.routes.WhatYearToSignUpController.show().url
-          else controllers.agent.routes.IncomeSourceController.show().url
+        case (true, _) => appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
+        case _ => controllers.agent.routes.IncomeSourceController.show().url
       }
     }
   }

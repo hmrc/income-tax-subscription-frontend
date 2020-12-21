@@ -50,13 +50,11 @@ class BusinessNameController @Inject()(val authService: AuthService, subscriptio
     implicit user =>
       for {
         businessName <- subscriptionDetailsService.fetchBusinessName()
-        incomeSource <- subscriptionDetailsService.fetchIncomeSource()
       } yield Ok(view(
         BusinessNameForm.businessNameForm.form.fill(businessName),
         isEditMode = isEditMode,
-        backUrl = backUrl(isEditMode, incomeSource.getOrElse(
-          throw new InternalServerException("User is missing income source details in Subscription Details")))
-      ))
+        backUrl = backUrl(isEditMode))
+      )
   }
 
   private def redirectLocation( currentAnswer: BusinessNameModel, isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
@@ -80,7 +78,7 @@ class BusinessNameController @Inject()(val authService: AuthService, subscriptio
     implicit user =>
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors,
-          isEditMode = isEditMode, backUrl = controllers.agent.business.routes.WhatYearToSignUpController.show().url))),
+          isEditMode = isEditMode, backUrl = controllers.agent.routes.WhatYearToSignUpController.show().url))),
         businessName => for {
           redirect <- redirectLocation(businessName, isEditMode)
           _ <- subscriptionDetailsService.saveBusinessName(businessName)
@@ -88,12 +86,9 @@ class BusinessNameController @Inject()(val authService: AuthService, subscriptio
       )
   }
 
-  def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel): String = {
+  def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) controllers.agent.routes.CheckYourAnswersController.show().url
     else
-      incomeSourceModel match {
-        case IncomeSourceModel(true, false, false) => controllers.agent.business.routes.WhatYearToSignUpController.show().url
-        case _ => controllers.agent.routes.IncomeSourceController.show().url
-      }
+      controllers.agent.routes.IncomeSourceController.show().url
   }
 }

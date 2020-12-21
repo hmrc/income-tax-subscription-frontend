@@ -40,7 +40,7 @@ class HomeController @Inject()(val authService: AuthService)(implicit val ec: Ex
         case Some(arn) =>
           (user.clientNino, user.clientUtr) match {
             case (Some(nino), Some(utr)) =>
-              Future.successful(Redirect(controllers.agent.routes.IncomeSourceController.show()).withJourneyState(AgentSignUp))
+              Future.successful(Redirect(controllers.agent.routes.WhatYearToSignUpController.show()).withJourneyState(AgentSignUp))
             case (Some(nino), _) =>
               Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
             case _ =>

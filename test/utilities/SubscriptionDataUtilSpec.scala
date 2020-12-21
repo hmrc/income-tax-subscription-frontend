@@ -16,7 +16,7 @@
 
 package utilities
 
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import models.common.IncomeSourceModel
 import models.{AgentSummary, IndividualSummary}
@@ -52,7 +52,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
 
     "The getSummary should populate the Summary model correctly" when {
       "income source is just uk property" in {
-        enable(PropertyNextTaxYear)
         testCacheMapCustom(incomeSource = testIncomeSourceProperty).getSummary() shouldBe
           IndividualSummary(
             incomeSource = testIncomeSourceProperty,
@@ -70,7 +69,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           )
       }
       "income source is only foreign property" in {
-        enable(PropertyNextTaxYear)
         testCacheMapCustom(incomeSource = testIncomeSourceOverseasProperty).getSummary() shouldBe
           IndividualSummary(
             incomeSource = testIncomeSourceOverseasProperty,
@@ -131,7 +129,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is both" in {
-        disable(PropertyNextTaxYear)
         disable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceBusinessProperty)
@@ -167,7 +164,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is property with the property tax year feature switch enabled" in {
-        enable(PropertyNextTaxYear)
         enable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceProperty)
@@ -200,7 +196,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is foreign property" in {
-        disable(PropertyNextTaxYear)
         disable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceForeignProperty)
@@ -217,7 +212,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is foreign property with the property tax year feature switch enabled" in {
-        enable(PropertyNextTaxYear)
         enable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceForeignProperty)
@@ -266,7 +260,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is both UK property and overseas property" in {
-        disable(PropertyNextTaxYear)
         disable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)
@@ -283,7 +276,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is both UK property and overseas property with the property feature switch enabled" in {
-        enable(PropertyNextTaxYear)
         enable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)

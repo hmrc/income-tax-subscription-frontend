@@ -234,25 +234,25 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "return the list of income source ids when the create is successful" in {
       setupMockCreateIncomeSourcesSuccess(testMTDID,
-        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true).copy(accountingPeriod = getCurrentTaxYear))
+        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino).copy(accountingPeriod = getCurrentTaxYear))
       call.right.value shouldBe CreateIncomeSourcesSuccess()
     }
 
     "return the error if create fails on bad request" in {
       setupMockCreateIncomeSourcesFailure(testMTDID,
-        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true).copy(accountingPeriod = getCurrentTaxYear))
+        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino).copy(accountingPeriod = getCurrentTaxYear))
       call.left.value shouldBe CreateIncomeSourcesFailureResponse(BAD_REQUEST)
     }
 
     "return the error if create fails on bad formatting" in {
       setupMockCreateIncomeSourcesBadFormatting(testMTDID,
-        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true).copy(accountingPeriod = getCurrentTaxYear))
+        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino).copy(accountingPeriod = getCurrentTaxYear))
       call.left.value shouldBe BadlyFormattedCreateIncomeSourcesResponse
     }
 
     "return the error if subscription throws an exception" in {
       setupMockCreateIncomeSourcesException(testMTDID,
-        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino, isPropertyNextTaxYearEnabled = true).copy(accountingPeriod = getCurrentTaxYear))
+        testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino).copy(accountingPeriod = getCurrentTaxYear))
       intercept[Exception](call) shouldBe testException
     }
   }

@@ -79,8 +79,8 @@ GET         /error/covid-cannot-sign-up             controllers.agent.eligibilit
 ######################### Business Routes
 
 #What Tax Year To Sign Up Routes
-GET         /business/what-year-to-sign-up                      controllers.agent.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
-POST        /business/what-year-to-sign-up                      controllers.agent.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
+GET         /business/what-year-to-sign-up                      controllers.agent.WhatYearToSignUpController.show(editMode: Boolean ?= false)
+POST        /business/what-year-to-sign-up                      controllers.agent.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 #Name Routes
 GET         /business/name                                      controllers.agent.business.BusinessNameController.show(editMode: Boolean ?= false)

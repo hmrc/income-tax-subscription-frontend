@@ -89,10 +89,10 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
             When("I call GET /index")
             val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
 
-            Then("the result should have a status of SEE_OTHER and a redirect location of /income")
+            Then("the result should have a status of SEE_OTHER and a redirect location of /what-year-to-sign-up")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(incomeSourceURI)
+              redirectURI(whatYearToSignUpURI)
             )
 
             Then("the JourneyStateKey should be changed to AgentSignUp")

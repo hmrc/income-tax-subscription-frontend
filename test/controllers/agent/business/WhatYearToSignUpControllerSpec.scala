@@ -16,7 +16,7 @@
 
 package controllers.agent.business
 
-import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
 import config.featureswitch.FeatureSwitching
 import forms.agent.AccountingYearForm
 import models.Current
@@ -99,12 +99,12 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
-      "redirect to business accounting period page" in {
+      "redirect to Income Sources page" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.BusinessNameController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
@@ -146,24 +146,15 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
       }
     }
-
-    "The back url is not in edit mode" when {
-      "the user click back url" should {
-        "redirect to Match Tax Year page" in {
-          TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
-            controllers.agent.routes.IncomeSourceController.show().url
-        }
-      }
-    }
-
+  }
 
     "The back url is in edit mode" when {
       "the user click back url" should {
         "redirect to check your answer page" in {
-          TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe
+          TestWhatYearToSignUpController.backUrl mustBe
             controllers.agent.routes.CheckYourAnswersController.show().url
         }
       }
     }
-  }
+
 }

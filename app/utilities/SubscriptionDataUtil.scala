@@ -16,7 +16,7 @@
 
 package utilities
 
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import models.common._
 import models.common.business._
@@ -131,7 +131,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
         if (isAgent) {
           AgentSummary(
             incomeSource = getIncomeSource,
-            selectedTaxYear = if (isEnabled(ReleaseFour) && isEnabled(PropertyNextTaxYear)) getSelectedTaxYear else None
+            selectedTaxYear = if (isEnabled(ReleaseFour)) getSelectedTaxYear else None
           )
         } else {
           IndividualSummary(
@@ -150,7 +150,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
           summaryModel.asInstanceOf[AgentSummary].copy(
             propertyStartDate = getPropertyStartDate,
             accountingMethodProperty = getPropertyAccountingMethod,
-            selectedTaxYear = if (isEnabled(ReleaseFour) && isEnabled(PropertyNextTaxYear)) summaryModel.selectedTaxYear else None
+            selectedTaxYear = if (isEnabled(ReleaseFour)) summaryModel.selectedTaxYear else None
           )
         } else {
           summaryModel.asInstanceOf[IndividualSummary].copy(
@@ -171,7 +171,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
           summaryModel.asInstanceOf[AgentSummary].copy(
             overseasPropertyStartDate = getOverseasPropertyStartDate,
             overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
-            selectedTaxYear = if (isEnabled(ReleaseFour) && isEnabled(PropertyNextTaxYear)) summaryModel.selectedTaxYear else None
+            selectedTaxYear = if (isEnabled(ReleaseFour)) summaryModel.selectedTaxYear else None
           )
         } else {
           summaryModel.asInstanceOf[IndividualSummary].copy(

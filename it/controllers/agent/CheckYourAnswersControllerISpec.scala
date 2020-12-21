@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, incomeSourceURI => _, testNino => _, testUtr => _, _}
@@ -39,7 +39,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
-    disable(PropertyNextTaxYear)
     super.beforeEach()
   }
 
@@ -422,7 +421,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
               IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
                 incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-                selectedTaxYear = None,
+                selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
                 propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
@@ -439,7 +438,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
                   nino = testNino,
-                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
                   selfEmploymentsData = None,
                   accountingMethod = None,
                   incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
@@ -500,7 +499,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
                   nino = testNino,
-                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
                   selfEmploymentsData = None,
                   accountingMethod = None,
                   incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false),
@@ -544,7 +543,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
               IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
                 incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-                selectedTaxYear = None,
+                selectedTaxYear = Some(AccountingYearModel(Next)),
                 businessName = None,
                 accountingMethod = None,
                 propertyStartDate = None,
@@ -561,7 +560,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
                   nino = testNino,
-                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
                   selfEmploymentsData = None,
                   accountingMethod = None,
                   incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true),
@@ -622,7 +621,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
                   nino = testNino,
-                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
                   selfEmploymentsData = None,
                   accountingMethod = None,
                   incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true),
@@ -683,7 +682,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
                 mtdbsa = testMtdId,
                 request = BusinessSubscriptionDetailsModel(
                   nino = testNino,
-                  accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
+                  accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
                   selfEmploymentsData = Some(testBusinesses),
                   accountingMethod = Some(testAccountingMethod.accountingMethod),
                   incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
@@ -1051,12 +1050,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         }
       }
 
-      "the property next tax year feature switch is enabled" when {
         "the signup of a user with next tax year property income is successful and creating of the enrolment is successful" in {
 
           Given("I set the required feature switches")
           enable(ReleaseFour)
-          enable(PropertyNextTaxYear)
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -1115,5 +1112,3 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       }
     }
   }
-
-}

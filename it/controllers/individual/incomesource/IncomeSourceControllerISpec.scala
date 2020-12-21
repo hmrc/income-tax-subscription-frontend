@@ -17,7 +17,7 @@
 package controllers.individual.incomesource
 
 
-import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
@@ -34,7 +34,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
     disable(ForeignProperty)
-    disable(PropertyNextTaxYear)
     super.beforeEach()
   }
 

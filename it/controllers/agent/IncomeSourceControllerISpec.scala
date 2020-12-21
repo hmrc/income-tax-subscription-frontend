@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.IntegrationTestModels.{subscriptionData, testAccountingMethod, testAccountingMethodForeignProperty,
@@ -36,7 +36,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
     disable(ForeignProperty)
-    disable(PropertyNextTaxYear)
     super.beforeEach()
   }
 
@@ -121,8 +120,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
     "it is in edit mode" should {
 
       "the user selects self-employment and self-employment journey has not been completed before" when {
-        "FS PropertyNextTaxYear is disabled and selected tax year page has not been completed before" should {
-          s"redirect to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in {
+        "FS Release Four is disabled and selected tax year page has not been completed before" should {
+          s"redirect to ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
             val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
 
             Given("I setup the wiremock stubs")
@@ -141,17 +140,17 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
-            Then(s"Should return $SEE_OTHER with a redirect location of what year to sign up")
+            Then(s"Should return $SEE_OTHER with a redirect location of Business Name page")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(whatYearToSignUpURI)
+              redirectURI(businessNameURI)
             )
           }
         }
 
 
-        "FS PropertyNextTaxYear is disabled and selected tax year page has been completed before and ReleaseFour is enabled" should {
-          s"redirect to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in {
+        "Selected tax year page has been completed before and ReleaseFour is enabled" should {
+          s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
             enable(ReleaseFour)
             val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
 
@@ -175,13 +174,13 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             Then(s"Should return $SEE_OTHER with a redirect location of self-employment frontend initialise")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.business.routes.WhatYearToSignUpController.show().url)
+              redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
             )
           }
         }
 
 
-        "FS PropertyNextTaxYear is disabled and selected tax year page has been completed before and FS ReleaseFour is disabled " +
+        "Selected tax year page has been completed before and FS ReleaseFour is disabled " +
           "and the user has no uk property and has an overseas property income" should {
           s" redirect to ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
             val userInput: IncomeSourceModel = IncomeSourceModel(true, false, true)
@@ -212,7 +211,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         }
 
 
-        "FS PropertyNextTaxYear is disabled and selected tax year page has been completed before and FS ReleaseFour is disabled" +
+        "Selected tax year page has been completed before and FS ReleaseFour is disabled" +
           "and the user has a uk property and has no overseas property income" should {
           s" redirect to ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
             val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
@@ -241,11 +240,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           }
         }
 
-        "FS PropertyNextTaxYear and FS ReleaseFour both are enabled and selected tax year page has been completed before " +
+        "FS ReleaseFour both are enabled and selected tax year page has been completed before " +
           "and the user has no uk property and no overseas property income" should {
           s" redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
             enable(ReleaseFour)
-            enable(PropertyNextTaxYear)
             val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
@@ -273,11 +271,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           }
         }
 
-        "FS PropertyNextTaxYear and FS ReleaseFour both are enabled and selected tax year page has not been completed before " +
+        "FS ReleaseFour is enabled and selected tax year page has not been completed before " +
           "and the user has no uk property and no overseas property income" should {
-          s" redirect to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in {
+          s" redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
             enable(ReleaseFour)
-            enable(PropertyNextTaxYear)
             val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
@@ -299,7 +296,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             Then(s"Should return $SEE_OTHER with a redirect location of self-employment Frontend Initialise")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.business.routes.WhatYearToSignUpController.show().url)
+              redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
             )
           }
         }
@@ -654,10 +651,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-        Then(s"Should return $SEE_OTHER with a redirect location of what year to sign up page")
+        Then(s"Should return $SEE_OTHER with a redirect location of Business Name page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(whatYearToSignUpURI)
+          redirectURI(businessNameURI)
         )
       }
 
@@ -712,10 +709,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-        Then(s"Should return $SEE_OTHER with a redirect location of what tax year to sign up page")
+        Then(s"Should return $SEE_OTHER with a redirect location of Business Name page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(whatYearToSignUpURI)
+          redirectURI(businessNameURI)
         )
       }
 
@@ -845,10 +842,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-        Then(s"Should return $SEE_OTHER with a redirect location of what tax year to sign up page")
+        Then(s"Should return $SEE_OTHER with a redirect location of Business Name page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(whatYearToSignUpURI)
+          redirectURI(businessNameSEURI)
         )
       }
 
@@ -905,10 +902,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
-        Then(s"Should return $SEE_OTHER with a redirect location of what tax year to sign up page")
+        Then(s"Should return $SEE_OTHER with a redirect location of Business Name page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(whatYearToSignUpURI)
+          redirectURI(businessNameSEURI)
         )
       }
 
