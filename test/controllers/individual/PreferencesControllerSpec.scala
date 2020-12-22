@@ -57,7 +57,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
       mockCheckPaperlessActivated(testToken)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
+      redirectLocation(result).get must be(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
     }
 
     "Redirect to returned preferences service if paperless was previously unspecified" in {
@@ -81,7 +81,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
       mockCheckPaperlessActivated(testToken)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
+      redirectLocation(result).get must be(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
     }
 
     "Redirect to the preferences error page if paperless preferences was not selected" in {

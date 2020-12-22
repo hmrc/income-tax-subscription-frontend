@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.{accountingYearURI, businessAccountingMethodURI, checkYourAnswersURI}
+import helpers.IntegrationTestConstants.{businessAccountingMethodURI, checkYourAnswersURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -71,34 +71,14 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
   "POST /report-quarterly/income-and-expenses/sign-up/business/name" when {
     "not in edit mode" when {
       "enter business name" should {
-        "redirect to the accounting year page when the user is business only" in {
-          val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData( subscriptionData(
-            incomeSource = Some(IncomeSourceModel(true, false, false))
-          ))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
-
-          When("POST /business/name is called")
-          val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of match tax year")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(accountingYearURI)
-          )
-        }
-        "redirect to business accounting method page when the user has business and property" in {
+        "redirect to business accounting method page" in {
           val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           ))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails( SubscriptionDataKeys.BusinessName, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
           When("POST /business/name is called")
           val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
@@ -167,7 +147,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing business name when calling page from Check Your Answers" in {
-        val SubscriptionDetailsIncomeSource = IncomeSourceModel(true, true, false)
+        val SubscriptionDetailsIncomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
         val SubscriptionDetailsBusinessName = BusinessNameModel("testBusiness")
         val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
 

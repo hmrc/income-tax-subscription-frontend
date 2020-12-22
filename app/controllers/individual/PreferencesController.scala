@@ -48,7 +48,7 @@ class PreferencesController @Inject()(val authService: AuthService, preferencesS
         token <- paperlessPreferenceTokenService.storeNino(user.nino.get)
         res <- preferencesService.checkPaperless(token)
       } yield res match {
-        case Right(Activated) => Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
+        case Right(Activated) => Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
         case Right(Unset(url)) => Redirect(url)
         case _ => throw new InternalServerException("Could not get paperless preferences")
       }
@@ -59,7 +59,7 @@ class PreferencesController @Inject()(val authService: AuthService, preferencesS
       paperlessPreferenceTokenService.storeNino(user.nino.get) flatMap {
         token =>
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
+            case Right(Activated) => Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
             case Right(Unset(url)) => Redirect(controllers.individual.routes.PreferencesController.show())
               .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
             case _ => throw new InternalServerException("Could not get paperless preferences")

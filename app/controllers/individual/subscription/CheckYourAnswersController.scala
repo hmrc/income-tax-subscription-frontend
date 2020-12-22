@@ -18,7 +18,7 @@ package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import javax.inject.{Inject, Singleton}
@@ -56,6 +56,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
       case IncomeSourceModel(true, _, _) =>
         controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+      case _ => throw new InternalServerException("[CheckYourAnswersController][backUrl] - Invalid income source state")
     }
   }
 
@@ -69,8 +70,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
               controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
               backUrl = backUrl(cache.getIncomeSource.get),
               implicitDateFormatter,
-              isEnabled(ReleaseFour),
-              isEnabled(PropertyNextTaxYear)
+              isEnabled(ReleaseFour)
             ))
         }
   }
@@ -81,7 +81,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
         val nino = user.nino.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
         getSummaryModel(cache).flatMap { summaryModel =>
-          subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour), isEnabled(PropertyNextTaxYear))(headerCarrier).flatMap {
+          subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour))(headerCarrier).flatMap {
             case Right(SubscriptionSuccess(id)) =>
               subscriptionDetailsService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
             case Left(failure) =>
@@ -96,7 +96,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService,
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
     } yield {
       if (isEnabled(ReleaseFour)) {
-        cacheMap.getSummary(businesses, businessAccountingMethod, isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = isEnabled(PropertyNextTaxYear))
+        cacheMap.getSummary(businesses, businessAccountingMethod, isReleaseFourEnabled = true)
       } else {
         cacheMap.getSummary()
       }

@@ -24,9 +24,9 @@ import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesRespons
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.{MultipleIncomeSourcesSubscriptionConnector, SubscriptionConnector}
 import javax.inject.{Inject, Singleton}
-import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel, subscription}
 import models.common.business.BusinessSubscriptionDetailsModel
 import models.common.subscription.{BusinessIncomeModel, PropertyIncomeModel, SubscriptionRequest}
+import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel, subscription}
 import models.{AgentSummary, IndividualSummary, Next, SummaryModel}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
@@ -116,12 +116,12 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
   }
 
 
-  def createIncomeSources(nino: String, mtdbsa: String, summaryModel: SummaryModel, isPropertyNextTaxYearEnabled: Boolean)
+  def createIncomeSources(nino: String, mtdbsa: String, summaryModel: SummaryModel)
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
     Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
     val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = summaryModel match {
       case summary: IndividualSummary =>
-        summary.toBusinessSubscriptionDetailsModel(nino, isPropertyNextTaxYearEnabled = isPropertyNextTaxYearEnabled)
+        summary.toBusinessSubscriptionDetailsModel(nino, isPropertyNextTaxYearEnabled = true)
       case summary: AgentSummary =>
         summary.toBusinessSubscriptionDetailsModel(nino, isEnabled(PropertyNextTaxYear))
     }

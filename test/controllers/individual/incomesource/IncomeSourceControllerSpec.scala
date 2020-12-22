@@ -17,22 +17,21 @@
 package controllers.individual.incomesource
 
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
 import forms.individual.incomesource.IncomeSourceForm
 import models.Current
-import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource}
-import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap,
-  testOverseasAccountingMethodProperty, testOverseasPropertyStartDateModel, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testOverseasAccountingMethodProperty, testOverseasPropertyStartDateModel, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
 
 import scala.concurrent.Future
 
@@ -51,7 +50,6 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
     disable(ForeignProperty)
-    disable(PropertyNextTaxYear)
     super.beforeEach()
   }
 
@@ -104,7 +102,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         "redirect to BusinessName page if release four is disabled" in {
           setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
@@ -112,27 +110,14 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           verifySubscriptionDetailsFetch(IncomeSource, 1)
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
-        "redirect to WhatYearToSignUp page if release four is enabled" in {
+        "redirect to the start of the self employment journey if release four is enabled" in {
           setupMockSubscriptionDetailsSaveFunctions()
           enable(ReleaseFour)
 
-          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-        "redirect to WhatYearToSignUp page if PropertyNextTaxYear is enabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          enable(PropertyNextTaxYear)
-          enable(ReleaseFour)
-
-          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+          redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
           verifySubscriptionDetailsSave(IncomeSource, 1)
@@ -140,11 +125,10 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "self-employed is checked and rent UK property is checked but foreign property is NOT checked" when {
-        "redirect to BusinessName page if release four is enabled" in {
+        "redirect to BusinessName page if release four is disabled" in {
           setupMockSubscriptionDetailsSaveFunctions()
           disable(ReleaseFour)
-          disable(PropertyNextTaxYear)
-          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
@@ -157,24 +141,10 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           setupMockSubscriptionDetailsSaveFunctions()
           enable(ReleaseFour)
 
-          val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe "/report-quarterly/income-and-expenses/sign-up/self-employments/details"
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-
-        "redirect to WhatYearToSignUp page if PropertyNextTaxYear is enabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          enable(PropertyNextTaxYear)
-          enable(ReleaseFour)
-
-          val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
           verifySubscriptionDetailsSave(IncomeSource, 1)
@@ -185,9 +155,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         "Release Four feature switch is disabled" when {
           "redirect to the PropertyAccounting method page" in {
             setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
             disable(ReleaseFour)
-            disable(PropertyNextTaxYear)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
@@ -201,7 +170,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           "redirect to the PropertyStartDate page" in {
             enable(ReleaseFour)
             setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyStartDateController.show().url)
@@ -211,63 +180,19 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
-        "PropertyNextTaxYear feature switch is enabled" when {
-          "redirect to WhatYearToSignUp page" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            enable(PropertyNextTaxYear)
-            enable(ReleaseFour)
-
-            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
       }
       "Foreign property is checked and self-employed, UK property are NOT checked" should {
-        "Release Four feature switch is disabled" when {
+        "Release Four and Foreign property feature switch is enabled" when {
           "redirect to the overseas property start date page" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            disable(ReleaseFour)
-            disable(PropertyNextTaxYear)
-
-            val goodRequest = callSubmit(IncomeSourceModel(false, false, true), isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.OverseasPropertyStartDateController.show().url)
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-        "Release Four feature switch is enabled" when {
-          "redirect to the overseas property start date page" in {
+            enable(ReleaseFour)
             enable(ForeignProperty)
             setupMockSubscriptionDetailsSaveFunctions()
 
-            val goodRequest = callSubmit(IncomeSourceModel(false, false, true), isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get must be(controllers.individual.business.routes.OverseasPropertyStartDateController.show().url)
 
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-        "PropertyNextTaxYear feature switch is enabled" when {
-          "redirect to WhatYearToSignUp page" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            enable(PropertyNextTaxYear)
-
-            val goodRequest = callSubmit(IncomeSourceModel(false, false, true), isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
             verifySubscriptionDetailsSave(IncomeSource, 1)
@@ -279,9 +204,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         "redirect to BusinessName page" in {
           setupMockSubscriptionDetailsSaveFunctions()
           disable(ReleaseFour)
-          disable(PropertyNextTaxYear)
 
-          val goodRequest = callSubmit(IncomeSourceModel(true, true, true), isEditMode = false)
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get must be(controllers.individual.business.routes.BusinessNameController.show().url)
@@ -296,29 +220,9 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     "When it is in edit mode" should {
 
       "the user selects self-employment and self-employment journey has not been completed before" when {
-        "FS PropertyNextTaxYear and ReleaseFour are disabled and selected tax year page has not been completed before" should {
-          s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
-            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
-            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(incomeSource = Some(IncomeSourceModel(false, true, false)))))
-
-            val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = true)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-
-
-        "FS PropertyNextTaxYear and ReleaseFour are enabled and selected tax year page has been completed before " should {
+        "FS ReleaseFour is enabled " should {
           s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl}" in {
             enable(ReleaseFour)
-            enable(PropertyNextTaxYear)
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -340,33 +244,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           }
         }
 
-        "FS PropertyNextTaxYear and ReleaseFour are enabled and selected tax year page has not been completed before" should {
-          s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-            enable(ReleaseFour)
-            setupMockSubscriptionDetailsSaveFunctions()
-            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
-            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
-            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-              ukPropertyStartDate = testPropertyStartDateModel,
-              accountingMethodProperty = testAccountingMethodProperty
-            )))
-
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-
-
-        "FS ReleaseFour and PropertyNextTaxYear are disabled and selected tax year page has been completed before " +
-          "and the user has no uk property and no overseas property income" should {
-          s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
+        "FS ReleaseFour is disabled and the user has no uk property and no overseas property income" should {
+          s"redirect to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -380,7 +259,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -388,8 +267,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           }
         }
 
-        "FS ReleaseFour and PropertyNextTaxYear are disabled and selected tax year page has been completed before" +
-          "and the user has no uk property and has an overseas property income" should {
+        "FS ReleaseFour is disabled and the user has no uk property and has an overseas property income" should {
           s" redirect to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
@@ -411,8 +289,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           }
         }
 
-        "FS ReleaseFour and PropertyNextTaxYear are disabled and selected tax year page has been completed before " +
-          "and the user has a uk property and has no overseas property income" should {
+        "FS ReleaseFour is disabled and the user has a uk property and has no overseas property income" should {
           s" redirect to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
@@ -434,11 +311,9 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           }
         }
 
-        "FS PropertyNextTaxYear and FS ReleaseFour both are enabled and selected tax year page has been completed before " +
-          "and the user has no uk property and no overseas property income" should {
+        "FS ReleaseFour is enabled and the user has no uk property and no overseas property income" should {
           s" redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl}" in {
             enable(ReleaseFour)
-            enable(PropertyNextTaxYear)
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -458,37 +333,12 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
-
-        "FS PropertyNextTaxYear and FS ReleaseFour both are enabled and selected tax year page has not been completed before " +
-          "and the user has no uk property and no overseas property income" should {
-          s" redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-            enable(ReleaseFour)
-            enable(PropertyNextTaxYear)
-            setupMockSubscriptionDetailsSaveFunctions()
-            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
-            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
-            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-              accountingMethodProperty = testAccountingMethodProperty
-            )))
-
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
       }
 
       "the user selected UK property and UK property journey has not been completed before" when {
-        "when ReleaseFour and PropertyNextTaxYear are enabled" should {
+        "when ReleaseFour is enabled" should {
           s" redirect to ${controllers.individual.business.routes.PropertyStartDateController.show()}" in {
             enable(ReleaseFour)
-            enable(PropertyNextTaxYear)
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -534,10 +384,9 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
 
       "the user selected overseas property and overseas property journey has not been completed before" when {
-        "when ReleaseFour and PropertyNextTaxYear are enabled" should {
+        "when ReleaseFour is enabled" should {
           s" redirect to ${controllers.individual.business.routes.OverseasPropertyStartDateController.show().url}" in {
             enable(ReleaseFour)
-            enable(PropertyNextTaxYear)
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -559,11 +408,9 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         }
       }
 
-
-      "the user select self-employment and self-employment journey ( include tax year to sign up) has completed before and ReleaseFour and PropertyNextTaxYear are enabled" should {
+      "the user select self-employment and self-employment journey has completed before and ReleaseFour is enabled" should {
         s" redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
           enable(ReleaseFour)
-          enable(PropertyNextTaxYear)
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -792,9 +639,16 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     }
 
 
-    "The back url" should {
-      s"point to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url} on income source page" in {
-        new TestIncomeSourceController().backUrl mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+    "The back url" when {
+      "in edit mode" should {
+        "point to the check your answers page" in {
+          new TestIncomeSourceController().backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        }
+      }
+      "not in edit mode" should {
+        "point to the tax year page" in {
+          new TestIncomeSourceController().backUrl(isEditMode = false) mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+        }
       }
     }
 

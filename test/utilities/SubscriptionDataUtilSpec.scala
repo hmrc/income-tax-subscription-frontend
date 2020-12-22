@@ -16,7 +16,6 @@
 
 package utilities
 
-import config.featureswitch.FeatureSwitch.PropertyNextTaxYear
 import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import models.common.IncomeSourceModel
@@ -92,7 +91,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "income source is all property and business and the feature switches are enabled" in {
-        testCacheMapCustom(incomeSource = testIncomeSourceAll).getSummary(isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = true) shouldBe
+        testCacheMapCustom(incomeSource = testIncomeSourceAll).getSummary(isReleaseFourEnabled = true) shouldBe
           IndividualSummary(
             incomeSource = testIncomeSourceAll,
             businessName = testBusinessName,
@@ -132,8 +131,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is both" in {
-				disable(PropertyNextTaxYear)
-				disable(ReleaseFour)
+        disable(PropertyNextTaxYear)
+        disable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceBusinessProperty)
         ).getAgentSummary() shouldBe
@@ -159,29 +158,29 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
           isReleaseFourEnabled = true
         ) shouldBe AgentSummary(
-              incomeSource = Some(testAgentIncomeSourceProperty),
-              selectedTaxYear = None,
-              businessName = None,
-              accountingMethod = None,
-              accountingMethodProperty = Some(testAccountingMethodProperty)
+          incomeSource = Some(testAgentIncomeSourceProperty),
+          selectedTaxYear = None,
+          businessName = None,
+          accountingMethod = None,
+          accountingMethodProperty = Some(testAccountingMethodProperty)
         )
       }
 
-			"the income type is property with the property tax year feature switch enabled" in {
-				enable(PropertyNextTaxYear)
-				enable(ReleaseFour)
+      "the income type is property with the property tax year feature switch enabled" in {
+        enable(PropertyNextTaxYear)
+        enable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceProperty)
         ).getAgentSummary(
-            selfEmployments = testSelfEmployments,
-            selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
-            isReleaseFourEnabled = true
+          selfEmployments = testSelfEmployments,
+          selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+          isReleaseFourEnabled = true
         ) shouldBe AgentSummary(
-              incomeSource = Some(testAgentIncomeSourceProperty),
-              selectedTaxYear = testSelectedTaxYearNext,
-              businessName = None,
-              accountingMethod = None,
-              accountingMethodProperty = Some(testAccountingMethodProperty)
+          incomeSource = Some(testAgentIncomeSourceProperty),
+          selectedTaxYear = testSelectedTaxYearNext,
+          businessName = None,
+          accountingMethod = None,
+          accountingMethodProperty = Some(testAccountingMethodProperty)
         )
       }
 
@@ -201,8 +200,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is foreign property" in {
-				disable(PropertyNextTaxYear)
-				disable(ReleaseFour)
+        disable(PropertyNextTaxYear)
+        disable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceForeignProperty)
         ).getAgentSummary(selfEmployments = testSelfEmployments,
@@ -217,9 +216,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         )
       }
 
-			"the income type is foreign property with the property tax year feature switch enabled" in {
-				enable(PropertyNextTaxYear)
-				enable(ReleaseFour)
+      "the income type is foreign property with the property tax year feature switch enabled" in {
+        enable(PropertyNextTaxYear)
+        enable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceForeignProperty)
         ).getAgentSummary(selfEmployments = testSelfEmployments,
@@ -267,25 +266,25 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       }
 
       "the income type is both UK property and overseas property" in {
-				disable(PropertyNextTaxYear)
-				disable(ReleaseFour)
+        disable(PropertyNextTaxYear)
+        disable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)
         ).getAgentSummary(selfEmployments = testSelfEmployments,
           selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
           isReleaseFourEnabled = true) shouldBe AgentSummary(
-            incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
-            selectedTaxYear = None,
-            businessName = None,
-            accountingMethod = None,
-            accountingMethodProperty = Some(testAccountingMethodProperty),
-            overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+          incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
+          selectedTaxYear = None,
+          businessName = None,
+          accountingMethod = None,
+          accountingMethodProperty = Some(testAccountingMethodProperty),
+          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
         )
       }
 
-			"the income type is both UK property and overseas property with the property feature switch enabled" in {
-				enable(PropertyNextTaxYear)
-				enable(ReleaseFour)
+      "the income type is both UK property and overseas property with the property feature switch enabled" in {
+        enable(PropertyNextTaxYear)
+        enable(ReleaseFour)
         testCacheMapCustom(
           incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)
         ).getAgentSummary(selfEmployments = testSelfEmployments,

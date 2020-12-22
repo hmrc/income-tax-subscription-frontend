@@ -27,10 +27,10 @@ import play.api.test.Helpers._
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.ImplicitDateFormatterImpl
 import utilities.SubscriptionDataKeys.MtditId
 import utilities.SubscriptionDataUtil._
 import utilities.TestModels._
-import utilities.ImplicitDateFormatterImpl
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
@@ -42,6 +42,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with FeatureSwitching {
 
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -106,7 +111,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = false, isPropertyNextTaxYearEnabled = false)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = false)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -127,28 +132,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = false)
-        status(result) must be(Status.SEE_OTHER)
-        await(result)
-        verifySubscriptionDetailsSave(MtditId, 1)
-        verifySubscriptionDetailsFetchAll(2)
-      }
-
-      s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show().url)
-      }
-    }
-
-    "When the submission is successful and release four + property next tax year is enabled" should {
-      lazy val result = call
-
-      "return a redirect status (SEE_OTHER - 303)" in {
-        enable(ReleaseFour)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchAllFromSubscriptionDetails(testCacheMap)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
-        mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = true, isPropertyNextTaxYearEnabled = true)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true), isReleaseFourEnabled = true)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -164,11 +148,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a internalServer error" in {
-        disable(ReleaseFour)
+        enable(ReleaseFour)
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = false, isPropertyNextTaxYearEnabled = false)
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true), isReleaseFourEnabled = true)
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifySubscriptionDetailsFetchAll(1)
         verifySubscriptionDetailsSave(MtditId, 0)

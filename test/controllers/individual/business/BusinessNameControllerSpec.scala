@@ -23,8 +23,8 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import utilities.TestModels._
 import utilities.SubscriptionDataKeys.BusinessName
+import utilities.TestModels._
 
 import scala.concurrent.Future
 
@@ -82,20 +82,18 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptio
     }
 
     "it is not in edit mode" when {
-      "the user is business only" should {
-        s"redirect to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
+      s"redirect to ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url}" in {
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
 
-          val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callShow(isEditMode = false)
 
-          status(goodRequest) mustBe Status.SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
+        status(goodRequest) mustBe Status.SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.BusinessAccountingMethodController.show().url)
 
-          await(goodRequest)
-          verifySubscriptionDetailsFetchAll(2)
-          verifySubscriptionDetailsSave(BusinessName, 1)
-        }
+        await(goodRequest)
+        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsSave(BusinessName, 1)
       }
     }
 

@@ -19,7 +19,7 @@ package views.individual.incometax.business
 import assets.MessageLookup.{Base => common, WhatYearToSignUp => messages}
 import forms.individual.business.AccountingYearForm
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -108,10 +108,17 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
       }
     }
 
-    "have a back button" in new Setup {
-      val backButton: Elements = document.select(".back-link")
-      backButton.attr("href") mustBe backUrl
-      backButton.text mustBe common.back
+    "have a back button" when {
+      "in edit mode" in new Setup(isEditMode = true) {
+        val backLink: Element = document.selectFirst(".back-link")
+        backLink.attr("href") mustBe backUrl
+        backLink.text mustBe common.back
+      }
+    }
+    "not have a back button" when {
+      "not in edit mode" in new Setup(isEditMode = false) {
+        Option(document.selectFirst(".back-link")) mustBe None
+      }
     }
   }
 }
