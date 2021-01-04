@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ object TestModels extends Implicits {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = DateModel("6", "4", LocalDate.now.getYear.toString)
-  val testEndDate = DateModel("5", "4", LocalDate.now.plusYears(1).getYear.toString)
+  val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
+  val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
 
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
