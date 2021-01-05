@@ -60,7 +60,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   val token: String = TestConstants.testToken
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
-    SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name).buildRequest(userDetails)
+    ITSASessionKeys.JourneyStateKey -> UserMatching.name).buildRequest(userDetails)
 
 
   "Calling the show action of the ConfirmUserController with an authorised user" should {
@@ -70,7 +70,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     "when there are no user details stored redirect them to user details" in {
       setupMockNotLockedOut(testCredId)
 
-      val r = userMatchingRequest.withSession(SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+      val r = userMatchingRequest.withSession(ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
       val result = call(r)
 
@@ -112,7 +112,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     "return the user details page" in {
       setupMockNotLockedOut(testCredId)
 
-      val r = userMatchingRequest.withSession(SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+      val r = userMatchingRequest.withSession(ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
       val result = callSubmit(r)
 
@@ -190,7 +190,6 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         "remove the counter from the session, lockout the user then redirect to the locked out page" in {
           val currentFailedMatches = appConfig.matchingAttempts - 1
           implicit val requestWithLockout: FakeRequest[AnyContentAsEmpty.type] = request.withSession(
-            SessionKeys.userId -> testCredId,
             ITSASessionKeys.FailedUserMatching -> currentFailedMatches.toString
           )
 

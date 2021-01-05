@@ -12,19 +12,19 @@ object FrontendBuild {
 
 private object AppDependencies {
 
-  private val bootstrapPlayVersion = "1.7.0"
-  private val govukTemplateVersion = "5.52.0-play-26"
-  private val playUiVersion = "8.18.0-play-26"
-  private val playPartialsVersion = "6.10.0-play-26"
-  private val hmrcTestVersion = "3.9.0-play-26"
-  private val scalaTestVersion = "3.0.8"
+  private val bootstrapPlayVersion = "2.3.0"
+  private val govukTemplateVersion = "5.60.0-play-26"
+  private val playUiVersion = "8.19.0-play-26"
+  private val playPartialsVersion = "7.1.0-play-26"
+  private val hmrcTestVersion = "3.10.0-play-26"
+  private val scalaTestVersion = "3.0.9"
   private val scalaTestPlusVersion = "3.1.3"
   private val pegdownVersion = "1.6.0"
-  private val httpCachingClientVersion = "9.0.0-play-26"
-  private val wiremockVersion = "2.26.3"
-  private val domainVersion = "5.6.0-play-26"
+  private val httpCachingClientVersion = "9.2.0-play-26"
+  private val wiremockVersion = "2.27.2"
+  private val domainVersion = "5.10.0-play-26"
   private val catsVersion = "0.9.0"
-  private val playLanguageVersion = "4.2.0-play-26"
+  private val playLanguageVersion = "4.5.0-play-26"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
@@ -36,7 +36,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "domain" % domainVersion,
     "org.typelevel" %% "cats" % catsVersion,
     "uk.gov.hmrc" %% "play-language" % playLanguageVersion,
-    "uk.gov.hmrc" %% "logback-json-logger" % "4.8.0"
+    "uk.gov.hmrc" %% "logback-json-logger" % "4.9.0"
   )
 
   trait TestDependencies {
@@ -51,9 +51,9 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
-        "org.jsoup" % "jsoup" % "1.11.3" % scope,
+        "org.jsoup" % "jsoup" % "1.13.1" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.mockito" % "mockito-core" % "2.25.1" % scope
+        "org.mockito" % "mockito-core" % "3.7.0" % scope
       )
     }.test
   }
@@ -70,7 +70,7 @@ private object AppDependencies {
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
         "com.github.fge" % "json-schema-validator" % "2.2.6" % scope,
-        "org.jsoup" % "jsoup" % "1.11.3" % scope,
+        "org.jsoup" % "jsoup" % "1.13.1" % scope,
         "com.github.tomakehurst" % "wiremock-jre8" % wiremockVersion % scope
       )
     }.test

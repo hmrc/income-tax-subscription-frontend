@@ -35,9 +35,7 @@ trait SessionCookieBaker {
 
     Map(
       SessionKeys.sessionId -> SessionId,
-      SessionKeys.userId -> userId,
-      SessionKeys.token -> "token",
-      SessionKeys.authProvider -> "GGW",
+      SessionKeys.authToken -> "token",
       SessionKeys.lastRequestTimestamp -> rollbackTimestamp,
       SessionKeys.authToken -> "auth"
     ) ++ additionalData
