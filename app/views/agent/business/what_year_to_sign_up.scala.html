@@ -56,7 +56,9 @@
 
 @main_template(title = pageTitle, form = Some(accountingYearForm), scriptElem = Some(scripts)) {
 
-    @back_link(backUrl)
+    @if(isEditMode) {
+         @back_link(backUrl)
+     }
 
     @summaryErrorHelper(accountingYearForm)
 

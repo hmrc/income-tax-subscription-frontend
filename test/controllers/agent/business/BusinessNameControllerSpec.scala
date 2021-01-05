@@ -47,17 +47,15 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
   "The back url for BusinessNameController" should {
 
     "return the url for check your answers if in edit mode" in {
-      TestBusinessNameController.backUrl(true, IncomeSourceModel(true, false, false)) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+      TestBusinessNameController.backUrl(true) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
     }
 
     "return the url for WhatYearToSignUp if not in edit mode and only self employment is checked in IncomeSource" in {
-      TestBusinessNameController.backUrl(false,
-        IncomeSourceModel(true, false, false)) mustBe controllers.agent.business.routes.WhatYearToSignUpController.show().url
+      TestBusinessNameController.backUrl(false) mustBe controllers.agent.routes.IncomeSourceController.show().url
     }
 
     "return the url for income source if not in edit mode and self employment and any other property source is selected" in {
-      TestBusinessNameController.backUrl(false,
-        IncomeSourceModel(true, true, false)) mustBe controllers.agent.routes.IncomeSourceController.show().url
+      TestBusinessNameController.backUrl(false) mustBe controllers.agent.routes.IncomeSourceController.show().url
     }
   }
 
@@ -73,7 +71,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
 
       await(result)
       verifySubscriptionDetailsSave(BusinessName, 0)
-      verifySubscriptionDetailsFetch(BusinessName, 2)
+      verifySubscriptionDetailsFetch(BusinessName, 1)
 
     }
   }
@@ -93,7 +91,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
 
     "When is not in edit mode" when {
       "the user is business only" should {
-        s"redirect to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in {
+        s"redirect to ${controllers.agent.routes.WhatYearToSignUpController.show().url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceBusiness))
 
@@ -186,9 +184,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     "in edit mode" should {
       s"point to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
         TestBusinessNameController.backUrl(
-          isEditMode = true,
-          IncomeSourceModel(true, false, false)
-        ) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+          isEditMode = true) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
       }
     }
   }

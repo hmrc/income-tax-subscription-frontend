@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.agent.business
+package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.FeatureSwitching
 import forms.agent.AccountingYearForm
 import javax.inject.{Inject, Singleton}
-import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -35,21 +33,15 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
                                            accountingPeriodService: AccountingPeriodService,
                                            subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                           appConfig: AppConfig) extends AuthenticatedController  with FeatureSwitching {
+                                           appConfig: AppConfig) extends AuthenticatedController {
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      controllers.agent.routes.CheckYourAnswersController.show().url
-    } else {
-      controllers.agent.routes.IncomeSourceController.show().url
-    }
-  }
+  val backUrl: String = controllers.agent.routes.CheckYourAnswersController.show().url
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.agent.business.what_year_to_sign_up(
       accountingYearForm = accountingYearForm,
-      postAction = controllers.agent.business.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
-      backUrl = backUrl(isEditMode),
+      postAction = controllers.agent.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
+      backUrl = backUrl,
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode
     )
@@ -69,19 +61,11 @@ class WhatYearToSignUpController @Inject()(val authService: AuthService,
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(accountingYear)) flatMap { _ =>
+          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(accountingYear)) map { _ =>
             if (isEditMode) {
-              Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
+              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             } else {
-              subscriptionDetailsService.fetchIncomeSource() map {
-                case Some(IncomeSourceModel(true, _, _)) =>
-                  if (isEnabled(ReleaseFour)) Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
-                  else Redirect(controllers.agent.business.routes.BusinessNameController.show())
-                case Some(IncomeSourceModel(_, true, _)) =>
-                  Redirect(controllers.agent.business.routes.PropertyStartDateController.show())
-                case Some(IncomeSourceModel(_, _, true)) =>
-                  Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
-              }
+              Redirect(controllers.agent.routes.IncomeSourceController.show())
             }
           }
         }

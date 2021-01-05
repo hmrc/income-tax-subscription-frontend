@@ -16,7 +16,7 @@
 
 package controllers.individual.business
 
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
@@ -36,7 +36,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec 
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
-    disable(PropertyNextTaxYear)
     super.beforeEach()
   }
 

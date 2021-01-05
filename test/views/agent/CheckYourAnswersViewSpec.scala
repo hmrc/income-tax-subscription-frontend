@@ -164,7 +164,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year
         val expectedAnswer = messages.option1(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
-        val expectedEditLink = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
@@ -180,7 +180,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year
         val expectedAnswer = messages.option2(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
-        val expectedEditLink = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
@@ -198,7 +198,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year_release4
         val expectedAnswer = messages.option1_release4(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
-        val expectedEditLink = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
@@ -215,7 +215,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year_release4
         val expectedAnswer = messages.option2_release4(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
-        val expectedEditLink = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,

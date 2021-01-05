@@ -27,9 +27,7 @@
 
 @main_template(title = Messages("agent.income_source.heading"), form = incomeSourceForm) {
 
-    @if(isEditMode) {
-        @back_link(backUrl)
-    }
+    @back_link(backUrl)
 
 @if(incomeSourceForm.hasErrors) {
 

@@ -18,7 +18,7 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import forms.agent.IncomeSourceForm
@@ -43,12 +43,20 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching {
 
+  def backUrl(isEditMode: Boolean): String = {
+    if (isEditMode) {
+      controllers.agent.routes.CheckYourAnswersController.show().url
+    } else {
+      controllers.agent.routes.WhatYearToSignUpController.show().url
+    }
+  }
+
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.agent.income_source(
       incomeSourceForm = incomeSourceForm,
       postAction = controllers.agent.routes.IncomeSourceController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl,
+      backUrl = backUrl(isEditMode),
       foreignProperty = isEnabled(ForeignProperty)
     )
 
@@ -80,29 +88,12 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
       cacheMap <- subscriptionDetailsService.saveIncomeSource(incomeSource)
       summaryModel <- getSummaryModel(cacheMap)
     } yield {
-      if (isEnabled(ReleaseFour) && isEnabled(PropertyNextTaxYear)) {
-        if (cacheMap.getSelectedTaxYear.isDefined) {
-          incomeSource match {
-            case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true, ignoreSelectedTaxYear = true) =>
-              Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
-            case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(true) =>
-              Redirect(controllers.agent.business.routes.PropertyStartDateController.show())
-            case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
-              Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
-            case _ =>
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-          }
-        } else {
-          Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
-        }
 
-      } else if (isEnabled(ReleaseFour)) {
+      if (isEnabled(ReleaseFour)) {
 
         incomeSource match {
-          case IncomeSourceModel(true, false, false) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true, ignoreSelectedTaxYear = false) =>
-            Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
-          case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true, ignoreSelectedTaxYear = true) =>
-            Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+          case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true) =>
+            Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
           case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(true) =>
             Redirect(controllers.agent.business.routes.PropertyStartDateController.show())
           case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
@@ -113,9 +104,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
 
       } else {
         incomeSource match {
-          case IncomeSourceModel(true, false, false) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = false, ignoreSelectedTaxYear = false) =>
-            Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
-          case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = false, ignoreSelectedTaxYear = true) =>
+          case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = false) =>
             Redirect(controllers.agent.business.routes.BusinessNameController.show())
           case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(false) =>
             Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
@@ -142,24 +131,17 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
   private def linearJourney(incomeSource: IncomeSourceModel)(implicit request: Request[_]): Future[Result] = {
     subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
       incomeSource match {
-        case IncomeSourceModel(_, _, _) if isEnabled(PropertyNextTaxYear) =>
-          Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
-        case IncomeSourceModel(true, false, false) =>
-          Redirect(controllers.agent.business.routes.WhatYearToSignUpController.show())
         case IncomeSourceModel(true, _, _) =>
           if (isEnabled(ReleaseFour)) Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
           else Redirect(controllers.agent.business.routes.BusinessNameController.show())
         case IncomeSourceModel(_, true, _) =>
           if (isEnabled(ReleaseFour)) Redirect(controllers.agent.business.routes.PropertyStartDateController.show())
           else Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
-        case IncomeSourceModel(_, _, true) =>
+        case IncomeSourceModel(_, _, true) if isEnabled(ForeignProperty) =>
           Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
         case _ =>
           throw new InternalServerException("User is missing income source type in Subscription Details")
       }
     }
   }
-
-  lazy val backUrl: String =
-    controllers.agent.routes.CheckYourAnswersController.show().url
 }

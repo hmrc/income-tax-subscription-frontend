@@ -16,7 +16,7 @@
 
 package controllers.individual.subscription
 
-import config.featureswitch.FeatureSwitch.{PropertyNextTaxYear, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
@@ -34,7 +34,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
-    disable(PropertyNextTaxYear)
     super.beforeEach()
   }
 

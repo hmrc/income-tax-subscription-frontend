@@ -73,7 +73,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     }
   }
 
-  def toBusinessSubscriptionDetailsModel(nino: String, isPropertyNextTaxYearEnabled: Boolean): BusinessSubscriptionDetailsModel = {
+  def toBusinessSubscriptionDetailsModel(nino: String): BusinessSubscriptionDetailsModel = {
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
     val useUkProperty = incomeSource.exists(_.ukProperty)
     val useForeignProperty = incomeSource.exists(_.foreignProperty)
@@ -89,17 +89,9 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     if (!hasValidSelfEmployments) throw new Exception("Missing data items for valid self employments submission")
 
     val accountingPeriodVal: Option[AccountingPeriodModel] = {
-      if (isPropertyNextTaxYearEnabled) {
-        selectedTaxYear map {
-          case AccountingYearModel(Next) => getNextTaxYear
-          case AccountingYearModel(Current) => getCurrentTaxYear
-        }
-      } else {
-        if (incomeSource.exists(sources => sources.ukProperty || sources.foreignProperty)) Some(getCurrentTaxYear)
-        else selectedTaxYear map {
-          case AccountingYearModel(Next) => getNextTaxYear
-          case AccountingYearModel(Current) => getCurrentTaxYear
-        }
+      selectedTaxYear map {
+        case AccountingYearModel(Next) => getNextTaxYear
+        case AccountingYearModel(Current) => getCurrentTaxYear
       }
     }
 
@@ -142,24 +134,15 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
     }
   }
 
-  def selfEmploymentComplete(releaseFourEnabled: Boolean, ignoreSelectedTaxYear: Boolean): Boolean = {
+  def selfEmploymentComplete(releaseFourEnabled: Boolean): Boolean = {
     if (releaseFourEnabled) {
-      if (ignoreSelectedTaxYear) {
-        selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
-      } else {
-        selectedTaxYear.isDefined && selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+      selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+    } else {
+      businessName.isDefined && accountingMethod.isDefined
       }
     }
-    else {
-      if (ignoreSelectedTaxYear) {
-        businessName.isDefined && accountingMethod.isDefined
-      } else {
-        selectedTaxYear.isDefined && businessName.isDefined && accountingMethod.isDefined
-      }
-    }
-  }
 
-  def toBusinessSubscriptionDetailsModel(nino: String, propertyNextTaxYear: Boolean): BusinessSubscriptionDetailsModel = {
+  def toBusinessSubscriptionDetailsModel(nino: String): BusinessSubscriptionDetailsModel = {
 
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
     val useUkProperty = incomeSource.exists(_.ukProperty)
@@ -176,8 +159,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
     if (!hasValidSelfEmployments) throw new Exception("Missing data items for valid self employments submission")
 
     val accountingPeriodVal: Option[AccountingPeriodModel] =
-      if (!propertyNextTaxYear && (useUkProperty || useForeignProperty)) Some(getCurrentTaxYear)
-      else selectedTaxYear map {
+      selectedTaxYear map {
         case AccountingYearModel(Next) => getNextTaxYear
         case AccountingYearModel(Current) => getCurrentTaxYear
       }

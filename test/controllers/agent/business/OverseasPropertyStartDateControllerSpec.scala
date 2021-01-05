@@ -194,20 +194,13 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "The back url is not in edit mode and release four is disabled" when {
+    "The back url is not in edit mode" when {
       "the user has a foreign property and it is the only income source" should {
 
         "redirect to income source page" in new Test {
 
           controller.backUrl(isEditMode = false, incomeSourceOverseasPropertyOnly) mustBe
             controllers.agent.routes.IncomeSourceController.show().url
-        }
-      }
-
-      "the user has a business and a foreign property" should {
-        "redirect to business accounting method page" in new Test {
-          controller.backUrl(isEditMode = false, incomeSourceSelfEmployAndOverseasProperty) mustBe
-            controllers.agent.business.routes.BusinessAccountingMethodController.show().url
         }
       }
 
@@ -229,40 +222,6 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     }
 
-    "The back url is not in edit mode and release four is enabled" when {
-      "the user has a foreign property and it is the only income source" should {
-        "redirect to income source page" in new Test {
-          enable(ReleaseFour)
-          controller.backUrl(isEditMode = false, incomeSourceOverseasPropertyOnly) mustBe
-            controllers.agent.business.routes.WhatYearToSignUpController.show().url
-        }
-      }
-
-      "the user has a business and a foreign property" should {
-        "redirect to business accounting method page" in new Test {
-          enable(ReleaseFour)
-          controller.backUrl(isEditMode = false, incomeSourceSelfEmployAndOverseasProperty) mustBe
-            "/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-accounting-method"
-        }
-      }
-
-      "the user has a UK and a foreign property" should {
-        "redirect to business accounting method page" in new Test {
-          enable(ReleaseFour)
-          controller.backUrl(isEditMode = false, incomeSourceUkAndOverseasProperty) mustBe
-            controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-        }
-      }
-
-      "the user has a business, a UK and a foreign property" should {
-        "redirect to business accounting method page" in new Test {
-          enable(ReleaseFour)
-          controller.backUrl(isEditMode = false, incomeSourceAllTypes) mustBe
-            controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-        }
-      }
-
-    }
     "The back url is in edit mode" when {
       "the user click back url" should {
         "redirect to check your answer page" in new Test {

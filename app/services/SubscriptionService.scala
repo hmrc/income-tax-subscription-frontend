@@ -16,7 +16,6 @@
 
 package services
 
-import config.featureswitch.FeatureSwitch.PropertyNextTaxYear
 import config.featureswitch.FeatureSwitching
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
@@ -121,9 +120,9 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
     Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
     val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = summaryModel match {
       case summary: IndividualSummary =>
-        summary.toBusinessSubscriptionDetailsModel(nino, isPropertyNextTaxYearEnabled = true)
+        summary.toBusinessSubscriptionDetailsModel(nino)
       case summary: AgentSummary =>
-        summary.toBusinessSubscriptionDetailsModel(nino, isEnabled(PropertyNextTaxYear))
+        summary.toBusinessSubscriptionDetailsModel(nino)
     }
 
     multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)

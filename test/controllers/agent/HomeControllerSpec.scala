@@ -100,7 +100,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
         s"redirect user to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)
 
-          redirectLocation(result).get mustBe controllers.agent.routes.IncomeSourceController.show().url
+          redirectLocation(result).get mustBe controllers.agent.routes.WhatYearToSignUpController.show().url
 
           await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }

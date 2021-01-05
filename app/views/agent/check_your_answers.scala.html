@@ -82,7 +82,7 @@
         Messages("agent.summary.selected_year")
     }
     val rowAnswer = accountingYearText(selectedTaxYear, releaseFour)
-    val rowUrl = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
+    val rowUrl = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
