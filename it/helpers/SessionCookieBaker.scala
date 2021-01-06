@@ -52,9 +52,6 @@ trait SessionCookieBaker {
 
     Map(
       SessionKeys.sessionId -> SessionId,
-      SessionKeys.userId -> userId,
-      SessionKeys.authToken -> "token",
-      SessionKeys.authProvider -> "GGW",
       SessionKeys.lastRequestTimestamp -> rollbackTimestamp,
       SessionKeys.authToken -> "auth",
       ITSASessionKeys.StartTime -> LocalDateTime.now().toString

@@ -59,7 +59,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
     )
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
-    SessionKeys.userId -> testCredId, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+    ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "Calling the show action of the UserDetailsController with an authorised user" should {

@@ -28,7 +28,6 @@ import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchS
 import models.{Cash, Current, DateModel, IndividualSummary}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
-import uk.gov.hmrc.http.UserId
 import utilities.AccountingPeriodUtil
 import utilities.TestModels.testBusinessName
 import utilities.individual.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
@@ -52,8 +51,8 @@ object TestConstants {
   lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
   lazy val testAgencyName = UUID.randomUUID().toString
 
-  val testUserId = UserId(s"/auth/oid/1234567")
-  val escapedUserId = URLEncoder.encode(testUserId.value, "UTF-8")
+  val testUserId = "/auth/oid/1234567"
+  val escapedUserId = URLEncoder.encode(testUserId, "UTF-8")
 
   val testFirstName = "Test"
   val testLastName = "Name"

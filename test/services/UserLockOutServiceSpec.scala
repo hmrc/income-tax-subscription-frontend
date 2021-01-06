@@ -28,7 +28,7 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
   "UserLockoutService.getLockOutStatus" should {
 
-    def call: LockoutStatusResponse = await(TestUserLockoutService.getLockoutStatus(token = testUserId.value))
+    def call: LockoutStatusResponse = await(TestUserLockoutService.getLockoutStatus(token = testUserId))
 
     "return the not locked out status" in {
       setupMockNotLockedOut(escapedUserId)
@@ -53,7 +53,7 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
   "UserLockoutService.incrementLockout" should {
 
-    def call(counter: Int): Either[LockoutStatusFailure, LockoutUpdate] = await(TestUserLockoutService.incrementLockout(token = testUserId.value, counter))
+    def call(counter: Int): Either[LockoutStatusFailure, LockoutUpdate] = await(TestUserLockoutService.incrementLockout(token = testUserId, counter))
 
     "when counter is under the limit should return not locked out and updated new counter, should not clear Subscription Details " in {
       setupMockLockCreated(escapedUserId)
