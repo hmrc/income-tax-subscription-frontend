@@ -41,7 +41,12 @@
         <legend>
             <h1 class="heading-large" id="heading">@messages("agent.property_trading_after.heading", startDateLimit)</h1>
         </legend>
-        <p class="form-hint" id="property-trading-hint">@messages("agent.property_trading_after.line")</p>
+        <p id="property-trading-hint">@messages("agent.property_trading_after.line")</p>
+        <ul class="list list-bullet">
+            <li>@messages("agent.property_trading_after.line.point1")</li>
+            <li>@messages("agent.property_trading_after.line.point2")</li>
+            <li>@messages("agent.property_trading_after.line.point3")</li>
+        </ul>
     </fieldset>
     @form(action = postAction) {
 

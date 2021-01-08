@@ -505,7 +505,7 @@ trait ComponentSpecBase extends UnitSpec
       element.getErrorSummary.attr("aria-labelledby") shouldBe "error-summary-heading"
       element.getErrorSummary.attr("tabindex") shouldBe "-1"
       element.getErrorSummary.select("h2").attr("id") shouldBe "error-summary-heading"
-      element.getErrorSummary.select("h2").text shouldBe "There’s a problem"
+      element.getErrorSummary.select("h2").text shouldBe "There is a problem"
       element.getErrorSummary.select("ul > li").text shouldBe errors.mkString(" ")
     }
 
