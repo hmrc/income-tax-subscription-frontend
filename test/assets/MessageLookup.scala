@@ -215,8 +215,8 @@ object MessageLookup {
     val accountingMethodProperty = "Accounting method for UK property income"
     val propertyStart = "Trading start date of your UK property business"
     val selfEmployments = "Number of businesses signed up"
-    val overseasPropertyStartDate = "Trading start date of your foreign property business"
-    val accountingMethodForeignProperty = "Accounting method for foreign property income"
+    val overseasPropertyStartDate = "Trading start date of your overseas property business"
+    val accountingMethodForeignProperty = "Accounting method for overseas property income"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -225,7 +225,7 @@ object MessageLookup {
     }
 
     val business_name = "Your business name"
-    val selected_tax_year = "Tax year signed up for"
+    val selected_tax_year = "Tax year to start filing updates"
     val income_type = "Accounting method for your self-employment income"
 
     object AccountingMethod {
@@ -234,9 +234,9 @@ object MessageLookup {
     }
 
     object SelectedTaxYear {
-      def current(staringYear: Int, endYear: Int): String = s"Current tax year ($staringYear to $endYear)"
+      def current(staringYear: Int, endYear: Int): String = s"Current tax year (6 April $staringYear to 5 April $endYear)"
 
-      def next(staringYear: Int, endYear: Int): String = s"Next tax year ($staringYear to $endYear)"
+      def next(staringYear: Int, endYear: Int): String = s"Next tax year (6 April $staringYear to 5 April $endYear)"
     }
 
     val contact_email = "Do you want to receive electronic communications from HMRC?"
