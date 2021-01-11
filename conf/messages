@@ -254,9 +254,9 @@ summary.accounting_method_property                              = Accounting met
 summary.selected_year                                           = Tax year to start filing updates
 summary.selected_year.current                                   = Current tax year (6 April {0} to 5 April {1})
 summary.selected_year.next                                      = Next tax year (6 April {0} to 5 April {1})
-summary.property_start_date                              = Trading start date of your UK property business
+summary.property_start_date                              = Trading start date of UK property business
 summary.self_employments                                        = Number of businesses signed up
-summary.overseas_property_start_date                      = Trading start date of your overseas property business
+summary.overseas_property_start_date                      = Trading start date of overseas property business
 summary.accounting_method_foreign_property                      = Accounting method for overseas property income
 
 

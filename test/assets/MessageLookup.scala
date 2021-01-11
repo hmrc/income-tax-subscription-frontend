@@ -213,9 +213,9 @@ object MessageLookup {
     val selfEmployment = "Self-employment"
     val ukProperty = "UK property"
     val accountingMethodProperty = "Accounting method for UK property income"
-    val propertyStart = "Trading start date of your UK property business"
+    val propertyStart = "Trading start date of UK property business"
     val selfEmployments = "Number of businesses signed up"
-    val overseasPropertyStartDate = "Trading start date of your overseas property business"
+    val overseasPropertyStartDate = "Trading start date of overseas property business"
     val accountingMethodForeignProperty = "Accounting method for overseas property income"
 
     object IncomeSource {
