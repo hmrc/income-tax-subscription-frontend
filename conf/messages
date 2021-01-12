@@ -463,7 +463,7 @@ agent.base.endDate                                              = End date
 agent.base.day                                                  = Day
 agent.base.month                                                = Month
 agent.base.year                                                 = Year
-agent.base.error_heading                                        = There’s a problem
+agent.base.error_heading                                        = There is a problem
 agent.base.change                                               = Change
 agent.base.yes                                                  = Yes
 agent.base.no                                                   = No
@@ -496,7 +496,7 @@ agent.frontpage.bullet_10                                       = your client ne
 agent.other_sources_of_income.title                             = Apart from self employment or renting out property, does your client have any other sources of income?
 agent.other_sources_of_income.heading                           = Apart from self employment or renting out property, does your client have any other sources of income?
 agent.other_sources_of_income.include                           = This could include:
-agent.other_sources_of_income.includePoint1                     = as an employee
+agent.other_sources_of_income.includePoint1                     = PAYE as an employee
 agent.other_sources_of_income.includePoint2                     = UK pensions or annuities
 agent.other_sources_of_income.includePoint3                     = investments from outside the UK
 agent.other_sources_of_income.includePoint4                     = capital gains
@@ -510,12 +510,12 @@ agent.other_sources_of_income.invalid                           = Select yes if 
 agent.cannot_take_part.title                                    = Your client cannot take part in this pilot
 agent.cannot_take_part.heading                                  = Your client cannot take part in this pilot
 agent.cannot_take_part.income                                   = You will not be able to sign up your client for this pilot if they receive income from:
-agent.cannot_take_part.income.point1                            = being employed by another business
+agent.cannot_take_part.income.point1                            = PAYE income as an employee
 agent.cannot_take_part.income.point2                            = UK pensions or annuities
 agent.cannot_take_part.income.point3                            = investments from outside the UK
 agent.cannot_take_part.income.point4                            = capital gains
 agent.cannot_take_part.income.point5                            = taxable state benefits
-agent.cannot_take_part.other                                    = Your client also cannot take part if your client’s:
+agent.cannot_take_part.other                                    = Your client also cannot take part if their:
 agent.cannot_take_part.other.point1                             = tax year does not align with the standard tax year
 agent.cannot_take_part.other.point2                             = sole trader business began within the last two years
 agent.cannot_take_part.other.point3                             = property business began within the last year
@@ -529,14 +529,17 @@ agent.accounting_period_check.heading                           = Are all of you
 agent.accounting_period_check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
 
 # Agent property trading after date page
-agent.property_trading_after.title                              = Does your client own a property business that began trading on or after {0}?
-agent.property_trading_after.heading                            = Does your client own a property business that began trading on or after {0}?
-agent.property_trading_after.line                               = This includes being a landlord and letting holiday properties
+agent.property_trading_after.title                              = Did your client start a property business on or after {0}?
+agent.property_trading_after.heading                            = Did your client start a property business on or after {0}?
+agent.property_trading_after.line                               = This includes being a landlord or using a letting agency for:
+agent.property_trading_after.line.point1                        = UK properties
+agent.property_trading_after.line.point2                        = overseas properties
+agent.property_trading_after.line.point3                        = holiday properties
 agent.property_trading_after.error.summary                      = Select yes if your client owns a property business that began trading on or after {0}
 
 # Client details page
-agent.client-details-error.title                                = There’s a problem
-agent.client-details-error.heading                              = There’s a problem
+agent.client-details-error.title                                = There is a problem
+agent.client-details-error.heading                              = There is a problem
 agent.client-details-error.line_1                               = The details you’ve entered are not on our system.
 
 # Client Details Lockout
@@ -556,11 +559,11 @@ agent.client-details.summary.dob                                = Date of birth
 ## agent income source page
 agent.income_source.heading                                     = How does your client receive their income?
 agent.income_source.checkbox.hint                               = Select all that apply
-agent.income_source.selfEmployed                                = Self-employed
-agent.income_source.rentUkProperty                              = Rent out a property in the UK
-agent.income_source.foreignProperty                             = Rent out foreign properties
+agent.income_source.selfEmployed                                = Sole trader with one or more businesses
+agent.income_source.rentUkProperty                              = Rent out UK properties
+agent.income_source.foreignProperty                             = Rent out overseas properties
 agent.error.income_source.invalid                               = Select if your client receives income from self employment or UK property
-agent.error.income_source_foreignProperty.invalid               = Select if your client receives income from self employment, UK property or foreign property
+agent.error.income_source_foreignProperty.invalid               = Select if your client receives income from self employment, UK property or overseas property
 
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?
@@ -569,22 +572,22 @@ agent.property.income.line_1                                    = This is the am
 
 
 ## Accounting Year page
-agent.business.what_year_to_sign_up.title                       = Which tax year do you want to sign your client up for?
-agent.business.what_year_to_sign_up.heading                     = Which tax year do you want to sign your client up for?
-agent.business.what_year_to_sign_up.line_1                      = You can sign your client up for the current tax year or the next tax year.
+agent.business.what_year_to_sign_up.title                       = Which tax year do you want your client to start filing income tax updates for?
+agent.business.what_year_to_sign_up.heading                     = Which tax year do you want your client to start filing income tax updates for?
+agent.business.what_year_to_sign_up.line_1                      = You can sign your client up for the current tax year or the next tax year. It will not affect the amount of income tax they will need to pay.
 agent.business.what_year_to_sign_up.option_1                    = Current tax year (6 April {0} to 5 April {1})
 agent.business.what_year_to_sign_up.option_2                    = Next tax year (6 April {0} to 5 April {1})
-agent.business.what_year_to_sign_up.conditional.1.line_1        = You or your client will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You or your client need to send a quarterly update for:
-agent.business.what_year_to_sign_up.conditional.1.line_2        = You or your client need to send a final declaration by the 31 January {0}.
+agent.business.what_year_to_sign_up.conditional.1.line_1        = You or your client will need to add all business income and expenses into your software from the start of the current tax year. You or your client need to send a quarterly update for:
+agent.business.what_year_to_sign_up.conditional.1.line_2        = You or your client will need to submit a final declaration by the 31 January {0}.
 agent.business.what_year_to_sign_up.conditional.2.line_1        = You or your client need to send a quarterly update for:
-agent.business.what_year_to_sign_up.conditional.2.line_2        = You or your client need to send a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
+agent.business.what_year_to_sign_up.conditional.2.line_2        = You or your client will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
 agent.business.what_year_to_sign_up.quarterly.date_1            = 5 July {0}
 agent.business.what_year_to_sign_up.quarterly.date_2            = 5 October {0}
 agent.business.what_year_to_sign_up.quarterly.date_3            = 5 January {0}
 agent.business.what_year_to_sign_up.quarterly.date_4            = 5 April {0}
 
 # Agent Sole trader page
-agent.eligibility.sole_trader.heading                           = Is your client a sole trader that began trading on or after {0}?
+agent.eligibility.sole_trader.heading                           = Did your client’s sole trader business start trading on or after {0}?
 
 ## Business Income page
 agent.business.accounting_method.title                          = What accounting method does your client use for their self-employed business?
@@ -650,7 +653,7 @@ agent.summary.heading                                           = Check your ans
 agent.summary.heading_hidden                                    = before signing up
 agent.summary.confirm_and_sign_up                               = Confirm and sign up
 agent.summary.line_1                                            = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
-agent.summary.income_source                                     = Client’s income type
+agent.summary.income_source                                     = Income received from
 agent.summary.income_source.business                            = Sole trader business
 agent.summary.income_source.uk_property                         = UK property
 agent.summary.income_source.overseas_property                   = Overseas property
@@ -669,7 +672,7 @@ agent.summary.selected_year.current.release4                    = Current tax ye
 agent.summary.selected_year.next.release4                       = Next tax year (6 April {0} to 5 April {1})
 agent.summary.property_start_date                               = Trading start for UK property
 agent.summary.overseas_property_start_date                      = Trading start for foreign property
-agent.summary.income_type_overseas_property                     = Accounting method for foreign property income
+agent.summary.income_type_overseas_property                     = Accounting method for foreign property
 agent.summary.self_employments                                  = Number of businesses signed up
 
 ## Sign Up Complete page ##
@@ -693,7 +696,7 @@ agent.sign-up-complete.whatNow.para2                            = After you’ve
 ## Errors ##
 agent.error.back_to_preferences.empty                           = You must select an option to continue
 
-agent.error.dob_date.empty                                      = Enter a date of birth
+agent.error.dob_date.empty                                      = Enter your client’s date of birth
 agent.error.dob_date.invalid_chars                              = Enter a date of birth using numbers 0 to 9
 agent.error.dob_date.invalid                                    = Enter a real date of birth
 
@@ -742,7 +745,7 @@ agent.error.client_details.last_name.invalid                    = Enter a valid 
 agent.error.client_details.first_name.maxLength                 = Enter a first name that’s 105 characters or less
 agent.error.client_details.last_name.maxLength                  = Enter a last name that’s 105 characters or less
 
-agent.error.nino.invalid                                        = Enter a valid National Insurance number
+agent.error.nino.invalid                                        = Enter a National Insurance number in the correct format
 agent.error.nino.empty                                          = Enter your client’s National Insurance number
 
 ## Eligible page ##
@@ -774,7 +777,7 @@ agent.not_enrolled_agent_services.para1                         = To use this se
 ## Client Details ##
 agent.client-details.title                                      = Enter your client’s details
 agent.client-details.heading                                    = Enter your client’s details
-agent.client-details.line_1                                     = We will attempt to match these details against information we currently hold.
+agent.client-details.line_1                                     = We will try to match these details to information we have about your client.
 agent.client-details.field_1                                    = First name
 agent.client-details.field_2                                    = Last name
 agent.client-details.field_3                                    = National Insurance number

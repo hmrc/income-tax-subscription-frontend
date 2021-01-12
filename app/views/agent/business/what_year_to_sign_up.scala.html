@@ -51,7 +51,7 @@
         <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_3",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
         <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_4",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
     </ul>
-    <p> @messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod).toString) </p>
+    <p> @messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString) </p>
 }
 
 @main_template(title = pageTitle, form = Some(accountingYearForm), scriptElem = Some(scripts)) {

@@ -505,7 +505,7 @@ agent.frontpage.bullet_10                                       = rhaid i’ch c
 agent.other_sources_of_income.title                             = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau eraill o incwm?
 agent.other_sources_of_income.heading                           = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau eraill o incwm?
 agent.other_sources_of_income.include                           = Gallai hyn gynnwys:
-agent.other_sources_of_income.includePoint1                     = incwm fel cyflogai
+agent.other_sources_of_income.includePoint1                     = TWE fel cyflogai
 agent.other_sources_of_income.includePoint2                     = pensiynau neu flwydd-daliadau’r DU
 agent.other_sources_of_income.includePoint3                     = buddsoddiadau y tu allan i’r DU
 agent.other_sources_of_income.includePoint4                     = enillion cyfalaf
@@ -519,7 +519,7 @@ agent.other_sources_of_income.invalid                           = Dewiswch ‘Ia
 agent.cannot_take_part.title                                    = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
 agent.cannot_take_part.heading                                  = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
 agent.cannot_take_part.income                                   = Ni allwch gofrestru’ch cleient ar gyfer y cynllun peilot hwn os yw’n cael incwm o’r canlynol:
-agent.cannot_take_part.income.point1                            = gweithio fel cyflogai
+agent.cannot_take_part.income.point1                            = incwm TWE fel cyflogai
 agent.cannot_take_part.income.point2                            = pensiynau neu flwydd-daliadau’r DU
 agent.cannot_take_part.income.point3                            = buddsoddiadau y tu allan i’r DU
 agent.cannot_take_part.income.point4                            = enillion cyfalaf
@@ -538,9 +538,12 @@ agent.accounting_period_check.heading                           = A yw holl gyfn
 agent.accounting_period_check.invalid                           = Dewiswch ‘Iawn’ os yw holl gyfnodau cyfrifyddu busnes eich cleient o 6 Ebrill i 5 Ebrill
 
 # Agent property trading after date page
-agent.property_trading_after.title                              = A yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ôl {0}?
-agent.property_trading_after.heading                            = A yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ôl {0}?
-agent.property_trading_after.line                               = Mae hyn yn cynnwys bod yn landlord ac yn rhoi llety gwyliau ar osod
+agent.property_trading_after.title                              = A wnaeth eich cleient ddechrau busnes eiddo ar neu ôl {0}?
+agent.property_trading_after.heading                            = A wnaeth eich cleient ddechrau busnes eiddo ar neu ôl {0}?
+agent.property_trading_after.line                               = Mae hyn yn cynnwys bod yn landlord neu ddefnyddio asiantaeth gosod ar gyfer y canlynol:
+agent.property_trading_after.line.point1                        = eiddo yn y DU
+agent.property_trading_after.line.point2                        = eiddo tramor
+agent.property_trading_after.line.point3                        = llety gwyliau
 agent.property_trading_after.error.summary                      = Dewiswch ‘Iawn’ os yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ar ôl {0}
 
 # Client details page
@@ -565,8 +568,8 @@ agent.client-details.summary.dob                                = Dyddiad geni
 ## agent income source page
 agent.income_source.heading                                     = Sut mae’ch cleient yn cael ei incwm?
 agent.income_source.checkbox.hint                               = Dewiswch bob un sy’n gymwys
-agent.income_source.selfEmployed                                = Hunangyflogedig
-agent.income_source.rentUkProperty                              = Rhoi eiddo ar osod yn y DU
+agent.income_source.selfEmployed                                = Unig fasnachwr gydag un neu fwy o fusnesau
+agent.income_source.rentUkProperty                              = Rhoi eiddo yn y DU ar osod
 agent.income_source.foreignProperty                             = Rhoi eiddo tramor ar osod
 agent.error.income_source.invalid                               = Dewiswch a yw’ch cleient yn cael incwm ohono eiddo hunangyflogedig neu eiddo’r DU
 agent.error.income_source_foreignProperty.invalid               = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
@@ -577,22 +580,22 @@ agent.property.income.heading                                   = Faint oedd eic
 agent.property.income.line_1                                    = Dyma’r swm a wnaethoch cyn didynnu unrhyw dreuliau caniataol.
 
 ## Accounting Year page
-agent.business.what_year_to_sign_up.title                     = Pa flwyddyn dreth rydych am gofrestru’ch cleient ar ei chyfer?
-agent.business.what_year_to_sign_up.heading                   = Pa flwyddyn dreth rydych am gofrestru’ch cleient ar ei chyfer?
-agent.business.what_year_to_sign_up.line_1                    = Gallwch gofrestru’ch cleient ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf.
+agent.business.what_year_to_sign_up.title                     = Ar gyfer pa flwyddyn dreth ydych am i’ch cleient ddechrau cyflwyno diweddariadau treth incwm?
+agent.business.what_year_to_sign_up.heading                   = Ar gyfer pa flwyddyn dreth ydych am i’ch cleient ddechrau cyflwyno diweddariadau treth incwm?
+agent.business.what_year_to_sign_up.line_1                    = Gallwch gofrestru’ch cleient ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf. Ni fydd yn effeithio ar faint o dreth incwm y bydd angen iddo ei dalu.
 agent.business.what_year_to_sign_up.option_1                  = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.what_year_to_sign_up.option_2                  = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.what_year_to_sign_up.conditional.1.line_1      = Bydd angen i chi neu’ch cleient fewnbynnu yr holl incwm a threuliau busnes i’ch meddalwedd o ddechrau’r flwyddyn dreth bresennol. Mae angen i chi neu’ch cleient anfon diweddariad chwarterol ar gyfer:
-agent.business.what_year_to_sign_up.conditional.1.line_2      = Mae angen i chi neu’ch cleient anfon datganiad terfynol erbyn 31 Ionawr {0}.
+agent.business.what_year_to_sign_up.conditional.1.line_2      = Bydd angen i chi neu’ch cleient gyflwyno datganiad terfynol erbyn 31 Ionawr {0}.
 agent.business.what_year_to_sign_up.conditional.2.line_1      = Mae angen i chi neu’ch cleient anfon diweddariad chwarterol ar gyfer:
-agent.business.what_year_to_sign_up.conditional.2.line_2      = Mae angen i chi neu’ch cleient anfon datganiad terfynol erbyn 31 Ionawr {0}, a bydd angen llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer..
+agent.business.what_year_to_sign_up.conditional.2.line_2      = Bydd angen i chi neu’ch cleient gyflwyno datganiad terfynol erbyn 31 Ionawr {0}, a bydd angen llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer.
 agent.business.what_year_to_sign_up.quarterly.date_1          = 5 Gorffennaf {0}
 agent.business.what_year_to_sign_up.quarterly.date_2          = 5 Hydref {0}
 agent.business.what_year_to_sign_up.quarterly.date_3          = 5 Ionawr {0}
 agent.business.what_year_to_sign_up.quarterly.date_4          = 5 Ebrill {0}
 
 # Sole trader page
-agent.eligibility.sole_trader.heading                           = A ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}?
+agent.eligibility.sole_trader.heading                           = A ddechreuodd busnes unig fasnachwr eich cleient fasnachu ar neu ar ôl {0}?
 
 ## Business Income page
 agent.business.accounting_method.title                          = Pa ddull cyfrifyddu mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
@@ -657,7 +660,7 @@ agent.summary.heading                                           = Gwiriwch eich 
 agent.summary.heading_hidden                                    = cyn cofrestru
 agent.summary.confirm_and_sign_up                               = Cadarnhau a chofrestru
 agent.summary.line_1                                            = Gallwch olygu’ch atebion, os oes angen.<br>Pan fyddwch chi’n barod, cyflwynwch eich atebion er mwyn cofrestru i anfon diweddariadau digidol i CThEM ynglŷn ag incwm a gwariant.
-agent.summary.income_source                                     = Math o incwm eich cleient
+agent.summary.income_source                                     = Incwm a gafwyd o
 agent.summary.income_source.business                            = Busnes fel unig fasnachwr
 agent.summary.income_source.uk_property                         = Eiddo yn y DU
 agent.summary.income_source.overseas_property                   = Eiddo tramor
@@ -674,8 +677,8 @@ agent.summary.selected_year.next                                = Y flwyddyn dre
 agent.summary.selected_year.release4                            = Blwyddyn dreth i ddechrau cyflwyno diweddariadau
 agent.summary.selected_year.current.release4                    = Y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.summary.selected_year.next.release4                       = Y flwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-agent.summary.property_start_date                        = Dyddiad dechrau masnachu ar gyfer eiddo yn y DU
-agent.summary.overseas_property_start_date               = Dyddiad dechrau masnachu ar gyfer eiddo tramor
+agent.summary.property_start_date                               = Dyddiad dechrau masnachu ar gyfer eiddo yn y DU
+agent.summary.overseas_property_start_date                      = Dyddiad dechrau masnachu ar gyfer eiddo tramor
 agent.summary.income_type_overseas_property                     = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
 agent.summary.self_employments                                  = Nifer y busnesau sydd wedi’u cofrestru
 
@@ -700,7 +703,7 @@ agent.sign-up-complete.whatNow.para2                            = Ar ôl i chi a
 ## Errors ##
 agent.error.back_to_preferences.empty                           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-agent.error.dob_date.empty                                      = Nodwch ddyddiad geni
+agent.error.dob_date.empty                                      = Nodwch ddyddiad geni’ch cleient
 agent.error.dob_date.invalid_chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
 agent.error.dob_date.invalid                                    = Nodwch ddyddiad geni go iawn
 
@@ -746,7 +749,7 @@ agent.error.client_details.last_name.invalid                    = Nodwch enw ola
 agent.error.client_details.first_name.maxLength                 = Nodwch enw cyntaf sy’n 105 o gymeriadau neu lai
 agent.error.client_details.last_name.maxLength                  = Nodwch enw olaf sy’n 105 o gymeriadau neu lai
 
-agent.error.nino.invalid                                        = Nodwch rif Yswiriant Gwladol dilys
+agent.error.nino.invalid                                        = Nodwch rif Yswiriant Gwladol yn y fformat cywir
 agent.error.nino.empty                                          = Nodwch rif Yswiriant Gwladol eich cleient
 
 ## Eligible page ##
@@ -778,7 +781,7 @@ agent.not_enrolled_agent_services.para1                         = I ddefnyddio�
 ## Client Details ##
 agent.client-details.title                                      = Nodwch fanylion eich cleient
 agent.client-details.heading                                    = Nodwch fanylion eich cleient
-agent.client-details.line_1                                     = Byddwn yn ceisio paru’r manylion hyn â’r wybodaeth sydd gennym ar hyn o bryd.
+agent.client-details.line_1                                     = Byddwn yn ceisio paru’r manylion hyn â gwybodaeth sydd gennym ar hyn o bryd am eich cleient.
 agent.client-details.field_1                                    = Enw cyntaf
 agent.client-details.field_2                                    = Enw olaf
 agent.client-details.field_3                                    = Rhif Yswiriant Gwladol

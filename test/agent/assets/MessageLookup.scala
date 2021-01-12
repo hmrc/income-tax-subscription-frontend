@@ -28,7 +28,7 @@ object MessageLookup {
     val day = "Day"
     val month = "Month"
     val year = "Year"
-    val errorHeading = "There’s a problem"
+    val errorHeading = "There is a problem"
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
@@ -79,12 +79,12 @@ object MessageLookup {
   object IncomeSource {
     val title = "How does your client receive their income?"
     val heading: String = title
-    val business = "Self-employed"
-    val ukProperty = "Rent out a property in the UK"
-    val foreignProperty = "Rent out foreign properties"
+    val business = "Sole trader with one or more businesses"
+    val ukProperty = "Rent out UK properties"
+    val foreignProperty = "Rent out overseas properties"
     val errorHeading = "There is a problem"
     val errorSummary = "Select if your client receives income from self employment or UK property"
-    val errorSummaryForeignProperty = "Select if your client receives income from self employment, UK property or foreign property"
+    val errorSummaryForeignProperty = "Select if your client receives income from self employment, UK property or overseas property"
   }
 
   object Property {
@@ -109,17 +109,17 @@ object MessageLookup {
     }
 
     object WhatYearToSignUp {
-      val heading = "Which tax year do you want to sign your client up for?"
-      val line1 = "You can sign your client up for the current tax year or the next tax year."
+      val heading = "Which tax year do you want your client to start filing income tax updates for?"
+      val line1 = "You can sign your client up for the current tax year or the next tax year. It will not affect the amount of income tax they will need to pay."
 
 
-      def option1ConditionalExample1: String = "You or your client will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You or your client need to send a quarterly update for:"
+      def option1ConditionalExample1: String = "You or your client will need to add all business income and expenses into your software from the start of the current tax year. You or your client need to send a quarterly update for:"
 
-      def option1ConditionalExample2(year: String): String = s"You or your client need to send a final declaration by the 31 January $year."
+      def option1ConditionalExample2(year: String): String = s"You or your client will need to submit a final declaration by the 31 January $year."
 
       def option2ConditionalExample1: String = "You or your client need to send a quarterly update for:"
 
-      def option2ConditionalExample2(year: String): String = s"You or your client need to send a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
+      def option2ConditionalExample2(year: String): String = s"You or your client will need to submit a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
 
       def option1(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
 
@@ -184,7 +184,7 @@ object MessageLookup {
     val title = "Check your answers"
     val heading: String = title
     val heading_hidden = "before signing up"
-    val income_source = "Client’s income type"
+    val income_source = "Income received from"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -210,7 +210,7 @@ object MessageLookup {
     val match_tax_year = "Accounting period matches tax year"
     val propertyStartDate = "Trading start for UK property"
     val overseasPropertyStartDate = "Trading start for foreign property"
-    val income_type_overseas_property = "Accounting method for foreign property income"
+    val income_type_overseas_property = "Accounting method for foreign property"
 
     object AccountingMethod {
       val cash = "Cash accounting"
@@ -320,7 +320,7 @@ object MessageLookup {
     }
 
     object DOBDate {
-      val empty = "Enter a date of birth"
+      val empty = "Enter your client’s date of birth"
       val invalid_chars = "Enter a date of birth using numbers 0 to 9"
       val invalid = "Enter a real date of birth"
     }
@@ -344,8 +344,8 @@ object MessageLookup {
     }
 
     object AccountingMethod {
-      val empty = "Select how your client records their income and expenses for their self-employed business"
-      val invalid = "Select how your client records their income and expenses for their self-employed business"
+      val empty = "Select if your client uses cash accounting or standard accounting"
+      val invalid = "Select if your client uses cash accounting or standard accounting"
     }
 
     object NotEligible {
@@ -369,7 +369,7 @@ object MessageLookup {
 
     object Nino {
       val empty = "Enter your client’s National Insurance number"
-      val invalid = "Enter a valid National Insurance number"
+      val invalid = "Enter a National Insurance number in the correct format"
     }
 
   }
@@ -433,8 +433,8 @@ object MessageLookup {
   }
 
   object ClientDetailsError {
-    val title = "There’s a problem"
-    val heading = "There’s a problem"
+    val title = "There is a problem"
+    val heading = "There is a problem"
     val line1 = "The details you’ve entered are not on our system."
   }
 
@@ -448,7 +448,7 @@ object MessageLookup {
   object ClientDetails {
     val title = "Enter your client’s details"
     val heading = "Enter your client’s details"
-    val line1 = "We will attempt to match these details against information we currently hold."
+    val line1 = "We will try to match these details to information we have about your client."
     val field1 = "First name"
     val field2 = "Last name"
     val field3 = "National Insurance number"

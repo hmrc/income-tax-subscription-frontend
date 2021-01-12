@@ -43,9 +43,12 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
   object PropertyStartAfterMessage {
 
-    def title(date: String) = s"Does your client own a property business that began trading on or after $date?"
+    def title(date: String) = s"Did your client start a property business on or after $date?"
 
-    val hint = "This includes being a landlord and letting holiday properties"
+    val hint = "This includes being a landlord or using a letting agency for:"
+    val point1 = "UK properties"
+    val point2 = "overseas properties"
+    val point3 = "holiday properties"
 
     def error(date: String) = s"Select yes if your client owns a property business that began trading on or after $date"
 
@@ -74,7 +77,10 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct hint" in new GetSetup {
-      doc.getHintText shouldBe PropertyStartAfterMessage.hint
+      doc.getElementById("property-trading-hint").text() shouldBe PropertyStartAfterMessage.hint
+      pageContent.getNthUnorderedList(1).getNthListItem(1).text shouldBe PropertyStartAfterMessage.point1
+      pageContent.getNthUnorderedList(1).getNthListItem(2).text shouldBe PropertyStartAfterMessage.point2
+      pageContent.getNthUnorderedList(1).getNthListItem(3).text shouldBe PropertyStartAfterMessage.point3
     }
 
     "have a view with a back link" in new GetSetup {
