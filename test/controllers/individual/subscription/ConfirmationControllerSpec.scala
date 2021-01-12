@@ -26,20 +26,28 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import utilities.TestModels.testCacheMap
 import utilities.{ITSASessionKeys, TestModels}
 
 import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
-  with FeatureSwitching {
+  with FeatureSwitching with MockAccountingPeriodService with MockUserMatchingService {
 
   object TestConfirmationController extends ConfirmationController(
     mockAuthService,
+    mockAccountingPeriodService,
     MockSubscriptionDetailsService
   )
+
+  val taxQuarter1 = ("agent.sign-up.complete.julyUpdate", "2020")
+  val taxQuarter2 = ("agent.sign-up.complete.octoberUpdate", "2020")
+  val taxQuarter3 = ("agent.sign-up.complete.januaryUpdate", "2021")
+  val taxQuarter4 = ("agent.sign-up.complete.aprilUpdate", "2021")
+
 
   implicit val request: Request[_] = FakeRequest()
 
@@ -59,26 +67,25 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "the user is in confirmation journey state" should {
       "get the ID from Subscription Details  if the user is enrolled" in {
         mockAuthEnrolled()
-        mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
-        val result: Future[Result] = TestConfirmationController.show(
-          subscriptionRequest.addStartTime(startTime)
+        mockFetchAllFromSubscriptionDetails(testCacheMap)
+
+        mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
+        mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
+
+        val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime)
         )
 
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
         status(result) shouldBe OK
 
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("sign-up-complete.title") + serviceNameGovUk
 
       }
 
-      "fail if no income source is stored" in {
-        mockAuthEnrolled()
-        mockFetchAllFromSubscriptionDetails(TestModels.emptyCacheMap)
-        val result: Future[Result] = TestConfirmationController.show(
-          subscriptionRequest.addStartTime(startTime)
-        )
+      "submitted is not in session" should {
+        "return a NotFoundException" in {
+          val result = TestConfirmationController.show(subscriptionRequest)
 
-        intercept[InternalServerException](await(result))
+          intercept[NotFoundException](await(result))
+        }
       }
 
       "return not found if the user is not enrolled" in {

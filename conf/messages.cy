@@ -281,17 +281,20 @@ confirmation.whatHappensNext.para4                              = Gall gymryd rh
 sign-up-complete.title                                          = Rydych wedi gorffen cofrestru
 sign-up-complete.heading                                        = Rydych wedi’ch cofrestru i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
 sign-up-complete.whatHappensNow.heading                         = Yr hyn sy’n digwydd nawr
-sign-up-complete.whatHappensNow.number1                         = Os nad ydych eisoes wedi’i wneud, <a id="accountingSoftware" href="{0}" target="_blank">ewch ati i ddod o hyd i feddalwedd sy’n cydweddu â Throi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor ffenestr neu dab newydd).</a>
-sign-up-complete.whatHappensNow.number2                         = Caniatewch i’ch meddalwedd ryngweithio â CThEM.
-sign-up-complete.whatHappensNow.number3                         = Ychwanegwch at eich meddalwedd unrhyw incwm a threuliau yr ydych eisoes wedi’u cael neu eu talu ers dechrau eich blwyddyn dreth.
-sign-up-complete.whatHappensNow.number4                         = Anfonwch unrhyw ddiweddariadau sydd heb eu gwneud i CThEM.
-sign-up-complete.whatHappensNow.number5                         = Defnyddiwch eich meddalwedd i anfon diweddariad i CThEM bob 3 mis.
-sign-up-complete.whatHappensNow.number6                         = Anfonwch ddatganiad terfynol i CThEM erbyn 31 Ionawr {0}.
-sign-up-complete.whatHappensNow.number7                         = Mewngofnodwch i’ch <a id="bta" href="{0}" target="_blank">cyfrif Treth Busnes (yn agor mewn tab newydd)</a> er mwyn cael gwybod pryd y bydd disgwyl i chi gyflwyno’ch diweddariad cyntaf.
-sign-up-complete.whatHappensNow.para1                           = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch <a id="bta" href="{0}" target="_blank">cyfrif Treth Busnes (yn agor mewn tab newydd)</a>.
+sign-up-complete.whatHappensNow.number1                         = Os nad ydych eisoes wedi gwneud hynny,{0} a chaniatáu iddi ryngweithio â CThEM.
+sign-up-complete.whatHappensNow.number1.link                    = dewch o hyd i feddalwedd sy’n cydweddu (yn agor tab newydd)
+sign-up-complete.whatHappensNow.sendPreviousUpdates             = Mae’n rhaid i chi ychwanegu’r holl incwm a threuliau ar gyfer y diweddariadau blaenorol gan ddefnyddio’ch meddalwedd ar gyfer:
+sign-up-complete.whatHappensNow.sendQuarterly                   = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd erbyn:
+sign-up-complete.whatHappensNext.sendQuarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
+sign-up-complete.whatHappensNow.submitAnnualUpdates             = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
+sign-up.complete.julyUpdate                                     = 5 Gorffennaf {0}
+sign-up.complete.octoberUpdate                                  = 5 Hydref {0}
+sign-up.complete.januaryUpdate                                  = 5 Ionawr {0}
+sign-up.complete.aprilUpdate                                    = 5 Ebrill {0}
+sign-up-complete.whatHappensNow.para                            = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm ar gyfer y flwyddyn hyd yn hyn. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch {0}.
+sign-up-complete.whatHappensNow.para.link                       = cyfrif Treth Busnes (yn agor tab newydd).
 sign-up-complete.whatHappensNow.para2                           = Gall gymryd rhai oriau cyn i wybodaeth newydd ymddangos.
 sign-up-complete.whatHappensNow.signOut                         = Gorffen ac allgofnodi
-
 
 ## Errors ##
 error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen

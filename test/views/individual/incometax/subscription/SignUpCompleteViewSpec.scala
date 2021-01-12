@@ -17,6 +17,8 @@
 package views.individual.incometax.subscription
 
 import assets.MessageLookup
+import assets.MessageLookup.SignUpCompleteIndividual._
+import assets.MessageLookup.SignUpCompleteIndividual.whatHappensNow._
 import controllers.SignOutController
 import models.DateModel
 import models.common.IncomeSourceModel
@@ -27,103 +29,188 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utilities.TestModels.{testSummaryData, testSummaryDataBusinessNextTaxYear}
 import views.ViewSpecTrait
+import utilities.UnitTestTrait
+
 
 class SignUpCompleteViewSpec extends ViewSpecTrait {
 
   val submissionDateValue = DateModel("1", "1", "2016")
-  val duration: Int = 0
   val action: Call = ViewSpecTrait.testCall
   val incomeSourceBusinessNextTaxYear: IncomeSourceModel = IncomeSourceModel(true, false, false)
-  val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
+  val incomeSourceBusinessProperty: IncomeSourceModel = IncomeSourceModel(true, true, false)
   val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
-  val declarationDate = "2022"
+  val testEndYearOfCurrentTaxPeriod = 2021
+  val testUpdatesBeforeQ1 = List[(String, String)]()
+  val testUpdatesAfterQ1 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"), ("5 January 2021", "2021"), ("5 April 2021", "2021"))
+  val testUpdatesBeforeQ2 = List(("5 July 2020", "2020"))
+  val testUpdatesAfterQ2 = List(("5 October 2020", "2020"), ("5 January 2021", "2021"), ("5 April 2021", "2021"))
+  val testUpdatesBeforeQ3 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"))
+  val testUpdatesAfterQ3 = List(("5 January 2021", "2021"), ("5 April 2021", "2021"))
+  val testUpdatesBeforeQ4 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"), ("5 January 2021", "2021"))
+  val testUpdatesAfterQ4 = List(("5 April 2021", "2021"))
 
-  def page(incomeSource: IncomeSourceModel): Html = views.html.individual.incometax.subscription.sign_up_complete(
-    journeyDuration = duration,
+  def page(incomeSource: IncomeSourceModel, taxQuarter: String): Html = views.html.individual.incometax.subscription.sign_up_complete(
     summary = incomeSource match {
       case IncomeSourceModel(true, false, false) => testSummaryDataBusinessNextTaxYear
       case _ => testSummaryData
     },
-    declarationYear = declarationDate
+    endYearOfCurrentTaxPeriod = testEndYearOfCurrentTaxPeriod,
+    updatesBefore = taxQuarter match {
+      case "Q1" => testUpdatesBeforeQ1
+      case "Q2" => testUpdatesBeforeQ2
+      case "Q3" => testUpdatesBeforeQ3
+      case "Q4" => testUpdatesBeforeQ4
+      case "Next" => testUpdatesBeforeQ1
+    },
+    updatesAfter = taxQuarter match {
+      case "Q1" => testUpdatesAfterQ1
+      case "Q2" => testUpdatesAfterQ2
+      case "Q3" => testUpdatesAfterQ3
+      case "Q4" => testUpdatesAfterQ4
+      case "Next" => testUpdatesBeforeQ1
+    },
   )(request, implicitly, appConfig)
 
-  def documentCurrentTaxYear: Document = Jsoup.parse(page(incomeSourceBoth).body)
+  def documentCurrentTaxYear(taxQuarter: String): Document = Jsoup.parse(page(incomeSourceBusinessProperty, taxQuarter).body)
 
-  def documentNextTaxYear: Document = Jsoup.parse(page(incomeSourceBusinessNextTaxYear).body)
+  def documentNextTaxYear: Document = Jsoup.parse(page(incomeSourceBusinessNextTaxYear, "Next").body)
 
   val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
 
-  "The Sign up confirmation page" should {
+  "The Sign Up Complete view" should {
 
-    s"have the title '${MessageLookup.SignUpComplete.title}'" in {
-      documentCurrentTaxYear.title() must be(MessageLookup.SignUpComplete.title + serviceNameGovUk
-      )
+    s"have the title '$title'" in {
+      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      documentNextTaxYear.title() mustBe (title + serviceNameGovUk)
     }
 
     "have a successful transaction confirmation banner" which {
 
-      "has a green background" in {
-        documentCurrentTaxYear.select("#confirmation-heading").hasClass("govuk-panel--confirmation") mustBe true
+      "has a turquoise background" in {
+        documentNextTaxYear.select("#confirmation-heading").hasClass("govuk-panel--confirmation") mustBe true
       }
 
       s"has a heading (H1)" which {
 
-        lazy val heading = documentCurrentTaxYear.select("H1")
-
-        s"has the text '${MessageLookup.SignUpComplete.heading}'" in {
-          heading.text() mustBe MessageLookup.SignUpComplete.heading
+        lazy val heading = documentNextTaxYear.select("H1")
+        s"has the text '${heading}'" in {
+          heading.text() mustBe MessageLookup.SignUpCompleteIndividual.heading
         }
 
-        "has the class 'transaction-banner__heading'" in {
+        "has the class 'heading-large'" in {
           heading.hasClass("transaction-banner__heading") mustBe true
         }
       }
     }
 
-    "have a 'What happens now' section" which {
+    "have a 'What you need to do next' section for Next Tax Year" which {
 
-      s"has the section heading '${MessageLookup.SignUpComplete.whatHappensNow.heading}'" in {
-        documentCurrentTaxYear.select("#whatHappensNow h2").text() mustBe MessageLookup.SignUpComplete.whatHappensNow.heading
+      s"has the section heading '${whatHappensNow.heading}'" in {
+        documentNextTaxYear.select("#whatHappensNow h2").text() mustBe whatHappensNow.heading
       }
 
-      s"has a numeric list of actions for the Individual to perform if selected current tax year" in {
-        val list = documentCurrentTaxYear.select("#actionList li")
-        list.get(0).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number1
-        list.get(0).select("a").attr("href") mustBe appConfig.softwareUrl
-        list.get(1).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number2
-        list.get(2).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number3
-        list.get(3).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number4
-        list.get(4).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number5
-        list.get(5).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number6
+      s"has a paragraph stating complete steps '$para1'" in {
+        documentNextTaxYear.select("#whatHappensNow p").get(0).text() mustBe para1
       }
 
-      s"has a numeric list of actions for the Individual to perform if selected next tax year" in {
-        val list = documentNextTaxYear.select("#actionList li")
-        list.get(0).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number1
-        list.get(0).select("a").attr("href") mustBe appConfig.softwareUrl
-        list.get(1).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number2
-        list.get(2).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number7
-        list.get(2).select("a").attr("href") mustBe appConfig.btaUrl
-        list.get(3).text mustBe MessageLookup.SignUpComplete.whatHappensNow.number6
+      s"has an initial numeric point '$number1'" in {
+        documentNextTaxYear.select("#whatHappensNow ol li").get(0).text() mustBe number1
+        documentNextTaxYear.select("#whatHappensNow ol li").get(0).select("a").attr("href") mustBe appConfig.softwareUrl
       }
 
-      s"has a paragraph referring to Income Tax Estimate and link to BTA" in {
-        val para1 = documentCurrentTaxYear.select("#whatHappensNow p").get(0)
-        para1.text() must include(MessageLookup.SignUpComplete.whatHappensNow.para1)
-        para1.select("a").attr("href") mustBe appConfig.btaUrl
+      s"has a 3rd numeric point '$number4'" in {
+        documentNextTaxYear.select("#whatHappensNow ol li").get(1).text() mustBe number4
       }
 
-      s"does have a paragraph stating information to appear '${MessageLookup.SignUpComplete.whatHappensNow.para2}'" in {
-        documentCurrentTaxYear.select("#whatHappensNow p").get(1).text() must include(MessageLookup.SignUpComplete.whatHappensNow.para2)
+      s"has a bullet pointed list detailing update dates" in {
+        documentNextTaxYear.select("#whatHappensNow ol ul li").get(0).text() mustBe nextTaxYearJulyUpdate
+        documentNextTaxYear.select("#whatHappensNow ol ul li").get(1).text() mustBe nextTaxYearOcoberUpdate
+        documentNextTaxYear.select("#whatHappensNow ol ul li").get(2).text() mustBe nextTaxYearJanuaryUpdate
+        documentNextTaxYear.select("#whatHappensNow ol ul li").get(3).text() mustBe nextTaxYearAprilUpdate
+      }
+
+      s"has a 4th numeric point '${number5}'" in {
+        documentNextTaxYear.select("#whatHappensNow ol li").get(6).text() mustBe number5
       }
     }
 
-    "have a sign out button" in {
-      val actionSignOut = documentCurrentTaxYear.getElementById("sign-out-button")
-      actionSignOut.attr("role") mustBe "button"
-      actionSignOut.text() mustBe MessageLookup.SignUpComplete.whatHappensNow.signOut
-      actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
-    }
+    "have a 'What you need to do next' section for Current Tax Year" which {
 
-  }
+      s"has an initial numbered point: '$number1'" in {
+        documentCurrentTaxYear("Q1").select("#whatHappensNow ol li").get(0).text() mustBe number1
+        documentCurrentTaxYear("Q1").select("#whatHappensNow ol li").get(0).select("a").attr("href") mustBe appConfig.softwareUrl
+      }
+
+      "for Tax Quarter Q1" should {
+        s"have a second numbered point: '$currentYaxYearQuarterlyUpdates'" in {
+          documentCurrentTaxYear("Q1").select("#whatHappensNow ol li").get(1).text() mustBe currentYaxYearQuarterlyUpdates
+        }
+
+        "have a bullet pointed list of update dates" in {
+          documentCurrentTaxYear("Q1").select("#whatHappensNow ol ul li").get(0).text() mustBe currentTaxYearJulyUpdate
+          documentCurrentTaxYear("Q1").select("#whatHappensNow ol ul li").get(1).text() mustBe currentTaxYearOctoberUpdate
+          documentCurrentTaxYear("Q1").select("#whatHappensNow ol ul li").get(2).text() mustBe currentTaxYearJanuaryUpdate
+          documentCurrentTaxYear("Q1").select("#whatHappensNow ol ul li").get(3).text() mustBe currentTaxYearAprilUpdate
+        }
+        s"have a third numbered point: '$currentTaxYearAnnualUpdates'" in {
+          documentCurrentTaxYear("Q1").select("#whatHappensNow ol li").get(6).text() mustBe currentTaxYearAnnualUpdates
+        }
+      }
+
+      "for Tax Quarter Q2, Q3 & Q4" should {
+        s"have a second numbered point: $currentTaxYearPreviousUpdates" in {
+          documentCurrentTaxYear("Q2").select("#whatHappensNow ol li").get(1).text() mustBe currentTaxYearPreviousUpdates
+          documentCurrentTaxYear("Q3").select("#whatHappensNow ol li").get(1).text() mustBe currentTaxYearPreviousUpdates
+          documentCurrentTaxYear("Q4").select("#whatHappensNow ol li").get(1).text() mustBe currentTaxYearPreviousUpdates
+        }
+
+        "have a bullet pointed list of previous update dates for Q2" in {
+          documentCurrentTaxYear("Q2").select("#whatHappensNow ol ul:nth-child(3) li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
+        }
+        "have a bullet pointed list of previous update dates for Q3" in {
+          documentCurrentTaxYear("Q3").select("#whatHappensNow ol ul:nth-child(3) li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
+          documentCurrentTaxYear("Q3").select("#whatHappensNow ol ul:nth-child(3) li:nth-child(2)").text() mustBe currentTaxYearOctoberUpdate
+        }
+        "have a bullet pointed list of previous update dates for Q4" in {
+          documentCurrentTaxYear("Q4").select("#whatHappensNow ol ul:nth-child(3) li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
+          documentCurrentTaxYear("Q4").select("#whatHappensNow ol ul:nth-child(3) li:nth-child(2)").text() mustBe currentTaxYearOctoberUpdate
+          documentCurrentTaxYear("Q4").select("#whatHappensNow ol ul:nth-child(3) li:nth-child(3)").text() mustBe currentTaxYearJanuaryUpdate
+        }
+
+        s"have a third numbered point: $currentYaxYearQuarterlyUpdates" in {
+          documentCurrentTaxYear("Q2").select("#whatHappensNow ol li").get(3).text() mustBe currentYaxYearQuarterlyUpdates
+          documentCurrentTaxYear("Q3").select("#whatHappensNow ol li").get(4).text() mustBe currentYaxYearQuarterlyUpdates
+          documentCurrentTaxYear("Q4").select("#whatHappensNow ol li").get(5).text() mustBe currentYaxYearQuarterlyUpdates
+        }
+
+        "have a bullet pointed list of quarterly update dates for Q2" in {
+          documentCurrentTaxYear("Q2").select("#whatHappensNow ol ul:nth-child(5) li:nth-child(1)").text() mustBe currentTaxYearOctoberUpdate
+          documentCurrentTaxYear("Q2").select("#whatHappensNow ol ul:nth-child(5) li:nth-child(2)").text() mustBe currentTaxYearJanuaryUpdate
+          documentCurrentTaxYear("Q2").select("#whatHappensNow ol ul:nth-child(5) li:nth-child(3)").text() mustBe currentTaxYearAprilUpdate
+        }
+        "have a bullet pointed list of quarterly update dates for Q3" in {
+          documentCurrentTaxYear("Q3").select("#whatHappensNow ol ul:nth-child(5) li:nth-child(1)").text() mustBe currentTaxYearJanuaryUpdate
+          documentCurrentTaxYear("Q3").select("#whatHappensNow ol ul:nth-child(5) li:nth-child(2)").text() mustBe currentTaxYearAprilUpdate
+        }
+        "have a bullet pointed list of quarterly update dates for Q4" in {
+          documentCurrentTaxYear("Q4").select("#whatHappensNow ol ul:nth-child(5) li:nth-child(1)").text() mustBe currentTaxYearAprilUpdate
+        }
+
+        s"has a paragraph stating Income Tax Estimate '$para1'" in {
+          documentNextTaxYear.select("#whatHappensNow p").get(0).text() mustBe para1
+        }
+
+        s"has a paragraph stating Info delay '$para2'" in {
+          documentNextTaxYear.select("#whatHappensNow p").get(1).text() mustBe para2
+        }
+
+        "have a sign out button" in {
+          val actionSignOut = documentNextTaxYear.getElementById("sign-out-button")
+          actionSignOut.attr("role") mustBe "button"
+          actionSignOut.text() mustBe signOut
+          actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
+        }
+      }
+    }
+    }
 }
