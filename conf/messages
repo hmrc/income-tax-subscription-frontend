@@ -274,14 +274,18 @@ confirmation.whatHappensNext.para4                              = It may take a 
 sign-up-complete.title                                          = Sign up complete
 sign-up-complete.heading                                        = You have signed up to use software to send Income Tax updates
 sign-up-complete.whatHappensNow.heading                         = What happens now
-sign-up-complete.whatHappensNow.number1                         = If you have not already, <a id="accountingSoftware" href="{0}" target="_blank">find software that’s compatible with Making Tax Digital for Income Tax (opens in a new window or tab).</a>
-sign-up-complete.whatHappensNow.number2                         = Allow your software to interact with HMRC.
-sign-up-complete.whatHappensNow.number3                         = Add any income and expenses you have already received or paid out from the start of your tax year into your software.
-sign-up-complete.whatHappensNow.number4                         = Send any outstanding updates to HMRC.
-sign-up-complete.whatHappensNow.number5                         = Use your software to send HMRC an update every 3 months.
-sign-up-complete.whatHappensNow.number6                         = Send HMRC a final declaration by 31 January {0}.
-sign-up-complete.whatHappensNow.number7                         = Log in to your <a id="bta" href="{0}" target="_blank">Business Tax account (opens in a new tab)</a> to find out when your first update is due.
-sign-up-complete.whatHappensNow.para1                           = After you have sent an update you will get an Income Tax estimate. You can view your estimates and submission dates in your software or your <a id="bta" href="{0}" target="_blank">Business Tax account (opens in a new tab)</a>.
+sign-up-complete.whatHappensNow.number1                         = If you have not already done so, {0}. and allow it interact with HMRC.
+sign-up-complete.whatHappensNow.number1.link                    = find software that’s compatible (opens in new tab)
+sign-up-complete.whatHappensNow.sendPreviousUpdates             = You need to add all income and expenses for the previous updates using your software for:
+sign-up-complete.whatHappensNow.sendQuarterly                   = Send next quarterly updates using your software by:
+sign-up-complete.whatHappensNext.sendQuarterly                  = You will need to send quarterly updates using your software by:
+sign-up-complete.whatHappensNow.submitAnnualUpdates             = Submit your annual updates and declare for the tax year by 31 January {0}.
+sign-up.complete.julyUpdate                                     = 5 July {0}
+sign-up.complete.octoberUpdate                                  = 5 October {0}
+sign-up.complete.januaryUpdate                                  = 5 January {0}
+sign-up.complete.aprilUpdate                                    = 5 April {0}
+sign-up-complete.whatHappensNow.para                            = After you have sent an update you will get an year-to-date Income Tax estimate. You can view your estimates and submission dates in your software or your {0}.
+sign-up-complete.whatHappensNow.para.link                       = Business Tax account (opens in new tab)
 sign-up-complete.whatHappensNow.para2                           = It may take a few hours before new information is displayed.
 sign-up-complete.whatHappensNow.signOut                         = Finish and sign out
 

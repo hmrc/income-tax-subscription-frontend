@@ -311,23 +311,32 @@ object MessageLookup {
 
   }
 
-  object SignUpComplete {
+  object SignUpCompleteIndividual {
     val title = "Sign up complete"
     val heading = "You have signed up to use software to send Income Tax updates"
 
     object whatHappensNow {
       val heading = "What happens now"
-      val linkText = "find software that’s compatible with Making Tax Digital for Income Tax (opens in a new window or tab)."
-      val number1 = s"If you have not already, $linkText"
+      val linkText = "find software that’s compatible (opens in new tab)"
+      val number1 = s"If you have not already done so, $linkText. and allow it interact with HMRC."
       val number2 = "Allow your software to interact with HMRC."
       val number3 = "Add any income and expenses you have already received or paid out from the start of your tax year into your software."
-      val number4 = "Send any outstanding updates to HMRC."
-      val number5 = "Use your software to send HMRC an update every 3 months."
-      val declarationYear = "2022"
-      val number6 = s"Send HMRC a final declaration by 31 January $declarationYear."
-      val btaLinkText = "Business Tax account (opens in a new tab)"
+      val number4 = "You will need to send quarterly updates using your software by:"
+      val nextTaxYearJulyUpdate = "5 July 2021"
+      val nextTaxYearOcoberUpdate = "5 October 2021"
+      val nextTaxYearJanuaryUpdate = "5 January 2022"
+      val nextTaxYearAprilUpdate = "5 April 2022"
+      val number5 = "Submit your annual updates and declare for the tax year by 31 January 2023."
+      val currentYaxYearQuarterlyUpdates = "Send next quarterly updates using your software by:"
+      val currentTaxYearJulyUpdate = "5 July 2020"
+      val currentTaxYearOctoberUpdate = "5 October 2020"
+      val currentTaxYearJanuaryUpdate = "5 January 2021"
+      val currentTaxYearAprilUpdate = "5 April 2021"
+      val currentTaxYearAnnualUpdates = "Submit your annual updates and declare for the tax year by 31 January 2022."
+      val currentTaxYearPreviousUpdates = "You need to add all income and expenses for the previous updates using your software for:"
+      val btaLinkText = "Business Tax account (opens in new tab)"
       val number7 = s"Log in to your $btaLinkText to find out when your first update is due."
-      val para1 = s"After you have sent an update you will get an Income Tax estimate. You can view your estimates and submission dates in your software or your $btaLinkText."
+      val para1 = s"After you have sent an update you will get an year-to-date Income Tax estimate. You can view your estimates and submission dates in your software or your $btaLinkText."
       val para2 = "It may take a few hours before new information is displayed."
       val signOut = "Finish and sign out"
     }
