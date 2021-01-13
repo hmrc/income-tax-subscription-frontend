@@ -26,7 +26,7 @@
 
 @main_template(title = messages("agent.cannot_take_part.title")) {
 
-    <a id="back-link" class="back-link" href="javascript:history.back()">@messages("base.back")</a>
+    @back_link("javascript:history.back()")
 
     <h1>@messages("agent.cannot_take_part.heading")</h1>
 

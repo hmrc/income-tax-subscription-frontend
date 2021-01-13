@@ -56,7 +56,7 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
     }
 
     "have a back button" in new Setup {
-      val backButton: Elements = document.select(".back-link")
+      val backButton: Elements = document.select(".link-back")
       backButton.attr("href") mustBe backUrl
       backButton.text mustBe common.back
     }
