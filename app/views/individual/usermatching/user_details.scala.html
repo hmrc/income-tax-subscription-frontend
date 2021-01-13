@@ -24,13 +24,13 @@
 
 @(userDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("user-details.title"), form = userDetailsForm) {
+@main_template(title = messages("user-details.title"), form = userDetailsForm) {
 
     @summaryErrorHelper(userDetailsForm)
 
-    <h1 class="heading-large">@Messages("user-details.heading")</h1>
+    <h1 class="heading-large">@messages("user-details.heading")</h1>
 
-    <p>@Messages("user-details.line_1")</p>
+    <p>@messages("user-details.line_1")</p>
 
     @form(action = postAction) {
 
@@ -38,41 +38,44 @@
             <div class="form-field-group">
             @inputHelper(
                 field = userDetailsForm(userFirstName),
-                label = Messages("user-details.field_1"),
+                label = messages("user-details.field_1"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
-                parentForm = userDetailsForm
+                parentForm = userDetailsForm,
+                autoComplete = Some("given-name")
             )
             </div>
             <div class="form-field-group">
             @inputHelper(
                 field = userDetailsForm(userLastName),
-                label = Messages("user-details.field_2"),
+                label = messages("user-details.field_2"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
-                parentForm = userDetailsForm
+                parentForm = userDetailsForm,
+                autoComplete = Some("family-name")
             )
             </div>
             <div class="form-field-group">
             @inputHelper(
                 field = userDetailsForm(userNino),
-                label = Messages("user-details.field_3"),
+                label = messages("user-details.field_3"),
                 labelClass = "form-label-bold",
-                formHint = Seq(Messages("user_details.formhint.1.line_1")),
+                formHint = Seq(messages("user_details.formhint.1.line_1")),
                 parentForm = userDetailsForm
             )
             </div>
 
             @dateHelper(
                 field = userDetailsForm(userDateOfBirth),
-                label = Messages("user-details.field_4"),
+                label = messages("user-details.field_4"),
                 parentForm = userDetailsForm,
-                hintText = Messages("user-details.formhint.2")
+                hintText = messages("user-details.formhint.2"),
+                isDateOfBirth = true
             )
         </div>
 
         @if(isEditMode) {
-            @continueButton(Messages("base.update"))
+            @continueButton(messages("base.update"))
         } else {
             @continueButton()
         }

@@ -51,12 +51,15 @@ class DateHelperSpec extends UnitTestTrait {
       inputs.size() shouldBe 3
       inputs.get(0).attr("type") shouldBe "text"
       inputs.get(0).attr("maxlength") shouldBe "2"
+      inputs.get(0).attr("autocomplete") shouldBe ""
       inputs.get(0).parent().classNames() should contain("form-group-day")
       inputs.get(1).attr("type") shouldBe "text"
       inputs.get(1).attr("maxlength") shouldBe "2"
+      inputs.get(1).attr("autocomplete") shouldBe ""
       inputs.get(1).parent().classNames() should contain("form-group-month")
       inputs.get(2).attr("type") shouldBe "text"
       inputs.get(2).attr("maxlength") shouldBe "4"
+      inputs.get(2).attr("autocomplete") shouldBe ""
       inputs.get(2).parent().classNames() should contain("form-group-year")
 
       val labels = doc.getElementsByTag("label")
@@ -109,6 +112,18 @@ class DateHelperSpec extends UnitTestTrait {
       val doc = dateHelper(testField, testLabel, Some("Hint text"), testForm).doc
       doc.getElementsByAttributeValue("aria-describedby", "date-helper-hint").hasText mustBe true
       doc.getElementById("date-helper-hint").hasText mustBe true
+    }
+  }
+  "dateHelper" when {
+    "is a date of birth selected" in {
+      val testField = testForm(dateName)
+
+      val doc = dateHelper(testField, testLabel, None, testForm, isDateOfBirth = true).doc
+      val inputs = doc.getElementsByTag("input")
+
+      inputs.get(0).attr("autocomplete") mustBe "bday-day"
+      inputs.get(1).attr("autocomplete") mustBe "bday-month"
+      inputs.get(2).attr("autocomplete") mustBe "bday-year"
     }
   }
 }

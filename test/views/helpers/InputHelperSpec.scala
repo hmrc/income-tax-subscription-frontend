@@ -32,10 +32,11 @@ class InputHelperSpec extends UnitTestTrait {
                            formHint: Option[Seq[String]] = None,
                            maxLength: Option[Int] = None,
                            labelClass: Option[String] = None,
-                           isNumeric: Boolean = false
+                           isNumeric: Boolean = false,
+                           autoComplete: Option[String] = None,
                          )
   = views.html.helpers.inputHelper(field, label = label, parentForm = parentForm, formHint = formHint, maxLength = maxLength,
-    labelClass = labelClass, isNumeric = isNumeric)(implicitly)
+    labelClass = labelClass, isNumeric = isNumeric, autoComplete = autoComplete)(implicitly)
 
   case class TestData(input: String)
 
@@ -64,6 +65,7 @@ class InputHelperSpec extends UnitTestTrait {
       inputs.get(0).attr("value") shouldBe ""
       inputs.get(0).attr("type") shouldBe "text"
       inputs.get(0).attr("maxlength") shouldBe maxLength.toString
+      inputs.get(0).attr("autocomplete") shouldBe ""
     }
 
     "if the form is populated, then the input should be populated correctly" in {
@@ -108,6 +110,11 @@ class InputHelperSpec extends UnitTestTrait {
       "have an additional attribute for inputmode=numeric" in {
         input.attr("inputmode") shouldBe "numeric"
       }
+    }
+    "if the field has an autocomplete attribute set, should be present" in {
+      val testField = testForm.fill(TestData("My previous input"))(inputName)
+      val input = inputHelper(testField, testForm, Some(testLabel), isNumeric = true, autoComplete = Some("test autocomplete")).doc.getElementsByTag("input")
+      input.attr("autocomplete") shouldBe "test autocomplete"
     }
   }
 }
