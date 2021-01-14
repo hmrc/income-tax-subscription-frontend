@@ -104,11 +104,17 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
 
     }
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]): Unit = {
+    def sectionTest(sectionId: String,
+                    expectedQuestion: String,
+                    expectedAnswer: String,
+                    expectedEditLink: Option[String],
+                    rowNo: Int,
+                    expectedHiddenContent: Option[String]): Unit = {
       val accountingPeriod = document().getElementById(sectionId)
       val question = document().getElementById(questionId(sectionId))
       val answer = document().getElementById(answerId(sectionId))
       val editLink = document().getElementById(editLinkId(sectionId))
+      val hiddenContent = document.getElementsByClass("visuallyhidden").get(rowNo).text()
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -120,8 +126,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         val link = editLink.select("a")
         link.attr("href") should include(expectedEditLink.get)
         link.text() should include(MessageLookup.Base.change)
-        link.select("span").text() shouldBe expectedQuestion
-        link.select("span").hasClass("visuallyhidden") shouldBe true
+        link.select(".visuallyhidden").get(0).text() shouldBe hiddenContent
       }
     }
 
@@ -129,13 +134,17 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val sectionId = FirstNameId
       val expectedQuestion = messages.firstName
       val expectedAnswer = testFirstName
+      val expectedHiddenContent = "Change" + messages.firstName
 
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        rowNo = 0,
+        expectedHiddenContent = expectedHiddenContent
+
       )
     }
 
@@ -143,12 +152,14 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val sectionId = LastNameId
       val expectedQuestion = messages.lastName
       val expectedAnswer = testLastName
-
+      val expectedHiddenContent = "Change" + messages.lastName
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        rowNo = 1,
+        expectedHiddenContent = expectedHiddenContent
       )
     }
 
@@ -156,12 +167,15 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val sectionId = NinoId
       val expectedQuestion = messages.nino
       val expectedAnswer = testNino.toNinoDisplayFormat
+      val expectedHiddenContent = "Change" + messages.nino
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        rowNo = 2,
+        expectedHiddenContent = expectedHiddenContent
       )
     }
 
@@ -169,12 +183,15 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val sectionId = DobId
       val expectedQuestion = messages.dob
       val expectedAnswer = testDob.toCheckYourAnswersDateFormat
+      val expectedHiddenContent = "Change" + messages.dob
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        rowNo = 3,
+        expectedHiddenContent = expectedHiddenContent
       )
     }
 

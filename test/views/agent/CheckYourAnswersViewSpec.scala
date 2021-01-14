@@ -135,12 +135,18 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     }
 
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
+    def sectionTest(sectionId: String,
+                    expectedQuestion: String,
+                    expectedAnswer: String,
+                    expectedEditLink: Option[String],
+                    rowNo: Int,
+                    expectedHiddenContent: Option[String],
                     testSummaryModel: AgentSummary = testSummary, releaseFour: Boolean = false)(
                      setupData: AgentSummary = testAgentSummaryData): Unit = {
       val question = document(setupData, releaseFour).getElementById(questionId(sectionId))
       val answer = document(setupData, releaseFour).getElementById(answerId(sectionId))
       val editLink = document(setupData, releaseFour).getElementById(editLinkId(sectionId))
+      val hiddenContent = document(setupData, releaseFour).getElementsByClass("visuallyhidden").get(rowNo).text()
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -152,8 +158,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val link = editLink.select("a")
         link.attr("href") shouldBe expectedEditLink.get
         link.text() should include(MessageLookup.Base.change)
-        link.select("span").text() shouldBe expectedQuestion
-        link.select("span").hasClass("visuallyhidden") shouldBe true
+        link.select(".visuallyhidden").get(0).text() shouldBe hiddenContent
       }
     }
 
@@ -165,12 +170,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val expectedQuestion = messages.selected_tax_year
         val expectedAnswer = messages.option1(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
         val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedHiddenContent = "Change" + messages.selected_tax_year
 
         sectionTest(
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink
+          expectedEditLink = expectedEditLink,
+          rowNo = 1,
+          expectedHiddenContent = expectedHiddenContent
         )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Current))))
       }
 
@@ -181,12 +189,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val expectedQuestion = messages.selected_tax_year
         val expectedAnswer = messages.option2(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
         val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedHiddenContent = "Change" + messages.selected_tax_year
 
         sectionTest(
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink
+          expectedEditLink = expectedEditLink,
+          rowNo = 1,
+          expectedHiddenContent = expectedHiddenContent
         )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Next))))
       }
     }
@@ -199,12 +210,14 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val expectedQuestion = messages.selected_tax_year_release4
         val expectedAnswer = messages.option1_release4(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
         val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
-
+        val expectedHiddenContent = "Change" + messages.selected_tax_year_release4
         sectionTest(
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
+          rowNo = 1,
+          expectedHiddenContent = expectedHiddenContent,
           releaseFour = true
         )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Current))))
       }
@@ -216,12 +229,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val expectedQuestion = messages.selected_tax_year_release4
         val expectedAnswer = messages.option2_release4(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
         val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedHiddenContent = "Change" + messages.selected_tax_year_release4
 
         sectionTest(
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
+          rowNo = 1,
+          expectedHiddenContent = expectedHiddenContent,
           releaseFour = true
         )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Next))))
       }
@@ -234,12 +250,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val expectedQuestion = messages.income_source
       val expectedAnswer = s"${IncomeSource.business} ${IncomeSource.property} ${IncomeSource.overseas_property}"
       val expectedEditLink = controllers.agent.routes.IncomeSourceController.show(editMode = true).url
+      val expectedHiddenContent = "Change" + messages.income_source
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        rowNo = 1,
+        expectedHiddenContent = expectedHiddenContent
       )()
     }
 
@@ -248,12 +267,14 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val expectedQuestion = messages.business_name
       val expectedAnswer = testBusinessName.businessName
       val expectedEditLink = controllers.agent.business.routes.BusinessNameController.show(editMode = true).url
-
+      val expectedHiddenContent = "Change" + messages.business_name
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        rowNo = 2,
+        expectedHiddenContent = expectedHiddenContent
       )()
     }
 
@@ -262,41 +283,50 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val expectedQuestion = messages.number_of_businesses
       val expectedAnswer = testSelfEmployments.size.toString
       val expectedEditLink = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-list"
+      val expectedHiddenContent = "Change" + messages.number_of_businesses
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
+        rowNo = 2,
+        expectedHiddenContent = expectedHiddenContent,
         releaseFour = true
       )(setupData = customTestSummary())
     }
 
     "display the correct info for the accounting method when release four is disabled" in {
       val sectionId = AccountingMethodId
-      val expectedQuestion = messages.income_type
+      val expectedQuestion = messages.business_accountingmethod
       val expectedAnswer = messages.AccountingMethod.cash
       val expectedEditLink = controllers.agent.business.routes.BusinessAccountingMethodController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )()
-    }
-
-    "display the correct info for the accounting method when release four is enabled" in {
-      val sectionId = AccountingMethodId
-      val expectedQuestion = messages.income_type
-      val expectedAnswer = messages.AccountingMethod.cash
-      val expectedEditLink = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method?isEditMode=true"
+      val expectedHiddenContent = "Change" + messages.business_accountingmethod
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
+        rowNo = 3,
+        expectedHiddenContent = expectedHiddenContent
+      )()
+    }
+
+    "display the correct info for the accounting method when release four is enabled" in {
+      val sectionId = AccountingMethodId
+      val expectedQuestion = messages.business_accountingmethod
+      val expectedAnswer = messages.AccountingMethod.cash
+      val expectedEditLink = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method?isEditMode=true"
+      val expectedHiddenContent = "Change" + messages.business_accountingmethod
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink,
+        rowNo = 2,
+        expectedHiddenContent = expectedHiddenContent,
         releaseFour = true
       )()
     }
@@ -306,27 +336,32 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val expectedQuestion = messages.propertyStartDate
       val expectedAnswer = testPropertyStartDate.startDate.toLocalDate.toLongDate
       val expectedEditLink = controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url
-
+      val expectedHiddenContent = "Change" + messages.propertyStartDate
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
+        rowNo = 4,
+        expectedHiddenContent = expectedHiddenContent,
         testSummaryModel = customTestSummary(propertyStartDate = testPropertyStartDate)
       )()
     }
 
     "display the correct info for the property accounting method" in {
       val sectionId = AccountingMethodPropertyId
-      val expectedQuestion = messages.income_type_property
+      val expectedQuestion = messages.ukproperty__accountingmethod
       val expectedAnswer = messages.AccountingMethodProperty.cash
       val expectedEditLink = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+      val expectedHiddenContent = "Change" + messages.ukproperty__accountingmethod
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
+        rowNo = 5,
+        expectedHiddenContent = expectedHiddenContent,
         testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
       )()
     }
@@ -336,26 +371,32 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val expectedQuestion = messages.overseasPropertyStartDate
       val expectedAnswer = testOverseasPropertyStartDate.startDate.toLocalDate.toLongDate
       val expectedEditLink = controllers.agent.business.routes.OverseasPropertyStartDateController.show(editMode = true).url
+      val expectedHiddenContent = "Change" + messages.overseasPropertyStartDate
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        rowNo = 6,
+        expectedHiddenContent = expectedHiddenContent
       )()
     }
 
     "display the correct info for the Overseas property accounting method" in {
       val sectionId = OverseasAccountingMethodPropertyId
-      val expectedQuestion = messages.income_type_overseas_property
+      val expectedQuestion = messages.overseasproperty_accountingmethod
       val expectedAnswer = messages.AccountingMethodOverseasProperty.cash
       val expectedEditLink = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
+      val expectedHiddenContent = "Change" + messages.overseasproperty_accountingmethod
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = expectedEditLink,
+        rowNo = 7,
+        expectedHiddenContent = expectedHiddenContent
       )()
     }
   }

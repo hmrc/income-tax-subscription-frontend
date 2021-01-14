@@ -33,6 +33,29 @@ base.minutes                                                    = minutes
 base.second                                                     = second
 base.seconds                                                    = seconds
 
+## Hidden content for user detail and final CYA pages
+userdetail.cya.change.firstname                                 = Change first name
+userdetail.cya.change.lastname                                  = Change last name
+userdetail.cya.change.nationalinsurance                         = Change National Insurance number
+userdetail.cya.change.dateofbirth                               = Change Date of Birth
+final.cya.change.taxyearstartfiling                             = Change tax year to start filing updates
+final.cya.change.incomereceived                                 = Change income received from
+final.cya.change.signupbusinessnumber                           = Change number of businesses signed up
+final.cya.change.businessname                                   = Change your business name
+agent.final.cya.change.businessname                             = Change business name
+final.cya.change.businesstradestartdate                         = Change trading start date of business
+final.cya.change.ukpropertystradestartdate                      = Change trading start date of UK property business
+agent.final.cya.change.ukpropertystradestartdate                = Change trading start for UK property
+final.cya.change.overseaspropertytradestartdate                 = Change trading start date of overseas property business
+agent.final.cya.change.overseaspropertytradestartdate           = Change trading start for foreign property
+final.cya.change.soletraderaccountingmethod                     = Change accounting method for your self-employment income
+agent.final.cya.change.soletraderaccountingmethod               = Change accounting method for their self-employed business
+final.cya.change.ukpropertyaccountingmethod                     = Change accounting method for UK property income
+agent.final.cya.change.ukpropertyaccountingmethod               = Change accounting method for their property business
+final.cya.change.overseaspropertyaccountingmethod               = Change accounting method for overseas property income
+agent.final.cya.change.overseaspropertyaccountingmethod         = Change accounting method for foreign property
+final.cya.change.soletraderbusinesssignup                       = Change number of sole trader businesses signed up
+
 ## Front page
 frontpage.title                                                 = Sign up to report your income and expenses quarterly
 frontpage.heading                                               = Sign up to report your income and expenses quarterly

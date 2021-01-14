@@ -59,6 +59,29 @@ preferences_callback.heading                                    = Rhaid i chi gy
 preferences_callback.line_1                                     = I gofrestru ar gyfer y gwasanaeth hwn, rhaid i chi ganiatáu i Gyllid a Thollau EM anfon gohebiaeth electronig atoch.
 preferences_callback.button                                     = Ewch yn ôl
 
+## Hidden content for user detail and final CYA pages
+userdetail.cya.change.firstname                                 = Newid enw cyntaf
+userdetail.cya.change.lastname                                  = Newid enw olaf
+userdetail.cya.change.nationalinsurance                         = Newid rhif Yswiriant Gwladol
+userdetail.cya.change.dateofbirth                               = Newid Dyddiad Geni
+final.cya.change.taxyearstartfiling                             = Newid blwyddyn dreth i ddechrau cyflwyno diweddariadau
+final.cya.change.incomereceived                                 = Newid incwm a gawsoch gan
+final.cya.change.signupbusinessnumber                           = Newid nifer y busnesau sydd wedi’u cofrestru
+final.cya.change.businessname                                   = Newid eich enw’r busnes
+agent.final.cya.change.businessname                             = Newid enw’r busnes
+final.cya.change.businesstradestartdate                         = Newid dyddiad dechrau masnachu’r busnes
+final.cya.change.ukpropertystradestartdate                      = Newid dyddiad dechrau masnachu busnes eiddo yn y DU
+agent.final.cya.change.ukpropertystradestartdate                = Newid dyddiad dechrau masnachu ar gyfer eiddo yn y DU
+final.cya.change.overseaspropertytradestartdate                 = Newid dyddiad dechrau masnachu busnes eiddo tramor
+agent.final.cya.change.overseaspropertytradestartdate           = Newid dyddiad dechrau masnachu ar gyfer eiddo tramor
+final.cya.change.soletraderaccountingmethod                     = Newid dull cyfrifyddu ar gyfer eich incwm o hunangyflogaeth
+agent.final.cya.change.soletraderaccountingmethod               = Newid dull cyfrifyddu ar gyfer ei fusnes hunangyflogedig
+final.cya.change.ukpropertyaccountingmethod                     = Newid dull cyfrifyddu ar gyfer incwm o eiddo yn y DU
+agent.final.cya.change.ukpropertyaccountingmethod               = Newid dull cyfrifyddu ar gyfer ei fusnes eiddo
+final.cya.change.overseaspropertyaccountingmethod               = Newid dull cyfrifyddu ar gyfer incwm o eiddo tramor
+agent.final.cya.change.overseaspropertyaccountingmethod         = Newid dull cyfrifyddu ar gyfer incwm o eiddo tramor
+final.cya.change.soletraderbusinesssignup                       = Newid nifer y busnesau unig fasnachwr sydd wedi’u cofrestru
+
 # are you self-employed page
 are_you_selfemployed.title                                      = A ydych yn hunangyflogedig?
 are_you_selfemployed.heading                                    = A ydych yn hunangyflogedig?
