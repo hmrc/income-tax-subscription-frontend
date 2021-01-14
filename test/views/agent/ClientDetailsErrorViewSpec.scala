@@ -31,7 +31,8 @@ class ClientDetailsErrorViewSpec extends ViewSpecTrait {
       name = "Client Details Error",
       title = messages.title,
       heading = messages.heading,
-      page = page
+      page = page,
+      isAgent = true
     )
 
     testPage.mustHavePara(messages.line1)

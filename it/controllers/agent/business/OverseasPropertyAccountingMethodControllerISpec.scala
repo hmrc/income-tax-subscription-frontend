@@ -26,7 +26,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
 
         val expectedText = removeHtmlMarkup(messages("agent.overseas.property.accounting_method.radio.cash"))
 
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
         Then("Should return a OK with the foreign property accounting method page")
         res should have(
@@ -47,7 +47,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
 
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
 
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
         Then("Should return a OK with the foreign property accounting method page")
         res should have(

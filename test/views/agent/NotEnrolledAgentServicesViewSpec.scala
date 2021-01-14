@@ -31,7 +31,8 @@ class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
       name = "Agent not Enrolled to Agent Services",
       title = messages.title,
       heading = messages.heading,
-      page = page
+      page = page,
+      isAgent = true
     )
 
     testPage.mustHavePara(messages.para1)

@@ -57,7 +57,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
     "the user is locked out" should {
       lazy val result = TestUserDetailsLockoutController.show(request)
       lazy val document = Jsoup.parse(contentAsString(result))
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       "return 200" in {
         setupMockLockedOut(testCredId)
         status(result) must be(Status.OK)

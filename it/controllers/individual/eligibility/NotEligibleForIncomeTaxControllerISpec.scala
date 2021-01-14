@@ -30,7 +30,7 @@ class NotEligibleForIncomeTaxControllerISpec extends ComponentSpecBase {
 
       When("GET /cannot-use-service-yet")
       val res = IncomeTaxSubscriptionFrontend.notEligibleForIncomeTax()
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       Then("Should return a OK with the cannot use service yet page")
       res should have(
         httpStatus(OK),

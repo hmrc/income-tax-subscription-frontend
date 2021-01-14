@@ -45,7 +45,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
 
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       document.title mustBe messages.heading + serviceNameGovUk
 
       document.select("#sign-out-button").attr("href") mustBe

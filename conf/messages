@@ -827,7 +827,13 @@ agent.error.overseas.property.month.empty                       = The date must 
 agent.error.overseas.property.start_date.maxStartDate           = The date the overseas property business started trading must be on or before {0}
 agent.error.overseas.property.start_date.minStartDate           = The date your client’s property business started trading must be on or after {0}
 
-## Title pattern
-titlePattern.serviceName.govUk                                  = {0} - Report your income and expenses quarterly - GOV.UK
-base.title.error                                                = Error: {0} - Report your income and expenses quarterly - GOV.UK
+## Service Name
+agent_service_name.title                                        = Use software to report your client’s Income Tax
 
+## Title pattern
+titlePattern.serviceName.govUk                                  = {0} - Use software to send Income Tax updates - GOV.UK
+agentTitlePattern.serviceName.govUk                             = {0} - Use software to report your client’s Income Tax - GOV.UK
+
+## Title Errors
+base.title.error                                                = Error: {0} - Use software to send Income Tax updates - GOV.UK
+agentBase.title.error                                           = Error: {0} - Use software to report your client’s Income Tax - GOV.UK

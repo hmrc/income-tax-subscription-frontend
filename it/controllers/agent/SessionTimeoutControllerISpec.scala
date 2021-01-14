@@ -29,7 +29,7 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase {
 
         When("GET /session-timeout is called")
         val res = IncomeTaxSubscriptionFrontend.sessionTimeout()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the session timeout page")
         res should have(
           httpStatus(OK),

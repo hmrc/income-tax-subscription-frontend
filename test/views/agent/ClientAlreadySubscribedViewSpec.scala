@@ -31,7 +31,8 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
       name = "Client Already Enrolled View",
       title = messages.title,
       heading = messages.heading,
-      page = page
+      page = page,
+      isAgent = true
     )
 
     testPage.mustHavePara(

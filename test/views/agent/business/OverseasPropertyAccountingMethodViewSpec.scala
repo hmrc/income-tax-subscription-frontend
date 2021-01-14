@@ -38,6 +38,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
     name = "Overseas Property Accounting Method View",
     title = messages.title,
     heading = messages.heading,
+    isAgent = true,
     page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
@@ -72,6 +73,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
       name = "Overseas Property Accounting Method View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
+      isAgent = true,
       page = page(isEditMode = false, addFormErrors = true)
     )
 

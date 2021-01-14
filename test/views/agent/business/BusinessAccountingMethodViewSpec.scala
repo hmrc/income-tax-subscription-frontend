@@ -39,6 +39,7 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
     name = "Business Accounting Method View",
     title = messages.title,
     heading = messages.heading,
+    isAgent = true,
     page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
@@ -73,6 +74,7 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
       name = "Business Accounting Method View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
+      isAgent = true,
       page = page(isEditMode = false, addFormErrors = true)
     )
 

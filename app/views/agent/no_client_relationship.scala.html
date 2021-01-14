@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.templates.main_template
+@import views.html.templates.agent_main_template
 @import config.AppConfig
 @import views.html.helpers._
 @import views.agent.helpers._
@@ -22,7 +22,7 @@
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("agent.no-client-relationship.title")) {
+@agent_main_template(title = Messages("agent.no-client-relationship.title")) {
 
   <h1 class="heading-large">@Messages("agent.no-client-relationship.heading")</h1>
 

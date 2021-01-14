@@ -19,7 +19,7 @@
 @import forms.agent.AccountingYearForm
 @import config.AppConfig
 @import forms.submapping.AccountingYearMapping
-@import views.html.templates.main_template
+@import views.html.templates.agent_main_template
 @import views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.helpers.RadioOption
@@ -54,7 +54,7 @@
     <p> @messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString) </p>
 }
 
-@main_template(title = pageTitle, form = Some(accountingYearForm), scriptElem = Some(scripts)) {
+@agent_main_template(title = pageTitle, form = Some(accountingYearForm), scriptElem = Some(scripts)) {
 
     @if(isEditMode) {
          @back_link(backUrl)

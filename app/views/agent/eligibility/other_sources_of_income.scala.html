@@ -20,7 +20,7 @@
 @import play.api.mvc.Request
 @import play.api.i18n.Messages
 @import config.AppConfig
-@import views.html.templates.main_template
+@import views.html.templates.agent_main_template
 @import views.html.helpers.summaryErrorHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers.radioHelper
@@ -32,7 +32,7 @@
 @import views.html.helpers.back_link
 @(otherSourcesOfIncomeForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = messages("agent.other_sources_of_income.title")) {
+@agent_main_template(title = messages("agent.other_sources_of_income.title")) {
 
     @back_link(backUrl)
 

@@ -19,12 +19,12 @@
 @import views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
-@import views.html.templates.main_template
+@import views.html.templates.agent_main_template
 @import views.agent.helpers._
 
 @(clientDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("agent.client-details.title"), form = clientDetailsForm) {
+@agent_main_template(title = Messages("agent.client-details.title"), form = clientDetailsForm) {
 
     @summaryErrorHelper(clientDetailsForm)
 

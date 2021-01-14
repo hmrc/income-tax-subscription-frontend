@@ -17,7 +17,7 @@
 @import forms.submapping.YesNoMapping
 @import play.api.data.Form
 @import models.YesNo
-@import views.html.templates.main_template
+@import views.html.templates.agent_main_template
 @import views.html.helpers.summaryErrorHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import forms.agent.PropertyTradingStartDateForm
@@ -31,7 +31,7 @@
 
 @(propertyTradingBeforeDateForm: Form[YesNo], postAction: Call, startDateLimit: String, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = messages("agent.property_trading_after.title", startDateLimit)) {
+@agent_main_template(title = messages("agent.property_trading_after.title", startDateLimit)) {
 
     @back_link(backUrl)
 

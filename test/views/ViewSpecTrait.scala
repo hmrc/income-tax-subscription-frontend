@@ -414,7 +414,8 @@ trait ViewSpecTrait extends UnitTestTrait {
                  title: String,
                  heading: String,
                  page: => Html,
-                 showSignOutInBanner: Boolean = true) extends ElementTest {
+                 showSignOutInBanner: Boolean = true,
+                  isAgent: Boolean = false) extends ElementTest {
 
     lazy val document: Document = Jsoup.parse(page.body)
     override lazy val element: Element = document.getElementById("content")
@@ -433,9 +434,16 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
     }
 
+    if(isAgent) {
     s"$name must have the title '$title'" in {
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
-      document.title() mustBe title + serviceNameGovUk
+      val agentServiceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
+      document.title() mustBe title + agentServiceNameGovUK
+      }
+    }else {
+      s"$name must have the title '$title'" in {
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        document.title() mustBe title + serviceNameGovUk
+      }
     }
 
     s"$name must have the heading (H1) '$heading'" in {
@@ -484,7 +492,8 @@ trait ViewSpecTrait extends UnitTestTrait {
               title: String,
               heading: String,
               page: => Html,
-              showSignOutInBanner: Boolean = true): TestView = new TestView(name, title, heading, page, showSignOutInBanner)
+              isAgent: Boolean = false,
+              showSignOutInBanner: Boolean = true): TestView = new TestView(name, title, heading, page, showSignOutInBanner, isAgent)
   }
 
   implicit class FormUtil[T](form: Form[T]) {

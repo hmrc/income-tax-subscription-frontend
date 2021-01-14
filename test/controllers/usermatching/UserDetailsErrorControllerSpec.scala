@@ -61,7 +61,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
     }
 
     "render the 'User Details Error page'" in {
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       document.title mustBe messages.title + serviceNameGovUk
     }
 

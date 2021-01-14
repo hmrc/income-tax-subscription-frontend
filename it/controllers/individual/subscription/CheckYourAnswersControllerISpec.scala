@@ -55,7 +55,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         Then("The check your answers page is displayed with an OK status")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("summary.title") + " - Report your income and expenses quarterly - GOV.UK")
+          pageTitle(messages("summary.title") + " - Use software to send Income Tax updates - GOV.UK")
         )
       }
     }
@@ -73,7 +73,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         Then("The check your answers page is displayed with an OK status")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("summary.title") + " - Report your income and expenses quarterly - GOV.UK")
+          pageTitle(messages("summary.title") + " - Use software to send Income Tax updates - GOV.UK")
         )
       }
     }
