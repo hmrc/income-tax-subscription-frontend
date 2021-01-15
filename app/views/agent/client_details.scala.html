@@ -41,7 +41,8 @@
                 label = Messages("agent.client-details.field_1"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
-                parentForm = clientDetailsForm
+                parentForm = clientDetailsForm,
+                autoComplete = Some("given-name")
             )
             </div>
             <div class="form-field-group">
@@ -50,7 +51,8 @@
                 label = Messages("agent.client-details.field_2"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
-                parentForm = clientDetailsForm
+                parentForm = clientDetailsForm,
+                autoComplete = Some("family-name")
             )
             </div>
             <div class="form-field-group">
@@ -59,7 +61,7 @@
                 label = Messages("agent.client-details.field_3"),
                 labelClass = "form-label-bold",
                 formHint = Seq(Messages("agent.client_details.formhint.1.line_1")),
-                parentForm = clientDetailsForm
+                parentForm = clientDetailsForm,
             )
             </div>
 
@@ -67,7 +69,8 @@
                 field = clientDetailsForm(clientDateOfBirth),
                 label = Messages("agent.client-details.field_4"),
                 parentForm = clientDetailsForm,
-                hintText = Messages("agent.client-details.formhint.2")
+                hintText = Messages("agent.client-details.formhint.2"),
+                isDateOfBirth = true
             )
         </div>
 

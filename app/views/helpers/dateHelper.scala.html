@@ -22,7 +22,8 @@
 @(field: Field,
         label: Option[String] = None,
         hintText: Option[String] = None,
-        parentForm: Form[_]
+        parentForm: Form[_],
+        isDateOfBirth: Boolean = false
 )(implicit messages: Messages)
 
 @dateErrors = @{
@@ -62,7 +63,8 @@
                     divClass = Some(ifNotWelsh("form-group-day")),
                     maxLength = Some(2),
                     isNumeric = true,
-                    showErrors = false
+                    showErrors = false,
+                    autoComplete = if(isDateOfBirth) Some("bday-day") else None
                 )
                 @inputHelper(
                     field(month),
@@ -71,7 +73,8 @@
                     divClass = Some(ifNotWelsh("form-group-month")),
                     maxLength = Some(2),
                     isNumeric = true,
-                    showErrors = false
+                    showErrors = false,
+                    autoComplete = if(isDateOfBirth) Some("bday-month") else None
                 )
                 @inputHelper(
                     field(year),
@@ -80,7 +83,8 @@
                     divClass = Some("form-group-year"),
                     maxLength = Some(4),
                     isNumeric = true,
-                    showErrors = false
+                    showErrors = false,
+                    autoComplete = if(isDateOfBirth) Some("bday-year") else None
                 )
             </div>
     </fieldset>
