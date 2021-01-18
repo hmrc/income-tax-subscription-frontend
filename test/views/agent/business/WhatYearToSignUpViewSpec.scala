@@ -110,14 +110,14 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
 
     "have a back button" when {
       "in edit mode" in new Setup(isEditMode = true) {
-        val backButton: Elements = document.select(".back-link")
+        val backButton: Elements = document.select(".link-back")
         backButton.attr("href") mustBe backUrl
         backButton.text mustBe MessageLookup.Base.back
       }
     }
     "not have a back button" when {
       "not in edit mode" in new Setup(isEditMode = false) {
-        Option(document.selectFirst(".back-link")) mustBe None
+        Option(document.selectFirst(".link-back")) mustBe None
       }
     }
   }
