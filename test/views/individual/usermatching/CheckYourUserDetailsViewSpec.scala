@@ -81,7 +81,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
     }
 
     s"have the title '${messages.title}'" in {
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       document().title() mustBe messages.title + serviceNameGovUk
     }
 

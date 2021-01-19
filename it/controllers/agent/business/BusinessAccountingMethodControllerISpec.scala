@@ -49,7 +49,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
 
         val expectedText = removeHtmlMarkup(messages("agent.business.accounting_method.cash"))
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the accounting method page")
         res should have(
           httpStatus(OK),
@@ -68,7 +68,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           When ("GET /business/accounting-method is called")
 
           val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
-          val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+          val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
           Then("Should return a OK with the accounting method page")
           res should have(
             httpStatus(OK),

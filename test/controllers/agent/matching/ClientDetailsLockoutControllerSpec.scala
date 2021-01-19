@@ -61,7 +61,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
       }
 
       "render the 'Client Details Lockout page'" in {
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         document.title mustBe messages.title + serviceNameGovUk
       }
     }

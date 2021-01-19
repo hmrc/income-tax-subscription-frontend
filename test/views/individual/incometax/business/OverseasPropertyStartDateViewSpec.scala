@@ -60,7 +60,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   "foreign property start date page" must {
 
     "have a title" in new Setup {
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       document.title mustBe OverseasPropertyStartDateMessages.title + serviceNameGovUk
     }
     "have a heading" in new Setup {

@@ -29,7 +29,7 @@ class NotEnrolledAgentServicesControllerISpec extends ComponentSpecBase {
 
       When("GET /not-enrolled-agent-services is called")
       val res = IncomeTaxSubscriptionFrontend.notEnrolledAgentServices()
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       Then("Should return a OK with the agent not enrolled page")
       res should have(
         httpStatus(OK),

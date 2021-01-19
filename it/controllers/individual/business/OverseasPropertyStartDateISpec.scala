@@ -25,7 +25,7 @@ class OverseasPropertyStartDateISpec extends ComponentSpecBase {
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyStartDate()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the overseas property start page with populated commencement date")
         res should have(
           httpStatus(OK),
@@ -45,7 +45,7 @@ class OverseasPropertyStartDateISpec extends ComponentSpecBase {
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyStartDate()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the overseas property start date page with no commencement date")
         res should have(
           httpStatus(OK),

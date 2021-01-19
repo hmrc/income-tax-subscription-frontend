@@ -38,7 +38,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         When("GET /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.businessName()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the business name page with populated business name")
         res should have(
           httpStatus(OK),
@@ -56,7 +56,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         When("GET /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.businessName()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the business name page with no business name")
         res should have(
           httpStatus(OK),

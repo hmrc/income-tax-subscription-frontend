@@ -31,7 +31,8 @@ class ClientDetailsLockoutViewSpec extends ViewSpecTrait {
       name = "Client Details Lockout",
       title = messages.title,
       heading = messages.heading,
-      page = page
+      page = page,
+      isAgent = true
     )
 
     testPage.mustHavePara(messages.line1(testTime))

@@ -108,7 +108,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     }
 
     s"have the title '${messages.title}'" in {
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       document().title() mustBe messages.title + serviceNameGovUk
     }
 

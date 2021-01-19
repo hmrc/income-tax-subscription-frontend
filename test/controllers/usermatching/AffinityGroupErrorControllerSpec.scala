@@ -45,7 +45,7 @@ class AffinityGroupErrorControllerSpec extends ControllerBaseSpec {
     }
 
     s"have the title '${MessageLookup.AffinityGroup.title}'" in {
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       document.title() must be(MessageLookup.AffinityGroup.title + serviceNameGovUk)
     }
   }

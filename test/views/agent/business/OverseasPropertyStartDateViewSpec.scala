@@ -40,7 +40,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val action: Call = testCall
   val taxYearEnd: Int = 2020
   val testError: FormError = FormError("startDate", "testError")
-  val titleSuffix = " - Report your income and expenses quarterly - GOV.UK"
+  val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
 
   class Setup(isEditMode: Boolean = false, overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel] =
   OverseasPropertyStartDateForm.overseasPropertyStartDateForm("minStartDateError", "maxStartDateError")) {

@@ -44,6 +44,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
       name = "Income Source View",
       title = messages.title,
       heading = messages.heading,
+      isAgent = true,
       page = page(isEditMode = false,
         addFormErrors = false
       )
@@ -75,6 +76,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
       name = "Income source View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
+      isAgent = true,
       page = page(isEditMode = false, addFormErrors = true)
     )
 

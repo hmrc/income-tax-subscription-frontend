@@ -835,6 +835,13 @@ agent.error.overseas.property.month.empty                       = Mae’n rhaid 
 agent.error.overseas.property.start_date.maxStartDate           = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
 agent.error.overseas.property.start_date.minStartDate           = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
 
+## Service name
+agent_service_name.title                                        = Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient
+
 ## Title pattern
 titlePattern.serviceName.govUk                                  = {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
+agentTitlePattern.serviceName.govUk                             = {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
+
+## Title Errors
 base.title.error                                                = Gwall: {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
+agentBase.title.error                                           = Gwall: {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK

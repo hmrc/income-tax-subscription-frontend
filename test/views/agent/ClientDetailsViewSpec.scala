@@ -37,7 +37,9 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
     name = "Client Details View",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode, addFormErrors = false)
+    isAgent = true,
+    page = page
+    (isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Client Details view" should {
@@ -81,6 +83,7 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
       name = "Client Details View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
+      isAgent = true,
       page = page(isEditMode = false, addFormErrors = true)
     )
 

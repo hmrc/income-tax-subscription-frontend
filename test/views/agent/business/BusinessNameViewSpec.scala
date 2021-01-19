@@ -39,6 +39,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
     name = "Business Name View",
     title = messages.title,
     heading = messages.heading,
+    isAgent = true,
     page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
@@ -72,6 +73,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
       name = "Business Name View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
+      isAgent = true,
       page = page(isEditMode = false, addFormErrors = true)
     )
 

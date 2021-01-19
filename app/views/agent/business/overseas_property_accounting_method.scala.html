@@ -30,7 +30,7 @@
     Messages("agent.overseas.property.accounting_method.title")
 }
 
-@views.html.templates.main_template(title = Messages("agent.overseas.property.accounting_method.title"), form = accountingMethodOverseasPropertyForm) {
+@views.html.templates.agent_main_template(title = Messages("agent.overseas.property.accounting_method.title"), form = accountingMethodOverseasPropertyForm) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodOverseasPropertyForm)

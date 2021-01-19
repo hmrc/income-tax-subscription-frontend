@@ -33,6 +33,7 @@ class AgentAffinityGroupErrorViewSpec extends ViewSpecTrait {
       name = "Affinity Group Error view",
       title = messages.title,
       heading = messages.heading,
+      isAgent = true,
       page = page)
 
     testPage.mustHavePara(messages.Agent.line1)

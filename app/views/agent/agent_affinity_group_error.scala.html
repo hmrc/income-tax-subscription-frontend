@@ -15,11 +15,11 @@
  *@
 
 @import config.AppConfig
-@import views.html.templates.main_template
+@import views.html.templates.agent_main_template
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("affinity-group-error.title")) {
+@agent_main_template(title = Messages("affinity-group-error.title")) {
 
     <h1 class="heading-large">@Messages("affinity-group-error.heading")</h1>
     <p>@Html(Messages("affinity-group-error.agent.line1", appConfig.agentSignUpUrl))</p>

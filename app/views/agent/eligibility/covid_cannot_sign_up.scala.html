@@ -15,13 +15,13 @@
  *@
 
 @import config.AppConfig
-@import views.html.templates.main_template
+@import views.html.templates.agent_main_template
 @import views.html.helper.form
 @import views.html.helpers._
 
 
 @(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@main_template(title = messages("agent.covid_cannot_sign_up.title")) {
+@agent_main_template(title = messages("agent.covid_cannot_sign_up.title")) {
 
     @back_link(backUrl)
 

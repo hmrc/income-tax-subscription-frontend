@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.templates.main_template
+@import views.html.templates.agent_main_template
 @import config.AppConfig
 @import forms.submapping.YesNoMapping
 @import models.YesNo
@@ -28,7 +28,7 @@
 
 @(covid19ClaimCheckForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = messages("agent.covid_19_claim_check.title"), form = covid19ClaimCheckForm) {
+@agent_main_template(title = messages("agent.covid_19_claim_check.title"), form = covid19ClaimCheckForm) {
 
     @back_link(backUrl)
 

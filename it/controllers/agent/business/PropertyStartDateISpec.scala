@@ -40,7 +40,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.propertyStartDate()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the property commencement page with populated commencement date")
         res should have(
           httpStatus(OK),
@@ -60,7 +60,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.propertyStartDate()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the property commencement date page with no commencement date")
         res should have(
           httpStatus(OK),

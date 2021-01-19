@@ -72,7 +72,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
       withClue("render the 'Not subscribed to Agent Services page'") {
         val document = Jsoup.parse(contentAsString(result))
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         document.title mustBe messages.title + serviceNameGovUk
       }
     }
@@ -222,7 +222,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
           val badResult = callSubmit(isEditMode = editMode)
           val document = Jsoup.parse(contentAsString(badResult))
-          val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+          val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
           document.title mustBe "Error: " + messages.title + serviceNameGovUk
         }
 

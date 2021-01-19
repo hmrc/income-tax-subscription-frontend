@@ -39,7 +39,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
 
         val expectedText = removeHtmlMarkup(messages("property.accounting_method.cash"))
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the property accounting method page")
         res should have(
           httpStatus(OK),
@@ -57,7 +57,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 
         When("GET /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the property accounting method page")
         res should have(
           httpStatus(OK),

@@ -69,7 +69,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
-        val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the check your answers page")
         res should have(
           httpStatus(OK),

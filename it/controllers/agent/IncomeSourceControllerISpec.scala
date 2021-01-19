@@ -52,7 +52,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
           When("GET /income is called")
           val res = IncomeTaxSubscriptionFrontend.income()
-          val serviceNameGovUK = " - Report your income and expenses quarterly - GOV.UK"
+          val serviceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
           Then("Should return a OK with the income source page")
           res should have(
             httpStatus(OK),
@@ -73,7 +73,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
           When("GET /income is called")
           val res = IncomeTaxSubscriptionFrontend.income()
-          val serviceNameGovUK = " - Report your income and expenses quarterly - GOV.UK"
+          val serviceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
           Then("Should return a OK with the income source page")
           res should have(
             httpStatus(OK),
@@ -95,7 +95,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
           When("GET /income is called")
           val res = IncomeTaxSubscriptionFrontend.income()
-          val serviceNameGovUK = " - Report your income and expenses quarterly - GOV.UK"
+          val serviceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
           Then("Should return a OK with the income source page")
           res should have(
             httpStatus(OK),

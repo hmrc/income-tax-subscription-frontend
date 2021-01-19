@@ -44,7 +44,7 @@ class SessionTimeoutControllerSpec extends ControllerBaseSpec {
     }
 
     s"have the title '${MessageLookup.Timeout.title}'" in {
-      val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       document.title() must be(MessageLookup.Timeout.title + serviceNameGovUk)
     }
   }

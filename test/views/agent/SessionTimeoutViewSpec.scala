@@ -31,6 +31,7 @@ class SessionTimeoutViewSpec extends ViewSpecTrait {
       title = messages.title,
       heading = messages.heading,
       page = page,
+      isAgent = true,
       showSignOutInBanner = false)
 
     testPage.mustHavePara(messages.returnToHome)

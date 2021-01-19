@@ -23,7 +23,6 @@ import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class NoSAViewSpec extends ViewSpecTrait {
-
   val action: Call = ViewSpecTrait.testCall
   val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
@@ -36,6 +35,7 @@ class NoSAViewSpec extends ViewSpecTrait {
       title = messages.Agent.title,
       heading = messages.Agent.heading,
       page = page,
+      isAgent = true,
       showSignOutInBanner = false
     )
 
