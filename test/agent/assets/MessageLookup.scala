@@ -174,7 +174,7 @@ object MessageLookup {
   }
 
   object OverseasPropertyAccountingMethod {
-    val title = "What accounting method does your client use for their foreign property business?"
+    val title = "What accounting method does your client use for their overseas property business?"
     val heading = title
     val cash = "Cash accounting"
     val accruals = "Standard accounting"

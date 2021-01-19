@@ -190,8 +190,8 @@ overseas.property.line_1                                        = This is the da
 overseas.property.start_date.exampleStartDate                   = For example, 1 8 2014
 
 # Agent Overseas Property Start Date
-agent.overseas.property.name.heading                            = When did your client’s foreign property business start trading?
-agent.overseas.property.line_1                                  = This is the date that letting or renting out any foreign property first started.
+agent.overseas.property.name.heading                            = When did your client’s overseas property business start trading?
+agent.overseas.property.line_1                                  = This is the date that letting or renting out any overseas property first started.
 agent.overseas.property.start_date.exampleStartDate             = For example, 1 8 2014
 
 # Overseas Property Start Date errors
@@ -330,7 +330,7 @@ error.overseas_property_accounting_method.invalid               = Select if you 
 error.overseas_property_accounting_method.empty                 = Select if you use cash accounting or standard accounting
 
 #Agent Overseas Property accounting method errors
-error.agent.overseas_property_accounting_method.empty           = Select if your client uses cash or standard accounting
+error.agent.overseas_property_accounting_method.empty           = Select if your client uses cash accounting or standard accounting
 
 error.user_details.first_name.empty                             = Enter your first name
 error.user_details.last_name.empty                              = Enter your last name
@@ -602,7 +602,7 @@ agent.property.accounting_method.radio.cash                     = Cash accountin
 agent.property.accounting_method.radio.accruals                 = Standard accounting
 
 # Agent Overseas Property Accounting Method Page
-agent.overseas.property.accounting_method.title                 = What accounting method does your client use for their foreign property business?
+agent.overseas.property.accounting_method.title                 = What accounting method does your client use for their overseas property business?
 agent.overseas.property.accounting_method.radio.cash            = Cash accounting
 agent.overseas.property.accounting_method.radio.accruals        = Standard accounting
 
@@ -733,7 +733,7 @@ agent.error.contact_email.invalid                               = The email is i
 agent.error.accounting-method.empty                             = Select how your client records their income and expenses for their self-employed business
 agent.error.accounting-method.invalid                           = Select how your client records their income and expenses for their self-employed business
 
-agent.error.accounting-method-property.invalid                  = Select if your client uses cash or standard accounting
+agent.error.accounting-method-property.invalid                  = Select if your client uses cash accounting or standard accounting
 
 agent.error.not-eligible.empty                                  = You must select an option to continue
 agent.error.not-eligible.invalid                                = You must select an option to continue
