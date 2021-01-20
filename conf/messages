@@ -1,5 +1,5 @@
 ## Base ##
-base.service_name                                               = Report your income and expenses quarterly
+base.service_name                                               = Use software to send Income Tax updates
 base.back                                                       = Back
 base.continue                                                   = Continue
 base.continue-sign-up                                           = Continue to sign up
