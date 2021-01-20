@@ -29,8 +29,8 @@ import utilities.ViewSpec
 class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
   object OverseasPropertyStartDateMessages {
-    val heading = "When did your client’s foreign property business start trading?"
-    val para = "This is the date that letting or renting out any foreign property first started."
+    val heading = "When did your client’s overseas property business start trading?"
+    val para = "This is the date that letting or renting out any overseas property first started."
     val exampleStartDate = "For example, 1 8 2014"
     val continue = "Continue"
     val backLink = "Back"
