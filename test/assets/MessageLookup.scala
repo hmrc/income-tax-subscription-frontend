@@ -226,7 +226,7 @@ object MessageLookup {
 
     val business_name = "Your business name"
     val selected_tax_year = "Tax year to start filing updates"
-    val income_type = "Accounting method for your self-employment income"
+    val business_accountingmethod = "Accounting method for your self-employment income"
 
     object AccountingMethod {
       val cash = "Cash accounting"
