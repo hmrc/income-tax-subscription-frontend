@@ -47,13 +47,13 @@ final.cya.change.businesstradestartdate                         = Change trading
 final.cya.change.ukpropertystradestartdate                      = Change trading start date of UK property business
 agent.final.cya.change.ukpropertystradestartdate                = Change trading start for UK property
 final.cya.change.overseaspropertytradestartdate                 = Change trading start date of overseas property business
-agent.final.cya.change.overseaspropertytradestartdate           = Change trading start for foreign property
+agent.final.cya.change.overseaspropertytradestartdate           = Change trading start for overseas property
 final.cya.change.soletraderaccountingmethod                     = Change accounting method for your self-employment income
-agent.final.cya.change.soletraderaccountingmethod               = Change accounting method for their self-employed business
+agent.final.cya.change.soletraderaccountingmethod               = Change accounting method for sole trader business
 final.cya.change.ukpropertyaccountingmethod                     = Change accounting method for UK property income
-agent.final.cya.change.ukpropertyaccountingmethod               = Change accounting method for their property business
+agent.final.cya.change.ukpropertyaccountingmethod               = Change accounting method for UK property
 final.cya.change.overseaspropertyaccountingmethod               = Change accounting method for overseas property income
-agent.final.cya.change.overseaspropertyaccountingmethod         = Change accounting method for foreign property
+agent.final.cya.change.overseaspropertyaccountingmethod         = Change accounting method for overseas property
 final.cya.change.soletraderbusinesssignup                       = Change number of sole trader businesses signed up
 
 ## Front page
@@ -682,8 +682,8 @@ agent.summary.income_source.uk_property                         = UK property
 agent.summary.income_source.overseas_property                   = Overseas property
 agent.summary.accounting_period                                 = Your client’s accounting period dates
 agent.summary.business_name                                     = Business name
-agent.summary.income_type                                       = Accounting method for their self-employed business
-agent.summary.income_type_property                              = Accounting method for their property business
+agent.summary.income_type                                       = Accounting method for sole trader business
+agent.summary.income_type_property                              = Accounting method for UK property
 agent.summary.income_type.cash                                  = Cash accounting
 agent.summary.income_type.accruals                              = Standard accounting
 agent.summary.match_tax_year                                    = Accounting period matches tax year
@@ -694,8 +694,8 @@ agent.summary.selected_year.release4                            = Tax year to st
 agent.summary.selected_year.current.release4                    = Current tax year (6 April {0} to 5 April {1})
 agent.summary.selected_year.next.release4                       = Next tax year (6 April {0} to 5 April {1})
 agent.summary.property_start_date                               = Trading start for UK property
-agent.summary.overseas_property_start_date                      = Trading start for foreign property
-agent.summary.income_type_overseas_property                     = Accounting method for foreign property
+agent.summary.overseas_property_start_date                      = Trading start for overseas property
+agent.summary.income_type_overseas_property                     = Accounting method for overseas property
 agent.summary.self_employments                                  = Number of businesses signed up
 
 ## Sign Up Complete page ##

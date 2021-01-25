@@ -205,12 +205,12 @@ object MessageLookup {
     def option2(taxYearStart: String, taxYearEnd: String) = s"Next tax year ($taxYearStart to $taxYearEnd)"
     def option2_release4(taxYearStart: String, taxYearEnd: String) = s"Next tax year (6 April $taxYearStart to 5 April $taxYearEnd)"
 
-    val business_accountingmethod = "Accounting method for their self-employed business"
-    val ukproperty__accountingmethod = "Accounting method for their property business"
+    val business_accountingmethod = "Accounting method for sole trader business"
+    val ukproperty__accountingmethod = "Accounting method for UK property"
     val match_tax_year = "Accounting period matches tax year"
     val propertyStartDate = "Trading start for UK property"
-    val overseasPropertyStartDate = "Trading start for foreign property"
-    val overseasproperty_accountingmethod = "Accounting method for foreign property"
+    val overseasPropertyStartDate = "Trading start for overseas property"
+    val overseasproperty_accountingmethod = "Accounting method for overseas property"
 
     object AccountingMethod {
       val cash = "Cash accounting"
