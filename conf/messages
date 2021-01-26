@@ -720,8 +720,16 @@ agent.sign-up-complete.whatNow.para2                            = After you’ve
 agent.error.back_to_preferences.empty                           = You must select an option to continue
 
 agent.error.dob_date.empty                                      = Enter your client’s date of birth
+agent.error.dob_date.date.empty                                 = Enter your client’s date of birth
 agent.error.dob_date.invalid_chars                              = Enter a date of birth using numbers 0 to 9
 agent.error.dob_date.invalid                                    = Enter a real date of birth
+agent.error.dob_date.day.empty                                  = Their date of birth must include a day
+agent.error.dob_date.month.empty                                = Their date of birth must include a month
+agent.error.dob_date.year.empty                                 = Their date of birth must include a year
+agent.error.dob_date.day_month.empty                            = Their date of birth must include a day and a month
+agent.error.dob_date.day_year.empty                             = Their date of birth must include a day and a year
+agent.error.dob_date.month_year.empty                           = Their date of birth must include a month and a year
+agent.error.dob_date.not_in_past                                = Their date of birth must be in the past
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?

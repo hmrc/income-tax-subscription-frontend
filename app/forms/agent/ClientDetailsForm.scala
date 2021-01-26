@@ -16,15 +16,16 @@
 
 package forms.agent
 
+import java.time.LocalDate
+
+import forms.formatters.DateModelMapping
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
-import forms.formatters.DateModelMapping.dateMapping
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
 import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.data.Form
-import play.api.data.Forms.mapping
+import play.api.data.Forms.{default, mapping, text}
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 
 import scala.util.Try
@@ -37,6 +38,8 @@ object ClientDetailsForm {
   val clientDateOfBirth = "clientDateOfBirth"
 
   val nameMaxLength = 105
+
+  val errorContext: String = "dob_date"
 
   val firstNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client_details.first_name.empty")
   val lastNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client_details.last_name.empty")
@@ -53,40 +56,29 @@ object ClientDetailsForm {
     constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else Invalid("agent.error.nino.invalid"))
   }
 
-  val dobNoneEmpty: Constraint[DateModel] = constraint[DateModel](
-    date => {
-      lazy val emptyDate = Invalid("agent.error.dob_date.empty")
-      if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
+  val isValidDate: Constraint[DateModel] = constraint[DateModel] { dateModel =>
+    lazy val invalidDate = Invalid(s"agent.error.$errorContext.empty")
+    Try[ValidationResult] {
+      dateModel.toLocalDate
+      Valid
+    }.getOrElse(invalidDate)
+  }
+
+  val dateInPast: Constraint[DateModel] = constraint[DateModel] { dateModel =>
+    if (dateModel.toLocalDate.isBefore(LocalDate.now)) {
+      Valid
+    } else {
+      Invalid(s"agent.error.$errorContext.not_in_past")
     }
-  )
-
-  val dobIsNumeric: Constraint[DateModel] = constraint[DateModel](
-    date => {
-      lazy val isNotNumeric = Invalid("agent.error.dob_date.invalid_chars")
-      val numericRegex = "[0-9]*"
-
-      def isNumeric(str: String): Boolean = str.replace(" ","").matches(numericRegex)
-
-      if (isNumeric(date.day) && isNumeric(date.month) && isNumeric(date.year)) Valid else isNotNumeric
-    }
-  )
-
-  val dobInvalid: Constraint[DateModel] = constraint[DateModel](
-    date => {
-      Try[ValidationResult] {
-        date.toLocalDate
-        Valid
-      }.getOrElse(Invalid("agent.error.dob_date.invalid"))
-    }
-  )
+  }
 
 
-  val clientDetailsValidationForm = Form(
+  val clientDetailsValidationForm = Form[UserDetailsModel](
     mapping(
-      clientFirstName -> oText.toText.verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
-      clientLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
-      clientNino -> oText.toText.verifying(emptyClientNino andThen validateClientNino),
-      clientDateOfBirth -> dateMapping.verifying(dobNoneEmpty andThen dobIsNumeric andThen dobInvalid)
+      clientFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
+      clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
+      clientNino -> default(text, "").verifying(emptyClientNino andThen validateClientNino),
+      clientDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = true, errorContext = errorContext).verifying(isValidDate andThen dateInPast)
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 

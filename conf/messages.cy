@@ -727,8 +727,17 @@ agent.sign-up-complete.whatNow.para2                            = Ar ôl i chi a
 agent.error.back_to_preferences.empty                           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
 agent.error.dob_date.empty                                      = Nodwch ddyddiad geni’ch cleient
+agent.error.dob_date.date.empty                                 = Nodwch ddyddiad geni’ch cleient
 agent.error.dob_date.invalid_chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
 agent.error.dob_date.invalid                                    = Nodwch ddyddiad geni go iawn
+agent.error.dob_date.day.empty                                  = Rhaid i'w dyddiad geni gynnwys diwrnod
+agent.error.dob_date.month.empty                                = Rhaid i'w dyddiad geni gynnwys mis
+agent.error.dob_date.year.empty                                 = Rhaid i'w dyddiad geni gynnwys blwyddyn
+agent.error.dob_date.day_month.empty                            = Rhaid i'w dyddiad geni gynnwys diwrnod a mis
+agent.error.dob_date.day_year.empty                             = Rhaid i'w dyddiad geni gynnwys diwrnod a blwyddyn
+agent.error.dob_date.month_year.empty                           = Rhaid i'w dyddiad geni gynnwys mis a blwyddyn
+agent.error.dob_date.not_in_past                                = Rhaid i'w dyddiad geni fod yn y gorffennol
+
 
 agent.error.match_tax_year.empty                                = Dewiswch ‘iawn’ os yw cyfnod cyfrifyddu eich cleient yn paru â’r flwyddyn dreth
 agent.error.match_tax_year.invalid                              = Dewiswch ‘iawn’ os yw cyfnod cyfrifyddu eich cleient yn paru â’r flwyddyn dreth
