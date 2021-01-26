@@ -118,6 +118,14 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     FeatureSwitch.switches foreach disable
   }
 
+  def getWithHeaders(uri: String, headers: (String, String)*): WSResponse = {
+    await(
+      buildClient(uri)
+        .withHttpHeaders(headers: _*)
+        .get()
+    )
+  }
+
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString
 

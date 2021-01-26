@@ -24,7 +24,7 @@ private object AppDependencies {
   private val wiremockVersion = "2.27.2"
   private val domainVersion = "5.10.0-play-26"
   private val catsVersion = "0.9.0"
-  private val playLanguageVersion = "4.5.0-play-26"
+  private val playLanguageVersion = "4.10.0-play-26"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
