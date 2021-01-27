@@ -1,5 +1,5 @@
 ## Base ##
-base.service_name                                               = Rhoi gwybod am eich incwm a’ch treuliau bob chwarter
+base.service_name                                               = Defnyddio meddalwedd i anfon diweddariadau Treth Incwm
 base.back                                                       = Yn ôl
 base.continue                                                   = Yn eich blaen
 base.continue-sign-up                                           = Parhau i gofrestru
@@ -871,9 +871,9 @@ agent.error.overseas.property.start_date.minStartDate           = Rhaid i’r dy
 agent_service_name.title                                        = Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient
 
 ## Title pattern
-titlePattern.serviceName.govUk                                  = {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
+titlePattern.serviceName.govUk                                  = {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
 agentTitlePattern.serviceName.govUk                             = {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
 
 ## Title Errors
-base.title.error                                                = Gwall: {0} - Rhoi gwybod am eich incwm a’ch treuliau bob chwarter - GOV.UK
+base.title.error                                                = Gwall: {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
 agentBase.title.error                                           = Gwall: {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
