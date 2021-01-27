@@ -101,9 +101,12 @@ trait AppConfig extends FeatureSwitching {
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy"))
+    "cymraeg" -> Lang("cy")
+  )
 
-  def routeToSwitchLanguage: String => Call = (lang: String) => controllers.language.routes.LanguageSwitchController.switchToLanguage(lang)
+  def routeToSwitchLanguage: String => Call = (lang: String) => controllers.individual.routes.LanguageSwitchController.switchToLanguage(lang)
+
+  def routeToSwitchAgentLanguage: String => Call = (lang:String) => controllers.agent.routes.LanguageSwitchController.switchToLanguage(lang)
 
   def betaFeedbackUrl: String
 

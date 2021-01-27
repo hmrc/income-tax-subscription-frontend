@@ -68,7 +68,7 @@ GET         /add-another                            controllers.agent.AddAnother
 GET         /register-for-SA                        controllers.agent.matching.NoSAController.show
 
 #Language
-GET         /language/:lang                         controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                         controllers.agent.LanguageSwitchController.switchToLanguage(lang: String)
 
 #Covid19 Routes
 GET         /eligibility/covid-19                   controllers.agent.eligibility.Covid19ClaimCheckController.show

@@ -63,7 +63,7 @@ GET         /error/cannot-use-service                   controllers.individual.i
 GET         /cannot-use-service-yet                     controllers.individual.eligibility.NotEligibleForIncomeTaxController.show()
 
 #Language
-GET         /language/:lang                             controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                             controllers.individual.LanguageSwitchController.switchToLanguage(lang: String)
 
 # Feedback Routes
 GET         /feedback                                   controllers.FeedbackController.show
