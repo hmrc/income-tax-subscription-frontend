@@ -80,7 +80,7 @@ object IntegrationTestConstants {
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val ggSignInURI = "/gg/sign-in"
   val signOutURI = s"$baseURI/logout"
-  val ggSignOutURI = s"/gg/sign-out"
+  val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
   val claimSubscriptionURI = s"$baseURI/claim-subscription"
   val wrongAffinityURI = s"$baseURI/error/affinity-group"
   val ivURI = s"$baseURI/iv"
