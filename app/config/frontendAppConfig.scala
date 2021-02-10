@@ -138,7 +138,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   // sign out
   override lazy val ggUrl: String = config.getString(s"government-gateway.url")
 
-  override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/gg/sign-out?continue=$redirectionUrl"
+  override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/bas-gateway/sign-out-without-state?continue=$redirectionUrl"
 
   // BTA link
   override lazy val btaUrl: String = config.getString(s"bta.url")
