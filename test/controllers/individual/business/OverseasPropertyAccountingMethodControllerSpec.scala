@@ -16,7 +16,8 @@
 
 package controllers.individual.business
 
-import config.featureswitch.FeatureSwitch.{ReleaseFour}
+import agent.audit.mocks.MockAuditingService
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
@@ -32,7 +33,8 @@ import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with FeatureSwitching {
+class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
+  with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
@@ -46,6 +48,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec 
   )
 
   object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService
   )

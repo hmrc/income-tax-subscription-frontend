@@ -24,13 +24,17 @@ import models.common.business.BusinessNameModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessNameController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig, mcc: MessagesControllerComponents) extends SignUpController {
+class BusinessNameController @Inject()(val auditingService: AuditingService,
+                                       val authService: AuthService,
+                                       subscriptionDetailsService: SubscriptionDetailsService)
+                                      (implicit val ec: ExecutionContext,
+                                       val appConfig: AppConfig,
+                                       mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
     views.html.individual.incometax.business.business_name(

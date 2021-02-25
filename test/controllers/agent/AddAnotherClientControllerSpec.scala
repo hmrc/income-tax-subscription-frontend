@@ -16,6 +16,7 @@
 
 package controllers.agent
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -26,8 +27,7 @@ import scala.concurrent.Future
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching with MockUserLockoutService
-{
+  with MockSubscriptionDetailsService with FeatureSwitching with MockUserLockoutService with MockAuditingService {
 
   override val controllerName: String = "addAnotherClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -35,6 +35,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestAddAnotherClientController extends AddAnotherClientController(
+    mockAuditingService,
     mockAuthService,
     appConfig,
     MockSubscriptionDetailsService

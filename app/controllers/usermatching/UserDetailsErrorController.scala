@@ -20,14 +20,17 @@ import auth.individual.UserMatchingController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
+import services.{AuditingService, AuthService}
 import utilities.Implicits._
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class UserDetailsErrorController @Inject()(val authService: AuthService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                                                         mcc: MessagesControllerComponents) extends UserMatchingController {
+class UserDetailsErrorController @Inject()(val auditingService: AuditingService,
+                                           val authService: AuthService)
+                                          (implicit val ec: ExecutionContext,
+                                           val appConfig: AppConfig,
+                                           mcc: MessagesControllerComponents) extends UserMatchingController {
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

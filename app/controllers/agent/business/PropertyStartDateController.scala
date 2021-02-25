@@ -31,17 +31,19 @@ import play.api.data.Form
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PropertyStartDateController @Inject()(val authService: AuthService,
+class PropertyStartDateController @Inject()(val auditingService: AuditingService,
+                                            val authService: AuthService,
                                             val subscriptionDetailsService: SubscriptionDetailsService,
                                             val languageUtils: LanguageUtils)
-                                           (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                                   mcc: MessagesControllerComponents) extends AuthenticatedController
+                                           (implicit val ec: ExecutionContext,
+                                            val appConfig: AppConfig,
+                                            mcc: MessagesControllerComponents) extends AuthenticatedController
   with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
 
   def view(propertyStartDateForm: Form[PropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)

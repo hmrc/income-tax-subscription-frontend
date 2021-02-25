@@ -17,13 +17,14 @@
 package controllers.agent.matching
 
 import agent.assets.MessageLookup.{ClientDetailsError => messages}
+import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 
-class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec {
+class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "ClientDetailsErrorController"
@@ -33,6 +34,7 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec {
   )
 
   object TestClientDetailsErrorController extends ClientDetailsErrorController(
+    mockAuditingService,
     mockAuthService
   )
 

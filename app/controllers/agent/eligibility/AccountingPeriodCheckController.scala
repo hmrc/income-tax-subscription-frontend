@@ -30,9 +30,9 @@ import views.html.agent.eligibility.accounting_period_check
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AccountingPeriodCheckController @Inject()(auditService: AuditingService,
-                                                 val authService: AuthService)
-                                               (implicit appConfig: AppConfig,
+class AccountingPeriodCheckController @Inject()(val auditingService: AuditingService,
+                                                val authService: AuthService)
+                                               (implicit val appConfig: AppConfig,
                                                 mcc: MessagesControllerComponents,
                                                 val ec: ExecutionContext) extends StatelessController {
 
@@ -48,11 +48,11 @@ class AccountingPeriodCheckController @Inject()(auditService: AuditingService,
         formWithErrors => BadRequest(accounting_period_check(formWithErrors, routes.AccountingPeriodCheckController.submit(), backLink)),
         {
           case Yes =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, true, "yes",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "yes",
               "standardAccountingPeriod", arn))
             Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
           case No =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, false, "no",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "no",
               "standardAccountingPeriod", arn))
             Redirect(routes.CannotTakePartController.show())
         }

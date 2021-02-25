@@ -24,14 +24,18 @@ import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService, UserLockoutService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserDetailsController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService, lockOutService: UserLockoutService)
-                                     (implicit val ec: ExecutionContext, appConfig: AppConfig,
+class UserDetailsController @Inject()(val auditingService: AuditingService,
+                                      val authService: AuthService,
+                                      subscriptionDetailsService: SubscriptionDetailsService,
+                                      lockOutService: UserLockoutService)
+                                     (implicit val ec: ExecutionContext,
+                                      val appConfig: AppConfig,
                                       mcc: MessagesControllerComponents) extends UserMatchingController {
 
   def view(userDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =

@@ -151,10 +151,13 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def indexPage(): WSResponse = get("/index")
 
+    def ivFailure(): WSResponse = get("/iv-failure")
+
+    def ivSuccess(): WSResponse = get("/iv-success")
+
     def income(): WSResponse = get("/income")
 
     def incomeSource(): WSResponse = get("/details/income-receive")
-
 
     def thankYou(): WSResponse = get("/thank-you")
 
@@ -291,24 +294,24 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def submitpropertyStartDate(inEditMode: Boolean, request: Option[PropertyStartDateModel]): WSResponse = {
       val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
-      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900,1,1)).toString
+      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
       val uri = s"/business/property-commencement-date?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate,testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate, testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
 
     def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[OverseasPropertyStartDateModel]): WSResponse = {
       val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
-      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900,1,1)).toString
+      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
       val uri = s"/business/overseas-property-start-date?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate,testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate, testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

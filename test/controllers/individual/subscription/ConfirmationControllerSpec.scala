@@ -18,6 +18,7 @@ package controllers.individual.subscription
 
 import java.time.LocalDateTime
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import org.scalatest.Matchers._
@@ -33,18 +34,22 @@ import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
-  with FeatureSwitching with MockAccountingPeriodService with MockUserMatchingService {
+  with MockAccountingPeriodService
+  with MockUserMatchingService
+  with MockAuditingService
+  with FeatureSwitching {
 
   object TestConfirmationController extends ConfirmationController(
+    mockAuditingService,
     mockAuthService,
     mockAccountingPeriodService,
     MockSubscriptionDetailsService
   )
 
-  val taxQuarter1 = ("agent.sign-up.complete.julyUpdate", "2020")
-  val taxQuarter2 = ("agent.sign-up.complete.octoberUpdate", "2020")
-  val taxQuarter3 = ("agent.sign-up.complete.januaryUpdate", "2021")
-  val taxQuarter4 = ("agent.sign-up.complete.aprilUpdate", "2021")
+  val taxQuarter1: (String, String) = ("agent.sign-up.complete.julyUpdate", "2020")
+  val taxQuarter2: (String, String) = ("agent.sign-up.complete.octoberUpdate", "2020")
+  val taxQuarter3: (String, String) = ("agent.sign-up.complete.januaryUpdate", "2021")
+  val taxQuarter4: (String, String) = ("agent.sign-up.complete.aprilUpdate", "2021")
 
 
   implicit val request: Request[_] = FakeRequest()

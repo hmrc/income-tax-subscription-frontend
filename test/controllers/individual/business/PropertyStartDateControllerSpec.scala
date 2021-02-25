@@ -18,6 +18,7 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
+import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
@@ -32,7 +33,7 @@ import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourc
 
 import scala.concurrent.Future
 
-class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
+class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with MockAuditingService {
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -41,6 +42,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscr
   )
 
   object TestPropertyStartDateController$ extends PropertyStartDateController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockLanguageUtils
@@ -48,6 +50,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscr
 
   trait Test {
     val controller = new PropertyStartDateController(
+      mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
       mockLanguageUtils

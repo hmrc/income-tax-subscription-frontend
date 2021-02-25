@@ -16,6 +16,7 @@
 
 package controllers.individual.business
 
+import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import forms.individual.business.BusinessNameForm
 import models.common.business.BusinessNameModel
@@ -28,7 +29,7 @@ import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
+class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with MockAuditingService {
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -37,6 +38,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptio
   )
 
   object TestBusinessNameController extends BusinessNameController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService
   )

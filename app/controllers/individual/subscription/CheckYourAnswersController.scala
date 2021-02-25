@@ -29,7 +29,7 @@ import models.common.subscription.SubscriptionSuccess
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, Request, Result, _}
 import services.individual.SubscriptionOrchestrationService
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
@@ -39,13 +39,14 @@ import utilities.{ITSASessionKeys, ImplicitDateFormatterImpl}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(val authService: AuthService,
+class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
+                                           val authService: AuthService,
                                            subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
                                            incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            implicitDateFormatter: ImplicitDateFormatterImpl)
                                           (implicit val ec: ExecutionContext,
-                                           appConfig: AppConfig,
+                                           val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def backUrl(incomeSource: IncomeSourceModel): String = {

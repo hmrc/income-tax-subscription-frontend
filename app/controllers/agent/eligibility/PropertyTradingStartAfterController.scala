@@ -34,10 +34,10 @@ import views.html.agent.eligibility.property_trading_after
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class PropertyTradingStartAfterController @Inject()(auditService: AuditingService,
+class PropertyTradingStartAfterController @Inject()(val auditingService: AuditingService,
                                                     val authService: AuthService,
                                                     val languageUtils: LanguageUtils)
-                                                   (implicit appConfig: AppConfig,
+                                                   (implicit val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents,
                                                     val ec: ExecutionContext) extends StatelessController with ImplicitDateFormatter {
 
@@ -58,11 +58,11 @@ class PropertyTradingStartAfterController @Inject()(auditService: AuditingServic
         formWithErrors => BadRequest(property_trading_after(
           formWithErrors, routes.PropertyTradingStartAfterController.submit(), startDateLimit.toLongDate, backUrl)), {
           case Yes =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, false, "yes",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "propertyBusinessStartDate", arn))
             Redirect(routes.CannotTakePartController.show())
           case No =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, true, "no",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "propertyBusinessStartDate", arn))
             Redirect(routes.AccountingPeriodCheckController.show())
         }

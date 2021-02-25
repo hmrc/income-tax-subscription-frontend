@@ -25,7 +25,7 @@ import scala.concurrent.Future
 
 @Singleton
 class NoSAController @Inject()(mcc: MessagesControllerComponents)
-                              (implicit appConfig: AppConfig) extends FrontendController(mcc){
+                              (implicit appConfig: AppConfig) extends FrontendController(mcc) {
 
   val show: Action[AnyContent] = Action.async {
     implicit request => Future.successful(Ok(views.html.agent.no_sa()))

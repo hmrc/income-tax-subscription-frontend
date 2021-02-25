@@ -16,6 +16,7 @@
 
 package controllers.individual.incomesource
 
+import agent.audit.mocks.MockAuditingService
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
@@ -39,9 +40,11 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
   with MockConfig
+  with MockAuditingService
   with FeatureSwitching {
 
   class TestIncomeSourceController extends IncomeSourceController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockIncomeTaxSubscriptionConnector

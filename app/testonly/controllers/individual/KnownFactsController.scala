@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
+import services.{AuditingService, AuthService}
 import services.individual.KnownFactsService
 import testonly.form.individual.KnownFactsForm._
 import testonly.models.KnownFactsModel
@@ -33,8 +33,12 @@ import testonly.views.html.individual.add_known_facts
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class KnownFactsController @Inject()(val authService: AuthService, knownFactsService: KnownFactsService)
-                                    (implicit val ec: ExecutionContext, appConfig: AppConfig, mcc: MessagesControllerComponents) extends SignUpController {
+class KnownFactsController @Inject()(val auditingService: AuditingService,
+                                     val authService: AuthService,
+                                     knownFactsService: KnownFactsService)
+                                    (implicit val ec: ExecutionContext,
+                                     val appConfig: AppConfig,
+                                     mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
     add_known_facts(

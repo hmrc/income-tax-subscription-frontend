@@ -16,9 +16,9 @@
 
 package controllers.individual
 
-import controllers.ControllerBaseSpec
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitching
-import utilities.individual.TestConstants._
+import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
@@ -27,6 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService, MockSubscriptionDetailsService}
 import utilities.ITSASessionKeys
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
@@ -34,6 +35,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   with MockPreferencesService
   with MockSubscriptionDetailsService
   with MockPaperlessPreferenceTokenService
+  with MockAuditingService
   with FeatureSwitching {
 
   override val controllerName: String = "PreferencesController"
@@ -42,6 +44,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   )
 
   object TestPreferencesController extends PreferencesController(
+    mockAuditingService,
     mockAuthService,
     mockPreferencesService,
     mockPaperlessPreferenceTokenService

@@ -29,7 +29,7 @@ import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
@@ -38,9 +38,12 @@ import utilities.SubscriptionDataUtil.CacheMapUtil
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeSourceController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService,
-                                      incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig,
+class IncomeSourceController @Inject()(val auditingService: AuditingService,
+                                       val authService: AuthService,
+                                       subscriptionDetailsService: SubscriptionDetailsService,
+                                       incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
+                                      (implicit val ec: ExecutionContext,
+                                       val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching {
 
   def backUrl(isEditMode: Boolean): String = {
@@ -77,7 +80,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
           if (!isEditMode) {
             linearJourney(incomeSource)
           } else {
-           editJourney(incomeSource)
+            editJourney(incomeSource)
           }
         }
       )

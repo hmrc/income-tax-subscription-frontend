@@ -20,12 +20,15 @@ import auth.individual.StatelessController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
+import services.{AuditingService, AuthService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CannotUseServiceController @Inject()(val authService: AuthService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
+class CannotUseServiceController @Inject()(val auditingService: AuditingService,
+                                           val authService: AuthService)
+                                          (implicit val ec: ExecutionContext,
+                                           val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>

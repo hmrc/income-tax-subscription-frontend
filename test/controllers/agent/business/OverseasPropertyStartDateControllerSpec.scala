@@ -18,6 +18,7 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
@@ -36,7 +37,7 @@ import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourc
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAgentAuthService with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
@@ -50,6 +51,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestOverseasPropertyStartDateController$ extends OverseasPropertyStartDateController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockLanguageUtils
@@ -57,6 +59,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   trait Test {
     val controller = new OverseasPropertyStartDateController(
+      mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
       mockLanguageUtils
@@ -79,7 +82,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   "show" should {
     "display the foreign property start date view and return OK (200)" in new Test {
-      lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
+      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = Some(incomeSourceAllTypes)
@@ -93,7 +96,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   "redirect to the income source page" when {
     "the user hasn't selected income sources" in new Test {
-      lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
+      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = None
@@ -108,7 +111,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   "submit" should {
 
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-    val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900,1,1))
+    val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
 
     val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidMaxStartDate)
 

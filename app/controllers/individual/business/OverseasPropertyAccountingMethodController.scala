@@ -24,14 +24,16 @@ import models.common.OverseasAccountingMethodPropertyModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class OverseasPropertyAccountingMethodController @Inject()(val authService: AuthService,
+class OverseasPropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
+                                                           val authService: AuthService,
                                                            val subscriptionDetailsService: SubscriptionDetailsService)
-                                                          (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                                          (implicit val ec: ExecutionContext,
+                                                           val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends SignUpController {
 
 

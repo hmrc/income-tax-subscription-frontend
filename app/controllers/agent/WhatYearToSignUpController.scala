@@ -24,16 +24,17 @@ import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AccountingPeriodService, AuthService, SubscriptionDetailsService}
+import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatYearToSignUpController @Inject()(val authService: AuthService,
+class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
+                                           val authService: AuthService,
                                            accountingPeriodService: AccountingPeriodService,
                                            subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                           appConfig: AppConfig) extends AuthenticatedController {
+                                           val appConfig: AppConfig) extends AuthenticatedController {
 
   val backUrl: String = controllers.agent.routes.CheckYourAnswersController.show().url
 

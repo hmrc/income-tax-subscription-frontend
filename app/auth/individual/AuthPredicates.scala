@@ -21,15 +21,26 @@ import auth.individual.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import auth.individual.JourneyState._
 import cats.implicits._
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.IdentityVerification
+import config.featureswitch.FeatureSwitching
+import models.audits.IVHandoffAuditing.IVHandoffAuditModel
+import play.api.Logger
 import play.api.mvc.{Result, Results}
+import services.AuditingService
 import uk.gov.hmrc.auth.core.AffinityGroup._
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
+import uk.gov.hmrc.play.bootstrap.controller.FrontendHeaderCarrierProvider
+import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys.JourneyStateKey
 
 import scala.concurrent.Future
 
-trait AuthPredicates extends Results {
+trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCarrierProvider {
+
+  val appConfig: AppConfig
+  val auditingService: AuditingService
 
   import AuthPredicates._
 
@@ -49,7 +60,7 @@ trait AuthPredicates extends Results {
 
   lazy val cannotUseServiceRoute: Result = Redirect(controllers.individual.incomesource.routes.CannotUseServiceController.show())
 
-  lazy val timeoutRoute: Result  = Redirect(controllers.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show())
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
@@ -88,17 +99,49 @@ trait AuthPredicates extends Results {
     if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val defaultPredicates: AuthPredicate[IncomeTaxSAUser] = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
+  val ivPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user => {
+    if (isEnabled(IdentityVerification)) {
+      if (user.confidenceLevel >= ConfidenceLevel.L200) {
+        Right(AuthPredicateSuccess)
+      } else {
+        user.affinityGroup match {
+          case Some(Individual) =>
+            Logger.info("[AuthPredicates][ivPredicate] - Redirecting individual to IV")
+            auditingService.audit(IVHandoffAuditModel(
+              handoffReason = "individual",
+              currentConfidence = user.confidenceLevel.level,
+              minConfidence = appConfig.identityVerificationRequiredConfidenceLevel
+            ))
+            Left(Future.successful(Redirect(appConfig.identityVerificationURL)
+              .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
+          case Some(Organisation) if user.nino.isDefined =>
+            Logger.info("[AuthPredicates][ivPredicate] - Redirecting organisation with nino to IV")
+            auditingService.audit(IVHandoffAuditModel(
+              handoffReason = "organisationWithNino",
+              currentConfidence = user.confidenceLevel.level,
+              minConfidence = appConfig.identityVerificationRequiredConfidenceLevel
+            ))
+            Left(Future.successful(Redirect(appConfig.identityVerificationURL)
+              .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
+          case _ => Right(AuthPredicateSuccess)
+        }
+      }
+    } else {
+      Right(AuthPredicateSuccess)
+    }
+  }
 
-  val homePredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate
+  val defaultPredicates: AuthPredicate[IncomeTaxSAUser] = timeoutPredicate |+| affinityPredicate |+| ninoPredicate |+| ivPredicate
+
+  val homePredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| ivPredicate
 
   val userMatchingPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
-    timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate
+    timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate |+| ivPredicate
 
   val subscriptionPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
     defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
 
-  val enrolledPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate
+  val enrolledPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate |+| ivPredicate
 
   val preferencesPredicate: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
     defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate

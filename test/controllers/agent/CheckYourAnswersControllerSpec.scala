@@ -17,6 +17,7 @@
 package controllers.agent
 
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import models.common.IncomeSourceModel
@@ -28,12 +29,12 @@ import services.agent.mocks._
 import services.mocks._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.InternalServerException
+import utilities.ImplicitDateFormatterImpl
 import utilities.SubscriptionDataKeys.MtditId
 import utilities.SubscriptionDataUtil._
 import utilities.agent.TestConstants.{testNino, _}
 import utilities.agent.TestModels
 import utilities.agent.TestModels.testCacheMap
-import utilities.ImplicitDateFormatterImpl
 
 import scala.concurrent.Future
 
@@ -42,6 +43,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockClientRelationshipService
   with MockSubscriptionOrchestrationService
   with MockIncomeTaxSubscriptionConnector
+  with MockAuditingService
   with FeatureSwitching {
 
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
@@ -53,6 +55,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestCheckYourAnswersController extends CheckYourAnswersController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,

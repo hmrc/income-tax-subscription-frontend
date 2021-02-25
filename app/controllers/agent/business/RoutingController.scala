@@ -17,18 +17,22 @@
 package controllers.agent.business
 
 import auth.agent.AuthenticatedController
+import config.AppConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
 import javax.inject.{Inject, Singleton}
 import models.common.IncomeSourceModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RoutingController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
+class RoutingController @Inject()(val auditingService: AuditingService,
+                                  val authService: AuthService,
+                                  subscriptionDetailsService: SubscriptionDetailsService)
                                  (implicit val ec: ExecutionContext,
+                                  val appConfig: AppConfig,
                                   mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching {
 
   def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>

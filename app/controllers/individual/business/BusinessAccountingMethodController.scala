@@ -27,15 +27,18 @@ import models.common.business.AccountingMethodModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.SubscriptionDataUtil.CacheMapUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAccountingMethodController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
-                                                  (implicit val ec: ExecutionContext, appConfig: AppConfig,
+class BusinessAccountingMethodController @Inject()(val auditingService: AuditingService,
+                                                   val authService: AuthService,
+                                                   subscriptionDetailsService: SubscriptionDetailsService)
+                                                  (implicit val ec: ExecutionContext,
+                                                   val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
@@ -69,7 +72,7 @@ class BusinessAccountingMethodController @Inject()(val authService: AuthService,
               subscriptionDetailsService.fetchIncomeSource() map {
                 case Some(IncomeSourceModel(_, true, _)) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-                case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty)  =>
+                case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
                   Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())

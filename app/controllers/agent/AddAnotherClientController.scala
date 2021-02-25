@@ -21,16 +21,18 @@ import auth.individual.AuthPredicate.AuthPredicate
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AddAnotherClientController @Inject()(val authService: AuthService, appConfig: AppConfig,
-                                           subscriptionDetailsService: SubscriptionDetailsService)(
-                                          implicit val ec: ExecutionContext,
-                                          mcc: MessagesControllerComponents) extends StatelessController {
+class AddAnotherClientController @Inject()(val auditingService: AuditingService,
+                                           val authService: AuthService,
+                                           val appConfig: AppConfig,
+                                           subscriptionDetailsService: SubscriptionDetailsService)
+                                          (implicit val ec: ExecutionContext,
+                                           mcc: MessagesControllerComponents) extends StatelessController {
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = AuthPredicates.defaultPredicates
 

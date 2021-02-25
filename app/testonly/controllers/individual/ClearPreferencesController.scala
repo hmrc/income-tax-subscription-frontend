@@ -22,7 +22,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.AuthService
+import services.{AuditingService, AuthService}
 import testonly.connectors.individual.ClearPreferencesConnector
 import testonly.form.individual.ClearPreferencesForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
@@ -32,8 +32,12 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClearPreferencesController @Inject()(val authService: AuthService, clearPreferencesConnector: ClearPreferencesConnector)
-                                          (implicit val ec: ExecutionContext, appConfig: AppConfig, mcc: MessagesControllerComponents) extends StatelessController {
+class ClearPreferencesController @Inject()(val auditingService: AuditingService,
+                                           val authService: AuthService,
+                                           clearPreferencesConnector: ClearPreferencesConnector)
+                                          (implicit val ec: ExecutionContext,
+                                           val appConfig: AppConfig,
+                                           mcc: MessagesControllerComponents) extends StatelessController {
 
   private def clearUser(nino: String)(implicit hc: HeaderCarrier): Future[ClearPreferencesResult] = clearPreferencesConnector.clear(nino).map { response =>
     response.status match {

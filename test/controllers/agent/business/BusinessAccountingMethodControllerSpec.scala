@@ -16,21 +16,24 @@
 
 package controllers.agent.business
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import utilities.agent.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodForm
-import models.common.business.AccountingMethodModel
+import models.Cash
 import models.common.IncomeSourceModel
-import models.{Cash, No, Yes, common}
+import models.common.business.AccountingMethodModel
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.AccountingMethod
+import utilities.agent.TestModels.testCacheMap
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching {
+  with MockSubscriptionDetailsService
+  with MockAuditingService
+  with FeatureSwitching {
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -39,12 +42,14 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService
   )
 
   trait Test {
     val controller = new BusinessAccountingMethodController(
+      mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService
     )
@@ -59,7 +64,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     s"return $OK" when {
       "the user has not entered an answer previously" in new Test {
         mockFetchAllFromSubscriptionDetails(testCacheMap(
-          incomeSource = Some(IncomeSourceModel(true, false, false))
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         ))
 
         val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
@@ -70,9 +75,9 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
       }
       "the user has entered the answer previously" in new Test {
         mockFetchAllFromSubscriptionDetails(testCacheMap(
-            incomeSource = Some(IncomeSourceModel(true, false, false)),
-            accountingMethod = Some(AccountingMethodModel(Cash))
-          )
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+          accountingMethod = Some(AccountingMethodModel(Cash))
+        )
         )
 
         val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
@@ -89,8 +94,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     "the users submission is invalid" must {
       s"return $BAD_REQUEST" in new Test {
         mockFetchAllFromSubscriptionDetails(testCacheMap(
-            incomeSource = Some(IncomeSourceModel(true, false, false))
-          )
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
+        )
         )
 
         val result: Result = await(controller.submit(isEditMode = false)(subscriptionRequest))
@@ -107,7 +112,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         "the user has both business and property income" in new Test {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(
-            incomeSource = Some(IncomeSourceModel(true, true, false))
+            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
           )
           )
 
@@ -128,8 +133,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
           enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(
-              incomeSource = Some(IncomeSourceModel(true, true, false))
-            )
+            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
+          )
           )
 
           val result: Result = await(controller.submit(isEditMode = false)(subscriptionRequest.post(
@@ -170,8 +175,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         "the user has business only income" in new Test {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMap(
-              incomeSource = Some(IncomeSourceModel(true, false, false))
-            )
+            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
+          )
           )
 
           val result: Result = await(controller.submit(isEditMode = false)(subscriptionRequest.post(
@@ -193,7 +198,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
       s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}'" in new Test {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchAllFromSubscriptionDetails(testCacheMap(
-          incomeSource = Some(IncomeSourceModel(true, false, false))
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         ))
 
         val result: Result = await(controller.submit(isEditMode = true)(

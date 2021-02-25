@@ -16,6 +16,7 @@
 
 package controllers.usermatching
 
+import agent.audit.mocks.MockAuditingService
 import config.MockConfig
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.ControllerBaseSpec
@@ -26,17 +27,17 @@ import play.api.test.Helpers.{await, _}
 import services.mocks.{MockCitizenDetailsService, MockGetEligibilityStatusService, MockSubscriptionDetailsService, MockSubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
-import utilities.individual.TestConstants
 import utilities.SubscriptionDataKeys.MtditId
+import utilities.individual.TestConstants
 
 import scala.concurrent.Future
-
 
 class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionService
   with MockSubscriptionDetailsService
   with MockCitizenDetailsService
-  with MockGetEligibilityStatusService {
+  with MockGetEligibilityStatusService
+  with MockAuditingService {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -51,6 +52,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   def testHomeController(showStartPage: Boolean = true): HomeController = new HomeController(
+    mockAuditingService,
     mockAuthService,
     mockCitizenDetailsService,
     mockGetEligibilityStatusService,
@@ -124,21 +126,21 @@ class HomeControllerSpec extends ControllerBaseSpec
 
               "the user does not have a matching utr in CID" should {
 
-                  "redirect to the no SA page" in {
-                    mockNinoRetrieval()
-                    mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
-                    setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+                "redirect to the no SA page" in {
+                  mockNinoRetrieval()
+                  mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
+                  setupMockGetSubscriptionNotFound(testNino)
+                  mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
-                    val result = testHomeController().index()(userMatchingRequest)
+                  val result = testHomeController().index()(userMatchingRequest)
 
-                    status(result) mustBe SEE_OTHER
-                    redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show().url
+                  status(result) mustBe SEE_OTHER
+                  redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show().url
 
-                    await(result).session(userMatchingRequest).get(ITSASessionKeys.UTR) mustBe None
-                  }
+                  await(result).session(userMatchingRequest).get(ITSASessionKeys.UTR) mustBe None
                 }
               }
+            }
           }
         }
         "the user is not eligible" should {

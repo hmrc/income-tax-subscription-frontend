@@ -16,19 +16,18 @@
 
 package controllers.usermatching
 
+import agent.audit.mocks.MockAuditingService
 import assets.MessageLookup.{UserDetailsError => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
-import utilities.individual.TestConstants.{testCredId, testUserId}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
-import uk.gov.hmrc.http.SessionKeys
 import utilities.ITSASessionKeys
 
-class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
+class UserDetailsErrorControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "UserDetailsErrorController"
@@ -38,7 +37,9 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
   )
 
   def createTestUserDetailsErrorController(enableMatchingFeature: Boolean): UserDetailsErrorController = new UserDetailsErrorController(
-    mockAuthService)
+    mockAuditingService,
+    mockAuthService
+  )
 
   lazy val TestUserDetailsErrorController: UserDetailsErrorController = createTestUserDetailsErrorController(enableMatchingFeature = true)
 

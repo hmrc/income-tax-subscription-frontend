@@ -16,10 +16,10 @@
 
 package controllers.agent.business
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.BusinessNameForm
-import models.common.IncomeSourceModel
 import models.common.business.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -31,7 +31,7 @@ import utilities.agent.TestModels._
 import scala.concurrent.Future
 
 class BusinessNameControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,6 +40,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestBusinessNameController extends BusinessNameController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService
   )
@@ -170,7 +171,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
       }
     }
   }
-    "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
+  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
     lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
