@@ -20,16 +20,14 @@ import java.time.LocalDateTime
 
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
 import org.scalatest.Matchers._
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.NotFoundException
+import utilities.ITSASessionKeys
 import utilities.TestModels.testCacheMap
-import utilities.{ITSASessionKeys, TestModels}
 
 import scala.concurrent.Future
 
