@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.utils.AgentAnswers._
 import controllers.utils.OptionalAnswers._
@@ -31,18 +30,20 @@ import play.api.data.Form
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyStartDateController @Inject()(val authService: AuthService,
+class OverseasPropertyStartDateController @Inject()(val auditingService: AuditingService,
+                                                    val authService: AuthService,
                                                     val subscriptionDetailsService: SubscriptionDetailsService,
-                                                    val languageUtils: LanguageUtils
-                                                          )(implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                                            mcc: MessagesControllerComponents)
+                                                    val languageUtils: LanguageUtils)
+                                                   (implicit val ec: ExecutionContext,
+                                                    val appConfig: AppConfig,
+                                                    mcc: MessagesControllerComponents)
   extends AuthenticatedController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
 
   def view(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)

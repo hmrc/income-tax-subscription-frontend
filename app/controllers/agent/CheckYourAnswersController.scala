@@ -30,7 +30,7 @@ import models.common.subscription.SubscriptionSuccess
 import play.api.Logger
 import play.api.mvc._
 import services.agent.SubscriptionOrchestrationService
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.ImplicitDateFormatterImpl
@@ -40,11 +40,14 @@ import utilities.SubscriptionDataUtil._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(val authService: AuthService, val subscriptionDetailsService: SubscriptionDetailsService,
+class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
+                                           val authService: AuthService,
+                                           val subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
-                                          incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+                                           incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            implicitDateFormatter: ImplicitDateFormatterImpl)
-                                          (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                          (implicit val ec: ExecutionContext,
+                                           val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching with RequireAnswer {
 
 
@@ -83,7 +86,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, val sub
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        if(isEnabled(ReleaseFour)) {
+        if (isEnabled(ReleaseFour)) {
           require(incomeSourceModelAnswer) { incomeSource =>
             for {
               (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
@@ -129,7 +132,7 @@ class CheckYourAnswersController @Inject()(val authService: AuthService, val sub
     for {
       (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
       mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr,
-        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod,true), true)(headerCarrier)
+        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, true), true)(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)

@@ -31,10 +31,11 @@ import scala.concurrent.ExecutionContext
 
 
 @Singleton
-class Covid19ClaimCheckController @Inject()(auditService: AuditingService,
+class Covid19ClaimCheckController @Inject()(val auditingService: AuditingService,
                                             val authService: AuthService)
-                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                            appConfig: AppConfig) extends StatelessController {
+                                           (implicit val ec: ExecutionContext,
+                                            mcc: MessagesControllerComponents,
+                                            val appConfig: AppConfig) extends StatelessController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
@@ -47,11 +48,11 @@ class Covid19ClaimCheckController @Inject()(auditService: AuditingService,
       covid19ClaimCheckForm.bindFromRequest.fold(
         formWithErrors => BadRequest(covid_19_claim_check(formWithErrors, routes.Covid19ClaimCheckController.submit(), backUrl)), {
           case Yes =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, false, "yes",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "claimedCovidGrant", arn))
             Redirect(routes.CovidCannotSignUpController.show())
           case No =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, true, "no",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "claimedCovidGrant", arn))
             Redirect(routes.OtherSourcesOfIncomeController.show())
         }

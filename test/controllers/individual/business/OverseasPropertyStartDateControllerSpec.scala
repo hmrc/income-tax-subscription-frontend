@@ -18,6 +18,7 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
@@ -30,13 +31,13 @@ import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.{IncomeSource, OverseasPropertyStartDate}
+import utilities.SubscriptionDataKeys.OverseasPropertyStartDate
 import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceOverseasProperty}
 
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuthService with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAuthService with MockAuditingService with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
@@ -50,6 +51,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   )
 
   object TestOverseasPropertyStartDateController extends OverseasPropertyStartDateController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockLanguageUtils
@@ -57,6 +59,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   trait Test {
     val controller = new OverseasPropertyStartDateController(
+      mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
       mockLanguageUtils

@@ -17,6 +17,7 @@
 package controllers.agent.matching
 
 import agent.assets.MessageLookup.{ClientDetails => messages}
+import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.ClientDetailsForm
 import models.DateModel
@@ -35,7 +36,8 @@ import scala.concurrent.Future
 
 class ClientDetailsControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockUserLockoutService {
+  with MockUserLockoutService
+  with MockAuditingService {
 
   override val controllerName: String = "ClientDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -44,6 +46,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestClientDetailsController extends ClientDetailsController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockUserLockoutService

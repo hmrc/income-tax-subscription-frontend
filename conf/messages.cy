@@ -59,6 +59,13 @@ preferences_callback.heading                                    = Rhaid i chi gy
 preferences_callback.line_1                                     = I gofrestru ar gyfer y gwasanaeth hwn, rhaid i chi ganiatáu i Gyllid a Thollau EM anfon gohebiaeth electronig atoch.
 preferences_callback.button                                     = Ewch yn ôl
 
+# IV Failure Page
+iv-failure.heading                                              = Mae problem wedi codi
+iv-failure.cannot-access                                        = Ni allwch gael mynediad at y gwasanaeth hwn. Gall hyn fod oherwydd y canlynol:
+iv-failure.took-too-long                                        = gwnaethoch gymryd gormod o amser i nodi gwybodaeth ac mae’ch cyfle i ddefnyddio’r gwasanaeth wedi dod i ben
+iv-failure.failed-questions                                     = rydych wedi methu ag ateb digon o gwestiynau’n gywir
+iv-failure.could-not-match-details                              = nid oeddem yn gallu paru’ch manylion â’r hyn sydd ar ein system
+
 ## Hidden content for user detail and final CYA pages
 userdetail.cya.change.firstname                                 = Newid enw cyntaf
 userdetail.cya.change.lastname                                  = Newid enw olaf

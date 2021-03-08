@@ -25,39 +25,42 @@ import models.ConnectorError
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.individual.SubscriptionOrchestrationService
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.MtditId
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClaimSubscriptionController @Inject()(val authService: AuthService,
+class ClaimSubscriptionController @Inject()(val auditingService: AuditingService,
+                                            val authService: AuthService,
                                             subscriptionDetailsService: SubscriptionDetailsService,
                                             subscriptionOrchestrationService: SubscriptionOrchestrationService)
-                                           (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                           (implicit val ec: ExecutionContext,
+                                            val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends SignUpController {
 
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>
       user =>
         val res = for {
-          mtditId <- EitherT(getMtditId())
+          mtditId <- EitherT(getMtditId)
           nino = user.nino.get
-          subscriptionResult <- EitherT(subscriptionOrchestrationService.enrolAndRefresh(mtditId, nino))
-        } yield Ok(confirmationPage(mtditId))
+          _ <- EitherT(subscriptionOrchestrationService.enrolAndRefresh(mtditId, nino))
+        } yield Ok(confirmationPage)
 
         res.valueOr(ex => throw new InternalServerException(ex.toString))
   }
 
-  private def getMtditId()(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
+  private def getMtditId(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
     subscriptionDetailsService.fetchSubscriptionId() map (_.toRight(left = SubscriptionDetailsMissingError(MtditId)))
   }
 
-  private def confirmationPage(id: String)(implicit request: Request[AnyContent]): Html = {
+  private def confirmationPage(implicit request: Request[AnyContent]): Html = {
     views.html.individual.incometax.subscription.enrolled.claim_subscription()
   }
 
   case class SubscriptionDetailsMissingError(key: String) extends ConnectorError
+
 }
 

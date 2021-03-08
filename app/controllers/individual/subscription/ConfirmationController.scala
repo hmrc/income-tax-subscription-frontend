@@ -16,30 +16,25 @@
 
 package controllers.individual.subscription
 
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-
 import auth.individual.PostSubmissionController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import javax.inject.{Inject, Singleton}
-import models.Next
-import models.common.AccountingYearModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AccountingPeriodService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.InternalServerException
+import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.SubscriptionDataUtil._
-import utilities.{AccountingPeriodUtil, ITSASessionKeys}
 import views.html.individual.incometax.subscription.sign_up_complete
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(val authService: AuthService,
+class ConfirmationController @Inject()(val auditingService: AuditingService,
+                                       val authService: AuthService,
                                        accountingPeriodService: AccountingPeriodService,
                                        subscriptionDetailsService: SubscriptionDetailsService)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                      (implicit val ec: ExecutionContext,
+                                       val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController with FeatureSwitching {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>

@@ -16,6 +16,7 @@
 
 package controllers.individual.eligibility
 
+import agent.audit.mocks.MockAuditingService
 import assets.MessageLookup.{NotEligibleForIncomeTax => messages}
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
@@ -25,12 +26,13 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class NotEligibleForIncomeTaxControllerSpec extends ControllerBaseSpec {
+class NotEligibleForIncomeTaxControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
   override val controllerName: String = "NotEligibleForIncomeTaxController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestCannotUseServiceController extends NotEligibleForIncomeTaxController(
+    mockAuditingService,
     mockAuthService
   )
 

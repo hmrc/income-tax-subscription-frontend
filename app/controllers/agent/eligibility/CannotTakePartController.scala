@@ -20,14 +20,15 @@ import auth.agent.StatelessController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
+import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.cannot_take_part
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CannotTakePartController @Inject()(val authService: AuthService)
-                                        (implicit appConfig: AppConfig,
+class CannotTakePartController @Inject()(val auditingService: AuditingService,
+                                         val authService: AuthService)
+                                        (implicit val appConfig: AppConfig,
                                          mcc: MessagesControllerComponents,
                                          val ec: ExecutionContext) extends StatelessController {
 

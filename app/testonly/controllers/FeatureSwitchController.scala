@@ -23,7 +23,7 @@ import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.AuthService
+import services.{AuditingService, AuthService}
 import testonly.connectors.{BackendFeatureSwitchConnector, EligibilityFeatureSwitchConnector}
 import testonly.models.FeatureSwitchSetting
 import testonly.views.html.feature_switch
@@ -31,16 +31,17 @@ import testonly.views.html.feature_switch
 import scala.collection.immutable.ListMap
 import scala.concurrent.{ExecutionContext, Future}
 
-class FeatureSwitchController @Inject()(val authService: AuthService, backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
+class FeatureSwitchController @Inject()(val auditingService: AuditingService,
+                                        val authService: AuthService,
+                                        backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
                                         eligibilityFeatureSwitchConnector: EligibilityFeatureSwitchConnector)
-                                       (implicit val ec: ExecutionContext, appConfig: AppConfig,
-                                        mcc: MessagesControllerComponents) extends BaseFrontendController with FeatureSwitching{
+                                       (implicit val ec: ExecutionContext,
+                                        val appConfig: AppConfig,
+                                        mcc: MessagesControllerComponents) extends BaseFrontendController with FeatureSwitching {
 
   private def view(switchNames: Map[FeatureSwitch, Boolean],
                    backendFeatureSwitches: Map[String, Boolean],
-                   eligibilityFeatureSwitches: Map[String, Boolean]
-                  )(implicit request: Request[_]): Html =
-
+                   eligibilityFeatureSwitches: Map[String, Boolean])(implicit request: Request[_]): Html =
     feature_switch(
       switchNames = switchNames,
       backendFeatureSwitches = backendFeatureSwitches,

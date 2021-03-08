@@ -29,14 +29,17 @@ import models.common.business.AccountingMethodModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessAccountingMethodController @Inject()(val authService: AuthService, val subscriptionDetailsService: SubscriptionDetailsService)
-                                                  (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                                   appConfig: AppConfig) extends AuthenticatedController with RequireAnswer with FeatureSwitching {
+class BusinessAccountingMethodController @Inject()(val auditingService: AuditingService,
+                                                   val authService: AuthService,
+                                                   val subscriptionDetailsService: SubscriptionDetailsService)
+                                                  (implicit val ec: ExecutionContext,
+                                                   mcc: MessagesControllerComponents,
+                                                   val appConfig: AppConfig) extends AuthenticatedController with RequireAnswer with FeatureSwitching {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {
     views.html.agent.business.accounting_method(

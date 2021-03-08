@@ -18,11 +18,18 @@ package auth.individual
 
 import auth.individual.AuthPredicate.AuthPredicateSuccess
 import auth.individual.JourneyState._
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.IdentityVerification
+import config.featureswitch.FeatureSwitching
+import models.audits.IVHandoffAuditing.IVHandoffAuditModel
+import org.mockito.ArgumentMatchers.{any, eq => matches}
+import org.mockito.Mockito.{never, reset, verify}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.AuditingService
 import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.NotFoundException
@@ -30,9 +37,23 @@ import uk.gov.hmrc.http.SessionKeys._
 import utilities.individual.TestConstants.testCredId
 import utilities.{ITSASessionKeys, UnitTestTrait}
 
-class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
+class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues with FeatureSwitching {
 
-  val authPredicates: AuthPredicates = new AuthPredicates {}
+  val mockAuditingService: AuditingService = mock[AuditingService]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(IdentityVerification)
+    reset(mockAuditingService)
+  }
+
+  val injectedConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  val injectedAuditingService: AuditingService = app.injector.instanceOf[AuditingService]
+
+  val authPredicates: AuthPredicates = new AuthPredicates {
+    val appConfig: AppConfig = injectedConfig
+    val auditingService: AuditingService = mockAuditingService
+  }
 
   import authPredicates._
 
@@ -142,6 +163,76 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
   }
 
+  "ivPredicate" when {
+    "the identity verification feature switch is disabled" should {
+      "return an AuthPredicateSuccess" in {
+        val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L0, "testUserId"))
+        result.right.value mustBe AuthPredicateSuccess
+        verify(mockAuditingService, never()).audit(any())(any(), any())
+      }
+    }
+    "the identity verification feature switch is enabled" when {
+      "the user confidence level is above CL200" should {
+        "return an AuthPredicateSuccess" in {
+          enable(IdentityVerification)
+          val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L300, "testUserId"))
+          result.right.value mustBe AuthPredicateSuccess
+          verify(mockAuditingService, never()).audit(any())(any(), any())
+        }
+      }
+      "the user confidence level is CL200" should {
+        "return an AuthPredicateSuccess" in {
+          enable(IdentityVerification)
+          val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L200, "testUserId"))
+          result.right.value mustBe AuthPredicateSuccess
+          verify(mockAuditingService, never()).audit(any())(any(), any())
+        }
+      }
+      "the user confidence level is below CL200" when {
+        "the user's affinity group is individual" should {
+          "redirect the user to IV" in {
+            enable(IdentityVerification)
+            implicit val request: Request[AnyContent] = FakeRequest()
+            val result = ivPredicate(request)(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L100, "testUserId"))
+            status(result.left.value) mustBe SEE_OTHER
+            redirectLocation(result.left.value) mustBe Some(injectedConfig.identityVerificationURL)
+            verify(mockAuditingService).audit(matches(
+              IVHandoffAuditModel("individual", ConfidenceLevel.L100.level, ConfidenceLevel.L200.level)
+            ))(any(), any())
+          }
+        }
+        "the user's affinity group is organisation and they have a nino" should {
+          "redirect the user to IV" in {
+            enable(IdentityVerification)
+            implicit val request: Request[AnyContent] = FakeRequest()
+            val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Organisation), None, ConfidenceLevel.L100, "testUserId", ninoEnrolment))
+            status(result.left.value) mustBe SEE_OTHER
+            redirectLocation(result.left.value) mustBe Some(injectedConfig.identityVerificationURL)
+            verify(mockAuditingService).audit(matches(
+              IVHandoffAuditModel("organisationWithNino", ConfidenceLevel.L100.level, ConfidenceLevel.L200.level)
+            ))(any(), any())
+          }
+        }
+        "the user's affinity group is organisation but the user has no nino" should {
+          "return an AuthPredicateSuccess" in {
+            enable(IdentityVerification)
+            val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Organisation), None, ConfidenceLevel.L100, "testUserId"))
+            result.right.value mustBe AuthPredicateSuccess
+            verify(mockAuditingService, never()).audit(any())(any(), any())
+          }
+        }
+        "the user's affinity group is neither individual or organisation" should {
+          "return an AuthPredicateSuccess" in {
+            enable(IdentityVerification)
+            val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Agent), None, ConfidenceLevel.L50, "testUserId"))
+            result.right.value mustBe AuthPredicateSuccess
+            verify(mockAuditingService, never()).audit(any())(any(), any())
+          }
+        }
+      }
+    }
+  }
+
   "defaultPredicates" should {
     "return an AuthPredicateSuccess where there is a nino, an individual affinity, and an auth token" in {
       defaultPredicates(authorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
@@ -163,6 +254,13 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     "return the wrong affinity page where there is no affinity group or nino enrolment" in {
       await(defaultPredicates(authorisedRequest)(blankUser).left.value) mustBe wrongAffinity
     }
+
+    "redirect to iv when the user doesn't have high enough confidence level" in {
+      enable(IdentityVerification)
+      val result = await(defaultPredicates(authorisedRequest)(defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
+    }
   }
 
   "subscriptionPredicates" should {
@@ -176,6 +274,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
     "return the already-enrolled page where an mtdid enrolment already exists" in {
       await(subscriptionPredicates(authorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
+    }
+    "redirect to iv when the user doesn't have high enough confidence level" in {
+      enable(IdentityVerification)
+      val result = await(subscriptionPredicates(authorisedRequest)(defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
     }
   }
 
@@ -201,6 +305,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     "return to HomeController if there is no nino, but we have a utr" in {
       homePredicates(homelessAuthorisedRequest)(userWithUtrButNoNino).right.value mustBe AuthPredicateSuccess
     }
+    "redirect to iv when the user doesn't have high enough confidence level" in {
+      enable(IdentityVerification)
+      val result = await(homePredicates(homelessAuthorisedRequest)(defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
+    }
   }
 
   "userMatchingPredicates" should {
@@ -210,6 +320,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
     "return user to index if the user does not have the JourneyState flag set to UserMatching" in {
       await(userMatchingPredicates(homelessAuthorisedRequest)(userWithIndividualAffinity).left.value) mustBe homeRoute
+    }
+    "redirect to iv when the user doesn't have high enough confidence level" in {
+      enable(IdentityVerification)
+      val result = await(userMatchingPredicates(userMatchingRequest)(userWithIndividualAffinity.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
     }
   }
 

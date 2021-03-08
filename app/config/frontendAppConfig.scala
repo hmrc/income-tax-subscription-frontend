@@ -59,6 +59,7 @@ trait AppConfig extends FeatureSwitching {
   val hasEnabledTestOnlyRoutes: Boolean
   val ggAuthenticationURL: String
   val identityVerificationURL: String
+  val identityVerificationRequiredConfidenceLevel: Int
   val contactHmrcLink: String
   val citizenDetailsURL: String
   val matchingAttempts: Int
@@ -93,8 +94,11 @@ trait AppConfig extends FeatureSwitching {
   def incomeTaxEligibilityFrontendUrl: String
 
   def incomeTaxSelfEmploymentsFrontendUrl: String
+
   def incomeTaxSelfEmploymentsFrontendInitialiseUrl: String
+
   def incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String
+
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
 
   val eligibilityFeatureSwitchUrl: String
@@ -106,7 +110,7 @@ trait AppConfig extends FeatureSwitching {
 
   def routeToSwitchLanguage: String => Call = (lang: String) => controllers.individual.routes.LanguageSwitchController.switchToLanguage(lang)
 
-  def routeToSwitchAgentLanguage: String => Call = (lang:String) => controllers.agent.routes.LanguageSwitchController.switchToLanguage(lang)
+  def routeToSwitchAgentLanguage: String => Call = (lang: String) => controllers.agent.routes.LanguageSwitchController.switchToLanguage(lang)
 
   def betaFeedbackUrl: String
 
@@ -187,7 +191,17 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val ggAuthenticationURL: String = config.baseUrl("gg-authentication")
   override lazy val ggURL: String = config.baseUrl("government-gateway")
 
-  override lazy val identityVerificationURL: String = config.getString("identity-verification-frontend.url")
+  override lazy val identityVerificationRequiredConfidenceLevel: Int = config.getInt("identity-verification-frontend.target-confidence-level")
+  override lazy val identityVerificationURL: String = {
+    val identityVerificationFrontendBaseUrl: String = config.getString("identity-verification-frontend.url")
+    val upliftUri: String = config.getString("identity-verification-frontend.uplift-uri")
+    val origin: String = config.getString("identity-verification-frontend.origin")
+    val confidenceLevel: Int = identityVerificationRequiredConfidenceLevel
+    val successUrl: String = baseUrl + controllers.individual.iv.routes.IVSuccessController.success().url
+    val failureUrl: String = baseUrl + controllers.individual.iv.routes.IVFailureController.failure().url
+    s"$identityVerificationFrontendBaseUrl$upliftUri?origin=$origin&confidenceLevel=$confidenceLevel&completionURL=$successUrl&failureURL=$failureUrl"
+  }
+
 
   override lazy val contactHmrcLink: String = config.getString("contact-hmrc.url")
 

@@ -20,20 +20,18 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
-import forms.individual.business.AccountingMethodForm
 import javax.inject.{Inject, Singleton}
 import models.common.IncomeSourceModel
-import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.HeaderCarrier
-import utilities.SubscriptionDataUtil.CacheMapUtil
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class RoutingController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
+class RoutingController @Inject()(val auditingService: AuditingService,
+                                  val authService: AuthService,
+                                  val appConfig: AppConfig,
+                                  subscriptionDetailsService: SubscriptionDetailsService)
                                  (implicit val ec: ExecutionContext,
                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 

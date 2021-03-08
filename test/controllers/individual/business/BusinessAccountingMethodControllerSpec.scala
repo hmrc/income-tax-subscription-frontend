@@ -16,11 +16,11 @@
 
 package controllers.individual.business
 
+import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodForm
-import models.common.IncomeSourceModel
+import models.Cash
 import models.common.business.AccountingMethodModel
-import models.{Cash, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -30,7 +30,7 @@ import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService {
+class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with MockAuditingService {
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -39,6 +39,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec with Moc
   )
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService
   )

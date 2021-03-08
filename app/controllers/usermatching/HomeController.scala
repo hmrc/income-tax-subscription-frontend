@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 import models.common.subscription.SubscriptionSuccess
 import play.api.mvc._
 import services.individual._
-import services.{AuthService, GetEligibilityStatusService, SubscriptionDetailsService, SubscriptionService}
+import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys._
 import utilities.Implicits._
@@ -33,9 +33,14 @@ import utilities.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HomeController @Inject()(val authService: AuthService, citizenDetailsService: CitizenDetailsService,
-                               getEligibilityStatusService: GetEligibilityStatusService, subscriptionDetailsService: SubscriptionDetailsService,
-                               subscriptionService: SubscriptionService)(implicit val ec: ExecutionContext, appConfig: AppConfig,
+class HomeController @Inject()(val auditingService: AuditingService,
+                               val authService: AuthService,
+                               citizenDetailsService: CitizenDetailsService,
+                               getEligibilityStatusService: GetEligibilityStatusService,
+                               subscriptionDetailsService: SubscriptionDetailsService,
+                               subscriptionService: SubscriptionService)
+                              (implicit val ec: ExecutionContext,
+                               val appConfig: AppConfig,
                                mcc: MessagesControllerComponents) extends StatelessController {
 
   def home: Action[AnyContent] = Action { implicit request =>
@@ -47,7 +52,6 @@ class HomeController @Inject()(val authService: AuthService, citizenDetailsServi
     Authenticated.async { implicit request =>
       implicit user =>
         val timestamp: String = java.time.LocalDateTime.now().toString
-
         citizenDetailsService.resolveKnownFacts(user.nino, user.utr) flatMap {
           case OptionalIdentifiers(Some(nino), Some(utr)) =>
             getSubscription(nino) flatMap {
@@ -72,9 +76,9 @@ class HomeController @Inject()(val authService: AuthService, citizenDetailsServi
         }
     }
 
-  lazy val goToPreferences = Redirect(controllers.individual.routes.PreferencesController.checkPreferences())
+  lazy val goToPreferences: Result = Redirect(controllers.individual.routes.PreferencesController.checkPreferences())
 
-  lazy val goToUserMatching = Redirect(controllers.usermatching.routes.UserDetailsController.show())
+  lazy val goToUserMatching: Result = Redirect(controllers.usermatching.routes.UserDetailsController.show())
 
   private def getSubscription(nino: String)(implicit request: Request[AnyContent]): Future[Option[SubscriptionSuccess]] =
     subscriptionService.getSubscription(nino) map {

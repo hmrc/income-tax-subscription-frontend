@@ -18,16 +18,20 @@ package controllers.agent
 
 import auth.agent.AgentJourneyState._
 import auth.agent.{AgentSignUp, AgentUserMatching, StatelessController}
+import config.AppConfig
 import controllers.agent.ITSASessionKeys._
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
+import services.{AuditingService, AuthService}
 import utilities.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HomeController @Inject()(val authService: AuthService)(implicit val ec: ExecutionContext,
+class HomeController @Inject()(val auditingService: AuditingService,
+                               val authService: AuthService,
+                               val appConfig: AppConfig)
+                              (implicit val ec: ExecutionContext,
                                mcc: MessagesControllerComponents) extends StatelessController {
 
   def home: Action[AnyContent] = Action.async { implicit request =>
@@ -39,9 +43,9 @@ class HomeController @Inject()(val authService: AuthService)(implicit val ec: Ex
       user.arn match {
         case Some(arn) =>
           (user.clientNino, user.clientUtr) match {
-            case (Some(nino), Some(utr)) =>
+            case (Some(_), Some(_)) =>
               Future.successful(Redirect(controllers.agent.routes.WhatYearToSignUpController.show()).withJourneyState(AgentSignUp))
-            case (Some(nino), _) =>
+            case (Some(_), _) =>
               Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
             case _ =>
               Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show())

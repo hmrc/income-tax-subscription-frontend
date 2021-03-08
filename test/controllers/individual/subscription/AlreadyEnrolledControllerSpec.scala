@@ -16,6 +16,7 @@
 
 package controllers.individual.subscription
 
+import agent.audit.mocks.MockAuditingService
 import assets.MessageLookup.{AlreadyEnrolled => messages}
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
@@ -23,7 +24,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
+class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
   override val controllerName: String = "AlreadyEnrolledController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -31,7 +32,9 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
   )
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(
-    mockAuthService)
+    mockAuditingService,
+    mockAuthService
+  )
 
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
     "return an OK with the error page" in {

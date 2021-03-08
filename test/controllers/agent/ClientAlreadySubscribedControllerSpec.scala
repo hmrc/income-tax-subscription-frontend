@@ -17,12 +17,13 @@
 package controllers.agent
 
 import agent.assets.MessageLookup.{ClientAlreadySubscribed => messages}
+import agent.audit.mocks.MockAuditingService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec {
+class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
 
   override val controllerName: String = "ClientAlreadySubscribedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -31,6 +32,7 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec {
   )
 
   object TestClientAlreadySubscribedController extends ClientAlreadySubscribedController(
+    mockAuditingService,
     mockAuthService
   )(executionContext, appConfig, mockMessagesControllerComponents)
 

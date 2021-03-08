@@ -16,10 +16,10 @@
 
 package controllers.usermatching
 
+import agent.audit.mocks.MockAuditingService
 import assets.MessageLookup.{UserDetails => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
-import utilities.individual.TestConstants._
 import forms.usermatching.UserDetailsForm
 import models.DateModel
 import models.usermatching.UserDetailsModel
@@ -29,14 +29,16 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService}
-import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
+import uk.gov.hmrc.http.HttpResponse
 import utilities.ITSASessionKeys
+import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
 class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockUserLockoutService {
+  with MockUserLockoutService
+  with MockAuditingService {
 
   override val controllerName: String = "UserDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -45,12 +47,13 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
   )
 
   object TestUserDetailsController extends UserDetailsController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockUserLockoutService
   )
 
-  val testUserDetails =
+  val testUserDetails: UserDetailsModel =
     UserDetailsModel(
       firstName = "Abc",
       lastName = "Abc",

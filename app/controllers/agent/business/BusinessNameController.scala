@@ -19,23 +19,24 @@ package controllers.agent.business
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.BusinessNameForm
-import forms.agent.BusinessNameForm.businessName
 import javax.inject.{Inject, Singleton}
 import models.common.IncomeSourceModel
 import models.common.business.BusinessNameModel
 import play.api.Logger
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.InternalServerException
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessNameController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
-                                      (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                       appConfig: AppConfig) extends AuthenticatedController {
+class BusinessNameController @Inject()(val auditingService: AuditingService,
+                                       val authService: AuthService,
+                                       subscriptionDetailsService: SubscriptionDetailsService)
+                                      (implicit val ec: ExecutionContext,
+                                       mcc: MessagesControllerComponents,
+                                       val appConfig: AppConfig) extends AuthenticatedController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {
     views.html.agent.business.business_name(
@@ -57,7 +58,7 @@ class BusinessNameController @Inject()(val authService: AuthService, subscriptio
       )
   }
 
-  private def redirectLocation( currentAnswer: BusinessNameModel, isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
+  private def redirectLocation(isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
     for {
       incomeSources <- subscriptionDetailsService.fetchIncomeSource
     } yield {
@@ -74,13 +75,14 @@ class BusinessNameController @Inject()(val authService: AuthService, subscriptio
       }
     }
   }
+
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors,
           isEditMode = isEditMode, backUrl = controllers.agent.routes.WhatYearToSignUpController.show().url))),
         businessName => for {
-          redirect <- redirectLocation(businessName, isEditMode)
+          redirect <- redirectLocation(isEditMode)
           _ <- subscriptionDetailsService.saveBusinessName(businessName)
         } yield redirect
       )

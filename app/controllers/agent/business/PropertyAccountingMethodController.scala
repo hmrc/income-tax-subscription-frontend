@@ -30,14 +30,17 @@ import play.api.data.Form
 import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(val authService: AuthService, val subscriptionDetailsService: SubscriptionDetailsService)
-                                                  (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                                   appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching with RequireAnswer {
+class PropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
+                                                   val authService: AuthService,
+                                                   val subscriptionDetailsService: SubscriptionDetailsService)
+                                                  (implicit val ec: ExecutionContext,
+                                                   mcc: MessagesControllerComponents,
+                                                   val appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching with RequireAnswer {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], incomeSource: IncomeSourceModel, isEditMode: Boolean)
           (implicit request: Request[_]): Html = {

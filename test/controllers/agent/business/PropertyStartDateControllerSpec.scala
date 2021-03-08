@@ -18,11 +18,10 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import controllers.ControllerBaseSpec
 import controllers.agent.AgentControllerBaseSpec
-import controllers.agent.business.PropertyStartDateController
 import forms.agent.PropertyStartDateForm
 import models.DateModel
 import models.common.{IncomeSourceModel, PropertyStartDateModel}
@@ -36,7 +35,8 @@ import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourc
 
 import scala.concurrent.Future
 
-class PropertyStartDateControllerSpec  extends AgentControllerBaseSpec with MockSubscriptionDetailsService with FeatureSwitching {
+class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
+  with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -45,6 +45,7 @@ class PropertyStartDateControllerSpec  extends AgentControllerBaseSpec with Mock
   )
 
   object TestPropertyStartDateController$ extends PropertyStartDateController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockLanguageUtils
@@ -52,6 +53,7 @@ class PropertyStartDateControllerSpec  extends AgentControllerBaseSpec with Mock
 
   trait Test {
     val controller = new PropertyStartDateController(
+      mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
       mockLanguageUtils
@@ -91,7 +93,7 @@ class PropertyStartDateControllerSpec  extends AgentControllerBaseSpec with Mock
   "submit" should {
 
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-    val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900,1,1))
+    val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
 
     val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(testValidMaxStartDate)
 

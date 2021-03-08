@@ -18,6 +18,7 @@ package controllers.usermatching
 
 import java.time.Duration
 
+import agent.audit.mocks.MockAuditingService
 import assets.MessageLookup.{UserDetailsLockout => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
@@ -28,12 +29,11 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import services.mocks.MockUserLockoutService
-import uk.gov.hmrc.http.SessionKeys
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants._
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
-  with MockUserLockoutService {
+  with MockUserLockoutService with MockAuditingService {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "UserDetailsLockoutController"
@@ -42,6 +42,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   )
 
   def createTestUserDetailsLockoutController(enableMatchingFeature: Boolean): UserDetailsLockoutController = new UserDetailsLockoutController(
+    mockAuditingService,
     mockAuthService,
     mockUserLockoutService
   )

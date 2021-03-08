@@ -24,9 +24,10 @@ sealed trait FeatureSwitch {
 object FeatureSwitch {
   val prefix = "feature-switch"
 
-  val switches: Set[FeatureSwitch]  = Set(
+  val switches: Set[FeatureSwitch] = Set(
     ReleaseFour,
-    ForeignProperty
+    ForeignProperty,
+    IdentityVerification
   )
 
   def apply(str: String): FeatureSwitch =
@@ -45,6 +46,11 @@ object FeatureSwitch {
   case object ForeignProperty extends FeatureSwitch {
     override val name = s"$prefix.enable-foreign-property"
     override val displayText = "Foreign property"
+  }
+
+  case object IdentityVerification extends FeatureSwitch {
+    override val name = s"$prefix.enable-identity-verification"
+    override val displayText: String = "Identity Verification"
   }
 
 }

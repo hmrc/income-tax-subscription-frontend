@@ -16,6 +16,7 @@
 
 package controllers.agent
 
+import agent.audit.mocks.MockAuditingService
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
@@ -30,8 +31,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource}
-import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testOverseasAccountingMethodProperty,
-	testOverseasPropertyStartDateModel, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testOverseasAccountingMethodProperty, testOverseasPropertyStartDateModel, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
 
 import scala.concurrent.Future
 
@@ -39,9 +39,11 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
   with MockConfig
+  with MockAuditingService
   with FeatureSwitching {
 
   class TestIncomeSourceController extends IncomeSourceController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockIncomeTaxSubscriptionConnector

@@ -16,12 +16,13 @@
 
 package controllers.individual.business
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch._
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingYearForm
 import models.Current
-import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.common.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -33,6 +34,7 @@ import scala.concurrent.Future
 class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
+  with MockAuditingService
   with FeatureSwitching {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
@@ -47,6 +49,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   }
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
+    mockAuditingService,
     mockAuthService,
     mockAccountingPeriodService,
     MockSubscriptionDetailsService

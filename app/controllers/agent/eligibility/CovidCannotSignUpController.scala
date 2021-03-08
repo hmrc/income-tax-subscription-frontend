@@ -20,23 +20,24 @@ import auth.agent.StatelessController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuthService
+import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.covid_cannot_sign_up
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CovidCannotSignUpController @Inject()(val authService: AuthService)
-                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                            appConfig: AppConfig)
-  extends StatelessController {
+class CovidCannotSignUpController @Inject()(val auditingService: AuditingService,
+                                            val authService: AuthService)
+                                           (implicit val ec: ExecutionContext,
+                                            mcc: MessagesControllerComponents,
+                                            val appConfig: AppConfig) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-        Ok(covid_cannot_sign_up(postAction = routes.Covid19ClaimCheckController.show(), backUrl))
+      Ok(covid_cannot_sign_up(postAction = routes.Covid19ClaimCheckController.show(), backUrl))
   }
 
-  def backUrl: String  = {
+  def backUrl: String = {
     routes.Covid19ClaimCheckController.show().url
   }
 

@@ -42,15 +42,18 @@ import models.common.{AccountingMethodPropertyModel, IncomeSourceModel}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.SubscriptionDataUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService)
-                                                  (implicit val ec: ExecutionContext, appConfig: AppConfig,
+class PropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
+                                                   val authService: AuthService,
+                                                   subscriptionDetailsService: SubscriptionDetailsService)
+                                                  (implicit val ec: ExecutionContext,
+                                                   val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {

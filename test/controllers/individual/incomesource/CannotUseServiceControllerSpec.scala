@@ -16,6 +16,7 @@
 
 package controllers.individual.incomesource
 
+import agent.audit.mocks.MockAuditingService
 import assets.MessageLookup.{CannotUseService => messages}
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
@@ -25,13 +26,15 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class CannotUseServiceControllerSpec extends ControllerBaseSpec {
+class CannotUseServiceControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
   override val controllerName: String = "CannotUseServiceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestCannotUseServiceController extends CannotUseServiceController(
-    mockAuthService)
+    mockAuditingService,
+    mockAuthService
+  )
 
   "Calling the show action of the Cannot Use Service Controller" when {
 

@@ -30,9 +30,9 @@ import views.html.agent.eligibility.other_sources_of_income
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class OtherSourcesOfIncomeController @Inject()(auditService: AuditingService,
+class OtherSourcesOfIncomeController @Inject()(val auditingService: AuditingService,
                                                val authService: AuthService)
-                                              (implicit appConfig: AppConfig,
+                                              (implicit val appConfig: AppConfig,
                                                mcc: MessagesControllerComponents,
                                                val ec: ExecutionContext) extends StatelessController {
 
@@ -50,11 +50,11 @@ class OtherSourcesOfIncomeController @Inject()(auditService: AuditingService,
         formWithErrors => BadRequest(other_sources_of_income(formWithErrors, routes.OtherSourcesOfIncomeController.submit(), backUrl)),
         {
           case Yes =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, false, "yes",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "otherIncomeSource", arn))
             Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
           case No =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, true, "no",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "otherIncomeSource", arn))
             Redirect(controllers.agent.eligibility.routes.SoleTraderController.show())
         }

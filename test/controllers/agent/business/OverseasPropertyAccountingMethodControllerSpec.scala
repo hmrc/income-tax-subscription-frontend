@@ -16,6 +16,7 @@
 
 package controllers.agent.business
 
+import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -31,7 +32,7 @@ import utilities.agent.TestModels._
 import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService {
+  with MockSubscriptionDetailsService with MockAuditingService {
 
   override val controllerName: String = "OverseasPropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,6 +41,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
   )
 
   object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService
   )

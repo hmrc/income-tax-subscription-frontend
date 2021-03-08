@@ -29,7 +29,7 @@ import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
@@ -39,9 +39,11 @@ import views.html.individual.incometax.incomesource.income_source
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeSourceController @Inject()(val authService: AuthService, subscriptionDetailsService: SubscriptionDetailsService,
+class IncomeSourceController @Inject()(val auditingService: AuditingService,
+                                       val authService: AuthService,
+                                       subscriptionDetailsService: SubscriptionDetailsService,
                                        incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                      (implicit val ec: ExecutionContext, val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
@@ -135,7 +137,7 @@ class IncomeSourceController @Inject()(val authService: AuthService, subscriptio
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    if(isEditMode) {
+    if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
       controllers.individual.business.routes.WhatYearToSignUpController.show().url

@@ -24,15 +24,18 @@ import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockedOut, NotLockedOut}
 import play.api.i18n.Messages
 import play.api.mvc._
-import services.{AuthService, UserLockoutService}
+import services.{AuditingService, AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientDetailsLockoutController @Inject()(val authService: AuthService, lockoutService: UserLockoutService)
-                                              (implicit val ec: ExecutionContext, appConfig: AppConfig,
+class ClientDetailsLockoutController @Inject()(val auditingService: AuditingService,
+                                               val authService: AuthService,
+                                               lockoutService: UserLockoutService)
+                                              (implicit val ec: ExecutionContext,
+                                               val appConfig: AppConfig,
                                                mcc: MessagesControllerComponents) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {

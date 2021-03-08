@@ -16,6 +16,7 @@
 
 package controllers.agent
 
+import agent.audit.mocks.MockAuditingService
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
@@ -27,15 +28,15 @@ import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsServi
 import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels
 import utilities.agent.TestModels._
-import uk.gov.hmrc.http.InternalServerException
-import utilities.agent.TestConstants.testException
-
 
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAccountingPeriodService with MockUserMatchingService {
+  with MockSubscriptionDetailsService
+  with MockAccountingPeriodService
+  with MockUserMatchingService with MockAuditingService {
 
   object TestConfirmationController extends ConfirmationController(
+    mockAuditingService,
     mockAuthService,
     mockAccountingPeriodService,
     MockSubscriptionDetailsService
@@ -43,10 +44,10 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
   val userDetails: UserDetailsModel = TestModels.testUserDetails
 
-  val taxQuarter1 = ("agent.sign-up.complete.julyUpdate", "2020")
-  val taxQuarter2 = ("agent.sign-up.complete.octoberUpdate", "2020")
-  val taxQuarter3 = ("agent.sign-up.complete.januaryUpdate", "2021")
-  val taxQuarter4 = ("agent.sign-up.complete.aprilUpdate", "2021")
+  val taxQuarter1: (String, String) = ("agent.sign-up.complete.julyUpdate", "2020")
+  val taxQuarter2: (String, String) = ("agent.sign-up.complete.octoberUpdate", "2020")
+  val taxQuarter3: (String, String) = ("agent.sign-up.complete.januaryUpdate", "2021")
+  val taxQuarter4: (String, String) = ("agent.sign-up.complete.aprilUpdate", "2021")
 
   implicit val request: Request[_] = FakeRequest()
 

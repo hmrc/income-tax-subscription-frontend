@@ -16,8 +16,9 @@
 
 package controllers.agent.business
 
-import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitching
+import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
 import forms.agent.AccountingYearForm
 import models.Current
 import models.common.{AccountingYearModel, IncomeSourceModel}
@@ -32,6 +33,7 @@ import scala.concurrent.Future
 class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
+  with MockAuditingService
   with FeatureSwitching {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
@@ -41,6 +43,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
+    mockAuditingService,
     mockAuthService,
     mockAccountingPeriodService,
     MockSubscriptionDetailsService
@@ -148,13 +151,13 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-    "The back url is in edit mode" when {
-      "the user click back url" should {
-        "redirect to check your answer page" in {
-          TestWhatYearToSignUpController.backUrl mustBe
-            controllers.agent.routes.CheckYourAnswersController.show().url
-        }
+  "The back url is in edit mode" when {
+    "the user click back url" should {
+      "redirect to check your answer page" in {
+        TestWhatYearToSignUpController.backUrl mustBe
+          controllers.agent.routes.CheckYourAnswersController.show().url
       }
     }
+  }
 
 }

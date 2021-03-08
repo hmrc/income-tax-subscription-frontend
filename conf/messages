@@ -83,6 +83,13 @@ preferences_callback.heading                                    = You need to ag
 preferences_callback.line_1                                     = To sign up for this service, you need to allow HM Revenue and Customs to send you electronic communications.
 preferences_callback.button                                     = Go back
 
+# IV Failure Page
+iv-failure.heading                                              = There’s a problem
+iv-failure.cannot-access                                        = You cannot access this service. This may be because:
+iv-failure.took-too-long                                        = you took too long to enter information and the service has timed out
+iv-failure.failed-questions                                     = you have failed to answer enough questions correctly
+iv-failure.could-not-match-details                              = we could not match your details to our system
+
 # are you self-employed page
 are_you_selfemployed.title                                      = Are you self-employed?
 are_you_selfemployed.heading                                    = Are you self-employed?

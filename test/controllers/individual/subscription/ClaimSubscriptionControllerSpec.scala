@@ -16,16 +16,18 @@
 
 package controllers.individual.subscription
 
+import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
-import utilities.individual.TestConstants._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
+import utilities.individual.TestConstants._
 
-class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with MockSubscriptionOrchestrationService {
+class ClaimSubscriptionControllerSpec extends ControllerBaseSpec
+  with MockSubscriptionDetailsService with MockSubscriptionOrchestrationService with MockAuditingService {
 
   override val controllerName: String = "ClaimSubscriptionController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -33,6 +35,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockSubscr
   )
 
   object TestClaimSubscriptionController extends ClaimSubscriptionController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService

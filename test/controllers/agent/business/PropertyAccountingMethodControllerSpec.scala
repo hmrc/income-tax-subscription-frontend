@@ -16,6 +16,7 @@
 
 package controllers.agent.business
 
+import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch._
 import controllers.agent.AgentControllerBaseSpec
@@ -33,7 +34,7 @@ import utilities.agent.TestModels._
 import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -42,6 +43,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestPropertyAccountingMethodController extends PropertyAccountingMethodController(
+    mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService
   )

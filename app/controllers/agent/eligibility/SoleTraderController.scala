@@ -35,9 +35,9 @@ import views.html.agent.eligibility.are_you_a_sole_trader
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SoleTraderController @Inject()(auditService: AuditingService,
+class SoleTraderController @Inject()(val auditingService: AuditingService,
                                      val authService: AuthService)
-                                    (implicit appConfig: AppConfig,
+                                    (implicit val appConfig: AppConfig,
                                      mcc: MessagesControllerComponents,
                                      override val languageUtils: LanguageUtils,
                                      val ec: ExecutionContext) extends StatelessController with I18nSupport with ImplicitDateFormatter {
@@ -58,11 +58,11 @@ class SoleTraderController @Inject()(auditService: AuditingService,
         formWithErrors => BadRequest(are_you_a_sole_trader(formWithErrors, routes.SoleTraderController.submit(), startDateLimit.toLongDate, backUrl)),
         {
           case Yes =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, false, "yes",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "soleTraderBusinessStartDate", arn))
             Redirect(routes.CannotTakePartController.show())
           case No =>
-            auditService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, true, "no",
+            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "soleTraderBusinessStartDate", arn))
             Redirect(routes.PropertyTradingStartAfterController.show())
         }

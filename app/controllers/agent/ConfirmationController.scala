@@ -21,7 +21,7 @@ import auth.agent.PostSubmissionController
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AccountingPeriodService, AuthService, SubscriptionDetailsService}
+import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.SubscriptionDataUtil._
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.sign_up_complete
@@ -29,10 +29,12 @@ import views.html.agent.sign_up_complete
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(val authService: AuthService,
+class ConfirmationController @Inject()(val auditingService: AuditingService,
+                                       val authService: AuthService,
                                        accountingPeriodService: AccountingPeriodService,
                                        subscriptionDetailsService: SubscriptionDetailsService)
-                                      (implicit val ec: ExecutionContext, appConfig: AppConfig,
+                                      (implicit val ec: ExecutionContext,
+                                       val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -48,7 +50,6 @@ class ConfirmationController @Inject()(val authService: AuthService,
         Ok(sign_up_complete(cacheMap.getAgentSummary(), clientName, endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter, postAction, signOutAction))
       }
   }
-
 
 
 }

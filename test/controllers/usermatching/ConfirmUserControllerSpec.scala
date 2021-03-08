@@ -28,7 +28,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
 import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService, MockUserMatchingService}
-import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
+import uk.gov.hmrc.http.HttpResponse
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants._
 import utilities.{ITSASessionKeys, TestModels}
@@ -36,7 +36,10 @@ import utilities.{ITSASessionKeys, TestModels}
 import scala.concurrent.Future
 
 class ConfirmUserControllerSpec extends ControllerBaseSpec
-  with MockUserLockoutService with MockUserMatchingService with MockSubscriptionDetailsService with MockAuditingService
+  with MockUserLockoutService
+  with MockUserMatchingService
+  with MockSubscriptionDetailsService
+  with MockAuditingService
   with OptionValues {
 
   override val controllerName: String = "ConfirmUserController"
