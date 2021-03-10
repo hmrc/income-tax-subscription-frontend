@@ -114,7 +114,7 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
             ))
             Left(Future.successful(Redirect(appConfig.identityVerificationURL)
               .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
-          case Some(Organisation) if user.nino.isDefined =>
+          case Some(Organisation) if user.ninoFromEnrolmentsOnly.isDefined =>
             Logger.info("[AuthPredicates][ivPredicate] - Redirecting organisation with nino to IV")
             auditingService.audit(IVHandoffAuditModel(
               handoffReason = "organisationWithNino",

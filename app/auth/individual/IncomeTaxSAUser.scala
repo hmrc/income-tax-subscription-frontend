@@ -40,6 +40,10 @@ case class IncomeTaxSAUser(enrolments: Enrolments,
       case x => x
     }
 
+  def ninoFromEnrolmentsOnly: Option[String] = {
+    getEnrolment(Constants.ninoEnrolmentName)
+  }
+
   def utr(implicit request: Request[AnyContent]): Option[String] =
     getEnrolment(Constants.utrEnrolmentName) match {
       case None => request.session.get(ITSASessionKeys.UTR)
