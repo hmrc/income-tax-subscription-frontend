@@ -201,7 +201,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
             ))(any(), any())
           }
         }
-        "the user's affinity group is organisation and they have a nino" should {
+        "the user's affinity group is organisation" should {
           "redirect the user to IV" in {
             enable(IdentityVerification)
             implicit val request: Request[AnyContent] = FakeRequest()
@@ -209,16 +209,8 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
             status(result.left.value) mustBe SEE_OTHER
             redirectLocation(result.left.value) mustBe Some(injectedConfig.identityVerificationURL)
             verify(mockAuditingService).audit(matches(
-              IVHandoffAuditModel("organisationWithNino", ConfidenceLevel.L100.level, ConfidenceLevel.L200.level)
+              IVHandoffAuditModel("organisation", ConfidenceLevel.L100.level, ConfidenceLevel.L200.level)
             ))(any(), any())
-          }
-        }
-        "the user's affinity group is organisation but the user has no nino" should {
-          "return an AuthPredicateSuccess" in {
-            enable(IdentityVerification)
-            val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Organisation), None, ConfidenceLevel.L100, "testUserId"))
-            result.right.value mustBe AuthPredicateSuccess
-            verify(mockAuditingService, never()).audit(any())(any(), any())
           }
         }
         "the user's affinity group is neither individual or organisation" should {
