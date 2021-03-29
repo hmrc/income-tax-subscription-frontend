@@ -19,6 +19,8 @@ package controllers.agent
 import auth.agent.{AuthPredicates, IncomeTaxAgentUser, StatelessController}
 import auth.individual.AuthPredicate.AuthPredicate
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.{ReleaseFour, RemoveCovidPages}
+import config.featureswitch.FeatureSwitching
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -32,17 +34,27 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
                                            val appConfig: AppConfig,
                                            subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext,
-                                           mcc: MessagesControllerComponents) extends StatelessController {
+                                           mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
+
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = AuthPredicates.defaultPredicates
 
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
+      if (isEnabled(RemoveCovidPages)) {
       subscriptionDetailsService.deleteAll() map { _ =>
-        Redirect(eligibility.routes.Covid19ClaimCheckController.show())
+        Redirect(eligibility.routes.OtherSourcesOfIncomeController.show())
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
           .removingFromSession(ITSASessionKeys.clientData: _*)
           .clearUserName
+      }
+  } else {
+        subscriptionDetailsService.deleteAll() map { _ =>
+          Redirect(eligibility.routes.Covid19ClaimCheckController.show())
+            .removingFromSession(ITSASessionKeys.JourneyStateKey)
+            .removingFromSession(ITSASessionKeys.clientData: _*)
+            .clearUserName
+        }
       }
   }
 

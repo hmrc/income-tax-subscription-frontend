@@ -18,6 +18,7 @@ package controllers.agent.eligibility
 
 import auth.agent.StatelessController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import forms.agent.Covid19ClaimCheckForm.covid19ClaimCheckForm
 import javax.inject.{Inject, Singleton}
 import models.audits.EligibilityAnswerAuditing
@@ -39,7 +40,11 @@ class Covid19ClaimCheckController @Inject()(val auditingService: AuditingService
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(covid_19_claim_check(covid19ClaimCheckForm, routes.Covid19ClaimCheckController.submit(), backUrl))
+      if (isEnabled(RemoveCovidPages)) {
+        Redirect(routes.OtherSourcesOfIncomeController.show())
+  } else {
+        Ok(covid_19_claim_check(covid19ClaimCheckForm, routes.Covid19ClaimCheckController.submit(), backUrl))
+      }
   }
 
   def submit(): Action[AnyContent] = Authenticated { implicit request =>

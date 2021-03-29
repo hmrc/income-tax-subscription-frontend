@@ -16,6 +16,8 @@
 
 package controllers.agent
 
+import config.featureswitch.FeatureSwitch.RemoveCovidPages
+import config.featureswitch.FeatureSwitching
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import org.jsoup.Jsoup
@@ -23,7 +25,12 @@ import org.jsoup.nodes.{Document, Element}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.{OK, SEE_OTHER}
 
-class NoClientRelationshipControllerISpec extends ComponentSpecBase {
+class NoClientRelationshipControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(RemoveCovidPages)
+    super.beforeEach()
+  }
 
       trait Setup {
         AuthStub.stubAuthSuccess()
@@ -85,6 +92,19 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
 
           val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
           val expectedRedirect: String = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/covid-19"
+
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(expectedRedirect)
+          )
+
+        }
+
+        "return SEE_OTHER when selecting clicking sign up another client - RemoveCovidPages FS enabled" in new Setup{
+
+          enable(RemoveCovidPages)
+          val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
+          val expectedRedirect: String = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/income-sources"
 
           res should have(
             httpStatus(SEE_OTHER),
