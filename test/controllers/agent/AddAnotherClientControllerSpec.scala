@@ -17,6 +17,7 @@
 package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
+import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -27,7 +28,12 @@ import scala.concurrent.Future
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching with MockUserLockoutService with MockAuditingService {
+  with MockSubscriptionDetailsService with FeatureSwitching with MockUserLockoutService with MockAuditingService  {
+
+  override def beforeEach(): Unit = {
+    disable(RemoveCovidPages)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "addAnotherClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -55,6 +61,33 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(eligibility.routes.Covid19ClaimCheckController.show().url)
+
+      result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
+      result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
+      result.session(request).get(ITSASessionKeys.UTR) mustBe None
+      result.session(request).get(ITSASessionKeys.NINO) mustBe None
+      result.verifyStoredUserDetailsIs(None)(request)
+
+      verifySubscriptionDetailsDeleteAll(1)
+    }
+
+
+  }
+
+  "AddAnotherClientController.addAnother - RemoveCovidPages FS Enabled" should {
+
+    lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue")
+
+    def call: Future[Result] = TestAddAnotherClientController.addAnother()(request)
+
+
+    "redirect to the agent eligibility frontend terms page, clearing Subscription Details  and session values" in {
+      mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+      enable(RemoveCovidPages)
+      val result: Result = await(call)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(eligibility.routes.OtherSourcesOfIncomeController.show().url)
 
       result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
       result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None

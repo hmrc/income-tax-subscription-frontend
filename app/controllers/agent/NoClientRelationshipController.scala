@@ -18,6 +18,8 @@ package controllers.agent
 
 import auth.agent.UserMatchingController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.RemoveCovidPages
+import config.featureswitch.FeatureSwitching
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
@@ -29,7 +31,7 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
                                                val authService: AuthService)
                                               (implicit val ec: ExecutionContext,
                                                mcc: MessagesControllerComponents,
-                                               val appConfig: AppConfig) extends UserMatchingController {
+                                               val appConfig: AppConfig) extends UserMatchingController with FeatureSwitching {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -38,6 +40,10 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show()))
+      if (isEnabled(RemoveCovidPages)) {
+        Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show()))
+  } else {
+        Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show()))
+      }
   }
 }
