@@ -41,8 +41,8 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
     implicit user =>
 
       val endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear
-      val updatesAfter = accountingPeriodService.updateDatesAfter
-      val updatesBefore = accountingPeriodService.updateDatesBefore
+      val updatesAfter = accountingPeriodService.updateDatesAfter()
+      val updatesBefore = accountingPeriodService.updateDatesBefore()
 
       subscriptionDetailsService.fetchAll() map { cacheMap =>
         Ok(sign_up_complete(cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour)), endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter))
