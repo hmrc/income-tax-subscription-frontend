@@ -21,7 +21,7 @@
 @import views.html.templates.agent_main_template
 @import views.html.helpers._
 
-@(summary: AgentSummary, clientName: String, endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)], postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summary: AgentSummary, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)], postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @dataHelper(metricId:String, optFieldValue:Option[String]) = {
         @for(value <- optFieldValue) {
@@ -29,7 +29,7 @@
         }
     }
 
-    @agent_main_template(title = Messages("agent.sign-up-complete.title", clientName)) {
+    @agent_main_template(title = Messages("agent.sign-up-complete.title", clientName, clientNino)) {
 
         @dataHelper("self-employment", summary.incomeSource.map(_.selfEmployment.toString))
         @dataHelper("uk-property", summary.incomeSource.map(_.ukProperty.toString))
@@ -37,7 +37,11 @@
 
         <div class="form-group">
             <section id="confirmation-heading" class="govuk-panel--confirmation">
-                <h1 class="transaction-banner__heading" style="font-size: 42px">@Html(Messages("agent.sign-up-complete.heading", clientName))</h1>
+                <h1 class="govuk-panel__title">@Html(Messages("agent.sign-up-complete.heading1"))</h1>
+                <div class="govuk-panel__body">
+                    <div class="bold">@Html(Messages("agent.sign-up-complete.heading2", clientName, clientNino))</div>
+                    <div>@Html(Messages("agent.sign-up-complete.heading3"))</div>
+                </div>
             </section>
         </div>
 

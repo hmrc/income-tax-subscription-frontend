@@ -706,8 +706,10 @@ agent.summary.income_type_overseas_property                     = Accounting met
 agent.summary.self_employments                                  = Number of businesses signed up
 
 ## Sign Up Complete page ##
-agent.sign-up-complete.title                                    = You have signed up {0} to use software to send Income Tax updates
-agent.sign-up-complete.heading                                  = You have signed up {0} to use software to send Income Tax updates
+agent.sign-up-complete.title                                    = You have signed up {0} {1} to use software to send Income Tax updates
+agent.sign-up-complete.heading1                                 = Sign up Complete
+agent.sign-up-complete.heading2                                 = {0} {1}
+agent.sign-up-complete.heading3                                 = is now signed up for Making Tax Digital for Income Tax
 agent.sign-up-complete.whatNow.heading                          = What you need to do next
 agent.sign-up-complete.whatNow.para1                            = Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other.
 agent.sign-up-complete.whatNow.number1                          = If you have not already, {0} and allow it interact with HMRC.

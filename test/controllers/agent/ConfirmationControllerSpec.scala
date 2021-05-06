@@ -17,6 +17,7 @@
 package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
+import forms.agent.ClientDetailsForm.clientNino
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
@@ -28,6 +29,8 @@ import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsServi
 import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels
 import utilities.agent.TestModels._
+
+import scala.util.matching.Regex
 
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
@@ -55,6 +58,17 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "showConfirmation" -> TestConfirmationController.show
   )
+
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+
+  }
 
   "ConfirmationController" when {
 
@@ -99,6 +113,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
         val clientName = userDetails.firstName + " " + userDetails.lastName
 
+        val clientNino = formatNino(userDetails.nino)
+
         val result = TestConfirmationController.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")
@@ -107,7 +123,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         status(result) shouldBe OK
 
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title", clientName) + serviceNameGovUk
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title", clientName, clientNino) + serviceNameGovUk
       }
     }
 

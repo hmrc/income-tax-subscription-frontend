@@ -37,6 +37,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.test.UnitSpec
+import utilities.UserMatchingSessionUtil
 
 import java.time.LocalDate
 import java.util.UUID
@@ -229,11 +230,13 @@ trait ComponentSpecBase extends UnitSpec
 
     def showClientDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def showConfirmation(hasSubmitted: Boolean, storedUserDetails: UserDetailsModel): WSResponse =
+    def showConfirmation(hasSubmitted: Boolean, firstName: String, lastName: String, nino: String): WSResponse =
       if (hasSubmitted)
-        get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMTDID).addUserDetails(Some(storedUserDetails)))
+        get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMTDID, UserMatchingSessionUtil.firstName -> firstName,
+          UserMatchingSessionUtil.lastName -> lastName, ITSASessionKeys.NINO -> nino))
       else
-        get("/confirmation", Map[String, String]().addUserDetails(Some(storedUserDetails)))
+        get("/confirmation", Map[String, String](UserMatchingSessionUtil.firstName -> firstName,
+          UserMatchingSessionUtil.lastName -> lastName, ITSASessionKeys.NINO -> nino))
 
     def feedback(): WSResponse = get("/feedback-submitted")
 

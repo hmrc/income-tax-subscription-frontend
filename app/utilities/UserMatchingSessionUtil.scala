@@ -86,6 +86,9 @@ object UserMatchingSessionUtil {
           Some(f + " " + l)
         case _ => None
       }
+
+    def fetchClientNino: Option[String] =
+      request.session.get(nino)
   }
 
 }
