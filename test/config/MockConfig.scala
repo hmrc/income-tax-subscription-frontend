@@ -108,6 +108,8 @@ trait MockConfig extends AppConfig {
 
   override def assignEnrolmentUrl(userId: String, enrolmentKey: String): String = ???
 
+  override val feedbackFrontendRedirectUrl: String = "/feedback/ITSU"
+
 }
 
 object MockConfig extends MockConfig

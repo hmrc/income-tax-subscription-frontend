@@ -116,6 +116,8 @@ trait AppConfig extends FeatureSwitching {
 
   def betaFeedbackUnauthenticatedUrl: String
 
+  def feedbackFrontendRedirectUrl: String
+
 }
 
 @Singleton
@@ -289,5 +291,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   override lazy val betaFeedbackUnauthenticatedUrl: String =
     s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+
+  val feedbackFrontendRedirectUrl: String = config.getString("feedback-frontend.url")
 
 }
