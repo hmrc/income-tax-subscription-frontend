@@ -41,15 +41,12 @@
     <ul class="list list-bullet">
         <li>
             @Html(messages(
-            "agent.covid_19_claim_check.join_pilot_support_scheme_point",
-            <a id="supportScheme" href="https://www.gov.uk/guidance/claim-a-grant-through-the-coronavirus-covid-19-self-employment-income-support-scheme" target="_blank">{messages("agent.covid_19_claim_check.join_pilot_support_scheme_point.link")}</a>
+                "agent.covid_19_claim_check.join_pilot_support_scheme_point",
+                <a id="supportScheme" href="https://www.gov.uk/guidance/claim-a-grant-through-the-coronavirus-covid-19-self-employment-income-support-scheme" target="_blank">{messages("agent.covid_19_claim_check.join_pilot_support_scheme_point.link")}</a>
             ))
         </li>
         <li>
             <a id="retentionScheme" href="https://www.gov.uk/guidance/claim-for-wage-costs-through-the-coronavirus-job-retention-scheme" target="_blank">@messages("agent.covid_19_claim_check.join_pilot_retention_scheme.link")</a>
-        </li>
-        <li>
-            <a id="eatOutScheme" href="https://www.gov.uk/guidance/claim-money-back-through-the-eat-out-to-help-out-scheme" target="_blank">@messages("agent.covid_19_claim_check.join_pilot_eat_out_scheme.link")</a> @messages("agent.covid_19_claim_check.join_pilot_eat_out_scheme.text")
         </li>
 
     </ul>
@@ -82,7 +79,8 @@
             inline = true
         )
 
-            @continueButton()
-}
+        @continueButton()
+
+    }
 
 }

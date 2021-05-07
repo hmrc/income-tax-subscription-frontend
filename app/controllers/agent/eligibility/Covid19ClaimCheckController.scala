@@ -20,7 +20,6 @@ import auth.agent.StatelessController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import forms.agent.Covid19ClaimCheckForm.covid19ClaimCheckForm
-import javax.inject.{Inject, Singleton}
 import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
@@ -28,8 +27,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.covid_19_claim_check
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-
 
 @Singleton
 class Covid19ClaimCheckController @Inject()(val auditingService: AuditingService,
@@ -42,7 +41,7 @@ class Covid19ClaimCheckController @Inject()(val auditingService: AuditingService
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
         Redirect(routes.OtherSourcesOfIncomeController.show())
-  } else {
+      } else {
         Ok(covid_19_claim_check(covid19ClaimCheckForm, routes.Covid19ClaimCheckController.submit(), backUrl))
       }
   }
