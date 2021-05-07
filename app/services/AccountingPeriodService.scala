@@ -16,13 +16,12 @@
 
 package services
 
-import java.time.LocalDate
-import java.time.Month._
-
-import javax.inject.{Inject, Singleton}
 import utilities.AccountingPeriodUtil._
 import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 
+import java.time.LocalDate
+import java.time.Month._
+import javax.inject.{Inject, Singleton}
 import scala.Ordering.Implicits._
 
 @Singleton
@@ -48,24 +47,24 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
   def currentTaxYear: Int = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate)
 
   object AgentUpdateDates {
-    val currentDate = currentDateProvider.getCurrentDate
-    val taxYearEnd = getCurrentTaxEndYear
-    val taxYearQ1 = LocalDate.of(taxYearEnd - 1, JULY, 5)
-    val taxYearQ2 = LocalDate.of(taxYearEnd - 1, OCTOBER, 5)
-    val taxYearQ3 = LocalDate.of(taxYearEnd, JANUARY, 5)
-    val taxYearQ4 = LocalDate.of(taxYearEnd, APRIL, 5)
+    val currentDate: LocalDate = currentDateProvider.getCurrentDate
+    val taxYearEnd: Int = getTaxEndYear(currentDate)
+    val taxYearQ1: LocalDate = LocalDate.of(taxYearEnd - 1, JULY, 5)
+    val taxYearQ2: LocalDate = LocalDate.of(taxYearEnd - 1, OCTOBER, 5)
+    val taxYearQ3: LocalDate = LocalDate.of(taxYearEnd, JANUARY, 5)
+    val taxYearQ4: LocalDate = LocalDate.of(taxYearEnd, APRIL, 5)
     val updateDates = List((taxYearQ1, "agent.sign-up.complete.julyUpdate", (currentTaxYear - 1).toString),
       (taxYearQ2, "agent.sign-up.complete.octoberUpdate", (currentTaxYear - 1).toString),
       (taxYearQ3, "agent.sign-up.complete.januaryUpdate", currentTaxYear.toString),
       (taxYearQ4, "agent.sign-up.complete.aprilUpdate", currentTaxYear.toString))
   }
 
-    def updateDatesBefore: List[(String, String)] = {
-      AgentUpdateDates.updateDates.filter(x => x._1 <= AgentUpdateDates.currentDate).map(x => (x._2, x._3))
-    }
+  def updateDatesBefore(): List[(String, String)] = {
+    AgentUpdateDates.updateDates.filter(x => x._1 <= AgentUpdateDates.currentDate).map(x => (x._2, x._3))
+  }
 
-    def updateDatesAfter: List[(String, String)] = {
-      AgentUpdateDates.updateDates.filter(x => x._1 >= AgentUpdateDates.currentDate).map(x => (x._2, x._3))
-    }
+  def updateDatesAfter(): List[(String, String)] = {
+    AgentUpdateDates.updateDates.filter(x => x._1 > AgentUpdateDates.currentDate).map(x => (x._2, x._3))
+  }
 
 }
