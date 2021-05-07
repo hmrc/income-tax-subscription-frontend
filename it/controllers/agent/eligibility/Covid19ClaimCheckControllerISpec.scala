@@ -27,7 +27,6 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
     val join_pilot: String = "Your client cannot currently join the pilot if they have claimed one or more of these grants (the following links open in a new tab):"
     val join_pilot_point_1: String = "Self-Employment Support Scheme for sole traders"
     val join_pilot_point_2: String = "Coronavirus Job Retention Scheme"
-    val join_pilot_point_3: String = "Eat out to Help Out Scheme for businesses in the hospitality sector"
     val still_sign_up_your_client: String = "You can still sign your client up if they’ve only claimed a rebate through the:"
     val claim_sick_pay: String = "Coronavirus Statutory Sick Pay Rebate Scheme"
     val test_and_support_pay_scheme: String = "Test and Trace Support Payment Scheme"
@@ -63,7 +62,6 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
     "have a bullet point list of reasons unable to join the pilot" in new GetSetup {
       pageContent.getNthUnorderedList(1).getNthListItem(1).text shouldBe Covid19ClaimCheckMessages.join_pilot_point_1
       pageContent.getNthUnorderedList(1).getNthListItem(2).text shouldBe Covid19ClaimCheckMessages.join_pilot_point_2
-      pageContent.getNthUnorderedList(1).getNthListItem(3).text shouldBe Covid19ClaimCheckMessages.join_pilot_point_3
     }
 
     "have a paragraph stating about additional conditions for signing up your client" in new GetSetup {
