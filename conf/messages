@@ -875,4 +875,5 @@ base.title.error                                                = Error: {0} - U
 agentBase.title.error                                           = Error: {0} - Use software to report your client’s Income Tax - GOV.UK
 
 ## Language switching
-language-selector.change-to-language                            = Change the language to English
+language-selector.change-to-language                            = Newid yr iaith ir Gymraeg
+language-selector.nav-label                                     = Language switcher

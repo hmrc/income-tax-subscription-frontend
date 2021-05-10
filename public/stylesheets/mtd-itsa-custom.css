@@ -246,7 +246,7 @@ input[type=radio]
 .hmrc-language-select:after {
     content:"";
     display:block;
-    clear:both
+    clear:both;
 }
 .hmrc-language-select__list {
     margin-top:1em;
@@ -262,9 +262,9 @@ input[type=radio]
     position:relative;
     top:.1875em;
     height:1em;
-    border-right:.09375em solid #0b0c0c
+    border-right:.09375em solid #0b0c0c;
 }
 .hmrc-language-select__list-item [aria-current],
 .hmrc-language-select__list-item a {
-    padding:.3125em
+    padding:.3125em;
 }
