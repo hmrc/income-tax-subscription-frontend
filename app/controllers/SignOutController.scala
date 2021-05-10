@@ -35,9 +35,7 @@ class SignOutController @Inject()(mcc: MessagesControllerComponents, appConfig: 
   def signOut(origin: String): Action[AnyContent] = Action.async { implicit request =>
     authService.authorised().retrieve(affinityGroup) {
       case Some(_) =>
-        Future.successful(Redirect(appConfig.ggSignOutUrl(
-          appConfig.baseUrl + controllers.routes.FeedbackController.submit().url
-        )))
+        Future.successful(Redirect(appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)))
       case None =>
         Future.failed(new InternalServerException("unexpected state"))
     }
