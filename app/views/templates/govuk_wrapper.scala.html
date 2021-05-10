@@ -15,12 +15,10 @@
  *@
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
-@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
-@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
-@import views.html.helpers.full_width_banner
-@import views.html.helpers.full_width_banner_content_ur
 @import play.twirl.api.HtmlFormat
-
+@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers, layouts => uiLayouts}
+@import views.html.helpers.{full_width_banner, full_width_banner_content_ur}
+@import views.html.templates.custom_language_selection
 @(appConfig: config.AppConfig,
         title: String,
         navigationTitle: Option[String] = None,
@@ -100,11 +98,12 @@
     }
 
     @mainContentHeader = {
-        <div class="float--right">@views.html.language_selection(
+        <div class="float--right">
+        @custom_language_selection(
             appConfig.languageMap,
             if(isAgent) appConfig.routeToSwitchAgentLanguage else appConfig.routeToSwitchLanguage,
-            customClass = None
-            )</div>
+            customClass = None)
+        </div>
 
     @if(contentHeader.isDefined) {
             <header class="page-header inline-block">@contentHeader.get</header>
