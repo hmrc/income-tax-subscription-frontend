@@ -882,3 +882,7 @@ agentTitlePattern.serviceName.govUk                             = {0} - Defnyddi
 ## Title Errors
 base.title.error                                                = Gwall: {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
 agentBase.title.error                                           = Gwall: {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
+
+## Language switching
+language-selector.change-to-language                            = Change the language to English
+language-selector.nav-label                                     = Cyfnewidydd iaith

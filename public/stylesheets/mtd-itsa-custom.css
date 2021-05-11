@@ -242,3 +242,29 @@ input[type=radio]
 .js-enabled #global-header .header-proposition #proposition-links {
     display: block;
 }
+
+.hmrc-language-select:after {
+    content:"";
+    display:block;
+    clear:both;
+}
+.hmrc-language-select__list {
+    margin-top:1em;
+    float:right;
+    text-align:right;
+}
+.hmrc-language-select__list-item {
+    display:inline-block;
+}
+.hmrc-language-select__list-item:first-child:after {
+    content:"";
+    display:inline-block;
+    position:relative;
+    top:.1875em;
+    height:1em;
+    border-right:.09375em solid #0b0c0c;
+}
+.hmrc-language-select__list-item [aria-current],
+.hmrc-language-select__list-item a {
+    padding:.3125em;
+}

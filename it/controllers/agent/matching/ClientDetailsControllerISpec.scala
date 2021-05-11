@@ -22,8 +22,11 @@ import helpers.agent.IntegrationTestConstants.{agentLockedOutURI, testARN}
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.usermatching.UserDetailsModel
-import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import org.jsoup.Jsoup
+import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import play.api.libs.ws.WSResponse
+import play.api.test.Helpers.OK
 
 
 class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
@@ -62,6 +65,13 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           httpStatus(OK),
           pageTitle(messages("agent.client-details.title") + serviceNameGovUk)
         )
+      }
+
+      "return a view with the language selector" in {
+        val res = fixture(agentLocked = false)
+        val languageSelectNav = Jsoup.parse(res.body).selectOptionally("""nav[class="hmrc-language-select"]""")
+        languageSelectNav.isDefined mustBe true
+        languageSelectNav.get.selectOptionally("""a[href="/report-quarterly/income-and-expenses/sign-up/client/language/cymraeg"]""").isDefined mustBe true
       }
     }
   }

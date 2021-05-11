@@ -1,9 +1,6 @@
 
 package helpers.agent
 
-import java.time.LocalDate
-import java.util.UUID
-
 import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -18,10 +15,10 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
-import models.{DateModel, YesNo}
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
+import models.{DateModel, YesNo}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest._
@@ -41,6 +38,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.test.UnitSpec
 
+import java.time.LocalDate
+import java.util.UUID
 import scala.collection.JavaConversions._
 
 trait ComponentSpecBase extends UnitSpec
@@ -401,6 +400,10 @@ trait ComponentSpecBase extends UnitSpec
         case Some(element) => element
         case None => fail(s"No elements returned for selector: $selector")
       }
+    }
+
+    def selectOptionally(selector: String): Option[Element] = {
+      element.select(selector).headOption
     }
 
     def content: Element = element.firstOf("article")

@@ -1,0 +1,34 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(langMap: Map[String, Lang], langToCall: String => Call, customClass: Option[String] = None, appName: Option[String] = None)(implicit messages: Messages)
+
+<nav class="hmrc-language-select" aria-label="@messages("language-selector.nav-label")">
+    <ul class="hmrc-language-select__list">
+        @langMap.map { case (key: String, value: Lang) =>
+            <li class="hmrc-language-select__list-item">
+                @if(messages.lang.code == value.code) {
+                    <span aria-current="true">@key.capitalize</span>
+                } else {
+                    <a href="@langToCall(key)" hreflang="@value.code" lang="@value.code" rel="alternate">
+                        <span class="visually-hidden">@messages("language-selector.change-to-language")</span>
+                        <span aria-hidden="true">@key.capitalize</span>
+                    </a>
+                }
+            </li>
+        }
+    </ul>
+</nav>
