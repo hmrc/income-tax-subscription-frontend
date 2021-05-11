@@ -47,6 +47,10 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       }
     }
 
+    def selectOptionally(selector: String): Option[Element] = {
+      element.select(selector).headOption
+    }
+
     def content: Element = element.selectFirst("article")
 
     def getParagraphs: Elements = element.getElementsByTag("p")
