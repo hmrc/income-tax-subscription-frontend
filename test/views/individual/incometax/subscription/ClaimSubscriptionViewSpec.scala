@@ -97,12 +97,5 @@ class ClaimSubscriptionViewSpec extends ViewSpecTrait {
       actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
     }
 
-    // N.B. both of these should be directed to the special sign out call which also takes them to the exit survey page
-    "The banner sign out button must be directed to the same as the sign out button" in {
-      val bannerSignout = document.getElementById("logOutNavHref")
-      bannerSignout.text() mustBe MessageLookup.Base.signOut
-      bannerSignout.attr("href") mustBe SignOutController.signOut(request.path).url
-    }
-
   }
 }
