@@ -873,3 +873,7 @@ agentTitlePattern.serviceName.govUk                             = {0} - Use soft
 ## Title Errors
 base.title.error                                                = Error: {0} - Use software to send Income Tax updates - GOV.UK
 agentBase.title.error                                           = Error: {0} - Use software to report your client’s Income Tax - GOV.UK
+
+## Language switching
+language-selector.change-to-language                            = Newid yr iaith ir Gymraeg
+language-selector.nav-label                                     = Language switcher
