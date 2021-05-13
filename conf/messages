@@ -707,7 +707,7 @@ agent.summary.self_employments                                  = Number of busi
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                    = You have signed up {0} {1} to use software to send Income Tax updates
-agent.sign-up-complete.heading1                                 = Sign up Complete
+agent.sign-up-complete.heading1                                 = Sign up complete
 agent.sign-up-complete.heading2                                 = {0} {1}
 agent.sign-up-complete.heading3                                 = is now signed up for Making Tax Digital for Income Tax
 agent.sign-up-complete.whatNow.heading                          = What you need to do next
