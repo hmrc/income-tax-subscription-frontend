@@ -37,7 +37,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
 
         When("I call GET /confirmation")
-        val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = true, clientDetails)
+        val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = true, "Test", "User", "A111111AA")
 
         Then("The result should have a status of OK and display the confirmation page")
         res should have(
@@ -53,7 +53,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
 
         When("I call GET /confirmation")
-        val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = false, clientDetails)
+        val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = false, "Test", "User", "A111111AA")
 
         Then("The result should have a status of NOT_FOUND")
         res should have(

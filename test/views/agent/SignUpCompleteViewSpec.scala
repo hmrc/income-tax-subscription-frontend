@@ -36,6 +36,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
   val incomeSourceBusinessNextTaxYear: IncomeSourceModel = IncomeSourceModel(true, false, false)
   val incomeSourceBusinessProperty: IncomeSourceModel = IncomeSourceModel(true, true, false)
   val testClientName = "Test User"
+  val testClientNino = "1234567890"
   val testEndYearOfCurrentTaxPeriod = 2021
   val testUpdatesBeforeQ1 = List[(String, String)]()
   val testUpdatesAfterQ1 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"), ("5 January 2021", "2021"), ("5 April 2021", "2021"))
@@ -52,6 +53,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
       case _ => testAgentSummaryData
     },
     clientName = testClientName,
+    clientNino = testClientNino,
     endYearOfCurrentTaxPeriod = testEndYearOfCurrentTaxPeriod,
     updatesBefore = taxQuarter match {
       case "Q1" => testUpdatesBeforeQ1
@@ -97,7 +99,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
         }
 
         "has the class 'heading-large'" in {
-          heading.hasClass("transaction-banner__heading") mustBe true
+          heading.hasClass("govuk-panel__title") mustBe true
         }
       }
 

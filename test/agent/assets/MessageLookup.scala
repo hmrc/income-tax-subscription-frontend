@@ -271,8 +271,8 @@ object MessageLookup {
   }
 
   object SignUpComplete {
-    val title = "You have signed up Test User to use software to send Income Tax updates"
-    val heading: String = title
+    val title = "You have signed up Test User 1234567890 to use software to send Income Tax updates"
+    val heading: String = "Sign up Complete"
 
     object whatNext {
       val heading = "What you need to do next"

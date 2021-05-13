@@ -268,3 +268,41 @@ input[type=radio]
 .hmrc-language-select__list-item a {
     padding:.3125em;
 }
+
+.govuk-panel__title {
+    margin-top: 0;
+    margin-bottom: 30px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 700;
+    font-size: 3rem;
+    line-height:1.09375
+}
+
+@media (min-width: 40.0625em) {
+    .govuk-panel__title {
+        font-size: 4rem;
+        line-height:1.04167
+    }
+}
+
+
+.govuk-panel__title:last-child {
+    margin-bottom:0
+}
+
+.govuk-panel__body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 2.5rem;
+    line-height:1.04167
+}
+
+@media (min-width: 40.0625em) {
+    .govuk-panel__body {
+        font-size: 3.5rem;
+        line-height:1.11111
+    }
+}
+

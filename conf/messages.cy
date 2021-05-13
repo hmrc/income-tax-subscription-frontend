@@ -713,8 +713,10 @@ agent.summary.income_type_overseas_property                     = Dull cyfrifydd
 agent.summary.self_employments                                  = Nifer y busnesau sydd wedi’u cofrestru
 
 ## Sign Up Complete page ##
-agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
-agent.sign-up-complete.heading                                  = Rydych wedi cofrestru {0} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
+agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
+agent.sign-up-complete.heading1                                 = Cofrestrwch wedi'i gwblhau
+agent.sign-up-complete.heading2                                 = Mae {0} {1}
+agent.sign-up-complete.heading3                                 = bellach wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.sign-up-complete.whatNow.heading                          = Yr hyn y mae angen i chi ei wneud nesaf
 agent.sign-up-complete.whatNow.para1                            = Rhaid i chi neu’ch cleient gwblhau’r camau isod. Os yw’r ddau ohonoch yn defnyddio’r feddalwedd, mae’n bwysig dewis pecynnau sydd yn gallu rhyngweithio a’i gilydd.
 agent.sign-up-complete.whatNow.number1                          = Os nad ydych eisoes wedi’i wneud, {0} a chaniatáu iddi ryngweithio â CThEM.
