@@ -20,8 +20,10 @@ import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, UserLockoutStub}
-import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
+import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport, ViewSpec}
 import models.usermatching.UserDetailsModel
+import org.jsoup.Jsoup
+import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 
@@ -62,6 +64,20 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           pageTitle(messages("user-details.title") + serviceNameGovUk)
         )
       }
+    }
+
+    "return a view with appropriate national insurance hint" in {
+      val res = fixture(agentLocked = false)
+      val label = Jsoup.parse(res.body).selectOptionally("""label[for="userNino"]""")
+      label.isDefined mustBe true
+      // label should not contain hint refs
+      label.get.selectOptionally("""span[class="form-hint"]""").isDefined mustBe false
+      // Check that input has hint ref, which is not nested
+      val input = Jsoup.parse(res.body).selectOptionally("""input[aria-describedby="hint-userNino"]""")
+      input.isDefined mustBe true
+      input.get.childrenSize() mustBe(0)
+      // Check that hint exists
+      Jsoup.parse(res.body).selectOptionally("""span[id="hint-userNino"]""").isDefined mustBe true
     }
   }
 

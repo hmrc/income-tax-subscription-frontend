@@ -56,11 +56,11 @@ errors.map(errMsg)
         @errorNotification
     <label class='form-label @labelClass.fold("")(x => x)' for="@field.name">
         @label.fold(Html(""))(label => Html(label))
-        @formHint.fold(Nil: Seq[Html])(_.map(hintText))
     </label>
+    @formHint.fold(Nil: Seq[Html])(_.map(hintText))
 
     @if(formHint.isDefined) {
-        <input name="@field.name" class="form-control" id="@field.name" type="text" aria-describedby="input-helper-hint"
+        <input name="@field.name" class="form-control" id="@field.name" type="text" aria-describedby="hint-@field.name"
     } else {
         <input name="@field.name" class="form-control" id="@field.name" type="text"
     }

@@ -45,7 +45,7 @@ class GetSubscriptionDetailsHttpParserSpec extends UnitTestTrait {
       "parse an incorrectly formatted Ok response as an invalid Json" in {
         val httpResponse = HttpResponse(OK, Some(Json.obj()))
 
-        lazy val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
+        lazy val res = getSubscriptionDetailsHttpReads[DummyModel].read(testHttpVerb, testUri, httpResponse)
 
         the[Exception] thrownBy res must have message "Invalid Json for getSubscriptionDetailsHttpReads"
       }
@@ -53,7 +53,7 @@ class GetSubscriptionDetailsHttpParserSpec extends UnitTestTrait {
       "parse an no content response as None" in {
         val httpResponse = HttpResponse(NO_CONTENT)
 
-        lazy val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
+        lazy val res = getSubscriptionDetailsHttpReads[DummyModel].read(testHttpVerb, testUri, httpResponse)
 
 
         res mustBe None
@@ -62,7 +62,7 @@ class GetSubscriptionDetailsHttpParserSpec extends UnitTestTrait {
       "parse any other http status as a UnexpectedStatusFailure" in {
         val httpResponse = HttpResponse(INTERNAL_SERVER_ERROR)
 
-        lazy val res = getSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
+        lazy val res = getSubscriptionDetailsHttpReads[DummyModel].read(testHttpVerb, testUri, httpResponse)
 
         the[Exception] thrownBy res must have message s"Unexpected status: $INTERNAL_SERVER_ERROR"
 

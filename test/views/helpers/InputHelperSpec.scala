@@ -57,7 +57,7 @@ class InputHelperSpec extends UnitTestTrait {
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("div").hasClass("form-field") shouldBe true
       doc.getElementsByTag("label").text() should include(testLabel)
-      doc.getElementsByTag("label").text() should include(testHint)
+      doc.getElementsByTag("label").text() shouldNot include(testHint)
       doc.getElementsByTag("span").text() shouldBe testHint
 
       val inputs = doc.getElementsByTag("input")
