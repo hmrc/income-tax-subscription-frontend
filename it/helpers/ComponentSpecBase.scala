@@ -18,7 +18,6 @@ package helpers
 
 import java.time.LocalDate
 import java.util.UUID
-
 import auth.individual.{JourneyState, SignUp, UserMatching}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
@@ -31,6 +30,7 @@ import models.DateModel
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
+import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -43,6 +43,7 @@ import play.api.libs.crypto.DefaultCookieSigner
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
+import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.ITSASessionKeys._
 
@@ -54,6 +55,12 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
   lazy val mockHost: String = WiremockHelper.wiremockHost
   lazy val mockPort: String = WiremockHelper.wiremockPort.toString
   lazy val mockUrl = s"http://$mockHost:$mockPort"
+
+  implicit class CustomSelectors(element: Element) {
+    def selectOptionally(selector: String): Option[Element] = {
+      element.select(selector).headOption
+    }
+  }
 
   override lazy val cookieSigner: DefaultCookieSigner = app.injector.instanceOf[DefaultCookieSigner]
 

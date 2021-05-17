@@ -254,9 +254,10 @@ trait ViewSpecTrait extends UnitTestTrait {
 
       s"${this.name} must have an input field '$name'" which {
 
+        val eles = element.select(s"""input[name=$name]""")
+
         s"is a text field" in {
           import collection.JavaConversions._
-          val eles = element.select(s"""input[name=$name]""")
           if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
           if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
           val ele = eles.head
@@ -275,8 +276,14 @@ trait ViewSpecTrait extends UnitTestTrait {
         lazy val labelField = element.select(s"label[for=$name]")
 
         s"with the expected label label '$label'" in {
-          labelField.text() mustBe (label + hint.fold("")(" " + _))
+          labelField.text() mustBe (label)
         }
+
+        if (hint.isDefined)
+          s"with the expected linked hint text '$hint" in {
+            val hintId = eles.attr("aria-describedby")
+            element.select(s"*[id=$hintId]").text() mustBe hint.get
+          }
 
         if (!showLabel)
           s"and the label must be visuallyhidden" in

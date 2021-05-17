@@ -109,9 +109,13 @@ class DateHelperSpec extends UnitTestTrait {
     "have aria-describedBy and input Id linked " in {
       val testField = testForm(dateName)
 
-      val doc = dateHelper(testField, testLabel, Some("Hint text"), testForm).doc
-      doc.getElementsByAttributeValue("aria-describedby", "date-helper-hint").hasText mustBe true
-      doc.getElementById("date-helper-hint").hasText mustBe true
+      val hintText = "Hint text"
+      val doc = dateHelper(testField, testLabel, Some(hintText), testForm).doc
+      val elements = doc.getElementsByAttributeValue("aria-describedby", s"hint-$dateName")
+      elements.hasText mustBe true
+      val element = doc.getElementById(s"hint-$dateName")
+      element.hasText mustBe true
+      element.text() mustBe hintText
     }
   }
   "dateHelper" when {

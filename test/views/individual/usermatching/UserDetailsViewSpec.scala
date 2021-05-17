@@ -50,6 +50,8 @@ class UserDetailsViewSpec extends ViewSpecTrait {
 
     val form = testPage.getForm("User Details form")(actionCall = action)
 
+    System.out.println(form.element.getAllElements)
+
     form.mustHaveTextField(
       name = UserDetailsForm.userFirstName,
       label = messages.field1
@@ -63,7 +65,7 @@ class UserDetailsViewSpec extends ViewSpecTrait {
     form.mustHaveTextField(
       name = UserDetailsForm.userNino,
       label = messages.field3,
-      hint = messages.formhint1_line1
+      hint = Some(messages.formhint1_line1)
     )
 
     form.mustHaveDateField(
