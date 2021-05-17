@@ -306,3 +306,10 @@ input[type=radio]
     }
 }
 
+.form-field--error .heading-xlarge, .form-field--error .heading-large, .form-field--error .heading-medium {
+    margin-top: 0;
+}
+
+.form-field--error {
+    border-left: 5px solid #df3034;
+}

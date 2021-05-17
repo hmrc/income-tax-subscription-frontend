@@ -75,11 +75,11 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         // label should not contain hint refs
         label.get.selectOptionally("""span[class="form-hint"]""").isDefined mustBe false
         // Check that input has hint ref, which is not nested
-        val input = Jsoup.parse(res.body).selectOptionally("""input[aria-describedby="hint-clientNino"]""")
+        val input = Jsoup.parse(res.body).selectOptionally("""input[aria-describedby="clientNino-hint"]""")
         input.isDefined mustBe true
-        input.get.childrenSize() mustBe(0)
+        input.get.childrenSize() mustBe 0
         // Check that hint exists
-        Jsoup.parse(res.body).selectOptionally("""span[id="hint-clientNino"]""").isDefined mustBe true
+        Jsoup.parse(res.body).selectOptionally("""div[id="clientNino-hint"]""").isDefined mustBe true
       }
 
       "return a view with the language selector" in {

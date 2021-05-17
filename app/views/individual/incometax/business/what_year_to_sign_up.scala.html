@@ -54,6 +54,9 @@
     <p> @messages("business.what_year_to_sign_up.conditional.2.line_2.signup", (endYearOfCurrentTaxPeriod + 2).toString) </p>
 }
 
+@inputContent = {
+    <p>@messages("business.what_year_to_sign_up.line_1.signup")</p>
+}
 
 @main_template(title = pageTitle, form = accountingYearForm, scriptElem = scripts) {
 
@@ -63,13 +66,11 @@
 
     @summaryErrorHelper(accountingYearForm)
 
-    <h1 class="heading-large">@question</h1>
-    <p>@messages("business.what_year_to_sign_up.line_1.signup")</p>
-
     @form(action = postAction) {
         @radioHelper(
             field = accountingYearForm(AccountingYearForm.accountingYear),
             legend = question,
+            content = Some(inputContent),
             options = Seq(
                 RadioOption(
                     AccountingYearMapping.option_current,

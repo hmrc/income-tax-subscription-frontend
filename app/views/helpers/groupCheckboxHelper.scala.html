@@ -31,8 +31,12 @@
 
 @hasError = @{ parentForm.errors(field.name).nonEmpty }
 
-@errorNotification = @{
-if(hasError) <span class="error-notification bold" id="error-message-@field.name">{Messages(s"${parentForm.error(field.name).get.message}")}</span>
+@errorNotification = {
+    @if(hasError) {
+        <span class="error-notification" id="@field.name-error">
+            @messages(s"${parentForm.error(field.name).get.message}")
+        </span>
+    }
 }
 
 @valueAttr(label: String) = @{

@@ -54,6 +54,10 @@
     <p> @messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString) </p>
 }
 
+@inputContent = {
+    <p>@Messages("agent.business.what_year_to_sign_up.line_1")</p>
+}
+
 @agent_main_template(title = pageTitle, form = Some(accountingYearForm), scriptElem = Some(scripts)) {
 
     @if(isEditMode) {
@@ -62,13 +66,12 @@
 
     @summaryErrorHelper(accountingYearForm)
 
-    <h1 class="heading-large">@question</h1>
-    <p>@Messages("agent.business.what_year_to_sign_up.line_1")</p>
-
     @form(action = postAction) {
+
         @radioHelper(
             field = accountingYearForm(AccountingYearForm.accountingYear),
             legend = question,
+            content = Some(inputContent),
             options = Seq(
               RadioOption(
                 AccountingYearMapping.option_current,
@@ -85,10 +88,13 @@
             ),
             parentForm = accountingYearForm
         )
+
         @if(isEditMode) {
             @continueButton(Some(Messages("base.update")))
         } else {
             @continueButton()
         }
+
     }
+
 }

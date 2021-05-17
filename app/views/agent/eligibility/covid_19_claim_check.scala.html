@@ -25,25 +25,17 @@
 @import views.individual.helpers._
 @import views.helpers.RadioOption
 
-
 @(covid19ClaimCheckForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent_main_template(title = messages("agent.covid_19_claim_check.title"), form = covid19ClaimCheckForm) {
-
-    @back_link(backUrl)
-
-    @summaryErrorHelper(covid19ClaimCheckForm)
-
-    <h1>@messages("agent.covid_19_claim_check.heading")</h1>
-
+@inputContent = {
     <p>@messages("agent.covid_19_claim_check.join_pilot")</p>
 
     <ul class="list list-bullet">
         <li>
-            @Html(messages(
-                "agent.covid_19_claim_check.join_pilot_support_scheme_point",
+        @Html(messages(
+            "agent.covid_19_claim_check.join_pilot_support_scheme_point",
                 <a id="supportScheme" href="https://www.gov.uk/guidance/claim-a-grant-through-the-coronavirus-covid-19-self-employment-income-support-scheme" target="_blank">{messages("agent.covid_19_claim_check.join_pilot_support_scheme_point.link")}</a>
-            ))
+        ))
         </li>
         <li>
             <a id="retentionScheme" href="https://www.gov.uk/guidance/claim-for-wage-costs-through-the-coronavirus-job-retention-scheme" target="_blank">@messages("agent.covid_19_claim_check.join_pilot_retention_scheme.link")</a>
@@ -64,13 +56,20 @@
             <a id="localAuthorityGrants" href="https://www.gov.uk/government/publications/coronavirus-grant-funding-local-authority-payments-to-small-and-medium-businesses" target="_blank">@messages("agent.covid_19_claim_check.local_authority_grants.link")</a>
         </li>
     </ul>
+}
 
+@agent_main_template(title = messages("agent.covid_19_claim_check.title"), form = covid19ClaimCheckForm) {
+
+    @back_link(backUrl)
+
+    @summaryErrorHelper(covid19ClaimCheckForm)
 
     @form(action = postAction) {
 
         @radioHelper(
             field = covid19ClaimCheckForm(Covid19ClaimCheckForm.fieldName),
             legend = messages("agent.covid_19_claim_check.title"),
+            content = Some(inputContent),
             options = Seq(
                 RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
                 RadioOption(YesNoMapping.option_no, No.toMessageString)

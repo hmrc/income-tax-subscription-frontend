@@ -18,22 +18,23 @@
 @import play.api.data.Form
 @import views.helpers.RadioOption
 
-
-@(field: Field,
-    legend: String,
-    isPageHeading: Boolean = false,
-    options: Seq[RadioOption],
-    parentForm: Form[_],
-    inline: Boolean = false,
-    fieldSetClass: Option[String] = None,
-    useTextForValue: Boolean = false
+@(
+        field: Field,
+        legend: String,
+        content: Option[Html] = None,
+        isPageHeading: Boolean = true,
+        options: Seq[RadioOption],
+        parentForm: Form[_],
+        inline: Boolean = false,
+        fieldSetClass: Option[String] = None,
+        useTextForValue: Boolean = false
 )(implicit messages: Messages)
 
 @fieldSetClassValue = @{
     (inline, fieldSetClass) match {
-        case (false, _ )       => fieldSetClass.fold(Html(""))(cls => Html(s"""class="$cls""""))
+        case (false, _) => fieldSetClass.fold(Html(""))(cls => Html(s"""class="$cls""""))
         case (true, Some(cls)) => Html(s"""class="inline $cls"""")
-        case _                 => Html(s"""class="inline"""")
+        case _ => Html(s"""class="inline"""")
     }
 }
 
@@ -50,11 +51,11 @@
         case false => option.optionName
     }
 }
-    @dataTarget(radioOption: RadioOption) = {
-        @if(radioOption.conditionalContent.isDefined){
-            data-target = @radioOption.optionName
-        }
+@dataTarget(radioOption: RadioOption) = {
+    @if(radioOption.conditionalContent.isDefined) {
+        data-target = @radioOption.optionName
     }
+}
 
 @radioId(fieldName: String, index: Int) = @{
     if(index == 1) {
@@ -64,34 +65,46 @@
     }
 }
 
-<fieldset @fieldSetClassValue>
-    @if(isPageHeading) {
-        <legend>
-            <h1>@legend</h1>
-        </legend>
-    } else {
-        <legend class="visuallyhidden">
-            @legend
-        </legend>
+@ariaDescribedBy = {
+    @if(field.error.isDefined) {
+        aria-describedby="@field.name-error"
     }
+}
 
-    <div class="form-group @if(field.error.isDefined) { form-field--error}">
+<div class="form-group @if(field.error.isDefined) { form-field--error}">
+
+    <fieldset @fieldSetClassValue @ariaDescribedBy>
+
+        <legend>
+            @if(isPageHeading) {
+                <h1 class="heading-large">
+                    @legend
+                </h1>
+            } else {
+                @legend
+            }
+        </legend>
+
+        @content
+
         @field.error.map { error =>
-            <span class="error-notification bold" id="error-message-@field.name">
-            @messages(error.message, error.args: _*)
-            </span>
+            <div class="error-notification" id="@field.name-error">
+                <span class="visuallyhidden">@messages("error-notification.prefix")</span> @messages(error.message, error.args: _*)
+            </div>
         }
+
         @for((option, index) <- options.zip(1 to options.length)) {
             <div class="multiple-choice" @dataTarget(option)>
                 <input id="@radioId(field.name, index)" type="radio" name="@field.name" value="@valueAttr(option)" @isSelected(option.optionName)>
                 <label @option.classes.fold("")(x => s"""class="$x"""") for="@radioId(field.name, index)">@Html(option.message)</label>
             </div>
-            @option.conditionalContent.map{content =>
+            @option.conditionalContent.map { content =>
                 <div id="@option.optionName" class="panel panel-indent panel-border-narrow js-hidden">
-                @content
+                    @content
                 </div>
             }
         }
-    </div>
-</fieldset>
 
+    </fieldset>
+
+</div>

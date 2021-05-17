@@ -55,8 +55,8 @@ class BusinessNameViewSpec extends ViewSpecTrait {
 
     form.mustHaveTextField(
       name = BusinessNameForm.businessName,
-      label = messages.heading,
-      showLabel = false)
+      label = messages.heading
+    )
 
     form.mustHaveContinueButton()
 

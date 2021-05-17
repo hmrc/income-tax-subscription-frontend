@@ -40,7 +40,7 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
   implicit class CustomSelectors(element: Element) {
 
-    def selectFirst(selector: String): Element = {
+    def selectHead(selector: String): Element = {
       element.select(selector).headOption match {
         case Some(element) => element
         case None => fail(s"No elements returned for selector: $selector")
@@ -129,16 +129,25 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       } forall (_ == succeed) mustBe true
     }
 
-    def mustHaveDateField(id: String, legend: String, exampleDate: String, error: Option[String] = None): Assertion = {
-      val ele = element.getElementById(id)
-      ele.select("span.form-label-bold").text() mustBe legend
-      ele.select("span.form-hint").text() mustBe exampleDate
-      ele.tag().toString mustBe "fieldset"
-      mustHaveTextField(s"$id.dateDay", "Day")
-      mustHaveTextField(s"$id.dateMonth", "Month")
-      mustHaveTextField(s"$id.dateYear", "Year")
+    def mustHaveDateField(id: String, legend: String, exampleDate: String, error: Option[String] = None, isPageHeading: Boolean = true): Assertion = {
+      val fieldset: Element = element.selectHead("fieldset")
+
+      fieldset.attr("aria-describedby") mustBe s"$id-hint" + error.map(_ => s" $id-error").getOrElse("")
+
+      if (isPageHeading) {
+        fieldset.selectHead("fieldset").selectHead("legend").selectHead("h1").text mustBe legend
+      } else {
+        fieldset.selectHead("fieldset").selectHead("legend").selectHead("div.form-label-bold").text() mustBe legend
+      }
+
+      fieldset.selectHead("fieldset").select("div.form-hint").text() mustBe exampleDate
+
+      fieldset.mustHaveTextField(s"$id.dateDay", "Day")
+      fieldset.mustHaveTextField(s"$id.dateMonth", "Month")
+      fieldset.mustHaveTextField(s"$id.dateYear", "Year")
+
       error.map { message =>
-        ele.select("legend").select(".error-notification").text mustBe message
+        fieldset.select("fieldset").select("div.error-notification").text mustBe s"Error: $message"
       }.getOrElse(succeed)
     }
 

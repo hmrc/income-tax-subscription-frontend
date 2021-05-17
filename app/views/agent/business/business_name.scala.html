@@ -23,14 +23,14 @@
 
 @(businessNameForm: Form[BusinessNameModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@inputContent = {
+    <p>@Messages("agent.business.name.line_1")</p>
+}
+
 @views.html.templates.agent_main_template(title = Messages("agent.business.name.title"), form = businessNameForm) {
     @back_link(backUrl)
 
     @summaryErrorHelper(businessNameForm)
-
-    <h1 class="heading-large">@Messages("agent.business.name.heading")</h1>
-
-    <p>@Messages("agent.business.name.line_1")</p>
 
     @form(action = postAction) {
 
@@ -38,7 +38,7 @@
             @inputHelper(
                 field = businessNameForm(businessName),
                 label = Messages("agent.business.name.heading"),
-                labelClass = "visuallyhidden",
+                content = Some(inputContent),
                 maxLength = businessNameMaxLength,
                 parentForm = businessNameForm
             )

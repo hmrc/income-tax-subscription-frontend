@@ -43,21 +43,23 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")">
 }
 
+@inputContent = {
+    <div class="form-group">
+        @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
+    </div>
+}
+
 @main_template(title = Messages("business.accounting_method.title"), form = accountingMethodForm, scriptElem = Some(scripts)) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodForm)
 
-    <h1 class="heading-large">@question</h1>
-
-    <div class="form-group">
-        @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
-    </div>
     @form(action = postAction) {
 
         @radioHelper(
             field = accountingMethodForm(AccountingMethodForm.accountingMethod),
             legend = question,
+            content = Some(inputContent),
             options = Seq(
                 RadioOption(AccountingMethodMapping.option_cash, Messages("business.accounting_method.cash")),
                 RadioOption(AccountingMethodMapping.option_accruals, Messages("business.accounting_method.accruals"))

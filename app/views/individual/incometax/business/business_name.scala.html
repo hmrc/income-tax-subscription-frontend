@@ -24,14 +24,14 @@
 
 @(businessNameForm: Form[BusinessNameModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@inputContent = {
+    <p>@Messages("business.name.signup.line_1")</p>
+}
+
 @main_template(title = Messages("business.name.title"), form = businessNameForm) {
     @back_link(backUrl)
 
     @summaryErrorHelper(businessNameForm)
-
-    <h1 class="heading-large">@Messages("business.name.heading")</h1>
-
-    <p>@Messages("business.name.signup.line_1")</p>
 
     @form(action = postAction) {
 
@@ -39,7 +39,7 @@
             @inputHelper(
                 field = businessNameForm(businessName),
                 label = Messages("business.name.heading"),
-                labelClass = "visuallyhidden",
+                content = Some(inputContent),
                 maxLength = businessNameMaxLength,
                 parentForm = businessNameForm
             )

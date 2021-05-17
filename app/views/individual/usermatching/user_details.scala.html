@@ -24,45 +24,56 @@
 
 @(userDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@hasError = @{userDetailsForm.hasErrors}
+
 @main_template(title = messages("user-details.title"), form = userDetailsForm) {
 
     @summaryErrorHelper(userDetailsForm)
 
-    <h1 class="heading-large">@messages("user-details.heading")</h1>
-
-    <p>@messages("user-details.line_1")</p>
-
     @form(action = postAction) {
 
-        <div class="form-group">
+        <div class="form-group @if(hasError){ form-field--error }">
+
+            <h1 class="heading-large">@messages("user-details.heading")</h1>
+
+            <p>@messages("user-details.line_1")</p>
+
             <div class="form-field-group">
-            @inputHelper(
-                field = userDetailsForm(userFirstName),
-                label = messages("user-details.field_1"),
-                labelClass = "form-label-bold",
-                maxLength = nameMaxLength,
-                parentForm = userDetailsForm,
-                autoComplete = Some("given-name")
-            )
+                @inputHelper(
+                    field = userDetailsForm(userFirstName),
+                    label = messages("user-details.field_1"),
+                    labelClass = "form-label-bold",
+                    maxLength = nameMaxLength,
+                    parentForm = userDetailsForm,
+                    autoComplete = Some("given-name"),
+                    isPageHeading = false,
+                    showErrorBorder = false
+                )
             </div>
+
             <div class="form-field-group">
-            @inputHelper(
-                field = userDetailsForm(userLastName),
-                label = messages("user-details.field_2"),
-                labelClass = "form-label-bold",
-                maxLength = nameMaxLength,
-                parentForm = userDetailsForm,
-                autoComplete = Some("family-name")
-            )
+                @inputHelper(
+                    field = userDetailsForm(userLastName),
+                    label = messages("user-details.field_2"),
+                    labelClass = "form-label-bold",
+                    maxLength = nameMaxLength,
+                    parentForm = userDetailsForm,
+                    autoComplete = Some("family-name"),
+                    isPageHeading = false,
+                    showErrorBorder = false
+                )
             </div>
+
             <div class="form-field-group">
-            @inputHelper(
-                field = userDetailsForm(userNino),
-                label = messages("user-details.field_3"),
-                labelClass = "form-label-bold",
-                formHint = Seq(messages("user_details.formhint.1.line_1")),
-                parentForm = userDetailsForm
-            )
+                @inputHelper(
+                    field = userDetailsForm(userNino),
+                    label = messages("user-details.field_3"),
+                    labelClass = "form-label-bold",
+                    formHint = Some(messages("user_details.formhint.1.line_1")),
+                    parentForm = userDetailsForm,
+                    isPageHeading = false,
+                    showErrorBorder = false
+                )
             </div>
 
             @dateHelper(
@@ -70,8 +81,11 @@
                 label = messages("user-details.field_4"),
                 parentForm = userDetailsForm,
                 hintText = messages("user-details.formhint.2"),
-                isDateOfBirth = true
+                isDateOfBirth = true,
+                isPageHeading = false,
+                showErrorBorder = false
             )
+
         </div>
 
         @if(isEditMode) {

@@ -28,10 +28,14 @@
     }
 }
 
-@hasError = @{ parentForm.errors(field.name).nonEmpty }
+@hasError = @{ field.error.isDefined }
 
-@errorNotification = @{
-if(hasError) <span class="error-notification bold" id="error-message-@field.name">{Messages(s"${parentForm.error(field.name).get.message}")}</span>
+@errorNotification = {
+    @if(hasError) {
+        <span class="error-notification" id="@field.name-error">
+            @messages(s"${parentForm.error(field.name).get.message}")
+        </span>
+    }
 }
 
 <div class="multiple-choice@if(hasError) { form-field--error}">

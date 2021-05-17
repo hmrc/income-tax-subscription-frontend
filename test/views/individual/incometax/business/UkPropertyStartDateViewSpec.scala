@@ -71,7 +71,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       document.getForm.attr("action") mustBe testCall.url
     }
     "have a fieldset with dateInputs" in new Setup {
-      document.mustHaveDateField("startDate", "", PropertyStartDateMessages.exampleStartDate)
+      document.mustHaveDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.exampleStartDate)
     }
     "have a continue button when not in edit mode" in new Setup {
       document.getSubmitButton.text mustBe PropertyStartDateMessages.continue
@@ -85,7 +85,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     }
     "must display form error on page" in new Setup(false, PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage").withError(testError)) {
       document.mustHaveErrorSummary(List[String](testError.message))
-      document.mustHaveDateField("startDate", "", PropertyStartDateMessages.exampleStartDate, Some(testError.message))
+      document.mustHaveDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.exampleStartDate, Some(testError.message))
     }
 
   }

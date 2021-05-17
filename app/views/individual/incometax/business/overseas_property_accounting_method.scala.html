@@ -32,17 +32,10 @@
 }
 
 @scripts = {
-<link rel="stylesheet" href="@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")">
 }
 
-@main_template(title = messages("overseas.property.accounting_method.title"), form = overseasPropertyAccountingMethodForm, scriptElem = Some(scripts))  {
-
-    @back_link(backUrl)
-
-    @summaryErrorHelper(overseasPropertyAccountingMethodForm)
-
-    <h1 class="heading-large">@question</h1>
-
+@inputContent = {
     <div class='form-group'>
         <details role="group">
             <summary aria-controls="details-content">
@@ -57,12 +50,20 @@
             </div>
         </details>
     </div>
+}
+
+@main_template(title = messages("overseas.property.accounting_method.title"), form = overseasPropertyAccountingMethodForm, scriptElem = Some(scripts))  {
+
+    @back_link(backUrl)
+
+    @summaryErrorHelper(overseasPropertyAccountingMethodForm)
 
     @form(action = postAction) {
 
         @radioHelper(
             field = overseasPropertyAccountingMethodForm(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty),
             legend = question,
+            content = Some(inputContent),
             options = Seq(
                 RadioOption(AccountingMethodMapping.option_cash, Messages("overseas.property.accounting_method.cash")),
                 RadioOption(AccountingMethodMapping.option_accruals, Messages("overseas.property.accounting_method.accruals"))

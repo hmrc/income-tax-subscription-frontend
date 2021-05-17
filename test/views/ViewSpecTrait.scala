@@ -373,13 +373,17 @@ trait ViewSpecTrait extends UnitTestTrait {
       selectHead(accordionName, "details div")
     }
 
-    def mustHaveDateField(id: String, legend: String, exampleDate: String): Unit = {
+    def mustHaveDateField(id: String, legend: String, exampleDate: String, isPageHeading: Boolean = true): Unit = {
       val selector = s"#$id"
       s"${this.name} have a fieldset with id '$id' with the legend '$legend'" in {
-        val ele = element.getElementById(id)
-        ele.select("span.form-label-bold").text() mustBe legend
-        ele.select("span.form-hint").text() mustBe exampleDate
-        ele.tag().toString mustBe "fieldset"
+        val fieldset = element.getElementById(id)
+        if(isPageHeading) {
+          fieldset.select("legend").select("h1").text mustBe legend
+        } else {
+          fieldset.select("legend").select("div.form-label-bold").text() mustBe legend
+        }
+        fieldset.select("div.form-hint").text() mustBe exampleDate
+        fieldset.tag().toString mustBe "fieldset"
       }
       val date = selectHead(id, selector)
       val numericPattern = "[0-9]*"

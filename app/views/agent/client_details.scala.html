@@ -24,58 +24,71 @@
 
 @(clientDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent_main_template(title = Messages("agent.client-details.title"), form = clientDetailsForm) {
+@hasError = @{clientDetailsForm.hasErrors}
+
+@agent_main_template(title = messages("agent.client-details.title"), form = clientDetailsForm) {
 
     @summaryErrorHelper(clientDetailsForm)
 
-    <h1 class="heading-large">@Messages("agent.client-details.heading")</h1>
-
-    <p>@Messages("agent.client-details.line_1")</p>
-
     @form(action = postAction) {
 
-        <div class="form-group">
+        <div class="form-group @if(hasError){ form-field--error }">
+
+            <h1 class="heading-large">@messages("agent.client-details.heading")</h1>
+
+            <p>@messages("agent.client-details.line_1")</p>
+
             <div class="form-field-group">
-            @inputHelper(
-                field = clientDetailsForm(clientFirstName),
-                label = Messages("agent.client-details.field_1"),
-                labelClass = "form-label-bold",
-                maxLength = nameMaxLength,
-                parentForm = clientDetailsForm,
-                autoComplete = Some("given-name")
-            )
+                @inputHelper(
+                    field = clientDetailsForm(clientFirstName),
+                    label = messages("agent.client-details.field_1"),
+                    labelClass = "form-label-bold",
+                    maxLength = nameMaxLength,
+                    parentForm = clientDetailsForm,
+                    autoComplete = Some("given-name"),
+                    isPageHeading = false,
+                    showErrorBorder = false
+                )
             </div>
+
             <div class="form-field-group">
-            @inputHelper(
-                field = clientDetailsForm(clientLastName),
-                label = Messages("agent.client-details.field_2"),
-                labelClass = "form-label-bold",
-                maxLength = nameMaxLength,
-                parentForm = clientDetailsForm,
-                autoComplete = Some("family-name")
-            )
+                @inputHelper(
+                    field = clientDetailsForm(clientLastName),
+                    label = messages("agent.client-details.field_2"),
+                    labelClass = "form-label-bold",
+                    maxLength = nameMaxLength,
+                    parentForm = clientDetailsForm,
+                    autoComplete = Some("family-name"),
+                    isPageHeading = false,
+                    showErrorBorder = false
+                )
             </div>
+
             <div class="form-field-group">
-            @inputHelper(
-                field = clientDetailsForm(clientNino),
-                label = Messages("agent.client-details.field_3"),
-                labelClass = "form-label-bold",
-                formHint = Seq(Messages("agent.client_details.formhint.1.line_1")),
-                parentForm = clientDetailsForm,
-            )
+                @inputHelper(
+                    field = clientDetailsForm(clientNino),
+                    label = messages("agent.client-details.field_3"),
+                    labelClass = "form-label-bold",
+                    formHint = Some(messages("agent.client_details.formhint.1.line_1")),
+                    parentForm = clientDetailsForm,
+                    isPageHeading = false,
+                    showErrorBorder = false
+                )
             </div>
 
             @dateHelper(
                 field = clientDetailsForm(clientDateOfBirth),
-                label = Messages("agent.client-details.field_4"),
+                label = messages("agent.client-details.field_4"),
                 parentForm = clientDetailsForm,
-                hintText = Messages("agent.client-details.formhint.2"),
-                isDateOfBirth = true
+                hintText = messages("agent.client-details.formhint.2"),
+                isDateOfBirth = true,
+                isPageHeading = false,
+                showErrorBorder = false
             )
         </div>
 
         @if(isEditMode) {
-            @continueButton(Messages("agent.base.update"))
+            @continueButton(messages("agent.base.update"))
         } else {
             @continueButton()
         }

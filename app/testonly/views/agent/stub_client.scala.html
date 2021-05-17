@@ -55,7 +55,7 @@
                 field = clientToStubform(clientNino),
                 label = Messages("agent.client-details.field_3"),
                 labelClass = "form-label-bold",
-                formHint = Seq(Messages("agent.client_details.formhint.1.line_1")),
+                formHint = Some(Messages("agent.client_details.formhint.1.line_1")),
                 parentForm = clientToStubform
             )
             </div>
@@ -64,7 +64,7 @@
                 field = clientToStubform(clientSautr),
                 label = "Self Assessment Unique Tax Reference",
                 labelClass = "form-label-bold",
-                formHint = Seq("For example, '1234546734'"),
+                formHint = Some("For example, '1234546734'"),
                 parentForm = clientToStubform
             )
             </div>

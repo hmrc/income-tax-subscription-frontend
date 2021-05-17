@@ -25,75 +25,102 @@
 
 @(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, foreignProperty: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent_main_template(title = Messages("agent.income_source.heading"), form = incomeSourceForm) {
+@errorNotification = {
+    @if(incomeSourceForm.hasErrors) {
+        <div class="error-notification" id="checkbox-error">
+            <span class="visuallyhidden">@messages("error-notification.prefix")</span>
+            <span>
+                @if(foreignProperty){
+                    @messages("agent.error.income_source_foreignProperty.invalid")
+                }else{
+                    @messages("agent.error.income_source.invalid")
+                }
+            </span>
+        </div>
+    }
+}
+
+@hintText = {
+    <p id="checkbox-hint" class="form-hint">
+        @messages("agent.income_source.checkbox.hint")
+    </p>
+}
+
+@ariaDescribedBy = {
+    @if(incomeSourceForm.hasErrors) {
+        aria-describedby="checkbox-hint checkbox-error"
+    } else {
+        aria-describedby="checkbox-hint"
+    }
+}
+
+@agent_main_template(title = messages("agent.income_source.heading"), form = incomeSourceForm) {
 
     @back_link(backUrl)
 
-@if(incomeSourceForm.hasErrors) {
+    @if(incomeSourceForm.hasErrors) {
+        <div class="flash error-summary error-summary--show"
+         id="error-summary-display"
+         role="alert"
+         aria-labelledby="error-summary-heading"
+         tabindex="-1"
+        >
+            <h2 id="error-summary-heading" class="heading-medium">@messages("base.error_heading")</h2>
+                <ul>
+                    <li class="bold">
+                        <a id="error-summary-heading-href" href="#@IncomeSourceForm.business">
+                            @if(foreignProperty){
+                                @messages("agent.error.income_source_foreignProperty.invalid")
+                            }else{
+                                @messages("agent.error.income_source.invalid")
+                            }
+                        </a>
+                    </li>
+                </ul>
+        </div>
 
-    <div class="flash error-summary error-summary--show"
-     id="error-summary-display"
-     role="alert"
-     aria-labelledby="error-summary-heading"
-     tabindex="-1">
-        <h2 id="error-summary-heading" class="heading-medium">@Messages("base.error_heading")</h2>
-            <ul>
-                <li class="bold">
-                    <a id="error-summary-heading-href" href="#@IncomeSourceForm.business">
-                        @if(foreignProperty){
-                            @Messages("agent.error.income_source_foreignProperty.invalid")
-                        }else{
-                            @Messages("agent.error.income_source.invalid")
-                        }
-                    </a>
-                </li>
-            </ul>
-    </div>
-
-}
-
-    <h1 class="heading-large">@Messages("agent.income_source.heading")</h1>
+    }
 
     @form(action = postAction) {
-        @if(incomeSourceForm.hasErrors){
-            <div class="form-group form-field--error">
-            <span class="error-notification bold">
-                @if(foreignProperty){
-                    @Messages("agent.error.income_source_foreignProperty.invalid")
-                }else{
-                    @Messages("agent.error.income_source.invalid")
-                }
-            </span>
-        } else {
-            <div class="form-group">
-                }
-            <p id="checkbox-hint" class="form-hint">
-                @messages("agent.income_source.checkbox.hint")
-            </p>
-            @checkboxHelper(
-                field = incomeSourceForm(IncomeSourceForm.business),
-                label = Messages("agent.income_source.selfEmployed"),
-                parentForm = incomeSourceForm
-            )
-            @checkboxHelper(
-                field = incomeSourceForm(IncomeSourceForm.ukProperty),
-                label = Messages("agent.income_source.rentUkProperty"),
-                parentForm = incomeSourceForm
-            )
-            @{if(foreignProperty){
-                checkboxHelper(
-                    field = incomeSourceForm(IncomeSourceForm.foreignProperty),
-                    label = Messages("agent.income_source.foreignProperty"),
+
+        <div class="form-group @if(incomeSourceForm.hasErrors) { form-field--error}">
+
+            <fieldset @ariaDescribedBy>
+
+                <legend>
+                    <h1 class="heading-large">@messages("agent.income_source.heading")</h1>
+                </legend>
+
+                @hintText
+
+                @errorNotification
+
+                @checkboxHelper(
+                    field = incomeSourceForm(IncomeSourceForm.business),
+                    label = messages("agent.income_source.selfEmployed"),
                     parentForm = incomeSourceForm
                 )
-            }}
+                @checkboxHelper(
+                    field = incomeSourceForm(IncomeSourceForm.ukProperty),
+                    label = messages("agent.income_source.rentUkProperty"),
+                    parentForm = incomeSourceForm
+                )
+                @{if(foreignProperty){
+                    checkboxHelper(
+                        field = incomeSourceForm(IncomeSourceForm.foreignProperty),
+                        label = messages("agent.income_source.foreignProperty"),
+                        parentForm = incomeSourceForm
+                    )
+                }}
+
+            </fieldset>
 
         </div>
 
-    @if(isEditMode) {
-        @continueButton(Messages("base.update"))
-    } else {
-        @continueButton()
+        @if(isEditMode) {
+            @continueButton(messages("base.update"))
+        } else {
+            @continueButton()
+        }
     }
-}
 }
