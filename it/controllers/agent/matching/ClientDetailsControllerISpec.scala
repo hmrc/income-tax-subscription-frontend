@@ -67,6 +67,21 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
       }
 
+
+      "return a view with appropriate national insurance hint" in {
+        val res = fixture(agentLocked = false)
+        val label = Jsoup.parse(res.body).selectOptionally("""label[for="clientNino"]""")
+        label.isDefined mustBe true
+        // label should not contain hint refs
+        label.get.selectOptionally("""span[class="form-hint"]""").isDefined mustBe false
+        // Check that input has hint ref, which is not nested
+        val input = Jsoup.parse(res.body).selectOptionally("""input[aria-describedby="hint-clientNino"]""")
+        input.isDefined mustBe true
+        input.get.childrenSize() mustBe(0)
+        // Check that hint exists
+        Jsoup.parse(res.body).selectOptionally("""span[id="hint-clientNino"]""").isDefined mustBe true
+      }
+
       "return a view with the language selector" in {
         val res = fixture(agentLocked = false)
         val languageSelectNav = Jsoup.parse(res.body).selectOptionally("""nav[class="hmrc-language-select"]""")
