@@ -18,12 +18,16 @@
 
 @(endYearOfCurrentTaxPeriod: Int)(implicit messages: Messages, appConfig: AppConfig)
 
-
-    <li>@Html(Messages("sign-up-complete.whatHappensNext.sendQuarterly"))</li>
+<li>
+    <span>@messages("sign-up-complete.whatHappensNext.sendQuarterly")</span>
     <ul class="list list-bullet">
-        <li>@Html(Messages("sign-up.complete.julyUpdate", endYearOfCurrentTaxPeriod.toString))</li>
-        <li>@Html(Messages("sign-up.complete.octoberUpdate", endYearOfCurrentTaxPeriod.toString))</li>
-        <li>@Html(Messages("sign-up.complete.januaryUpdate", (endYearOfCurrentTaxPeriod + 1).toString))</li>
-        <li>@Html(Messages("sign-up.complete.aprilUpdate", (endYearOfCurrentTaxPeriod + 1).toString))</li>
+        <li>@messages("sign-up.complete.julyUpdate", endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("sign-up.complete.octoberUpdate", endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("sign-up.complete.januaryUpdate", (endYearOfCurrentTaxPeriod + 1).toString)</li>
+        <li>@messages("sign-up.complete.aprilUpdate", (endYearOfCurrentTaxPeriod + 1).toString)</li>
     </ul>
-    <li>@Html(Messages("sign-up-complete.whatHappensNow.submitAnnualUpdates", (endYearOfCurrentTaxPeriod + 2).toString))</li>
+</li>
+
+<li>
+    @messages("sign-up-complete.whatHappensNow.submitAnnualUpdates", (endYearOfCurrentTaxPeriod + 2).toString)
+</li>
