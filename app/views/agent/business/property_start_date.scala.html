@@ -25,19 +25,22 @@
 
 @(propertyStartDateForm: Form[PropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@inputContent = {
+    <p>@Messages("agent.property.line_1")</p>
+}
+
 @views.html.templates.agent_main_template(title = Messages("agent.property.name.heading"), form = Some(propertyStartDateForm)) {
+
     @back_link(backUrl)
 
     @summaryErrorHelper(propertyStartDateForm)
-
-    <h1 class="heading-large">@Messages("agent.property.name.heading")</h1>
-
-    <p>@Messages("agent.property.line_1")</p>
 
     @form(action = postAction) {
 
         @dateHelper(
             field = propertyStartDateForm(startDate),
+            label = Some(messages("agent.property.name.heading")),
+            content = Some(inputContent),
             parentForm = propertyStartDateForm,
             hintText = Some(messages("agent.property.start_date.exampleStartDate"))
         )
@@ -48,4 +51,5 @@
             @continueButton()
         }
     }
+
 }

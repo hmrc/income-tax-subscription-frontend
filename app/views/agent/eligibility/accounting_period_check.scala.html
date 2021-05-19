@@ -39,10 +39,10 @@
     @summaryErrorHelper(accountingPeriodCheckForm)
 
     @form(action = postAction) {
+
         @radioHelper(
             field = accountingPeriodCheckForm(AccountingPeriodCheckForm.accountingPeriodCheck),
             legend = messages("agent.accounting_period_check.heading"),
-            isPageHeading = true,
             options = Seq(
                 RadioOption(YesNoMapping.option_yes, messages("base.yes")),
                 RadioOption(YesNoMapping.option_no, messages("base.no"))

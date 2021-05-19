@@ -28,20 +28,14 @@
 @(accountingMethodForm: Form[AccountingMethodPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
-messages("property.accounting_method.heading")
+    messages("property.accounting_method.heading")
 }
 
 @scripts = {
-<link rel="stylesheet" href="@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")">
 }
 
-@main_template(title = messages("property.accounting_method.title"), form = accountingMethodForm, scriptElem = Some(scripts)) {
-    @back_link(backUrl)
-
-    @summaryErrorHelper(accountingMethodForm)
-
-    <h1 class="heading-large">@question</h1>
-
+@inputContent = {
     <div class='form-group'>
         <details role="group">
             <summary aria-controls="details-content">
@@ -56,12 +50,19 @@ messages("property.accounting_method.heading")
             </div>
         </details>
     </div>
+}
+
+@main_template(title = messages("property.accounting_method.title"), form = accountingMethodForm, scriptElem = Some(scripts)) {
+    @back_link(backUrl)
+
+    @summaryErrorHelper(accountingMethodForm)
 
     @form(action = postAction) {
 
         @radioHelper(
             field = accountingMethodForm(AccountingMethodPropertyForm.accountingMethodProperty),
             legend = question,
+            content = Some(inputContent),
             options = Seq(
                 RadioOption(AccountingMethodMapping.option_cash, Messages("property.accounting_method.cash")),
                 RadioOption(AccountingMethodMapping.option_accruals, Messages("property.accounting_method.accruals"))

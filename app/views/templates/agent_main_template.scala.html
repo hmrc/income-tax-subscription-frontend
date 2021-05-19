@@ -45,8 +45,9 @@
     <script type="text/javascript" src="@routes.Assets.at("javascripts/mtd-itsa-custom.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ur-banner.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/skipToMainContent.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/error-focus.js")"></script>
     @* append custom scripts *@
-@scriptElem.fold(HtmlFormat.empty)(x => x)
+    @scriptElem.fold(HtmlFormat.empty)(x => x)
 }
 
 @headStyle = {

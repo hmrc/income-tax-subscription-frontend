@@ -18,7 +18,6 @@ package controllers.agent.eligibility
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 import forms.agent.PropertyTradingStartDateForm
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
@@ -26,6 +25,7 @@ import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.{BAD_REQUEST, OK, SEE_OTHER}
 
@@ -90,9 +90,9 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct values displayed in the form" in new GetSetup {
-      val form = doc.select("form")
-      val labels = doc.select("form").select("label")
-      val radios = form.select("input[type=radio]")
+      val form: Elements = doc.select("form")
+      val labels: Elements = doc.select("form").select("label")
+      val radios: Elements = form.select("input[type=radio]")
 
       radios.size() shouldBe 2
       radios.get(0).attr("id") shouldBe "yes-no"
@@ -101,7 +101,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
       radios.get(1).attr("id") shouldBe "yes-no-2"
       labels.get(1).text() shouldBe PropertyStartAfterMessage.no
 
-      val submitButton = form.select("button[type=submit]")
+      val submitButton: Elements = form.select("button[type=submit]")
       submitButton.text shouldBe PropertyStartAfterMessage.continue
     }
 
@@ -143,7 +143,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
       val pageContent: Element = Jsoup.parse(response.body).content
 
-      pageContent.select("span[class=error-notification bold]").text shouldBe PropertyStartAfterMessage.error(date)
+      pageContent.select("div[class=error-notification]").text shouldBe s"Error: ${PropertyStartAfterMessage.error(date)}"
       pageContent.select(s"a[href=#${PropertyTradingStartDateForm.fieldName}]").text shouldBe PropertyStartAfterMessage.error(date)
     }
 

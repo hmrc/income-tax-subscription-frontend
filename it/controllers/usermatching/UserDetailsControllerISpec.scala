@@ -71,13 +71,13 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
       val label = Jsoup.parse(res.body).selectOptionally("""label[for="userNino"]""")
       label.isDefined mustBe true
       // label should not contain hint refs
-      label.get.selectOptionally("""span[class="form-hint"]""").isDefined mustBe false
+      label.get.selectOptionally("""div[class="form-hint"]""").isDefined mustBe false
       // Check that input has hint ref, which is not nested
-      val input = Jsoup.parse(res.body).selectOptionally("""input[aria-describedby="hint-userNino"]""")
+      val input = Jsoup.parse(res.body).selectOptionally("""input[aria-describedby="userNino-hint"]""")
       input.isDefined mustBe true
-      input.get.childrenSize() mustBe(0)
+      input.get.childrenSize() mustBe (0)
       // Check that hint exists
-      Jsoup.parse(res.body).selectOptionally("""span[id="hint-userNino"]""").isDefined mustBe true
+      Jsoup.parse(res.body).selectOptionally("""div[id="userNino-hint"]""").isDefined mustBe true
     }
   }
 

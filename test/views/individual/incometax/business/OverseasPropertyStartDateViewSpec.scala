@@ -71,7 +71,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
       document.getForm.attr("action") mustBe testCall.url
     }
     "have a fieldset with dateInputs" in new Setup {
-      document.mustHaveDateField("startDate", "", OverseasPropertyStartDateMessages.exampleStartDate)
+      document.mustHaveDateField("startDate", OverseasPropertyStartDateMessages.heading, OverseasPropertyStartDateMessages.exampleStartDate)
     }
     "have a continue button when not in edit mode" in new Setup {
       document.getSubmitButton.text mustBe OverseasPropertyStartDateMessages.continue
@@ -86,7 +86,12 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     "must display form error on page" in new Setup(false, OverseasPropertyStartDateForm.overseasPropertyStartDateForm(
       "testMessage", "testMessage").withError(testError)) {
       document.mustHaveErrorSummary(List[String](testError.message))
-      document.mustHaveDateField("startDate", "", OverseasPropertyStartDateMessages.exampleStartDate, Some(testError.message))
+      document.mustHaveDateField(
+        "startDate",
+        OverseasPropertyStartDateMessages.heading,
+        OverseasPropertyStartDateMessages.exampleStartDate,
+        Some(testError.message)
+      )
     }
 
   }

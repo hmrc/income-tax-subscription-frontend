@@ -86,7 +86,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
   "Display error summary and error notification" when {
     "foreign property FS is disabled" in {
 
-      lazy val document = Jsoup.parse(page(false, true, false).body)
+      lazy val document = Jsoup.parse(page(isEditMode = false, addFormErrors = true, foreignProperty = false).body)
 
       val errorHeading = document.getElementById("error-summary-heading")
       errorHeading.text() mustBe messages.errorHeading
@@ -94,12 +94,12 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
       val summaryError = document.getElementById("error-summary-heading-href")
       summaryError.text() mustBe messages.errorSummary
 
-      val summaryNotification = document.getElementsByClass("error-notification bold")
-      summaryNotification.text() mustBe messages.errorSummary
+      val summaryNotification = document.getElementsByClass("error-notification")
+      summaryNotification.text() mustBe s"Error: ${messages.errorSummary}"
     }
 
     "foreign property FS is enabled" in {
-      lazy val document = Jsoup.parse(page(false, true).body)
+      lazy val document = Jsoup.parse(page(isEditMode = false, addFormErrors = true).body)
 
       val errorHeading = document.getElementById("error-summary-heading")
       errorHeading.text() mustBe messages.errorHeading
@@ -107,8 +107,8 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
       val summaryError = document.getElementById("error-summary-heading-href")
       summaryError.text() mustBe messages.errorSummaryForeignProperty
 
-      val summaryNotification = document.getElementsByClass("error-notification bold")
-      summaryNotification.text() mustBe messages.errorSummaryForeignProperty
+      val summaryNotification = document.getElementsByClass("error-notification")
+      summaryNotification.text() mustBe s"Error: ${messages.errorSummaryForeignProperty}"
     }
   }
 

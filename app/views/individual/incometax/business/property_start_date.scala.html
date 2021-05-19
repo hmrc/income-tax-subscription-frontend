@@ -25,19 +25,21 @@
 
 @(propertyStartDateForm: Form[PropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@inputContent = {
+    <p>@messages("business.property.line_1")</p>
+}
+
 @main_template(title = Messages("business.property.name.title"), form = Some(propertyStartDateForm)) {
     @back_link(backUrl)
 
     @summaryErrorHelper(propertyStartDateForm)
 
-    <h1 class="heading-large">@Messages("business.property.name.heading")</h1>
-
-    <p>@Messages("business.property.line_1")</p>
-
     @form(action = postAction) {
 
         @dateHelper(
             field = propertyStartDateForm(startDate),
+            label = Some(messages("business.property.name.heading")),
+            content = Some(inputContent),
             parentForm = propertyStartDateForm,
             hintText = Some(messages("business.property.start_date.exampleStartDate"))
         )

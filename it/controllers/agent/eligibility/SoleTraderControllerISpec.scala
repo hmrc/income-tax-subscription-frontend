@@ -135,7 +135,7 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
         val pageContent: Element = Jsoup.parse(response.body).content
 
-        pageContent.select("span[class=error-notification bold]").text shouldBe s"${SoleTraderPageMessages.invalidError(date)}"
+        pageContent.select("div[class=error-notification]").text shouldBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
         pageContent.select(s"a[href=#${SoleTraderForm.fieldName}]").text shouldBe s"${SoleTraderPageMessages.invalidError(date)}"
       }
 

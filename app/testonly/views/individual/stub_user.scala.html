@@ -56,7 +56,7 @@
                 field = userToStubform(userNino),
                 label = Messages("user-details.field_3"),
                 labelClass = "form-label-bold",
-                formHint = Seq(Messages("user_details.formhint.1.line_1")),
+                formHint = Some(Messages("user_details.formhint.1.line_1")),
                 parentForm = userToStubform
             )
             </div>
@@ -65,7 +65,7 @@
                 field = userToStubform(userSautr),
                 label = "Self Assessment Unique Tax Reference",
                 labelClass = "form-label-bold",
-                formHint = Seq("For example, '1234546734'"),
+                formHint = Some("For example, '1234546734'"),
                 parentForm = userToStubform
             )
             </div>

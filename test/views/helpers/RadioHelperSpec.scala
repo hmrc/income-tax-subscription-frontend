@@ -21,6 +21,7 @@ import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.twirl.api.Html
 import utilities.UnitTestTrait
 import views.html.helpers.radioHelper
 
@@ -29,15 +30,16 @@ class RadioHelperSpec extends UnitTestTrait {
   case class TestData(radio: String)
 
   val radioName = "radio"
-  val testForm = Form(
+  val testForm: Form[TestData] = Form(
     mapping(
       radioName -> oText.toText.verifying(DataMap.alwaysFail)
     )(TestData.apply)(TestData.unapply)
   )
 
   val testLegend = "my test legend text"
-  val yesOption = RadioOption("yes", "Yes - you can")
-  val noOption = RadioOption("no", "No - you cannot")
+  val testContent: Html = Html("<p>test content</p>")
+  val yesOption: RadioOption = RadioOption("yes", "Yes - you can")
+  val noOption: RadioOption = RadioOption("no", "No - you cannot")
   val testOptions: Seq[RadioOption] = Seq(yesOption, noOption)
 
   "RadioOption" should {
@@ -79,10 +81,13 @@ class RadioHelperSpec extends UnitTestTrait {
   "RadioHelper" should {
     "populate the relevent content in the correct positions" in {
       val testField = testForm(radioName)
-      val doc = radioHelper(testField, testLegend, isPageHeading = false, testOptions, testForm).doc
+
+      val doc = radioHelper(testField, testLegend, Some(testContent), isPageHeading = false, testOptions, testForm).doc
+
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("legend").text() shouldBe testLegend
-      doc.getElementsByTag("legend").attr("class") shouldBe "visuallyhidden"
+      doc.select("fieldset").select("p").text shouldBe "test content"
+
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 2
       inputs.get(0).attr("name") shouldBe radioName
@@ -106,7 +111,7 @@ class RadioHelperSpec extends UnitTestTrait {
 
       val filledForm = testForm.fill(TestData(noOption.optionName))
       val testField = filledForm(radioName)
-      val doc = radioHelper(testField, testLegend, isPageHeading = false, testOptions, filledForm).doc
+      val doc = radioHelper(testField, testLegend, Some(testContent), isPageHeading = false, testOptions, filledForm).doc
 
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 2
@@ -118,23 +123,23 @@ class RadioHelperSpec extends UnitTestTrait {
 
     "when there is error on the field, the errors needs to be displayed, but not otherwise" in {
       val testField = testForm(radioName)
-      val doc = radioHelper(testField, testLegend, isPageHeading = false, testOptions, testForm).doc
+      val doc = radioHelper(testField, testLegend, Some(testContent), isPageHeading = false, testOptions, testForm).doc
       doc.getElementsByTag("div").hasClass("form-field--error") shouldBe false
       doc.getElementsByClass("error-notification").isEmpty shouldBe true
 
       val errorForm = testForm.bind(DataMap.EmptyMap)
       val errorField = errorForm(radioName)
-      val errDoc = radioHelper(errorField, testLegend, isPageHeading = false, testOptions, errorForm).doc
+      val errDoc = radioHelper(errorField, testLegend, Some(testContent), isPageHeading = false, testOptions, errorForm).doc
       errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
       errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
+      errDoc.select("fieldset").attr("aria-describedby") shouldBe s"$radioName-error"
     }
 
     "when isPageHeading is true, the legend should act as the heading of the page" in {
       val testField = testForm(radioName)
-      val doc = radioHelper(testField, testLegend, isPageHeading = true, testOptions, testForm).doc
+      val doc = radioHelper(testField, testLegend, Some(testContent), isPageHeading = true, testOptions, testForm).doc
 
       val legend = doc.select("fieldset > legend")
-      legend.hasClass("visuallyhidden") shouldBe false
       legend.select("h1").text shouldBe testLegend
     }
   }

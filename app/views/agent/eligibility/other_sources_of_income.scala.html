@@ -32,14 +32,7 @@
 @import views.html.helpers.back_link
 @(otherSourcesOfIncomeForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent_main_template(title = messages("agent.other_sources_of_income.title")) {
-
-    @back_link(backUrl)
-
-    @summaryErrorHelper(otherSourcesOfIncomeForm)
-
-    <h1>@messages("agent.other_sources_of_income.heading")</h1>
-
+@inputContent = {
     <p class="bold">@messages("agent.other_sources_of_income.include")</p>
 
     <ul class="list list-bullet">
@@ -56,11 +49,19 @@
         <li>@messages("agent.other_sources_of_income.notIncludePoint1")</li>
         <li>@messages("agent.other_sources_of_income.notIncludePoint2")</li>
     </ul>
+}
+
+@agent_main_template(title = messages("agent.other_sources_of_income.title")) {
+
+    @back_link(backUrl)
+
+    @summaryErrorHelper(otherSourcesOfIncomeForm)
 
     @form(action = postAction) {
         @radioHelper(
             field = otherSourcesOfIncomeForm(OtherSourcesOfIncomeForm.fieldName),
             legend = messages("agent.other_sources_of_income.title"),
+            content = Some(inputContent),
             options = Seq(
                 RadioOption(YesNoMapping.option_yes, messages("base.yes")),
                 RadioOption(YesNoMapping.option_no, messages("base.no"))

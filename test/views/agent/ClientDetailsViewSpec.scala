@@ -38,8 +38,7 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
     title = messages.title,
     heading = messages.heading,
     isAgent = true,
-    page = page
-    (isEditMode = isEditMode, addFormErrors = false)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Client Details view" should {
@@ -52,21 +51,26 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
 
     form.mustHaveTextField(
       name = ClientDetailsForm.clientFirstName,
-      label = messages.field1)
+      label = messages.field1
+    )
 
     form.mustHaveTextField(
       name = ClientDetailsForm.clientLastName,
-      label = messages.field2)
+      label = messages.field2
+    )
 
     form.mustHaveTextField(
       name = ClientDetailsForm.clientNino,
       label = messages.field3,
-      hint = messages.formhint1_line1)
+      hint = messages.formhint1_line1
+    )
 
     form.mustHaveDateField(
       id = "clientDateOfBirth",
       legend = common.dateOfBirth,
-      exampleDate = messages.formhint2)
+      exampleDate = messages.formhint2,
+      isPageHeading = false
+    )
 
     form.mustHaveContinueButton()
 

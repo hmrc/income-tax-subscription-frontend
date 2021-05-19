@@ -38,20 +38,21 @@
 
     @summaryErrorHelper(soleTraderForm)
 
+    @form(action = postAction) {
 
-        @form(action = postAction) {
-            @radioHelper(
-                field = soleTraderForm(SoleTraderForm.fieldName),
-                legend = messages("agent.eligibility.sole_trader.heading", startDateLimit),
-                isPageHeading = true,
-                options = Seq(
-                    RadioOption(YesNoMapping.option_yes, messages("base.yes")),
-                    RadioOption(YesNoMapping.option_no, messages("base.no"))
-                    ),
-                parentForm = soleTraderForm,
-                inline = true
-            )
+        @radioHelper(
+            field = soleTraderForm(SoleTraderForm.fieldName),
+            legend = messages("agent.eligibility.sole_trader.heading", startDateLimit),
+            options = Seq(
+                RadioOption(YesNoMapping.option_yes, messages("base.yes")),
+                RadioOption(YesNoMapping.option_no, messages("base.no"))
+            ),
+            parentForm = soleTraderForm,
+            inline = true
+        )
 
-            @continueButton()
+        @continueButton()
+
     }
+
 }

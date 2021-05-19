@@ -25,19 +25,22 @@
 
 @(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@inputContent = {
+    <p>@Messages("agent.overseas.property.line_1")</p>
+}
+
 @agent_main_template(title = Messages("agent.overseas.property.name.heading"), form = Some(overseasPropertyStartDateForm)) {
+
     @back_link(backUrl)
 
     @summaryErrorHelper(overseasPropertyStartDateForm)
-
-    <h1 class="heading-large">@Messages("agent.overseas.property.name.heading")</h1>
-
-    <p>@Messages("agent.overseas.property.line_1")</p>
 
     @form(action = postAction) {
 
         @dateHelper(
             field = overseasPropertyStartDateForm(startDate),
+            label = Some(messages("agent.overseas.property.name.heading")),
+            content = Some(inputContent),
             parentForm = overseasPropertyStartDateForm,
             hintText = Some(messages("agent.overseas.property.start_date.exampleStartDate"))
         )
@@ -48,4 +51,5 @@
             @continueButton()
         }
     }
+
 }
