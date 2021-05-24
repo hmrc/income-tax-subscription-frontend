@@ -33,7 +33,7 @@
     }
 }
 
-@main_template(title = Messages("sign-up-complete.title")) {
+@main_template(title = messages("sign-up-complete.title")) {
 
     @dataHelper("self-employment", summary.incomeSource.map(_.selfEmployment.toString))
     @dataHelper("uk-property", summary.incomeSource.map(_.ukProperty.toString))
@@ -41,35 +41,35 @@
 
     <div class="form-group">
         <section id="confirmation-heading" class="govuk-panel--confirmation">
-            <h1 class="transaction-banner__heading" style="color: #fff; font-size:42px">@Messages("sign-up-complete.heading")</h1>
+            <h1 class="transaction-banner__heading" style="color: #fff; font-size:42px">@messages("sign-up-complete.heading")</h1>
         </section>
     </div>
 
     <section class="form-group" id="whatHappensNow">
-        <h2>@Messages("sign-up-complete.whatHappensNow.heading")</h2>
+        <h2>@messages("sign-up-complete.whatHappensNow.heading")</h2>
 
         <ol id="actionList" class="list list-number">
-                <li>@Html(Messages("sign-up-complete.whatHappensNow.number1",
-                    <a id="compatibleSoftware" href={appConfig.softwareUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.number1.link")}</a>))
-
-
-                </li>
-                @if(summary.selectedTaxYear.exists(_.accountingYear == Next)) {
-            @signUpCompleteIndividualNextTaxYearHelper(endYearOfCurrentTaxPeriod)
+            <li>
+                @Html(messages(
+                    key = "sign-up-complete.whatHappensNow.number1",
+                    args = <a id="compatibleSoftware" href={appConfig.softwareUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.number1.link")}</a>
+                ))
+            </li>
+            @if(summary.selectedTaxYear.exists(_.accountingYear == Next)) {
+                @signUpCompleteIndividualNextTaxYearHelper(endYearOfCurrentTaxPeriod)
             } else {
-            @signUpCompleteIndividualCurrentTaxYearHelper(endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter)
+                @signUpCompleteIndividualCurrentTaxYearHelper(endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter)
             }
 
         </ol>
 
-        <p>@Html(Messages("sign-up-complete.whatHappensNow.para",
+        <p>@Html(messages("sign-up-complete.whatHappensNow.para",
             <a id="btaLink" href={appConfig.btaUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.para.link")}</a>))
-
         </p>
 
-        <p>@Messages("sign-up-complete.whatHappensNow.para2")</p>
+        <p>@messages("sign-up-complete.whatHappensNow.para2")</p>
     </section>
 
-    @signOutButton(Messages("sign-up-complete.whatHappensNow.signOut"))
+    @signOutButton(messages("sign-up-complete.whatHappensNow.signOut"))
 
 }
