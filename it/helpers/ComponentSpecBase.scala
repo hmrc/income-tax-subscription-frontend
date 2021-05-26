@@ -181,6 +181,13 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def sessionTimeout(): WSResponse = get("/session-timeout")
 
+    def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/timeout", sessionKeys)
+
+    def keepAlive(sessionKeys: Map[String, String] = Map.empty): WSResponse = get(
+      uri = "/keep-alive",
+      additionalCookies = sessionKeys
+    )
+
     def notAuthorised(): WSResponse = get("/not-authorised")
 
     def signIn(): WSResponse = get("/sign-in")
