@@ -18,19 +18,26 @@
 
 @(endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)])(implicit messages: Messages, appConfig: AppConfig)
 
-
 @if(updatesBefore.nonEmpty){
-    <li>@Html(Messages("agent.sign-up.complete.sendPreviousUpdates"))</li>
-    <ul class="list list-bullet">@for((updatesBefore, year) <- updatesBefore) {
-        <li>@Html(Messages(updatesBefore, year))</li>
-        }
-    </ul>
+    <li>
+        <span>@messages("agent.sign-up.complete.sendPreviousUpdates")</span>
+        <ul class="list list-bullet">
+            @for((updatesBefore, year) <- updatesBefore) {
+                <li>@messages(updatesBefore, year)</li>
+            }
+        </ul>
+    </li>
 }
 @if(updatesAfter.nonEmpty){
-    <li>@Html(Messages("agent.sign-up.complete.sendQuarterly"))</li>
-    <ul class="list list-bullet">@for((updatesAfter, year) <- updatesAfter) {
-        <li>@Html(Messages(updatesAfter, year))</li>
-        }
-    </ul>
+    <li>
+        <span>@messages("agent.sign-up.complete.sendQuarterly")</span>
+        <ul class="list list-bullet">
+            @for((updatesAfter, year) <- updatesAfter) {
+                <li>@messages(updatesAfter, year)</li>
+            }
+        </ul>
+    </li>
 }
-<li>@Html(Messages("agent.sign-up.complete.submitAnnualUpdates", (endYearOfCurrentTaxPeriod + 1).toString))</li>
+<li>
+    @messages("agent.sign-up.complete.submitAnnualUpdates", (endYearOfCurrentTaxPeriod + 1).toString)
+</li>
