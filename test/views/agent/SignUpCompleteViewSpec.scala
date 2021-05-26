@@ -23,6 +23,7 @@ import models.DateModel
 import models.common.IncomeSourceModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utilities.TestModels.{testAgentSummaryData, testAgentSummaryDataNextTaxYear}
@@ -31,14 +32,14 @@ import views.ViewSpecTrait
 
 class SignUpCompleteViewSpec extends UnitTestTrait {
 
-  val submissionDateValue = DateModel("1", "1", "2016")
-  val action = ViewSpecTrait.testCall
-  val incomeSourceBusinessNextTaxYear: IncomeSourceModel = IncomeSourceModel(true, false, false)
-  val incomeSourceBusinessProperty: IncomeSourceModel = IncomeSourceModel(true, true, false)
+  val submissionDateValue: DateModel = DateModel("1", "1", "2016")
+  val action: Call = ViewSpecTrait.testCall
+  val incomeSourceBusinessNextTaxYear: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
+  val incomeSourceBusinessProperty: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
   val testClientName = "Test User"
   val testClientNino = "1234567890"
   val testEndYearOfCurrentTaxPeriod = 2021
-  val testUpdatesBeforeQ1 = List[(String, String)]()
+  val testUpdatesBeforeQ1: List[(String, String)] = List[(String, String)]()
   val testUpdatesAfterQ1 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"), ("5 January 2021", "2021"), ("5 April 2021", "2021"))
   val testUpdatesBeforeQ2 = List(("5 July 2020", "2020"))
   val testUpdatesAfterQ2 = List(("5 October 2020", "2020"), ("5 January 2021", "2021"), ("5 April 2021", "2021"))
@@ -112,33 +113,29 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
       }
 
       s"has a paragraph stating complete steps '$para1'" in {
-        documentNextTaxYear.select("#whatNext p").get(0).text() mustBe para1
+        documentNextTaxYear.select("#whatNext p:nth-of-type(1)").text() mustBe para1
       }
 
       s"has an initial numeric point '$number1'" in {
-        documentNextTaxYear.select("#whatNext ol li").get(0).text() mustBe number1
-        documentNextTaxYear.select("#whatNext ol li").get(0).select("a").attr("href") mustBe appConfig.softwareUrl
+        documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(1)").text() mustBe number1
+        documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(1)").select("a").attr("href") mustBe appConfig.softwareUrl
       }
 
-      s"has a 2nd numeric point '$nextTaxYearNumber2'" in {
-        documentNextTaxYear.select("#whatNext ol li").get(1).text() mustBe nextTaxYearNumber2
-        documentNextTaxYear.select("#whatNext ol li").get(1).select("a").attr("href") mustBe appConfig.btaUrl
+      s"has a 2nd numeric point '$nextTaxYearNumber2'" which {
+        "has some info about updates" in {
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > span").text mustBe nextTaxYearNumber2
+        }
+        "has bullet pointed list detailing update dates" in {
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(1)").text() mustBe nextTaxYearJulyUpdate
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(2)").text() mustBe nextTaxYearOcoberUpdate
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(3)").text() mustBe nextTaxYearJanuaryUpdate
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(4)").text() mustBe nextTaxYearAprilUpdate
+        }
       }
 
       s"has a 3rd numeric point '$nextTaxYearNumber3'" in {
-        documentNextTaxYear.select("#whatNext ol li").get(2).text() mustBe nextTaxYearNumber3
+        documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(3)").text() mustBe nextTaxYearNumber3
       }
-      s"has a bullet pointed list detailing update dates" in {
-        documentNextTaxYear.select("#whatNext ol ul li").get(0).text() mustBe nextTaxYearJulyUpdate
-        documentNextTaxYear.select("#whatNext ol ul li").get(1).text() mustBe nextTaxYearOcoberUpdate
-        documentNextTaxYear.select("#whatNext ol ul li").get(2).text() mustBe nextTaxYearJanuaryUpdate
-        documentNextTaxYear.select("#whatNext ol ul li").get(3).text() mustBe nextTaxYearAprilUpdate
-      }
-
-      s"has a 4th numeric point '${nextTaxYearNumber4}'" in {
-        documentNextTaxYear.select("#whatNext ol li").get(7).text() mustBe nextTaxYearNumber4
-      }
-
     }
 
     "have a 'What you need to do next' section for Current Tax Year" which {
@@ -153,58 +150,57 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
       }
 
       "for Tax Quarter Q1" should {
-        s"have a second numbered point: '$currentYaxYearQuarterlyUpdates'" in {
-          documentCurrentTaxYear("Q1").select("#whatNext ol li").get(1).text() mustBe currentYaxYearQuarterlyUpdates
-        }
-
-        "have a bullet pointed list of update dates" in {
-          documentCurrentTaxYear("Q1").select("#whatNext ol ul li").get(0).text() mustBe currentTaxYearJulyUpdate
-          documentCurrentTaxYear("Q1").select("#whatNext ol ul li").get(1).text() mustBe currentTaxYearOctoberUpdate
-          documentCurrentTaxYear("Q1").select("#whatNext ol ul li").get(2).text() mustBe currentTaxYearJanuaryUpdate
-          documentCurrentTaxYear("Q1").select("#whatNext ol ul li").get(3).text() mustBe currentTaxYearAprilUpdate
+        s"have a second numbered point: '$currentYaxYearQuarterlyUpdates'" which {
+          "has info about updates" in {
+            documentCurrentTaxYear("Q1").select("#whatNext > ol > li:nth-of-type(2) > span").text() mustBe currentYaxYearQuarterlyUpdates
+          }
+          "has a bullet pointed list of update dates" in {
+            documentCurrentTaxYear("Q1").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(1)").text() mustBe currentTaxYearJulyUpdate
+            documentCurrentTaxYear("Q1").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(2)").text() mustBe currentTaxYearOctoberUpdate
+            documentCurrentTaxYear("Q1").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(3)").text() mustBe currentTaxYearJanuaryUpdate
+            documentCurrentTaxYear("Q1").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(4)").text() mustBe currentTaxYearAprilUpdate
+          }
         }
         s"have a third numbered point: '$currentTaxYearAnnualUpdates'" in {
-          documentCurrentTaxYear("Q1").select("#whatNext ol li").get(6).text() mustBe currentTaxYearAnnualUpdates
+          documentCurrentTaxYear("Q1").select("#whatNext > ol > li:nth-of-type(3)").text() mustBe currentTaxYearAnnualUpdates
         }
       }
 
       "for Tax Quarter Q2, Q3 & Q4" should {
-        s"have a second numbered point: $currentTaxYearPreviousUpdates" in {
-          documentCurrentTaxYear("Q2").select("#whatNext ol li").get(1).text() mustBe currentTaxYearPreviousUpdates
-          documentCurrentTaxYear("Q3").select("#whatNext ol li").get(1).text() mustBe currentTaxYearPreviousUpdates
-          documentCurrentTaxYear("Q4").select("#whatNext ol li").get(1).text() mustBe currentTaxYearPreviousUpdates
+        s"have a second numbered point: $currentTaxYearPreviousUpdates" which {
+          "has info on previous updates" in {
+            documentCurrentTaxYear("Q2").select("#whatNext > ol > li:nth-of-type(2) > span").text() mustBe currentTaxYearPreviousUpdates
+          }
+          "has a bullet pointed list of previous updates for Q2" in {
+            documentCurrentTaxYear("Q2").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
+          }
+          "has a bullet pointed list of previous updates for Q3" in {
+            documentCurrentTaxYear("Q3").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
+            documentCurrentTaxYear("Q3").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-child(2)").text() mustBe currentTaxYearOctoberUpdate
+          }
+          "has a bullet pointed list of previous updates for Q4" in {
+            documentCurrentTaxYear("Q4").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
+            documentCurrentTaxYear("Q4").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-child(2)").text() mustBe currentTaxYearOctoberUpdate
+            documentCurrentTaxYear("Q4").select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-child(3)").text() mustBe currentTaxYearJanuaryUpdate
+          }
         }
 
-        "have a bullet pointed list of previous update dates for Q2" in {
-          documentCurrentTaxYear("Q2").select("#whatNext ol ul:nth-child(3) li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
-        }
-        "have a bullet pointed list of previous update dates for Q3" in {
-          documentCurrentTaxYear("Q3").select("#whatNext ol ul:nth-child(3) li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
-          documentCurrentTaxYear("Q3").select("#whatNext ol ul:nth-child(3) li:nth-child(2)").text() mustBe currentTaxYearOctoberUpdate
-        }
-        "have a bullet pointed list of previous update dates for Q4" in {
-          documentCurrentTaxYear("Q4").select("#whatNext ol ul:nth-child(3) li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
-          documentCurrentTaxYear("Q4").select("#whatNext ol ul:nth-child(3) li:nth-child(2)").text() mustBe currentTaxYearOctoberUpdate
-          documentCurrentTaxYear("Q4").select("#whatNext ol ul:nth-child(3) li:nth-child(3)").text() mustBe currentTaxYearJanuaryUpdate
-        }
-
-        s"have a third numbered point: $currentYaxYearQuarterlyUpdates" in {
-          documentCurrentTaxYear("Q2").select("#whatNext ol li").get(3).text() mustBe currentYaxYearQuarterlyUpdates
-          documentCurrentTaxYear("Q3").select("#whatNext ol li").get(4).text() mustBe currentYaxYearQuarterlyUpdates
-          documentCurrentTaxYear("Q4").select("#whatNext ol li").get(5).text() mustBe currentYaxYearQuarterlyUpdates
-        }
-
-        "have a bullet pointed list of quarterly update dates for Q2" in {
-          documentCurrentTaxYear("Q2").select("#whatNext ol ul:nth-child(5) li:nth-child(1)").text() mustBe currentTaxYearOctoberUpdate
-          documentCurrentTaxYear("Q2").select("#whatNext ol ul:nth-child(5) li:nth-child(2)").text() mustBe currentTaxYearJanuaryUpdate
-          documentCurrentTaxYear("Q2").select("#whatNext ol ul:nth-child(5) li:nth-child(3)").text() mustBe currentTaxYearAprilUpdate
-        }
-        "have a bullet pointed list of quarterly update dates for Q3" in {
-          documentCurrentTaxYear("Q3").select("#whatNext ol ul:nth-child(5) li:nth-child(1)").text() mustBe currentTaxYearJanuaryUpdate
-          documentCurrentTaxYear("Q3").select("#whatNext ol ul:nth-child(5) li:nth-child(2)").text() mustBe currentTaxYearAprilUpdate
-        }
-        "have a bullet pointed list of quarterly update dates for Q4" in {
-          documentCurrentTaxYear("Q4").select("#whatNext ol ul:nth-child(5) li:nth-child(1)").text() mustBe currentTaxYearAprilUpdate
+        s"have a third numbered point $currentYaxYearQuarterlyUpdates" which {
+          "has info on current updates" in {
+            documentCurrentTaxYear("Q2").select("#whatNext > ol > li:nth-of-type(3) > span").text() mustBe currentYaxYearQuarterlyUpdates
+          }
+          "has a bullet pointed list of current updates for Q2" in {
+            documentCurrentTaxYear("Q2").select("#whatNext > ol > li:nth-of-type(3) > ul > li:nth-child(1)").text() mustBe currentTaxYearOctoberUpdate
+            documentCurrentTaxYear("Q2").select("#whatNext > ol > li:nth-of-type(3) > ul > li:nth-child(2)").text() mustBe currentTaxYearJanuaryUpdate
+            documentCurrentTaxYear("Q2").select("#whatNext > ol > li:nth-of-type(3) > ul > li:nth-child(3)").text() mustBe currentTaxYearAprilUpdate
+          }
+          "has a bullet pointed list of current updates for Q3" in {
+            documentCurrentTaxYear("Q3").select("#whatNext > ol > li:nth-of-type(3) > ul > li:nth-child(1)").text() mustBe currentTaxYearJanuaryUpdate
+            documentCurrentTaxYear("Q3").select("#whatNext > ol > li:nth-of-type(3) > ul > li:nth-child(2)").text() mustBe currentTaxYearAprilUpdate
+          }
+          "has a bullet pointed list of current updates for Q4" in {
+            documentCurrentTaxYear("Q4").select("#whatNext > ol > li:nth-of-type(3) > ul > li:nth-child(1)").text() mustBe currentTaxYearAprilUpdate
+          }
         }
       }
 
