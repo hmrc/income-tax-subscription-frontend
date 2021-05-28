@@ -19,9 +19,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("timeout.title"), showSignOutLink = false) {
-
+@main_template(title = Messages("timeout.title"), showSignOutLink = false, enableTimeout = false) {
 <h1>@Messages("timeout.title")</h1>
 <p>@Html(Messages("timeout.returnToHome", controllers.usermatching.routes.HomeController.index().url))</p>
-
 }

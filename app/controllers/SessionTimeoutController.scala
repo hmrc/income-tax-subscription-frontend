@@ -17,18 +17,27 @@
 package controllers
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
+import play.api.{Configuration, Environment}
+import play.api.mvc.{Action, AnyContent, _}
+import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class SessionTimeoutController @Inject()(mcc: MessagesControllerComponents)
-                                        (implicit appConfig: AppConfig) extends FrontendController(mcc){
+class SessionTimeoutController @Inject()(mcc: MessagesControllerComponents, val config: Configuration, val env: Environment)
+                                        (implicit appConfig: AppConfig) extends FrontendController(mcc) with AuthRedirects {
 
   val show: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.individual.timeout()))
   }
 
+  val keepAlive: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok.withSession(request.session))
+  }
+
+  val timeout: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(toGGLogin(controllers.usermatching.routes.HomeController.home().url).withNewSession)
+  }
 }

@@ -16,25 +16,69 @@
 
 package controllers.agent
 
+import controllers.Assets.SEE_OTHER
+import helpers.SessionCookieCrumbler
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.{testARN, testNino, testUtr}
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.OK
 
-class SessionTimeoutControllerISpec extends ComponentSpecBase {
+class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   "GET /session-timeout" should {
-      "show the session timeout page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
+    "show the session timeout page" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
 
-        When("GET /session-timeout is called")
-        val res = IncomeTaxSubscriptionFrontend.sessionTimeout()
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-        Then("Should return a OK with the session timeout page")
+      When("GET /session-timeout is called")
+      val res = IncomeTaxSubscriptionFrontend.sessionTimeout()
+      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+      Then("Should return a OK with the session timeout page")
+      res should have(
+        httpStatus(OK),
+        pageTitle(messages("agent.timeout.title") + serviceNameGovUk)
+      )
+    }
+  }
+
+  "GET /report-quarterly/income-and-expenses/sign-up/keep-alive" when {
+    "an agent user chooses to not time out" should {
+      "return an OK and keep the session" in {
+        AuthStub.stubAuthSuccess()
+        val sessionMap = Map(
+          ITSASessionKeys.NINO -> testNino,
+          ITSASessionKeys.ArnKey -> testARN,
+          ITSASessionKeys.UTR -> testUtr)
+        val res = IncomeTaxSubscriptionFrontend.keepAlive(sessionMap)
+        val session = getSessionMap(res)
+        session.get(ITSASessionKeys.ArnKey) shouldBe Some(testARN)
         res should have(
-          httpStatus(OK),
-          pageTitle(messages("agent.timeout.title") + serviceNameGovUk)
+          httpStatus(OK)
         )
       }
+    }
   }
+
+  "GET /report-quarterly/income-and-expenses/sign-up/timeout" when {
+    "a  user times out" should {
+      "redirect and sign out the user" in {
+        AuthStub.stubAuthSuccess()
+        val sessionMap = Map(
+          ITSASessionKeys.NINO -> testNino,
+          ITSASessionKeys.ArnKey -> testARN,
+          ITSASessionKeys.UTR -> testUtr)
+
+        val res = IncomeTaxSubscriptionFrontend.timeout(sessionMap)
+
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI("/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fclient&origin=income-tax-subscription-frontend")
+        )
+        val session = getSessionMap(res)
+        session.keys shouldNot contain(testARN)
+      }
+    }
+  }
+
+
 }

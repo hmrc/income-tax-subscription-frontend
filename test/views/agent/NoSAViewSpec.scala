@@ -36,7 +36,6 @@ class NoSAViewSpec extends ViewSpecTrait {
       heading = messages.Agent.heading,
       page = page,
       isAgent = true,
-      showSignOutInBanner = false
     )
 
     testPage.mustHavePara(messages.Agent.line1)

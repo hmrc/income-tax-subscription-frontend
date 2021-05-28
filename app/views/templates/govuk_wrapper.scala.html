@@ -34,7 +34,8 @@
         showSignOutLink: Boolean = true,
         overrideSignOutCall: Option[Call] = None,
         isUserResearchBannerVisible: Boolean = true,
-        isAgent: Boolean = false
+        isAgent: Boolean = false,
+        enableTimeout: Boolean = false
 )(implicit request: Request[_], messages: Messages)
 
 @head = {

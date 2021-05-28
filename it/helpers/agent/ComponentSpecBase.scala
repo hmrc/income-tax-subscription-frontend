@@ -217,6 +217,9 @@ trait ComponentSpecBase extends UnitSpec
 
     def sessionTimeout(): WSResponse = get("/session-timeout")
 
+    def keepAlive(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/keep-alive", sessionKeys)
+    def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/timeout", sessionKeys)
+
     def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
@@ -298,12 +301,12 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[OverseasPropertyStartDateModel]): WSResponse = {
       val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
-      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900,1,1)).toString
+      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
       val uri = s"/business/overseas-commencement-date?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate,testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate, testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

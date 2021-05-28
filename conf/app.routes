@@ -106,3 +106,6 @@ GET         /business/routing                                    controllers.ind
 # Identity Verification return routes
 GET         /iv-success                                          controllers.individual.iv.IVSuccessController.success
 GET         /iv-failure                                          controllers.individual.iv.IVFailureController.failure
+
+GET         /keep-alive                                          controllers.SessionTimeoutController.keepAlive
+GET         /timeout                                            controllers.SessionTimeoutController.timeout

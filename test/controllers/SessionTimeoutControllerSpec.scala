@@ -18,6 +18,7 @@ package controllers
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
+import play.api.Configuration
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -26,8 +27,11 @@ class SessionTimeoutControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "SessionTimeoutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+  implicit lazy val config:Configuration = app.injector.instanceOf[Configuration]
 
-  object TestSessionTimeoutController extends SessionTimeoutController(mockMessagesControllerComponents)
+
+  object TestSessionTimeoutController extends SessionTimeoutController(mockMessagesControllerComponents, config, env)(appConfig)
+
 
   "Calling the timeout action of the SessionTimeoutController" should {
 

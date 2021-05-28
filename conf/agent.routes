@@ -108,3 +108,6 @@ POST        /business/overseas-property-accounting-method        controllers.age
 
 #Routing controller
 GET         /business/routing                                    controllers.agent.business.RoutingController.show(editMode: Boolean ?= false)
+
+GET         /keep-alive                                         controllers.agent.SessionTimeoutController.keepAlive
+GET         /timeout                                            controllers.agent.SessionTimeoutController.timeout

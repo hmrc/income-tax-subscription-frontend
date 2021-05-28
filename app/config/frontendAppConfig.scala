@@ -44,6 +44,8 @@ trait AppConfig extends FeatureSwitching {
   val baseUrl: String
   val ggUrl: String
   val microServiceUrl: String
+  val countdownLength: String
+  val timeoutLength: String
 
   def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
 
@@ -294,4 +296,6 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   val feedbackFrontendRedirectUrl: String = config.getString("feedback-frontend.url")
 
+  override lazy val countdownLength: String = config.getString("timeout.countdown")
+  override lazy val timeoutLength: String = config.getString("timeout.length")
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.routes.{SessionTimeoutController}
 @import config.AppConfig
 @import uk.gov.hmrc.play.views.html.layouts
 @import play.twirl.api.HtmlFormat
@@ -26,7 +27,9 @@
         mainClass: Option[String] = None,
         scriptElem: Option[Html] = None,
         showSignOutLink: Boolean = true,
-        overrideSignOutCall: Option[Call] = None
+        overrideSignOutCall: Option[Call] = None,
+        isAgent: Boolean = false,
+        enableTimeout: Boolean  = true
 )(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
@@ -47,8 +50,17 @@
     <script type="text/javascript" src="@routes.Assets.at("javascripts/error-focus.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ur-banner.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/skipToMainContent.js")"></script>
-        @* append custom scripts *@
-@scriptElem.fold(HtmlFormat.empty)(x => x)
+    @if(enableTimeout) {
+        <script id="timeoutScript" role="dialog" tabindex="-1">
+                window.GOVUK.timeoutDialog({
+                    timeout: @appConfig.timeoutLength,
+                    countdown: @appConfig.countdownLength,
+                    keepAliveUrl: '@SessionTimeoutController.keepAlive.url',
+                    signOutUrl: '@SessionTimeoutController.timeout.url'
+                });
+        </script>
+    }
+@scriptElem.getOrElse(HtmlFormat.empty)
 }
 
 @headStyle = {
@@ -74,5 +86,7 @@
     scriptElem = Some(defaultScriptElem),
     headStyle = Some(headStyle),
     showSignOutLink = showSignOutLink,
-    overrideSignOutCall = overrideSignOutCall
+    overrideSignOutCall = overrideSignOutCall,
+    isAgent = isAgent,
+    enableTimeout = enableTimeout
 )
