@@ -52,6 +52,8 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
     )
   }
 
+  val dateErrorContext: String = "agent.error.dob_date"
+
   "The clientDetailsForm" should {
 
 
@@ -134,95 +136,66 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
       "when testing the DoB" should {
 
-        "error if no DoB is supplied" in {
-          val errors = "agent.error.dob_date.date.empty"
+        "error if an invalid date is supplied" which {
+          "has an invalid day" in {
+            val error = s"$dateErrorContext.invalid"
 
-          val testInput = setupTestData(dob = DateModel("", "", ""))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(s"$clientDateOfBirth.dateDay", errors))
+            val testInput = setupTestData(dob = DateModel("32", "12", "1980"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$clientDateOfBirth.dateDay", error))
+          }
+          "has an invalid month" in {
+            val error = s"$dateErrorContext.invalid"
+
+            val testInput = setupTestData(dob = DateModel("31", "13", "1980"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(clientDateOfBirth, error))
+          }
+          "has an invalid year" in {
+            val error = s"$dateErrorContext.invalid"
+
+            val testInput = setupTestData(dob = DateModel("31", "12", "invalid"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(clientDateOfBirth, error))
+          }
+          "has multiple invalid fields" in {
+            val error = s"$dateErrorContext.invalid"
+
+            val testInput = setupTestData(dob = DateModel("32", "13", "1980"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(clientDateOfBirth, error))
+          }
         }
 
-        "error if no day is supplied" in {
-          val errors = "agent.error.dob_date.day.empty"
+        "error if empty dates are supplied" which {
+          "has an empty day" in {
+            val error = s"$dateErrorContext.day.empty"
 
-          val testInput = setupTestData(dob = DateModel("", "1", "1980"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(s"$clientDateOfBirth.dateDay", errors))
-        }
+            val testInput = setupTestData(dob = DateModel("", "12", "1980"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$clientDateOfBirth.dateDay", error))
+          }
+          "has an empty month" in {
+            val error = s"$dateErrorContext.month.empty"
 
-        "error if no month is supplied" in {
-          val errors = "agent.error.dob_date.month.empty"
+            val testInput = setupTestData(dob = DateModel("31", "", "1980"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$clientDateOfBirth.dateMonth", error))
+          }
+          "has an empty year" in {
+            val error = s"$dateErrorContext.year.empty"
 
-          val testInput = setupTestData(dob = DateModel("1", "", "1980"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(s"$clientDateOfBirth.dateMonth", errors))
-        }
+            val testInput = setupTestData(dob = DateModel("31", "12", ""))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$clientDateOfBirth.dateYear", error))
+          }
+          "has multiple empty fields" in {
+            val error = s"$dateErrorContext.day_month.empty"
 
-        "error if no year is supplied" in {
-          val errors = "agent.error.dob_date.year.empty"
-
-          val testInput = setupTestData(dob = DateModel("1", "1", ""))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(s"$clientDateOfBirth.dateYear", errors))
-        }
-
-        "error if no day and month is supplied" in {
-          val errors = "agent.error.dob_date.day_month.empty"
-
-          val testInput = setupTestData(dob = DateModel("", "", "1980"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(s"$clientDateOfBirth.dateDay", errors))
-        }
-
-        "error if no day and year is supplied" in {
-          val errors = "agent.error.dob_date.day_year.empty"
-
-          val testInput = setupTestData(dob = DateModel("", "1", ""))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(s"$clientDateOfBirth.dateDay", errors))
-        }
-
-        "error if no month and year is supplied" in {
-          val errors = "agent.error.dob_date.month_year.empty"
-
-          val testInput = setupTestData(dob = DateModel("1", "", ""))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(s"$clientDateOfBirth.dateMonth", errors))
-        }
-
-        "error if a none numeric day is supplied" in {
-          val errors = "agent.error.dob_date.empty"
-
-          val testInput = setupTestData(dob = DateModel("aa", "10", "1990"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
-        }
-
-        "error if a none numeric month is supplied" in {
-          val errors = "agent.error.dob_date.empty"
-
-          val testInput = setupTestData(dob = DateModel("01", "aa", "1990"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
-        }
-
-        "error if a none numeric year is supplied" in {
-          val errors = "agent.error.dob_date.empty"
-
-          val testInput = setupTestData(dob = DateModel("01", "12", "aa"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
-        }
-
-        "error if an invalid numeric day is supplied" in {
-          val errors = "agent.error.dob_date.empty"
-
-          val testInput = setupTestData(dob = DateModel("56", "10", "1990"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
-        }
-
-        "error if an invalid numeric month is supplied" in {
-          val errors = "agent.error.dob_date.empty"
-
-          val testInput = setupTestData(dob = DateModel("01", "15", "1990"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
-        }
-
-        "error if an invalid numeric year is supplied" in {
-          val errors = "agent.error.dob_date.empty"
-
-          val testInput = setupTestData(dob = DateModel("01", "12", "1234567899"))
-          clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, errors))
+            val testInput = setupTestData(dob = DateModel("", "", "1980"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(clientDateOfBirth, error))
+          }
         }
 
         "error if a date not in the past is supplied" in {

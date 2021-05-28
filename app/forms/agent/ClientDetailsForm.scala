@@ -16,8 +16,6 @@
 
 package forms.agent
 
-import java.time.LocalDate
-
 import forms.formatters.DateModelMapping
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
@@ -26,9 +24,9 @@ import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.data.Form
 import play.api.data.Forms.{default, mapping, text}
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
-import scala.util.Try
+import java.time.LocalDate
 
 object ClientDetailsForm {
 
@@ -56,14 +54,6 @@ object ClientDetailsForm {
     constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else Invalid("agent.error.nino.invalid"))
   }
 
-  val isValidDate: Constraint[DateModel] = constraint[DateModel] { dateModel =>
-    lazy val invalidDate = Invalid(s"agent.error.$errorContext.empty")
-    Try[ValidationResult] {
-      dateModel.toLocalDate
-      Valid
-    }.getOrElse(invalidDate)
-  }
-
   val dateInPast: Constraint[DateModel] = constraint[DateModel] { dateModel =>
     if (dateModel.toLocalDate.isBefore(LocalDate.now)) {
       Valid
@@ -72,13 +62,12 @@ object ClientDetailsForm {
     }
   }
 
-
-  val clientDetailsValidationForm = Form[UserDetailsModel](
+  val clientDetailsValidationForm: Form[UserDetailsModel] = Form[UserDetailsModel](
     mapping(
       clientFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       clientNino -> default(text, "").verifying(emptyClientNino andThen validateClientNino),
-      clientDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = true, errorContext = errorContext).verifying(isValidDate andThen dateInPast)
+      clientDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = true, errorContext = errorContext).verifying(dateInPast)
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 

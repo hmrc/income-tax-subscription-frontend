@@ -16,17 +16,15 @@
 
 package forms.agent
 
-import java.time.LocalDate
-
 import forms.formatters.DateModelMapping.dateModelMapping
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import models.common.PropertyStartDateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
-import scala.util.Try
+import java.time.LocalDate
 
 object PropertyStartDateForm {
 
@@ -37,14 +35,6 @@ object PropertyStartDateForm {
   val minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
 
   val errorContext: String = "property"
-
-  val dateValidation: Constraint[DateModel] = constraint[DateModel] { dateModel =>
-    lazy val invalidDate = Invalid(s"agent.error.$errorContext.date.empty")
-    Try[ValidationResult] {
-      dateModel.toLocalDate
-      Valid
-    }.getOrElse(invalidDate)
-  }
 
   def earliestTaxYear(date: String): Constraint[DateModel] = constraint[DateModel] { dateModel =>
     val earliestAllowedYear: Int = minStartDate.getYear
@@ -66,7 +56,7 @@ object PropertyStartDateForm {
   def propertyStartDateForm(minStartDate: String, maxStartDate: String): Form[PropertyStartDateModel] = Form(
     mapping(
       startDate -> dateModelMapping(isAgent = true, errorContext = errorContext).verifying(
-        dateValidation andThen startBeforeOneYear(maxStartDate) andThen earliestTaxYear(minStartDate)
+        startBeforeOneYear(maxStartDate) andThen earliestTaxYear(minStartDate)
       )
     )(PropertyStartDateModel.apply)(PropertyStartDateModel.unapply)
   )

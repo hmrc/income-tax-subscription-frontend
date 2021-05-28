@@ -31,7 +31,8 @@
         showErrors: Boolean = true,
         showErrorBorder: Boolean = true,
         autoComplete: Option[String] = None,
-        isPageHeading: Boolean = true
+        isPageHeading: Boolean = true,
+        forceError: Boolean = false
 )(implicit messages: Messages)
 
 @errMsg(err: FormError) = {
@@ -65,6 +66,10 @@
     }
 }
 
+@inputCssClass = @{
+    if (field.error.isDefined || forceError) "form-control form-control--error" else "form-control"
+}
+
 <div class="form-group form-field@divClass.map(cls => s" $cls") @if(hasError && showErrorBorder) { form-field--error}">
 
     <label for="@field.name" class='form-label @labelClass.fold("")(x => x)'>
@@ -83,7 +88,7 @@
 
     <input
         name="@field.name"
-        class="form-control"
+        class="@inputCssClass"
         id="@field.name"
         type="text"
         @autoComplete.fold(HtmlFormat.empty)(text => Html(s"autocomplete='$text'"))

@@ -197,6 +197,7 @@ error.property.day_year.empty                                   = The date must 
 error.property.month_year.empty                                 = The date must include a month and a year
 error.property.start_date.maxStartDate                          = The date your UK property business started trading must be the same as or before {0}
 error.property.start_date.minStartDate                          = The date your property business started must be on or after {0}
+error.property.invalid                                          = The date must be a real date
 
 # Agent Property Start Date Date
 agent.property.name.heading                                     = When did your client’s UK property business start trading?
@@ -213,6 +214,7 @@ agent.error.property.day_year.empty                             = The date must 
 agent.error.property.month_year.empty                           = The date must include a month and a year
 agent.error.property.start_date.maxStartDate                    = The date the UK property business started trading must be on or before {0}
 agent.error.property.start_date.minStartDate                    = The date your client’s property business started trading must be on or after {0}
+agent.error.property.invalid                                    = The date must be a real date
 
 ## Overseas Property Start Date
 overseas.property.name.title                                    = When did your overseas property business start trading?
@@ -235,6 +237,7 @@ error.overseas.property.day_year.empty                          = The date must 
 error.overseas.property.month_year.empty                        = The date must include a month and a year
 error.overseas.property.start_date.maxStartDate                 = The date your overseas property business started trading must be the same as or before {0}
 error.overseas.property.start_date.minStartDate                 = The date your property business started must be on or after {0}
+error.overseas.property.invalid                                 = The date must be a real date
 
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
@@ -381,6 +384,8 @@ error.user_details.date_of_birth.day_month.empty                = Your date of b
 error.user_details.date_of_birth.day_year.empty                 = Your date of birth must include a day and a year
 error.user_details.date_of_birth.month_year.empty               = Your date of birth must include a month and a year
 error.user_details.date_of_birth.not_in_past                    = Your date of birth must be in the past
+error.user_details.date_of_birth.invalid                        = The date must be a real date
+
 
 error.not-eligible.empty                                        = You must select an option to continue
 error.not-eligible.invalid                                      = You must select an option to continue
@@ -740,6 +745,7 @@ agent.error.dob_date.day_month.empty                            = Their date of 
 agent.error.dob_date.day_year.empty                             = Their date of birth must include a day and a year
 agent.error.dob_date.month_year.empty                           = Their date of birth must include a month and a year
 agent.error.dob_date.not_in_past                                = Their date of birth must be in the past
+agent.error.dob_date.invalid                                    = The date must be a real date
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?
@@ -865,6 +871,7 @@ agent.error.overseas.property.day.empty                         = The date must 
 agent.error.overseas.property.month.empty                       = The date must include a month
 agent.error.overseas.property.start_date.maxStartDate           = The date the overseas property business started trading must be on or before {0}
 agent.error.overseas.property.start_date.minStartDate           = The date your client’s property business started trading must be on or after {0}
+agent.error.overseas.property.invalid                           = The date must be a real date
 
 ## Service Name
 agent_service_name.title                                        = Use software to report your client’s Income Tax

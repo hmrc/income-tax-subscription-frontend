@@ -60,15 +60,10 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
         val monthKeyError: String = s"$startDate.$month"
         val yearKeyError: String = s"$startDate.$year"
 
+        val errorContext: String = "error.overseas.property"
+
         "the date is not supplied to the map" in {
-          form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, empty))
-        }
-        "the date supplied is empty" in {
-          form.bind(DataMap.emptyDate(startDate)).errors must contain(FormError(dayKeyError, empty))
-        }
-        "it is an invalid date" in {
-          val invalidTest = form.bind(DataMap.date(startDate)("29", "2", "2017"))
-          invalidTest.errors must contain(FormError(startDate, invalid))
+          form.bind(DataMap.EmptyMap).errors must contain(FormError(startDate, empty))
         }
         "it is within 1 years" in {
           val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)
@@ -84,28 +79,36 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
           minTest.errors must contain(FormError(startDate, beforeMin, Seq(OverseasPropertyStartDateForm.minStartDate.toString)))
         }
         "it is missing the day" in {
-          val dayTest = form.bind(DataMap.date(startDate)("", "4", "2017"))
-          dayTest.errors must contain(FormError(dayKeyError, "error.overseas.property.day.empty"))
+          val test = form.bind(DataMap.date(startDate)("", "4", "2017"))
+          test.errors must contain(FormError(dayKeyError, s"$errorContext.day.empty"))
         }
-        "it is is missing the month" in {
-          val mothTest = form.bind(DataMap.date(startDate)("06", "", "2017"))
-          mothTest.errors must contain(FormError(monthKeyError, "error.overseas.property.month.empty"))
+        "it is missing the month" in {
+          val test = form.bind(DataMap.date(startDate)("1", "", "2017"))
+          test.errors must contain(FormError(monthKeyError, s"$errorContext.month.empty"))
         }
-        "it is is missing the year" in {
-          val yearTest = form.bind(DataMap.date(startDate)("06", "4", ""))
-          yearTest.errors must contain(FormError(yearKeyError, "error.overseas.property.year.empty"))
+        "it is missing the year" in {
+          val test = form.bind(DataMap.date(startDate)("1", "1", ""))
+          test.errors must contain(FormError(yearKeyError, s"$errorContext.year.empty"))
         }
-        "it is is missing the day and month" in {
-          val dayAndMonthTest = form.bind(DataMap.date(startDate)("", "", "2017"))
-          dayAndMonthTest.errors must contain(FormError(dayKeyError, "error.overseas.property.day_month.empty"))
+        "it is missing multiple fields" in {
+          val test = form.bind(DataMap.date(startDate)("", "", "2017"))
+          test.errors must contain(FormError(startDate, s"$errorContext.day_month.empty"))
         }
-        "it is is missing the day and year" in {
-          val dayAndYearTest = form.bind(DataMap.date(startDate)("", "4", ""))
-          dayAndYearTest.errors must contain(FormError(dayKeyError, "error.overseas.property.day_year.empty"))
+        "it has an invalid day" in {
+          val test = form.bind(DataMap.date(startDate)("0", "1", "2017"))
+          test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
         }
-        "it is is missing the month and year" in {
-          val monthAndYearTest = form.bind(DataMap.date(startDate)("06", "", ""))
-          monthAndYearTest.errors must contain(FormError(monthKeyError, "error.overseas.property.month_year.empty"))
+        "it has an invalid month" in {
+          val test = form.bind(DataMap.date(startDate)("1", "13", "2017"))
+          test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
+        }
+        "it has an invalid year" in {
+          val test = form.bind(DataMap.date(startDate)("1", "1", "invalid"))
+          test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
+        }
+        "it has multiple invalid fields" in {
+          val test = form.bind(DataMap.date(startDate)("0", "0", "2017"))
+          test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
         }
       }
     }

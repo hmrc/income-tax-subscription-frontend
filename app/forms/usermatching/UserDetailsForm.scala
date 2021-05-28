@@ -16,8 +16,6 @@
 
 package forms.usermatching
 
-import java.time.LocalDate
-
 import forms.formatters.DateModelMapping
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.Constraints._
@@ -26,9 +24,9 @@ import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.data.Form
 import play.api.data.Forms.{default, mapping, text}
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
-import scala.util.Try
+import java.time.LocalDate
 
 object UserDetailsForm {
 
@@ -48,14 +46,6 @@ object UserDetailsForm {
   val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user_details.first_name.maxLength")
   val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user_details.last_name.maxLength")
 
-  val isValidDate: Constraint[DateModel] = constraint[DateModel] { dateModel =>
-    lazy val invalidDate = Invalid("error.user_details.date_of_birth.date.empty")
-    Try[ValidationResult] {
-      dateModel.toLocalDate
-      Valid
-    }.getOrElse(invalidDate)
-  }
-
   val dateInPast: Constraint[DateModel] = constraint[DateModel] { dateModel =>
     if (dateModel.toLocalDate.isBefore(LocalDate.now)) {
       Valid
@@ -69,7 +59,7 @@ object UserDetailsForm {
       userFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       userLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       userNino -> default(text, "").verifying(emptyNino andThen validateNino),
-      userDateOfBirth -> DateModelMapping.dateModelMapping(errorContext = "user_details.date_of_birth").verifying(isValidDate andThen dateInPast)
+      userDateOfBirth -> DateModelMapping.dateModelMapping(errorContext = "user_details.date_of_birth").verifying(dateInPast)
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 

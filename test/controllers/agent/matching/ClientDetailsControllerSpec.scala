@@ -198,7 +198,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
               .post(ClientDetailsForm.clientDetailsForm.form, newTestUserDetails)
           )
 
-        "return a redirect status (BAD_REQUEST - 400)" in {
+        "return a bad request status (BAD_REQUEST - 400)" in {
           setupMockSubscriptionDetailsSaveFunctions()
           setupMockNotLockedOut(testARN)
 

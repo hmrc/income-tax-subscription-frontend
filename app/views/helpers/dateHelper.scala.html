@@ -92,7 +92,8 @@
                 isNumeric = true,
                 showErrors = false,
                 autoComplete = if(isDateOfBirth) Some("bday-day") else None,
-                isPageHeading = false
+                isPageHeading = false,
+                forceError = parentForm.error(field.name).isDefined
             )
             @inputHelper(
                 field(month),
@@ -103,7 +104,8 @@
                 isNumeric = true,
                 showErrors = false,
                 autoComplete = if(isDateOfBirth) Some("bday-month") else None,
-                isPageHeading = false
+                isPageHeading = false,
+                forceError = parentForm.error(field.name).isDefined
             )
             @inputHelper(
                 field(year),
@@ -114,7 +116,8 @@
                 isNumeric = true,
                 showErrors = false,
                 autoComplete = if(isDateOfBirth) Some("bday-year") else None,
-                isPageHeading = false
+                isPageHeading = false,
+                forceError = parentForm.error(field.name).isDefined
             )
         </div>
 
