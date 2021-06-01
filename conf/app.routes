@@ -108,4 +108,4 @@ GET         /iv-success                                          controllers.ind
 GET         /iv-failure                                          controllers.individual.iv.IVFailureController.failure
 
 GET         /keep-alive                                          controllers.SessionTimeoutController.keepAlive
-GET         /timeout                                            controllers.SessionTimeoutController.timeout
+GET         /timeout                                             controllers.SessionTimeoutController.timeout
