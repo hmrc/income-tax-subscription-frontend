@@ -313,3 +313,11 @@ input[type=radio]
 .form-field--error {
     border-left: 5px solid #df3034;
 }
+
+.form-control--error {
+    border: 2px solid #df3034 !important;
+}
+
+.form-control--error:focus {
+    border: 2px solid black !important;
+}
