@@ -6,7 +6,7 @@ GET         /                                                    controllers.use
 GET         /index                                               controllers.usermatching.HomeController.index
 
 # SignOut Controller
-GET         /logout                                              controllers.SignOutController.signOut(origin: String)
+GET         /logout                                              controllers.SignOutController.signOut
 
 # Preferences routes
 GET         /preferences                                         controllers.individual.PreferencesController.checkPreferences

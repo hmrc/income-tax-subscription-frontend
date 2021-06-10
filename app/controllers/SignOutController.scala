@@ -16,28 +16,26 @@
 
 package controllers
 
-import java.net.URLEncoder
-
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import services.AuthService
+import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
-import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SignOutController @Inject()(mcc: MessagesControllerComponents, appConfig: AppConfig, authService: AuthService)
                                  (implicit ec: ExecutionContext) extends FrontendController(mcc) {
 
-  def signOut(origin: String): Action[AnyContent] = Action.async { implicit request =>
+  def signOut: Action[AnyContent] = Action.async { implicit request =>
     authService.authorised().retrieve(affinityGroup) {
-      case Some(_) =>
+      case Some(AffinityGroup.Agent) =>
+        Future.successful(Redirect(appConfig.ggSignOutUrl(appConfig.feedbackFrontendAgentRedirectUrl)))
+      case _ =>
         Future.successful(Redirect(appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)))
-      case None =>
-        Future.failed(new InternalServerException("unexpected state"))
     }
   }
 
@@ -46,8 +44,6 @@ class SignOutController @Inject()(mcc: MessagesControllerComponents, appConfig: 
 
 object SignOutController {
 
-  def signOut(origin: Call)(implicit request: Request[AnyContent]): Call = signOut(origin = origin.url)
-
-  def signOut(origin: String): Call =
-    routes.SignOutController.signOut(origin = URLEncoder.encode(origin, "UTF-8"))
+  def signOut: Call =
+    routes.SignOutController.signOut()
 }

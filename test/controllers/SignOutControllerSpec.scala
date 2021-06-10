@@ -24,11 +24,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup
 
-
 class SignOutControllerSpec extends ControllerBaseSpec {
 
   object TestSignOutController extends SignOutController(
-   mockMessagesControllerComponents,appConfig, mockAuthService)
+    mockMessagesControllerComponents, appConfig, mockAuthService)
 
   override val controllerName: String = "SignOutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty
@@ -37,21 +36,21 @@ class SignOutControllerSpec extends ControllerBaseSpec {
   "Authorised users" when {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
     "with an agent affinity group" should {
-      "be redirected to the gg signOut" in {
+      "be redirected to the gg signOut with an url end /ITSU-A" in {
         mockRetrievalSuccess(Some(AffinityGroup.Agent))
 
-        val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
+        val result = TestSignOutController.signOut(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get should be(
-          appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
+          appConfig.ggSignOutUrl(appConfig.feedbackFrontendAgentRedirectUrl)
         )
       }
     }
     "with an individual affinity group" should {
-      "be redirected to the gg signOut" in {
+      "be redirected to the gg signOut with an url end with /ITSU " in {
         mockRetrievalSuccess(Some(AffinityGroup.Individual))
 
-        val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
+        val result = TestSignOutController.signOut(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get should be(
           appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
@@ -59,10 +58,22 @@ class SignOutControllerSpec extends ControllerBaseSpec {
       }
     }
     "with an org affinity group" should {
-      "be redirected to the gg signOut" in {
+      "be redirected to the gg signOut with an url end with /ITSU" in {
         mockRetrievalSuccess(Some(AffinityGroup.Organisation))
 
-        val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
+        val result = TestSignOutController.signOut(subscriptionRequest)
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get should be(
+          appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
+        )
+      }
+    }
+
+    "with an affinity group value that is not agent, individual or org" should {
+      "be redirected to the gg signOut with an url end with /ITSU" in {
+        mockRetrievalSuccess(None)
+
+        val result = TestSignOutController.signOut(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get should be(
           appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
@@ -74,7 +85,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
   "SignOutController.signOut util function" should {
     "escape the url correctly" in {
       val testOrigin = "/hello-world"
-      SignOutController.signOut(testOrigin).url mustBe routes.SignOutController.signOut(origin = URLEncoder.encode(testOrigin, "UTF-8")).url
+      SignOutController.signOut.url mustBe routes.SignOutController.signOut.url
     }
   }
 

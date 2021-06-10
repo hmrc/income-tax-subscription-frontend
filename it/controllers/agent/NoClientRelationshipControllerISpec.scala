@@ -78,7 +78,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase with Feature
 
         "have a Sign Out link" in new Setup {
           val signOutLink: Element = pageContent.getLink("sign-out")
-          signOutLink.attr("href") shouldBe controllers.SignOutController.signOut(controllers.agent.routes.NoClientRelationshipController.show().url).url
+          signOutLink.attr("href") shouldBe controllers.SignOutController.signOut.url
           signOutLink.text shouldBe NoClientRelationshipMessages.signOut
         }
 

@@ -68,7 +68,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec with MockAuditin
 
     s"the page must have a link to sign out" in {
       document.select("#sign-out").attr("href") mustBe
-        controllers.SignOutController.signOut(request.path).url
+        controllers.SignOutController.signOut.url
     }
 
   }

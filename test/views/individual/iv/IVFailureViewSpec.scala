@@ -70,7 +70,7 @@ class IVFailureViewSpec extends ViewSpec {
       signOutLink.text mustBe IVFailureMessages.signOut
       signOutLink.attr("class") mustBe "button"
       signOutLink.attr("role") mustBe "button"
-      signOutLink.attr("href") mustBe signOut(request.path).url
+      signOutLink.attr("href") mustBe signOut.url
     }
   }
 

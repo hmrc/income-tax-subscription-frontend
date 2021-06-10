@@ -25,19 +25,33 @@ class SignOutControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/logout" when {
 
-    "the Subscription Details Connector not applicable" should {
-      "show the logout page" in {
+    "the user is authenticated" should {
+      "redirect the user to logout" in {
         Given("I setup the Wiremock stubs")
-        val testOrigin = "/origin"
         AuthStub.stubAuthSuccess()
 
         When("GET /logout is called")
-        val res = IncomeTaxSubscriptionFrontend.signOut(testOrigin)
+        val res = IncomeTaxSubscriptionFrontend.signOut
 
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(ggSignOutURI)
+        )
+      }
+    }
+
+    "the user is not authenticate" should {
+      "redirect the user to login" in {
+        AuthStub.stubUnauthorised()
+
+        When("GET /logout is called")
+        val res = IncomeTaxSubscriptionFrontend.signOut
+
+        Then("Should return a SEE_OTHER with a redirect location of gg sign in")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(ggSignInURI)
         )
       }
     }

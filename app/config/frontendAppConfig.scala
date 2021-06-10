@@ -120,6 +120,8 @@ trait AppConfig extends FeatureSwitching {
 
   def feedbackFrontendRedirectUrl: String
 
+  def feedbackFrontendAgentRedirectUrl: String
+
 }
 
 @Singleton
@@ -295,6 +297,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
     s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
   val feedbackFrontendRedirectUrl: String = config.getString("feedback-frontend.url")
+
+  val feedbackFrontendAgentRedirectUrl: String = config.getString("feedback-frontend-A.url")
 
   override lazy val countdownLength: String = config.getString("timeout.countdown")
   override lazy val timeoutLength: String = config.getString("timeout.length")

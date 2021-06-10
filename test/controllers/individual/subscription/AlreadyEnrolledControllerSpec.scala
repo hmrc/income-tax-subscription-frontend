@@ -52,7 +52,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditing
       document.title mustBe messages.heading + serviceNameGovUk
 
       document.select("#sign-out-button").attr("href") mustBe
-        controllers.SignOutController.signOut(subscriptionRequest.path).url
+        controllers.SignOutController.signOut.url
     }
   }
 

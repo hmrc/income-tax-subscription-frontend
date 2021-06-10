@@ -54,7 +54,7 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
     implicit user =>
 
       val postAction = controllers.agent.routes.AddAnotherClientController.addAnother()
-      val signOutAction = controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
+      val signOutAction = controllers.SignOutController.signOut
       val endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear
       val updatesAfter = accountingPeriodService.updateDatesAfter()
       val updatesBefore = accountingPeriodService.updateDatesBefore()

@@ -18,4 +18,4 @@
 
 @(alternativeText: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-<a  id="sign-out-button" class="button" role="button" href="@signOut(request.path)">@alternativeText.fold(Messages("base.sign-out"))(x => x)</a>
+<a  id="sign-out-button" class="button" role="button" href="@signOut">@alternativeText.fold(Messages("base.sign-out"))(x => x)</a>

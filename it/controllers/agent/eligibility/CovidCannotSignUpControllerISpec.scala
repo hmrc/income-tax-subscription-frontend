@@ -67,7 +67,7 @@ class CovidCannotSignUpControllerISpec extends ComponentSpecBase{
 
     "have a Sign Out link" in new Setup {
       val signOutLink: Element = pageContent.getLink("sign-out")
-      signOutLink.attr("href") shouldBe controllers.SignOutController.signOut(controllers.agent.eligibility.routes.CovidCannotSignUpController.show().url).url
+      signOutLink.attr("href") shouldBe controllers.SignOutController.signOut.url
       signOutLink.text shouldBe CovidCannotSignUpMessages.signOut
     }
   }
