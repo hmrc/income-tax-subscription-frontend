@@ -74,7 +74,7 @@ trait MockHttp extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   def setupMockHttpGet(url: Option[String] = None)(status: Int, response: Option[JsValue]): Unit = {
     lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.eq(x))
-    when(mockHttp.GET[HttpResponse](urlMatcher)
+    when(mockHttp.GET[HttpResponse](urlMatcher, ArgumentMatchers.any, ArgumentMatchers.any)
       (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, response)))
   }
 

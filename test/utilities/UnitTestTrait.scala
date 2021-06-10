@@ -28,6 +28,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
+import uk.gov.hmrc.play.partials.{CachedStaticHtmlPartialRetriever, FormPartialRetriever, HeaderCarrierForPartialsConverter}
 
 import scala.concurrent.{ExecutionContext, Future}
 

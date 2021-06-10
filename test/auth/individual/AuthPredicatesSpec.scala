@@ -73,7 +73,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   val userWithMtditIdEnrolment: IncomeTaxSAUser = testUser(None, mtdidEnrolment)
   val userWithMtditIdEnrolmentAndNino: IncomeTaxSAUser = testUser(None, ninoEnrolment, mtdidEnrolment)
   val userWithUtrButNoNino: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual), utrEnrolment)
-  val blankUser: IncomeTaxSAUser = testUser(None, None, confidenceLevel = ConfidenceLevel.L0, "")
+  val blankUser: IncomeTaxSAUser = testUser(None, None, confidenceLevel = ConfidenceLevel.L50, "")
 
   val userWithIndividualAffinity: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual))
   val userWithAgentAffinity: IncomeTaxSAUser = testUser(Some(AffinityGroup.Agent))
@@ -166,20 +166,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   "ivPredicate" when {
     "the identity verification feature switch is disabled" should {
       "return an AuthPredicateSuccess" in {
-        val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L0, "testUserId"))
+        val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L50, "testUserId"))
         result.right.value mustBe AuthPredicateSuccess
         verify(mockAuditingService, never()).audit(any())(any(), any())
       }
     }
     "the identity verification feature switch is enabled" when {
-      "the user confidence level is above CL200" should {
-        "return an AuthPredicateSuccess" in {
-          enable(IdentityVerification)
-          val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L300, "testUserId"))
-          result.right.value mustBe AuthPredicateSuccess
-          verify(mockAuditingService, never()).audit(any())(any(), any())
-        }
-      }
       "the user confidence level is CL200" should {
         "return an AuthPredicateSuccess" in {
           enable(IdentityVerification)
@@ -193,11 +185,11 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
           "redirect the user to IV" in {
             enable(IdentityVerification)
             implicit val request: Request[AnyContent] = FakeRequest()
-            val result = ivPredicate(request)(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L100, "testUserId"))
+            val result = ivPredicate(request)(testUser(Some(AffinityGroup.Individual), None, ConfidenceLevel.L50, "testUserId"))
             status(result.left.value) mustBe SEE_OTHER
             redirectLocation(result.left.value) mustBe Some(injectedConfig.identityVerificationURL)
             verify(mockAuditingService).audit(matches(
-              IVHandoffAuditModel("individual", ConfidenceLevel.L100.level, ConfidenceLevel.L200.level)
+              IVHandoffAuditModel("individual", ConfidenceLevel.L50.level, ConfidenceLevel.L200.level)
             ))(any(), any())
           }
         }
@@ -205,11 +197,11 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
           "redirect the user to IV" in {
             enable(IdentityVerification)
             implicit val request: Request[AnyContent] = FakeRequest()
-            val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Organisation), None, ConfidenceLevel.L100, "testUserId", ninoEnrolment))
+            val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Organisation), None, ConfidenceLevel.L50, "testUserId", ninoEnrolment))
             status(result.left.value) mustBe SEE_OTHER
             redirectLocation(result.left.value) mustBe Some(injectedConfig.identityVerificationURL)
             verify(mockAuditingService).audit(matches(
-              IVHandoffAuditModel("organisation", ConfidenceLevel.L100.level, ConfidenceLevel.L200.level)
+              IVHandoffAuditModel("organisation", ConfidenceLevel.L50.level, ConfidenceLevel.L200.level)
             ))(any(), any())
           }
         }

@@ -24,7 +24,7 @@ trait MockConfig extends AppConfig {
   override val reportAProblemNonJSUrl: String = ""
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"
   override val contactFormServiceIdentifier: String = "MTDIT"
-  override val contactFrontendPartialBaseUrl: String = "/contact/partial"
+  override val contactFrontendPartialBaseUrl: String = "http://localhost:12345/contact/partial"
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"
   override val subscriptionUrlPost: String = "/income-tax-subscription/subscription-v2"
   override val clientMatchingUrl = "/income-tax-subscription/client-matching"

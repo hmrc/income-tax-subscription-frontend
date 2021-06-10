@@ -124,7 +124,6 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
               s"""MatchingStubConnector.newUser failure:
                  | Request {
                  |   dynamicStubUrl: $dynamicStubUrl
-                 |   hc.headers: ${hc.headers.map { case (a, b) => s"a$a: $b" }.mkString("\n")}
                  |   json: ${UserData.format.writes(userData): JsValue}
                  | }
                  | Response: status=$status, body=${response.body}""".stripMargin)

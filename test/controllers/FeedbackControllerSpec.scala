@@ -28,7 +28,8 @@ import play.twirl.api.Html
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http.{CoreGet, HttpResponse, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
-import uk.gov.hmrc.play.partials.{FormPartialRetriever, HtmlPartial}
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import uk.gov.hmrc.play.partials.{CachedStaticHtmlPartialRetriever, FormPartialRetriever, HeaderCarrierForPartialsConverter, HtmlPartial}
 
 import scala.concurrent.Future
 
@@ -37,19 +38,14 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
   override val controllerName: String = "FeedbackController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  val sessionCookieCrypto: SessionCookieCrypto = app.injector.instanceOf[SessionCookieCrypto]
+  implicit lazy val mockHeaderCarrierForPartialsConverter: HeaderCarrierForPartialsConverter = app.injector.instanceOf[HeaderCarrierForPartialsConverter]
 
-  object TestFeedbackController extends FeedbackController(mockHttp, sessionCookieCrypto)(appConfig, executionContext, mockMessagesControllerComponents) {
-    override val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
-      override def httpGet: CoreGet = ???
+  implicit lazy val mockFormPartialRetriever: FormPartialRetriever = app.injector.instanceOf[FormPartialRetriever]
 
-      override def crypto: String => String = cookie => sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
+  implicit lazy val mockCachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = app.injector.instanceOf[CachedStaticHtmlPartialRetriever]
 
-      override def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial = HtmlPartial.Success(
-        title = Some("test-title"),
-        content = Html("test-html-content")
-      )
-    }
+  object TestFeedbackController extends FeedbackController(mockHttp)(mockFormPartialRetriever, mockCachedStaticHtmlPartialRetriever, appConfig, executionContext, mockMessagesControllerComponents, mockHeaderCarrierForPartialsConverter) {
+
   }
 
   "show" when {

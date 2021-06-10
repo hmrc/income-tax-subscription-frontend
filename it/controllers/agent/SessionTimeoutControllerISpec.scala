@@ -72,7 +72,7 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
 
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI("/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fclient&origin=income-tax-subscription-frontend")
+          redirectURI( "http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fclient&origin=income-tax-subscription-frontend")
         )
         val session = getSessionMap(res)
         session.keys shouldNot contain(testARN)

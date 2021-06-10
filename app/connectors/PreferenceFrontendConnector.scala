@@ -18,7 +18,7 @@ package connectors
 
 import java.net.URLEncoder
 
-import config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
+import config.AppConfig
 import connectors.PaperlessPreferenceHttpParser._
 import javax.inject.{Inject, Singleton}
 import models.{PaperlessPreferenceError, PaperlessState}
@@ -26,7 +26,8 @@ import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utilities.HttpResult._
 import utilities.individual.Constants._
 
@@ -36,11 +37,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class PreferenceFrontendConnector @Inject()(val messagesApi: MessagesApi,
                                             appConfig: AppConfig,
                                             applicationCrypto: ApplicationCrypto,
-                                            hc: ITSAHeaderCarrierForPartialsConverter,
                                             http: HttpClient)
                                            (implicit ec: ExecutionContext) {
 
-  import hc._
 
   lazy val returnUrl: String = returnUrl(appConfig.baseUrl)
 
@@ -55,6 +54,7 @@ class PreferenceFrontendConnector @Inject()(val messagesApi: MessagesApi,
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
     // this header is converted implicitly by functions in config.ITSAHeaderCarrierForPartialsConverter which implements
     // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
+    implicit val hc : HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
     http.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl(token), "") map {
       case Right(paperlessState) => Right(paperlessState)
       case Left(error) =>
