@@ -64,7 +64,7 @@
 }
 
 @signOut = @{
-    overrideSignOutCall.fold(controllers.SignOutController.signOut(request.path))(href => href)
+    overrideSignOutCall.fold(controllers.SignOutController.signOut)(href => href)
 }
 
 @signOutLink = {

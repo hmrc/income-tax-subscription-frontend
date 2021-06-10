@@ -208,7 +208,7 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
           val actionSignOut = documentNextTaxYear.getElementById("sign-out-button")
           actionSignOut.attr("role") mustBe "button"
           actionSignOut.text() mustBe signOut
-          actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
+          actionSignOut.attr("href") mustBe SignOutController.signOut.url
         }
       }
     }

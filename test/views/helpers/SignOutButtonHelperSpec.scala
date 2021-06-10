@@ -58,7 +58,7 @@ class SignOutButtonHelperSpec extends UnitTestTrait {
       }
 
       s"point to sign out with the path from the request" in {
-        signOutButton.attr("href") mustBe SignOutController.signOut(testRequest.path).url
+        signOutButton.attr("href") mustBe SignOutController.signOut.url
       }
     }
 

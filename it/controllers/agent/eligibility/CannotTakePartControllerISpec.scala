@@ -145,7 +145,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
       "has a link to sign out" in new Setup {
         val link: Element = pageContent.getLink("sign-out")
 
-        link.attr("href") shouldBe controllers.SignOutController.signOut(controllers.agent.eligibility.routes.CannotTakePartController.show().url).url
+        link.attr("href") shouldBe controllers.SignOutController.signOut.url
         link.text shouldBe CannotTakePartMessages.signOut
       }
 

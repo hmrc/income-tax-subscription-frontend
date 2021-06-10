@@ -59,7 +59,7 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with Mock
 
     s"the page must have a link to sign out}" in {
       document.select("#sign-out").attr("href") mustBe
-        controllers.SignOutController.signOut(userMatchingRequest.path).url
+        controllers.SignOutController.signOut.url
     }
 
   }

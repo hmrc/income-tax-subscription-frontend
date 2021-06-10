@@ -192,7 +192,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def signIn(): WSResponse = get("/sign-in")
 
-    def signOut(origin: String): WSResponse = get(s"/logout?origin=$origin")
+    def signOut: WSResponse = get("/logout")
 
     def alreadyEnrolled(): WSResponse = get("/already-enrolled")
 
