@@ -66,7 +66,7 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
     }
 
     "Nino and UTR are stored in session after being pulled from CID" should {
-      val confidenceLevel = ConfidenceLevel.L0
+      val confidenceLevel = ConfidenceLevel.L50
 
       implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         ITSASessionKeys.NINO -> testNino,
@@ -89,8 +89,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
         user.utr shouldBe Some(testUtr)
       }
 
-      "have the default confidence level of 0" in {
-        user.confidenceLevel shouldBe ConfidenceLevel.L0
+      "have the default confidence level of 50" in {
+        user.confidenceLevel shouldBe ConfidenceLevel.L50
       }
     }
 

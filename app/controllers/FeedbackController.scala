@@ -22,39 +22,29 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, RequestHeader}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.partials._
 import views.html.feedback_thankyou
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class FeedbackController @Inject()(http: HttpClient, sessionCookieCrypto: SessionCookieCrypto)(
-  implicit appConfig: AppConfig, ec: ExecutionContext, mcc: MessagesControllerComponents) extends FrontendController(mcc) {
+class FeedbackController @Inject()(http: HttpClient)
+                                  (implicit formPartialRetriever: FormPartialRetriever,
+                                   cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever,
+                                   appConfig: AppConfig,
+                                   ec: ExecutionContext,
+                                   mcc: MessagesControllerComponents,
+                                   headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter) extends FrontendController(mcc) {
 
   private val TICKET_ID = "ticketId"
-
-  implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
-    override val httpGet: HttpGet = http
-  }
-
-  implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
-    override def httpGet: HttpGet = http
-
-    def crypto: (String) => String = cookie => sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
-  }
 
   def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
 
   def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
-
-  protected def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial = ???
 
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
     s"${appConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
@@ -76,9 +66,10 @@ class FeedbackController @Inject()(http: HttpClient, sessionCookieCrypto: Sessio
 
   def submit: Action[AnyContent] = Action.async {
     implicit request =>
+      val partialHeaderCarrier = headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
       request.body.asFormUrlEncoded.map { formData =>
         http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(
-          rds = readPartialsForm, hc = partialsReadyHeaderCarrier,implicitly[ExecutionContext]).map {
+          rds = readPartialsForm, hc = partialHeaderCarrier, implicitly[ExecutionContext]).map {
           resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).addingToSession(TICKET_ID -> resp.body)
@@ -101,15 +92,6 @@ class FeedbackController @Inject()(http: HttpClient, sessionCookieCrypto: Sessio
   }
 
   def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
-
-  private def partialsReadyHeaderCarrier(implicit request: Request[_]): HeaderCarrier = {
-    val hc1 = PlaHeaderCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)
-    PlaHeaderCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
-  }
-
-  object PlaHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter {
-    override val crypto: String => String = identity
-  }
 
   implicit val readPartialsForm: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     def read(method: String, url: String, response: HttpResponse): HttpResponse = response

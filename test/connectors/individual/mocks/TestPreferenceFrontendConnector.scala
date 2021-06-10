@@ -17,7 +17,7 @@
 package connectors.individual.mocks
 
 import auth.MockHttp
-import config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
+import config.AppConfig
 import connectors.PreferenceFrontendConnector
 import models.{Activated, PaperlessPreferenceError, PaperlessState, Unset}
 import org.mockito.ArgumentMatchers
@@ -61,7 +61,6 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait with MockHttp {
     app.injector.instanceOf[MessagesApi],
     app.injector.instanceOf[AppConfig],
     app.injector.instanceOf[ApplicationCrypto],
-    app.injector.instanceOf[ITSAHeaderCarrierForPartialsConverter],
     mockHttp
   )
 

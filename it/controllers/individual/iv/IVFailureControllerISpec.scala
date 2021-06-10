@@ -19,7 +19,6 @@ package controllers.individual.iv
 import config.featureswitch.FeatureSwitch.IdentityVerification
 import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.ggSignInURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
@@ -40,7 +39,7 @@ class IVFailureControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(ggSignInURI)
+          redirectURI("http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fiv-failure&origin=income-tax-subscription-frontend")
         )
       }
     }

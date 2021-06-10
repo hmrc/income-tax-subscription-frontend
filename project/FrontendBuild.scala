@@ -12,23 +12,23 @@ object FrontendBuild {
 
 private object AppDependencies {
 
-  private val bootstrapPlayVersion = "2.3.0"
+  private val bootstrapPlayVersion = "5.3.0"
   private val govukTemplateVersion = "5.60.0-play-26"
   private val playUiVersion = "8.19.0-play-26"
-  private val playPartialsVersion = "7.1.0-play-26"
+  private val playPartialsVersion = "8.1.0-play-26"
   private val hmrcTestVersion = "3.10.0-play-26"
   private val scalaTestVersion = "3.0.9"
   private val scalaTestPlusVersion = "3.1.3"
   private val pegdownVersion = "1.6.0"
   private val httpCachingClientVersion = "9.2.0-play-26"
   private val wiremockVersion = "2.27.2"
-  private val domainVersion = "5.10.0-play-26"
+  private val domainVersion = "5.11.0-play-26"
   private val catsVersion = "0.9.0"
   private val playLanguageVersion = "4.10.0-play-26"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-26" % bootstrapPlayVersion,
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-26" % bootstrapPlayVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
