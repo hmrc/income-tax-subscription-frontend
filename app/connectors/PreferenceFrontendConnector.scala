@@ -16,28 +16,28 @@
 
 package connectors
 
-import java.net.URLEncoder
-
 import config.AppConfig
 import connectors.PaperlessPreferenceHttpParser._
-import javax.inject.{Inject, Singleton}
 import models.{PaperlessPreferenceError, PaperlessState}
 import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 import utilities.HttpResult._
 import utilities.individual.Constants._
 
+import java.net.URLEncoder
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PreferenceFrontendConnector @Inject()(val messagesApi: MessagesApi,
                                             appConfig: AppConfig,
                                             applicationCrypto: ApplicationCrypto,
-                                            http: HttpClient)
+                                            http: HttpClient,
+                                            headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter)
                                            (implicit ec: ExecutionContext) {
 
 
@@ -54,7 +54,7 @@ class PreferenceFrontendConnector @Inject()(val messagesApi: MessagesApi,
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
     // this header is converted implicitly by functions in config.ITSAHeaderCarrierForPartialsConverter which implements
     // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
-    implicit val hc : HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
+    implicit val hc: HeaderCarrier = headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
     http.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl(token), "") map {
       case Right(paperlessState) => Right(paperlessState)
       case Left(error) =>

@@ -28,6 +28,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.ApplicationCrypto
+import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants._
 
@@ -61,7 +62,8 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait with MockHttp {
     app.injector.instanceOf[MessagesApi],
     app.injector.instanceOf[AppConfig],
     app.injector.instanceOf[ApplicationCrypto],
-    mockHttp
+    mockHttp,
+    app.injector.instanceOf[HeaderCarrierForPartialsConverter]
   )
 
   def setupCheckPaperless(token: String)(tuple: (Int, Option[JsValue]))(implicit request: Request[AnyContent]): Unit =
