@@ -80,6 +80,10 @@ object IntegrationTestConstants {
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val signOutURI = s"$baseURI/logout"
   val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
+  def basGatewaySignIn(continueTo: String): String = {
+    val updatedContinue: String = continueTo.replaceAllLiterally("/", "%2F")
+    s"http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
+  }
   val claimSubscriptionURI = s"$baseURI/claim-subscription"
   val wrongAffinityURI = s"$baseURI/error/affinity-group"
   val ivURI = s"$baseURI/iv"

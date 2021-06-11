@@ -51,7 +51,7 @@ class SignOutControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(ggSignInURI)
+          redirectURI(basGatewaySignIn("/logout"))
         )
       }
     }
