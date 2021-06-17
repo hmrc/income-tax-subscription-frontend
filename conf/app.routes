@@ -1,5 +1,7 @@
 # Assets
-GET         /assets/*file                                        controllers.Assets.at(path="/public", file)
+->          /govuk-frontend                                      govuk.Routes
+->          /hmrc-frontend                                       hmrcfrontend.Routes
+GET         /assets/*file                                        controllers.Assets.versioned(path="/public", file: Asset)
 
 # Home controller
 GET         /                                                    controllers.usermatching.HomeController.home

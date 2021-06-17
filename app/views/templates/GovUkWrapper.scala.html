@@ -1,0 +1,79 @@
+@import config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcHead
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardHeader
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcScripts
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLanguageSelectHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
+
+@this(
+govukLayout: GovukLayout,
+govukBackLink: GovukBackLink,
+govukErrorSummary: GovukErrorSummary,
+hmrcHead: HmrcHead,
+hmrcStandardHeader: HmrcStandardHeader,
+hmrcStandardFooter: HmrcStandardFooter,
+hmrcScripts: HmrcScripts,
+standardBetaBanner: StandardBetaBanner,
+hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
+)
+
+@(title: String, serviceName: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+
+@scripts = {
+    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+    <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+    <script>
+            window.GOVUKFrontend.initAll();
+            window.HMRCFrontend.initAll()
+    </script>
+@hmrcScripts()
+}
+
+@beforeContentBlock = {
+@hmrcLanguageSelectHelper()
+@backLink.map {href =>
+    @govukBackLink(BackLink(href = href, content = Text(messages("base.back")), attributes = Map("id" -> "back-link")))
+}
+}
+
+@content = {
+
+@optForm.map { form =>
+    @if(form.hasErrors) {
+        @govukErrorSummary(ErrorSummary(
+            errorList = form.errors.asTextErrorLinks,
+            title = Text(messages("base.error_heading"))
+        ))
+    }
+}
+
+@contentBlock
+
+@hmrcReportTechnicalIssueHelper()
+
+}
+
+@govukLayout(
+    pageTitle = Some(title),
+    headBlock = Some(hmrcHead(
+        headBlock = if(showSignOutLink) {
+            Some(hmrcTimeoutDialogHelper(signOutUrl = controllers.routes.SignOutController.signOut().url))
+        } else None
+    )),
+    headerBlock = Some(hmrcStandardHeader(
+        serviceName = Some(serviceName),
+        serviceUrl = None,
+        signOutUrl = if(showSignOutLink) Some(controllers.routes.SignOutController.signOut().url) else None,
+        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
+        displayHmrcBanner = true
+    )),
+    beforeContentBlock = Some(beforeContentBlock),
+    scriptsBlock = Some(scripts),
+    footerBlock = Some(hmrcStandardFooter())
+)(content)
