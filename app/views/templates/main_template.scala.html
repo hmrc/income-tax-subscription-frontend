@@ -45,11 +45,11 @@
     * put all default assets for this service here
     *@
 @defaultScriptElem = {
-    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/mtd-itsa-custom.css")">
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/mtd-itsa-custom.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/error-focus.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/ur-banner.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/skipToMainContent.js")"></script>
+    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/mtd-itsa-custom.css")">
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/mtd-itsa-custom.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/error-focus.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ur-banner.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/skipToMainContent.js")"></script>
     @if(enableTimeout) {
         <script id="timeoutScript" role="dialog" tabindex="-1">
                 window.GOVUK.timeoutDialog({
@@ -64,7 +64,7 @@
 }
 
 @headStyle = {
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/banner-panel.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/banner-panel.css")">
 }
 
 @prefixedTitle = @{

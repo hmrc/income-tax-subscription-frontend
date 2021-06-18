@@ -25,6 +25,9 @@ private object AppDependencies {
   private val domainVersion = "5.11.0-play-26"
   private val catsVersion = "0.9.0"
   private val playLanguageVersion = "4.10.0-play-26"
+  private val playFrontendGovukVersion = "0.57.0-play-26"
+  private val playHmrcFrontendVersion = "0.65.0-play-26"
+
 
   val compile: Seq[ModuleID] = Seq(
     ws,
@@ -32,6 +35,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
+    "uk.gov.hmrc" %% "play-frontend-govuk" % playFrontendGovukVersion,
+    "uk.gov.hmrc" %% "play-frontend-hmrc" % playHmrcFrontendVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "uk.gov.hmrc" %% "domain" % domainVersion,
     "org.typelevel" %% "cats" % catsVersion,

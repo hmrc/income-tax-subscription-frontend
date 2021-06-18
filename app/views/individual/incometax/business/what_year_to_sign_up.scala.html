@@ -28,7 +28,7 @@
 @(accountingYearForm: Form[AccountingYearModel], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/show-hide-content.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/show-hide-content.js")"></script>
 }
 
 @question = @{messages("business.what_year_to_sign_up.heading.signup")}
