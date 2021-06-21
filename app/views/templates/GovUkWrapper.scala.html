@@ -10,17 +10,17 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
 
 @this(
-govukLayout: GovukLayout,
-govukBackLink: GovukBackLink,
-govukErrorSummary: GovukErrorSummary,
-hmrcHead: HmrcHead,
-hmrcStandardHeader: HmrcStandardHeader,
-hmrcStandardFooter: HmrcStandardFooter,
-hmrcScripts: HmrcScripts,
-standardBetaBanner: StandardBetaBanner,
-hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
+    govukLayout: GovukLayout,
+    govukBackLink: GovukBackLink,
+    govukErrorSummary: GovukErrorSummary,
+    hmrcHead: HmrcHead,
+    hmrcStandardHeader: HmrcStandardHeader,
+    hmrcStandardFooter: HmrcStandardFooter,
+    hmrcScripts: HmrcScripts,
+    standardBetaBanner: StandardBetaBanner,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 
 @(title: String, serviceName: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
@@ -29,17 +29,17 @@ hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
     <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
     <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
     <script>
-            window.GOVUKFrontend.initAll();
-            window.HMRCFrontend.initAll()
+        window.GOVUKFrontend.initAll();
+        window.HMRCFrontend.initAll()
     </script>
-@hmrcScripts()
+    @hmrcScripts()
 }
 
 @beforeContentBlock = {
-@hmrcLanguageSelectHelper()
-@backLink.map {href =>
-    @govukBackLink(BackLink(href = href, content = Text(messages("base.back")), attributes = Map("id" -> "back-link")))
-}
+    @hmrcLanguageSelectHelper()
+    @backLink.map {href =>
+        @govukBackLink(BackLink(href = href, content = Text(messages("base.back")), attributes = Map("id" -> "back-link")))
+    }
 }
 
 @content = {

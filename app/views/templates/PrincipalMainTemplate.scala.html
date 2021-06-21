@@ -21,7 +21,7 @@
         govukWrapper: GovUkWrapper
 )
 
-@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String]= None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String]= None, showSignOutLink: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @prefixedTitle = @{
     optForm match {
@@ -34,5 +34,6 @@
     title = prefixedTitle,
     serviceName = messages("base.service_name"),
     optForm = optForm,
-    backLink = backLink
+    backLink = backLink,
+    showSignOutLink = showSignOutLink
 )(contentBlock)

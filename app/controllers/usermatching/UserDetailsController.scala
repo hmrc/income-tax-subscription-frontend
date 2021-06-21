@@ -19,7 +19,6 @@ package controllers.usermatching
 import auth.individual.{IncomeTaxSAUser, UserMatchingController}
 import config.AppConfig
 import forms.usermatching.UserDetailsForm
-import javax.inject.{Inject, Singleton}
 import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
@@ -27,6 +26,7 @@ import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -43,6 +43,7 @@ class UserDetailsController @Inject()(val auditingService: AuditingService,
       userDetailsForm,
       controllers.usermatching.routes.UserDetailsController.submit(editMode = isEditMode),
       isEditMode
+
     )
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
@@ -57,7 +58,9 @@ class UserDetailsController @Inject()(val auditingService: AuditingService,
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        Future.successful(Ok(view(UserDetailsForm.userDetailsForm.form.fill(request.fetchUserDetails), isEditMode = isEditMode)))
+        Future.successful(Ok(view(
+          UserDetailsForm.userDetailsForm.form.fill(request.fetchUserDetails),
+          isEditMode = isEditMode)))
       }
   }
 
@@ -65,7 +68,9 @@ class UserDetailsController @Inject()(val auditingService: AuditingService,
     implicit user =>
       handleLockOut {
         UserDetailsForm.userDetailsForm.bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
+          formWithErrors => Future.successful(BadRequest(view(
+            formWithErrors,
+            isEditMode = isEditMode))),
           userDetails => {
             val continue = Redirect(controllers.usermatching.routes.ConfirmUserController.show()).saveUserDetails(userDetails)
 
@@ -75,5 +80,4 @@ class UserDetailsController @Inject()(val auditingService: AuditingService,
         )
       }
   }
-
 }
