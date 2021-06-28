@@ -35,6 +35,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
 import utilities.{ITSASessionKeys, ImplicitDateFormatterImpl}
+import views.html.individual.incometax.subscription.CheckYourAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +45,8 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                            subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
                                            incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                           implicitDateFormatter: ImplicitDateFormatterImpl)
+                                           implicitDateFormatter: ImplicitDateFormatterImpl,
+                                           checkYourAnswers: CheckYourAnswers)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
@@ -66,7 +68,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       cache =>
         getSummaryModel(cache).map {
           summaryModel =>
-            Ok(views.html.individual.incometax.subscription.check_your_answers(
+            Ok(checkYourAnswers(
               summaryModel,
               controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
               backUrl = backUrl(cache.getIncomeSource.get),
