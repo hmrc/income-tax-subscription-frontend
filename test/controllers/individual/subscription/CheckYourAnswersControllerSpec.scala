@@ -22,9 +22,12 @@ import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
@@ -33,6 +36,7 @@ import utilities.SubscriptionDataKeys.MtditId
 import utilities.SubscriptionDataUtil._
 import utilities.TestModels._
 import utilities.individual.TestConstants._
+import views.html.individual.incometax.subscription.CheckYourAnswers
 
 import scala.concurrent.Future
 
@@ -44,9 +48,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with FeatureSwitching {
 
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
+  val mockCheckYourAnswers: CheckYourAnswers = mock[CheckYourAnswers]
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
+    reset(mockCheckYourAnswers)
     super.beforeEach()
   }
 
@@ -62,7 +68,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
     mockIncomeTaxSubscriptionConnector,
-    mockImplicitDateFormatter
+    mockImplicitDateFormatter,
+    mockCheckYourAnswers
   )
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {
@@ -76,6 +83,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+      when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+        .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
     }
 
@@ -86,7 +95,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testPropertyCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-
+      when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+        .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
     }
 
@@ -94,7 +104,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-
+      when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+        .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
     }
   }

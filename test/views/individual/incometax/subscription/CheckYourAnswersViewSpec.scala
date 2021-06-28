@@ -31,10 +31,13 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, TestModels, UnitTestTrait}
 import views.individual.helpers.SummaryIdConstants._
+import views.html.individual.incometax.subscription.CheckYourAnswers
 
 class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter with FeatureSwitching {
 
   override val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
+
+  val checkYourAnswers : CheckYourAnswers = app.injector.instanceOf[CheckYourAnswers]
 
   def selfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(
     id = id,
@@ -82,7 +85,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
   def page(testSummaryModel: IndividualSummary, releaseFour: Boolean = false): HtmlFormat.Appendable =
-    views.html.individual.incometax.subscription.check_your_answers(
+   checkYourAnswers(
       summaryModel = testSummaryModel,
       postAction = postAction,
       backUrl = backUrl,
@@ -112,7 +115,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   "Summary page view" should {
 
     s"have a back button pointed to $backUrl" in {
-      val backLink = document().select("#back")
+      val backLink = document().select(".govuk-back-link")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
     }
@@ -133,7 +136,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     "has a form" which {
 
       "has a submit button" in {
-        val submit = document().getElementById("continue-button")
+        val submit = document().select("button")
         submit.isEmpty mustBe false
         submit.text shouldBe MessageLookup.Summary.confirm_and_sign_up
       }
@@ -157,7 +160,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val question = doc.getElementById(questionId(sectionId))
       val answer = doc.getElementById(answerId(sectionId))
       val editLink = doc.getElementById(editLinkId(sectionId))
-      val hiddenContent = doc.getElementsByClass("visuallyhidden").get(rowNo).text()
+      val hiddenContent = doc.getElementsByClass("govuk-visually-hidden").get(rowNo+1).text()
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -169,8 +172,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val link = editLink.select("a")
         link.attr("href") shouldBe expectedEditLink.get
         link.text() should include(MessageLookup.Base.change)
-        link.select(".visuallyhidden").get(0).text() shouldBe hiddenContent
+        link.select(".govuk-visually-hidden").get(0).text() shouldBe hiddenContent
       }
+
     }
 
     "display the correct info for the income source" in {
