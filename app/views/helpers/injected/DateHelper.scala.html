@@ -1,0 +1,86 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import forms.formatters.DateModelMapping
+
+@this(govukDateInput : GovukDateInput)
+
+
+@(
+        field: Field,
+        legendContent: String,
+        hintText: Option[String] = None,
+        parentForm: Form[_],
+        isPageHeading: Boolean = true,
+        isLegendVisible: Boolean = true
+)(implicit messages: Messages)
+
+@errorMessage = @{
+    (parentForm.error(field.name) orElse parentForm.error(s"${field.name}-dateDay") orElse parentForm.error(s"${field.name}-dateMonth") orElse parentForm.error(s"${field.name}-dateYear")) map { error =>
+        ErrorMessage(content = Text(messages(error.message, error.args: _*)))
+    }
+}
+
+@inputClass(key: String, size: Int) = @{
+    s"govuk-input--width-$size" +
+            {if (parentForm.error(field.name).isDefined || parentForm(s"${field.name}-$key").error.isDefined) s" govuk-input--error" else ""}
+}
+
+@fieldsetLegendClass = @{
+    if(isPageHeading) "govuk-fieldset__legend--l"
+    else if(isLegendVisible) "govuk-!-font-weight-bold"
+    else "govuk-visually-hidden"
+}
+
+@govukDateInput(DateInput(
+    id = field.id,
+    namePrefix = Some(field.name),
+    items = Seq(
+        InputItem(
+            name = "dateDay",
+            autocomplete = Some(s"${field.name}"+"-day"),
+            classes = inputClass(DateModelMapping.day, 2),
+            label =  Some(messages("base.day")),
+            value = parentForm("startDate-dateDay").value
+        ),
+        InputItem(
+            name = "dateMonth",
+            autocomplete = Some(s"${field.name}"+"-month"),
+            classes = inputClass(DateModelMapping.month, 2),
+            label =  Some(messages("base.month")),
+            value = parentForm("startDate-dateMonth").value
+        ),
+        InputItem(
+            name = "dateYear",
+            autocomplete = Some(s"${field.name}"+"-year"),
+            classes = inputClass(DateModelMapping.year, 4),
+            label =  Some(messages("base.year")),
+            value = parentForm("startDate-dateYear").value
+        )
+    ),
+    hint = hintText.map(t => Hint(content = Text(t))),
+    errorMessage = errorMessage,
+    fieldset = Some(Fieldset(
+        legend = Some(Legend(
+            content = Text(legendContent),
+            classes = fieldsetLegendClass,
+            isPageHeading = isPageHeading
+        )),
+    ))
+)
+
+)
