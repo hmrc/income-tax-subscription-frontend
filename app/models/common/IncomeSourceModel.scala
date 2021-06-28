@@ -21,7 +21,9 @@ import play.api.libs.json._
 case class IncomeSourceModel(selfEmployment: Boolean,
                              ukProperty: Boolean,
                              foreignProperty: Boolean) {
+
   val hasAtLeastOneSelected: Boolean = selfEmployment || ukProperty || foreignProperty
+
 }
 
 object IncomeSourceModel {

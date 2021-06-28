@@ -27,7 +27,6 @@ import views.html.individual.iv.IVFailure
 class IVFailureViewSpec extends ViewSpec {
 
   val ivFailure: IVFailure = app.injector.instanceOf[IVFailure]
-  implicit val request: Request[_] = FakeRequest(method = "GET", path = "/test-path")
 
   val document: Document = Jsoup.parse(ivFailure().body)
   lazy val content: Element = document.selectFirst("#content")

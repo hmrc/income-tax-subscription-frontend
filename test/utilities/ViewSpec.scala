@@ -17,13 +17,16 @@
 package utilities
 
 import config.AppConfig
-import org.jsoup.nodes.Element
+import org.jsoup.Jsoup
+import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.{Assertion, MustMatchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
+import play.twirl.api.Html
 
 import scala.collection.JavaConversions._
 
@@ -38,6 +41,50 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
   val testBackUrl = "/test-back-url"
   val testCall: Call = Call("POST", "/test-url")
 
+  implicit val request: Request[_] = FakeRequest()
+
+  class TemplateViewTest(view: Html,
+                         title: String,
+                         isAgent: Boolean = false,
+                         backLink: Option[String] = None,
+                         hasSignOutLink: Boolean = false,
+                         error: Option[FormError] = None) {
+
+    val document: Document = Jsoup.parse(view.body)
+
+    private val titlePrefix: String = if (error.isDefined) "Error: " else ""
+    private val titleSuffix: String = if (isAgent) {
+      " - Use software to report your client’s Income Tax - GOV.UK"
+    } else {
+      " - Use software to send Income Tax updates - GOV.UK"
+    }
+
+    document.title mustBe s"$titlePrefix$title$titleSuffix"
+
+    backLink.map { href =>
+      val link = document.selectHead(".govuk-back-link")
+      link.text mustBe "Back"
+      link.attr("href") mustBe href
+    }
+
+    if (hasSignOutLink) {
+      val signOutLink: Element = document.selectHead(".hmrc-sign-out-nav__link")
+      signOutLink.text mustBe "Sign out"
+      signOutLink.attr("href") mustBe controllers.routes.SignOutController.signOut().url
+    } else {
+      document.selectOptionally(".hmrc-sign-out-nav__link") mustBe None
+    }
+
+    error.map { formError =>
+      val errorSummary: Element = document.selectHead(".govuk-error-summary")
+      errorSummary.selectHead("h2").text mustBe "There is a problem"
+      val errorLink: Element = errorSummary.selectHead("div > ul > li > a")
+      errorLink.text mustBe formError.message
+      errorLink.attr("href") mustBe s"#${formError.key}"
+    }
+
+  }
+
   implicit class CustomSelectors(element: Element) {
 
     def selectHead(selector: String): Element = {
@@ -49,6 +96,10 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
     def selectOptionally(selector: String): Option[Element] = {
       element.select(selector).headOption
+    }
+
+    def selectNth(selector: String, nth: Int): Element = {
+      selectHead(s"$selector:nth-of-type($nth)")
     }
 
     def content: Element = element.selectFirst("article")
