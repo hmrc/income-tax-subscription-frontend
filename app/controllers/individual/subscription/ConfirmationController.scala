@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.SubscriptionDataUtil._
-import views.html.individual.incometax.subscription.sign_up_complete
+import views.html.individual.incometax.subscription.SignUpComplete
 
 import scala.concurrent.ExecutionContext
 
@@ -32,7 +32,9 @@ import scala.concurrent.ExecutionContext
 class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        val authService: AuthService,
                                        accountingPeriodService: AccountingPeriodService,
-                                       subscriptionDetailsService: SubscriptionDetailsService)
+                                       subscriptionDetailsService: SubscriptionDetailsService,
+                                       signUpComplete:SignUpComplete
+                                      )
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController with FeatureSwitching {
@@ -45,7 +47,7 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
       val updatesBefore = accountingPeriodService.updateDatesBefore()
 
       subscriptionDetailsService.fetchAll() map { cacheMap =>
-        Ok(sign_up_complete(cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour)), endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter))
+        Ok(signUpComplete(cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour)), endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter))
       }
   }
 

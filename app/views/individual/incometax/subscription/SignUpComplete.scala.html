@@ -15,12 +15,17 @@
  *@
 
 @import config.AppConfig
-@import views.html.templates.main_template
+@import views.html.templates.PrincipalMainTemplate
+@import views.html.helpers.injected.ButtonHelper
 @import views.html.helpers._
 @import views.individual.helpers._
 @import models.IndividualSummary
 @import models.common.AccountingYearModel
 
+@this(
+    principalMainTemplate: PrincipalMainTemplate,
+    buttonHelper: ButtonHelper
+)
 @(summary: IndividualSummary, endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @incomeSource = @{
@@ -33,26 +38,24 @@
     }
 }
 
-@main_template(title = messages("sign-up-complete.title")) {
+@principalMainTemplate(title = messages("sign-up-complete.title")) {
 
     @dataHelper("self-employment", summary.incomeSource.map(_.selfEmployment.toString))
     @dataHelper("uk-property", summary.incomeSource.map(_.ukProperty.toString))
     @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod.toString))
 
-    <div class="form-group">
-        <section id="confirmation-heading" class="govuk-panel--confirmation">
-            <h1 class="transaction-banner__heading" style="color: #fff; font-size:42px">@messages("sign-up-complete.heading")</h1>
-        </section>
+    <div id="comfirmation-panel" class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-8">
+            <h1 class="govuk-panel__title">@messages("sign-up-complete.heading")</h1>
     </div>
 
-    <section class="form-group" id="whatHappensNow">
-        <h2>@messages("sign-up-complete.whatHappensNow.heading")</h2>
+    <section class="govuk-form-group" id="whatHappensNow">
+        <h2 class="govuk-heading-m">@messages("sign-up-complete.whatHappensNow.heading")</h2>
 
-        <ol id="actionList" class="list list-number">
+        <ol id="actionList" class="govuk-list govuk-list--number">
             <li>
                 @Html(messages(
                     key = "sign-up-complete.whatHappensNow.number1",
-                    args = <a id="compatibleSoftware" href={appConfig.softwareUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.number1.link")}</a>
+                    args = <a class = "govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.number1.link")}</a>
                 ))
             </li>
             @if(summary.selectedTaxYear.exists(_.accountingYear == Next)) {
@@ -63,13 +66,15 @@
 
         </ol>
 
-        <p>@Html(messages("sign-up-complete.whatHappensNow.para",
-            <a id="btaLink" href={appConfig.btaUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.para.link")}</a>))
+        <p class = "govuk-body">@Html(messages("sign-up-complete.whatHappensNow.para",
+            <a class = "govuk-link" id="btaLink" href={appConfig.btaUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.para.link")}</a>))
         </p>
 
-        <p>@messages("sign-up-complete.whatHappensNow.para2")</p>
+        <p class = "govuk-body">@messages("sign-up-complete.whatHappensNow.para2")</p>
+
+        @buttonHelper(messages("sign-up-complete.whatHappensNow.signOut"))
     </section>
 
-    @signOutButton(messages("sign-up-complete.whatHappensNow.signOut"))
+
 
 }

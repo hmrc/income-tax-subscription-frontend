@@ -16,20 +16,23 @@
 
 package controllers.individual.subscription
 
-import java.time.LocalDateTime
-
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
 import utilities.ITSASessionKeys
 import utilities.TestModels.testCacheMap
+import views.html.individual.incometax.subscription.SignUpComplete
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
@@ -39,11 +42,19 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with FeatureSwitching {
 
+  val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
+
+  override def beforeEach() = {
+    reset(mockSignUpComplete)
+    super.beforeEach()
+  }
+
   object TestConfirmationController extends ConfirmationController(
     mockAuditingService,
     mockAuthService,
     mockAccountingPeriodService,
-    MockSubscriptionDetailsService
+    MockSubscriptionDetailsService,
+    mockSignUpComplete
   )
 
   val taxQuarter1: (String, String) = ("agent.sign-up.complete.julyUpdate", "2020")
@@ -74,6 +85,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
         mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
         mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
+
+        when(mockSignUpComplete(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+        (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime)
         )

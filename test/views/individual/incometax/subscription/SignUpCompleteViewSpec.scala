@@ -29,10 +29,12 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utilities.TestModels.{testSummaryData, testSummaryDataBusinessNextTaxYear}
 import views.ViewSpecTrait
-import utilities.UnitTestTrait
+import views.html.individual.incometax.subscription.SignUpComplete
 
 
 class SignUpCompleteViewSpec extends ViewSpecTrait {
+
+  val signUpComplete: SignUpComplete = app.injector.instanceOf[SignUpComplete]
 
   val submissionDateValue: DateModel = DateModel("1", "1", "2016")
   val action: Call = ViewSpecTrait.testCall
@@ -49,7 +51,7 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
   val testUpdatesBeforeQ4 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"), ("5 January 2021", "2021"))
   val testUpdatesAfterQ4 = List(("5 April 2021", "2021"))
 
-  def page(incomeSource: IncomeSourceModel, taxQuarter: String): Html = views.html.individual.incometax.subscription.sign_up_complete(
+  def page(incomeSource: IncomeSourceModel, taxQuarter: String): Html = signUpComplete(
     summary = incomeSource match {
       case IncomeSourceModel(true, false, false) => testSummaryDataBusinessNextTaxYear
       case _ => testSummaryData
@@ -87,20 +89,21 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
     "have a successful transaction confirmation banner" which {
 
       "has a turquoise background" in {
-        documentNextTaxYear.select("#confirmation-heading").hasClass("govuk-panel--confirmation") mustBe true
+        documentNextTaxYear.select("#comfirmation-panel").hasClass("govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-8") mustBe true
       }
 
-      s"has a heading (H1)" which {
+      s"has a heading (H1)" in {
 
-        lazy val heading = documentNextTaxYear.select("H1")
-        s"has the text '$heading'" in {
-          heading.text() mustBe MessageLookup.SignUpCompleteIndividual.heading
-        }
-
-        "has the class 'heading-large'" in {
-          heading.hasClass("transaction-banner__heading") mustBe true
-        }
+        val heading = documentNextTaxYear.select("H1")
+        heading.text() mustBe MessageLookup.SignUpCompleteIndividual.heading
+        heading.hasClass("govuk-panel__title") mustBe true
       }
+    }
+
+    "have a sign out link on the top banner" in {
+      val actionSignOut = documentNextTaxYear.getElementsByClass("hmrc-sign-out-nav__link")
+      actionSignOut.text() mustBe signOut
+      actionSignOut.attr("href") mustBe SignOutController.signOut.url
     }
 
     "have a 'What you need to do next' section for Next Tax Year" which {
@@ -204,13 +207,13 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
           documentNextTaxYear.select("#whatHappensNow p").get(1).text() mustBe para2
         }
 
-        "have a sign out button" in {
-          val actionSignOut = documentNextTaxYear.getElementById("sign-out-button")
-          actionSignOut.attr("role") mustBe "button"
-          actionSignOut.text() mustBe signOut
-          actionSignOut.attr("href") mustBe SignOutController.signOut.url
-        }
       }
     }
+
+    "have a finish and sign out button" in {
+      val actionSignOut = documentNextTaxYear.getElementsByClass("govuk-button")
+      actionSignOut.text() mustBe finishAndSignOut
+    }
+
   }
 }
