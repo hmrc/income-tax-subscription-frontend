@@ -22,7 +22,6 @@ import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import forms.agent.IncomeSourceForm
-import javax.inject.{Inject, Singleton}
 import models.AgentSummary
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
@@ -34,14 +33,18 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
+import views.html.agent.IncomeSource
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeSourceController @Inject()(val auditingService: AuditingService,
-                                       val authService: AuthService,
-                                       subscriptionDetailsService: SubscriptionDetailsService,
-                                       incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
+class IncomeSourceController @Inject()(
+                                        incomeSource: IncomeSource,
+                                        val auditingService: AuditingService,
+                                        val authService: AuthService,
+                                        subscriptionDetailsService: SubscriptionDetailsService,
+                                        incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching {
@@ -55,7 +58,7 @@ class IncomeSourceController @Inject()(val auditingService: AuditingService,
   }
 
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    views.html.agent.income_source(
+    incomeSource(
       incomeSourceForm = incomeSourceForm,
       postAction = controllers.agent.routes.IncomeSourceController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
@@ -66,14 +69,13 @@ class IncomeSourceController @Inject()(val auditingService: AuditingService,
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       subscriptionDetailsService.fetchIncomeSource() map { incomeSource =>
-        Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm
-          .fill(incomeSource), isEditMode = isEditMode))
+        Ok(view(incomeSourceForm = incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      IncomeSourceForm.incomeSourceForm.bindFromRequest.fold(
+      incomeSourceForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource => {
@@ -85,6 +87,8 @@ class IncomeSourceController @Inject()(val auditingService: AuditingService,
         }
       )
   }
+
+  private def incomeSourceForm: Form[IncomeSourceModel] = IncomeSourceForm.incomeSourceForm(isEnabled(ForeignProperty))
 
   private[controllers] def editJourney(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier): Future[Result] = {
     for {

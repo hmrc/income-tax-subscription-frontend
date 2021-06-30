@@ -57,9 +57,9 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           res should have(
             httpStatus(OK),
             pageTitle(messages("agent.income_source.heading") + serviceNameGovUK),
-            checkboxSet(id = "Business", selectedCheckbox = Some(messages("agent.income_source.selfEmployed"))),
-            checkboxSet(id = "UKProperty", selectedCheckbox = Some(messages("agent.income_source.rentUkProperty"))),
-            checkboxSet(id = "ForeignProperty", selectedCheckbox = Some(messages("agent.income_source.foreignProperty")))
+            checkboxSet(id = "IncomeSource", selectedCheckbox = Some(messages("agent.income_source.selfEmployed"))),
+            checkboxSet(id = "IncomeSource-2", selectedCheckbox = Some(messages("agent.income_source.rentUkProperty"))),
+            checkboxSet(id = "IncomeSource-3", selectedCheckbox = Some(messages("agent.income_source.foreignProperty")))
           )
         }
       }
@@ -78,9 +78,9 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           res should have(
             httpStatus(OK),
             pageTitle(messages("agent.income_source.heading") + serviceNameGovUK),
-            checkboxSet(id = "Business", selectedCheckbox = None),
-            checkboxSet(id = "UKProperty", selectedCheckbox = None),
-            checkboxSet(id = "ForeignProperty", selectedCheckbox = None)
+            checkboxSet(id = "IncomeSource", selectedCheckbox = None),
+            checkboxSet(id = "IncomeSource-2", selectedCheckbox = None),
+            checkboxSet(id = "IncomeSource-3", selectedCheckbox = None)
           )
         }
       }
@@ -100,14 +100,14 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           res should have(
             httpStatus(OK),
             pageTitle(messages("agent.income_source.heading") + serviceNameGovUK),
-            checkboxSet(id = "Business", selectedCheckbox = Some(messages("agent.income_source.selfEmployed"))),
-            checkboxSet(id = "UKProperty", selectedCheckbox = Some(messages("agent.income_source.rentUkProperty")))
+            checkboxSet(id = "IncomeSource", selectedCheckbox = Some(messages("agent.income_source.selfEmployed"))),
+            checkboxSet(id = "IncomeSource-2", selectedCheckbox = Some(messages("agent.income_source.rentUkProperty")))
           )
 
-          val checkboxes = Jsoup.parse(res.body).select(".multiple-choice")
+          val checkboxes = Jsoup.parse(res.body).select(".govuk-checkboxes__item")
           checkboxes.size() shouldBe 2
 
-          val checkboxTextForeignProperty = Jsoup.parse(res.body).select(s"label[for=ForeignProperty]").text()
+          val checkboxTextForeignProperty = Jsoup.parse(res.body).select(s"label[for=IncomeSource-3]").text()
           checkboxTextForeignProperty shouldBe empty
 
         }

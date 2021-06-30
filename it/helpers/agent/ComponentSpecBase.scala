@@ -208,7 +208,7 @@ trait ComponentSpecBase extends UnitSpec
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            IncomeSourceForm.incomeSourceForm(true).fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
@@ -218,6 +218,7 @@ trait ComponentSpecBase extends UnitSpec
     def sessionTimeout(): WSResponse = get("/session-timeout")
 
     def keepAlive(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/keep-alive", sessionKeys)
+
     def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/timeout", sessionKeys)
 
     def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
@@ -322,7 +323,7 @@ trait ComponentSpecBase extends UnitSpec
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            IncomeSourceForm.incomeSourceForm(true).fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

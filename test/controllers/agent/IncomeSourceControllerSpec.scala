@@ -23,8 +23,8 @@ import config.featureswitch.FeatureSwitching
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import forms.agent.IncomeSourceForm
 import models.Current
-import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Result}
@@ -32,10 +32,12 @@ import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource}
 import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testOverseasAccountingMethodProperty, testOverseasPropertyStartDateModel, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import views.agent.mocks.MockIncomeSource
 
 import scala.concurrent.Future
 
 class IncomeSourceControllerSpec extends AgentControllerBaseSpec
+  with MockIncomeSource
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
   with MockConfig
@@ -43,6 +45,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
   with FeatureSwitching {
 
   class TestIncomeSourceController extends IncomeSourceController(
+    incomeSource,
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
@@ -77,6 +80,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
     "the new income source flow" should {
       "return ok (200)" in {
         mockFetchIncomeSourceFromSubscriptionDetails(None)
+        mockIncomeSource()
 
         val result = call
         status(result) must be(Status.OK)
@@ -95,7 +99,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
                    isEditMode: Boolean
                   ): Future[Result] = {
       new TestIncomeSourceController().submit(isEditMode = isEditMode)(
-        subscriptionRequest.post(IncomeSourceForm.incomeSourceForm, incomeSourceModel)
+        subscriptionRequest.post(IncomeSourceForm.incomeSourceForm(true), incomeSourceModel)
       )
     }
 
@@ -105,7 +109,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         "redirect to BusinessName page" in {
           setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = false)
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
@@ -119,7 +123,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         "Release Four feature switch is disabled" should {
           "redirect to the Property Accounting Method page" in {
             setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
@@ -134,7 +138,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           "redirect to the Property Start Date page" in {
             enable(ReleaseFour)
             setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(false, true, false), isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyStartDateController.show().url)
@@ -149,7 +153,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           "redirect to BusinessName page" in {
             setupMockSubscriptionDetailsSaveFunctions()
 
-            val goodRequest = callSubmit(IncomeSourceModel(true, true, false), isEditMode = false)
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get must be(controllers.agent.business.routes.BusinessNameController.show().url)
@@ -164,6 +168,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           lazy val badRequest = new TestIncomeSourceController().submit(isEditMode = true)(subscriptionRequest)
 
           "return a bad request status (400)" in {
+            mockIncomeSource()
             status(badRequest) must be(Status.BAD_REQUEST)
 
             await(badRequest)
@@ -185,9 +190,9 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
-            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(incomeSource = Some(IncomeSourceModel(false, true, false)))))
+            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)))))
 
-            val goodRequest = callSubmit(IncomeSourceModel(true, false, false), isEditMode = true)
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
@@ -472,6 +477,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       lazy val badRequest = new TestIncomeSourceController().submit(isEditMode = true)(subscriptionRequest)
 
       "return a bad request status (400)" in {
+        mockIncomeSource()
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
