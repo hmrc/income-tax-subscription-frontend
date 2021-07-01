@@ -26,12 +26,13 @@ import models.common.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
+import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockWhatYearToSignUp}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 import scala.concurrent.Future
 
 class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
+  with MockWhatYearToSignUp
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with MockAuditingService
@@ -49,6 +50,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   }
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
+    whatYearToSignUp,
     mockAuditingService,
     mockAuthService,
     mockAccountingPeriodService,
@@ -58,7 +60,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
       "there is a pre-saved tax year option in Subscription Details " in {
-
+        mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
         mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
@@ -72,7 +74,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "display the What Year To Sign Up view with empty form and return OK (200)" when {
       "there is a no pre-saved tax year option in Subscription Details " in {
-
+        mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
         mockFetchSelectedTaxYearFromSubscriptionDetails(None)
@@ -98,6 +100,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "not in edit mode" should {
       "redirect to the income source page" in {
+        mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callSubmit(isEditMode = false)
 
@@ -111,6 +114,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "it is in edit mode" should {
       "redirect to the check your answers page" in {
+        mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = true)
@@ -125,6 +129,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
+        mockIncomeSource()
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
         status(badRequest) must be(Status.BAD_REQUEST)
       }
@@ -132,6 +137,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "The back url" should {
       "return the user to the check your answers page" in {
+        mockIncomeSource()
         TestWhatYearToSignUpController.backUrl mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
       }
     }

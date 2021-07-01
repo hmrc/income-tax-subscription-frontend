@@ -122,7 +122,7 @@ trait CustomMatchers {
     new HavePropertyMatcher[WSResponse, String] {
       def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
-        val errorHeader = body.getElementById("error-summary-heading")
+        val errorHeader = Option(body.getElementById("error-summary-title")).getOrElse(body.getElementById("error-summary-heading"))
 
         HavePropertyMatchResult(
           errorHeader != null,

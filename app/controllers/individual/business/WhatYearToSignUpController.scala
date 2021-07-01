@@ -19,18 +19,20 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business.AccountingYearForm
+
 import javax.inject.{Inject, Singleton}
 import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
-import views.html.individual.incometax.business.what_year_to_sign_up
+import views.html.individual.incometax.business.{WhatYearToSignUp}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
+class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
+                                           val auditingService: AuditingService,
                                            val authService: AuthService,
                                            accountingPeriodService: AccountingPeriodService,
                                            subscriptionDetailsService: SubscriptionDetailsService)
@@ -39,7 +41,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                            mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
-    what_year_to_sign_up(
+    whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.individual.business.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
       backUrl = backUrl,
