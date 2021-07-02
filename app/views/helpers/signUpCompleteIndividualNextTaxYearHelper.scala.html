@@ -16,11 +16,12 @@
 
 @import config.AppConfig
 
+
 @(endYearOfCurrentTaxPeriod: Int)(implicit messages: Messages, appConfig: AppConfig)
 
 <li>
     <span>@messages("sign-up-complete.whatHappensNext.sendQuarterly")</span>
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("sign-up.complete.julyUpdate", endYearOfCurrentTaxPeriod.toString)</li>
         <li>@messages("sign-up.complete.octoberUpdate", endYearOfCurrentTaxPeriod.toString)</li>
         <li>@messages("sign-up.complete.januaryUpdate", (endYearOfCurrentTaxPeriod + 1).toString)</li>

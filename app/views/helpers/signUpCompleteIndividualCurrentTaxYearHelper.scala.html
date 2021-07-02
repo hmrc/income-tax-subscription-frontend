@@ -16,12 +16,13 @@
 
 @import config.AppConfig
 
+
 @(endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)])(implicit messages: Messages, appConfig: AppConfig)
 
 @if(updatesBefore.nonEmpty){
     <li>
         <span>@messages("sign-up-complete.whatHappensNow.sendPreviousUpdates")</span>
-        <ul class="list list-bullet">
+        <ul class="govuk-list govuk-list--bullet">
             @for((update, year) <- updatesBefore) {
                 <li>@messages(update, year)</li>
             }
@@ -32,7 +33,7 @@
 @if(updatesAfter.nonEmpty){
     <li>
         <span>@messages("sign-up-complete.whatHappensNow.sendQuarterly")</span>
-        <ul class="list list-bullet">
+        <ul class="govuk-list govuk-list--bullet">
             @for((updates, year) <- updatesAfter) {
                 <li>@messages(updates, year)</li>
             }

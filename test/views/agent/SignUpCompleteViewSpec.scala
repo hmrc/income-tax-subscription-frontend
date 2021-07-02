@@ -95,7 +95,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
       s"has a heading (H1)" which {
 
         lazy val heading = documentNextTaxYear.select("H1")
-        s"has the text '${heading}'" in {
+        s"has the correct text" in {
           heading.text() mustBe MessageLookup.SignUpComplete.heading
         }
 
