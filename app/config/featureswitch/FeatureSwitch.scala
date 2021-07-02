@@ -28,7 +28,8 @@ object FeatureSwitch {
     ReleaseFour,
     ForeignProperty,
     IdentityVerification,
-    RemoveCovidPages
+    RemoveCovidPages,
+    SPSEnabled
   )
 
   def apply(str: String): FeatureSwitch =
@@ -57,6 +58,11 @@ object FeatureSwitch {
   case object RemoveCovidPages extends FeatureSwitch {
     override val name = s"$prefix.remove-covid-eligibility-and-kickout-page"
     override val displayText = "Remove Covid Eligibility And Kickout Page"
+  }
+
+  case object SPSEnabled extends FeatureSwitch {
+    override val name = s"$prefix.SPS-enabled"
+    override val displayText = "Enable strategic preference service (SPS)"
   }
 
 }
