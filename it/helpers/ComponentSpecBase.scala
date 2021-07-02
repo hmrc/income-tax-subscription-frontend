@@ -162,6 +162,14 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def ivSuccess(): WSResponse = get("/iv-success")
 
+    def spsCallback(hasEntityId: Boolean): WSResponse = {
+      if(hasEntityId) {
+        get("/sps-callback?entityId=testId")
+      } else {
+        get("/sps-callback")
+      }
+    }
+
     def income(): WSResponse = get("/income")
 
     def incomeSource(): WSResponse = get("/details/income-receive")
