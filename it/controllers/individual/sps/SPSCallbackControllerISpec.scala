@@ -19,7 +19,7 @@ package controllers.individual.sps
 import config.featureswitch.FeatureSwitch.SPSEnabled
 import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.accountingYearURI
+import helpers.IntegrationTestConstants.{accountingYearURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
@@ -40,7 +40,7 @@ class SPSCallbackControllerISpec extends ComponentSpecBase with FeatureSwitching
 
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI("http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fsps-callback&origin=income-tax-subscription-frontend")
+          redirectURI(basGatewaySignIn("/sps-callback"))
         )
       }
     }
