@@ -1,0 +1,80 @@
+@import config.AppConfig
+@import forms.submapping.AccountingYearMapping
+@import models.common.AccountingYearModel
+@import views.helpers.RadioOption
+@import views.html.helper.form
+@import views.html.helpers.{back_link, summaryErrorHelper}
+@import views.html.templates.AgentMainTemplate
+@import forms.agent.AccountingYearForm
+@import views.html.helpers.injected.RadioHelper
+@import views.html.helpers.injected.ContinueButton
+
+@this(mainTemplate: AgentMainTemplate,
+        radioHelper: RadioHelper,
+        continueButton: ContinueButton,
+        form : FormWithCSRF
+)
+
+@(accountingYearForm: Form[AccountingYearModel], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@question = @{messages("agent.business.what_year_to_sign_up.heading")}
+
+@optionCurrentContent ={
+    <p class="govuk-body"> @messages("agent.business.what_year_to_sign_up.conditional.1.line_1") </p>
+    <ul class="govuk-list">
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_1",  (endYearOfCurrentTaxPeriod - 1).toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_2",  (endYearOfCurrentTaxPeriod - 1).toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_3",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_4",  endYearOfCurrentTaxPeriod.toString)</li>
+    </ul>
+    <p class="govuk-body"> @messages("agent.business.what_year_to_sign_up.conditional.1.line_2", (endYearOfCurrentTaxPeriod +1).toString) </p>
+}
+
+@optionNextContent ={
+    <p class="govuk-body"> @messages("agent.business.what_year_to_sign_up.conditional.2.line_1") </p>
+    <ul class="govuk-list">
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_1",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_2",  endYearOfCurrentTaxPeriod.toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_3",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
+        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_4",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
+    </ul>
+    <p class="govuk-body"> @messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString) </p>
+}
+
+@backLink = @{
+    if(isEditMode) {
+        Some(backUrl)
+    } else {
+        None
+    }
+}
+
+@mainTemplate(title = messages("agent.business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backLink) {
+
+    @form(action = postAction) {
+
+        @radioHelper(
+            hint = Some(messages("agent.business.what_year_to_sign_up.line_1")),
+            field = accountingYearForm(AccountingYearForm.accountingYear),
+            legend = question,
+            radioItems = Seq(
+                    RadioItem(
+                        content = Text(messages("agent.business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
+                        value = Some(Current.toString),
+                        conditionalHtml = Some(optionCurrentContent)
+                ),
+                RadioItem(
+                    content = Text(messages("agent.business.what_year_to_sign_up.option_2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)),
+                    value = Some(Next.toString),
+                    conditionalHtml = Some(optionNextContent)
+                )
+            )
+        )
+
+        @if(isEditMode) {
+            @continueButton(Some(Messages("base.update")))
+        } else {
+            @continueButton()
+        }
+    }
+}

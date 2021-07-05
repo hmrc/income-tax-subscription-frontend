@@ -19,27 +19,29 @@ package controllers.agent
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.AccountingYearForm
-import javax.inject.{Inject, Singleton}
 import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
+import views.html.agent.business.WhatYearToSignUp
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                            val authService: AuthService,
                                            accountingPeriodService: AccountingPeriodService,
-                                           subscriptionDetailsService: SubscriptionDetailsService)
+                                           subscriptionDetailsService: SubscriptionDetailsService,
+                                           whatYearToSignUp: WhatYearToSignUp)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                            val appConfig: AppConfig) extends AuthenticatedController {
 
   val backUrl: String = controllers.agent.routes.CheckYourAnswersController.show().url
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
-    views.html.agent.business.what_year_to_sign_up(
+    whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.agent.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
       backUrl = backUrl,

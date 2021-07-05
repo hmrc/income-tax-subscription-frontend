@@ -19,104 +19,108 @@ package views.agent.business
 import agent.assets.MessageLookup
 import forms.agent.AccountingYearForm
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-
 import play.api.mvc.Call
-import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
+import utilities.ViewSpec
 import views.ViewSpecTrait
+import views.html.agent.business.WhatYearToSignUp
 
-class WhatYearToSignUpViewSpec extends ViewSpecTrait {
+class WhatYearToSignUpViewSpec extends ViewSpec {
 
   val backUrl: String = ViewSpecTrait.testBackUrl
   val action: Call = ViewSpecTrait.testCall
   val taxYearEnd: Int = 2020
 
-  class Setup(isEditMode: Boolean = false) {
-    val page: HtmlFormat.Appendable = views.html.agent.business.what_year_to_sign_up(
-      accountingYearForm = AccountingYearForm.accountingYearForm,
-      postAction = action,
-      backUrl = backUrl,
-      endYearOfCurrentTaxPeriod = taxYearEnd,
-      isEditMode = isEditMode
-    )(FakeRequest(), implicitly, appConfig)
+  val whatYearToSignUp: WhatYearToSignUp = app.injector.instanceOf[WhatYearToSignUp]
 
-    val document: Document = Jsoup.parse(page.body)
+  def view(editMode: Boolean = false): Html = {
+    whatYearToSignUp(
+      AccountingYearForm.accountingYearForm,
+      postAction = testCall,
+      backUrl = testBackUrl,
+      endYearOfCurrentTaxPeriod = taxYearEnd,
+      isEditMode = editMode,
+    )
   }
 
+    class ViewTest(editMode: Boolean = false) {
+      val document: Document = Jsoup.parse(view(editMode = editMode).body)
+    }
+
   "what year to sign up" must {
-    "have a title" in new Setup {
+    "have a title" in new ViewTest {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       document.title mustBe MessageLookup.Business.WhatYearToSignUp.heading + serviceNameGovUk
     }
 
-    "have a heading" in new Setup {
+    "have a heading" in new ViewTest {
       document.select("h1").text mustBe MessageLookup.Business.WhatYearToSignUp.heading
     }
 
-    "have content" in new Setup {
-      val paragraphs: Elements = document.select(".content__body").select("p")
-      val uls: Elements = document.select(".content__body").select("ul").select("li")
-      paragraphs.get(0).text() mustBe MessageLookup.Business.WhatYearToSignUp.line1
-      paragraphs.get(1).text() mustBe MessageLookup.Business.WhatYearToSignUp.option1ConditionalExample1
-      paragraphs.get(2).text() mustBe MessageLookup.Business.WhatYearToSignUp.option1ConditionalExample2((taxYearEnd + 1).toString)
-      paragraphs.get(3).text() mustBe MessageLookup.Business.WhatYearToSignUp.option2ConditionalExample1
-      paragraphs.get(4).text() mustBe MessageLookup.Business.WhatYearToSignUp.option2ConditionalExample2((taxYearEnd + 2).toString)
+    "have content" in new ViewTest {
+      val paragraphs: Elements = document.select(".govuk-body").select("p")
+      val conditionalListLabels: Elements = document.select(".govuk-radios__conditional").select(".govuk-list").select("li")
+      document.select(".govuk-hint").get(0).text() mustBe MessageLookup.Business.WhatYearToSignUp.line1
+      paragraphs.get(0).text() mustBe MessageLookup.Business.WhatYearToSignUp.option1ConditionalExample1
+      paragraphs.get(1).text() mustBe MessageLookup.Business.WhatYearToSignUp.option1ConditionalExample2((taxYearEnd + 1).toString)
+      paragraphs.get(2).text() mustBe MessageLookup.Business.WhatYearToSignUp.option2ConditionalExample1
+      paragraphs.get(3).text() mustBe MessageLookup.Business.WhatYearToSignUp.option2ConditionalExample2((taxYearEnd + 2).toString)
 
-      uls.get(0).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate1((taxYearEnd - 1).toString)
-      uls.get(1).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate2((taxYearEnd - 1).toString)
-      uls.get(2).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate3(taxYearEnd.toString)
-      uls.get(3).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate4(taxYearEnd.toString)
+      conditionalListLabels.get(0).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate1((taxYearEnd - 1).toString)
+      conditionalListLabels.get(1).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate2((taxYearEnd - 1).toString)
+      conditionalListLabels.get(2).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate3(taxYearEnd.toString)
+      conditionalListLabels.get(3).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate4(taxYearEnd.toString)
 
-      uls.get(4).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate1(taxYearEnd.toString)
-      uls.get(5).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate2(taxYearEnd.toString)
-      uls.get(6).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate3((taxYearEnd + 1).toString)
-      uls.get(7).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate4((taxYearEnd + 1).toString)
+      conditionalListLabels.get(4).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate1(taxYearEnd.toString)
+      conditionalListLabels.get(5).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate2(taxYearEnd.toString)
+      conditionalListLabels.get(6).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate3((taxYearEnd + 1).toString)
+      conditionalListLabels.get(7).text() mustBe MessageLookup.Business.WhatYearToSignUp.conditionalDate4((taxYearEnd + 1).toString)
     }
 
     "have a form" which {
-      "has correct attributes" in new Setup {
+      "has correct attributes" in new ViewTest {
         val form: Elements = document.select("form")
         form.attr("method") mustBe action.method
         form.attr("action") mustBe action.url
       }
 
-      "has a current tax year radio button" in new Setup {
-        val radioWithLabel: Elements = document.select("form fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingYear]").`val` mustBe "CurrentYear"
-        radioWithLabel.select("label[for=accountingYear]").text mustBe Seq(
+      "has a current tax year radio button" in new ViewTest {
+        val radio: Element = document.select(".govuk-radios__item").get(0)
+        radio.select("input[id=accountingYear]").`val` mustBe "CurrentYear"
+        radio.select("label[for=accountingYear]").text mustBe Seq(
           MessageLookup.Business.WhatYearToSignUp.option1((taxYearEnd - 1).toString, taxYearEnd.toString)
         ).mkString(" ")
       }
 
-      "has a next tax year radio button" in new Setup {
-        val radioWithLabel: Elements = document.select("form fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingYear-2]").`val` mustBe "NextYear"
-        radioWithLabel.select("label[for=accountingYear-2]").text mustBe Seq(
+      "has a next tax year radio button" in new ViewTest {
+        val radio: Element = document.select(".govuk-radios__item").get(1)
+        radio.select("input[id=accountingYear-2]").`val` mustBe "NextYear"
+        radio.select("label[for=accountingYear-2]").text mustBe Seq(
           MessageLookup.Business.WhatYearToSignUp.option2(taxYearEnd.toString, (taxYearEnd + 1).toString)
         ).mkString(" ")
       }
 
       "has a continue button" that {
-        s"displays ${MessageLookup.Base.continue} when not in edit mode" in new Setup {
-          document.select("button[type=submit]").text mustBe MessageLookup.Base.continue
+        s"displays ${MessageLookup.Base.continue} when not in edit mode" in new ViewTest {
+          document.select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
         }
-        s"displays ${MessageLookup.Base.update} when in edit mode" in new Setup(isEditMode = true) {
-          document.select("button[type=submit]").text mustBe MessageLookup.Base.update
+        s"displays ${MessageLookup.Base.update} when in edit mode" in new ViewTest(editMode = true) {
+          document.select("button[id=continue-button]").text mustBe MessageLookup.Base.update
         }
       }
     }
 
     "have a back button" when {
-      "in edit mode" in new Setup(isEditMode = true) {
-        val backButton: Elements = document.select(".link-back")
+      "in edit mode" in new ViewTest(editMode = true) {
+        val backButton: Elements = document.select(".govuk-back-link")
         backButton.attr("href") mustBe backUrl
         backButton.text mustBe MessageLookup.Base.back
       }
     }
     "not have a back button" when {
-      "not in edit mode" in new Setup(isEditMode = false) {
+      "not in edit mode" in new ViewTest() {
         Option(document.selectFirst(".link-back")) mustBe None
       }
     }
