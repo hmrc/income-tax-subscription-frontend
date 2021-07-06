@@ -16,6 +16,9 @@ GET         /callback                                            controllers.ind
 GET         /paperless-error                                     controllers.individual.PreferencesController.show
 POST        /paperless-error                                     controllers.individual.PreferencesController.submit
 
+#SPS
+GET         /sps-callback                                       controllers.individual.sps.SPSCallbackController.callback
+
 # Income Source Routes
 GET         /details/income-receive                              controllers.individual.incomesource.IncomeSourceController.show(editMode: Boolean ?= false)
 POST        /details/income-receive                              controllers.individual.incomesource.IncomeSourceController.submit(editMode: Boolean ?= false)

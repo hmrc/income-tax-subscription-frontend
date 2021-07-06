@@ -27,4 +27,6 @@ object ITSASessionKeys {
   val AgentReferenceNumber = "Agent-Reference-Number"
   val ConfirmedAgent = "Confirmed-Agent"
   val IdentityVerificationFlag = "ITSA-Identity-Verification-Flag"
+
+  val SPSEntityId: String = "SPS-Entity-ID"
 }
