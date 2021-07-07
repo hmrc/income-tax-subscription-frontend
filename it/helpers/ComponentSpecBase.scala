@@ -158,6 +158,8 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def indexPage(): WSResponse = get("/index")
 
+    def spsHandoff(): WSResponse = get("/sps-handoff")
+
     def ivFailure(): WSResponse = get("/iv-failure")
 
     def ivSuccess(): WSResponse = get("/iv-success")
