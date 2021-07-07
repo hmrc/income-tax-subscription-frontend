@@ -27,10 +27,13 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
+import views.agent.mocks.MockWhatYearToSignUp
+import views.html.agent.business.WhatYearToSignUp
 
 import scala.concurrent.Future
 
 class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
+  with MockWhatYearToSignUp
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with MockAuditingService
@@ -46,13 +49,15 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     mockAuditingService,
     mockAuthService,
     mockAccountingPeriodService,
-    MockSubscriptionDetailsService
+    MockSubscriptionDetailsService,
+    whatYearToSignUp
   )
 
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
       "there is a pre-saved tax year option in Subscription Details " in {
 
+        mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
         mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
@@ -66,7 +71,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
     "display the What Year To Sign Up view with empty form and return OK (200)" when {
       "there is a no pre-saved tax year option in Subscription Details " in {
-
+        mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
         mockFetchSelectedTaxYearFromSubscriptionDetails(None)
@@ -92,6 +97,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
+        mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         val goodRequest = callShow(isEditMode = false)
@@ -103,6 +109,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       }
 
       "redirect to Income Sources page" in {
+        mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         val goodRequest = callShow(isEditMode = false)
@@ -117,6 +124,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
+        mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
@@ -128,6 +136,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       }
 
       "redirect to checkYourAnswer page" in {
+        mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
@@ -142,7 +151,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
-
+        mockIncomeSource()
         val badRequest = callShowWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
@@ -154,6 +163,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   "The back url is in edit mode" when {
     "the user click back url" should {
       "redirect to check your answer page" in {
+        mockIncomeSource()
         TestWhatYearToSignUpController.backUrl mustBe
           controllers.agent.routes.CheckYourAnswersController.show().url
       }
