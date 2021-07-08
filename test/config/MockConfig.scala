@@ -114,6 +114,9 @@ trait MockConfig extends AppConfig {
 
   override val countdownLength: String = "1234"
   override val timeoutLength: String = "87913"
+
+  override val channelPreferencesUrl: String = "/channel-preferences"
+
 }
 
 object MockConfig extends MockConfig

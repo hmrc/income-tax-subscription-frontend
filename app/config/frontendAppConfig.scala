@@ -46,6 +46,7 @@ trait AppConfig extends FeatureSwitching {
   val microServiceUrl: String
   val countdownLength: String
   val timeoutLength: String
+  val channelPreferencesUrl: String
 
   def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
 
@@ -178,6 +179,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val clientMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
   override lazy val signUpIncomeSourcesUrl = s"$microServiceUrl/income-tax-subscription/mis/sign-up"
   override lazy val createIncomeSourcesUrl = s"$microServiceUrl/income-tax-subscription/mis/create"
+  override lazy val channelPreferencesUrl: String = config.baseUrl("channel-preferences")
+
 
   override def storeNinoUrl(token: String): String = s"$microServiceUrl/income-tax-subscription/identifier-mapping/$token"
 
