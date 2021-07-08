@@ -18,6 +18,8 @@ package controllers.usermatching
 
 import agent.audit.mocks.MockAuditingService
 import config.MockConfig
+import config.featureswitch.FeatureSwitch.SPSEnabled
+import config.featureswitch.FeatureSwitching
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.ControllerBaseSpec
 import org.mockito.Mockito.reset
@@ -37,7 +39,8 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockCitizenDetailsService
   with MockGetEligibilityStatusService
-  with MockAuditingService {
+  with MockAuditingService
+  with FeatureSwitching {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -48,6 +51,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAuthService)
+    disable(SPSEnabled)
     mockNinoRetrieval()
   }
 
@@ -97,31 +101,69 @@ class HomeControllerSpec extends ControllerBaseSpec
         "the user is eligible " when {
           "the user does not have a current unauthorised subscription journey" when {
             "the user has a UTR" should {
-              "redirect to the sign up journey" in {
-                mockNinoAndUtrRetrieval()
-                mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-                setupMockGetSubscriptionNotFound(testNino)
-                mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+              "redirect to the sign up journey" when {
+                "feature switch SPSEnabled is enabled" should {
+                  "redirect to SPSHandoff controller" in {
+                    mockNinoAndUtrRetrieval()
+                    mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+                    setupMockGetSubscriptionNotFound(testNino)
+                    mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+                    enable(SPSEnabled)
 
-                val result = await(testHomeController().index(fakeRequest))
-                status(result) must be(Status.SEE_OTHER)
-                redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
+                    val result = await(testHomeController().index(fakeRequest))
+                    status(result) must be(Status.SEE_OTHER)
+                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS().url
+                  }
+                }
+                "feature switch SPSEnabled is disabled" should {
+                  "redirect to preference controller" in {
+                    mockNinoAndUtrRetrieval()
+                    mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+                    setupMockGetSubscriptionNotFound(testNino)
+                    mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+
+                    val result = await(testHomeController().index(fakeRequest))
+                    status(result) must be(Status.SEE_OTHER)
+                    redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
+                  }
+                }
               }
             }
 
             "the user does not have a utr" when {
-              "the user has a matching utr in CID against their NINO" in {
-                mockNinoRetrieval()
-                mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
-                setupMockGetSubscriptionNotFound(testNino)
-                mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+              "the user has a matching utr in CID against their NINO" when {
+                "feature switch SPSEnabled is enabled" should {
+                  "redirect to SPSHandoff controller" in {
+                    mockNinoRetrieval()
+                    mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
+                    setupMockGetSubscriptionNotFound(testNino)
+                    mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+                    enable(SPSEnabled)
 
-                val result = await(testHomeController().index(fakeRequest))
+                    val result = await(testHomeController().index(fakeRequest))
 
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
+                    status(result) mustBe SEE_OTHER
+                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS().url
 
-                session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+                    session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+                  }
+                }
+
+                "feature switch SPSEnabled is disabled" should {
+                  "redirect to preference controller" in {
+                    mockNinoRetrieval()
+                    mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
+                    setupMockGetSubscriptionNotFound(testNino)
+                    mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+
+                    val result = await(testHomeController().index(fakeRequest))
+
+                    status(result) mustBe SEE_OTHER
+                    redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
+
+                    session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+                  }
+                }
               }
 
               "the user does not have a matching utr in CID" should {
@@ -186,16 +228,39 @@ class HomeControllerSpec extends ControllerBaseSpec
       "the user does not already have an MTDIT subscription on ETMP" when {
         "the user is eligible" when {
           "the user does not have a current unauthorised subscription journey" when {
-            "redirect to the sign up journey" in {
-              mockUtrRetrieval()
-              mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
-              setupMockGetSubscriptionNotFound(testNino)
-              mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+            "redirect to the sign up journey" when {
+              "feature switch SPSEnabled is enabled" should {
+                "redirect to SPSHandoff controller" in {
 
-              val result = await(testHomeController().index(fakeRequest))
-              status(result) must be(Status.SEE_OTHER)
-              redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
-              session(result).get(ITSASessionKeys.NINO) must contain(testNino)
+
+                  mockUtrRetrieval()
+                  mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
+                  setupMockGetSubscriptionNotFound(testNino)
+                  mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+                  enable(SPSEnabled)
+
+                  val result = await(testHomeController().index(fakeRequest))
+                  status(result) must be(Status.SEE_OTHER)
+                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS().url
+                  session(result).get(ITSASessionKeys.NINO) must contain(testNino)
+                }
+              }
+
+              "feature switch SPSEnabled is disabled" should {
+                "redirect to Preference controller" in {
+
+
+                  mockUtrRetrieval()
+                  mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
+                  setupMockGetSubscriptionNotFound(testNino)
+                  mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
+
+                  val result = await(testHomeController().index(fakeRequest))
+                  status(result) must be(Status.SEE_OTHER)
+                  redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
+                  session(result).get(ITSASessionKeys.NINO) must contain(testNino)
+                }
+              }
             }
           }
         }

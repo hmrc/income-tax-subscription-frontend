@@ -19,6 +19,8 @@ package controllers.usermatching
 import auth.individual.JourneyState._
 import auth.individual.{SignUp, StatelessController, UserMatching}
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SPSEnabled
+import config.featureswitch.FeatureSwitching
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import javax.inject.{Inject, Singleton}
@@ -41,7 +43,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                subscriptionService: SubscriptionService)
                               (implicit val ec: ExecutionContext,
                                val appConfig: AppConfig,
-                               mcc: MessagesControllerComponents) extends StatelessController {
+                               mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
 
   def home: Action[AnyContent] = Action { implicit request =>
     val redirect = routes.HomeController.index()
@@ -77,6 +79,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
     }
 
   lazy val goToPreferences: Result = Redirect(controllers.individual.routes.PreferencesController.checkPreferences())
+  lazy val goToSPSHandoff: Result = Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS())
 
   lazy val goToUserMatching: Result = Redirect(controllers.usermatching.routes.UserDetailsController.show())
 
@@ -86,10 +89,18 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Left(err) => throw new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err")
     }
 
-  private def goToSignUp(timestamp: String)(implicit request: Request[AnyContent]): Result =
+  private def goToSignUp(timestamp: String)(implicit request: Request[AnyContent]): Result = {
+    if (isEnabled(SPSEnabled)) {
+      goToSPSHandoff
+        .addingToSession(StartTime -> timestamp)
+        .withJourneyState(SignUp)
+    } else {
     goToPreferences
       .addingToSession(StartTime -> timestamp)
       .withJourneyState(SignUp)
+
+    }
+  }
 
 
   private def claimSubscription(mtditId: String)(implicit request: Request[AnyContent]): Future[Result] =

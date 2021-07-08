@@ -16,6 +16,8 @@
 
 package controllers.usermatching
 
+import config.featureswitch.FeatureSwitch.SPSEnabled
+import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
@@ -23,7 +25,12 @@ import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import utilities.ITSASessionKeys
 
-class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
+class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(SPSEnabled)
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up" should {
     "return the guidance page" in {
@@ -59,22 +66,44 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         }
       }
       "the user does not have a subscription" when {
-        "the user is eligible" should {
-          "redirect to the preferences page" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
-            SubscriptionStub.stubGetNoSubscription()
-            EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
+        "the user is eligible" when {
+          "feature switch SPSEnabled is disabled" should {
+            "redirect to the preferences controller" in {
+              Given("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+              SubscriptionStub.stubGetNoSubscription()
+              EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
-            When("GET /index is called")
-            val res = IncomeTaxSubscriptionFrontend.indexPage()
+              When("GET /index is called")
+              val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-            Then("Should return a SEE OTHER and re-direct to the preferences page")
-            res should have(
-              httpStatus(SEE_OTHER),
-              redirectURI(preferencesURI)
-            )
+              Then("Should return a SEE OTHER and re-direct to the preferences controller")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(preferencesURI)
+              )
+            }
+          }
+
+          "feature switch SPSEnabled is enabled" should {
+            "redirect to the SPSHandoff controller" in {
+              Given("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+              SubscriptionStub.stubGetNoSubscription()
+              EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
+              enable(SPSEnabled)
+
+              When("GET /index is called")
+              val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+              Then("Should return a SEE OTHER and re-direct to the SPSHandoff controller")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(spsHandoffRouteURI)
+              )
+            }
           }
         }
         "the user is ineligible" should {
