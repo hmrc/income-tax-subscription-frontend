@@ -48,7 +48,7 @@ class SPSHandoffController @Inject()(
 
         implicit user =>
           if (isEnabled(SPSEnabled)) {
-            goToSPS(returnUrl = controllers.individual.sps.routes.SPSCallbackController.callback().absoluteURL(),
+            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback().url,
               returnLinkText = "I have verified",
               regime = "itsa"
             )(request)

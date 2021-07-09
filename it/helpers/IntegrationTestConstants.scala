@@ -75,9 +75,7 @@ object IntegrationTestConstants {
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val preferencesURI = s"$baseURI/preferences"
   val spsHandoffRouteURI = s"$baseURI/sps-handoff"
-  val spsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJWWQWwAjAcg3upL5GU%2FTNXd%2F6008jRp" +
-    s"h%2Fxs1zN88UuvkQ2CVxVBoRW8jjRdK1A49koAu54Qo7t0K%2BMPUrK7FMVVgHHK4VZAFBkAal7m1KCb&returnLinkText=lYCIdN%2BV3wGYJ1" +
-    s"SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
+  val spsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BDcR9uIsDgZ5Bi3z4iYCJe0%3D&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
   val choosePaperlessURI = s"/paperless/choose?returnUrl"
   val errorPreferencesURI = s"$baseURI/paperless-error"
   val accountingYearURI = s"$baseURI/business/what-year-to-sign-up"
