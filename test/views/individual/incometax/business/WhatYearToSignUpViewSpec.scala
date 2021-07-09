@@ -23,8 +23,9 @@ import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import views.ViewSpecTrait
+import views.html.individual.incometax.business.WhatYearToSignUp
 
 class WhatYearToSignUpViewSpec extends ViewSpecTrait {
 
@@ -32,13 +33,16 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
   val action: Call = ViewSpecTrait.testCall
   val taxYearEnd: Int = 2020
 
+  val whatYearToSignUp: WhatYearToSignUp = app.injector.instanceOf[WhatYearToSignUp]
+
   class Setup(isEditMode: Boolean = false) {
-    val page: HtmlFormat.Appendable = views.html.individual.incometax.business.what_year_to_sign_up(
-      accountingYearForm = AccountingYearForm.accountingYearForm,
+
+    val page: HtmlFormat.Appendable = whatYearToSignUp(
+      AccountingYearForm.accountingYearForm,
       postAction = action,
       backUrl = backUrl,
       endYearOfCurrentTaxPeriod = taxYearEnd,
-      isEditMode = isEditMode
+      isEditMode = isEditMode,
     )(FakeRequest(), implicitly, appConfig)
 
     val document: Document = Jsoup.parse(page.body)
@@ -55,24 +59,23 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
     }
 
     "have content" in new Setup {
-      val paragraphs: Elements = document.select(".content__body").select("p")
-      val uls: Elements = document.select(".content__body").select("ul").select("li")
-      paragraphs.get(0).text() mustBe messages.line1
-      paragraphs.get(1).text() mustBe messages.option1ConditionalExample1
-      paragraphs.get(2).text() mustBe messages.option1ConditionalExample2((taxYearEnd + 1).toString)
-      paragraphs.get(3).text() mustBe messages.option2ConditionalExample1
-      paragraphs.get(4).text() mustBe messages.option2ConditionalExample2((taxYearEnd + 2).toString)
+      val paragraphs: Elements = document.select(".govuk-body").select("p")
+      val conditionalListLabels: Elements = document.select(".govuk-radios__conditional").select(".govuk-list").select("li")
+      document.select(".govuk-hint").get(0).text() mustBe messages.line1
+      paragraphs.get(0).text() mustBe messages.option1ConditionalExample1
+      paragraphs.get(1).text() mustBe messages.option1ConditionalExample2((taxYearEnd + 1).toString)
+      paragraphs.get(2).text() mustBe messages.option2ConditionalExample1
+      paragraphs.get(3).text() mustBe messages.option2ConditionalExample2((taxYearEnd + 2).toString)
 
-      uls.get(0).text() mustBe messages.conditionalDate1((taxYearEnd - 1).toString)
-      uls.get(1).text() mustBe messages.conditionalDate2((taxYearEnd - 1).toString)
-      uls.get(2).text() mustBe messages.conditionalDate3(taxYearEnd.toString)
-      uls.get(3).text() mustBe messages.conditionalDate4(taxYearEnd.toString)
+      conditionalListLabels.get(0).text() mustBe messages.conditionalDate1((taxYearEnd - 1).toString)
+      conditionalListLabels.get(1).text() mustBe messages.conditionalDate2((taxYearEnd - 1).toString)
+      conditionalListLabels.get(2).text() mustBe messages.conditionalDate3(taxYearEnd.toString)
+      conditionalListLabels.get(3).text() mustBe messages.conditionalDate4(taxYearEnd.toString)
 
-      uls.get(4).text() mustBe messages.conditionalDate1(taxYearEnd.toString)
-      uls.get(5).text() mustBe messages.conditionalDate2(taxYearEnd.toString)
-      uls.get(6).text() mustBe messages.conditionalDate3((taxYearEnd + 1).toString)
-      uls.get(7).text() mustBe messages.conditionalDate4((taxYearEnd + 1).toString)
-
+      conditionalListLabels.get(4).text() mustBe messages.conditionalDate1(taxYearEnd.toString)
+      conditionalListLabels.get(5).text() mustBe messages.conditionalDate2(taxYearEnd.toString)
+      conditionalListLabels.get(6).text() mustBe messages.conditionalDate3((taxYearEnd + 1).toString)
+      conditionalListLabels.get(7).text() mustBe messages.conditionalDate4((taxYearEnd + 1).toString)
     }
 
     "have a form" which {
@@ -83,41 +86,42 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
       }
 
       "has a current tax year radio button" in new Setup {
-        val radioWithLabel: Elements = document.select("form fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingYear]").`val` mustBe "CurrentYear"
-        radioWithLabel.select("label[for=accountingYear]").text mustBe Seq(
+        val radio: Element = document.select(".govuk-radios__item").get(0)
+        radio.select("input[id=accountingYear]").`val` mustBe "CurrentYear"
+        radio.select("label[for=accountingYear]").text mustBe Seq(
           messages.option1((taxYearEnd - 1).toString, taxYearEnd.toString)
         ).mkString(" ")
       }
 
       "has a next tax year radio button" in new Setup {
-        val radioWithLabel: Elements = document.select("form fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingYear-2]").`val` mustBe "NextYear"
-        radioWithLabel.select("label[for=accountingYear-2]").text mustBe Seq(
+        val radio: Element = document.select(".govuk-radios__item").get(1)
+        radio.select("input[id=accountingYear-2]").`val` mustBe "NextYear"
+        radio.select("label[for=accountingYear-2]").text mustBe Seq(
           messages.option2(taxYearEnd.toString, (taxYearEnd + 1).toString)
         ).mkString(" ")
       }
 
       "has a continue button" that {
         s"displays ${common.continue} when not in edit mode" in new Setup {
-          document.select("button[type=submit]").text mustBe common.continue
+          document.select("button[id=continue-button]").text mustBe common.continue
         }
         s"displays ${common.update} when in edit mode" in new Setup(isEditMode = true) {
-          document.select("button[type=submit]").text mustBe common.update
+          document.select("button[id=continue-button]").text mustBe common.update
         }
       }
     }
 
+
     "have a back button" when {
       "in edit mode" in new Setup(isEditMode = true) {
-        val backLink: Element = document.selectFirst(".link-back")
+        val backLink: Element = document.selectFirst(".govuk-back-link")
         backLink.attr("href") mustBe backUrl
         backLink.text mustBe common.back
       }
     }
     "not have a back button" when {
       "not in edit mode" in new Setup(isEditMode = false) {
-        Option(document.selectFirst(".link-back")) mustBe None
+        Option(document.selectFirst(".govuk-back-link")) mustBe None
       }
     }
   }
