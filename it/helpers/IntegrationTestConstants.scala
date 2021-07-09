@@ -16,14 +16,15 @@
 
 package helpers
 
-import java.net.URLEncoder
-import java.util.UUID
-
 import models.DateModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 
+import java.net.URLEncoder
+import java.util.UUID
+
 object IntegrationTestConstants {
+
   lazy val testNino: String = new Generator().nextNino.nino
   lazy val staticTestNino = "AA111111A"
   lazy val testUtr: String = new Generator().nextAtedUtr.utr
@@ -74,7 +75,9 @@ object IntegrationTestConstants {
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val preferencesURI = s"$baseURI/preferences"
   val spsHandoffRouteURI = s"$baseURI/sps-handoff"
-  val spsHandoffURI = "http://localhost:9024/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJWWQWwAjAcg3upL5GU%2FTNXd%2F6008jRph%2Fxs1zN88UuvkQ2CVxVBoRW8jjRdK1A49koAu54Qo7t0K%2BMPUrK7FMVVgHHK4VZAFBkAal7m1KCb&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
+  val spsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJWWQWwAjAcg3upL5GU%2FTNXd%2F6008jRp" +
+    s"h%2Fxs1zN88UuvkQ2CVxVBoRW8jjRdK1A49koAu54Qo7t0K%2BMPUrK7FMVVgHHK4VZAFBkAal7m1KCb&returnLinkText=lYCIdN%2BV3wGYJ1" +
+    s"SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
   val choosePaperlessURI = s"/paperless/choose?returnUrl"
   val errorPreferencesURI = s"$baseURI/paperless-error"
   val accountingYearURI = s"$baseURI/business/what-year-to-sign-up"
@@ -82,10 +85,12 @@ object IntegrationTestConstants {
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val signOutURI = s"$baseURI/logout"
   val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
+
   def basGatewaySignIn(continueTo: String): String = {
     val updatedContinue: String = continueTo.replaceAllLiterally("/", "%2F")
     s"http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
   }
+
   val claimSubscriptionURI = s"$baseURI/claim-subscription"
   val wrongAffinityURI = s"$baseURI/error/affinity-group"
   val ivURI = s"$baseURI/iv"

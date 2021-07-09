@@ -25,6 +25,7 @@ import play.api.http.Status.{SEE_OTHER, _}
 
 class SPSHandoffControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(SPSEnabled)

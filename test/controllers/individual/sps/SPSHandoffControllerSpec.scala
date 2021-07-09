@@ -62,7 +62,7 @@ class SPSHandoffControllerSpec extends ControllerBaseSpec
         enable(SPSEnabled)
         mockEncrypt()
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(s"http://localhost:9024/paperless/choose/capture?returnUrl=encryptedValue&returnLinkText=encryptedValue&regime=encryptedValue")
+        redirectLocation(result).get must be(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=encryptedValue&returnLinkText=encryptedValue&regime=encryptedValue")
       }
     }
 
