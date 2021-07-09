@@ -69,7 +69,7 @@ class SPSHandoffController @Inject()(
     val encryptedReturnLinkText = encryptAndEncodeString(returnLinkText)
     val encryptedRegime = encryptAndEncodeString(regime)
 
-    Redirect(s"http://localhost:9024/paperless/choose/capture?returnUrl=$encryptedReturnUrl&returnLinkText=$encryptedReturnLinkText&regime=$encryptedRegime")
+    Redirect(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=$encryptedReturnUrl&returnLinkText=$encryptedReturnLinkText&regime=$encryptedRegime")
 
   }
 
