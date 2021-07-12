@@ -98,7 +98,9 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     "microservice.services.enrolment-store-proxy.host" -> mockHost,
     "microservice.services.enrolment-store-proxy.port" -> mockPort,
     "microservice.services.users-groups-search.host" -> mockHost,
-    "microservice.services.users-groups-search.port" -> mockPort
+    "microservice.services.users-groups-search.port" -> mockPort,
+    "microservice.services.channel-preferences.host" -> mockHost,
+    "microservice.services.channel-preferences.port" -> mockPort
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -270,7 +272,9 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def confirmation(): WSResponse = get("/confirmation")
+    def confirmation(): WSResponse = confirmation(Map.empty)
+
+    def confirmation(additionalCookies: Map[String,String]): WSResponse = get("/confirmation", additionalCookies)
 
     def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
       val uri = s"/business/name?editMode=$inEditMode"

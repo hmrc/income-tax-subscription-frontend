@@ -26,7 +26,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
+import services.mocks.{MockAccountingPeriodService, MockSpsService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
 import utilities.ITSASessionKeys
 import utilities.TestModels.testCacheMap
@@ -40,7 +40,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockAccountingPeriodService
   with MockUserMatchingService
   with MockAuditingService
-  with FeatureSwitching {
+  with FeatureSwitching
+  with MockSpsService {
 
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
 
@@ -54,7 +55,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockAccountingPeriodService,
     MockSubscriptionDetailsService,
-    mockSignUpComplete
+    mockSignUpComplete,
+    mockSpsService
   )
 
   val taxQuarter1: (String, String) = ("agent.sign-up.complete.julyUpdate", "2020")
