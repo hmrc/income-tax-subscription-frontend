@@ -23,17 +23,45 @@ import play.api.data._
 
 object IncomeSourceForm {
 
-  val business = "Business"
-  val ukProperty = "UkProperty"
-  val foreignProperty = "ForeignProperty"
+  val incomeSourceKey: String = "IncomeSource"
 
-  val incomeSourceForm: Form[IncomeSourceModel] = Form(
-    mapping(
-      business -> boolean,
-      ukProperty -> boolean,
-      foreignProperty -> boolean
-    )(IncomeSourceModel.apply)(IncomeSourceModel.unapply)
-      .verifying("individual.error.income_source.invalid", _.hasAtLeastOneSelected)
-  )
+  val selfEmployedKey = "SelfEmployed"
+  val ukPropertyKey = "UkProperty"
+  val overseasPropertyKey = "OverseasProperty"
+
+  def isAnyCheckboxSelected(list: List[String]): Boolean = {
+    list.contains(selfEmployedKey) || list.contains(ukPropertyKey) || list.contains(overseasPropertyKey)
+  }
+
+  def toIncomeSourceModel(list: List[String]): IncomeSourceModel = {
+    IncomeSourceModel(list.contains(selfEmployedKey), list.contains(ukPropertyKey), list.contains(overseasPropertyKey))
+  }
+
+  def fromIncomeSourceModel(model: IncomeSourceModel): List[String] = {
+    List(
+      if (model.selfEmployment) Some(selfEmployedKey) else None,
+      if (model.ukProperty) Some(ukPropertyKey) else None,
+      if (model.foreignProperty) Some(overseasPropertyKey) else None
+    ).flatten
+  }
+
+  private def errorKey(overseasPropertyEnabled: Boolean): String = {
+    if (overseasPropertyEnabled) {
+      "individual.error.income_source_foreignProperty.invalid"
+    } else {
+      "individual.error.income_source.invalid"
+    }
+  }
+
+  def incomeSourceForm(overseasPropertyEnabled: Boolean): Form[IncomeSourceModel] = {
+    Form(
+      single(
+        incomeSourceKey -> list(text)
+          .verifying(errorKey(overseasPropertyEnabled), isAnyCheckboxSelected _)
+          .transform[IncomeSourceModel](toIncomeSourceModel, fromIncomeSourceModel)
+      )
+    )
+  }
+
 
 }

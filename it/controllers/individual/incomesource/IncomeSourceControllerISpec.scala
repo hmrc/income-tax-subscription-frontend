@@ -52,8 +52,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         res should have(
           httpStatus(OK),
           pageTitle(messages("income_source.title") + serviceNameGovUk),
-          checkboxSet(id = "Business", selectedCheckbox = Some(messages("income_source.selfEmployed"))),
-          checkboxSet(id = "UkProperty", selectedCheckbox = Some(messages("income_source.rentUkProperty")))
+          checkboxSet(id = "IncomeSource", selectedCheckbox = Some(messages("income_source.selfEmployed"))),
+          checkboxSet(id = "IncomeSource-2", selectedCheckbox = Some(messages("income_source.rentUkProperty")))
         )
       }
     }
@@ -71,8 +71,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         res should have(
           httpStatus(OK),
           pageTitle(messages("income_source.title") + serviceNameGovUk),
-          checkboxSet(id = "Business", selectedCheckbox = None),
-          checkboxSet(id = "UkProperty", selectedCheckbox = None)
+          checkboxSet(id = "IncomeSource", selectedCheckbox = None),
+          checkboxSet(id = "IncomeSource-2", selectedCheckbox = None)
         )
       }
     }
