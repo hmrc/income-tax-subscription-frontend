@@ -51,6 +51,7 @@ object JourneyState {
     def hasConfirmedAgent: Boolean = session.get(ITSASessionKeys.ConfirmedAgent).fold(false)(_.toBoolean)
   }
 
+
   implicit class RequestFunctions(request: Request[_]) {
     def isInState(state: JourneyState): Boolean = request.session.isInState(state)
     def hasConfirmedAgent: Boolean = request.session.hasConfirmedAgent

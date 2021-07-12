@@ -20,9 +20,10 @@ import auth.individual.PostSubmissionController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AccountingPeriodService, AuditingService, AuthService, SPSService, SubscriptionDetailsService}
 import utilities.SubscriptionDataUtil._
 import views.html.individual.incometax.subscription.SignUpComplete
 
@@ -33,7 +34,8 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        val authService: AuthService,
                                        accountingPeriodService: AccountingPeriodService,
                                        subscriptionDetailsService: SubscriptionDetailsService,
-                                       signUpComplete:SignUpComplete
+                                       signUpComplete:SignUpComplete,
+                                       spsService: SPSService
                                       )
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
@@ -45,6 +47,7 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
       val endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear
       val updatesAfter = accountingPeriodService.updateDatesAfter()
       val updatesBefore = accountingPeriodService.updateDatesBefore()
+      spsService.confirmPreferences(request)
 
       subscriptionDetailsService.fetchAll() map { cacheMap =>
         Ok(signUpComplete(cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour)), endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter))
