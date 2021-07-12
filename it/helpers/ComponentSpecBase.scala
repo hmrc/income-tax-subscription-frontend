@@ -265,7 +265,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            IncomeSourceForm.incomeSourceForm(true).fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

@@ -17,74 +17,104 @@
 package forms.individual.incomesource
 
 import forms.individual.incomesource.IncomeSourceForm._
-import forms.validation.testutils.DataMap.DataMap
-import forms.validation.testutils._
 import models.common.IncomeSourceModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
+import play.api.data.{Form, FormError}
+import play.api.mvc.Request
+import play.api.test.FakeRequest
 
 class IncomeSourceFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
-  "The IncomeSource Form" should {
-    "transform the request to the form case class when both checked values are bound to income source" in {
+  class FormTest(overseasPropertyEnabled: Boolean,
+                 selectedItems: List[String] = List.empty[String],
+                 errorTest: Boolean = false) {
 
-      val testInput = Map(business -> "true", ukProperty -> "true")
-      val expected = IncomeSourceModel(true, true, false)
-      val actual = incomeSourceForm.bind(testInput).value
+    implicit val request: Request[_] = FakeRequest().withFormUrlEncodedBody(
+      selectedItems.map(item => s"$incomeSourceKey[]" -> item): _*
+    )
 
-      actual shouldBe Some(expected)
-    }
 
-    "transform the request to the form case class when self-employed is checked and rent uk property in not checked" in {
-      val testInput = Map(business -> "true", ukProperty -> "false")
-      val expected = IncomeSourceModel(true, false, false)
-      val actual = incomeSourceForm.bind(testInput).value
+    val expectedResult: IncomeSourceModel = IncomeSourceModel(
+      selfEmployment = selectedItems.contains(selfEmployedKey),
+      ukProperty = selectedItems.contains(ukPropertyKey),
+      foreignProperty = selectedItems.contains(overseasPropertyKey)
+    )
 
-      actual shouldBe Some(expected)
-    }
+    val boundForm: Form[IncomeSourceModel] = IncomeSourceForm.incomeSourceForm(
+      overseasPropertyEnabled = overseasPropertyEnabled
+    ).bindFromRequest()
 
-    "transform the request to the form case class when when self-employed is not checked and rent uk property in checked" in {
-      val testInput = Map(business -> "false", ukProperty -> "true")
-      val expected = IncomeSourceModel(false, true, false)
-      val actual = incomeSourceForm.bind(testInput).value
 
-      actual shouldBe Some(expected)
-    }
+    val resultValue: Option[IncomeSourceModel] = boundForm.value
 
-    "validate income source with incorrect data" when {
-      val invalidIncomeSourceMessage = "individual.error.income_source.invalid"
+    val resultError: Option[FormError] = boundForm.errors.headOption
 
-      "show an error when the map is empty" in {
-        val emptyInput0 = DataMap.EmptyMap
-        val emptyTest0 = incomeSourceForm.bind(emptyInput0)
-        emptyTest0.hasErrors shouldBe true
+    if (errorTest) {
+      if (overseasPropertyEnabled) {
+        resultError mustBe Some(FormError("IncomeSource", "individual.error.income_source_foreignProperty.invalid"))
+      } else {
+        resultError mustBe Some(FormError("IncomeSource", "individual.error.income_source.invalid"))
       }
+    } else {
+      resultValue shouldBe Some(expectedResult)
+    }
 
-      "show an error when the all values are not checked" in {
-        val bothFalseData = DataMap.incomeSource("false", "false", "false")
-        val bothFalseActualResponse = incomeSourceForm.bind(bothFalseData)
-        bothFalseActualResponse.hasErrors shouldBe true
-        bothFalseActualResponse.errors.size shouldBe 1
-        bothFalseActualResponse.errors.head.message shouldBe invalidIncomeSourceMessage
+  }
+
+  "The IncomeSource Form" when {
+    "overseasPropertyEnabled is set to true" should {
+      "transform the request to the form's case class" when {
+        "all options have been selected" in new FormTest(
+          overseasPropertyEnabled = true,
+          selectedItems = List(
+            selfEmployedKey, ukPropertyKey, overseasPropertyKey
+          )
+        )
+        "only self employment has been selected" in new FormTest(
+          overseasPropertyEnabled = true,
+          selectedItems = List(selfEmployedKey)
+        )
+        "only uk property has been selected" in new FormTest(
+          overseasPropertyEnabled = true,
+          selectedItems = List(ukPropertyKey)
+        )
+        "only overseas property has been selected" in new FormTest(
+          overseasPropertyEnabled = true,
+          selectedItems = List(overseasPropertyKey)
+        )
+      }
+      "return an error" when {
+        "no inputs were received" in new FormTest(
+          overseasPropertyEnabled = true,
+          errorTest = true
+        )
       }
     }
-    "The following submission should be valid" in {
-      val testAllTrue = DataMap.incomeSource("true","true", "true")
-      incomeSourceForm isValidFor testAllTrue
-      val testsPropFPropTrue = DataMap.incomeSource("false", "true", "true")
-      incomeSourceForm isValidFor testsPropFPropTrue
-      val testsBusFPropTrue = DataMap.incomeSource("true", "false", "true")
-      incomeSourceForm isValidFor testsBusFPropTrue
-      val testsBusPropTrue = DataMap.incomeSource("true", "true", "false")
-      incomeSourceForm isValidFor testsBusPropTrue
-      val testsBusTrue = DataMap.incomeSource("true", "false", "false")
-      incomeSourceForm isValidFor testsBusTrue
-      val testsPropTrue = DataMap.incomeSource("false", "true", "false")
-      incomeSourceForm isValidFor testsPropTrue
-      val testsFPropTrue = DataMap.incomeSource("false", "false", "true")
-      incomeSourceForm isValidFor testsFPropTrue
+    "overseasPropertyEnabled is set to false" should {
+      "transform the request to the form's case class" when {
+        "self employment and uk property have been selected" in new FormTest(
+          overseasPropertyEnabled = false,
+          selectedItems = List(
+            selfEmployedKey, ukPropertyKey
+          )
+        )
+        "only self employment has been selected" in new FormTest(
+          overseasPropertyEnabled = false,
+          selectedItems = List(selfEmployedKey)
+        )
+        "only uk property has been selected" in new FormTest(
+          overseasPropertyEnabled = false,
+          selectedItems = List(ukPropertyKey)
+        )
+      }
+      "return an error" when {
+        "no inputs were received" in new FormTest(
+          overseasPropertyEnabled = false,
+          errorTest = true
+        )
+      }
     }
-
   }
 }
