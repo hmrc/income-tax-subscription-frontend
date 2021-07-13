@@ -75,7 +75,8 @@ trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
   lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> SignUp.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
-    ITSASessionKeys.UTR -> TestConstants.testUtr
+    ITSASessionKeys.UTR -> TestConstants.testUtr,
+    ITSASessionKeys.SPSEntityId -> TestConstants.testSpsEntityId
   )
 
 }

@@ -25,7 +25,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
+import services.mocks.{MockAccountingPeriodService, MockSpsService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels
 import utilities.agent.TestModels._
@@ -36,7 +36,9 @@ import scala.util.matching.Regex
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
-  with MockUserMatchingService with MockAuditingService {
+  with MockUserMatchingService
+  with MockAuditingService
+  with MockSpsService {
 
   object TestConfirmationController extends ConfirmationController(
     mockAuditingService,

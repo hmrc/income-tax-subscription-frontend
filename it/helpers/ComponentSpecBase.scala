@@ -98,7 +98,9 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     "microservice.services.enrolment-store-proxy.host" -> mockHost,
     "microservice.services.enrolment-store-proxy.port" -> mockPort,
     "microservice.services.users-groups-search.host" -> mockHost,
-    "microservice.services.users-groups-search.port" -> mockPort
+    "microservice.services.users-groups-search.port" -> mockPort,
+    "microservice.services.channel-preferences.host" -> mockHost,
+    "microservice.services.channel-preferences.port" -> mockPort
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -165,7 +167,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     def ivSuccess(): WSResponse = get("/iv-success")
 
     def spsCallback(hasEntityId: Boolean): WSResponse = {
-      if(hasEntityId) {
+      if (hasEntityId) {
         get("/sps-callback?entityId=testId")
       } else {
         get("/sps-callback")
@@ -208,7 +210,9 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
-    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
+    def submitCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/check-your-answers", sessionData)(Map.empty)
+    }
 
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
@@ -270,7 +274,9 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def confirmation(): WSResponse = get("/confirmation")
+    def confirmation(): WSResponse = confirmation(Map.empty)
+
+    def confirmation(additionalCookies: Map[String, String]): WSResponse = get("/confirmation", additionalCookies)
 
     def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
       val uri = s"/business/name?editMode=$inEditMode"
