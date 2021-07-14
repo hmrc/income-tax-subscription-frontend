@@ -19,11 +19,12 @@ package services.individual.mocks
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import models.{ConnectorError, SummaryModel}
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.individual.SubscriptionOrchestrationService
-import services.mocks.MockSubscriptionService
+import services.mocks.{MockSpsService, MockSubscriptionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants._
@@ -32,12 +33,14 @@ import scala.concurrent.Future
 
 trait TestSubscriptionOrchestrationService extends MockSubscriptionService
   with MockKnownFactsService
-  with MockEnrolmentService {
+  with MockEnrolmentService
+  with MockSpsService {
 
   object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
     mockSubscriptionService,
     mockKnownFactsService,
-    mockEnrolmentService
+    mockEnrolmentService,
+    mockSpsService
   )
 
 }
@@ -58,7 +61,8 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
     when(mockSubscriptionOrchestrationService.createSubscription(
       ArgumentMatchers.eq(nino),
       ArgumentMatchers.eq(summaryModel),
-      ArgumentMatchers.eq(isReleaseFourEnabled)
+      ArgumentMatchers.eq(isReleaseFourEnabled),
+      ArgumentMatchers.any()
     )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
   }
 

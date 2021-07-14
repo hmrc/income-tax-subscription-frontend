@@ -20,12 +20,12 @@ import auth.individual.PostSubmissionController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.SubscriptionDataUtil._
 import views.html.individual.incometax.subscription.SignUpComplete
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -33,8 +33,7 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        val authService: AuthService,
                                        accountingPeriodService: AccountingPeriodService,
                                        subscriptionDetailsService: SubscriptionDetailsService,
-                                       signUpComplete:SignUpComplete
-                                      )
+                                       signUpComplete: SignUpComplete)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController with FeatureSwitching {

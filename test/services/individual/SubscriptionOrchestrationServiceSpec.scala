@@ -18,7 +18,9 @@ package services.individual
 
 import models.ConnectorError
 import models.common.subscription.SubscriptionSuccess
+import org.mockito.Mockito.verify
 import org.scalatest.concurrent.ScalaFutures
+import play.api.test.Helpers.await
 import services.individual.mocks.TestSubscriptionOrchestrationService
 import utilities.TestModels._
 import utilities.UnitTestTrait

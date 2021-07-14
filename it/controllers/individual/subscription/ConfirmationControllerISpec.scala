@@ -16,10 +16,12 @@
 
 package controllers.individual.subscription
 
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SPSEnabled}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.testSubscriptionId
 import helpers.IntegrationTestModels.testIncomeSourceIndivProperty
+import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
@@ -27,8 +29,14 @@ import utilities.SubscriptionDataKeys._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    disable(SPSEnabled)
+    super.beforeEach()
+  }
+
   "GET /confirmation" should {
-    "return the confirmation page when the user is enrolled" in {
+    "return the confirmation page when the user is enrolled and confirm SPS preferences" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubEnrolled()
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(Map(
