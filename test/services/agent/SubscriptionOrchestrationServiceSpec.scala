@@ -16,21 +16,30 @@
 
 package services.agent
 
+import config.featureswitch.FeatureSwitch.SPSEnabled
 import models.ConnectorError
 import models.common.subscription.SubscriptionSuccess
 import play.api.test.Helpers._
+import services.agent.mocks.MockAgentSPSConnector
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
+import utilities.SubscriptionDataUtil.{disable, enable}
 import utilities.TestModels.testAgentSummaryData
 import utilities.agent.TestConstants._
 
 import scala.concurrent.Future
 
-class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with MockAutoEnrolmentService {
+class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with MockAutoEnrolmentService with MockAgentSPSConnector {
 
   object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
     mockSubscriptionService,
-    mockAutoEnrolmentService
+    mockAutoEnrolmentService,
+    mockAgentSpsConnector
   )
+
+  override def beforeEach(): Unit = {
+    disable(SPSEnabled)
+    super.beforeEach()
+  }
 
   "createSubscription when release four is disabled" should {
 
@@ -77,6 +86,18 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
         await(res) mustBe testSubscriptionSuccess
       }
+
+      "SpsIsEnabled and all services succeed" in {
+        enable(SPSEnabled)
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
+        val res = TestSubscriptionOrchestrationService.createSubscription(
+          testARN, testNino, testUtr, testAgentSummaryData, isReleaseFourEnabled = true)
+
+        await(res) mustBe testSubscriptionSuccess
+        verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
+      }
     }
 
     "return a failure" when {
@@ -90,16 +111,19 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
       "create income sources returns an error when create income sources request fail" in {
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesFailure(testNino, testMTDID, testAgentSummaryData)
-
         await(res) mustBe testCreateIncomeSourcesFailure
       }
 
       "the auto enrolment service returns a failure response" in {
+        enable(SPSEnabled)
+
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
 
         await(res) mustBe Right(SubscriptionSuccess(testMTDID))
+        verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 0)
+
       }
 
 

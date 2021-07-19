@@ -16,22 +16,24 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SPSEnabled}
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, incomeSourceURI => _, testNino => _, testUtr => _, _}
 import helpers.IntegrationTestModels.{subscriptionData, testAccountingMethod, testBusinesses}
+import helpers.WiremockHelper.verifyPost
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import helpers.servicemocks.{EnrolmentStoreProxyStub, SubscriptionStub}
-import models.{Accruals, Cash, DateModel, Next}
-import models.common.{AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel,
-  OverseasAccountingMethodPropertyModel, OverseasPropertyStartDateModel, PropertyStartDateModel}
 import models.common.business.BusinessSubscriptionDetailsModel
+import models.common._
+import models.sps.AgentSPSPayload
+import models.{Accruals, Cash, DateModel, Next}
 import play.api.http.Status.{OK, _}
 import play.api.libs.json.Json
+import play.api.test.Helpers.NO_CONTENT
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 
@@ -39,6 +41,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
+    disable(SPSEnabled)
     super.beforeEach()
   }
 
@@ -1050,8 +1053,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         }
       }
 
-        "the signup of a user with next tax year property income is successful and creating of the enrolment is successful" in {
+      "the signup of a user with next tax year property income is successful and creating of the enrolment is successful" when {
 
+        "feature switch SPSEnabled is disabled" in {
           Given("I set the required feature switches")
           enable(ReleaseFour)
 
@@ -1106,9 +1110,77 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             redirectURI(confirmationURI)
           )
 
+          val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtr, testMtdId)
+          verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(0))
+
+          val cookieMap = getSessionMap(res)
+          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+        }
+
+        "feature switch SPSEnabled is enabled" in {
+          Given("I set the required feature switches")
+          enable(ReleaseFour)
+          enable(SPSEnabled)
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
+            selectedTaxYear = Some(AccountingYearModel(Next)),
+            businessName = None,
+            accountingMethod = None,
+            propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
+            propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+            overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Cash)),
+            overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010")))
+          ))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+            mtdbsa = testMtdId,
+            request = BusinessSubscriptionDetailsModel(
+              nino = testNino,
+              accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+              selfEmploymentsData = None,
+              accountingMethod = None,
+              incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true),
+              propertyStartDate = Some(PropertyStartDateModel(DateModel("20", "03", "2000"))),
+              propertyAccountingMethod = Some(AccountingMethodPropertyModel(Accruals)),
+              overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("21", "03", "2010"))),
+              overseasAccountingMethodProperty = Some(OverseasAccountingMethodPropertyModel(Cash))
+            )
+          )(NO_CONTENT)
+
+
+          And("The wiremock stubs for auto enrolment")
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
+          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
+
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
+
+          val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtr, testMtdId)
+          verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
           val cookieMap = getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
         }
       }
     }
   }
+}
+
