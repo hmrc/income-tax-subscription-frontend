@@ -96,7 +96,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                 controllers.agent.routes.CheckYourAnswersController.submit(),
                 backUrl = backUrl(incomeSource),
                 implicitDateFormatter,
-                true
+                releaseFour = true
               ))
             }
           }
@@ -107,7 +107,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
               controllers.agent.routes.CheckYourAnswersController.submit(),
               backUrl = backUrl(incomeSource),
               implicitDateFormatter,
-              false
+              releaseFour = false
             )))
           }
         }
