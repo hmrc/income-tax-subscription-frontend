@@ -30,9 +30,9 @@ object PropertyStartDateForm {
 
   val startDate: String = "startDate"
 
-  val maxStartDate: LocalDate = LocalDate.now().minusYears(1)
+  def maxStartDate: LocalDate = LocalDate.now().minusYears(1)
 
-  val minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
+  def minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
 
   val errorContext: String = "property"
 
