@@ -18,27 +18,38 @@ package services.agent
 
 import cats.data.EitherT
 import cats.implicits._
+import config.featureswitch.FeatureSwitch.SPSEnabled
+import config.featureswitch.FeatureSwitching
+import connectors.agent.AgentSPSConnector
+
 import javax.inject.{Inject, Singleton}
 import models.common.subscription.{CreateIncomeSourcesSuccess, SubscriptionSuccess}
 import models.{AgentSummary, ConnectorError, SummaryModel}
 import services.SubscriptionService
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,
-                                                 autoEnrolmentService: AutoEnrolmentService)
-                                                (implicit ec: ExecutionContext) {
+                                                 autoEnrolmentService: AutoEnrolmentService,
+                                                 agentSPSConnector: AgentSPSConnector)
+                                                (implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def createSubscription(arn: String, nino: String, utr: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false)
                         (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
 
-    if(isReleaseFourEnabled) {
+    if (isReleaseFourEnabled) {
       signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[AgentSummary]) flatMap {
         case right@Right(subscriptionSuccess) => {
-          autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map { _ =>
-            right
+          autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
+            case Right(_) =>
+              if(isEnabled(SPSEnabled)){
+              confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
+              }
+              right
+            case Left(_) =>
+              right
           }
         }
         case left => Future.successful(left)
@@ -66,8 +77,11 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     } yield SubscriptionSuccess(mtdbsa)
 
     res.value
-
   }
 
+  private[services] def confirmAgentEnrollmentToSps(arn: String, nino: String, sautr: String, mtditId: String)
+                                                   (implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    agentSPSConnector.postSpsConfirm(arn, nino, sautr, mtditId)
+  }
 
 }

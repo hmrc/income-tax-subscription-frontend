@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package utilities
+package models.sps
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
-  val ConfirmedAgent = "Confirmed-Agent"
-  val IdentityVerificationFlag = "ITSA-Identity-Verification-Flag"
+import play.api.libs.json.Json
 
-  val SPSEntityId: String = "SPS-Entity-ID"
+case class AgentSPSPayload(arn: String, nino: String, sautr: String, itsaId: String)
 
+object AgentSPSPayload {
+  implicit val writes = Json.format[AgentSPSPayload]
 }

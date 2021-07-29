@@ -21,7 +21,6 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
-import javax.inject.{Inject, Singleton}
 import models.IndividualSummary
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
@@ -32,11 +31,13 @@ import services.individual.SubscriptionOrchestrationService
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.ITSASessionKeys.SPSEntityId
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
 import utilities.{ITSASessionKeys, ImplicitDateFormatterImpl}
 import views.html.individual.incometax.subscription.CheckYourAnswers
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -83,8 +84,9 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       cache =>
         val nino = user.nino.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+        val session = request.session
         getSummaryModel(cache).flatMap { summaryModel =>
-          subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour))(headerCarrier).flatMap {
+          subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour), session.get(SPSEntityId))(headerCarrier).flatMap {
             case Right(SubscriptionSuccess(id)) =>
               subscriptionDetailsService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
             case Left(failure) =>

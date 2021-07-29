@@ -33,10 +33,12 @@ import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource}
 import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testOverseasAccountingMethodProperty, testOverseasPropertyStartDateModel, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import views.individual.mocks.MockIncomeSource
 
 import scala.concurrent.Future
 
 class IncomeSourceControllerSpec extends ControllerBaseSpec
+  with MockIncomeSource
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
   with MockConfig
@@ -44,6 +46,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
   with FeatureSwitching {
 
   class TestIncomeSourceController extends IncomeSourceController(
+    incomeSource,
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
@@ -78,6 +81,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     "the new income source flow" should {
       "return ok (200)" in {
         mockFetchIncomeSourceFromSubscriptionDetails(None)
+        mockIncomeSource()
 
         val result = call
         status(result) must be(Status.OK)
@@ -96,7 +100,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
                    isEditMode: Boolean
                   ): Future[Result] = {
       new TestIncomeSourceController().submit(isEditMode = isEditMode)(
-        subscriptionRequest.post(IncomeSourceForm.incomeSourceForm, incomeSourceModel)
+        subscriptionRequest.post(IncomeSourceForm.incomeSourceForm(true), incomeSourceModel)
       )
     }
 
@@ -633,6 +637,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       lazy val badRequest = new TestIncomeSourceController().submit(isEditMode = true)(subscriptionRequest)
 
       "return a bad request status (400)" in {
+        mockIncomeSource()
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)

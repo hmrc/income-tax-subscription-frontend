@@ -16,24 +16,28 @@
 
 package controllers.individual.subscription
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SPSEnabled}
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
+import helpers.WiremockHelper.verifyPost
 import helpers._
 import helpers.servicemocks._
+import models._
 import models.common._
 import models.common.business.BusinessSubscriptionDetailsModel
-import models._
+import models.sps.SPSPayload
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.AccountingPeriodUtil
+import utilities.ITSASessionKeys.SPSEntityId
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
+    disable(SPSEnabled)
     super.beforeEach()
   }
 
@@ -59,6 +63,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         )
       }
     }
+
     "the release four feature switch is disabled" should {
       "show the check your answers page" in {
         Given("I setup the stubs")
@@ -83,6 +88,63 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
     "the release four feature switch is enabled" when {
       "call the enrolment store successfully" should {
+        "call sps with the users details" when {
+          "the SPSEnabled feature switch is enabled" in {
+            Given("I set the required feature switches")
+            enable(ReleaseFour)
+            enable(SPSEnabled)
+
+            And("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+
+            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+              selectedTaxYear = Some(AccountingYearModel(Next)),
+              businessName = None,
+              accountingMethod = None,
+              propertyStartDate = None,
+              propertyAccountingMethod = None,
+              overseasPropertyAccountingMethod = None,
+              overseasPropertyStartDate = None
+            ))
+
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+              mtdbsa = testMtdId,
+              request = BusinessSubscriptionDetailsModel(
+                nino = testNino,
+                accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+                selfEmploymentsData = Some(testBusinesses),
+                accountingMethod = Some(testAccountingMethod.accountingMethod),
+                incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+                propertyStartDate = None,
+                propertyAccountingMethod = None,
+                overseasPropertyStartDate = None,
+                overseasAccountingMethodProperty = None
+              )
+            )(NO_CONTENT)
+
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+            IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+
+            When("POST /check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should return a SEE_OTHER with a redirect location of confirmation")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(confirmationURI)
+            )
+
+            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+          }
+        }
         "successfully send the correct details to the backend for a user with business income" when {
           "only the self employment has been answered" in {
             Given("I set the required feature switches")
@@ -133,6 +195,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
           }
           "everything has been answered but the user has only got self employment selected" in {
             Given("I set the required feature switches")
@@ -183,6 +247,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
           }
         }
 
@@ -236,6 +302,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
           }
           "everything has been answered but the user has only got uk property selected" in {
             Given("I set the required feature switches")
@@ -286,6 +354,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
           }
         }
 
@@ -339,6 +409,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
           }
 
           "everything has been answered but the user has only got foreign property selected" in {
@@ -390,6 +462,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
           }
         }
 
@@ -442,6 +516,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
+
+          verifyPost("/channel-preferences/confirm", count = Some(0))
         }
       }
 
@@ -449,6 +525,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "show the check your answers page" in {
           Given("I set the required feature switches")
           enable(ReleaseFour)
+          enable(SPSEnabled)
 
           And("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -493,6 +570,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           res should have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
+
+          verifyPost("/channel-preferences/confirm", count = Some(0))
         }
       }
 
@@ -500,6 +579,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "show the check your answers page" in {
           Given("I set the required feature switches")
           enable(ReleaseFour)
+          enable(SPSEnabled)
 
           And("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -544,6 +624,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           res should have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
+
+          verifyPost("/channel-preferences/confirm", count = Some(0))
         }
       }
 
@@ -551,6 +633,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "show the check your answers page" in {
           Given("I set the required feature switches")
           enable(ReleaseFour)
+          enable(SPSEnabled)
 
           And("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -595,6 +678,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           res should have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
+
+          verifyPost("/channel-preferences/confirm", count = Some(0))
         }
       }
 
@@ -602,6 +687,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "show the check your answers page" in {
           Given("I set the required feature switches")
           enable(ReleaseFour)
+          enable(SPSEnabled)
 
           And("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -646,12 +732,15 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           res should have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
+
+          verifyPost("/channel-preferences/confirm", count = Some(0))
         }
       }
 
       "return an INTERNAL_SERVER_ERROR when a failure occurs when signing the user up" in {
         Given("I set the required feature switches")
         enable(ReleaseFour)
+        enable(SPSEnabled)
 
         And("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -676,11 +765,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         res should have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
+
+        verifyPost("/channel-preferences/confirm", count = Some(0))
       }
 
       "return an INTERNAL_SERVER_ERROR when a failure occurs when creating income sources for the user" in {
         Given("I set the required feature switches")
         enable(ReleaseFour)
+        enable(SPSEnabled)
 
         And("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -718,6 +810,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         res should have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
+
+        verifyPost("/channel-preferences/confirm", count = Some(0))
       }
     }
 

@@ -100,7 +100,9 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.enrolment-store-proxy.host" -> mockHost,
     "microservice.services.enrolment-store-proxy.port" -> mockPort,
     "microservice.services.users-groups-search.host" -> mockHost,
-    "microservice.services.users-groups-search.port" -> mockPort
+    "microservice.services.users-groups-search.port" -> mockPort,
+    "microservice.services.channel-preferences.host" -> mockHost,
+    "microservice.services.channel-preferences.port" -> mockPort
   )
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]

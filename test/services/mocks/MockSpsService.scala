@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package utilities
+package services.mocks
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
-  val ConfirmedAgent = "Confirmed-Agent"
-  val IdentityVerificationFlag = "ITSA-Identity-Verification-Flag"
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import services.SPSService
+import utilities.UnitTestTrait
 
-  val SPSEntityId: String = "SPS-Entity-ID"
+trait MockSpsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+
+  val mockSpsService: SPSService = mock[SPSService]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockSpsService)
+  }
 
 }

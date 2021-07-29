@@ -18,10 +18,11 @@ package services.individual
 
 import cats.data.EitherT
 import cats.implicits._
+
 import javax.inject.{Inject, Singleton}
 import models.common.subscription.SubscriptionSuccess
 import models.{ConnectorError, IndividualSummary, SummaryModel}
-import services.SubscriptionService
+import services.{SPSService, SubscriptionService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,13 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,
                                                  knownFactsService: KnownFactsService,
-                                                 enrolmentService: EnrolmentService
+                                                 enrolmentService: EnrolmentService,
+                                                 spsService: SPSService
                                                 )(implicit ec: ExecutionContext) {
 
-  def createSubscription(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false)
+  def createSubscription(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false, maybeSpsEntityId: Option[String] = None)
                         (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     if (isReleaseFourEnabled) {
-      signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[IndividualSummary])
+      signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[IndividualSummary], maybeSpsEntityId)
     } else {
       createSubscriptionCore(nino, summaryModel)
     }
@@ -61,7 +63,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     res.value
   }
 
-  private[services] def signUpAndCreateIncomeSources(nino: String, individualSummary: IndividualSummary)
+  private[services] def signUpAndCreateIncomeSources(nino: String, individualSummary: IndividualSummary, maybeSpsEntityId: Option[String])
                                                     (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     val res = for {
       signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
@@ -69,7 +71,10 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       _ <- EitherT(subscriptionService.createIncomeSources(nino, mtdbsa, individualSummary))
       _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))
       _ <- EitherT(enrolAndRefresh(mtdbsa, nino))
-    } yield SubscriptionSuccess(mtdbsa)
+      _ = spsService.confirmPreferences(mtdbsa, maybeSpsEntityId)
+    } yield {
+      SubscriptionSuccess(mtdbsa)
+    }
 
     res.value
   }

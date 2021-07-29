@@ -29,7 +29,8 @@ object FeatureSwitch {
     ForeignProperty,
     IdentityVerification,
     RemoveCovidPages,
-    SPSEnabled
+    SPSEnabled,
+    ClaimEnrolment
   )
 
   def apply(str: String): FeatureSwitch =
@@ -63,6 +64,11 @@ object FeatureSwitch {
   case object SPSEnabled extends FeatureSwitch {
     override val name = s"$prefix.SPS-enabled"
     override val displayText = "Enable strategic preference service (SPS)"
+  }
+
+  case object ClaimEnrolment extends FeatureSwitch {
+    override val name = s"$prefix.claimEnrolment-enabled"
+    override val displayText = "Enable claim enrolment journey"
   }
 
 }
