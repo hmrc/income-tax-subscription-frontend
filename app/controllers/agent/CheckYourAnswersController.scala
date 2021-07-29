@@ -15,7 +15,7 @@
  */
 
 package controllers.agent
-
+import views.html.agent.CheckYourAnswers
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
@@ -45,7 +45,8 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                            val subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
                                            incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                           implicitDateFormatter: ImplicitDateFormatterImpl)
+                                           implicitDateFormatter: ImplicitDateFormatterImpl,
+                                           checkYourAnswers: CheckYourAnswers )
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching with RequireAnswer {
@@ -91,7 +92,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
             for {
               (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
             } yield {
-              Ok(views.html.agent.check_your_answers(
+              Ok(checkYourAnswers(
                 cache.getAgentSummary(businesses, businessAccountingMethod, true),
                 controllers.agent.routes.CheckYourAnswersController.submit(),
                 backUrl = backUrl(incomeSource),
@@ -102,7 +103,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
           }
         } else {
           require(incomeSourceModelAnswer) { incomeSource =>
-            Future.successful(Ok(views.html.agent.check_your_answers(
+            Future.successful(Ok(checkYourAnswers(
               cache.getAgentSummary(),
               controllers.agent.routes.CheckYourAnswersController.submit(),
               backUrl = backUrl(incomeSource),

@@ -35,8 +35,11 @@ import utilities.SubscriptionDataUtil._
 import utilities.agent.TestConstants.{testNino, _}
 import utilities.agent.TestModels
 import utilities.agent.TestModels.testCacheMap
-
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
 import scala.concurrent.Future
+import play.twirl.api.HtmlFormat
+import views.html.agent.CheckYourAnswers
 
 class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
@@ -45,8 +48,14 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockIncomeTaxSubscriptionConnector
   with MockAuditingService
   with FeatureSwitching {
-
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
+  val mockCheckYourAnswers: CheckYourAnswers = mock[CheckYourAnswers]
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    reset(mockCheckYourAnswers)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -60,7 +69,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
     mockIncomeTaxSubscriptionConnector,
-    mockImplicitDateFormatter
+    mockImplicitDateFormatter,
+    mockCheckYourAnswers
   )
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {
@@ -82,7 +92,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       "return ok (200)" in {
         mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
-
+        when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+          .thenReturn(HtmlFormat.empty)
         status(call()) must be(Status.OK)
       }
 
@@ -93,7 +104,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
           mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
           mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-
+          when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+            .thenReturn(HtmlFormat.empty)
           status(call()) must be(Status.OK)
           disable(ReleaseFour)
         }
