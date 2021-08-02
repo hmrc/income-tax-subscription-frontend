@@ -1,0 +1,43 @@
+@import config.AppConfig
+@import views.html.helpers.injected.ContinueButton
+@import views.html.templates.PrincipalMainTemplate
+
+@this(
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    continueButton: ContinueButton
+)
+
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@mainTemplate(
+    title = messages("mtdit-overview.heading")
+) {
+
+<h1 class="govuk-heading-l">@messages("mtdit-overview.heading")</h1>
+
+<p class="govuk-body"> @messages("mtdit-overview.paragraph1")
+    <a class="govuk-link" href="https://www.gov.uk/government/collections/making-tax-digital-for-income-tax" target="_blank">@messages("mtdit-overview.link_text")</a>
+</p>
+
+<p class="govuk-body"> @messages("mtdit-overview.paragraph2")</p>
+
+<div class="govuk-inset-text" id="inset-text"> @messages("mtdit-overview.inset")
+    <a class="govuk-link" href="https://www.tax.service.gov.uk/business-account" target="_blank">
+        @messages("mtdit-overview.link_text2").</a>
+</div>
+
+<h3 class="govuk-heading-m">@messages("mtdit-overview.heading2")</h3>
+
+<p class="govuk-body">@messages("mtdit-overview.paragraph3")</p>
+
+<p class="govuk-body">@messages("mtdit-overview.paragraph4")</p>
+
+<p class="govuk-body">@messages("mtdit-overview.paragraph5")</p>
+
+
+@form(action = postAction){
+    @continueButton()
+    }
+
+}

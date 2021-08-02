@@ -259,6 +259,8 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
 
+    def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview")(Map.empty)
+
     def claimSubscription(): WSResponse = {
       val uri = s"/claim-subscription"
       get(uri)
@@ -375,6 +377,8 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
 
+    def addMTDITOverview(): WSResponse = get("/claim-enrolment/overview")
+
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
@@ -388,3 +392,5 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim
 
 }
+
+

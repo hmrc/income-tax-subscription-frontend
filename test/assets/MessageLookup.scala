@@ -571,4 +571,17 @@ object MessageLookup {
 
   }
 
+  object AddMTDITOverview {
+    val title = "Add Making Tax Digital for Income Tax to your business tax account"
+    val heading: String = title
+    val subHeading = "Your responsibilities"
+    val insetText = "You need to use your current Government Gateway ID for Self Assessment. You can check your existing account details on your business tax account (opens in new tab)."
+    val paragraph1 = "Your agent has signed you up for Making Tax Digital for Income Tax (opens in new tab)."
+    val paragraph2 = "Adding this to your business tax account lets you manage it online with your other taxes."
+    val paragraph3 = "Making Tax Digital for Income Tax replaces Self Assessment. You can stop this tax at any time and go back to Self Assessment."
+    val paragraph4 = "You’ll still need to send HMRC a Self Assessment tax return for the tax year before you signed up for Making Tax Digital for Income Tax."
+    val paragraph5 = "To add this tax, you may need to provide documents that prove your identity."
+
+  }
+
 }

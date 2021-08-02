@@ -484,6 +484,19 @@ affinity-group-error.line1                                      = You can only u
 affinity-group-error.line2                                      = To sign up for quarterly reporting, you’ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
 affinity-group-error.agent.line1                                = To sign up for quarterly reporting with these sign in details, you need to <a id="agent-service" href="{0}">use our agent service.</a>
 
+##ADD MTDIT Overview
+
+mtdit-overview.heading                                          = Add Making Tax Digital for Income Tax to your business tax account
+mtdit-overview.paragraph1                                       = Your agent has signed you up for
+mtdit-overview.link_text                                        = Making Tax Digital for Income Tax (opens in new tab).
+mtdit-overview.paragraph2                                       = Adding this to your business tax account lets you manage it online with your other taxes.
+mtdit-overview.inset                                            = You need to use your current Government Gateway ID for Self Assessment. You can check your existing account details on your
+mtdit-overview.link_text2                                       = business tax account (opens in new tab)
+mtdit-overview.heading2                                         = Your responsibilities
+mtdit-overview.paragraph3                                       = Making Tax Digital for Income Tax replaces Self Assessment. You can stop this tax at any time and go back to Self Assessment.
+mtdit-overview.paragraph4                                       = You’ll still need to send HMRC a Self Assessment tax return for the tax year before you signed up for Making Tax Digital for Income Tax.
+mtdit-overview.paragraph5                                       = To add this tax, you may need to provide documents that prove your identity.
+
 
 ## Base ##
 agent.base.service_name                                         = Sign up your client for quarterly reporting

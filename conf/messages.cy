@@ -208,6 +208,20 @@ error.property.start_date.maxStartDate                          = Mae’n rhaid 
 error.property.start_date.minStartDate                          = Rhaid i’r dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu fod ar neu ar ôl {0}
 error.property.invalid                                          = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 
+##ADD MTDIT Overview
+
+mtdit-overview.heading                                          = Ychwanegwch Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif treth busnes
+mtdit-overview.paragraph1                                       = Mae’ch asiant wedi’ch cofrestru ar gyfer
+mtdit-overview.link_text                                        = Troi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor tab newydd)
+mtdit-overview.paragraph2                                       = Mae ychwanegu hyn at eich cyfrif treth busnes yn eich galluogi i’w reoli ar-lein gyda’ch trethi eraill.
+mtdit-overview.inset                                            = Mae angen i chi ddefnyddio’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth. Gallwch wirio manylion eich cyfrif presennol ar eich
+mtdit-overview.link_text2                                       = cyfrif treth busnes (yn agor tab newydd)
+mtdit-overview.heading2                                         = Eich cyfrifoldebau
+mtdit-overview.paragraph3                                       = Mae Troi Treth yn Ddigidol ar gyfer Treth Incwm yn disodli Hunanasesiad. Gallwch atal y dreth hon ar unrhyw adeg a mynd yn ôl i Hunanasesiad.
+mtdit-overview.paragraph4                                       = Bydd yn dal i fod yn rhaid i chi anfon Ffurflen Dreth Hunanasesiad i CThEM ar gyfer y flwyddyn dreth cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+mtdit-overview.paragraph5                                       = I ychwanegu’r dreth hon, mae’n bosibl y bydd angen i chi ddarparu dogfennau sy’n profi pwy ydych.
+
+
 # Agent Property Start Date Date
 agent.property.name.heading                                     = Pryd y dechreuodd busnes eiddo yn y DU eich cleient fasnachu?
 agent.property.line_1                                           = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
