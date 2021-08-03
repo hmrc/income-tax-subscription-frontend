@@ -29,8 +29,12 @@ import play.twirl.api.Html
 import utilities.TestModels.{testAgentSummaryData, testAgentSummaryDataNextTaxYear}
 import utilities.UnitTestTrait
 import views.ViewSpecTrait
+import views.html.agent.SignUpComplete
 
 class SignUpCompleteViewSpec extends UnitTestTrait {
+
+  val signUpComplete: SignUpComplete = app.injector.instanceOf[SignUpComplete]
+
 
   val submissionDateValue: DateModel = DateModel("1", "1", "2016")
   val action: Call = ViewSpecTrait.testCall
@@ -48,7 +52,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
   val testUpdatesBeforeQ4 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"), ("5 January 2021", "2021"))
   val testUpdatesAfterQ4 = List(("5 April 2021", "2021"))
 
-  def page(incomeSource: IncomeSourceModel, taxQuarter: String): Html = views.html.agent.sign_up_complete(
+  def page(incomeSource: IncomeSourceModel, taxQuarter: String): Html = signUpComplete(
     summary = incomeSource match {
       case IncomeSourceModel(true, false, false) => testAgentSummaryDataNextTaxYear
       case _ => testAgentSummaryData
@@ -89,7 +93,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
     "have a successful transaction confirmation banner" which {
 
       "has a turquoise background" in {
-        documentNextTaxYear.select("#confirmation-heading").hasClass("govuk-panel--confirmation") mustBe true
+        documentNextTaxYear.select("#comfirmation-panel").hasClass("govuk-panel--confirmation") mustBe true
       }
 
       s"has a heading (H1)" which {
@@ -113,7 +117,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
       }
 
       s"has a paragraph stating complete steps '$para1'" in {
-        documentNextTaxYear.select("#whatNext p:nth-of-type(1)").text() mustBe para1
+        documentNextTaxYear.select("#whatNext p").get(0).text() mustBe para1
       }
 
       s"has an initial numeric point '$number1'" in {
@@ -211,12 +215,11 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
     }
 
     "have a add another client button" in {
-
-      documentNextTaxYear.getElementById("add-another-button").text() mustBe MessageLookup.Base.addAnother
+      documentNextTaxYear.getElementsByClass("govuk-button").get(0).text() mustBe MessageLookup.Base.addAnother
     }
 
     "have a sign out link" in {
-       documentNextTaxYear.getElementById("sign-out").text() mustBe MessageLookup.Base.signOut
+      documentNextTaxYear.getElementsByClass("button govuk-link").get(0).text() mustBe MessageLookup.Base.signOut
     }
 
   }
