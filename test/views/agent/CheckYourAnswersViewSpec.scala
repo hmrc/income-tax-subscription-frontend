@@ -30,10 +30,13 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.TestModels.{testAgentSummaryData, testBusinessName}
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, TestModels, UnitTestTrait}
 import views.agent.helpers.SummaryIdConstants._
+import views.html.agent.CheckYourAnswers
 
 class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter {
 
   override val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
+
+  val checkYourAnswers : CheckYourAnswers = app.injector.instanceOf[CheckYourAnswers]
 
   lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.agent.routes.IncomeSourceController.show().url
@@ -71,7 +74,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     overseasAccountingMethodProperty = overseasAccountingMethodProperty
   )
 
-  def page(testSummaryModel: AgentSummary, releaseFour: Boolean = false): HtmlFormat.Appendable = views.html.agent.check_your_answers(
+
+  def page(testSummaryModel: AgentSummary, releaseFour: Boolean = false): HtmlFormat.Appendable = checkYourAnswers(
     summaryModel = testSummaryModel,
     postAction = postAction,
     backUrl = backUrl,
@@ -102,7 +106,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   "Summary page view" should {
 
     s"have a back button pointed to $backUrl" in {
-      val backLink = document().select("#back")
+      val backLink = document().select(".govuk-back-link")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
     }
@@ -123,7 +127,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     "has a form" which {
 
       "has a submit button" in {
-        val submit = document().getElementById("continue-button")
+        val submit = document().select("button")
         submit.isEmpty mustBe false
         submit.text shouldBe MessageLookup.Summary.confirm_and_sign_up
       }
@@ -146,8 +150,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val question = document(setupData, releaseFour).getElementById(questionId(sectionId))
       val answer = document(setupData, releaseFour).getElementById(answerId(sectionId))
       val editLink = document(setupData, releaseFour).getElementById(editLinkId(sectionId))
-      val hiddenContent = document(setupData, releaseFour).getElementsByClass("visuallyhidden").get(rowNo).text()
-
+      val hiddenContent = document(setupData, releaseFour).getElementsByClass("govuk-visually-hidden").get(rowNo+1).text()
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
       if (expectedEditLink.nonEmpty) editLinkStyleCorrectness(editLink)
@@ -158,7 +161,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         val link = editLink.select("a")
         link.attr("href") shouldBe expectedEditLink.get
         link.text() should include(MessageLookup.Base.change)
-        link.select(".visuallyhidden").get(0).text() shouldBe hiddenContent
+        link.select(".govuk-visually-hidden").get(0).text() shouldBe hiddenContent
       }
     }
 
