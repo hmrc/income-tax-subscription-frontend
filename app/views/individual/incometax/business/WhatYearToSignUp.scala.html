@@ -19,12 +19,13 @@
 @import play.api.data.Form
 @import views.html.helpers.injected.{ContinueButton, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import scala.util.Properties
 
 @this(
-        mainTemplate: PrincipalMainTemplate,
-        form: FormWithCSRF,
-        radioHelper: RadioHelper,
-        continueButton: ContinueButton
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton
 )
 
 @(accountingYearForm: Form[AccountingYearModel], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -38,7 +39,7 @@
 }
 @optionCurrentContent = {
     <p class="govuk-body"> @messages("business.what_year_to_sign_up.conditional.1.line_1.signup") </p>
-    <ul class="govuk-list">
+    <ul class="govuk-list--bullet">
         <li>@messages("business.what_year_to_sign_up.quarterly.date_1", (endYearOfCurrentTaxPeriod - 1).toString)</li>
         <li>@messages("business.what_year_to_sign_up.quarterly.date_2", (endYearOfCurrentTaxPeriod - 1).toString)</li>
         <li>@messages("business.what_year_to_sign_up.quarterly.date_3", endYearOfCurrentTaxPeriod.toString)</li>
@@ -48,7 +49,7 @@
 }
 @optionNextContent = {
     <p class="govuk-body"> @messages("business.what_year_to_sign_up.conditional.2.line_1.signup") </p>
-    <ul class="govuk-list">
+    <ul class="govuk-list--bullet">
         <li>@messages("business.what_year_to_sign_up.quarterly.date_1", endYearOfCurrentTaxPeriod.toString)</li>
         <li>@messages("business.what_year_to_sign_up.quarterly.date_2", endYearOfCurrentTaxPeriod.toString)</li>
         <li>@messages("business.what_year_to_sign_up.quarterly.date_3", (endYearOfCurrentTaxPeriod + 1).toString)</li>
@@ -71,16 +72,19 @@
         @radioHelper(
             field = accountingYearForm(AccountingYearForm.accountingYear),
             legend = question,
-            hint = Some(messages("business.what_year_to_sign_up.line_1.signup")),
+            hint = Some(messages("business.what_year_to_sign_up.line_1.signup")
+                    .concat(Properties.lineSeparator)
+                    .concat(Properties.lineSeparator)
+                    .concat(messages("business.what_year_to_sign_up.line_2.signup"))),
             radioItems = Seq(
                 RadioItem(
                     content = Text(messages("business.what_year_to_sign_up.option_1.signup", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
-                    conditionalHtml = Some(optionCurrentContent),
+                    hint = Some(Hint(content = HtmlContent(optionCurrentContent))),
                     value = Some(Current.toString)
                 ),
                 RadioItem(
                     content = Text(messages("business.what_year_to_sign_up.option_2.signup", (endYearOfCurrentTaxPeriod).toString, (endYearOfCurrentTaxPeriod + 1).toString)),
-                    conditionalHtml = Some(optionNextContent),
+                    hint = Some(Hint(content = HtmlContent(optionNextContent))),
                     value = Some(Next.toString)
                 )
             )

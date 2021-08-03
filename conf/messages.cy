@@ -133,15 +133,16 @@ cannot-use-service.heading                                      = Ni allwch ddef
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
 
 # What year to sign up
-business.what_year_to_sign_up.title.signup                      = Ar gyfer pa flwyddyn dreth ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
-business.what_year_to_sign_up.heading.signup                    = Ar gyfer pa flwyddyn dreth ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
+business.what_year_to_sign_up.title.signup                      = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
+business.what_year_to_sign_up.heading.signup                    = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
 business.what_year_to_sign_up.line_1.signup                     = Gallwch ddechrau anfon diweddariadau treth incwm yn ystod y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf. Ni fydd yn effeithio ar faint o dreth y byddwch yn ei thalu.
+business.what_year_to_sign_up.line_2.signup                     = Ychwanegu’r holl incwm a threuliau busnes at eich meddalwedd o 6 Ebrill ymlaen:
 business.what_year_to_sign_up.option_1.signup                   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.what_year_to_sign_up.option_2.signup                   = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-business.what_year_to_sign_up.conditional.1.line_1.signup       = Bydd angen i chi ychwanegu’r holl incwm a threuliau busnes at eich meddalwedd o ddechrau’r flwyddyn dreth bresennol, sef 6 Ebrill. Bydd angen i chi anfon diweddariadau cyflwyno chwarterol ar gyfer:
-business.what_year_to_sign_up.conditional.1.line_2.signup       = Mae angen i chi anfon datganiad terfynol erbyn 31 Ionawr {0}.
-business.what_year_to_sign_up.conditional.2.line_1.signup       = Bydd angen i chi anfon diweddariadau cyflwyno chwarterol ar gyfer:
-business.what_year_to_sign_up.conditional.2.line_2.signup       = Mae angen i chi gyflwyno datganiad terfynol erbyn 31 Ionawr {0}, a bydd angen llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer.
+business.what_year_to_sign_up.conditional.1.line_1.signup       = Mae angen i chi anfon diweddariad cyflwyno chwarterol ar gyfer:
+business.what_year_to_sign_up.conditional.1.line_2.signup       = Anfonwch ddatganiad terfynol erbyn 31 Ionawr {0}.
+business.what_year_to_sign_up.conditional.2.line_1.signup       = Mae angen i chi anfon diweddariad cyflwyno chwarterol ar gyfer:
+business.what_year_to_sign_up.conditional.2.line_2.signup       = Anfonwch ddatganiad terfynol erbyn 31 Ionawr {0} a llenwch Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer.
 business.what_year_to_sign_up.quarterly.date_1                  = 5 Gorffennaf {0}
 business.what_year_to_sign_up.quarterly.date_2                  = 5 Hydref {0}
 business.what_year_to_sign_up.quarterly.date_3                  = 5 Ionawr {0}
