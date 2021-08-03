@@ -540,17 +540,22 @@ object MessageLookup {
   }
 
   object WhatYearToSignUp {
-    val title = "For which tax year do you want to start using software to file updates?"
+    val title = "Which tax year do you want to start using software to file updates for?"
     val heading: String = title
     val line1 = "You can start sending income tax updates for the current tax year or the next tax year. It will not affect the amount of tax you will pay."
+    val line1_updated = "You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount of tax you will pay. Add all business income and expenses into your software from 6 April:"
 
     def option1ConditionalExample1: String = "You will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You will need to send quarterly filing updates for:"
+    def option1ConditionalExample1_updated: String = "You need to send a quarterly filing update for:"
 
     def option1ConditionalExample2(year: String): String = s"You need to submit a final declaration by the 31 January $year."
+    def option1ConditionalExample2_updated(year: String): String = s"Send a final declaration by the 31 January $year."
 
     def option2ConditionalExample1: String = "You will need to send quarterly filing updates for:"
+    def option2ConditionalExample1_updated: String = "You need to send a quarterly filing update for:"
 
     def option2ConditionalExample2(year: String): String = s"You will need to submit a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
+    def option2ConditionalExample2_updated(year: String): String = s"Send a final declaration by 31 January $year and complete a Self Assessment return for the current tax year as normal."
 
     def option1(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
 
