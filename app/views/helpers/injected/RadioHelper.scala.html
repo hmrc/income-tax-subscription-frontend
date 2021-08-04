@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *@
+@import scala.util.Properties
 
 @this(
-        govukRadios: GovukRadios,
+    govukRadios: GovukRadios
 )
 
 @(
@@ -39,7 +40,7 @@
         hint = hint.map { text =>
             Hint(
                 id = Some(s"${field.name}-hint"),
-                content = Text(text)
+                content = if (text.contains(Properties.lineSeparator)) HtmlContent("<p>" + text.replaceAll(Properties.lineSeparator, "<br>") + "</p>") else Text(text)
             )
         },
         items = radioItems,

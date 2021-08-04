@@ -23,7 +23,7 @@ import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.{HtmlFormat}
 import views.ViewSpecTrait
 import views.html.individual.incometax.business.WhatYearToSignUp
 
@@ -60,12 +60,12 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
 
     "have content" in new Setup {
       val paragraphs: Elements = document.select(".govuk-body").select("p")
-      val conditionalListLabels: Elements = document.select(".govuk-radios__conditional").select(".govuk-list").select("li")
-      document.select(".govuk-hint").get(0).text() mustBe messages.line1
-      paragraphs.get(0).text() mustBe messages.option1ConditionalExample1
-      paragraphs.get(1).text() mustBe messages.option1ConditionalExample2((taxYearEnd + 1).toString)
-      paragraphs.get(2).text() mustBe messages.option2ConditionalExample1
-      paragraphs.get(3).text() mustBe messages.option2ConditionalExample2((taxYearEnd + 2).toString)
+      val conditionalListLabels: Elements = document.select(".govuk-radios").select(".govuk-list--bullet").select("li")
+      document.select(".govuk-hint").get(0).text() mustBe messages.line1_updated
+      paragraphs.get(0).text() mustBe messages.option1ConditionalExample1_updated
+      paragraphs.get(1).text() mustBe messages.option1ConditionalExample2_updated((taxYearEnd + 1).toString)
+      paragraphs.get(2).text() mustBe messages.option2ConditionalExample1_updated
+      paragraphs.get(3).text() mustBe messages.option2ConditionalExample2_updated((taxYearEnd + 2).toString)
 
       conditionalListLabels.get(0).text() mustBe messages.conditionalDate1((taxYearEnd - 1).toString)
       conditionalListLabels.get(1).text() mustBe messages.conditionalDate2((taxYearEnd - 1).toString)
