@@ -15,12 +15,19 @@
  *@
 
 @import config.AppConfig
+@import config.AppConfig
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import models.AgentSummary
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.injected.ButtonHelper
+@import views.html.helpers.injected.SignOutButton
+@import views.html.helpers._
 
 @(endYearOfCurrentTaxPeriod: Int)(implicit messages: Messages, appConfig: AppConfig)
 
 <li>
     <span>@messages("agent.sign-up.complete.sendQuarterly")</span>
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("agent.sign-up.complete.julyUpdate", endYearOfCurrentTaxPeriod.toString)</li>
         <li>@messages("agent.sign-up.complete.octoberUpdate", endYearOfCurrentTaxPeriod.toString)</li>
         <li>@messages("agent.sign-up.complete.januaryUpdate", (endYearOfCurrentTaxPeriod + 1).toString)</li>

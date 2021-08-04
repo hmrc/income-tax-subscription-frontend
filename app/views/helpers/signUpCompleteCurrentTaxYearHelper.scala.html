@@ -21,7 +21,7 @@
 @if(updatesBefore.nonEmpty){
     <li>
         <span>@messages("agent.sign-up.complete.sendPreviousUpdates")</span>
-        <ul class="list list-bullet">
+        <ul class="govuk-list govuk-list--bullet">
             @for((updatesBefore, year) <- updatesBefore) {
                 <li>@messages(updatesBefore, year)</li>
             }
@@ -31,7 +31,7 @@
 @if(updatesAfter.nonEmpty){
     <li>
         <span>@messages("agent.sign-up.complete.sendQuarterly")</span>
-        <ul class="list list-bullet">
+        <ul class="govuk-list govuk-list--bullet">
             @for((updatesAfter, year) <- updatesAfter) {
                 <li>@messages(updatesAfter, year)</li>
             }

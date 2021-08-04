@@ -16,16 +16,15 @@
 
 package controllers.agent
 
-
 import auth.agent.PostSubmissionController
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.SubscriptionDataUtil._
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
-import views.html.agent.sign_up_complete
+import views.html.agent.SignUpComplete
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
 
@@ -33,6 +32,7 @@ import scala.util.matching.Regex
 class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        val authService: AuthService,
                                        accountingPeriodService: AccountingPeriodService,
+                                       signUpComplete: SignUpComplete,
                                        subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
@@ -64,7 +64,7 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
       val formattedClientNino = formatNino(clientNino)
 
       subscriptionDetailsService.fetchAll() map { cacheMap =>
-        Ok(sign_up_complete(cacheMap.getAgentSummary(), clientName, formattedClientNino, endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter, postAction, signOutAction))
+        Ok(signUpComplete(cacheMap.getAgentSummary(), clientName, formattedClientNino, endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter, postAction, signOutAction))
       }
   }
 
