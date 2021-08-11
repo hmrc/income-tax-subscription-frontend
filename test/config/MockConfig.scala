@@ -117,6 +117,8 @@ trait MockConfig extends AppConfig {
 
   override val channelPreferencesUrl: String = "/channel-preferences"
 
+  override val incomeTaxViewChangeUrl: String = "/income-tax-view-change-frontend"
+
 }
 
 object MockConfig extends MockConfig

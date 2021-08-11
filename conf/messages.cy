@@ -909,3 +909,17 @@ agentBase.title.error                                           = Gwall: {0} - D
 ## Language switching
 language-selector.change-to-language                            = Change the language to English
 language-selector.nav-label                                     = Cyfnewidydd iaith
+
+## Claim Confirm
+claimConfirm.title                                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i'ch cyfrif
+claimConfirm.heading                                            = Yr hyn sy’n digwydd nawr
+claimConfirm.content.line1                                      = Os nad ydych yn defnyddio asiant i reoli’ch materion treth, bydd angen i chi wneud y canlynol:
+claimConfirm.content.checklist.item1.link                       = Dewch o hyd i feddalwedd sy’n cydweddu
+claimConfirm.content.checklist.item1.suffix                     = a chaniatáu iddi ryngweithio â CThEM, os nad ydych eisoes wedi gwneud hynny.
+claimConfirm.content.checklist.item2                            = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd pan fo angen drwy gydol y flwyddyn dreth.
+claimConfirm.content.checklist.item3                            = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth.
+claimConfirm.content.line2                                      = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm ar gyfer y flwyddyn hyd yn hyn. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch cyfrif Troi Treth yn {0}
+claimConfirm.content.line2.link                                 = cyfrif Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+claimConfirm.content.line3                                      = Gall gymryd ychydig oriau cyn i wybodaeth newydd ymddangos.
+claimConfirm.continueButton                                     = Yn eich blaen i’ch cyfrif treth busnes
+claimConfirm.opens_in_a_new_tab                                 = (yn agor tab newydd)

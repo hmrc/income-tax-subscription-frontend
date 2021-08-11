@@ -260,6 +260,14 @@ object MessageLookup {
     val heading = "You’ve already signed up for quarterly reporting"
   }
 
+  object ClaimEnrollmentConfirmation {
+    val title = "You have added Making Tax Digital for Income Tax to your account"
+    val heading = "What happens now"
+    val bullet1 = "Find software that’s compatible (opens in new tab) and allow it to interact with HMRC, if you have not already done so."
+    val bullet2 = "Send next quarterly updates using your software when required throughout the tax year."
+    val bullet3 = "Submit your annual updates and declare for the tax year."
+  }
+
   object UserDetailsError {
     val title = "User match error"
     val heading = "We couldn’t confirm your details"
