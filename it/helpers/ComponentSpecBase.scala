@@ -290,6 +290,10 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
+    def claimEnrolmentConfirmation() : WSResponse = get("/claim-enrolment/confirmation")
+
+    def continueClaimEnrolmentConfirmation() : WSResponse = post("/claim-enrolment/confirmation")(Map.empty)
+
     def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
       val uri = s"/business/accounting-method?editMode=$inEditMode"
       post(uri)(

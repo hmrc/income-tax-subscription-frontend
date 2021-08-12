@@ -104,6 +104,8 @@ trait AppConfig extends FeatureSwitching {
 
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
 
+  val incomeTaxViewChangeUrl: String
+
   val eligibilityFeatureSwitchUrl: String
 
   def languageMap: Map[String, Lang] = Map(
@@ -305,4 +307,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   override lazy val countdownLength: String = config.getString("timeout.countdown")
   override lazy val timeoutLength: String = config.getString("timeout.length")
+
+  override val incomeTaxViewChangeUrl: String = {
+    s"${config.getString("income-tax-view-change-frontend.url")}/report-quarterly/income-and-expenses/view"
+  }
 }
