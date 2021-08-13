@@ -164,7 +164,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def ivFailure(): WSResponse = get("/iv-failure")
 
-    def ivSuccess(): WSResponse = get("/iv-success")
+    def ivSuccess(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/iv-success", sessionKeys)
 
     def spsCallback(hasEntityId: Boolean): WSResponse = {
       if (hasEntityId) {

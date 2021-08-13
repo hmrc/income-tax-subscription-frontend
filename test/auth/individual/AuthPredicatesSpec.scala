@@ -87,6 +87,13 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     lastRequestTimestamp -> "",
     ITSASessionKeys.JourneyStateKey -> SignUp.name
   )
+
+  lazy val claimEnrolmentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
+    authToken -> "",
+    lastRequestTimestamp -> "",
+    ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.name
+  )
+
   lazy val homelessAuthorisedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(authToken -> "", lastRequestTimestamp -> "")
 
   lazy val signUpRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> SignUp.name)
@@ -262,6 +269,26 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     "redirect to iv when the user doesn't have high enough confidence level" in {
       enable(IdentityVerification)
       val result = await(subscriptionPredicates(authorisedRequest)(defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
+    }
+  }
+
+  "claimEnrolmentPredicates" should {
+    "return an AuthPredicateSuccess where there is a nino, no mtditId, an individual affinity, the home session flag and an auth token" in {
+      claimEnrolmentPredicates(claimEnrolmentRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the claim enrolment overview page where the request session does not contain the ClaimEnrolment state" in {
+      await(claimEnrolmentPredicates(homelessAuthorisedRequest)(defaultPredicateUser).left.value) mustBe claimEnrolmentRoute
+    }
+
+    "return the already-enrolled page where an mtdid enrolment already exists" in {
+      await(claimEnrolmentPredicates(claimEnrolmentRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
+    }
+    "redirect to iv when the user doesn't have high enough confidence level" in {
+      enable(IdentityVerification)
+      val result = await(claimEnrolmentPredicates(claimEnrolmentRequest)(defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
     }

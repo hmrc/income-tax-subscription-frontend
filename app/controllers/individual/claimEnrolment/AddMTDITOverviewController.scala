@@ -16,7 +16,8 @@
 
 package controllers.individual.claimEnrolment
 
-import auth.individual.StatelessController
+import auth.individual.JourneyState.ResultFunctions
+import auth.individual.{BaseClaimEnrolmentController, StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.FeatureSwitching
@@ -31,19 +32,19 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
                                            val auditingService: AuditingService,
-                                          val authService: AuthService)
-                                         (implicit val ec: ExecutionContext,
-                                          implicit val appConfig: AppConfig,
-                                          mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
+                                           val authService: AuthService)
+                                          (implicit val ec: ExecutionContext,
+                                           implicit val appConfig: AppConfig,
+                                           mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController with FeatureSwitching {
 
 
- def show: Action[AnyContent] = Authenticated.async {implicit request =>
-   implicit user =>
+  def show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
+    implicit user =>
       if (isEnabled(ClaimEnrolment)) {
         Future.successful(
-        Ok(addmtdit(postAction = controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.submit())
-      ))
-      }else {
+          Ok(addmtdit(postAction = controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.submit())).withJourneyState(ClaimEnrolmentJourney)
+        )
+      } else {
         throw new NotFoundException("[AddMTDITOverviewController][show] - ClaimEnrolment Enabled feature switch not enabled")
       }
   }
@@ -51,8 +52,7 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Future.successful(
-      Redirect(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show())
-      )
+        Redirect(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show()))
   }
 
 }

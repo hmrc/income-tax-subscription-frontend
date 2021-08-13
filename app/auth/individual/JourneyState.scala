@@ -44,6 +44,10 @@ object UserMatched extends JourneyState {
   override val name: String = "userMatched"
 }
 
+object ClaimEnrolment extends JourneyState {
+  override val name: String = "claimEnrolment"
+}
+
 object JourneyState {
 
   implicit class SessionFunctions(session: Session) {

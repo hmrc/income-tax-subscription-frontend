@@ -16,12 +16,14 @@
 
 package controllers.individual.iv
 
-import config.featureswitch.FeatureSwitch.IdentityVerification
+import config.featureswitch.FeatureSwitch.{ClaimEnrolment, IdentityVerification}
 import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.baseURI
+import helpers.IntegrationTestConstants.{AddMTDITOverviewURI, baseURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
+import utilities.ITSASessionKeys
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
 class IVSuccessControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -58,20 +60,39 @@ class IVSuccessControllerISpec extends ComponentSpecBase with FeatureSwitching {
       }
     }
 
-    "the identity verification feature switch is enabled" should {
-      "redirect the user to the home page" in {
-        enable(IdentityVerification)
-        AuthStub.stubAuthSuccess()
+    "the identity verification feature switch is enabled" when {
+      "the user is in a claim enrolment journey" should {
+        "redirect the user to the home page" in {
+          enable(IdentityVerification)
+          enable(ClaimEnrolment)
+          AuthStub.stubAuthSuccess()
 
-        val res = IncomeTaxSubscriptionFrontend.ivSuccess()
+          val res = IncomeTaxSubscriptionFrontend.ivSuccess(
+            sessionKeys = Map(
+              ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+            )
+          )
 
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(baseURI)
-        )
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AddMTDITOverviewURI)
+          )
+        }
+      }
+      "the user is not in a claim enrolment journey" should {
+        "redirect the user to the home page" in {
+          enable(IdentityVerification)
+          AuthStub.stubAuthSuccess()
+
+          val res = IncomeTaxSubscriptionFrontend.ivSuccess()
+
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(baseURI)
+          )
+        }
       }
     }
-
   }
 
 }
