@@ -58,6 +58,8 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
 
   lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index())
 
+  lazy val claimEnrolmentRoute: Result = Redirect(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show())
+
   lazy val cannotUseServiceRoute: Result = Redirect(controllers.individual.incomesource.routes.CannotUseServiceController.show())
 
   lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show())
@@ -80,6 +82,11 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
     if (request.session.isInState(SignUp))
       Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
+
+  val claimEnrolmentJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (request.session.isInState(ClaimEnrolment))
+      Right(AuthPredicateSuccess)
+    else Left(Future.successful(claimEnrolmentRoute))
 
   val preferencesJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.isInState(SignUp)
@@ -140,6 +147,9 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
 
   val subscriptionPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
     defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
+
+  val claimEnrolmentPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| affinityPredicate |+|
+   ivPredicate |+| mtdidPredicate |+| claimEnrolmentJourneyPredicate
 
   val enrolledPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate |+| ivPredicate
 

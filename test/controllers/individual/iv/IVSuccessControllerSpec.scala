@@ -17,7 +17,7 @@
 package controllers.individual.iv
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.IdentityVerification
+import config.featureswitch.FeatureSwitch.{ClaimEnrolment, IdentityVerification}
 import config.featureswitch.FeatureSwitching
 import controllers.Assets.SEE_OTHER
 import controllers.ControllerBaseSpec
@@ -30,6 +30,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, sess
 import uk.gov.hmrc.http.NotFoundException
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants.testNino
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
 import scala.concurrent.Future
 
@@ -43,6 +44,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(IdentityVerification)
+    disable(ClaimEnrolment)
   }
 
   trait Setup {
@@ -61,6 +63,25 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
       }
     }
     "the identity verification feature switch is enabled" when {
+
+      "the user has an iv flag in session" when {
+        "the claim enrolment feature switch is enabled and the user is in claimEnrollment journey state" must {
+          "redirect the user to the claim enrolment overview page and remove the iv flag from session" in new Setup {
+            enable(IdentityVerification)
+            enable(ClaimEnrolment)
+
+            val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true" , ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name)
+            val result: Future[Result] = controller.success(requestWithIVSession)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show().url)
+            session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
+            verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
+          }
+        }
+      }
+
+
       "the user has an iv flag in session" must {
         "redirect the user to the home route and remove the iv flag from session" in new Setup {
           enable(IdentityVerification)

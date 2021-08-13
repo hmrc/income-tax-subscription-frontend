@@ -18,7 +18,7 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import auth.individual.{SignUp, UserMatching}
+import auth.individual.{ClaimEnrolment, SignUp, UserMatching}
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -80,7 +80,7 @@ trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
   )
 
   lazy val claimEnrolmentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> SignUp.name,
+    ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.name,
     ITSASessionKeys.NINO -> TestConstants.testNino
   )
 

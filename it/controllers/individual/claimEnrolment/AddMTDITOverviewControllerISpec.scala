@@ -3,12 +3,14 @@ package controllers.individual.claimEnrolment
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.FeatureSwitching
 import controllers.Assets.SEE_OTHER
-import helpers.ComponentSpecBase
+import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestConstants.AddMTDITOverviewURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{NOT_FOUND, OK}
+import utilities.ITSASessionKeys
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
-class AddMTDITOverviewControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class AddMTDITOverviewControllerISpec extends ComponentSpecBase with FeatureSwitching with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     disable(ClaimEnrolment)
@@ -31,6 +33,9 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with FeatureSwit
         httpStatus(OK),
         pageTitle(messages("mtdit-overview.heading") + serviceNameGovUk)
       )
+
+       getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) should be(Some(ClaimEnrolmentJourney.name))
+
     }
   }
 

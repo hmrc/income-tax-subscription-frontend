@@ -21,6 +21,7 @@ import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import views.html.individual.incometax.subscription.claimEnrolment.ClaimEnrolmentConfirmation
+import auth.individual.JourneyState._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,5 +44,4 @@ class ClaimEnrolmentController @Inject()(val authService: AuthService,
   def submit(): Action[AnyContent] = Action.async {
     Future.successful(Redirect(appConfig.btaUrl))
   }
-
 }

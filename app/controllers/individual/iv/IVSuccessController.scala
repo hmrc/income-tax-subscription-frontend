@@ -16,17 +16,18 @@
 
 package controllers.individual.iv
 
-import auth.individual.StatelessController
+import auth.individual.{ClaimEnrolment, StatelessController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.IdentityVerification
+import config.featureswitch.FeatureSwitch.{ClaimEnrolment => ClaimEnrolmentFeatureSwitch, IdentityVerification}
 import config.featureswitch.FeatureSwitching
-import javax.inject.Inject
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.ITSASessionKeys
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IVSuccessController @Inject()(val appConfig: AppConfig,
@@ -41,12 +42,17 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
         if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
           val nino: String = user.nino.getOrElse(throw new InternalServerException("[IVSuccessController][success] - Could not retrieve nino after iv success"))
           auditingService.audit(IVOutcomeSuccessAuditModel(nino))
+        }
+        if (isEnabled(ClaimEnrolmentFeatureSwitch) && request.session.isInState(ClaimEnrolmentJourney)) {
+          Future.successful(
+            Redirect(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show())
+              .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
+          )
+        } else {
           Future.successful(
             Redirect(controllers.usermatching.routes.HomeController.home())
               .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
           )
-        } else {
-          Future.successful(Redirect(controllers.usermatching.routes.HomeController.home()))
         }
       } else {
         Future.failed(new NotFoundException("[IVSuccessController][success] - identity verification disabled"))

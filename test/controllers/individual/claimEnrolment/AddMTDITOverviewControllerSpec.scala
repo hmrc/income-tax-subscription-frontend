@@ -28,7 +28,9 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.NotFoundException
+import utilities.ITSASessionKeys
 import views.html.individual.incometax.claimEnrolment.AddMTDITOverview
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
 import scala.concurrent.Future
 
@@ -70,17 +72,16 @@ class AddMTDITOverviewControllerSpec extends ControllerBaseSpec with MockAuditin
         when(addMTDITOverview(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(HtmlFormat.empty)
 
-        val document = Jsoup.parse(contentAsString(result))
         status(result) must be(Status.OK)
         contentType(result) must be(Some("text/html"))
         charset(result) must be(Some("utf-8"))
+        session(result).get(ITSASessionKeys.JourneyStateKey) must be(Some(ClaimEnrolmentJourney.name))
 
-        await(result)
       }
     }
   }
 
-  "Calling the show action of the AddMTDITOverviewController when ClaimEnrolment is off" should {
+  "Calling the show action of the AddMTDITOverviewController when ClaimEnrolment is not enabled" should {
 
     lazy val result = TestAddMTDITOverviewController.show()(claimEnrolmentRequest)
 
@@ -104,7 +105,6 @@ class AddMTDITOverviewControllerSpec extends ControllerBaseSpec with MockAuditin
         status(callSubmit()) must be(Status.SEE_OTHER)
         redirectLocation(callSubmit()) mustBe Some(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show().url)
 
-        await(callSubmit())
 
     }
   }
