@@ -18,7 +18,7 @@ package helpers
 
 import java.time.LocalDate
 import java.util.UUID
-import auth.individual.{JourneyState, SignUp, UserMatching}
+import auth.individual.{ClaimEnrolment, JourneyState, SignUp, UserMatching}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
@@ -45,6 +45,7 @@ import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.play.test.UnitSpec
+import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys._
 
 trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
@@ -259,7 +260,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
 
-    def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview")(Map.empty)
+    def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview", Map(JourneyStateKey -> ClaimEnrolment.name))(Map.empty)
 
     def claimSubscription(): WSResponse = {
       val uri = s"/claim-subscription"
@@ -290,9 +291,11 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def claimEnrolmentConfirmation() : WSResponse = get("/claim-enrolment/confirmation")
+    def claimEnrolmentConfirmation() : WSResponse = get("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolment.name))
 
-    def continueClaimEnrolmentConfirmation() : WSResponse = post("/claim-enrolment/confirmation")(Map.empty)
+    def continueClaimEnrolmentConfirmation() : WSResponse = post("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolment.name))(Map.empty)
+
+    def notSubscribed(): WSResponse = get("/claim-enrolment/not-subscribed", Map(JourneyStateKey -> ClaimEnrolment.name))
 
     def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
       val uri = s"/business/accounting-method?editMode=$inEditMode"

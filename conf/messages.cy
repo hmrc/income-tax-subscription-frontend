@@ -215,7 +215,7 @@ mtdit-overview.paragraph1                                       = Mae’ch asian
 mtdit-overview.link_text                                        = Troi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor tab newydd)
 mtdit-overview.paragraph2                                       = Mae ychwanegu hyn at eich cyfrif treth busnes yn eich galluogi i’w reoli ar-lein gyda’ch trethi eraill.
 mtdit-overview.inset                                            = Mae angen i chi ddefnyddio’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth. Gallwch wirio manylion eich cyfrif presennol ar eich
-mtdit-overview.link_text2                                       = cyfrif treth busnes (yn agor tab newydd)
+mtdit-overview.link_text2                                       = cyfrif treth busnes (yn agor tab newydd).
 mtdit-overview.heading2                                         = Eich cyfrifoldebau
 mtdit-overview.paragraph3                                       = Mae Troi Treth yn Ddigidol ar gyfer Treth Incwm yn disodli Hunanasesiad. Gallwch atal y dreth hon ar unrhyw adeg a mynd yn ôl i Hunanasesiad.
 mtdit-overview.paragraph4                                       = Bydd yn dal i fod yn rhaid i chi anfon Ffurflen Dreth Hunanasesiad i CThEM ar gyfer y flwyddyn dreth cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
@@ -923,3 +923,8 @@ claimConfirm.content.line2.link                                 = cyfrif Troi Tr
 claimConfirm.content.line3                                      = Gall gymryd ychydig oriau cyn i wybodaeth newydd ymddangos.
 claimConfirm.continueButton                                     = Yn eich blaen i’ch cyfrif treth busnes
 claimConfirm.opens_in_a_new_tab                                 = (yn agor tab newydd)
+
+# Claim enrolment not subscribed
+claim-enrolment.not-subscribed.heading                          = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
+claim-enrolment.not-subscribed.info                             = Nid ydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Yn ôl i’ch
+claim-enrolment.not-subscribed.info.link-text                   = cyfrif treth busnes.

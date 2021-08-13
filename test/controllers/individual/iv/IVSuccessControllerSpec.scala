@@ -74,7 +74,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
             val result: Future[Result] = controller.success(requestWithIVSession)
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show().url)
+            redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show().url)
             session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
             verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
           }

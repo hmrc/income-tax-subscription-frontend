@@ -118,10 +118,13 @@ GET         /iv-failure                                          controllers.ind
 GET         /keep-alive                                          controllers.SessionTimeoutController.keepAlive
 GET         /timeout                                             controllers.SessionTimeoutController.timeout
 
-# Claim enrolment return routes
-GET         /claim-enrolment/confirmation                       controllers.individual.claimEnrolment.ClaimEnrolmentController.show()
-POST        /claim-enrolment/confirmation                       controllers.individual.claimEnrolment.ClaimEnrolmentController.submit()
+# MTDIT Overview
+GET         /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.show
+POST        /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.submit
 
-#MTDIT Overview
-GET         /claim-enrolment/overview                            controllers.individual.claimEnrolment.AddMTDITOverviewController.show
-POST        /claim-enrolment/overview                            controllers.individual.claimEnrolment.AddMTDITOverviewController.submit
+# Claim enrolment return routes
+GET         /claim-enrolment/confirmation                       controllers.individual.claimenrolment.ClaimEnrolmentController.show()
+POST        /claim-enrolment/confirmation                       controllers.individual.claimenrolment.ClaimEnrolmentController.submit()
+
+# Claim enrolment not subscribed
+GET         /claim-enrolment/not-subscribed                     controllers.individual.claimenrolment.NotSubscribedController.show()

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.individual.claimEnrolment
+package views.individual.claimenrolment
 
 import assets.MessageLookup.{AddMTDITOverview => messages}
 import org.jsoup.Jsoup
@@ -24,9 +24,9 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
-import views.html.individual.incometax.claimEnrolment.AddMTDITOverview
+import views.html.individual.claimenrolment.AddMTDITOverview
 
-class AddMTDITOverviewSpec extends ViewSpecTrait{
+class AddMTDITOverviewSpec extends ViewSpecTrait {
 
   val addMTDITOverview: AddMTDITOverview = app.injector.instanceOf[AddMTDITOverview]
 

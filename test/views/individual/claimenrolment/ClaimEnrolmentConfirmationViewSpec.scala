@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views.individual.incometax.subscription
+package views.individual.claimenrolment
 
 import assets.MessageLookup
 import controllers.SignOutController
 import org.jsoup.Jsoup
 import play.twirl.api.Html
 import views.ViewSpecTrait
-import views.html.individual.incometax.subscription.claimEnrolment.ClaimEnrolmentConfirmation
+import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
 
 
 class ClaimEnrolmentConfirmationViewSpec extends ViewSpecTrait {
@@ -83,7 +83,7 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpecTrait {
 
       "Have a link to MTD account" in {
         val a = document.select("a[id=btaLink]")
-        a attr "href" mustBe(appConfig.incomeTaxViewChangeUrl)
+        a attr "href" mustBe (appConfig.incomeTaxViewChangeUrl)
       }
 
       "have a sign out button" in {

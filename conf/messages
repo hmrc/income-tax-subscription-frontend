@@ -491,7 +491,7 @@ mtdit-overview.paragraph1                                       = Your agent has
 mtdit-overview.link_text                                        = Making Tax Digital for Income Tax (opens in new tab).
 mtdit-overview.paragraph2                                       = Adding this to your business tax account lets you manage it online with your other taxes.
 mtdit-overview.inset                                            = You need to use your current Government Gateway ID for Self Assessment. You can check your existing account details on your
-mtdit-overview.link_text2                                       = business tax account (opens in new tab)
+mtdit-overview.link_text2                                       = business tax account (opens in new tab).
 mtdit-overview.heading2                                         = Your responsibilities
 mtdit-overview.paragraph3                                       = Making Tax Digital for Income Tax replaces Self Assessment. You can stop this tax at any time and go back to Self Assessment.
 mtdit-overview.paragraph4                                       = You’ll still need to send HMRC a Self Assessment tax return for the tax year before you signed up for Making Tax Digital for Income Tax.
@@ -915,3 +915,9 @@ claimConfirm.content.line2.link                                 = Making Tax Dig
 claimConfirm.content.line3                                      = It may take a few hours before new information is displayed.
 claimConfirm.continueButton                                     = Continue to your business tax account
 claimConfirm.opens_in_a_new_tab                                 = (opens in new tab)
+
+# Claim enrolment not subscribed
+claim-enrolment.not-subscribed.heading                          = Sorry, there is a problem with the service
+claim-enrolment.not-subscribed.info                             = You are not signed up for Making Tax Digital for Income Tax. Return to your
+claim-enrolment.not-subscribed.info.link-text                   = business tax account.
+

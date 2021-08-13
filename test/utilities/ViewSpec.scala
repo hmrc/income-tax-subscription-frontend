@@ -104,6 +104,8 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
     def content: Element = element.selectFirst("article")
 
+    def mainContent: Element = element.selectFirst("main")
+
     def getParagraphs: Elements = element.getElementsByTag("p")
 
     def getNthParagraph(nth: Int): Element = element.selectFirst(s"p:nth-of-type($nth)")
