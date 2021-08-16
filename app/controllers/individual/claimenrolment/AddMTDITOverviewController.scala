@@ -20,7 +20,7 @@ import auth.individual.JourneyState.ResultFunctions
 import auth.individual.{BaseClaimEnrolmentController, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.NotFoundException
 import views.html.individual.claimenrolment.AddMTDITOverview
@@ -40,16 +40,16 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
   def show: Action[AnyContent] = Authenticated.unrestricted { implicit request =>
     _ =>
       if (isEnabled(ClaimEnrolment)) {
-        Ok(addmtdit(postAction = controllers.individual.claimenrolment.routes.AddMTDITOverviewController.submit())).withJourneyState(ClaimEnrolmentJourney)
+        Ok(addmtdit(postAction = routes.AddMTDITOverviewController.submit())).withJourneyState(ClaimEnrolmentJourney)
       } else {
         throw new NotFoundException("[AddMTDITOverviewController][show] - The claim enrolment feature switch is disabled")
       }
   }
 
-  def submit: Action[AnyContent] = Authenticated { _ =>
-    _ =>
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user =>
       if (isEnabled(ClaimEnrolment)) {
-        Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show())
+        Redirect(routes.ClaimEnrolmentResolverController.resolve())
       } else {
         throw new NotFoundException("[AddMTDITOverviewController][submit] - The claim enrolment feature switch is disabled")
       }

@@ -13,11 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
-
 @import config.AppConfig
+@import views.html.helpers.injected.{ButtonHelper, SignOutLink}
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.injected.ButtonHelper
-@import views.html.helpers.injected.SignOutLink
 
 @this(
         principalMainTemplate: PrincipalMainTemplate,
@@ -34,41 +32,40 @@
     </div>
 
     @form(action = postAction) {
-    <section class="govuk-form-group" id="whatHappensNow">
-        <h2 class="govuk-heading-m">@messages("claimConfirm.heading")</h2>
+        <section class="govuk-form-group" id="whatHappensNow">
+            <h2 class="govuk-heading-m">@messages("claimConfirm.heading")</h2>
 
-        <p class="govuk-body">@messages("claimConfirm.content.line1")
+            <p class="govuk-body">@messages("claimConfirm.content.line1")</p>
 
-        <ol id="actionList" class="govuk-list govuk-list--number">
-            <li>
-                <a class = "govuk-link" id="compatibleSoftware" href=@appConfig.softwareUrl target="_blank">
-                    @messages("claimConfirm.content.checklist.item1.link")
-                    @messages("claimConfirm.opens_in_a_new_tab")
-                </a>
-                @Html(messages(
-                    key = "claimConfirm.content.checklist.item1.suffix"
-                ))
-            </li>
-            <li>
-            @messages("claimConfirm.content.checklist.item2")
-            </li>
-            <li>
-            @messages("claimConfirm.content.checklist.item3")
-            </li>
-        </ol>
+            <ol id="actionList" class="govuk-list govuk-list--number">
+                <li>
+                    <a class="govuk-link" id="compatibleSoftware" href="@appConfig.softwareUrl" target="_blank">
+                        @messages("claimConfirm.content.checklist.item1.link")
+                        @messages("claimConfirm.opens_in_a_new_tab")
+                    </a>
+                    @messages(
+                        key = "claimConfirm.content.checklist.item1.suffix"
+                    )
+                </li>
+                <li>
+                    @messages("claimConfirm.content.checklist.item2")
+                </li>
+                <li>
+                    @messages("claimConfirm.content.checklist.item3")
+                </li>
+            </ol>
 
-        <p class="govuk-body">@Html(messages("claimConfirm.content.line2",
-                <a class="govuk-link" id="btaLink" href={appConfig.incomeTaxViewChangeUrl} target="_blank">
-                    {messages("claimConfirm.content.line2.link")}
-                    {messages("claimConfirm.opens_in_a_new_tab")}
-                </a>))
-        </p>
+            <p class="govuk-body">@Html(messages("claimConfirm.content.line2",
+                    <a class="govuk-link" id="btaLink" href={appConfig.incomeTaxViewChangeUrl} target="_blank">
+                        {messages("claimConfirm.content.line2.link")}{messages("claimConfirm.opens_in_a_new_tab")}
+                    </a>))
+            </p>
 
-        <p class = "govuk-body">@messages("sign-up-complete.whatHappensNow.para2")</p>
-        <br>
-        @buttonHelper(messages("claimConfirm.continueButton"))
-        <br>
-        @signOutLink()
-    </section>
+            <p class = "govuk-body">@messages("sign-up-complete.whatHappensNow.para2")</p>
+            <br>
+            @buttonHelper(messages("claimConfirm.continueButton"))
+            <br>
+            @signOutLink()
+        </section>
     }
 }

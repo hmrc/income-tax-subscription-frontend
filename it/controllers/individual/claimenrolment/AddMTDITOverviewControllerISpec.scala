@@ -20,7 +20,7 @@ import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.FeatureSwitching
 import controllers.Assets.SEE_OTHER
-import helpers.IntegrationTestConstants.AddMTDITOverviewURI
+import helpers.IntegrationTestConstants.claimEnrolmentResolverURI
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.{NOT_FOUND, OK}
@@ -69,26 +69,9 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with FeatureSwit
     }
   }
 
-  "POST/claim-enrolment/overview" should {
-    "redirect to AddMTDITOverview page" when {
-      "the claim enrolment feature switch is enabled" in {
-        enable(ClaimEnrolment)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("POST /claim-enrolment/overview is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAddMTDITOverview()
-
-        Then("Should return a SEE_OTHER with a redirect location of AddMTDITOverview page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(AddMTDITOverviewURI)
-        )
-      }
-    }
-    "return a not found page" when {
-      "the claim enrolment feature switch is not enabled" in {
+  "POST /claim-enrolment/overview" when {
+    "the claim enrolment feature switch is disabled" should {
+      "return a NotFound status" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -99,6 +82,25 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with FeatureSwit
           httpStatus(NOT_FOUND),
           pageTitle("Page not found - 404")
         )
+      }
+    }
+    "the claim enrolment feature switch is enabled" should {
+      "redirect the user to the claim enrolment resolver" when {
+        "all calls are successful" in {
+          enable(ClaimEnrolment)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          When("POST /claim-enrolment/overview is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAddMTDITOverview()
+
+          Then("Should return a SEE_OTHER with a redirect location of the claim enrolment confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(claimEnrolmentResolverURI)
+          )
+        }
       }
     }
   }

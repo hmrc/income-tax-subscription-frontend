@@ -54,7 +54,7 @@ class EnrolmentStoreStubConnector @Inject()(appConfig: TestOnlyAppConfig,
           "identifiers" -> Json.arr(
             Json.obj(
               "key" -> "MTDITID",
-              "value" -> ""
+              "value" -> "XAIT000000000005"
             )
           ),
           "enrolmentFriendlyName" -> "MTD IT",

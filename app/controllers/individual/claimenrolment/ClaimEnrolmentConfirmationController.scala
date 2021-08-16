@@ -28,18 +28,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ClaimEnrolmentController @Inject()(val authService: AuthService,
-                                         val auditingService: AuditingService,
-                                         claimEnrolmentConfirmation: ClaimEnrolmentConfirmation)
-                                        (implicit val ec: ExecutionContext,
-                                         val appConfig: AppConfig,
-                                         mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
+class ClaimEnrolmentConfirmationController @Inject()(val authService: AuthService,
+                                                     val auditingService: AuditingService,
+                                                     claimEnrolmentConfirmation: ClaimEnrolmentConfirmation)
+                                                    (implicit val ec: ExecutionContext,
+                                                     val appConfig: AppConfig,
+                                                     mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       if (isEnabled(ClaimEnrolment)) {
         Ok(claimEnrolmentConfirmation(
-          postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentController.submit()
+          postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit()
         ))
       } else {
         throw new NotFoundException("[ClaimEnrolmentController][show] - The claim enrolment feature switch is disabled")

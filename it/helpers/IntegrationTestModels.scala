@@ -135,7 +135,8 @@ object IntegrationTestModels {
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testOneDayAgo)
 
-  lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMtdId)
+  lazy val testMTDITEnrolmentKey: EnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMtdId)
+  lazy val testIRSAEnrolmentKey: EnrolmentKey = EnrolmentKey(Constants.utrEnrolmentName, Constants.utrEnrolmentIdentifierKey -> testUtr)
 
   lazy val testSummaryDataSelfEmploymentData =
     Seq(SelfEmploymentData

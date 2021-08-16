@@ -16,22 +16,20 @@
 
 package models.common.subscription
 
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{Json, Writes}
 
 case class EnrolmentVerifiers(verifiers: (String, String)*)
 
 object EnrolmentVerifiers {
-  implicit val writer: Writes[EnrolmentVerifiers] = new Writes[EnrolmentVerifiers] {
-    override def writes(verifiers: EnrolmentVerifiers): JsValue =
-      Json.obj("verifiers" ->
-        (verifiers.verifiers map {
-          case (key, value) =>
-            Json.obj(
-              "key" -> key,
-              "value" -> value
-            )
-        })
-      )
+  implicit val writer: Writes[EnrolmentVerifiers] = Writes[EnrolmentVerifiers] { enrolmentVerifiers: EnrolmentVerifiers =>
+    Json.obj(
+      "verifiers" -> enrolmentVerifiers.verifiers.map { case (key, value) =>
+        Json.obj(
+          "key" -> key,
+          "value" -> value
+        )
+      }
+    )
   }
 }
 

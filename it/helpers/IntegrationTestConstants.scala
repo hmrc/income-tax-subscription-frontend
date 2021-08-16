@@ -83,7 +83,11 @@ object IntegrationTestConstants {
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val signOutURI = s"$baseURI/logout"
   val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
-  val AddMTDITOverviewURI = s"$baseURI/claim-enrolment/overview"
+  val addMTDITOverviewURI = s"$baseURI/claim-enrolment/overview"
+  val notSubscribedURI = s"$baseURI/claim-enrolment/not-subscribed"
+  val claimEnrolmentConfirmationURI = s"$baseURI/claim-enrolment/confirmation"
+  val claimEnrolmentAlreadySignedUpURI = s"$baseURI/claim-enrolment/already-signed-up"
+  val claimEnrolmentResolverURI = s"$baseURI/claim-enrolment/resolve"
 
   def basGatewaySignIn(continueTo: String): String = {
     val updatedContinue: String = continueTo.replaceAllLiterally("/", "%2F")

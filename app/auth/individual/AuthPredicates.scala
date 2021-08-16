@@ -149,7 +149,7 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
     defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
 
   val claimEnrolmentPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| affinityPredicate |+|
-   ivPredicate |+| mtdidPredicate |+| claimEnrolmentJourneyPredicate
+   ivPredicate |+| claimEnrolmentJourneyPredicate
 
   val enrolledPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate |+| ivPredicate
 

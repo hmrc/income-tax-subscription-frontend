@@ -278,13 +278,8 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     "return an AuthPredicateSuccess where there is a nino, no mtditId, an individual affinity, the home session flag and an auth token" in {
       claimEnrolmentPredicates(claimEnrolmentRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
     }
-
     "return the claim enrolment overview page where the request session does not contain the ClaimEnrolment state" in {
       await(claimEnrolmentPredicates(homelessAuthorisedRequest)(defaultPredicateUser).left.value) mustBe claimEnrolmentRoute
-    }
-
-    "return the already-enrolled page where an mtdid enrolment already exists" in {
-      await(claimEnrolmentPredicates(claimEnrolmentRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
     }
     "redirect to iv when the user doesn't have high enough confidence level" in {
       enable(IdentityVerification)

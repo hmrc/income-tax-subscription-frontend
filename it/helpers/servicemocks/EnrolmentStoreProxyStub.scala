@@ -18,7 +18,9 @@ package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.principalGroupIdKey
+import controllers.Assets.OK
 import helpers.IntegrationTestConstants._
+import models.common.subscription.EnrolmentKey
 import play.api.libs.json.{JsValue, Json}
 
 object EnrolmentStoreProxyStub extends WireMockMethods {
@@ -35,9 +37,14 @@ object EnrolmentStoreProxyStub extends WireMockMethods {
       .thenReturn(status = status, body = body)
   }
 
-  def stubGetAllocatedEnrolmentStatus(utr: String)(status: Int): StubMapping = {
-    when(method = GET, uri = s"$enrolmentStoreProxyUri/enrolments/IR-SA~UTR~$utr/groups\\?type=principal")
+  def stubGetAllocatedEnrolmentStatus(enrolmentKey: EnrolmentKey)(status: Int): StubMapping = {
+    when(method = GET, uri = s"$enrolmentStoreProxyUri/enrolments/${enrolmentKey.asString}/groups\\?type=principal")
       .thenReturn(status = status, body = jsonResponseBody(principalGroupIdKey, testGroupId))
+  }
+
+  def stubGetAllocatedEnrolmentJsError(enrolmentKey: EnrolmentKey): StubMapping = {
+    when(method = GET, uri = s"$enrolmentStoreProxyUri/enrolments/${enrolmentKey.asString}/groups\\?type=principal")
+      .thenReturn(status = OK, body = Json.obj())
   }
 
   private def upsertEnrolmentUrl(enrolmentKey: String) =

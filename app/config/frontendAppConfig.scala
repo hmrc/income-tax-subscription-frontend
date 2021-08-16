@@ -17,6 +17,8 @@
 package config
 
 import config.featureswitch.FeatureSwitching
+import models.common.subscription.EnrolmentKey
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.Lang
 import play.api.mvc.Call
@@ -70,7 +72,7 @@ trait AppConfig extends FeatureSwitching {
 
   def storeNinoUrl(token: String): String
 
-  def getAllocatedEnrolmentUrl(utr: String): String
+  def getAllocatedEnrolmentUrl(enrolmentKey: EnrolmentKey): String
 
   def queryUsersUrl(utr: String): String
 
@@ -277,8 +279,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   lazy val enrolmentStoreProxyUrl: String = config.baseUrl("enrolment-store-proxy") + "/enrolment-store-proxy/enrolment-store"
 
-  def getAllocatedEnrolmentUrl(utr: String): String =
-    s"$enrolmentStoreProxyUrl/enrolments/IR-SA~UTR~$utr/groups"
+  def getAllocatedEnrolmentUrl(enrolmentKey: EnrolmentKey): String =
+    s"$enrolmentStoreProxyUrl/enrolments/${enrolmentKey.asString}/groups"
 
   def queryUsersUrl(utr: String): String =
     s"$enrolmentStoreProxyUrl/enrolments/IR-SA~UTR~$utr/users"

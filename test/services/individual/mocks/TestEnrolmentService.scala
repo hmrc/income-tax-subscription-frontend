@@ -51,7 +51,8 @@ trait TestEnrolmentService extends MockTaxEnrolmentsConnector with MockAuth {
 }
 
 trait MockEnrolmentService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
-  val mockEnrolmentService = mock[EnrolmentService]
+
+  val mockEnrolmentService: EnrolmentService = mock[EnrolmentService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

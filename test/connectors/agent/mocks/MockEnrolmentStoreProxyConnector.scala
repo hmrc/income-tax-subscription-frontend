@@ -22,6 +22,7 @@ import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.AssignEnrolm
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyResponse
 import connectors.agent.httpparsers.QueryUsersHttpParser.QueryUsersResponse
 import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
+import models.common.subscription.EnrolmentKey
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, _}
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -40,9 +41,9 @@ trait MockEnrolmentStoreProxyConnector extends MockitoSugar with BeforeAndAfterE
 
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
 
-  def mockGetAllocatedEnrolment(utr: String)(response: EnrolmentStoreProxyResponse): Unit = {
+  def mockGetAllocatedEnrolment(enrolmentKey: EnrolmentKey)(response: EnrolmentStoreProxyResponse): Unit = {
     when(mockEnrolmentStoreProxyConnector.getAllocatedEnrolments(
-      ArgumentMatchers.eq(utr)
+      ArgumentMatchers.eq(enrolmentKey)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
   }
 

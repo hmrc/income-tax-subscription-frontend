@@ -16,8 +16,6 @@
 
 package helpers
 
-import java.time.LocalDate
-import java.util.UUID
 import auth.individual.{ClaimEnrolment, JourneyState, SignUp, UserMatching}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
@@ -45,8 +43,10 @@ import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.play.test.UnitSpec
-import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys._
+
+import java.time.LocalDate
+import java.util.UUID
 
 trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
@@ -385,9 +385,10 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     }
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
+
     def addMTDITOverview(): WSResponse = get("/claim-enrolment/overview")
 
-
+    def claimEnrolmentResolver(): WSResponse = get("/claim-enrolment/resolve", Map(JourneyStateKey -> ClaimEnrolment.name))
 
   }
 

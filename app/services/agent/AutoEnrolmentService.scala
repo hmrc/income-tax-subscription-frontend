@@ -21,12 +21,15 @@ import cats.implicits._
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UsersFound
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
 import connectors.agent.{EnrolmentStoreProxyConnector, UsersGroupsSearchConnector}
+
 import javax.inject.{Inject, Singleton}
 import models.ConnectorError
+import models.common.subscription.EnrolmentKey
 import play.api.Logger
 import services.agent.AutoEnrolmentService._
 import uk.gov.hmrc.auth.core.User
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.individual.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -59,7 +62,7 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
 
     val functionError: String => Unit = logError("getEnrolmentAllocation", nino, _)
 
-    EitherT(checkEnrolmentAllocationService.getGroupIdForEnrolment(utr)) transform {
+    EitherT(checkEnrolmentAllocationService.getGroupIdForEnrolment(EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> utr))) transform {
       case Right(_) =>
         functionError("Enrolment not allocated")
         Left(EnrolmentNotAllocated)

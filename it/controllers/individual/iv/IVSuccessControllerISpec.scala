@@ -19,7 +19,7 @@ package controllers.individual.iv
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, IdentityVerification}
 import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{AddMTDITOverviewURI, baseURI}
+import helpers.IntegrationTestConstants.{addMTDITOverviewURI, baseURI, claimEnrolmentResolverURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import utilities.ITSASessionKeys
@@ -75,7 +75,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(AddMTDITOverviewURI)
+            redirectURI(claimEnrolmentResolverURI)
           )
         }
       }

@@ -23,6 +23,8 @@ import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.AssignEnrolm
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyResponse
 import connectors.agent.httpparsers.QueryUsersHttpParser.QueryUsersResponse
 import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
+import models.common.subscription.EnrolmentKey
+
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,9 +36,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class EnrolmentStoreProxyConnector @Inject()(http: HttpClient,
                                              appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
-  def getAllocatedEnrolments(utr: String)(implicit hc: HeaderCarrier): Future[EnrolmentStoreProxyResponse] = {
+  def getAllocatedEnrolments(enrolmentKey: EnrolmentKey)(implicit hc: HeaderCarrier): Future[EnrolmentStoreProxyResponse] = {
     http.GET[EnrolmentStoreProxyResponse](
-      url = appConfig.getAllocatedEnrolmentUrl(utr),
+      url = appConfig.getAllocatedEnrolmentUrl(enrolmentKey),
       queryParams = Seq(principalQueryKey)
     )
   }

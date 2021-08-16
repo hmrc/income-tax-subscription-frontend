@@ -20,7 +20,7 @@ import config.featureswitch.FeatureSwitch.{ReleaseFour, SPSEnabled}
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, incomeSourceURI => _, testNino => _, testUtr => _, _}
-import helpers.IntegrationTestModels.{subscriptionData, testAccountingMethod, testBusinesses}
+import helpers.IntegrationTestModels.{subscriptionData, testAccountingMethod, testBusinesses, testIRSAEnrolmentKey}
 import helpers.WiremockHelper.verifyPost
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
@@ -114,7 +114,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
             And("The wiremock stubs for auto enrolment")
-            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
             EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
             UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
             EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -145,7 +145,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(NO_CONTENT)
 
               When("I call POST /check-your-answers")
               val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -167,7 +167,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(NO_CONTENT)
 
               When("I call POST /check-your-answers")
@@ -190,7 +190,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NOT_FOUND)
 
@@ -214,7 +214,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NOT_FOUND)
@@ -239,7 +239,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -265,7 +265,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -333,7 +333,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -393,7 +393,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -454,7 +454,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -515,7 +515,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -576,7 +576,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -637,7 +637,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -698,7 +698,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -759,7 +759,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )(NO_CONTENT)
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(NO_CONTENT)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(NO_CONTENT)
 
               When("I call POST /check-your-answers")
               val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -811,7 +811,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )(NO_CONTENT)
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(NO_CONTENT)
 
               When("I call POST /check-your-answers")
@@ -864,7 +864,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )(NO_CONTENT)
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NOT_FOUND)
 
@@ -918,7 +918,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )(NO_CONTENT)
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NOT_FOUND)
@@ -973,7 +973,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )(NO_CONTENT)
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -1029,7 +1029,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )(NO_CONTENT)
 
               And("The wiremock stubs for auto enrolment")
-              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+              EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
               EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
               UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
               EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -1093,7 +1093,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
           And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
           UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
           EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
@@ -1156,7 +1156,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
 
           And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
           UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
           EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)

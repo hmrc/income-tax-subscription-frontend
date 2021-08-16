@@ -16,6 +16,8 @@
 
 package config
 
+import models.common.subscription.EnrolmentKey
+
 trait MockConfig extends AppConfig {
 
   override val appName: String = "app"
@@ -98,7 +100,7 @@ trait MockConfig extends AppConfig {
   override val incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details/business-accounting-method"
   override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
 
-  override def getAllocatedEnrolmentUrl(utr: String): String = ???
+  override def getAllocatedEnrolmentUrl(enrolmentKey: EnrolmentKey): String = ???
 
   override def queryUsersUrl(utr: String): String = ???
 
