@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.individual.claimEnrolment
+package controllers.individual.claimenrolment
 
-import auth.individual.StatelessController
+import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import views.html.individual.incometax.subscription.claimEnrolment.ClaimEnrolmentConfirmation
-import auth.individual.JourneyState._
+import uk.gov.hmrc.http.NotFoundException
+import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClaimEnrolmentController @Inject()(val authService: AuthService,
@@ -32,16 +33,27 @@ class ClaimEnrolmentController @Inject()(val authService: AuthService,
                                          claimEnrolmentConfirmation: ClaimEnrolmentConfirmation)
                                         (implicit val ec: ExecutionContext,
                                          val appConfig: AppConfig,
-                                         mcc: MessagesControllerComponents) extends StatelessController {
+                                         mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      Future.successful(Ok(claimEnrolmentConfirmation(
-        postAction = controllers.individual.claimEnrolment.routes.ClaimEnrolmentController.submit()
-      )))
+  def show: Action[AnyContent] = Authenticated { implicit request =>
+    _ =>
+      if (isEnabled(ClaimEnrolment)) {
+        Ok(claimEnrolmentConfirmation(
+          postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentController.submit()
+        ))
+      } else {
+        throw new NotFoundException("[ClaimEnrolmentController][show] - The claim enrolment feature switch is disabled")
+      }
   }
 
-  def submit(): Action[AnyContent] = Action.async {
-    Future.successful(Redirect(appConfig.btaUrl))
+  def submit: Action[AnyContent] = Authenticated { _ =>
+    _ =>
+      if (isEnabled(ClaimEnrolment)) {
+        Redirect(appConfig.btaUrl)
+      } else {
+        throw new NotFoundException("[ClaimEnrolmentController][submit] - The claim enrolment feature switch is disabled")
+      }
+
   }
+
 }

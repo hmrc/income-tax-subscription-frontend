@@ -45,7 +45,7 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
         }
         if (isEnabled(ClaimEnrolmentFeatureSwitch) && request.session.isInState(ClaimEnrolmentJourney)) {
           Future.successful(
-            Redirect(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show())
+            Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show())
               .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
           )
         } else {

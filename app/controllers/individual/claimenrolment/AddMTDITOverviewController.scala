@@ -14,45 +14,45 @@
  * limitations under the License.
  */
 
-package controllers.individual.claimEnrolment
+package controllers.individual.claimenrolment
 
 import auth.individual.JourneyState.ResultFunctions
-import auth.individual.{BaseClaimEnrolmentController, StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
+import auth.individual.{BaseClaimEnrolmentController, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
-import config.featureswitch.FeatureSwitching
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.NotFoundException
-import views.html.individual.incometax.claimEnrolment.AddMTDITOverview
+import views.html.individual.claimenrolment.AddMTDITOverview
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
                                            val auditingService: AuditingService,
                                            val authService: AuthService)
                                           (implicit val ec: ExecutionContext,
-                                           implicit val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController with FeatureSwitching {
+                                           val appConfig: AppConfig,
+                                           mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
 
 
-  def show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    implicit user =>
+  def show: Action[AnyContent] = Authenticated.unrestricted { implicit request =>
+    _ =>
       if (isEnabled(ClaimEnrolment)) {
-        Future.successful(
-          Ok(addmtdit(postAction = controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.submit())).withJourneyState(ClaimEnrolmentJourney)
-        )
+        Ok(addmtdit(postAction = controllers.individual.claimenrolment.routes.AddMTDITOverviewController.submit())).withJourneyState(ClaimEnrolmentJourney)
       } else {
-        throw new NotFoundException("[AddMTDITOverviewController][show] - ClaimEnrolment Enabled feature switch not enabled")
+        throw new NotFoundException("[AddMTDITOverviewController][show] - The claim enrolment feature switch is disabled")
       }
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      Future.successful(
-        Redirect(controllers.individual.claimEnrolment.routes.AddMTDITOverviewController.show()))
+  def submit: Action[AnyContent] = Authenticated { _ =>
+    _ =>
+      if (isEnabled(ClaimEnrolment)) {
+        Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show())
+      } else {
+        throw new NotFoundException("[AddMTDITOverviewController][submit] - The claim enrolment feature switch is disabled")
+      }
   }
 
 }

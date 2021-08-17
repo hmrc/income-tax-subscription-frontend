@@ -17,10 +17,11 @@
 package auth.individual
 
 import auth.individual.AuthPredicate.AuthPredicate
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc._
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 abstract class BaseClaimEnrolmentController @Inject()(implicit mcc: MessagesControllerComponents) extends BaseFrontendController {
 
@@ -32,7 +33,12 @@ abstract class BaseClaimEnrolmentController @Inject()(implicit mcc: MessagesCont
 
     override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(defaultClaimEnrolmentPredicates)
 
-    val asyncUnrestricted: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(emptyPredicate)
+    def asyncUnrestricted: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(emptyPredicate)
+
+    def unrestricted(action: Request[AnyContent] => IncomeTaxUser => Result): Action[AnyContent] = {
+      asyncUnrestricted(action andThen (_ andThen Future.successful))
+    }
+
   }
 
 }
