@@ -123,8 +123,12 @@ GET         /claim-enrolment/overview                            controllers.ind
 POST        /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.submit
 
 # Claim enrolment return routes
-GET         /claim-enrolment/confirmation                       controllers.individual.claimenrolment.ClaimEnrolmentController.show()
-POST        /claim-enrolment/confirmation                       controllers.individual.claimenrolment.ClaimEnrolmentController.submit()
+GET         /claim-enrolment/confirmation                        controllers.individual.claimenrolment.ClaimEnrolmentController.show()
+POST        /claim-enrolment/confirmation                        controllers.individual.claimenrolment.ClaimEnrolmentController.submit()
 
 # Claim enrolment not subscribed
-GET         /claim-enrolment/not-subscribed                     controllers.individual.claimenrolment.NotSubscribedController.show()
+GET         /claim-enrolment/not-subscribed                      controllers.individual.claimenrolment.NotSubscribedController.show()
+
+#Claim enrolment Already Signed Up Page end point
+GET         /claim-enrolment/already-signed-up                   controllers.individual.claimenrolment.ClaimEnrolmentAlreadySignedUpController.show
+

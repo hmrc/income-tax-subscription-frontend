@@ -924,7 +924,15 @@ claimConfirm.content.line3                                      = Gall gymryd yc
 claimConfirm.continueButton                                     = Yn eich blaen i’ch cyfrif treth busnes
 claimConfirm.opens_in_a_new_tab                                 = (yn agor tab newydd)
 
+
 # Claim enrolment not subscribed
 claim-enrolment.not-subscribed.heading                          = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
 claim-enrolment.not-subscribed.info                             = Nid ydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Yn ôl i’ch
 claim-enrolment.not-subscribed.info.link-text                   = cyfrif treth busnes.
+
+
+## Claim Enrolment Already Signed Up
+claim-enrolment.claimAlreadySignedUp.title                      = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+claim-enrolment.claimAlreadySignedUp.content                    = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif ar-lein arall gan CThEM.
+claim-enrolment.claimAlreadySignedUp.content.link1              = Gwiriwch a yw’ch Hunanasesiad mewn cyfrif arall
+claim-enrolment.claimAlreadySignedUp.content.link2              = Adfer manylion mewngofnodi ar gyfer eich cyfrif arall
