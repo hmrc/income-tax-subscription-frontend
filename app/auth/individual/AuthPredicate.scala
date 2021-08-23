@@ -29,7 +29,6 @@ object AuthPredicate {
 
   implicit object AuthPredicateSuccessMonoid extends Monoid[AuthPredicateSuccess] {
     override def empty: AuthPredicateSuccess = AuthPredicateSuccess
-
     override def combine(x: AuthPredicateSuccess, y: AuthPredicateSuccess): AuthPredicateSuccess = AuthPredicateSuccess
   }
 

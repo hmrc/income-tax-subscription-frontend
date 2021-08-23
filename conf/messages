@@ -921,3 +921,11 @@ claim-enrolment.not-subscribed.heading                          = Sorry, there i
 claim-enrolment.not-subscribed.info                             = You are not signed up for Making Tax Digital for Income Tax. Return to your
 claim-enrolment.not-subscribed.info.link-text                   = business tax account.
 
+
+## Claim Enrolment Already Signed Up
+claim-enrolment.claimAlreadySignedUp.title                      = You are already signed up for Making Tax Digital for Income Tax
+claim-enrolment.claimAlreadySignedUp.content                    = If you cannot find your Self Assessment account details, they may be in your other HMRC online account.
+claim-enrolment.claimAlreadySignedUp.content.link1              = Check if your Self Assessment is in another account
+claim-enrolment.claimAlreadySignedUp.content.link2              = Retrieve sign in details for your other account
+
+

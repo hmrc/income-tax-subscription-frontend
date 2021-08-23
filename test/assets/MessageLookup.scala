@@ -268,6 +268,13 @@ object MessageLookup {
     val bullet3 = "Submit your annual updates and declare for the tax year."
   }
 
+  object ClaimEnrolmentAlreadySignedUp {
+    val title = "You are already signed up for Making Tax Digital for Income Tax"
+    val content = "If you cannot find your Self Assessment account details, they may be in your other HMRC online account."
+    val link1 = "Check if your Self Assessment is in another account"
+    val link2 = "Retrieve sign in details for your other account"
+  }
+
   object UserDetailsError {
     val title = "User match error"
     val heading = "We couldn’t confirm your details"

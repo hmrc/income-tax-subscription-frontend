@@ -291,11 +291,13 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def claimEnrolmentConfirmation() : WSResponse = get("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolment.name))
+    def claimEnrolmentConfirmation(): WSResponse = get("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolment.name))
 
-    def continueClaimEnrolmentConfirmation() : WSResponse = post("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolment.name))(Map.empty)
+    def continueClaimEnrolmentConfirmation(): WSResponse = post("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolment.name))(Map.empty)
 
     def notSubscribed(): WSResponse = get("/claim-enrolment/not-subscribed", Map(JourneyStateKey -> ClaimEnrolment.name))
+
+    def alreadySignedUp(): WSResponse = get("/claim-enrolment/already-signed-up", Map(JourneyStateKey -> ClaimEnrolment.name))
 
     def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
       val uri = s"/business/accounting-method?editMode=$inEditMode"
@@ -383,8 +385,9 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     }
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
-
     def addMTDITOverview(): WSResponse = get("/claim-enrolment/overview")
+
+
 
   }
 
