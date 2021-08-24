@@ -16,31 +16,27 @@
 
 package services.mocks
 
-import models.common.subscription.EnrolmentKey
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import services.agent.CheckEnrolmentAllocationService
-import services.agent.CheckEnrolmentAllocationService.CheckEnrolmentAllocationResponse
-import uk.gov.hmrc.http.HeaderCarrier
+import services.individual.claimenrolment.ClaimEnrolmentService
+import services.individual.claimenrolment.ClaimEnrolmentService.ClaimEnrolmentResponse
 
 import scala.concurrent.Future
 
-trait MockCheckEnrolmentAllocationService extends MockitoSugar with BeforeAndAfterEach {
+trait MockClaimEnrolmentService extends MockitoSugar with BeforeAndAfterEach {
   this: Suite =>
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockCheckEnrolmentAllocationService)
+    reset(claimEnrolmentService)
   }
 
-  val mockCheckEnrolmentAllocationService: CheckEnrolmentAllocationService = mock[CheckEnrolmentAllocationService]
+  val claimEnrolmentService: ClaimEnrolmentService = mock[ClaimEnrolmentService]
 
-  def mockGetGroupIdForEnrolment(enrolmentKey: EnrolmentKey)(response: CheckEnrolmentAllocationResponse): Unit = {
-    when(mockCheckEnrolmentAllocationService.getGroupIdForEnrolment(
-      ArgumentMatchers.eq(enrolmentKey)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
+  def mockClaimEnrolment(response: ClaimEnrolmentResponse): Unit = {
+    when(claimEnrolmentService.claimEnrolment(any(), any(), any())) thenReturn Future.successful(response)
   }
 
 }

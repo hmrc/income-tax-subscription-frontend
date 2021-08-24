@@ -18,8 +18,8 @@ POST        /paperless-error                                     controllers.ind
 
 
 # SPS routes
-GET         /sps-handoff                                        controllers.individual.sps.SPSHandoffController.redirectToSPS
-GET         /sps-callback                                       controllers.individual.sps.SPSCallbackController.callback
+GET         /sps-handoff                                         controllers.individual.sps.SPSHandoffController.redirectToSPS
+GET         /sps-callback                                        controllers.individual.sps.SPSCallbackController.callback
 
 
 # Income Source Routes
@@ -122,9 +122,12 @@ GET         /timeout                                             controllers.Ses
 GET         /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.show
 POST        /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.submit
 
+# Claim enrolment resolver
+GET         /claim-enrolment/resolve                             controllers.individual.claimenrolment.ClaimEnrolmentResolverController.resolve
+
 # Claim enrolment return routes
-GET         /claim-enrolment/confirmation                        controllers.individual.claimenrolment.ClaimEnrolmentController.show()
-POST        /claim-enrolment/confirmation                        controllers.individual.claimenrolment.ClaimEnrolmentController.submit()
+GET         /claim-enrolment/confirmation                        controllers.individual.claimenrolment.ClaimEnrolmentConfirmationController.show()
+POST        /claim-enrolment/confirmation                        controllers.individual.claimenrolment.ClaimEnrolmentConfirmationController.submit()
 
 # Claim enrolment not subscribed
 GET         /claim-enrolment/not-subscribed                      controllers.individual.claimenrolment.NotSubscribedController.show()

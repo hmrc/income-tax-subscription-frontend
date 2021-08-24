@@ -25,9 +25,12 @@ import connectors.agent.httpparsers.QueryUsersHttpParser.{EnrolmentStoreProxyCon
 import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.{UpsertEnrolmentFailure, UpsertEnrolmentSuccess}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestModels.testIRSAEnrolmentKey
 import helpers.servicemocks.EnrolmentStoreProxyStub._
+import models.common.subscription.EnrolmentKey
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.individual.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
 
 class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
@@ -81,9 +84,9 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
   "GetAllocatedEnrolments" should {
     "Return EnrolmentAlreadyAllocated" when {
       "EnrolmentStoreProxy ES1 returns an OK and Json Response" in {
-        stubGetAllocatedEnrolmentStatus(testUtr)(OK)
+        stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
 
-        val res = connector.getAllocatedEnrolments(testUtr)
+        val res = connector.getAllocatedEnrolments(EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr))
 
         await(res) shouldBe Right(EnrolmentAlreadyAllocated(testGroupId))
       }
@@ -91,9 +94,9 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
     "Return EnrolmentNotAllocated" when {
       "EnrolmentStoreProxy ES1 returns No Content" in {
-        stubGetAllocatedEnrolmentStatus(testUtr)(NO_CONTENT)
+        stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(NO_CONTENT)
 
-        val res = connector.getAllocatedEnrolments(testUtr)
+        val res = connector.getAllocatedEnrolments(EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr))
 
         await(res) shouldBe Right(EnrolmentNotAllocated)
       }
@@ -101,9 +104,9 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
     "Return EnrolmentStoreProxyFailure and status code" when {
       "EnrolmentStoreProxy ES1 returns Bad Request" in {
-        stubGetAllocatedEnrolmentStatus(testUtr)(BAD_REQUEST)
+        stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(BAD_REQUEST)
 
-        val res = connector.getAllocatedEnrolments(testUtr)
+        val res = connector.getAllocatedEnrolments(EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr))
 
         await(res) shouldBe Left(EnrolmentStoreProxyFailure(BAD_REQUEST))
       }

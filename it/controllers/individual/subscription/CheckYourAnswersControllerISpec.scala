@@ -127,8 +127,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )
             )(NO_CONTENT)
 
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
             IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
             When("POST /check-your-answers is called")
@@ -183,8 +183,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )
             )(NO_CONTENT)
 
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
             IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
             When("POST /check-your-answers is called")
@@ -235,8 +235,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )
             )(NO_CONTENT)
 
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
             IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
             When("POST /check-your-answers is called")
@@ -290,8 +290,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )
             )(NO_CONTENT)
 
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
             IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
             When("POST /check-your-answers is called")
@@ -342,8 +342,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )
             )(NO_CONTENT)
 
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
             IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
             When("POST /check-your-answers is called")
@@ -397,8 +397,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )
             )(NO_CONTENT)
 
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
             IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
             When("POST /check-your-answers is called")
@@ -450,8 +450,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
               )
             )(NO_CONTENT)
 
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
             IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
             When("POST /check-your-answers is called")
@@ -504,8 +504,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             )
           )(NO_CONTENT)
 
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
           IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           When("POST /check-your-answers is called")
@@ -560,8 +560,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             )
           )(NO_CONTENT)
 
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, BAD_REQUEST)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, BAD_REQUEST)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, BAD_REQUEST)
 
           When("POST /check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -614,8 +614,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             )
           )(NO_CONTENT)
 
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, FORBIDDEN)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, FORBIDDEN)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
 
           When("POST /check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -668,8 +668,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             )
           )(NO_CONTENT)
 
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, BAD_REQUEST)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
 
           When("POST /check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -722,8 +722,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             )
           )(NO_CONTENT)
 
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
 
           When("POST /check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -824,8 +824,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           SubscriptionStub.stubIndividualSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
           IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           When("POST /check-your-answers is called")
@@ -847,8 +847,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
           IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           When("POST /check-your-answers is called")
@@ -871,8 +871,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, BAD_REQUEST)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, BAD_REQUEST)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, BAD_REQUEST)
 
           When("POST /check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -892,8 +892,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, FORBIDDEN)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, FORBIDDEN)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
 
           When("POST /check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -913,8 +913,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, BAD_REQUEST)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
 
           When("POST /check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -934,8 +934,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
 
           When("POST /check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()

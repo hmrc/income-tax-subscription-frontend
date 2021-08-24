@@ -18,6 +18,8 @@ package services.agent
 
 import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser
+import models.common.subscription.EnrolmentKey
+
 import javax.inject.{Inject, Singleton}
 import services.agent.CheckEnrolmentAllocationService._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,8 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CheckEnrolmentAllocationService @Inject()(enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)
                                                (implicit ec: ExecutionContext) {
-  def getGroupIdForEnrolment(utr: String)(implicit hc: HeaderCarrier): Future[CheckEnrolmentAllocationResponse] = {
-    enrolmentStoreProxyConnector.getAllocatedEnrolments(utr) map {
+  def getGroupIdForEnrolment(enrolmentKey: EnrolmentKey)(implicit hc: HeaderCarrier): Future[CheckEnrolmentAllocationResponse] = {
+    enrolmentStoreProxyConnector.getAllocatedEnrolments(enrolmentKey) map {
       case Right(EnrolmentStoreProxyHttpParser.EnrolmentNotAllocated) => Right(EnrolmentNotAllocated)
       case Right(EnrolmentStoreProxyHttpParser.EnrolmentAlreadyAllocated(groupId)) => Left(EnrolmentAlreadyAllocated(groupId))
       case Left(EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyFailure(status)) => Left(UnexpectedEnrolmentStoreProxyFailure(status))
