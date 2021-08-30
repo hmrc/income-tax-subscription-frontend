@@ -27,6 +27,7 @@ import utilities.{AccountingPeriodUtil, ITSASessionKeys}
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
+
   def subscriptionURIPost(nino: String): String = s"/income-tax-subscription/subscription-v2/$nino"
 
   def stubSuccessfulPostSubscription(callingPageUri: String): Unit = {
@@ -50,7 +51,7 @@ object SubscriptionStub extends WireMockMethods {
     val nino = testNino
     when(method = POST, uri = subscriptionURIPost(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),
       body = successfulSubscriptionWithBodyBoth(nino = nino))
-    .thenReturn(Status.OK, successfulSubscriptionResponse)
+      .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 
   def stubSuccessfulSubscriptionPostWithProperty(callingPageUri: String): Unit = {
@@ -149,7 +150,6 @@ object SubscriptionStub extends WireMockMethods {
     "nino" -> nino,
     "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
   ) + ("arn" -> arn)
-
 
   val successfulSubscriptionResponse = SubscriptionSuccess(testMtdId)
   val failureSubscriptionResponse = Json.obj()

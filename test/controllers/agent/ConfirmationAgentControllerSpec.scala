@@ -36,7 +36,7 @@ import views.html.agent.SignUpComplete
 import scala.util.matching.Regex
 
 
-class ConfirmationControllerAgentSpec extends AgentControllerBaseSpec
+class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with MockUserMatchingService
@@ -46,7 +46,7 @@ class ConfirmationControllerAgentSpec extends AgentControllerBaseSpec
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
 
 
-  object TestConfirmationController extends ConfirmationController(
+  object TestConfirmationAgentController$ extends ConfirmationAgentController(
     mockAuditingService,
     mockAuthService,
     mockAccountingPeriodService,
@@ -65,7 +65,7 @@ class ConfirmationControllerAgentSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "ConfirmationControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showConfirmation" -> TestConfirmationController.show
+    "showConfirmation" -> TestConfirmationAgentController$.show
   )
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
@@ -87,7 +87,7 @@ class ConfirmationControllerAgentSpec extends AgentControllerBaseSpec
 
     "submitted is not in session" should {
       "return a NotFoundException" in {
-        TestConfirmationController.show(subscriptionRequest)
+        TestConfirmationAgentController$.show(subscriptionRequest)
       }
     }
 
@@ -99,7 +99,7 @@ class ConfirmationControllerAgentSpec extends AgentControllerBaseSpec
         mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
 
         mockCall()
-        val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any").buildRequest(userDetails))
+        val result = TestConfirmationAgentController$.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any").buildRequest(userDetails))
         status(result) shouldBe OK
       }
     }
@@ -113,7 +113,7 @@ class ConfirmationControllerAgentSpec extends AgentControllerBaseSpec
         mockCall()
 
 
-        val exception = intercept[Exception](await(TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))))
+        val exception = intercept[Exception](await(TestConfirmationAgentController$.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))))
         exception.getMessage shouldBe "[ConfirmationController][show]-could not retrieve client name from session"
       }
     }
@@ -130,7 +130,7 @@ class ConfirmationControllerAgentSpec extends AgentControllerBaseSpec
 
         val clientNino = formatNino(userDetails.nino)
 
-        val result = TestConfirmationController.show(
+        val result = TestConfirmationAgentController$.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")
             .buildRequest(userDetails)

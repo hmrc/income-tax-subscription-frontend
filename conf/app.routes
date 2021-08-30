@@ -135,3 +135,6 @@ GET         /claim-enrolment/not-subscribed                      controllers.ind
 #Claim enrolment Already Signed Up Page end point
 GET         /claim-enrolment/already-signed-up                   controllers.individual.claimenrolment.ClaimEnrolmentAlreadySignedUpController.show
 
+#Claim enrolment SPS
+GET         /claim-enrolment/sps-handoff                         controllers.individual.claimenrolment.spsClaimEnrol.SPSHandoffForClaimEnrolController.redirectToSPS
+GET         /claim-enrolment/sps-callback                        controllers.individual.claimenrolment.spsClaimEnrol.SPSCallbackForClaimEnrolController.callback

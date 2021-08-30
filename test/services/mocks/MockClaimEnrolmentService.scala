@@ -21,7 +21,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.individual.claimenrolment.ClaimEnrolmentService
-import services.individual.claimenrolment.ClaimEnrolmentService.ClaimEnrolmentResponse
+import services.individual.claimenrolment.ClaimEnrolmentService.{ClaimEnrolmentFailure, ClaimEnrolmentResponse}
 
 import scala.concurrent.Future
 
@@ -37,6 +37,10 @@ trait MockClaimEnrolmentService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockClaimEnrolment(response: ClaimEnrolmentResponse): Unit = {
     when(claimEnrolmentService.claimEnrolment(any(), any(), any())) thenReturn Future.successful(response)
+  }
+
+  def mockGetMtditidFromSubscription(response: Either[ClaimEnrolmentFailure, String]): Unit = {
+    when(claimEnrolmentService.getMtditidFromSubscription(any(), any(), any())) thenReturn Future.successful(response)
   }
 
 }

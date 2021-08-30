@@ -16,7 +16,8 @@
 
 package services.mocks
 
-import org.mockito.ArgumentMatchers.any
+import connectors.SPSConnector
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -26,10 +27,17 @@ import utilities.UnitTestTrait
 trait MockSpsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockSpsService: SPSService = mock[SPSService]
+  val mockSpsConnector = mock[SPSConnector]
+  val testEntityId = "testEntityId"
+  val testMtditid = "testMtditid"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockSpsService)
   }
+
+  def verifyConfirmPreferencesPostSpsConfirm(testEntityId: String, testMtditid: String, someCount: Option[Int]): Unit =
+    someCount map (count => verify(mockSpsService, times(count)).confirmPreferences(ArgumentMatchers.eq(testEntityId), ArgumentMatchers.eq(testMtditid))(
+      ArgumentMatchers.any()))
 
 }

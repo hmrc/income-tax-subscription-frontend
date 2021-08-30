@@ -123,7 +123,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)
         .recoverWith { case _ => error("Failed to save to Subscription Details ") }
-    } yield Redirect(controllers.agent.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
+    } yield Redirect(controllers.agent.routes.ConfirmationAgentController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }
 
   private def submitForAuthorisedAgentWithReleaseFourEnabled(arn: String, nino: String, utr: String)
@@ -138,7 +138,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)
         .recoverWith { case _ => error("Failed to save to Subscription Details ") }
-    } yield Redirect(controllers.agent.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
+    } yield Redirect(controllers.agent.routes.ConfirmationAgentController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }
 
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
