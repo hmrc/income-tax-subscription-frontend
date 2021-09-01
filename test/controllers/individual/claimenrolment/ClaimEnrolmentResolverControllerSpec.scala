@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
+import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Result}
@@ -40,6 +40,7 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     disable(ClaimEnrolment)
+    disable(SPSEnabled)
     super.beforeEach()
   }
 
@@ -56,20 +57,36 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
           .message mustBe "[ClaimEnrolmentResolverController][submit] - The claim enrolment feature switch is disabled"
       }
     }
-    "the claim enrolment feature switch is enabled" should {
-      "redirect the user to the claim enrolment confirmation page" when {
-        "the claim enrolment service returned a claim enrolment success" in {
-          enable(ClaimEnrolment)
-          mockClaimEnrolment(response = ClaimEnrolmentSuccess)
+    "the claim enrolment feature switch is enabled" when {
+      "the SPS Enabled feature switch is enabled" should {
+        "redirect the user to the SPS preference capture journey" when {
+          "the claim enrolment service returned a claim enrolment success" in {
+            enable(ClaimEnrolment)
+            enable(SPSEnabled)
+            mockClaimEnrolment(response = ClaimEnrolmentSuccess)
 
-          val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
+            val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ClaimEnrolmentConfirmationController.show().url)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS().url)
+          }
         }
       }
-      "redirect the user to the not subscribed page" when {
-        "the claim enrolment service returns a not subscribed response" in {
+      "the SPS Enabled feature switch is disabled" should {
+        "redirect the user to the claim enrolment confirmation page" when {
+          "the claim enrolment service returned a claim enrolment success" in {
+            enable(ClaimEnrolment)
+            mockClaimEnrolment(response = ClaimEnrolmentSuccess)
+
+            val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show().url)
+          }
+        }
+      }
+      "the claim enrolment service returns a not subscribed response" should {
+        "redirect the user to the not subscribed page" in {
           enable(ClaimEnrolment)
           mockClaimEnrolment(response = NotSubscribed)
 
@@ -79,8 +96,8 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
           redirectLocation(result) mustBe Some(routes.NotSubscribedController.show().url)
         }
       }
-      "redirect the user to the already signed up page" when {
-        "the claim enrolment service returns a already signed up response" in {
+      "the claim enrolment service returns a already signed up response" should {
+        "redirect the user to the already signed up page" in {
           enable(ClaimEnrolment)
           mockClaimEnrolment(response = AlreadySignedUp)
 
@@ -90,8 +107,8 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
           redirectLocation(result) mustBe Some(routes.ClaimEnrolmentAlreadySignedUpController.show().url)
         }
       }
-      "throw an InternalServerException with details" when {
-        "the claim enrolment service returns a claim enrolment error" in {
+      "the claim enrolment service returns a claim enrolment error" should {
+        "throw an InternalServerException with details" in {
           enable(ClaimEnrolment)
           mockClaimEnrolment(response = ClaimEnrolmentError(msg = "claim enrolment service error"))
 

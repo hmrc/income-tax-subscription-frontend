@@ -16,16 +16,15 @@
 
 package controllers.individual.iv
 
-import auth.individual.{ClaimEnrolment, StatelessController}
+import auth.individual.{StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment => ClaimEnrolmentFeatureSwitch, IdentityVerification}
+import config.featureswitch.FeatureSwitch.{IdentityVerification, ClaimEnrolment => ClaimEnrolmentFeatureSwitch}
 import config.featureswitch.FeatureSwitching
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.ITSASessionKeys
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

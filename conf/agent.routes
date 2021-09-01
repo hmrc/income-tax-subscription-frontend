@@ -30,7 +30,7 @@ GET         /check-your-answers                     controllers.agent.CheckYourA
 POST        /check-your-answers                     controllers.agent.CheckYourAnswersController.submit
 
 # Confirmation Routes
-GET         /confirmation                           controllers.agent.ConfirmationController.show
+GET         /confirmation                           controllers.agent.ConfirmationAgentController.show
 
 # Session Timeout Route
 GET         /session-timeout                        controllers.agent.SessionTimeoutController.show
