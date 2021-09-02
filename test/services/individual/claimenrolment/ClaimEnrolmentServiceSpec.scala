@@ -164,7 +164,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
 
                 val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment
 
-                await(result) mustBe Right(ClaimEnrolmentSuccess)
+                await(result) mustBe Right(ClaimEnrolmentSuccess(testNino,testMTDID))
               }
             }
           }

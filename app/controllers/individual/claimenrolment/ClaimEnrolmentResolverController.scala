@@ -19,6 +19,7 @@ package controllers.individual.claimenrolment
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc._
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, NotSubscribed}
@@ -41,16 +42,22 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
     implicit user =>
       if (isEnabled(ClaimEnrolment)) {
         claimEnrolmentService.claimEnrolment map {
-          case Right(_) => if (isEnabled(SPSEnabled)) {
-            Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS())
-          } else {
-            Redirect(routes.ClaimEnrolmentConfirmationController.show())
-          }
+          case Right(claimEnrolSuccess) =>
+            auditingService.audit(
+              ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid)
+            )
+            if (isEnabled(SPSEnabled)) {
+              Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS())
+            } else {
+              Redirect(routes.ClaimEnrolmentConfirmationController.show())
+            }
+
           case Left(NotSubscribed) => Redirect(routes.NotSubscribedController.show())
           case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show())
           case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
         }
-      } else {
+      }
+      else {
         throw new NotFoundException("[ClaimEnrolmentResolverController][submit] - The claim enrolment feature switch is disabled")
       }
   }

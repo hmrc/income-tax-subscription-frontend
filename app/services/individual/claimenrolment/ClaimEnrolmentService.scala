@@ -41,7 +41,7 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
     val claimEnrolmentResult = for {
       nino <- EitherT(getNino)
       mtditid <- EitherT(getMtditid(nino))
-      _ <- EitherT(getEnrolmentAllocation(mtditid))
+      _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
       _ <- EitherT(addKnownFacts(nino, mtditid))
       allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
     } yield allocationResult
@@ -80,11 +80,11 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
     }
   }
 
-  private def getEnrolmentAllocation(mtditid: String)(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
+  private def getEnrolmentAllocation(nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
     val enrolmentKey: EnrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> mtditid)
     checkEnrolmentAllocationService.getGroupIdForEnrolment(enrolmentKey) map {
       case Right(_) =>
-        Right(ClaimEnrolmentSuccess)
+        Right(ClaimEnrolmentSuccess(nino, mtditid))
       case Left(EnrolmentAlreadyAllocated(_)) =>
         Left(AlreadySignedUp)
       case Left(EnrolmentStoreProxyInvalidJsonResponse) =>
@@ -97,7 +97,7 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
   private def addKnownFacts(nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
     knownFactsService.addKnownFacts(mtditId = mtditid, nino = nino) map {
       case Right(_) =>
-        Right(ClaimEnrolmentSuccess)
+        Right(ClaimEnrolmentSuccess(nino, mtditid))
       case Left(response) =>
         Left(ClaimEnrolmentError(s"[ClaimEnrolmentService][addKnownFacts] - Unexpected response whilst adding known facts. Response: ${response.message}"))
     }
@@ -106,7 +106,7 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
   private def allocateEnrolment(nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
     enrolmentService.enrol(mtditId = mtditid, nino = nino) map {
       case Right(_) =>
-        Right(ClaimEnrolmentSuccess)
+        Right(ClaimEnrolmentSuccess(nino, mtditid))
       case Left(response) =>
         Left(ClaimEnrolmentError(s"[ClaimEnrolmentService][allocateEnrolment] - Unexpected response whist allocating enrolment. Response: ${response.message}"))
     }
@@ -116,9 +116,9 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
 
 object ClaimEnrolmentService {
 
-  type ClaimEnrolmentResponse = Either[ClaimEnrolmentFailure, ClaimEnrolmentSuccess.type]
+  type ClaimEnrolmentResponse = Either[ClaimEnrolmentFailure, ClaimEnrolmentSuccess]
 
-  case object ClaimEnrolmentSuccess
+  case class ClaimEnrolmentSuccess(nino: String, mtditid: String)
 
   sealed trait ClaimEnrolmentFailure
 
