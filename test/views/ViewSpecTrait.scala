@@ -347,6 +347,12 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveGoBackButton(): Unit = mustHaveSubmitButton(common.goBack)
 
+    def mustHaveContinueButtonWithText(text: String): Unit = {
+      s"$name must have a button with id 'continue-button' with text '$text'" in {
+        element.getElementById("continue-button").text() mustBe(text)
+      }
+    }
+
     def mustHaveCheckboxWithId(id: String, name: String, message: String): Unit =
       s"${this.name} must have a checkbox for '$name' with label '$message'" in {
         val checkbox: Element = element.getElementById(id)
@@ -429,19 +435,19 @@ trait ViewSpecTrait extends UnitTestTrait {
                   isAgent: Boolean = false) extends ElementTest {
 
     lazy val document: Document = Jsoup.parse(page.body)
-    override lazy val element: Element = document.getElementById("content")
+    override lazy val element: Element = Option(document.getElementById("content")).getOrElse(document.getElementById("main-content"))
 
     if (showSignOutInBanner) {
       s"$name must have a sign out link in the banner" in {
-        val signOut = document.getElementById("logOutNavHref")
+        val signOut = Option(document.getElementById("logOutNavHref")).orElse(Option(document.select(".hmrc-sign-out-nav__link")).filter(e => !e.isEmpty).map(e => e.get(0)))
         if (signOut.isEmpty) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
-        signOut.text() mustBe common.signOut
-        signOut.attr("href") must startWith(controllers.SignOutController.signOut.url)
+        signOut.get.text() mustBe common.signOut
+        signOut.get.attr("href") must startWith(controllers.SignOutController.signOut.url)
       }
     } else {
       s"$name must not have a sign out link in the banner" in {
-        val signOut = document.getElementById("logOutNavHref")
-        Option(signOut) mustBe None
+        val signOut = Option(document.getElementById("logOutNavHref")).orElse(Option(document.select(".hmrc-sign-out-nav__link")).filter(e => !e.isEmpty).map(e => e.get(0)))
+        signOut mustBe None
       }
     }
 
