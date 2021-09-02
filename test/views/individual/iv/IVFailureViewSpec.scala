@@ -18,9 +18,7 @@ package views.individual.iv
 
 import controllers.SignOutController.signOut
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
-import play.api.mvc.Request
-import play.api.test.FakeRequest
+import org.jsoup.nodes.Document
 import utilities.ViewSpec
 import views.html.individual.iv.IVFailure
 
@@ -29,10 +27,8 @@ class IVFailureViewSpec extends ViewSpec {
   val ivFailure: IVFailure = app.injector.instanceOf[IVFailure]
 
   val document: Document = Jsoup.parse(ivFailure().body)
-  lazy val content: Element = document.selectFirst("#content")
 
   object IVFailureMessages {
-    val title: String = "There’s a problem - Use software to send Income Tax updates - GOV.UK"
     val heading: String = "There’s a problem"
     val cannotAccess: String = "You cannot access this service. This may be because:"
     val tookTooLong: String = "you took too long to enter information and the service has timed out"
@@ -42,32 +38,34 @@ class IVFailureViewSpec extends ViewSpec {
   }
 
   "IVFailure" must {
-    "have a title" in {
-      document.title mustBe IVFailureMessages.title
-    }
+    "display the template correctly" in new TemplateViewTest(
+      view = ivFailure(),
+      title = IVFailureMessages.heading,
+      hasSignOutLink = true
+    )
     "have a heading" in {
-      content.getH1Element.text mustBe IVFailureMessages.heading
+      document.mainContent.getH1Element.text mustBe IVFailureMessages.heading
     }
     "have info on why the user can't access the service" which {
       "has text to start a list of reasons" in {
-        content.selectFirst(".content__body").selectFirst("p").text mustBe IVFailureMessages.cannotAccess
+        document.mainContent.selectFirst("p").text mustBe IVFailureMessages.cannotAccess
       }
       "has a list of reasons" which {
         "has a first reason" in {
-          content.selectFirst("ul").getNthListItem(1).text mustBe IVFailureMessages.tookTooLong
+          document.mainContent.selectFirst("ul").getNthListItem(1).text mustBe IVFailureMessages.tookTooLong
         }
         "has a second reason" in {
-          content.selectFirst("ul").getNthListItem(2).text mustBe IVFailureMessages.failedQuestions
+          document.mainContent.selectFirst("ul").getNthListItem(2).text mustBe IVFailureMessages.failedQuestions
         }
         "has a third reason" in {
-          content.selectFirst("ul").getNthListItem(3).text mustBe IVFailureMessages.couldNotMatchDetails
+          document.mainContent.selectFirst("ul").getNthListItem(3).text mustBe IVFailureMessages.couldNotMatchDetails
         }
       }
     }
     "have something for the user to sign out" in {
-      val signOutLink = content.select("#sign-out-button")
+      val signOutLink = document.mainContent.select("#sign-out-button")
       signOutLink.text mustBe IVFailureMessages.signOut
-      signOutLink.attr("class") mustBe "button"
+      signOutLink.attr("class") mustBe "govuk-button"
       signOutLink.attr("role") mustBe "button"
       signOutLink.attr("href") mustBe signOut.url
     }
