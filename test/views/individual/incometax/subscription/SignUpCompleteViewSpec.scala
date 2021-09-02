@@ -56,6 +56,7 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
       case IncomeSourceModel(true, false, false) => testSummaryDataBusinessNextTaxYear
       case _ => testSummaryData
     },
+    postAction = controllers.individual.subscription.routes.ConfirmationController.submit(),
     endYearOfCurrentTaxPeriod = testEndYearOfCurrentTaxPeriod,
     updatesBefore = taxQuarter match {
       case "Q1" => testUpdatesBeforeQ1

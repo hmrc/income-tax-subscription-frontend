@@ -46,8 +46,18 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
       val updatesBefore = accountingPeriodService.updateDatesBefore()
 
       subscriptionDetailsService.fetchAll() map { cacheMap =>
-        Ok(signUpComplete(cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour)), endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter))
+        Ok(signUpComplete(
+          summary = cacheMap.getSummary(isReleaseFourEnabled = isEnabled(ReleaseFour)),
+          postAction = routes.ConfirmationController.submit(),
+          endYearOfCurrentTaxPeriod = endYearOfCurrentTaxPeriod,
+          updatesBefore = updatesBefore,
+          updatesAfter = updatesAfter
+        ))
       }
+  }
+
+  def submit: Action[AnyContent] = Authenticated {
+    _ => _ => Redirect(controllers.routes.SignOutController.signOut())
   }
 
 }
