@@ -16,37 +16,29 @@
 
 package controllers.usermatching
 
-import assets.MessageLookup
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import views.individual.mocks.MockNoSA
 
-class NoSAControllerSpec extends ControllerBaseSpec {
+class NoSAControllerSpec extends ControllerBaseSpec with MockNoSA {
 
   override val controllerName: String = "NoSAController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestNoSAController extends NoSAController(mockMessagesControllerComponents)
+  object TestNoSAController extends NoSAController(noSA, mockMessagesControllerComponents)
 
   "Calling the show action of the NoSAController" should {
 
-    lazy val result = TestNoSAController.show(subscriptionRequest)
-    lazy val document = Jsoup.parse(contentAsString(result))
+    "return an OK result with HTML" in {
+      mockNoSA()
 
-    "return 200" in {
+      val result = TestNoSAController.show(subscriptionRequest)
+
       status(result) must be(Status.OK)
-    }
-
-    "return HTML" in {
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-    }
-
-    s"have the title '${MessageLookup.NoSA.title}'" in {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-      document.title() must be(MessageLookup.NoSA.title + serviceNameGovUk)
     }
   }
 

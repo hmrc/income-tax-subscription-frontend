@@ -16,33 +16,47 @@
 
 package views.individual.usermatching
 
-import assets.MessageLookup.{Base => common, NoSA => messages}
-import play.api.mvc.{AnyContentAsEmpty, Call}
-import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import org.jsoup.Jsoup
+import org.jsoup.nodes.{Document, Element}
+import play.twirl.api.Html
+import utilities.ViewSpec
+import views.html.individual.usermatching.NoSA
 
-class NoSAViewSpec extends ViewSpecTrait {
+class NoSAViewSpec extends ViewSpec {
 
-  val action: Call = ViewSpecTrait.testCall
-  implicit val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
+  val noSA: NoSA = app.injector.instanceOf[NoSA]
+  val page: Html = noSA()(request, implicitly)
+  val document: Document = Jsoup.parse(page.body)
 
-  lazy val page: HtmlFormat.Appendable = views.html.individual.usermatching.no_sa()(request, implicitly, appConfig)
+  object NoSAMessages {
+    val heading: String = "You need to register for Self Assessment"
+    val linkText = "register for Self Assessment."
+    val info = s"Before you can sign up to use software to report your Income Tax, you need to $linkText"
+  }
 
-  "The No SA view" should {
+  "NoSA" must {
 
-    val testPage = TestView(
-      name = "No SA View",
-      title = messages.title,
-      heading = messages.heading,
-      page = page,
+    "have the correct template" in new TemplateViewTest(
+      view = page,
+      title = NoSAMessages.heading,
+      hasSignOutLink = true
     )
 
-    testPage.mustHavePara(messages.line1)
+    "have a heading" in {
+      document.mainContent.getH1Element.text mustBe NoSAMessages.heading
+    }
 
-    testPage.mustHaveALink(id = "sa-signup", messages.linkText, appConfig.signUpToSaLink)
-
-    testPage.mustHaveSignOutButton(common.signOut, request.path)
+    "have a paragraph of info" which {
+      "has information for the user" in {
+        document.mainContent.getNthParagraph(1).text mustBe NoSAMessages.info
+      }
+      "has a link" in {
+        val link: Element = document.mainContent.getNthParagraph(1).getLink("sa-signup")
+        link.text mustBe NoSAMessages.linkText
+        link.attr("href") mustBe appConfig.signUpToSaLink
+      }
+    }
 
   }
+
 }

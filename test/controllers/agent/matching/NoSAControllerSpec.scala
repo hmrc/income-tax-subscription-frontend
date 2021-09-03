@@ -44,7 +44,7 @@ class NoSAControllerSpec extends ControllerBaseSpec {
       charset(result) must be(Some("utf-8"))
     }
 
-    s"have the title '${MessageLookup.NoSA.title}'" in {
+    s"have the title '${MessageLookup.NoSA.Agent.title}'" in {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       document.title() must be(MessageLookup.NoSA.Agent.title + serviceNameGovUk)
     }

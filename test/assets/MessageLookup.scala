@@ -500,10 +500,6 @@ object MessageLookup {
   }
 
   object NoSA {
-    val title = "You need to register for Self Assessment"
-    val heading: String = title
-    val linkText = "register for Self Assessment"
-    val line1 = s"Before you can sign up to use software to report your Income Tax, you need to $linkText."
 
     object Agent {
       val title = "Your client is not registered for Self Assessment"

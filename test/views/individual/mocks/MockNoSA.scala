@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package controllers.usermatching
+package views.individual.mocks
 
-import config.AppConfig
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
+import play.twirl.api.HtmlFormat
 import views.html.individual.usermatching.NoSA
 
-import javax.inject.{Inject, Singleton}
+trait MockNoSA extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
-@Singleton
-class NoSAController @Inject()(noSA: NoSA,
-                               mcc: MessagesControllerComponents)
-                              (implicit appConfig: AppConfig) extends FrontendController(mcc) {
+  val noSA: NoSA = mock[NoSA]
 
-  val show: Action[AnyContent] = Action {
-    implicit request => Ok(noSA())
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(noSA)
+  }
+
+  def mockNoSA(): Unit = {
+    when(noSA()(any(), any()))
+      .thenReturn(HtmlFormat.empty)
   }
 
 }
