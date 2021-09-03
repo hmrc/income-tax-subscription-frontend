@@ -18,13 +18,15 @@ package views.individual.usermatching
 
 import assets.MessageLookup.{Base => commonMessages, UserDetailsLockout => messages}
 import views.ViewSpecTrait
+import views.html.individual.usermatching.UserDetailsLockout
 
 class UserDetailsLockoutViewSpec extends ViewSpecTrait {
 
   val testTime = "test time"
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.individual.usermatching.user_details_lockout(testTime)(request, implicitly, appConfig)
+  val userDetailsLockout = app.injector.instanceOf[UserDetailsLockout]
+  lazy val page = userDetailsLockout(testTime)(request, implicitly, appConfig)
 
   "The User Details Lockout view" should {
     val testPage = TestView(

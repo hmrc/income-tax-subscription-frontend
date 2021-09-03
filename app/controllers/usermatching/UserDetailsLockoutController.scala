@@ -17,22 +17,24 @@
 package controllers.usermatching
 
 import java.time.{Duration, LocalTime}
-
 import auth.individual.{IncomeTaxSAUser, UserMatchingController}
 import config.AppConfig
+
 import javax.inject.Inject
 import models.usermatching.{LockedOut, NotLockedOut}
 import play.api.i18n.Messages
 import play.api.mvc._
 import services.{AuditingService, AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
+import views.html.individual.usermatching.UserDetailsLockout
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
 class UserDetailsLockoutController @Inject()(val auditingService: AuditingService,
                                              val authService: AuthService,
-                                             lockoutService: UserLockoutService)
+                                             lockoutService: UserLockoutService,
+                                             userDetailsLockout: UserDetailsLockout)
                                             (implicit val ec: ExecutionContext,
                                              val appConfig: AppConfig,
                                              mcc: MessagesControllerComponents) extends UserMatchingController {
@@ -67,7 +69,7 @@ class UserDetailsLockoutController @Inject()(val auditingService: AuditingServic
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(appConfig.matchingLockOutSeconds)
-        Future.successful(Ok(views.html.individual.usermatching.user_details_lockout(durationText(duration))))
+        Future.successful(Ok(userDetailsLockout(durationText(duration))))
       }
   }
 
