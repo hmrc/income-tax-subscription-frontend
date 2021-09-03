@@ -32,12 +32,12 @@ principalMainTemplate: PrincipalMainTemplate
 </p>
 <ul class="govuk-list govuk-list--bullet">
     <li>
-        <a class="govuk-link" href="" id="checkSaAccount">
+        <a class="govuk-link" href="@appConfig.haveSaUtr" id="checkSaAccount">
             @messages("claim-enrolment.claimAlreadySignedUp.content.link1")
         </a>
     </li>
     <li>
-        <a class="govuk-link" href="" id="retrieveSaAccountDetails">
+        <a class="govuk-link" href="@appConfig.wrongCredentials" id="retrieveSaAccountDetails">
             @messages("claim-enrolment.claimAlreadySignedUp.content.link2")
         </a>
     </li>

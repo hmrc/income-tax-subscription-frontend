@@ -53,6 +53,9 @@ trait AppConfig extends FeatureSwitching {
   def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
 
   val btaUrl: String
+  val wrongCredentials: String
+  val haveSaUtr: String
+  val btaBaseUrl :String
   val softwareUrl: String
   val agentAuthUrl: String
   val agentAccountUrl: String
@@ -198,9 +201,10 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override lazy val preferencesFrontendRedirect: String = config.getString("preferences-frontend.url")
 
   override lazy val preferencesUrl: String = config.baseUrl("preferences")
-
+  override lazy val btaBaseUrl: String = config.getString("bta.baseUrl")
   override lazy val shutterPage: String = config.getString("shutter-page.url")
-
+  override val wrongCredentials: String = s"$btaBaseUrl/business-account/wrong-credentials"
+  override val haveSaUtr: String = s"$btaBaseUrl/business-account/add-tax/self-assessment/have-sa-utr"
   override lazy val ggAuthenticationURL: String = config.baseUrl("gg-authentication")
   override lazy val ggURL: String = config.baseUrl("government-gateway")
 
@@ -212,6 +216,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
     val confidenceLevel: Int = identityVerificationRequiredConfidenceLevel
     val successUrl: String = baseUrl + controllers.individual.iv.routes.IVSuccessController.success().url
     val failureUrl: String = baseUrl + controllers.individual.iv.routes.IVFailureController.failure().url
+
     s"$identityVerificationFrontendBaseUrl$upliftUri?origin=$origin&confidenceLevel=$confidenceLevel&completionURL=$successUrl&failureURL=$failureUrl"
   }
 
