@@ -17,37 +17,44 @@
 package controllers.usermatching
 
 import java.time.Duration
-
 import agent.audit.mocks.MockAuditingService
-import assets.MessageLookup.{UserDetailsLockout => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.Play
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, contentType, _}
+import play.api.test.Helpers.{ contentType, _}
+import play.twirl.api.HtmlFormat
 import services.mocks.MockUserLockoutService
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants._
+import views.html.individual.usermatching.UserDetailsLockout
+
+import scala.concurrent.Future
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService with MockAuditingService {
 
+  val mockUserDetailsLockout: UserDetailsLockout = mock[UserDetailsLockout]
+  when(mockUserDetailsLockout(ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
+    .thenReturn(HtmlFormat.empty)
+
+  object TestUserDetailsLockoutController extends UserDetailsLockoutController(
+  mockAuditingService,
+  mockAuthService,
+  mockUserLockoutService,
+  mockUserDetailsLockout
+  )
+
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "UserDetailsLockoutController"
+
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestUserDetailsLockoutController.show
+  "show" -> TestUserDetailsLockoutController.show
   )
-
-  def createTestUserDetailsLockoutController(enableMatchingFeature: Boolean): UserDetailsLockoutController = new UserDetailsLockoutController(
-    mockAuditingService,
-    mockAuthService,
-    mockUserLockoutService
-  )
-
-  lazy val TestUserDetailsLockoutController: UserDetailsLockoutController = createTestUserDetailsLockoutController(enableMatchingFeature = true)
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
     ITSASessionKeys.JourneyStateKey -> UserMatching.name)
@@ -56,18 +63,17 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   "Calling the 'show' action of the UserDetailsLockoutController" when {
 
     "the user is locked out" should {
-      lazy val result = TestUserDetailsLockoutController.show(request)
-      lazy val document = Jsoup.parse(contentAsString(result))
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      def call(request: Request[AnyContent]): Future[Result] = TestUserDetailsLockoutController.show(request)
+
+      lazy val result = call(request)
+
       "return 200" in {
         setupMockLockedOut(testCredId)
         status(result) must be(Status.OK)
-
         contentType(result) must be(Some("text/html"))
         charset(result) must be(Some("utf-8"))
-
-        document.title mustBe messages.title + serviceNameGovUk
       }
+
     }
 
     "the user is not locked out" should {
