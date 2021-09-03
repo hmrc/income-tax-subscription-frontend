@@ -15,11 +15,11 @@
  *@
 
 @import config.AppConfig
-@import views.html.templates.injected.MainTemplate
 @import views.html.helpers.injected.SignOutButton
+@import views.html.templates.PrincipalMainTemplate
 
 @this(
-    mainTemplate: MainTemplate,
+    mainTemplate: PrincipalMainTemplate,
     signOutButton: SignOutButton
 )
 
@@ -29,11 +29,11 @@
     title = messages("iv-failure.heading")
 ){
 
-    <h1 class="heading-xlarge">@messages("iv-failure.heading")</h1>
+    <h1 class="govuk-heading-xl">@messages("iv-failure.heading")</h1>
 
-    <p>@messages("iv-failure.cannot-access")</p>
+    <p class="govuk-body">@messages("iv-failure.cannot-access")</p>
 
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("iv-failure.took-too-long")</li>
         <li>@messages("iv-failure.failed-questions")</li>
         <li>@messages("iv-failure.could-not-match-details")</li>
