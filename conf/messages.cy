@@ -464,7 +464,8 @@ user-details.summary.dob                                        = Dyddiad geni
 ## No SA page ##
 no-sa.title                                                     = Rhaid i chi gofrestru ar gyfer Hunanasesiad
 no-sa.heading                                                   = Rhaid i chi gofrestru ar gyfer Hunanasesiad
-no-sa.line_1                                                    = Cyn y gallwch gofrestru i ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm, rhaid i chi <a id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
+no-sa.info                                                      = Cyn y gallwch gofrestru i ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm, rhaid i chi {0}
+no-sa.info.link-text                                            = gofrestru ar gyfer Hunanasesiad.
 
 ## cannot report before 6 April 2018 page ##
 cannot-report-yet.title                                         = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm ar hyn o bryd

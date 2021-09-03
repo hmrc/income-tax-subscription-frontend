@@ -441,7 +441,8 @@ user-details.summary.dob                                        = Date of birth
 ## No SA page ##
 no-sa.title                                                     = You need to register for Self Assessment
 no-sa.heading                                                   = You need to register for Self Assessment
-no-sa.line_1                                                    = Before you can sign up to use software to report your Income Tax, you need to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
+no-sa.info                                                      = Before you can sign up to use software to report your Income Tax, you need to {0}
+no-sa.info.link-text                                            = register for Self Assessment.
 
 ## cannot report before 6 April 2018 page ##
 cannot-report-yet.title                                         = You can’t use software to report your Income Tax yet
