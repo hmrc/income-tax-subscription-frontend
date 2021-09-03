@@ -19,7 +19,7 @@ package controllers.individual.subscription
 import config.featureswitch.FeatureSwitch.{ReleaseFour, SPSEnabled}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.testSubscriptionId
+import helpers.IntegrationTestConstants.{signOutURI, testSubscriptionId}
 import helpers.IntegrationTestModels.testIncomeSourceIndivProperty
 import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.AuthStub
@@ -64,6 +64,35 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       Then("Should return a NOT_FOUND status")
       res should have(
         httpStatus(NOT_FOUND))
+    }
+  }
+
+  "POST /confirmation" should {
+    "redirect the user to sign out" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubEnrolled()
+
+      When("POST /confirmation is called")
+      val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
+
+      Then("Should redirect to sign out")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(signOutURI)
+      )
+    }
+    "return a NOT_FOUND when the user is not enrolled" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      When("GET /confirmation is called")
+      val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
+
+      Then("Should return a NOT_FOUND status")
+      res should have(
+        httpStatus(NOT_FOUND)
+      )
+
     }
   }
 

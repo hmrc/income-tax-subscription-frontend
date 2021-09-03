@@ -32,6 +32,7 @@ POST        /check-your-answers                                  controllers.ind
 
 # Confirmation Routes
 GET         /confirmation                                        controllers.individual.subscription.ConfirmationController.show
+POST        /confirmation                                        controllers.individual.subscription.ConfirmationController.submit
 
 # Session Timeout Route
 GET         /session-timeout                                     controllers.SessionTimeoutController.show

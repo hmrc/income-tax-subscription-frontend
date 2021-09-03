@@ -18,15 +18,14 @@
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.injected.ButtonHelper
 @import views.html.helpers._
-@import views.individual.helpers._
 @import models.IndividualSummary
-@import models.common.AccountingYearModel
 
 @this(
     principalMainTemplate: PrincipalMainTemplate,
-    buttonHelper: ButtonHelper
+    buttonHelper: ButtonHelper,
+    form: FormWithCSRF
 )
-@(summary: IndividualSummary, endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summary: IndividualSummary, postAction: Call, endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @incomeSource = @{
     summary.incomeSource.get
@@ -72,7 +71,10 @@
 
         <p class = "govuk-body">@messages("sign-up-complete.whatHappensNow.para2")</p>
 
-        @buttonHelper(messages("sign-up-complete.whatHappensNow.signOut"))
+        @form(action = postAction) {
+            @buttonHelper(messages("sign-up-complete.whatHappensNow.signOut"))
+        }
+
     </section>
 
 

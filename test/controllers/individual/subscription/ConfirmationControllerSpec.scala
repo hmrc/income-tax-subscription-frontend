@@ -44,7 +44,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
 
-  override def beforeEach() = {
+  override def beforeEach(): Unit = {
     reset(mockSignUpComplete)
     super.beforeEach()
   }
@@ -67,7 +67,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "ConfirmationControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestConfirmationController.show
+    "show" -> TestConfirmationController.show,
+    "submit" -> TestConfirmationController.submit
   )
 
   implicit class SessionUtil[T](fakeRequest: FakeRequest[T]) {
@@ -76,7 +77,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     )
   }
 
-  "ConfirmationController" when {
+  "show" when {
     val startTime: LocalDateTime = LocalDateTime.now()
     "the user is in confirmation journey state" should {
       "get the ID from Subscription Details  if the user is enrolled" in {
@@ -86,11 +87,10 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
         mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
 
-        when(mockSignUpComplete(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+        when(mockSignUpComplete(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
         (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
-        val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime)
-        )
+        val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime))
 
         status(result) shouldBe OK
 
@@ -113,6 +113,17 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       }
     }
 
+  }
+
+  "submit" should {
+    "redirect the user to the sign out controller" in {
+      mockAuthEnrolled()
+
+      val result: Future[Result] = TestConfirmationController.submit(subscriptionRequest)
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.SignOutController.signOut().url)
+    }
   }
 
   authorisationTests()
