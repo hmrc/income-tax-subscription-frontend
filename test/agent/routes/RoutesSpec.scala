@@ -46,7 +46,7 @@ class RoutesSpec extends PlaySpec with GuiceOneAppPerTest {
 
   "The URL for the ConfirmationController.show action" should {
     s"be equal to $contextRoute/confirmation" in {
-      controllers.agent.routes.ConfirmationAgentController.show().url must be(s"$contextRoute/confirmation")
+      controllers.agent.routes.ConfirmationController.show().url must be(s"$contextRoute/confirmation")
     }
   }
 

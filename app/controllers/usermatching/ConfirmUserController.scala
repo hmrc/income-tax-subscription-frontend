@@ -19,6 +19,8 @@ package controllers.usermatching
 import auth.individual.JourneyState.ResultFunctions
 import auth.individual.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import config.AppConfig
+import config.featureswitch.FeatureSwitching
+
 import javax.inject.{Inject, Singleton}
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
@@ -28,6 +30,7 @@ import play.twirl.api.Html
 import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys._
+import views.html.individual.usermatching.CheckYourUserDetails
 
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,13 +40,14 @@ import scala.util.Left
 class ConfirmUserController @Inject()(val auditingService: AuditingService,
                                       val authService: AuthService,
                                       lockOutService: UserLockoutService,
-                                      userMatching: UserMatchingService)
+                                      userMatching: UserMatchingService,
+                                      checkYourUserDetails: CheckYourUserDetails)
                                      (implicit val ec: ExecutionContext,
                                       val appConfig: AppConfig,
-                                      mcc: MessagesControllerComponents) extends UserMatchingController {
+                                      mcc: MessagesControllerComponents) extends UserMatchingController with FeatureSwitching {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
-    views.html.individual.usermatching.check_your_user_details(
+      checkYourUserDetails(
       userDetailsModel,
       controllers.usermatching.routes.ConfirmUserController.submit(),
       backUrl

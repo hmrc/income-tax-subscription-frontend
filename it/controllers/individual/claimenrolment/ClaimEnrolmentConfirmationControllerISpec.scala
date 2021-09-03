@@ -70,7 +70,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
 
         When("POST /claim-enrolment/confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
+        val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentConfirmation()
         Then("Should return a SEE_OTHER going to bta")
         res should have(
           httpStatus(SEE_OTHER), redirectURI("https://www.tax.service.gov.uk/business-account")
@@ -83,7 +83,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
 
         When("GET /claim-enrolment/confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
+        val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentConfirmation()
 
         res should have(
           httpStatus(NOT_FOUND)

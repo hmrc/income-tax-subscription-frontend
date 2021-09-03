@@ -44,10 +44,7 @@ class CannotUseServiceViewSpec extends ViewSpecTrait {
     )
 
     testPage.mustHavePara(messages.line1)
-
     testPage.mustHaveSignOutLink(common.signOut)
-
   }
-
 }
 

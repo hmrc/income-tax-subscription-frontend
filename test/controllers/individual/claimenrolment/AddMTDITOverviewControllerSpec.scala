@@ -41,6 +41,7 @@ class AddMTDITOverviewControllerSpec extends ControllerBaseSpec
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestAddMTDITOverviewController.show,
     "submit" -> TestAddMTDITOverviewController.submit
+
   )
 
   override def beforeEach(): Unit = {

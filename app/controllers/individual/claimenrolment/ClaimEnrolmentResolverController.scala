@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import play.api.mvc._
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, NotSubscribed}
@@ -31,8 +31,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnrolmentService,
                                                  val auditingService: AuditingService,
-                                                 val authService: AuthService
-                                                )
+                                                 val authService: AuthService)
                                                 (implicit val ec: ExecutionContext,
                                                  val appConfig: AppConfig,
                                                  mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
@@ -41,11 +40,7 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
     implicit user =>
       if (isEnabled(ClaimEnrolment)) {
         claimEnrolmentService.claimEnrolment map {
-          case Right(_) => if (isEnabled(SPSEnabled)) {
-            Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS())
-          } else {
-            Redirect(routes.ClaimEnrolmentConfirmationController.show())
-          }
+          case Right(_) => Redirect(routes.ClaimEnrolmentConfirmationController.show())
           case Left(NotSubscribed) => Redirect(routes.NotSubscribedController.show())
           case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show())
           case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)

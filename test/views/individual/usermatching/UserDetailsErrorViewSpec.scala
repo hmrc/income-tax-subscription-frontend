@@ -18,15 +18,13 @@ package views.individual.usermatching
 
 import assets.MessageLookup.{Base => commonMessages, UserDetailsError => messages}
 import views.ViewSpecTrait
-import views.html.individual.usermatching.UserDetailsError
 
 class UserDetailsErrorViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
   implicit val request = ViewSpecTrait.viewTestRequest
 
-  val userDetailsError = app.injector.instanceOf[UserDetailsError]
-  lazy val page = userDetailsError(action)(request, implicitly, appConfig)
+  lazy val page = views.html.individual.usermatching.user_details_error(action)(request, implicitly, appConfig)
 
   "The User Details Error view" should {
     val testPage = TestView(
@@ -40,7 +38,9 @@ class UserDetailsErrorViewSpec extends ViewSpecTrait {
 
     val form = testPage.getForm("User Details Error form")(actionCall = action)
 
-    form.mustHaveContinueButtonWithText(commonMessages.goBack)
+    form.mustHaveSubmitButton(commonMessages.goBack)
+
+    testPage.mustHaveSignOutLink(commonMessages.signOut, request.path)
 
   }
 }

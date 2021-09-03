@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import models.sps.SPSPayload
 import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.{Inject, Singleton}
@@ -28,10 +28,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SPSConnector @Inject()(appConfig: AppConfig,
                              http: HttpClient)
-                            (implicit ec: ExecutionContext) {
+                            (implicit ec: ExecutionContext)  {
 
   def postSpsConfirm(entityId: String, itsaId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.POST(appConfig.channelPreferencesUrl + s"/channel-preferences/confirm", Json.toJson(SPSPayload(entityId, itsaId)))
   }
 
 }
+
+
+
+

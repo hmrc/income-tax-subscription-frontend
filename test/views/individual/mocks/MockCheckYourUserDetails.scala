@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package services.mocks
+package views.individual.mocks
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import services.individual.claimenrolment.ClaimEnrolmentService
-import services.individual.claimenrolment.ClaimEnrolmentService.ClaimEnrolmentResponse
+import org.scalatestplus.play.PlaySpec
+import play.twirl.api.HtmlFormat
+import views.html.individual.incometax.incomesource.IncomeSource
+import views.html.individual.usermatching.CheckYourUserDetails
 
-import scala.concurrent.Future
+trait MockCheckYourUserDetails extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
-trait MockClaimEnrolmentService extends MockitoSugar with BeforeAndAfterEach {
-  this: Suite =>
+  val checkYourUserDetails: CheckYourUserDetails = mock[CheckYourUserDetails]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(claimEnrolmentService)
+    reset(checkYourUserDetails)
   }
 
-  val claimEnrolmentService: ClaimEnrolmentService = mock[ClaimEnrolmentService]
-
-  def mockClaimEnrolment(response: ClaimEnrolmentResponse): Unit = {
-    when(claimEnrolmentService.claimEnrolment(any(), any(), any())) thenReturn Future.successful(response)
+  def mockCheckYourUserDetails(): Unit = {
+    when(checkYourUserDetails(any(), any(), any())(any(), any(), any()))
+      .thenReturn(HtmlFormat.empty)
   }
 
 }

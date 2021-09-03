@@ -180,8 +180,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           disable(ReleaseFour)
         }
 
-        s"redirect to '${controllers.agent.routes.ConfirmationAgentController.show().url}'" in {
-          redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show().url)
+        s"redirect to '${controllers.agent.routes.ConfirmationController.show().url}'" in {
+          redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationController.show().url)
         }
       }
 

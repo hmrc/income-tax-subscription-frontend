@@ -29,12 +29,12 @@ import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
 
 @Singleton
-class ConfirmationAgentController @Inject()(val auditingService: AuditingService,
-                                            val authService: AuthService,
-                                            accountingPeriodService: AccountingPeriodService,
-                                            signUpComplete: SignUpComplete,
-                                            subscriptionDetailsService: SubscriptionDetailsService)
-                                           (implicit val ec: ExecutionContext,
+class ConfirmationController @Inject()(val auditingService: AuditingService,
+                                       val authService: AuthService,
+                                       accountingPeriodService: AccountingPeriodService,
+                                       signUpComplete: SignUpComplete,
+                                       subscriptionDetailsService: SubscriptionDetailsService)
+                                      (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController {
 

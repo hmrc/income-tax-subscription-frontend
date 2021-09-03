@@ -16,9 +16,8 @@
 
 package helpers
 
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney, JourneyState, SignUp, UserMatching}
+import auth.individual.{ClaimEnrolment, JourneyState, SignUp, UserMatching}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
 import forms.individual.incomesource.IncomeSourceForm
@@ -160,17 +159,9 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def callback(): WSResponse = get("/callback")
 
-    def claimEnrolSpsCallback(): WSResponse = get("/claim-enrolment/sps-callback", Map(JourneyStateKey -> ClaimEnrolment.name))
-
     def indexPage(): WSResponse = get("/index")
 
     def spsHandoff(): WSResponse = get("/sps-handoff")
-
-    def claimEnrolSpsHandoff(sessionKeys: Map[String, String] = Map.empty): WSResponse = {
-
-      get("/claim-enrolment/sps-handoff", sessionKeys)
-
-    }
 
     def ivFailure(): WSResponse = get("/iv-failure")
 
@@ -181,14 +172,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
         get("/sps-callback?entityId=testId")
       } else {
         get("/sps-callback")
-      }
-    }
-
-    def claimEnrolSpsCallback(hasEntityId: Boolean, sessionKeys: Map[String, String] = Map.empty): WSResponse = {
-      if (hasEntityId) {
-        get("/claim-enrolment/sps-callback?entityId=testId", sessionKeys)
-      } else {
-        get("/claim-enrolment/sps-callback", sessionKeys)
       }
     }
 
@@ -277,7 +260,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
 
-    def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
+    def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview", Map(JourneyStateKey -> ClaimEnrolment.name))(Map.empty)
 
     def claimSubscription(): WSResponse = {
       val uri = s"/claim-subscription"
@@ -308,13 +291,13 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def claimEnrolmentConfirmation(): WSResponse = get("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+    def claimEnrolmentConfirmation(): WSResponse = get("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolment.name))
 
-    def continueClaimEnrolmentJourneyConfirmation(): WSResponse = post("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
+    def continueClaimEnrolmentConfirmation(): WSResponse = post("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolment.name))(Map.empty)
 
-    def notSubscribed(): WSResponse = get("/claim-enrolment/not-subscribed", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+    def notSubscribed(): WSResponse = get("/claim-enrolment/not-subscribed", Map(JourneyStateKey -> ClaimEnrolment.name))
 
-    def alreadySignedUp(): WSResponse = get("/claim-enrolment/already-signed-up", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+    def alreadySignedUp(): WSResponse = get("/claim-enrolment/already-signed-up", Map(JourneyStateKey -> ClaimEnrolment.name))
 
     def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
       val uri = s"/business/accounting-method?editMode=$inEditMode"
@@ -405,7 +388,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def addMTDITOverview(): WSResponse = get("/claim-enrolment/overview")
 
-    def claimEnrolmentResolver(): WSResponse = get("/claim-enrolment/resolve", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+    def claimEnrolmentResolver(): WSResponse = get("/claim-enrolment/resolve", Map(JourneyStateKey -> ClaimEnrolment.name))
 
   }
 
@@ -420,3 +403,5 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim
 
 }
+
+

@@ -21,46 +21,36 @@ import assets.MessageLookup.{UserDetailsError => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Request, Result}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentType, _}
-import play.twirl.api.HtmlFormat
+import play.api.test.Helpers.{contentAsString, contentType, _}
 import utilities.ITSASessionKeys
-import views.html.individual.usermatching.UserDetailsError
-
-import scala.concurrent.Future
 
 class UserDetailsErrorControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
-  val mockUserDetailsError: UserDetailsError = mock[UserDetailsError]
-  when(mockUserDetailsError(ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
-    .thenReturn(HtmlFormat.empty)
-
-  object TestUserDetailsErrorController extends UserDetailsErrorController(
-    mockAuditingService,
-    mockAuthService,
-    mockUserDetailsError
-  )
-
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "UserDetailsErrorController"
-
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestUserDetailsErrorController.show,
     "submit" -> TestUserDetailsErrorController.submit
   )
+
+  def createTestUserDetailsErrorController(enableMatchingFeature: Boolean): UserDetailsErrorController = new UserDetailsErrorController(
+    mockAuditingService,
+    mockAuthService
+  )
+
+  lazy val TestUserDetailsErrorController: UserDetailsErrorController = createTestUserDetailsErrorController(enableMatchingFeature = true)
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
     ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "Calling the 'show' action of the UserDetailsErrorController" should {
-    def call(request: Request[AnyContent]): Future[Result] = TestUserDetailsErrorController.show(request)
 
-    lazy val result = call(request)
+    lazy val result = TestUserDetailsErrorController.show(request)
+    lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
       status(result) must be(Status.OK)
@@ -70,6 +60,17 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec with MockAuditin
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
     }
+
+    "render the 'User Details Error page'" in {
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      document.title mustBe messages.title + serviceNameGovUk
+    }
+
+    s"the page must have a link to sign out" in {
+      document.select("#sign-out").attr("href") mustBe
+        controllers.SignOutController.signOut.url
+    }
+
   }
 
   "Calling the 'submit' action of the UserDetailsErrorController" should {

@@ -49,17 +49,6 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
     claimEnrolmentResult.value
   }
 
-  def getMtditidFromSubscription(implicit request: Request[AnyContent], user: IncomeTaxSAUser,
-                                 hc: HeaderCarrier): Future[Either[ClaimEnrolmentFailure, String]] = {
-    val mtdIdFromSub = for {
-      nino <- EitherT(getNino)
-      mtditid <- EitherT(getMtditid(nino))
-    } yield mtditid
-
-    mtdIdFromSub.value
-
-  }
-
   private def getNino(implicit request: Request[AnyContent], user: IncomeTaxSAUser): Future[Either[ClaimEnrolmentFailure, String]] = {
     user.nino match {
       case Some(nino) =>
