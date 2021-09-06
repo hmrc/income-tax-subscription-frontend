@@ -17,42 +17,46 @@
 package controllers.individual.subscription
 
 import agent.audit.mocks.MockAuditingService
-import assets.MessageLookup.{AlreadyEnrolled => messages}
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
+import views.html.individual.incometax.subscription.enrolled.AlreadyEnrolled
+
+import scala.concurrent.Future
 
 class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditingService {
+
+  val mockAlreadyEnrolledView: AlreadyEnrolled = mock[AlreadyEnrolled]
+  when(mockAlreadyEnrolledView()(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
+    .thenReturn(HtmlFormat.empty)
+
+  object TestAlreadyEnrolledController extends AlreadyEnrolledController(
+    mockAuditingService,
+    mockAuthService,
+    mockAlreadyEnrolledView
+  )
 
   override val controllerName: String = "AlreadyEnrolledController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "enrolled" -> TestAlreadyEnrolledController.show()
   )
 
-  object TestAlreadyEnrolledController extends AlreadyEnrolledController(
-    mockAuditingService,
-    mockAuthService
-  )
-
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
+
+    def call(request: Request[AnyContent]): Future[Result] = TestAlreadyEnrolledController.show(request)
+
     "return an OK with the error page" in {
       mockAuthEnrolled()
 
-      lazy val result = TestAlreadyEnrolledController.show(subscriptionRequest)
-      lazy val document = Jsoup.parse(contentAsString(result))
+      lazy val result = call(subscriptionRequest)
 
       status(result) must be(Status.OK)
-
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-      document.title mustBe messages.heading + serviceNameGovUk
-
-      document.select("#sign-out-button").attr("href") mustBe
-        controllers.SignOutController.signOut.url
     }
   }
 
