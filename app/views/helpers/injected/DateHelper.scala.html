@@ -26,7 +26,8 @@
         hintText: Option[String] = None,
         parentForm: Form[_],
         isPageHeading: Boolean = true,
-        isLegendVisible: Boolean = true
+        isLegendVisible: Boolean = true,
+        isDateOfBirth: Boolean = false
 )(implicit messages: Messages)
 
 @errorMessage = @{
@@ -52,24 +53,24 @@
     items = Seq(
         InputItem(
             name = "dateDay",
-            autocomplete = Some(s"${field.name}"+"-day"),
+            autocomplete = if(isDateOfBirth) Some("bday-day") else None ,
             classes = inputClass(DateModelMapping.day, 2),
             label =  Some(messages("base.day")),
-            value = parentForm("startDate-dateDay").value
+            value = parentForm(s"${field.name}-dateDay").value
         ),
         InputItem(
             name = "dateMonth",
-            autocomplete = Some(s"${field.name}"+"-month"),
+            autocomplete = if(isDateOfBirth) Some("bday-month") else None ,
             classes = inputClass(DateModelMapping.month, 2),
             label =  Some(messages("base.month")),
-            value = parentForm("startDate-dateMonth").value
+            value = parentForm(s"${field.name}-dateMonth").value
         ),
         InputItem(
             name = "dateYear",
-            autocomplete = Some(s"${field.name}"+"-year"),
+            autocomplete = if(isDateOfBirth) Some("bday-year") else None ,
             classes = inputClass(DateModelMapping.year, 4),
             label =  Some(messages("base.year")),
-            value = parentForm("startDate-dateYear").value
+            value = parentForm(s"${field.name}-dateYear").value
         )
     ),
     hint = hintText.map(t => Hint(content = Text(t))),

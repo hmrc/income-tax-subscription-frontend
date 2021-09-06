@@ -23,7 +23,8 @@
         isLabelHidden: Boolean = false,
         isPageHeading: Boolean = true,
         hint: Option[String] = None,
-        classes: Option[String] = None
+        classes: Option[String] = None,
+        autoComplete: Option[String] = None
 )(implicit messages: Messages)
 
 
@@ -42,6 +43,7 @@
                 content = Text(text)
             )
         },
-        classes = classes.getOrElse("")
+        classes = classes.getOrElse(""),
+        autocomplete = autoComplete
     ).withFormField(field)
 )

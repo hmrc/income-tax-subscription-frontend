@@ -167,6 +167,85 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
   implicit class ElementTests(element: Element) {
 
+    def mustHaveTextInput(name: String,
+                          label: String,
+                          hint: Option[String] = None,
+                          error: Option[FormError] = None,
+                          autoComplete: Option[String] = None): Assertion = {
+      val textInput: Element = element.selectHead(s"input[name=$name]")
+      val textInputLabel: Element = element.selectHead(s"label[for=$name]")
+
+      textInputLabel.text mustBe label
+
+      autoComplete.foreach(value => textInput.attr("autocomplete") mustBe value)
+
+      hint.foreach { value =>
+        element.selectHead(s"#$name-hint").text mustBe value
+        textInput.attr("aria-describedby").contains(s"$name-hint") mustBe true
+      }
+
+      error.foreach { value =>
+        element.selectHead(s"#${value.key}-error").text mustBe s"Error: ${value.message}"
+        textInput.attr("aria-describedby").contains(s"${value.key}-error") mustBe true
+      }
+
+      textInput.attr("type") mustBe "text"
+    }
+
+    def mustHaveDateInput(name: String,
+                          label: String,
+                          hint: Option[String] = None,
+                          error: Option[FormError] = None,
+                          isDateOfBirth: Boolean = false): Assertion = {
+
+      val fieldset: Element = element.selectHead("fieldset")
+      val legend: Element = element.selectHead("legend")
+
+      legend.text mustBe label
+
+      hint.foreach { value =>
+        element.selectHead(s"#$name-hint").text mustBe value
+        fieldset.attr("aria-describedby").contains(s"$name-hint") mustBe true
+      }
+
+      error.foreach { value =>
+        element.selectHead(s"#${value.key}-error").text mustBe s"Error: ${value.message}"
+        fieldset.attr("aria-describedby").contains(s"${value.key}-error") mustBe true
+      }
+
+      val dayInput: Element = fieldset.selectNth(".govuk-date-input__item", 1).selectHead("input")
+      val dayLabel: Element = fieldset.selectNth(".govuk-date-input__item", 1).selectHead("label")
+      val monthInput: Element = fieldset.selectNth(".govuk-date-input__item", 2).selectHead("input")
+      val monthLabel: Element = fieldset.selectNth(".govuk-date-input__item", 2).selectHead("label")
+      val yearInput: Element = fieldset.selectNth(".govuk-date-input__item", 3).selectHead("input")
+      val yearLabel: Element = fieldset.selectNth(".govuk-date-input__item", 3).selectHead("label")
+
+      dayInput.attr("name") mustBe s"$name-dateDay"
+      dayInput.attr("type") mustBe "text"
+      dayInput.attr("pattern") mustBe "[0-9]*"
+      dayInput.attr("inputmode") mustBe "numeric"
+      if(isDateOfBirth) dayInput.attr("autocomplete") mustBe "bday-day"
+      dayLabel.text mustBe "Day"
+      dayLabel.attr("for") mustBe s"$name-dateDay"
+
+      monthInput.attr("name") mustBe s"$name-dateMonth"
+      monthInput.attr("type") mustBe "text"
+      monthInput.attr("pattern") mustBe "[0-9]*"
+      monthInput.attr("inputmode") mustBe "numeric"
+      if(isDateOfBirth) monthInput.attr("autocomplete") mustBe "bday-month"
+      monthLabel.text mustBe "Month"
+      monthLabel.attr("for") mustBe s"$name-dateMonth"
+
+      yearInput.attr("name") mustBe s"$name-dateYear"
+      yearInput.attr("type") mustBe "text"
+      yearInput.attr("pattern") mustBe "[0-9]*"
+      yearInput.attr("inputmode") mustBe "numeric"
+      if(isDateOfBirth) yearInput.attr("autocomplete") mustBe "bday-year"
+      yearLabel.text mustBe "Year"
+      yearLabel.attr("for") mustBe s"$name-dateYear"
+
+    }
+
     def mustHaveTextField(name: String, label: String): Assertion = {
       val eles = element.select(s"input[name=$name]")
       if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
