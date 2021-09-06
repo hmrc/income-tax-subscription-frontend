@@ -27,6 +27,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.individual.TestConstants
 import utilities.{TestModels, UnitTestTrait}
+import views.html.individual.usermatching.CheckYourUserDetails
 import views.individual.helpers.ConfirmUserIdConstants._
 
 class CheckYourUserDetailsViewSpec extends UnitTestTrait {
@@ -40,15 +41,14 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
     testLastName,
     testNino,
     testDob)
-
+  val checkYourUserDetails: CheckYourUserDetails = app.injector.instanceOf[CheckYourUserDetails]
   implicit val request: Request[_] = FakeRequest()
 
   lazy val postAction: Call = controllers.usermatching.routes.ConfirmUserController.submit()
-  lazy val backUrl: String = "testBackUrl"
-
+  lazy val backUrl: String = controllers.usermatching.routes.ConfirmUserController.show().url
   val expectedEditLink: String = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
 
-  def page(): HtmlFormat.Appendable = views.html.individual.usermatching.check_your_user_details(
+  def page(): HtmlFormat.Appendable = checkYourUserDetails(
     userDetailsModel = testUserDetails,
     postAction = postAction,
     backUrl = backUrl
@@ -75,11 +75,10 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
   "Confirm User page view" should {
 
     s"have a back button pointed to $backUrl" in {
-      val backLink = document().select("#back")
+      val backLink = document().select(".govuk-back-link")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
     }
-
     s"have the title '${messages.title}'" in {
       val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       document().title() mustBe messages.title + serviceNameGovUk
@@ -92,9 +91,9 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
     "has a form" which {
 
       "has a submit button" in {
-        val submit = document().getElementById("continue-button")
+        val submit = document().getElementsByClass("govuk-button")
         submit.isEmpty mustBe false
-        submit.text shouldBe common.continue
+        submit.text shouldBe MessageLookup.Base.continue
       }
 
       s"has a post action to '${postAction.url}'" in {
@@ -114,7 +113,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val question = document().getElementById(questionId(sectionId))
       val answer = document().getElementById(answerId(sectionId))
       val editLink = document().getElementById(editLinkId(sectionId))
-      val hiddenContent = document.getElementsByClass("visuallyhidden").get(rowNo).text()
+      val hiddenContent = document.getElementsByClass("govuk-visually-hidden").get(rowNo).text()
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -126,7 +125,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         val link = editLink.select("a")
         link.attr("href") should include(expectedEditLink.get)
         link.text() should include(MessageLookup.Base.change)
-        link.select(".visuallyhidden").get(0).text() shouldBe hiddenContent
+        link.select(".govuk-visually-hidden").get(0).text() shouldBe hiddenContent
       }
     }
 
@@ -142,7 +141,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 0,
+        rowNo = 1,
         expectedHiddenContent = expectedHiddenContent
 
       )
@@ -158,7 +157,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 1,
+        rowNo = 2,
         expectedHiddenContent = expectedHiddenContent
       )
     }
@@ -174,7 +173,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 2,
+        rowNo = 3,
         expectedHiddenContent = expectedHiddenContent
       )
     }
@@ -190,7 +189,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 3,
+        rowNo = 4,
         expectedHiddenContent = expectedHiddenContent
       )
     }

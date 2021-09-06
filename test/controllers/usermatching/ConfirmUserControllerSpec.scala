@@ -22,7 +22,7 @@ import controllers.ControllerBaseSpec
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.UserDetailsModel
-import org.scalatest.OptionValues
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -32,10 +32,11 @@ import uk.gov.hmrc.http.HttpResponse
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants._
 import utilities.{ITSASessionKeys, TestModels}
-
+import views.individual.mocks.MockCheckYourUserDetails
 import scala.concurrent.Future
 
 class ConfirmUserControllerSpec extends ControllerBaseSpec
+  with MockCheckYourUserDetails
   with MockUserLockoutService
   with MockUserMatchingService
   with MockSubscriptionDetailsService
@@ -52,19 +53,15 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     mockAuditingService,
     mockAuthService,
     mockUserLockoutService,
-    mockUserMatchingService
+    mockUserMatchingService,
+    checkYourUserDetails
   )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-  }
 
   val userDetails: UserDetailsModel = TestModels.testUserDetails
   val token: String = TestConstants.testToken
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
     ITSASessionKeys.JourneyStateKey -> UserMatching.name).buildRequest(userDetails)
-
 
   "Calling the show action of the ConfirmUserController with an authorised user" should {
 
@@ -86,6 +83,8 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
     "if there are user details return ok (200)" in {
       setupMockNotLockedOut(testCredId)
+
+      mockCheckYourUserDetails()
 
       val r = request.buildRequest(userDetails)
 
