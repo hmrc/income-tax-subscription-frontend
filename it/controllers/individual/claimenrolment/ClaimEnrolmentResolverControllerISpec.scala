@@ -16,21 +16,21 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
+import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
 import config.featureswitch.FeatureSwitching
 import controllers.Assets.{CREATED, INTERNAL_SERVER_ERROR, NO_CONTENT, SEE_OTHER}
-import helpers.IntegrationTestConstants.{addMTDITOverviewURI, claimEnrolmentAlreadySignedUpURI, claimEnrolmentConfirmationURI, notSubscribedURI, testGroupId}
+import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.testMTDITEnrolmentKey
+import helpers.servicemocks.AuditStub.verifyAudit
 import helpers.servicemocks.{AuthStub, EnrolmentStoreProxyStub, SubscriptionStub, TaxEnrolmentsStub}
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.{NOT_FOUND, OK}
-import utilities.ITSASessionKeys
 
 class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with FeatureSwitching with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     disable(ClaimEnrolment)
+    disable(SPSEnabled)
     super.beforeEach()
   }
 
@@ -49,26 +49,53 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
         )
       }
     }
-    "the claim enrolment feature switch is enabled" should {
-      "redirect the user to the claim enrolment confirmation" when {
-        "all calls are successful" in {
-          enable(ClaimEnrolment)
+    "the claim enrolment feature switch is enabled" when {
+      "all calls are successful and an auditing has been sent" when {
+        "the SPS feature switch is enabled" should {
+          "redirect the user to SPS" in {
+            enable(ClaimEnrolment)
+            enable(SPSEnabled)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          SubscriptionStub.stubGetSubscriptionFound()
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            SubscriptionStub.stubGetSubscriptionFound()
+            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
 
-          When("POST /claim-enrolment/resolve is called")
-          val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
+            When("GET /claim-enrolment/resolve is called")
+            val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
-          Then("Should return a SEE_OTHER with a redirect location of the claim enrolment confirmation page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(claimEnrolmentConfirmationURI)
-          )
+            verifyAudit()
+            Then("Should return a SEE_OTHER with a redirect location of the SPS beginning page")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(claimEnrolSpsHandoffRouteURI)
+            )
+          }
+        }
+
+        "the SPS feature switch is disabled" should {
+          "redirect the user to the claim enrolment confirmation" in {
+            enable(ClaimEnrolment)
+
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            SubscriptionStub.stubGetSubscriptionFound()
+            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+
+            When("GET /claim-enrolment/resolve is called")
+            val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
+
+            verifyAudit()
+            Then("Should return a SEE_OTHER with a redirect location of the claim enrolment confirmation page")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(claimEnrolmentConfirmationURI)
+            )
+          }
         }
       }
       "redirect the user to the claim enrolment not subscribed" when {
@@ -79,7 +106,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetNoSubscription()
 
-          When("POST /claim-enrolment/resolve is called")
+          When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return a SEE_OTHER with a redirect location of the claim enrolment not subscribed page")
@@ -98,7 +125,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
           SubscriptionStub.stubGetSubscriptionFound()
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(OK)
 
-          When("POST /claim-enrolment/resolve is called")
+          When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return a SEE_OTHER with a redirect location of the claim enrolment already signed up page")
@@ -115,7 +142,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthNoNino()
 
-          When("POST /claim-enrolment/resolve is called")
+          When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
@@ -130,7 +157,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetSubscriptionFail()
 
-          When("POST /claim-enrolment/resolve is called")
+          When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
@@ -146,7 +173,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
           SubscriptionStub.stubGetSubscriptionFound()
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentJsError(testMTDITEnrolmentKey)
 
-          When("POST /claim-enrolment/resolve is called")
+          When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
@@ -162,7 +189,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
           SubscriptionStub.stubGetSubscriptionFound()
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(INTERNAL_SERVER_ERROR)
 
-          When("POST /claim-enrolment/resolve is called")
+          When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
@@ -179,7 +206,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
           TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
 
-          When("POST /claim-enrolment/resolve is called")
+          When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
@@ -197,7 +224,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Featu
           TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
           TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
 
-          When("POST /claim-enrolment/resolve is called")
+          When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")

@@ -20,11 +20,13 @@ import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
+import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, ClaimEnrolmentSuccess, NotSubscribed}
 import services.mocks.MockClaimEnrolmentService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import utilities.agent.TestConstants
 
 import scala.concurrent.Future
 
@@ -58,28 +60,29 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
       }
     }
     "the claim enrolment feature switch is enabled" when {
-      "the SPS Enabled feature switch is enabled" should {
-        "redirect the user to the SPS preference capture journey" when {
-          "the claim enrolment service returned a claim enrolment success" in {
+      "the claim enrolment service returned a claim enrolment success and an auditing has been sent" when {
+        "the SPS Enabled feature switch is enabled" should {
+          "redirect the user to the SPS preference capture journey" in {
             enable(ClaimEnrolment)
             enable(SPSEnabled)
-            mockClaimEnrolment(response = ClaimEnrolmentSuccess)
+            mockClaimEnrolment(response = ClaimEnrolmentSuccess(TestConstants.testNino, "mtditid"))
 
-            val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
+            val result = await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest))
 
+            verifyAudit(ClaimEnrolAddToIndivCredAuditingModel(TestConstants.testNino, "mtditid"))
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS().url)
+
           }
         }
-      }
-      "the SPS Enabled feature switch is disabled" should {
-        "redirect the user to the claim enrolment confirmation page" when {
-          "the claim enrolment service returned a claim enrolment success" in {
+        "the SPS Enabled feature switch is disabled" should {
+          "redirect the user to the claim enrolment confirmation page" in {
             enable(ClaimEnrolment)
-            mockClaimEnrolment(response = ClaimEnrolmentSuccess)
+            mockClaimEnrolment(response = ClaimEnrolmentSuccess(TestConstants.testNino, "mtditid"))
 
-            val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
+            val result= await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest))
 
+            verifyAudit(ClaimEnrolAddToIndivCredAuditingModel(TestConstants.testNino, "mtditid"))
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show().url)
           }

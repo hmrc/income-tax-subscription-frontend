@@ -46,7 +46,7 @@ object WiremockHelper extends Eventually with IntegrationPatience {
   }
 
   def verifyGet(uri: String): Unit = {
-     verify(getRequestedFor(urlEqualTo(uri)))
+    verify(getRequestedFor(urlEqualTo(uri)))
   }
 
   def verifyDelete(uri: String, count: Option[Int] = None): Unit = {
@@ -137,4 +137,3 @@ trait WiremockHelper {
 
   def buildClient(path: String): WSRequest = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
 }
-
