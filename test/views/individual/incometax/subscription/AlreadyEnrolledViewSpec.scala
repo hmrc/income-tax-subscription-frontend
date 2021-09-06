@@ -21,14 +21,15 @@ import controllers.SignOutController
 import models.DateModel
 import org.jsoup.Jsoup
 import views.ViewSpecTrait
+import views.html.individual.incometax.subscription.enrolled.AlreadyEnrolled
 
 class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
   val submissionDateValue = DateModel("1", "1", "2016")
-  val action = ViewSpecTrait.testCall
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.individual.incometax.subscription.enrolled.already_enrolled()(request, implicitly, appConfig)
+  val alreadyEnrolled = app.injector.instanceOf[AlreadyEnrolled]
+  lazy val page = alreadyEnrolled()(request, implicitly, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Already Enrolled view" should {
@@ -47,13 +48,19 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
         }
 
         s"has a line '${MessageLookup.AlreadyEnrolled.line1}'" in {
-          document.select(".form-group").text must be(MessageLookup.AlreadyEnrolled.line1)
+          document.select(".govuk-body").text must be(MessageLookup.AlreadyEnrolled.line1)
         }
       }
 
     "have a sign out button" in {
       val actionSignOut = document.getElementById("sign-out-button")
       actionSignOut.attr("role") mustBe "button"
+      actionSignOut.text() mustBe MessageLookup.Base.signOut
+      actionSignOut.attr("href") mustBe SignOutController.signOut.url
+    }
+
+    "have a sign out link" in {
+      val actionSignOut = document.select(".hmrc-sign-out-nav__link")
       actionSignOut.text() mustBe MessageLookup.Base.signOut
       actionSignOut.attr("href") mustBe SignOutController.signOut.url
     }
