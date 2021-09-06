@@ -18,22 +18,24 @@ package controllers.individual.incomesource
 
 import auth.individual.StatelessController
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import views.html.individual.incometax.incomesource.CannotUseService
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CannotUseServiceController @Inject()(val auditingService: AuditingService,
-                                           val authService: AuthService)
+                                           val authService: AuthService,
+                                           val cannotUseServiceView: CannotUseService)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
-      Future.successful(Ok(views.html.individual.incometax.incomesource.cannot_use_service(
+      Future.successful(Ok(cannotUseServiceView(
         postAction = controllers.individual.incomesource.routes.CannotUseServiceController.show()
       )))
   }

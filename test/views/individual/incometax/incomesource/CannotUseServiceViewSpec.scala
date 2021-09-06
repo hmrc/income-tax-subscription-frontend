@@ -16,10 +16,13 @@
 
 package views.individual.incometax.incomesource
 
-import assets.MessageLookup.{Base => common, CannotUseService => messages}
+import assets.MessageLookup
+import controllers.SignOutController
+import org.jsoup.Jsoup
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
+import views.html.individual.incometax.incomesource.CannotUseService
 
 class CannotUseServiceViewSpec extends ViewSpecTrait {
 
@@ -27,27 +30,37 @@ class CannotUseServiceViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.individual.incometax.incomesource.cannot_use_service(
-    postAction = action)(
-    FakeRequest(),
-    implicitly,
-    appConfig
-  )
+  val cannotUseServiceView: CannotUseService = app.injector.instanceOf[CannotUseService]
+
+  lazy val page = cannotUseServiceView(action)(request, implicitly, appConfig)
+  lazy val document = Jsoup.parse(page.body)
 
   "The Cannot Use Service view" should {
 
-    val testPage = TestView(
-      name = "Cannot Use Service View",
-      title = messages.title,
-      heading = messages.heading,
-      page = page
-    )
+    s"have the title '${MessageLookup.AlreadyEnrolled.title}'" in {
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      document.title() must be(MessageLookup.CannotUseService.title + serviceNameGovUk)
+    }
 
-    testPage.mustHavePara(messages.line1)
+    s"has a heading (H1)" which {
 
-    testPage.mustHaveSignOutLink(common.signOut)
+      lazy val heading = document.select("H1")
+
+      s"has the text '${MessageLookup.CannotSignUp.heading}'" in {
+        heading.text() mustBe MessageLookup.CannotSignUp.heading
+      }
+
+      s"has a line '${MessageLookup.CannotSignUp.line1}'" in {
+        document.select(".govuk-body").text must be(MessageLookup.CannotSignUp.line1)
+      }
+    }
+
+    "have a sign out link" in {
+      val actionSignOut = document.select(".hmrc-sign-out-nav__link")
+      actionSignOut.text() mustBe MessageLookup.Base.signOut
+      actionSignOut.attr("href") mustBe SignOutController.signOut.url
+    }
+
 
   }
-
 }
-
