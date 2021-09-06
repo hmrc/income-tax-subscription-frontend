@@ -17,12 +17,15 @@
 package controllers.individual.incomesource
 
 import agent.audit.mocks.MockAuditingService
-import assets.MessageLookup.{CannotUseService => messages}
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
+import views.html.individual.incometax.incomesource.CannotUseService
 
 import scala.concurrent.Future
 
@@ -31,9 +34,14 @@ class CannotUseServiceControllerSpec extends ControllerBaseSpec with MockAuditin
   override val controllerName: String = "CannotUseServiceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
+  val mockCannotUseServiceView: CannotUseService = mock[CannotUseService]
+  when(mockCannotUseServiceView(ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
+    .thenReturn(HtmlFormat.empty)
+
   object TestCannotUseServiceController extends CannotUseServiceController(
     mockAuditingService,
-    mockAuthService
+    mockAuthService,
+    mockCannotUseServiceView
   )
 
   "Calling the show action of the Cannot Use Service Controller" when {
@@ -47,7 +55,6 @@ class CannotUseServiceControllerSpec extends ControllerBaseSpec with MockAuditin
       status(result) must be(Status.OK)
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-      document.title mustBe messages.title + serviceNameGovUk
     }
   }
 }

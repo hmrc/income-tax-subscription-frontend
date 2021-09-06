@@ -528,10 +528,10 @@ object MessageLookup {
   }
 
   object CannotSignUp {
-    val title = "You can’t use this service"
+    val title = "You cannot use this service"
     val heading: String = title
     val linktext = "send a Self Assessment tax return"
-    val line1 = "You can only use software to report your Income Tax if you either:"
+    val line1 = "You can only sign up if you are an administrator."
     val bullet1 = "are you self-employed"
     val bullet2 = "rent out UK property"
     val bullet3 = "are you self-employed and rent out UK property"
