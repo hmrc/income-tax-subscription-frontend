@@ -21,7 +21,9 @@ import models.common.subscription.EnrolmentKey
 trait MockConfig extends AppConfig {
 
   override val appName: String = "app"
-
+  override val wrongCredentials: String = ""
+  override val haveSaUtr: String = ""
+  override val btaBaseUrl: String = ""
   override val reportAProblemPartialUrl: String = ""
   override val reportAProblemNonJSUrl: String = ""
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"
