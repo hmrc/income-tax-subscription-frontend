@@ -19,12 +19,14 @@ package controllers.usermatching
 import auth.individual.{IncomeTaxSAUser, UserMatchingController}
 import config.AppConfig
 import forms.usermatching.UserDetailsForm
+import forms.usermatching.UserDetailsForm.userDetailsForm
 import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
+import views.html.individual.usermatching.UserDetails
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,17 +35,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserDetailsController @Inject()(val auditingService: AuditingService,
                                       val authService: AuthService,
                                       subscriptionDetailsService: SubscriptionDetailsService,
+                                      val userDetails: UserDetails,
                                       lockOutService: UserLockoutService)
                                      (implicit val ec: ExecutionContext,
                                       val appConfig: AppConfig,
                                       mcc: MessagesControllerComponents) extends UserMatchingController {
 
   def view(userDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    views.html.individual.usermatching.user_details(
+    userDetails(
       userDetailsForm,
       controllers.usermatching.routes.UserDetailsController.submit(editMode = isEditMode),
       isEditMode
-
     )
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
@@ -67,7 +69,7 @@ class UserDetailsController @Inject()(val auditingService: AuditingService,
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        UserDetailsForm.userDetailsForm.bindFromRequest.fold(
+        userDetailsForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(
             formWithErrors,
             isEditMode = isEditMode))),

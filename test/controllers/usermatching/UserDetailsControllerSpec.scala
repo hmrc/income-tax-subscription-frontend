@@ -24,21 +24,29 @@ import forms.usermatching.UserDetailsForm
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
+import play.twirl.api.HtmlFormat
 import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService}
 import uk.gov.hmrc.http.HttpResponse
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants._
+import views.html.individual.usermatching.{UserDetails, UserDetailsError}
+import views.individual.usermatching.mocks.MockUserDetails
 
 import scala.concurrent.Future
 
 class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockUserLockoutService
-  with MockAuditingService {
+  with MockAuditingService
+  with MockUserDetails {
+
 
   override val controllerName: String = "UserDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -50,6 +58,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
+    userDetails,
     mockUserLockoutService
   )
 
@@ -70,6 +79,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
     "return ok (200)" in {
       setupMockNotLockedOut(testCredId)
+      mockUserDetails()
 
       val r = request.buildRequest(None)
 
@@ -82,10 +92,6 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-
-      val document = Jsoup.parse(contentAsString(result))
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-      document.title mustBe messages.title + serviceNameGovUk
     }
   }
 
@@ -107,6 +113,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
           s"redirect to '${controllers.usermatching.routes.ConfirmUserController.show().url}" in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testCredId)
+            mockUserDetails()
 
             val r = request.buildRequest(None)
 
@@ -127,6 +134,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
           s"redirect to '${controllers.usermatching.routes.ConfirmUserController.show().url} and deleted all pre-existing entries in Subscription Details " in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testCredId)
+            mockUserDetails()
 
             val previousUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT")
 
@@ -164,6 +172,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
       }
 
       "Calling the submit action of the UserDetailsController with an authorised user and invalid submission" should {
+        mockUserDetails()
 
         lazy val testRequest = request
           .post(UserDetailsForm.userDetailsForm.form, UserDetailsModel(
@@ -178,6 +187,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         "return a redirect status (BAD_REQUEST - 400)" in {
           setupMockSubscriptionDetailsSaveFunctions()
           setupMockNotLockedOut(testCredId)
+          mockUserDetails()
 
           val badResult = callSubmit(isEditMode = editMode)
 
@@ -189,20 +199,12 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
         "return HTML" in {
           setupMockNotLockedOut(testCredId)
+          mockUserDetails()
 
           val badResult = callSubmit(isEditMode = editMode)
 
           contentType(badResult) must be(Some("text/html"))
           charset(badResult) must be(Some("utf-8"))
-        }
-
-        "render the 'User Details page'" in {
-          setupMockNotLockedOut(testCredId)
-
-          val badResult = callSubmit(isEditMode = editMode)
-          val document = Jsoup.parse(contentAsString(badResult))
-          val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-          document.title mustBe "Error: " + messages.title + serviceNameGovUk
         }
 
       }
@@ -213,6 +215,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
   "If the user is locked out" should {
     s"calling show should redirect them to ${controllers.usermatching.routes.UserDetailsLockoutController.show().url}" in {
       setupMockLockedOut(testCredId)
+      mockUserDetails()
       lazy val result = TestUserDetailsController.show(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsLockoutController.show().url
@@ -220,6 +223,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
     s"calling submit should redirect them to ${controllers.usermatching.routes.UserDetailsLockoutController.show().url}" in {
       setupMockLockedOut(testCredId)
+      mockUserDetails()
       lazy val result = TestUserDetailsController.submit(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsLockoutController.show().url
