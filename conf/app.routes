@@ -139,3 +139,7 @@ GET         /claim-enrolment/already-signed-up                   controllers.ind
 #Claim enrolment SPS
 GET         /claim-enrolment/sps-handoff                         controllers.individual.claimenrolment.spsClaimEnrol.SPSHandoffForClaimEnrolController.redirectToSPS
 GET         /claim-enrolment/sps-callback                        controllers.individual.claimenrolment.spsClaimEnrol.SPSCallbackForClaimEnrolController.callback
+
+#Task List Routes
+GET         /business/task-list                                  controllers.individual.business.TaskListController.show()
+POST        /business/task-list                                  controllers.individual.business.TaskListController.submit()

@@ -110,10 +110,9 @@ object MessageLookup {
     val title = "You can’t use software to report your Income Tax yet"
     val heading: String = title
     val linkText = "Self Assessment tax return"
+    val para2 = s"You need to send a $linkText instead."
 
     def para1(startDate: DateModel): String = s"You can sign up and use software to record your income and expenses, but you can’t send any reports until ${startDate.toOutputDateFormat}."
-
-    val para2 = s"You need to send a $linkText instead."
   }
 
   object CanReportBusinessButNotPropertyYet {
@@ -130,10 +129,9 @@ object MessageLookup {
     val linkText = "send a Self Assessment tax return"
     val para1 = "You can sign up and use software to record your income and expenses, but you won’t be able to submit a report for:"
     val bullet1 = "property income until 6 April 2018"
+    val para2 = s"You need to $linkText instead."
 
     def bullet2(startDate: DateModel): String = s"sole trader income until ${startDate.toOutputDateFormat}"
-
-    val para2 = s"You need to $linkText instead."
   }
 
   object AgentCannotReportYetBothMisaligned {
@@ -142,10 +140,9 @@ object MessageLookup {
     val linkText = "send a Self Assessment tax return"
     val para1 = "You can still sign this client up and use software to record their income and expenses, but they won’t be able to submit a report for their:"
     val bullet1 = "property income until 6 April 2018"
+    val para2 = s"Your client still needs to $linkText."
 
     def bullet2(businessStartDate: DateModel): String = s"sole trader income until ${businessStartDate.toOutputDateFormat}"
-
-    val para2 = s"Your client still needs to $linkText."
   }
 
   object BusinessName {
@@ -217,16 +214,17 @@ object MessageLookup {
     val selfEmployments = "Number of businesses signed up"
     val overseasPropertyStartDate = "Trading start date of overseas property business"
     val accountingMethodForeignProperty = "Accounting method for overseas property income"
+    val business_name = "Your business name"
+    val selected_tax_year = "Tax year to start filing updates"
+    val business_accountingmethod = "Accounting method for your self-employment income"
+    val contact_email = "Do you want to receive electronic communications from HMRC?"
+    val confirm_and_sign_up = "Confirm and sign up"
 
     object IncomeSource {
       val business = "Sole trader business"
       val property = "Property"
       val both = "Sole trader business and property"
     }
-
-    val business_name = "Your business name"
-    val selected_tax_year = "Tax year to start filing updates"
-    val business_accountingmethod = "Accounting method for your self-employment income"
 
     object AccountingMethod {
       val cash = "Cash accounting"
@@ -238,9 +236,6 @@ object MessageLookup {
 
       def next(staringYear: Int, endYear: Int): String = s"Next tax year (6 April $staringYear to 5 April $endYear)"
     }
-
-    val contact_email = "Do you want to receive electronic communications from HMRC?"
-    val confirm_and_sign_up = "Confirm and sign up"
   }
 
   object Timeout {
@@ -324,6 +319,17 @@ object MessageLookup {
       val para4 = "It may take a few hours for them all to appear."
     }
 
+  }
+
+  object TaskList {
+    val title = "Check and complete your business details - Use software to send Income Tax updates - GOV.UK"
+    val heading = "Check and complete your business details"
+    val subHeading = "Application incomplete"
+    val contentSummary = "You have completed 1 of 3 sections."
+    val item1 = "1. Choose a tax year to sign up"
+    val item2 = "2. Tell us about your income"
+    val item3 = "3. Sign up"
+    val continue = "Continue"
   }
 
   object SignUpCompleteIndividual {
@@ -557,15 +563,19 @@ object MessageLookup {
     val line1_updated = "You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount of tax you will pay. Add all business income and expenses into your software from 6 April:"
 
     def option1ConditionalExample1: String = "You will need to add all business income and expenses into your software from the start of the current tax year, which is 6 April. You will need to send quarterly filing updates for:"
+
     def option1ConditionalExample1_updated: String = "You need to send a quarterly filing update for:"
 
     def option1ConditionalExample2(year: String): String = s"You need to submit a final declaration by the 31 January $year."
+
     def option1ConditionalExample2_updated(year: String): String = s"Send a final declaration by the 31 January $year."
 
     def option2ConditionalExample1: String = "You will need to send quarterly filing updates for:"
+
     def option2ConditionalExample1_updated: String = "You need to send a quarterly filing update for:"
 
     def option2ConditionalExample2(year: String): String = s"You will need to submit a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
+
     def option2ConditionalExample2_updated(year: String): String = s"Send a final declaration by 31 January $year and complete a Self Assessment return for the current tax year as normal."
 
     def option1(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"

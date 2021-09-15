@@ -937,3 +937,21 @@ claim-enrolment.claimAlreadySignedUp.title                      = Rydych eisoes 
 claim-enrolment.claimAlreadySignedUp.content                    = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif ar-lein arall gan CThEM.
 claim-enrolment.claimAlreadySignedUp.content.link1              = Gwiriwch a yw’ch Hunanasesiad mewn cyfrif arall
 claim-enrolment.claimAlreadySignedUp.content.link2              = Adfer manylion mewngofnodi ar gyfer eich cyfrif arall
+
+## Task List
+business.task-list.title                                        = ?
+business.task-list.heading.incomplete                           = ?
+business.task-list.heading.complete                             = ?
+business.task-list.content.summary                              = ?
+business.task-list.content.section1                             = ?
+business.task-list.content.section1.action                      = ?
+business.task-list.content.section2                             = ?
+business.task-list.content.section2.action                      = ?
+business.task-list.content.section2.property.uk                 = ?
+business.task-list.content.section2.property.overseas           = ?
+business.task-list.content.section3                             = ?
+business.task-list.content.action-needed                        = ?
+business.task-list.status.completed                             = ?
+business.task-list.status.in-progress                           = ?
+business.task-list.status.not-started                           = ?
+business.task-list.status.cannot-start-yet                      = ?
