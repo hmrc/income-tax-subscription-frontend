@@ -86,10 +86,10 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     stubFor(mapping.willReturn(response))
   }
 
-  def stubPostSubscriptionId(): Unit = {
+  def stubPostSubscriptionId(subscriptionDataType: Map[String, JsValue] = fullSubscriptionData): Unit = {
     val id = "MtditId"
     when(method = POST, uri = subscriptionUri(subscriptionId))
-      .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionData + (id -> Json.toJson(testMtdId))))
+      .thenReturn(Status.OK, CacheMap(SessionId, subscriptionDataType + (id -> Json.toJson(testMtdId))))
   }
 
 

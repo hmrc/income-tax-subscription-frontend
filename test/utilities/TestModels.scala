@@ -17,16 +17,15 @@
 package utilities
 
 import java.time.LocalDate
-
 import models._
 import models.common.{IncomeSourceModel, _}
-import models.common.business._
+import models.common.business.{BusinessStartDate, _}
 import models.usermatching.{UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.individual.TestConstants
-import utilities.individual.TestConstants.{testFirstName, testLastName, testNino, testUtr}
+import utilities.individual.TestConstants.{businessStartDate, testFirstName, testLastName, testNino, testUtr}
 
 object TestModels extends Implicits {
 
@@ -40,8 +39,7 @@ object TestModels extends Implicits {
   val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
   val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
 
-  val testAccountingPeriod: AccountingPeriodModel =
-    testAccountingPeriod(testStartDate, testEndDate)
+  val testAccountingPeriod: AccountingPeriodModel = testAccountingPeriod(testStartDate, testEndDate)
   val adjustedTestAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate.plusDays(1))
 
@@ -55,6 +53,7 @@ object TestModels extends Implicits {
   val testSelectedTaxYearCurrent = AccountingYearModel(Current)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
+  val testAccountMethod: AccountingMethod = Cash
   val testAccountingMethodAccrual = AccountingMethodModel(Accruals)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testOverseasAccountingMethodProperty = OverseasAccountingMethodPropertyModel(Cash)
@@ -75,6 +74,17 @@ object TestModels extends Implicits {
       businessName = testBusinessName,
       selectedTaxYear = testSelectedTaxYearNext,
       accountingMethod = testAccountingMethod,
+      ukPropertyStartDate = testPropertyStartDateModel,
+      accountingMethodProperty = testAccountingMethodProperty
+    )
+
+  lazy val testCacheMapIndiv: CacheMap =
+    testCacheMap(
+      incomeSource = testIncomeSourceBoth,
+      businessName = testBusinessName,
+      selectedTaxYear = testSelectedTaxYearCurrent,
+      accountingMethod = testAccountingMethod,
+      ukPropertyStartDate = testPropertyStartDateModel,
       accountingMethodProperty = testAccountingMethodProperty
     )
 
@@ -162,7 +172,7 @@ object TestModels extends Implicits {
       businessStartDate = testBusinessStartDate,
       businessName = testBusinessName,
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(testBusinessAddressModel)
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
     )
     )
 

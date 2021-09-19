@@ -18,12 +18,23 @@ package controllers.individual.business
 
 ;
 
-import auth.individual.SignUpController
+import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.NotFoundException
+import config.featureswitch.FeatureSwitching
+import connectors.IncomeTaxSubscriptionConnector
+import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
+import play.api.Logger
+import play.api.mvc._
+import services.individual.SubscriptionOrchestrationService
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import utilities.ITSASessionKeys
+import utilities.ITSASessionKeys.SPSEntityId
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataUtil.CacheMapUtil
 import views.html.individual.incometax.business.TaskList
 
 import javax.inject.{Inject, Singleton}
@@ -32,10 +43,13 @@ import scala.concurrent.{ExecutionContext, Future};
 @Singleton
 class TaskListController @Inject()(val taskListView: TaskList,
                                    val auditingService: AuditingService,
-                                   val authService: AuthService)
+                                   val authService: AuthService,
+                                   subscriptionService: SubscriptionOrchestrationService,
+                                   subscriptionDetailsService: SubscriptionDetailsService,
+                                   incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends SignUpController {
+                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -46,13 +60,46 @@ class TaskListController @Inject()(val taskListView: TaskList,
       }
   }
 
-  def submit: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        Redirect(routes.TaskListController.show())
-      } else {
-        throw new NotFoundException("[TaskListCOntroller][submit] - The save and retrieve feature switch is disabled")
-      }
+  def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
+
+    implicit request =>
+      incomeSourcesModel =>
+
+        val nino = user.nino.get
+        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+        val session = request.session
+
+        subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(nino, incomeSourcesModel, maybeSpsEntityId = session.get(SPSEntityId))(headerCarrier).flatMap {
+          case Right(SubscriptionSuccess(id)) =>
+            subscriptionDetailsService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
+          case Left(failure) =>
+            error("Successful response not received from submission: \n" + failure.toString)
+        }
+  }
+
+  private[controllers] def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
+    Authenticated.async { implicit request =>
+      implicit user =>
+        if (isEnabled(SaveAndRetrieve)) {
+          val model = for {
+            cacheMap <- subscriptionDetailsService.fetchAll()
+            selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
+            selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+          } yield {
+            cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod)
+          }
+          model.flatMap { model =>
+            processFunc(user)(request)(model)
+          }
+        } else {
+          throw new NotFoundException("[TaskListController][submit] - The save and retrieve feature switch is disabled")
+        }
+
+    }
+
+  def error(message: String): Future[Nothing] = {
+    Logger.warn(message)
+    Future.failed(new InternalServerException(message))
   }
 
 }

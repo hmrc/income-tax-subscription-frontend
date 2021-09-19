@@ -32,6 +32,8 @@ import utilities.individual.TestConstants
 import utilities.individual.TestConstants._
 import utilities.{AccountingPeriodUtil, TestModels}
 
+import scala.concurrent.Future
+
 
 class SubscriptionServiceSpec extends TestSubscriptionService
   with EitherValues {
@@ -256,4 +258,36 @@ class SubscriptionServiceSpec extends TestSubscriptionService
       intercept[Exception](call) shouldBe testException
     }
   }
+
+  "SubscriptionService.createIncomeSourcesFromTaskList" should {
+    def call: Future[PostCreateIncomeSourceResponse] = TestSubscriptionService.createIncomeSourcesFromTaskList(
+      mtdbsa = testMTDID,
+      testCreateIncomeSources
+    )
+
+    "return the list of income source ids when the create is successful" in {
+      setupMockCreateIncomeSourcesFromTaskListSuccess(testMTDID,
+        testCreateIncomeSources)
+      await(call).right.value shouldBe CreateIncomeSourcesSuccess()
+    }
+
+    "return the error if create fails on bad request" in {
+      setupMockCreateIncomeSourcesFromTaskListFailure(testMTDID,
+        testCreateIncomeSources)
+      await(call).left.value shouldBe CreateIncomeSourcesFailureResponse(BAD_REQUEST)
+    }
+
+    "return the error if create fails on bad formatting" in {
+      setupMockCreateIncomeSourcesFromTaskListBadFormatting(testMTDID,
+        testCreateIncomeSources)
+      await(call).left.value shouldBe BadlyFormattedCreateIncomeSourcesResponse
+    }
+
+    "return the error if subscription throws an exception" in {
+      setupMockCreateIncomeSourcesFromTaskListException(testMTDID,
+        testCreateIncomeSources)
+      intercept[Exception](await(call)) shouldBe testException
+    }
+  }
+
 }
