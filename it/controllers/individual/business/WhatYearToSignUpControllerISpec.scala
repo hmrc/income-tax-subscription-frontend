@@ -17,8 +17,7 @@
 package controllers.individual.business
 
 import java.time.LocalDate
-
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
@@ -91,6 +90,9 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
+        And("SaveAndRetrieve feature switch is disabled")
+        disable(SaveAndRetrieve)
+
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
@@ -109,6 +111,9 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
+        And("SaveAndRetrieve feature switch is disabled")
+        disable(SaveAndRetrieve)
+
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
@@ -118,12 +123,37 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
           redirectURI(incomeReceivedURI)
         )
       }
+
+      "Save & Retrieve is enabled" in {
+        val userInput = AccountingYearModel(Current)
+
+        Given("I setup the Wiremock stubs")
+
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+
+        And("SaveAndRetrieve feature switch is enabled")
+        enable(SaveAndRetrieve)
+
+        When("POST /business/what-year-to-sign-up is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of Task List page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
     }
 
     "not select an option on the accounting year page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, "")
+
+      And("SaveAndRetrieve feature switch is disabled")
+      disable(SaveAndRetrieve)
 
       When("POST /business/what-year-to-sign-up is called")
 
@@ -152,6 +182,9 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         )
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
+        And("SaveAndRetrieve feature switch is disabled")
+        disable(SaveAndRetrieve)
+
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
@@ -177,6 +210,9 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         )
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
 
+        And("SaveAndRetrieve feature switch is disabled")
+        disable(SaveAndRetrieve)
+
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
@@ -184,6 +220,31 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "Save & Retrieve is enabled" in {
+        val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
+        val SubscriptionDetailsAccountingYearNext: AccountingYearModel = IntegrationTestModels.testAccountingYearNext
+        val userInput = SubscriptionDetailsAccountingYearNext
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
+          subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent))
+        )
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+
+        And("SaveAndRetrieve feature switch is enabled")
+        enable(SaveAndRetrieve)
+
+        When("POST /business/what-year-to-sign-up is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of Task List page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
         )
       }
 

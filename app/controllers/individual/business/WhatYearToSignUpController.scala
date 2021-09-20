@@ -18,6 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import forms.individual.business.AccountingYearForm
 
 import javax.inject.{Inject, Singleton}
@@ -26,7 +27,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
-import views.html.individual.incometax.business.{WhatYearToSignUp}
+import views.html.individual.incometax.business.WhatYearToSignUp
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -64,7 +65,9 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
           subscriptionDetailsService.saveSelectedTaxYear(accountingYear) map { _ =>
-            if (isEditMode) {
+            if (isEnabled(SaveAndRetrieve)) {
+              Redirect(controllers.individual.business.routes.TaskListController.show())
+            } else if (isEditMode) {
               Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
             } else {
               Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
@@ -74,6 +77,9 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       )
   }
 
-  def backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-
+  def backUrl: String = if (isEnabled(SaveAndRetrieve)) {
+    controllers.individual.business.routes.TaskListController.show().url
+  } else {
+    controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+  }
 }
