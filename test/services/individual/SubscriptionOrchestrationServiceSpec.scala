@@ -18,9 +18,7 @@ package services.individual
 
 import models.ConnectorError
 import models.common.subscription.SubscriptionSuccess
-import org.mockito.Mockito.verify
 import org.scalatest.concurrent.ScalaFutures
-import play.api.test.Helpers.await
 import services.individual.mocks.TestSubscriptionOrchestrationService
 import utilities.TestModels._
 import utilities.UnitTestTrait
@@ -134,29 +132,91 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
     }
   }
 
-  "enrolAndRefresh" should {
-    def res: Future[Either[ConnectorError, String]] =
-      TestSubscriptionOrchestrationService.enrolAndRefresh(testMTDID, testNino)
+  "signUpAndCreateIncomeSourcesFromTaskList" should {
+    def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
+      TestSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(
+        testNino,
+        testCreateIncomeSources
+      )
 
-    "return a success when enrolment and refresh profile succeed" in {
+    "return a success when all incometax.business.services succeed" in {
+      mockSignUpIncomeSourcesSuccess(testNino)
+      mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
+      mockAddKnownFactsSuccess(testMTDID, testNino)
       mockEnrolSuccess(testMTDID, testNino)
 
-      whenReady(res)(_ mustBe Right(testMTDID))
+      whenReady(res)(_ mustBe testSubscriptionSuccess)
     }
 
     "return a failure" when {
-      "enrol returns an error" in {
-        mockEnrolFailure(testMTDID, testNino)
+      "sign up income sources request fail and returns an error" in {
+        mockSignUpIncomeSourcesFailure(testNino)
 
-        whenReady(res)(_ mustBe testEnrolFailure)
+        whenReady(res)(_ mustBe testSignUpIncomeSourcesFailure)
       }
 
-      "enrol returns an exception" in {
-        mockEnrolException(testMTDID, testNino)
+      "create income sources from task list request fail and returns an error" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesFromTaskListFailure(testMTDID, testCreateIncomeSources)
+
+        whenReady(res)(_ mustBe testCreateIncomeSourcesFromTaskListFailure)
+      }
+
+      "sign up income sources throws an exception" in {
+        mockSignUpIncomeSourcesException(testNino)
 
         whenReady(res.failed)(_ mustBe testException)
       }
 
+      "create income sources from task list throws an exception" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesFromTaskListException(testMTDID, testCreateIncomeSources)
+
+        whenReady(res.failed)(_ mustBe testException)
+      }
+
+      "add known facts returns an error" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
+        mockAddKnownFactsFailure(testMTDID, testNino)
+
+        whenReady(res)(_ mustBe testKnownFactsFailure)
+      }
+
+      "add known facts returns an exception" in {
+        mockSignUpIncomeSourcesSuccess(testNino)
+        mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
+        mockAddKnownFactsException(testMTDID, testNino)
+
+        whenReady(res.failed)(_ mustBe testException)
+      }
+    }
+
+
+    "enrolAndRefresh" should {
+      def res: Future[Either[ConnectorError, String]] =
+        TestSubscriptionOrchestrationService.enrolAndRefresh(testMTDID, testNino)
+
+      "return a success when enrolment and refresh profile succeed" in {
+        mockEnrolSuccess(testMTDID, testNino)
+
+        whenReady(res)(_ mustBe Right(testMTDID))
+      }
+
+      "return a failure" when {
+        "enrol returns an error" in {
+          mockEnrolFailure(testMTDID, testNino)
+
+          whenReady(res)(_ mustBe testEnrolFailure)
+        }
+
+        "enrol returns an exception" in {
+          mockEnrolException(testMTDID, testNino)
+
+          whenReady(res.failed)(_ mustBe testException)
+        }
+
+      }
     }
   }
 }

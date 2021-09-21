@@ -58,11 +58,13 @@ object IntegrationTestModels {
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
   val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
   val testPropertyStartDate = PropertyStartDateModel(testValidStartDate)
+  val testPropertyStartDateModel = PropertyStartDateModel(DateModel("05","04","2017"))
   val testOverseasPropertyStartDate = OverseasPropertyStartDateModel(testValidStartDate)
+  val testOverseasPropertyStartDateModel = OverseasPropertyStartDateModel(DateModel("05","04","2017"))
   val testInvalidPropertyStartDate = PropertyStartDateModel(testInvalidStartDate)
   val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData(
-    id = "businessId",
-    businessStartDate = Some(BusinessStartDate(DateModel("19", "03", "1999"))),
+    id = "12345",
+    businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
     businessName = Some(testBusinessName),
     businessTradeName = Some(testBusinessTrade),
     businessAddress = Some(testBusinessAddress)
@@ -104,6 +106,54 @@ object IntegrationTestModels {
 
     )
 
+  val selfEmploymentSubscriptionData: Map[String, JsValue] =
+    subscriptionData(
+      incomeSource = Some(testIncomeSourceBusiness),
+      selectedTaxYear = Some(testAccountingYearCurrent),
+      businessName = Some(testBusinessName),
+      accountingMethod = Some(testAccountingMethod),
+      propertyStartDate = None,
+      propertyAccountingMethod = None,
+      overseasPropertyAccountingMethod = None,
+      overseasPropertyStartDate = None
+    )
+
+  val ukPropertySubscriptionData: Map[String, JsValue] =
+    subscriptionData(
+      incomeSource = Some(testIncomeSourceProperty),
+      selectedTaxYear = Some(testAccountingYearCurrent),
+      businessName = None,
+      accountingMethod = None,
+      propertyStartDate = Some(testPropertyStartDateModel),
+      propertyAccountingMethod = Some(testAccountingMethodProperty),
+      overseasPropertyAccountingMethod = None,
+      overseasPropertyStartDate = None
+    )
+
+  val overseasPropertySubscriptionData: Map[String, JsValue] =
+    subscriptionData(
+      incomeSource = Some(testIncomeSourceOverseas),
+      selectedTaxYear = Some(testAccountingYearCurrent),
+      businessName = None,
+      accountingMethod = None,
+      propertyStartDate = None,
+      propertyAccountingMethod = None,
+      overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
+      overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
+    )
+
+  val AllSubscriptionData: Map[String, JsValue] =
+    subscriptionData(
+      incomeSource = Some(testIncomeSourceAll),
+      selectedTaxYear = Some(testAccountingYearCurrent),
+      businessName = Some(testBusinessName),
+      accountingMethod = Some(testAccountingMethod),
+      propertyStartDate = Some(testPropertyStartDateModel),
+      propertyAccountingMethod = Some(testAccountingMethodProperty),
+      overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
+      overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
+    )
+
 
   def subscriptionData(incomeSource: Option[IncomeSourceModel] = None,
                        selectedTaxYear: Option[AccountingYearModel] = None,
@@ -130,6 +180,10 @@ object IntegrationTestModels {
   lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
 
   lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
+
+  lazy val testIncomeSourceOverseas: IncomeSourceModel = IncomeSourceModel(false, false, true)
+
+  lazy val testIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(true, true, true)
 
   lazy val testIncomeSourceIndivProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
 

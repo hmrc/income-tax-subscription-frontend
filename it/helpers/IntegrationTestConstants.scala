@@ -16,9 +16,13 @@
 
 package helpers
 
-import models.DateModel
+import models.common.AccountingPeriodModel
+import models.common.business._
+import models.common.subscription.{OverseasProperty, SoleTraderBusinesses, UkProperty}
+import models.{AccountingMethod, Cash, DateModel}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
+import utilities.AccountingPeriodUtil
 
 import java.net.URLEncoder
 import java.util.UUID
@@ -51,6 +55,35 @@ object IntegrationTestConstants {
   val testArn: String = UUID.randomUUID.toString
   val testAgencyName: String = UUID.randomUUID.toString
   val testUrl = "/test/url/"
+  val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
+  val tradingStartDate = (DateModel("05", "04", "2017"))
+  val testBusinessName = BusinessNameModel("test business")
+  val testBusinessTradeName = BusinessTradeNameModel("test trade")
+  val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
+  val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
+  val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
+  val testAccountMethod: AccountingMethod = Cash
+
+  val testAccountingPeriod: AccountingPeriodModel = testAccountingPeriod(testStartDate, testEndDate)
+
+  def testAccountingPeriod(startDate: DateModel = testStartDate,
+                           endDate: DateModel = testEndDate): AccountingPeriodModel =
+    AccountingPeriodModel(startDate, endDate)
+
+  val testSoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriod, testAccountMethod, testSelfEmploymentData)
+  val testUkProperty = UkProperty(testAccountingPeriod, tradingStartDate, testAccountMethod)
+  val testOverseasProperty = OverseasProperty(testAccountingPeriod, tradingStartDate, testAccountMethod)
+
+  lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
+    Seq(SelfEmploymentData
+    (
+      id = testId,
+      businessStartDate = Some(businessStartDate),
+      businessName = Some(testBusinessName),
+      businessTradeName = Some(testBusinessTradeName),
+      businessAddress = Some(BusinessAddressModel("", Address(Seq("1 long road", "lonely town", "quiet county"), "ZZ11ZZ")))
+    )
+    )
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up"
   val indexURI = s"$baseURI/index"
@@ -77,7 +110,7 @@ object IntegrationTestConstants {
   val spsHandoffRouteURI = s"$baseURI/sps-handoff"
   val claimEnrolSpsHandoffRouteURI = s"$baseURI/claim-enrolment/sps-handoff"
   val spsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BDcR9uIsDgZ5Bi3z4iYCJe0%3D&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
-  val claimEnrolSpsHandoffURI =  s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BFw14Es%2Fzqc6h9U3UpZg18WfhJXb4iUz3Y5ttgFaoTjs&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
+  val claimEnrolSpsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BFw14Es%2Fzqc6h9U3UpZg18WfhJXb4iUz3Y5ttgFaoTjs&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
   val choosePaperlessURI = s"/paperless/choose?returnUrl"
   val errorPreferencesURI = s"$baseURI/paperless-error"
   val accountingYearURI = s"$baseURI/business/what-year-to-sign-up"

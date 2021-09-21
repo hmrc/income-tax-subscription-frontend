@@ -16,28 +16,30 @@
 
 package utilities.individual
 
-import java.net.URLEncoder
-import java.time.OffsetDateTime
-import java.util.UUID
-
-import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.common.business._
-import models.common.subscription.{BusinessIncomeModel, CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess, EmacEnrolmentRequest, EnrolFailure, EnrolRequest, EnrolSuccess, EnrolmentKey, KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, PropertyIncomeModel, RefreshProfileFailure, RefreshProfileSuccess, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess, TypeValuePair}
-import models.individual.subscription._
+import models.common.subscription._
+import models.common.{AccountingYearModel, IncomeSourceModel, OverseasPropertyStartDateModel, PropertyStartDateModel}
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import models.{Cash, Current, DateModel, IndividualSummary}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
+import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.AccountingPeriodUtil
-import utilities.TestModels.testBusinessName
+import utilities.TestModels.{testAccountMethod, testAccountingPeriod, testBusinessName, testBusinessTradeName, testValidStartDate}
 import utilities.individual.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
 import utilities.individual.Constants.mtdItsaEnrolmentName
+
+import java.net.URLEncoder
+import java.time.OffsetDateTime
+import java.util.UUID
 
 object TestConstants {
   /*
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
   lazy val testNino: String = new Generator().nextNino.nino
+  lazy val testId: String = "testId"
+  lazy val testEmptyCacheMap = CacheMap("", Map())
   lazy val testUtr: String = UUID.randomUUID().toString
   //Not an actual UTRTestAuthenticatorConnector
   lazy val testArn: String = UUID.randomUUID().toString
@@ -46,6 +48,9 @@ object TestConstants {
   lazy val testMTDID2 = "XE0001234567892"
   lazy val testSubscriptionId = "sessionId"
   lazy val startDate = DateModel("05", "04", "2017")
+  lazy val propertyStartDate = PropertyStartDateModel(DateModel("05", "04", "2017"))
+  lazy val overseasPropertyStartDate = OverseasPropertyStartDateModel(DateModel("05", "04", "2017"))
+  lazy val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
   lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
@@ -59,7 +64,9 @@ object TestConstants {
   val testLastName = "Name"
 
   val testPhoneNumber = "000 000 0000"
-
+  val testSoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriod, testAccountMethod, testSelfEmploymentData)
+  val testUkProperty = UkProperty(testAccountingPeriod, testValidStartDate, testAccountMethod)
+  val testOverseasProperty = OverseasProperty(testAccountingPeriod, testValidStartDate, testAccountMethod)
   val testUrl = "/test/url/"
 
   lazy val knownFactsRequest = KnownFactsRequest(
@@ -125,6 +132,10 @@ object TestConstants {
 
   val testCreateIncomeSourcesFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
 
+  val testCreateIncomeSourcesFromTaskListSuccess = Right(CreateIncomeSourcesSuccess())
+
+  val testCreateIncomeSourcesFromTaskListFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+
   val testIndividualSummary: IndividualSummary = IndividualSummary(
     incomeSource = Some(IncomeSourceModel(true, false, false)),
     selfEmployments = Some(Seq(SelfEmploymentData("1", Some(BusinessStartDate(startDate)), Some(testBusinessName),
@@ -132,5 +143,35 @@ object TestConstants {
     accountingMethod = Some(AccountingMethodModel(Cash)),
     selectedTaxYear = Some(AccountingYearModel(Current))
   )
+
+  lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
+    Seq(SelfEmploymentData
+    (
+      id = testId,
+      businessStartDate = Some(businessStartDate),
+      businessName = Some(testBusinessName),
+      businessTradeName = Some(testBusinessTradeName),
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
+    )
+    )
+
+  lazy val testUncompletedSelfEmploymentData: Seq[SelfEmploymentData] =
+    Seq(SelfEmploymentData
+    (
+      id = testId,
+      businessStartDate = Some(businessStartDate),
+      businessName = None,
+      businessTradeName = Some(testBusinessTradeName),
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
+    )
+    )
+
+  lazy val testCreateIncomeSources: CreateIncomeSourcesModel =
+    CreateIncomeSourcesModel(
+      testNino,
+      Some(testSoleTraderBusinesses),
+      Some(testUkProperty),
+      Some(testOverseasProperty)
+    )
 
 }

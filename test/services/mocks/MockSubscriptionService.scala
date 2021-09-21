@@ -21,7 +21,7 @@ import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHtt
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.mocks.{MockMisSubscriptionConnector, MockSubscriptionConnector}
-import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
+import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionFailureResponse, SubscriptionSuccess}
 import models.{AgentSummary, IndividualSummary, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -76,6 +76,16 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
     }
   }
 
+  private def mockCreateIncomeSourcesFromTaskList(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
+                                                 (result: Future[PostCreateIncomeSourceResponse]): Unit = {
+
+    when(mockSubscriptionService.createIncomeSourcesFromTaskList(
+      ArgumentMatchers.eq(mtdbsa),
+      ArgumentMatchers.eq(createIncomeSourcesModel)
+    )(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
+  }
+
   def mockSignUpIncomeSourcesSuccess(nino: String): Unit =
     mockSignUpIncomeSources(nino)(Future.successful(testSignUpIncomeSourcesSuccess))
 
@@ -93,6 +103,15 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
 
   def mockCreateIncomeSourcesException(nino: String, mtdbsa: String, individualSummary: IndividualSummary): Unit =
     mockCreateIncomeSources(nino, mtdbsa, individualSummary)(Future.failed(testException))
+
+  def mockCreateIncomeSourcesFromTaskListSuccess(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
+    mockCreateIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)(Future.successful(testCreateIncomeSourcesFromTaskListSuccess))
+
+  def mockCreateIncomeSourcesFromTaskListFailure(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
+    mockCreateIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)(Future.successful(testCreateIncomeSourcesFromTaskListFailure))
+
+  def mockCreateIncomeSourcesFromTaskListException(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
+    mockCreateIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)(Future.failed(testException))
 
   def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, arn: Option[String]): Unit =
     mockCreateSubscription(nino, summaryModel, arn)(Future.successful(testSubscriptionSuccess))

@@ -19,11 +19,12 @@ package connectors.individual.subscription
 import config.AppConfig
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser._
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser._
-import javax.inject.{Inject, Singleton}
 import models.common.business.BusinessSubscriptionDetailsModel
+import models.common.subscription.CreateIncomeSourcesModel
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -32,6 +33,7 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
                                                           (implicit ec: ExecutionContext) {
 
   def signUpUrl(nino: String): String = appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino)
+
   def createIncomeSourcesUrl(mtdbsa: String): String = appConfig.createIncomeSourcesUrl +
     MultipleIncomeSourcesSubscriptionConnector.createIncomeSourcesUri(mtdbsa)
 
@@ -42,11 +44,16 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] =
     http.POST[BusinessSubscriptionDetailsModel, PostCreateIncomeSourceResponse](createIncomeSourcesUrl(mtdbsa), request)
 
+  def createIncomeSourcesFromTaskList(mtdbsa: String, request: CreateIncomeSourcesModel)
+                                     (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] =
+    http.POST[CreateIncomeSourcesModel, PostCreateIncomeSourceResponse](createIncomeSourcesUrl(mtdbsa), request)
+
 }
 
 object MultipleIncomeSourcesSubscriptionConnector {
 
   def signUpUri(nino: String): String = s"/$nino"
+
   def createIncomeSourcesUri(mtdbsa: String): String = s"/$mtdbsa"
 
 }

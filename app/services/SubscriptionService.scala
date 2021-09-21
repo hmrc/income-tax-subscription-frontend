@@ -22,15 +22,15 @@ import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHtt
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.{MultipleIncomeSourcesSubscriptionConnector, SubscriptionConnector}
-import javax.inject.{Inject, Singleton}
 import models.common.business.BusinessSubscriptionDetailsModel
-import models.common.subscription.{BusinessIncomeModel, PropertyIncomeModel, SubscriptionRequest}
+import models.common.subscription.{BusinessIncomeModel, CreateIncomeSourcesModel, PropertyIncomeModel, SubscriptionRequest}
 import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel, subscription}
 import models.{AgentSummary, IndividualSummary, Next, SummaryModel}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
@@ -125,6 +125,17 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
         summary.toBusinessSubscriptionDetailsModel(nino)
     }
 
+
     multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
   }
+
+  def createIncomeSourcesFromTaskList(mtdbsa: String,
+                                      createIncomeSourcesModel: CreateIncomeSourcesModel
+                                     )
+                                     (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
+    Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa from task list")
+
+    multipleIncomeSourcesSubscriptionConnector.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)
+  }
+
 }

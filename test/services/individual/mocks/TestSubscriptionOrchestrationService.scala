@@ -17,9 +17,9 @@
 package services.individual.mocks
 
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
+import models.common.subscription.CreateIncomeSourcesModel
 import models.{ConnectorError, SummaryModel}
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -66,6 +66,16 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
     )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
   }
 
+  private def mockSignUpAndCreateIncomeSourcesFromTaskList(nino: String,
+                                                           createIncomeSourcesModel: CreateIncomeSourcesModel
+                                                          )(result: Future[SubscriptionResponse]): Unit = {
+    when(mockSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(createIncomeSourcesModel),
+      ArgumentMatchers.any()
+    )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
+  }
+
   def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
     mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.successful(testSubscriptionSuccess))
 
@@ -74,6 +84,13 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
 
   def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
     mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.failed(testException))
+
+  def mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
+    mockSignUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel)(Future.successful(testSubscriptionSuccess))
+
+  def mockSignUpAndCreateIncomeSourcesFromTaskListFailure(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
+    mockSignUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel)(Future.successful(testSubscriptionFailure))
+
 
   private def mockEnrolAndRefresh(mtditId: String, nino: String)(result: Future[Either[ConnectorError, String]]): Unit =
     when(

@@ -71,6 +71,18 @@ object IntegrationTestModels {
       overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
     )
 
+  val ukPropertySubscriptionData: Map[String, JsValue] =
+    subscriptionData(
+      incomeSource = Some(testIncomeSourceProperty),
+      selectedTaxYear = Some(testAccountingYearCurrent),
+      businessName = None,
+      accountingMethod = None,
+      propertyStartDate = Some(testPropertyStartDate),
+      accountingMethodProperty = Some(testAccountingMethodProperty),
+      overseasPropertyAccountingMethod = None,
+      overseasPropertyStartDate = None
+    )
+
   def subscriptionData(
                         incomeSource: Option[IncomeSourceModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,

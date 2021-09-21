@@ -232,6 +232,10 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       post("/check-your-answers", sessionData)(Map.empty)
     }
 
+    def submitTaskList(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/business/task-list", sessionData)(Map.empty)
+    }
+
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
     def submitPaperlessError(sessionKeys: Map[String, String] = Map.empty): WSResponse = post(

@@ -21,7 +21,7 @@ import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.{testBusinessName, _}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import models.common.IncomeSourceModel
