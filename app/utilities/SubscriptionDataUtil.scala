@@ -50,6 +50,23 @@ object SubscriptionDataUtil extends FeatureSwitching {
     def getOverseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] =
       cacheMap.getEntry[OverseasAccountingMethodPropertyModel](OverseasPropertyAccountingMethod)
 
+    def getTaskListModel(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+                         selfEmploymentAccountingMethod: Option[AccountingMethodModel] = None): TaskListModel = {
+      TaskListModel(
+        taxYearSelection = getSelectedTaxYear.map(_.accountingYear),
+        selfEmployments = selfEmployments match {
+          case Some(businesses) => businesses
+          case None => Seq.empty[SelfEmploymentData]
+        },
+        selfEmploymentAccountingMethod = selfEmploymentAccountingMethod.map(_.accountingMethod),
+        ukPropertyStart = getPropertyStartDate.map(_.startDate),
+        ukPropertyAccountingMethod = getPropertyAccountingMethod.map(_.propertyAccountingMethod),
+        overseasPropertyStart = getOverseasPropertyStartDate.map(_.startDate),
+        overseasPropertyAccountingMethod = getOverseasPropertyAccountingMethod.map(_.overseasPropertyAccountingMethod)
+      )
+    }
+
+
     def createIncomeSources(nino: String,
                             selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                             selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None) = {

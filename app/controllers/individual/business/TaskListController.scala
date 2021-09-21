@@ -16,8 +16,6 @@
 
 package controllers.individual.business
 
-;
-
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
@@ -25,10 +23,11 @@ import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
+import models.common.{IncomeSourceModel, TaskListModel}
 import play.api.Logger
 import play.api.mvc._
 import services.individual.SubscriptionOrchestrationService
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
 import utilities.ITSASessionKeys
@@ -38,26 +37,66 @@ import utilities.SubscriptionDataUtil.CacheMapUtil
 import views.html.individual.incometax.business.TaskList
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future};
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TaskListController @Inject()(val taskListView: TaskList,
+                                   val accountingPeriodService: AccountingPeriodService,
                                    val auditingService: AuditingService,
-                                   val authService: AuthService,
-                                   subscriptionService: SubscriptionOrchestrationService,
-                                   subscriptionDetailsService: SubscriptionDetailsService,
-                                   incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
+                                   val subscriptionDetailsService: SubscriptionDetailsService,
+                                   val subscriptionService: SubscriptionOrchestrationService,
+                                   val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+                                   val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        Future.successful(Ok(taskListView(controllers.individual.business.routes.TaskListController.show(), "insert view model here")))
-      } else {
-        Future.failed(new NotFoundException("[TaskListController][show] - The save and retrieve feature switch is disabled"))
-      }
+
+  private def withSubscriptionDetails(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result]): Action[AnyContent] =
+    Authenticated.async { implicit request =>
+      implicit user =>
+        subscriptionDetailsService.fetchAll().flatMap { cache =>
+          processFunc(user)(request)(cache)
+        }
+    }
+
+  val show: Action[AnyContent] = withSubscriptionDetails { implicit user =>
+    implicit request => {
+      cache =>
+        getTaskListModel(cache).map {
+          viewModel =>
+            if (isEnabled(SaveAndRetrieve)) {
+              Ok(taskListView(
+                postAction = controllers.individual.business.routes.TaskListController.submit(),
+                viewModel = viewModel,
+                accountingPeriodService = accountingPeriodService
+              ))
+            } else {
+              throw new NotFoundException("[TaskListController][show] - The save and retrieve feature switch is disabled")
+            }
+        }
+    }
+  }
+
+  def backUrl(incomeSource: IncomeSourceModel): String = {
+    incomeSource match {
+      case IncomeSourceModel(_, _, true) =>
+        controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url
+      case IncomeSourceModel(_, true, _) =>
+        controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+      case IncomeSourceModel(true, _, _) =>
+        controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+      case _ => throw new InternalServerException("[CheckYourAnswersController][backUrl] - Invalid income source state")
+    }
+  }
+
+  private def getTaskListModel(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
+    for {
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
+      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+    } yield {
+      cacheMap.getTaskListModel(businesses, businessAccountingMethod)
+    }
   }
 
   def submit: Action[AnyContent] = journeySafeGuard { implicit user =>

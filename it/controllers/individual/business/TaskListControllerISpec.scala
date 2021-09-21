@@ -39,6 +39,114 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
     super.beforeEach()
   }
 
+  "GET /report-quarterly/income-and-expenses/sign-up/business/task-list" should {
+    "return OK" when {
+      "there is no user data setup" in {
+        enable(SaveAndRetrieve)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+
+        When("GET /business/task-list is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaskList()
+
+        Then("Should return OK with the task list page")
+        res should have(
+          httpStatus(OK),
+          pageTitle(messages("business.task-list.title") + serviceNameGovUk)
+        )
+      }
+      "there is partial user data setup" in {
+        enable(SaveAndRetrieve)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+          selectedTaxYear = Some(testAccountingYearCurrent),
+          propertyStartDate = Some(testPropertyStartDate),
+          overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
+        ))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+
+        When("GET /business/task-list is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaskList()
+
+        Then("Should return OK with the task list page")
+        res should have(
+          httpStatus(OK),
+          pageTitle(messages("business.task-list.title") + serviceNameGovUk)
+        )
+      }
+      "there is full user data setup" in {
+        enable(SaveAndRetrieve)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+          selectedTaxYear = Some(testAccountingYearCurrent),
+          propertyStartDate = Some(testPropertyStartDate),
+          propertyAccountingMethod = Some(testAccountingMethodProperty),
+          overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
+          overseasPropertyStartDate = Some(testOverseasPropertyStartDate)
+        ))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+
+        When("GET /business/task-list is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaskList()
+
+        Then("Should return OK with the task list page")
+        res should have(
+          httpStatus(OK),
+          pageTitle(messages("business.task-list.title") + serviceNameGovUk)
+        )
+      }
+    }
+    "return NOT_FOUND" when {
+      "the save & retrieve feature switch is disabled" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+          incomeSource = None,
+          selectedTaxYear = Some(testAccountingYearCurrent),
+          businessName = None,
+          accountingMethod = None,
+          propertyStartDate = Some(testPropertyStartDate),
+          propertyAccountingMethod = Some(testAccountingMethodProperty),
+          overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
+          overseasPropertyStartDate = Some(testOverseasPropertyStartDate)
+        ))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+        When("GET /business/task-list is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaskList()
+
+        Then("Should return NOT FOUND")
+        res should have(
+          httpStatus(NOT_FOUND)
+        )
+      }
+    }
+  }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/task-list" when {
     "the save and retrieve feature switch is enabled" when {

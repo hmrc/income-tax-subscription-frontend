@@ -47,6 +47,7 @@ class TaskListModelSpec extends UnitSpec {
         val summary = TaskListModel(
           taxYearSelection = Some(Next),
           selfEmployments = Seq(completeSeModel),
+          selfEmploymentAccountingMethod = None,
           ukPropertyStart = Some(date),
           ukPropertyAccountingMethod = Some(Cash),
           overseasPropertyStart = Some(date),
@@ -61,6 +62,7 @@ class TaskListModelSpec extends UnitSpec {
         val summary = TaskListModel(
           taxYearSelection = Some(Next),
           selfEmployments = Seq(completeSeModel),
+          selfEmploymentAccountingMethod = None,
           ukPropertyStart = None,
           ukPropertyAccountingMethod = None,
           overseasPropertyStart = Some(date),
@@ -75,6 +77,7 @@ class TaskListModelSpec extends UnitSpec {
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(completeSeModel),
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -89,6 +92,7 @@ class TaskListModelSpec extends UnitSpec {
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(incompleteSeModel),
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -98,11 +102,28 @@ class TaskListModelSpec extends UnitSpec {
       summary.selfEmploymentsComplete shouldBe false
     }
 
+    "provided income summary data with an incomplete self-employment accounting method, selfEmploymentsComplete returns false" in {
+
+      val summary = TaskListModel(
+        taxYearSelection = Some(Next),
+        selfEmployments = Seq(completeSeModel),
+        selfEmploymentAccountingMethod = None,
+        ukPropertyStart = Some(date),
+        ukPropertyAccountingMethod = Some(Cash),
+        overseasPropertyStart = Some(date),
+        overseasPropertyAccountingMethod = Some(Cash)
+      )
+
+      summary.selfEmploymentsComplete shouldBe false
+    }
+
+
     "provided income summary data with a foreign property, overseasPropertyComplete returns true" in {
 
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(completeSeModel),
+        selfEmploymentAccountingMethod = None,
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -117,6 +138,7 @@ class TaskListModelSpec extends UnitSpec {
     val summary = TaskListModel(
       taxYearSelection = Some(Next),
       selfEmployments = Seq(completeSeModel),
+      selfEmploymentAccountingMethod = None,
       ukPropertyStart = Some(date),
       ukPropertyAccountingMethod = Some(Cash),
       overseasPropertyStart = None,
@@ -131,6 +153,7 @@ class TaskListModelSpec extends UnitSpec {
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(completeSeModel),
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -145,6 +168,7 @@ class TaskListModelSpec extends UnitSpec {
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(incompleteSeModel),
+        selfEmploymentAccountingMethod = None,
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -159,6 +183,7 @@ class TaskListModelSpec extends UnitSpec {
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(completeSeModel),
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -173,6 +198,7 @@ class TaskListModelSpec extends UnitSpec {
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(completeSeModel),
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -187,6 +213,7 @@ class TaskListModelSpec extends UnitSpec {
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(completeSeModel),
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = None,
         overseasPropertyStart = Some(date),
@@ -201,6 +228,7 @@ class TaskListModelSpec extends UnitSpec {
       val summary = TaskListModel(
         taxYearSelection = Some(Next),
         selfEmployments = Seq(incompleteSeModel),
+        selfEmploymentAccountingMethod = None,
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -223,6 +251,7 @@ class TaskListModelSpec extends UnitSpec {
           businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
         )
       },
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),
@@ -246,6 +275,7 @@ class TaskListModelSpec extends UnitSpec {
             businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
           )
         },
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = None,
         ukPropertyAccountingMethod = None,
         overseasPropertyStart = Some(date),
@@ -269,6 +299,7 @@ class TaskListModelSpec extends UnitSpec {
             businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
           )
         },
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = None,
@@ -292,6 +323,7 @@ class TaskListModelSpec extends UnitSpec {
             businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
           )
         },
+        selfEmploymentAccountingMethod = Some(Cash),
         ukPropertyStart = Some(date),
         ukPropertyAccountingMethod = Some(Cash),
         overseasPropertyStart = Some(date),

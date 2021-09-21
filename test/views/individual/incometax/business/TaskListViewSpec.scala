@@ -16,57 +16,247 @@
 
 package views.individual.incometax.business
 
+import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
+import models._
+import models.common.TaskListModel
+import models.common.business._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
+import play.api.mvc.Call
 import play.twirl.api.Html
-import views.ViewSpecTrait
+import services.AccountingPeriodService
+import utilities.ViewSpec
 import views.html.individual.incometax.business.TaskList
 
-
-class TaskListViewSpec extends ViewSpecTrait {
+class TaskListViewSpec extends ViewSpec {
 
   val taskListView: TaskList = app.injector.instanceOf[TaskList]
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
-  def document: Document = Jsoup.parse(page().body)
+  val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
-  def page(): Html = taskListView(
-    postAction = controllers.individual.subscription.routes.ConfirmationController.submit(),
-    viewModel = "something"
+  lazy val postAction: Call = controllers.individual.business.routes.TaskListController.submit()
+  lazy val backUrl: String = controllers.individual.business.routes.TaskListController.show().url
+
+  def customTaskListModel(taxYearSelection: Option[AccountingYear] = None,
+                          selfEmployments: Seq[SelfEmploymentData] = Nil,
+                          selfEmploymentAccountingMethod: Option[AccountingMethod] = None,
+                          ukPropertyStart: Option[DateModel] = None,
+                          ukPropertyAccountingMethod: Option[AccountingMethod] = None,
+                          overseasPropertyStart: Option[DateModel] = None,
+                          overseasPropertyAccountingMethod: Option[AccountingMethod] = None): TaskListModel = {
+    TaskListModel(taxYearSelection,
+      selfEmployments,
+      selfEmploymentAccountingMethod,
+      ukPropertyStart,
+      ukPropertyAccountingMethod,
+      overseasPropertyStart,
+      overseasPropertyAccountingMethod
+    )
+
+  }
+
+  val partialTaskListComplete = customTaskListModel(
+    taxYearSelection = Some(Current),
+    selfEmployments = Seq(
+      SelfEmploymentData("id1", businessName = Some(BusinessNameModel("Name1"))),
+      SelfEmploymentData("id2", businessName = Some(BusinessNameModel("Name2")), businessTradeName = Some(BusinessTradeNameModel("TradeName")))
+    ),
+    ukPropertyStart = Some(DateModel("1", "2", "3")),
+    overseasPropertyStart = Some(DateModel("1", "2", "3"))
+  )
+  val completedTaskListComplete = TaskListModel(
+    taxYearSelection = Some(Next),
+    selfEmployments = Seq(SelfEmploymentData(
+      id = "",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
+      businessName = Some(BusinessNameModel("Name1")),
+      businessTradeName = Some(BusinessTradeNameModel("TradeName")),
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
+    )),
+    selfEmploymentAccountingMethod = Some(Cash),
+    ukPropertyStart = Some(DateModel("1", "2", "1980")),
+    ukPropertyAccountingMethod = Some(Cash),
+    overseasPropertyStart = Some(DateModel("1", "2", "1980")),
+    overseasPropertyAccountingMethod = Some(Cash)
+  )
+
+
+  def page(taskList: TaskListModel = customTaskListModel()): Html = taskListView(
+    postAction = postAction,
+    viewModel = taskList,
+    accountingPeriodService = accountingPeriodService
   )(request, implicitly, appConfig)
+
+
+  def document(taskList: TaskListModel = customTaskListModel()): Document = Jsoup.parse(page(taskList).body)
 
   "business task list view" must {
     "have a title" in {
-      document.title mustBe title
+      document().title mustBe title
     }
 
     "have a heading" in {
-      document.select("h1").text mustBe heading
-    }
-
-    "have a subheading" in {
-      document.select("h2").text() must include(subHeading)
-    }
-
-    "have content" in {
-      val paragraphs: Elements = document.select(".govuk-body").select("p")
-      paragraphs.text() mustBe contentSummary
+      document().select("h1").text mustBe heading
     }
 
     "have a contents list" in {
-      val contentList = document.select("ol").select("h2")
+      val contentList = document().select("ol").select("h2")
       contentList.text() must include(item1)
       contentList.text() must include(item2)
       contentList.text() must include(item3)
     }
 
-    "have a continue button" in {
-      val button = document.select("button")
-      button.text() must be(continue)
+    "display the dynamic content correctly" when {
+
+      "there is no user data" must {
+        "display the application is incomplete" in {
+          document().selectNth("h2", 1).text mustBe subHeadingIncomplete
+        }
+
+        "display the number of sections complete out of the total" in {
+          document().mainContent.selectNth("p", 1).text mustBe contentSummary(0, 2)
+        }
+
+        "display the select tax year section as incomplete" in {
+          val selectTaxYearSection = document().mainContent.selectNth("ul", 1)
+          val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
+          selectTaxYearLink.text mustBe selectTaxYear
+          selectTaxYearSection.selectNth("span", 2).text mustBe notStarted
+          selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+        }
+
+        "display the add a business link" in {
+          val businessLink = document().mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectHead("a")
+          businessLink.text mustBe addBusiness
+          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
+
+        "display the sign up incomplete text" in {
+          val incompleteText = document().mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectHead("span")
+          incompleteText.text mustBe signUpIncompleteText
+        }
+
+        "do not display the sign up button" in {
+          document().mainContent.selectOptionally("button") mustBe None
+        }
+      }
+
+      "there is partial user data" must {
+
+        "display the application is incomplete" in {
+          document(partialTaskListComplete).selectNth("h2", 1).text mustBe subHeadingIncomplete
+        }
+
+        "display the number of sections complete out of the total" in {
+          document(partialTaskListComplete).mainContent.selectNth("p", 1).text mustBe contentSummary(1, 5)
+        }
+
+        "display the current tax year as the selected option" in {
+          val selectTaxYearSection = document(partialTaskListComplete).mainContent.selectNth("ul", 1)
+          val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
+          selectTaxYearLink.text mustBe SelectedTaxYear.current(accountingPeriodService.currentTaxYear - 1, accountingPeriodService.currentTaxYear)
+          selectTaxYearSection.selectNth("span", 2).text mustBe complete
+          selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+        }
+
+        "display an incomplete self employment with just the business name" in {
+          val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
+          val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
+          selfEmploymentLink.text mustBe "Name1"
+          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendCheckYourAnswersUrl
+          selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
+
+        }
+
+        "display an incomplete self employment with a business name and trade" in {
+          val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
+          val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
+          selfEmploymentLink.text mustBe "Name2 TradeName"
+          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendCheckYourAnswersUrl
+          selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
+
+        }
+
+        "display an incomplete uk property income" in {
+          val ukPropertyIncomeSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
+          val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
+          ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
+          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyStartDateController.show().url
+          ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
+        }
+        "display an incomplete overseas property income" in {
+          val overseasPropertySection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4)
+          val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
+          overseasPropertyLink.text mustBe overseasPropertyBusiness
+          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+          overseasPropertySection.selectNth("span", 2).text mustBe incomplete
+        }
+        "display the add a business link" in {
+          val businessLink = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 5).selectHead("a")
+          businessLink.text mustBe addBusiness
+          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
+        "display the sign up incomplete text" in {
+          val incompleteText = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectHead("span")
+          incompleteText.text mustBe signUpIncompleteText
+        }
+        "do not display the sign up button" in {
+          document(partialTaskListComplete).mainContent.selectOptionally("button") mustBe None
+        }
+      }
+
+
+      "there is full user data" must {
+        "display the application is complete" in {
+          document(completedTaskListComplete).selectNth("h2", 1).text mustBe subHeadingComplete
+        }
+        "display the number of sections complete out of the total" in {
+          document(completedTaskListComplete).mainContent.selectNth("p", 1).text mustBe contentSummary(4, 4)
+        }
+        "display the next tax year as the selected option" in {
+          val selectTaxYearSection = document(completedTaskListComplete).mainContent.selectNth("ul", 1)
+          val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
+          selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
+          selectTaxYearSection.selectNth("span", 2).text mustBe complete
+          selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+        }
+        "display a complete self employment" in {
+          val selfEmploymentSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
+          val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
+          selfEmploymentLink.text mustBe "Name1 TradeName"
+          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendCheckYourAnswersUrl
+          selfEmploymentSection.selectNth("span", 2).text mustBe complete
+        }
+        "display a complete uk property income" in {
+          val ukPropertyIncomeSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
+          val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
+          ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
+          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyStartDateController.show().url
+          ukPropertyIncomeSection.selectNth("span", 2).text mustBe complete
+        }
+        "display a complete overseas property income" in {
+          val overseasPropertySection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
+          val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
+          overseasPropertyLink.text mustBe overseasPropertyBusiness
+          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+          overseasPropertySection.selectNth("span", 2).text mustBe complete
+        }
+        "display the add a business link" in {
+          val businessLink = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4).selectHead("a")
+          businessLink.text mustBe addBusiness
+          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
+        "display the sign up button" in {
+          document(completedTaskListComplete).mainContent.selectHead("button").text mustBe continue
+        }
+        "do not display the sign up incomplete text" in {
+          document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectOptionally("span") mustBe None
+
+        }
+      }
     }
+
+
   }
 }

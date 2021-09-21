@@ -22,6 +22,7 @@ import play.api.libs.json.{Format, Json}
 
 case class TaskListModel(taxYearSelection: Option[AccountingYear],
                          selfEmployments: Seq[SelfEmploymentData],
+                         selfEmploymentAccountingMethod: Option[AccountingMethod],
                          ukPropertyStart: Option[DateModel],
                          ukPropertyAccountingMethod: Option[AccountingMethod],
                          overseasPropertyStart: Option[DateModel],
@@ -29,13 +30,15 @@ case class TaskListModel(taxYearSelection: Option[AccountingYear],
 
   val ukPropertyComplete: Boolean = ukPropertyStart.isDefined && ukPropertyAccountingMethod.isDefined
 
-  var selfEmploymentsComplete: Boolean = selfEmployments.forall(_.isComplete)
+  var selfEmploymentsComplete: Boolean = selfEmployments.forall(_.isComplete) && selfEmploymentAccountingMethod.isDefined
 
   val overseasPropertyComplete: Boolean = overseasPropertyStart.isDefined && overseasPropertyAccountingMethod.isDefined
 
   val sectionsTotal: Int = Math.max(2, 1 + selfEmployments.size + ukPropertyStart.size + overseasPropertyStart.size)
 
-  val sectionsComplete: Int = taxYearSelection.size + selfEmployments.count(_.isComplete) + (if(ukPropertyComplete) 1 else 0) +
+  val sectionsComplete: Int = taxYearSelection.size +
+    selfEmployments.count { business => business.isComplete && selfEmploymentAccountingMethod.isDefined} +
+    (if(ukPropertyComplete) 1 else 0) +
     (if(overseasPropertyComplete)1 else 0)
 
   var canAddMoreBusinesses: Boolean = selfEmployments.size < 50  || ukPropertyStart.isEmpty || overseasPropertyStart.isEmpty

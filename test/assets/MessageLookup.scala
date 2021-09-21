@@ -233,7 +233,6 @@ object MessageLookup {
 
     object SelectedTaxYear {
       def current(staringYear: Int, endYear: Int): String = s"Current tax year (6 April $staringYear to 5 April $endYear)"
-
       def next(staringYear: Int, endYear: Int): String = s"Next tax year (6 April $staringYear to 5 April $endYear)"
     }
   }
@@ -310,7 +309,7 @@ object MessageLookup {
     val heading = "Sign up complete"
     val signOut = "Sign out"
 
-    object whatHappensNext {
+  object whatHappensNext {
       val heading = "What happens next"
       val para1 = "You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter."
       val para2 = "After you send a report you’ll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
@@ -324,12 +323,23 @@ object MessageLookup {
   object TaskList {
     val title = "Check and complete your business details - Use software to send Income Tax updates - GOV.UK"
     val heading = "Check and complete your business details"
-    val subHeading = "Application incomplete"
-    val contentSummary = "You have completed 1 of 3 sections."
+    val subHeadingComplete = "Application complete"
+    val subHeadingIncomplete = "Application incomplete"
+    def contentSummary (numberComplete: Int,numberTotal: Int) = s"You have completed $numberComplete of $numberTotal sections."
     val item1 = "1. Choose a tax year to sign up"
     val item2 = "2. Tell us about your income"
     val item3 = "3. Sign up"
+    val signUp = "3. Sign up"
+    val signUpIncompleteText = "You need to complete the `Tell us about your income` section before you can confirm and sign up"
     val continue = "Continue"
+    val selectTaxYear = "Select tax year"
+    val complete = "Complete"
+    val incomplete = "Incomplete"
+    val notStarted = "Not started"
+    val addBusiness = "Add a business"
+    val selfEmploymentsBusinessLink= "selfEmploymentsBusinessLink"
+    val ukPropertyBusiness= "UK property business"
+    val overseasPropertyBusiness= "Overseas property business"
   }
 
   object SignUpCompleteIndividual {
