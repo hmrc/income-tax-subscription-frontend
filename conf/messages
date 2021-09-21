@@ -937,15 +937,18 @@ business.task-list.heading.complete                             = Application co
 business.task-list.content.summary                              = You have completed {0} of {1} sections.
 business.task-list.content.section1                             = Choose a tax year to sign up
 business.task-list.content.section1.action                      = Select tax year
+business.task-list.content.section1.current-tax-year            = Current tax year (6 April {0} to 5 April {1})
+business.task-list.content.section1.next-tax-year               = Next tax year (6 April {0} to 5 April {1})
 business.task-list.content.section2                             = Tell us about your income
 business.task-list.content.section2.action                      = Add a business
 business.task-list.content.section2.property.uk                 = UK property business
 business.task-list.content.section2.property.overseas           = Overseas property business
 business.task-list.content.section3                             = Sign up
 business.task-list.content.action-needed                        = You need to complete the `{0}` section before you can confirm and sign up
-business.task-list.status.completed                             = Completed
+business.task-list.status.completed                             = Complete
+business.task-list.status.incomplete                            = Incomplete
 business.task-list.status.in-progress                           = In Progress
-business.task-list.status.not-started                           = Not Started
+business.task-list.status.not-started                           = Not started
 business.task-list.status.cannot-start-yet                      = Cannot Start Yet
 
 
