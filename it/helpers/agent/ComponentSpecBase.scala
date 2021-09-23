@@ -18,7 +18,7 @@ import helpers.servicemocks.AuditStub
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
-import models.{DateModel, YesNo}
+import models.{AccountingYear, DateModel, YesNo}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest._
@@ -332,7 +332,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def confirmation(): WSResponse = get("/confirmation")
 
-    def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYearModel]): WSResponse = {
+    def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYear]): WSResponse = {
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(

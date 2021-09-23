@@ -18,9 +18,9 @@ package utilities
 
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import models.common.IncomeSourceModel
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.common.subscription.CreateIncomeSourcesModel
-import models.{AgentSummary, IndividualSummary}
+import models.{AgentSummary, Current, IndividualSummary}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
 import uk.gov.hmrc.http.InternalServerException
@@ -69,7 +69,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           }
         }
 
-        "incomplete self employment data and self employment accounting method are returned" should {
+        "incomplete selected tax year returned" should {
           "throw InternalServerException" in {
 
             def result: CreateIncomeSourcesModel = testCacheMap(testIncomeSourceBusiness, businessName = None, testSelectedTaxYearCurrent,
@@ -77,6 +77,18 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
 
             intercept[InternalServerException](result).message mustBe
               "[SubscriptionDataUtil][createIncomeSource] - not all self employment businesses are complete"
+
+          }
+        }
+
+        "incomplete self employment data and self employment accounting method are returned" should {
+          "throw InternalServerException" in {
+
+            def result: CreateIncomeSourcesModel = testCacheMap(testIncomeSourceBusiness, businessName = None, AccountingYearModel(Current, false),
+              testAccountingMethod).createIncomeSources(testNino, testUncompletedSelfEmploymentData, testAccountingMethod)
+
+            intercept[InternalServerException](result).message mustBe
+              "[SubscriptionDataUtil][createIncomeSources] - Could not create the create income sources model as the user has not confirmed their selected tax year"
 
           }
         }

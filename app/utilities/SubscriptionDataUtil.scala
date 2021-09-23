@@ -75,8 +75,9 @@ object SubscriptionDataUtil extends FeatureSwitching {
         getSelectedTaxYear.getOrElse(
           throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - Could not create the create income sources model due to missing selected tax year")
         ) match {
-          case AccountingYearModel(Next) => getNextTaxYear
-          case AccountingYearModel(Current) => getCurrentTaxYear
+          case AccountingYearModel(_, false) => throw new InternalServerException("[SubscriptionDataUtil][createIncomeSources] - Could not create the create income sources model as the user has not confirmed their selected tax year")
+          case AccountingYearModel(Next, _) => getNextTaxYear
+          case AccountingYearModel(Current, _) => getCurrentTaxYear
         }
       }
 

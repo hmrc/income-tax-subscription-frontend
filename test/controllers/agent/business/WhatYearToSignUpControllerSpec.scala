@@ -28,7 +28,6 @@ import play.api.test.Helpers._
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 import views.agent.mocks.MockWhatYearToSignUp
-import views.html.agent.business.WhatYearToSignUp
 
 import scala.concurrent.Future
 
@@ -88,7 +87,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   "submit" should {
 
     def callShow(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(AccountingYearForm.accountingYearForm, AccountingYearModel(Current))
+      subscriptionRequest.post(AccountingYearForm.accountingYearForm, Current)
     )
 
     def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(

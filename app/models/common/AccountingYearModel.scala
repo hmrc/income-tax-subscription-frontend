@@ -17,10 +17,11 @@
 package models.common
 
 import models.AccountingYear
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{JsPath, Json, OFormat, Reads}
 
-case class AccountingYearModel(accountingYear: AccountingYear)
+case class AccountingYearModel(accountingYear: AccountingYear, confirmed: Boolean = false)
 
 object AccountingYearModel {
-  implicit val format: OFormat[AccountingYearModel] = Json.format[AccountingYearModel]
+  implicit val format: OFormat[AccountingYearModel] = Json.using[Json.WithDefaultValues].format[AccountingYearModel]
 }

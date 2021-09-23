@@ -92,7 +92,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   "submit" when {
 
     def callSubmit(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(AccountingYearForm.accountingYearForm, AccountingYearModel(Current))
+      subscriptionRequest.post(AccountingYearForm.accountingYearForm, Current)
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(

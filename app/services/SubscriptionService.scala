@@ -41,7 +41,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
 
   private[services] def getAccountingPeriod(summaryData: SummaryModel): Option[AccountingPeriodModel] = {
     (summaryData.incomeSource.get, summaryData.selectedTaxYear) match {
-      case (IncomeSourceModel(true, false, _), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
+      case (IncomeSourceModel(true, false, _), Some(AccountingYearModel(Next, _))) => Some(getNextTaxYear)
       case (IncomeSourceModel(true, _, _), _) => Some(getCurrentTaxYear)
       case _ => None
     }

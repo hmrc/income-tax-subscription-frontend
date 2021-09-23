@@ -90,8 +90,8 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
 
     val accountingPeriodVal: Option[AccountingPeriodModel] = {
       selectedTaxYear map {
-        case AccountingYearModel(Next) => getNextTaxYear
-        case AccountingYearModel(Current) => getCurrentTaxYear
+        case AccountingYearModel(Next, _) => getNextTaxYear
+        case AccountingYearModel(Current, _) => getCurrentTaxYear
       }
     }
 
@@ -160,8 +160,8 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
 
     val accountingPeriodVal: Option[AccountingPeriodModel] =
       selectedTaxYear map {
-        case AccountingYearModel(Next) => getNextTaxYear
-        case AccountingYearModel(Current) => getCurrentTaxYear
+        case AccountingYearModel(Next, _) => getNextTaxYear
+        case AccountingYearModel(Current, _) => getCurrentTaxYear
       }
 
     BusinessSubscriptionDetailsModel(
