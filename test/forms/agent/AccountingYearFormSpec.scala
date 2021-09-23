@@ -21,18 +21,16 @@ import forms.submapping.AccountingYearMapping
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Current
-import models.common.AccountingYearModel
-import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.data.FormError
 
 class AccountingYearFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
   "The AccountingYearForm" should {
     "transform the request to the form case class" in {
-      val testAccountingYear = Current
       val testInput = Map(accountingYear -> AccountingYearMapping.option_current)
-      val expected = AccountingYearModel(testAccountingYear)
+      val expected = Current
       val actual = accountingYearForm.bind(testInput).value
 
       actual mustBe Some(expected)

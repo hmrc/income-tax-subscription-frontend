@@ -20,8 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import forms.individual.business.AccountingYearForm
-
-import javax.inject.{Inject, Singleton}
+import models.AccountingYear
 import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -29,6 +28,7 @@ import play.twirl.api.Html
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import views.html.individual.incometax.business.WhatYearToSignUp
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -41,7 +41,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends SignUpController {
 
-  def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
+  def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.individual.business.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
@@ -53,8 +53,8 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYear =>
-        Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYear), isEditMode = isEditMode))
+      subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYearModel =>
+        Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
       }
   }
 
@@ -64,7 +64,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          subscriptionDetailsService.saveSelectedTaxYear(accountingYear) map { _ =>
+          subscriptionDetailsService.saveSelectedTaxYear(AccountingYearModel(accountingYear)) map { _ =>
             if (isEnabled(SaveAndRetrieve)) {
               Redirect(controllers.individual.business.routes.TaskListController.show())
             } else if (isEditMode) {

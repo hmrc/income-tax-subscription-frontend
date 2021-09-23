@@ -16,7 +16,7 @@
 
 package helpers
 
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney, JourneyState, SignUp, UserMatching}
+import auth.individual.{JourneyState, SignUp, UserMatching, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
@@ -25,7 +25,7 @@ import forms.individual.incomesource.IncomeSourceForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models.DateModel
+import models.{AccountingYear, DateModel}
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
@@ -275,7 +275,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
 
-    def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYearModel]): WSResponse = {
+    def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYear]): WSResponse = {
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(

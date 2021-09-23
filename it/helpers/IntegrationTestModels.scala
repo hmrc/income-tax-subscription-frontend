@@ -31,6 +31,7 @@ object IntegrationTestModels {
   val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1).plusDays(-1)
   val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
+  val testAccountingYearCurrentConfirmed: AccountingYearModel = AccountingYearModel(Current, true)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)

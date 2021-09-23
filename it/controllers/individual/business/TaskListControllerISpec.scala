@@ -163,7 +163,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-              selectedTaxYear = Some(testAccountingYearCurrent),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
               businessName = Some(testBusinessName),
               accountingMethod = Some(testAccountingMethod),
               propertyStartDate = None,
@@ -217,7 +217,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-              selectedTaxYear = Some(testAccountingYearCurrent),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
               businessName = None,
               accountingMethod = None,
               propertyStartDate = Some(testPropertyStartDateModel),
@@ -272,7 +272,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-              selectedTaxYear = Some(testAccountingYearCurrent),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
               businessName = None,
               accountingMethod = None,
               propertyStartDate = None,
@@ -327,7 +327,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-              selectedTaxYear = Some(testAccountingYearCurrent),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
               businessName = Some(testBusinessName),
               accountingMethod = Some(testAccountingMethod),
               propertyStartDate = Some(testPropertyStartDateModel),
@@ -385,7 +385,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Next)),
+            selectedTaxYear = Some(AccountingYearModel(Next, true)),
             businessName = Some(testBusinessName),
             accountingMethod = None,
             propertyStartDate = None,
@@ -429,7 +429,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Next)),
+            selectedTaxYear = Some(AccountingYearModel(Next, true)),
             businessName = None,
             accountingMethod = None,
             propertyStartDate = None,

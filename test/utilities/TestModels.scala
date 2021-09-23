@@ -50,7 +50,7 @@ object TestModels extends Implicits {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testSelectedTaxYearCurrent = AccountingYearModel(Current)
+  val testSelectedTaxYearCurrent = AccountingYearModel(Current, true)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountMethod: AccountingMethod = Cash

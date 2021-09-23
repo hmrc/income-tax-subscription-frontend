@@ -91,7 +91,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
       "select the Current Year radio button on the What Year To Sign Up page" in {
 
-          val userInput = AccountingYearModel(Current)
+          val userInput = Current
           enable(ReleaseFour)
 
           Given("I setup the Wiremock stubs")
@@ -111,7 +111,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
       }
 
       "select the Next radio button on the What Year To Sign Up page" in {
-        val userInput = AccountingYearModel(Next)
+        val userInput = Next
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -152,8 +152,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
 
         val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-        val SubscriptionDetailsAccountingYearNext: AccountingYearModel = IntegrationTestModels.testAccountingYearNext
-        val userInput = SubscriptionDetailsAccountingYearNext
+        val userInput = Next
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -176,7 +175,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
 
         val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-        val userInput = SubscriptionDetailsAccountingYearCurrent
+        val userInput = Current
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

@@ -19,6 +19,7 @@ package controllers.agent
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.AccountingYearForm
+import models.AccountingYear
 import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -40,7 +41,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
 
   val backUrl: String = controllers.agent.routes.CheckYourAnswersController.show().url
 
-  def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
+  def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.agent.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
@@ -52,8 +53,8 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYear =>
-        Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYear),
+      subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYearModel =>
+        Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
           isEditMode = isEditMode))
       }
   }
@@ -64,7 +65,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
         formWithErrors =>
           Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
         accountingYear => {
-          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(accountingYear)) map { _ =>
+          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(AccountingYearModel(accountingYear))) map { _ =>
             if (isEditMode) {
               Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             } else {

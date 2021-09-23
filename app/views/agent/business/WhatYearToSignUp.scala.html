@@ -1,13 +1,8 @@
 @import config.AppConfig
-@import forms.submapping.AccountingYearMapping
-@import models.common.AccountingYearModel
-@import views.helpers.RadioOption
-@import views.html.helper.form
-@import views.html.helpers.{back_link, summaryErrorHelper}
-@import views.html.templates.AgentMainTemplate
 @import forms.agent.AccountingYearForm
-@import views.html.helpers.injected.RadioHelper
-@import views.html.helpers.injected.ContinueButton
+@import views.html.helper.form
+@import views.html.helpers.injected.{ContinueButton, RadioHelper}
+@import views.html.templates.AgentMainTemplate
 
 @this(mainTemplate: AgentMainTemplate,
         radioHelper: RadioHelper,
@@ -15,7 +10,7 @@
         form : FormWithCSRF
 )
 
-@(accountingYearForm: Form[AccountingYearModel], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{messages("agent.business.what_year_to_sign_up.heading")}
 
