@@ -78,18 +78,6 @@ class TaskListController @Inject()(val taskListView: TaskList,
     }
   }
 
-  def backUrl(incomeSource: IncomeSourceModel): String = {
-    incomeSource match {
-      case IncomeSourceModel(_, _, true) =>
-        controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url
-      case IncomeSourceModel(_, true, _) =>
-        controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-      case IncomeSourceModel(true, _, _) =>
-        controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-      case _ => throw new InternalServerException("[CheckYourAnswersController][backUrl] - Invalid income source state")
-    }
-  }
-
   private def getTaskListModel(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
     for {
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)

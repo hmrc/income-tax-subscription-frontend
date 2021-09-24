@@ -336,6 +336,7 @@ object MessageLookup {
     val complete = "Complete"
     val incomplete = "Incomplete"
     val notStarted = "Not started"
+    val inProgress = "In progress"
     val addBusiness = "Add a business"
     val selfEmploymentsBusinessLink= "selfEmploymentsBusinessLink"
     val ukPropertyBusiness= "UK property business"

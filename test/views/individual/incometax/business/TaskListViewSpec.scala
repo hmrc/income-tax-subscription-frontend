@@ -19,7 +19,7 @@ package views.individual.incometax.business
 import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
 import models._
-import models.common.TaskListModel
+import models.common.{AccountingYearModel, TaskListModel}
 import models.common.business._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -36,9 +36,8 @@ class TaskListViewSpec extends ViewSpec {
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
   lazy val postAction: Call = controllers.individual.business.routes.TaskListController.submit()
-  lazy val backUrl: String = controllers.individual.business.routes.TaskListController.show().url
 
-  def customTaskListModel(taxYearSelection: Option[AccountingYear] = None,
+  def customTaskListModel(taxYearSelection: Option[AccountingYearModel] = None,
                           selfEmployments: Seq[SelfEmploymentData] = Nil,
                           selfEmploymentAccountingMethod: Option[AccountingMethod] = None,
                           ukPropertyStart: Option[DateModel] = None,
@@ -57,7 +56,7 @@ class TaskListViewSpec extends ViewSpec {
   }
 
   val partialTaskListComplete = customTaskListModel(
-    taxYearSelection = Some(Current),
+    taxYearSelection = Some(AccountingYearModel(Current, false)),
     selfEmployments = Seq(
       SelfEmploymentData("id1", businessName = Some(BusinessNameModel("Name1"))),
       SelfEmploymentData("id2", businessName = Some(BusinessNameModel("Name2")), businessTradeName = Some(BusinessTradeNameModel("TradeName")))
@@ -66,7 +65,7 @@ class TaskListViewSpec extends ViewSpec {
     overseasPropertyStart = Some(DateModel("1", "2", "3"))
   )
   val completedTaskListComplete = TaskListModel(
-    taxYearSelection = Some(Next),
+    taxYearSelection = Some(AccountingYearModel(Next, true)),
     selfEmployments = Seq(SelfEmploymentData(
       id = "",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
@@ -118,12 +117,15 @@ class TaskListViewSpec extends ViewSpec {
           document().mainContent.selectNth("p", 1).text mustBe contentSummary(0, 2)
         }
 
-        "display the select tax year section as incomplete" in {
-          val selectTaxYearSection = document().mainContent.selectNth("ul", 1)
-          val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
-          selectTaxYearLink.text mustBe selectTaxYear
-          selectTaxYearSection.selectNth("span", 2).text mustBe notStarted
-          selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+
+        "in the select tax year section: display the select tax year link with status incomplete" when {
+          "the user has not selected any tax year to sign up" in {
+            val selectTaxYearSection = document().mainContent.selectNth("ul", 1)
+            val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
+            selectTaxYearLink.text mustBe selectTaxYear
+            selectTaxYearSection.selectNth("span", 2).text mustBe notStarted
+            selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+          }
         }
 
         "display the add a business link" in {
@@ -149,15 +151,19 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the number of sections complete out of the total" in {
-          document(partialTaskListComplete).mainContent.selectNth("p", 1).text mustBe contentSummary(1, 5)
+          document(partialTaskListComplete).mainContent.selectNth("p", 1).text mustBe contentSummary(0, 5)
         }
 
-        "display the current tax year as the selected option" in {
-          val selectTaxYearSection = document(partialTaskListComplete).mainContent.selectNth("ul", 1)
-          val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
-          selectTaxYearLink.text mustBe SelectedTaxYear.current(accountingPeriodService.currentTaxYear - 1, accountingPeriodService.currentTaxYear)
-          selectTaxYearSection.selectNth("span", 2).text mustBe complete
-          selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+
+        "in the select tax year section: display the select tax year link with status in progress" when {
+          "the user has selected the tax year but not confirmed the answer in tax year CYA page" in {
+            val selectTaxYearSection = document(partialTaskListComplete).mainContent.selectNth("ul", 1)
+            val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
+
+            selectTaxYearLink.text mustBe selectTaxYear
+            selectTaxYearSection.selectNth("span", 2).text mustBe inProgress
+            selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+          }
         }
 
         "display an incomplete self employment with just the business name" in {
@@ -214,12 +220,15 @@ class TaskListViewSpec extends ViewSpec {
         "display the number of sections complete out of the total" in {
           document(completedTaskListComplete).mainContent.selectNth("p", 1).text mustBe contentSummary(4, 4)
         }
-        "display the next tax year as the selected option" in {
-          val selectTaxYearSection = document(completedTaskListComplete).mainContent.selectNth("ul", 1)
-          val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
-          selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
-          selectTaxYearSection.selectNth("span", 2).text mustBe complete
-          selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+
+        "in the select tax year section: display a link with next tax year as the selected option and it will redirect to tax year CYA page along with status complete" when {
+          "the user has selected the tax year and confirmed the answer in tax year CYA page" in {
+            val selectTaxYearSection = document(completedTaskListComplete).mainContent.selectNth("ul", 1)
+            val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
+            selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
+            selectTaxYearSection.selectNth("span", 2).text mustBe complete
+            selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url
+          }
         }
         "display a complete self employment" in {
           val selfEmploymentSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)

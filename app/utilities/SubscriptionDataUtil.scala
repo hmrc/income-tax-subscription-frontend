@@ -53,7 +53,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
     def getTaskListModel(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                          selfEmploymentAccountingMethod: Option[AccountingMethodModel] = None): TaskListModel = {
       TaskListModel(
-        taxYearSelection = getSelectedTaxYear.map(_.accountingYear),
+        taxYearSelection = getSelectedTaxYear,
         selfEmployments = selfEmployments match {
           case Some(businesses) => businesses
           case None => Seq.empty[SelfEmploymentData]
