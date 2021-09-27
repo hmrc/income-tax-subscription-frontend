@@ -143,3 +143,7 @@ GET         /claim-enrolment/sps-callback                        controllers.ind
 #Task List Routes
 GET         /business/task-list                                  controllers.individual.business.TaskListController.show()
 POST        /business/task-list                                  controllers.individual.business.TaskListController.submit()
+
+# Check Your Answers Routes
+GET         /business/tax-year-check-your-answers                controllers.individual.business.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/tax-year-check-your-answers                controllers.individual.business.TaxYearCheckYourAnswersController.submit()

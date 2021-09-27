@@ -342,6 +342,14 @@ object MessageLookup {
     val overseasPropertyBusiness= "Overseas property business"
   }
 
+  object TaxYearCheckYourAnswers {
+    val title = "Check your answers - Use software to send Income Tax updates - GOV.UK"
+    val heading = "Check your answers"
+    val question = "Tax year you are signing up for"
+    def current(staringYear: Int, endYear: Int): String = s"Current tax year (6 April $staringYear to 5 April $endYear)"
+    def next(staringYear: Int, endYear: Int): String = s"Next tax year (6 April $staringYear to 5 April $endYear)"
+  }
+
   object SignUpCompleteIndividual {
     val title = "Sign up complete"
     val heading = "You have signed up to use software to send Income Tax updates"

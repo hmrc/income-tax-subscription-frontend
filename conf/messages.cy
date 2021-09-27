@@ -958,3 +958,9 @@ business.task-list.status.incomplete                            = ?
 business.task-list.status.in-progress                           = ?
 business.task-list.status.not-started                           = ?
 business.task-list.status.cannot-start-yet                      = ?
+
+## Check Your Answers
+business.check-your-answers.title                               = ?
+business.check-your-answers.content.tax-year.question           = ?
+business.check-your-answers.content.tax-year.current-tax-year   = ?
+business.check-your-answers.content.tax-year.next-tax-year      = ?
