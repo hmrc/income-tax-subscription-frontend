@@ -1,0 +1,35 @@
+@*
+* Copyright 2021 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
+@this()
+
+@(field: String, question: String, answer: String, changeUrl: Option[String] = None, hiddenContent: Option[String] = None)(implicit messages: Messages)
+
+<div class="govuk-summary-list__row" id="@field-row">
+  <dt class="govuk-summary-list__key" id="@field-question">
+  @question
+  </dt>
+  <dd class="govuk-summary-list__value" id="@field-answer">
+  @answer
+  </dd>
+  <dd class="govuk-summary-list__actions" id="@field-edit">
+  @changeUrl.map { url =>
+    <a class="govuk-link" data-journey-click="itsa:changeLink:@field" href="@url">
+      @messages("base.change")<span class="govuk-visually-hidden"> @hiddenContent</span>
+    </a>
+  }
+  </dd>
+</div>
