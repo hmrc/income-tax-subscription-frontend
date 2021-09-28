@@ -947,7 +947,7 @@ business.task-list.content.section3                             = Sign up
 business.task-list.content.action-needed                        = You need to complete the `{0}` section before you can confirm and sign up
 business.task-list.status.completed                             = Complete
 business.task-list.status.incomplete                            = Incomplete
-business.task-list.status.in-progress                           = In Progress
+business.task-list.status.in-progress                           = In progress
 business.task-list.status.not-started                           = Not started
 business.task-list.status.cannot-start-yet                      = Cannot Start Yet
 

@@ -76,22 +76,41 @@
 }
 
 @selectTaxYear = @{
-    val maybeTaxYear = viewModel.taxYearSelection
         <ul class="app-task-list__items">
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                    <a href={controllers.individual.business.routes.WhatYearToSignUpController.show().url} aria-describedby="section_1_item_1_status" id="select_tax_year">
-                    {
-                        viewModel.taxYearSelection match {
+                    {if(viewModel.taxYearSelectedAndConfirmed) {
+                    <a href={controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url} aria-describedby="section_1_item_1_status" id="select_tax_year_check_your_answer">
+                        {
+                        viewModel.taxYearSelection.map(_.accountingYear) match {
                             case Some(Current) => messages("business.task-list.content.section1.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
                             case Some(Next) => messages("business.task-list.content.section1.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
                             case None => messages("business.task-list.content.section1.action")
                         }
-                    }
+                        }
                     </a>
+                    } else if (viewModel.taxYearSelectedNotConfirmed) {
+                    <a href={controllers.individual.business.routes.WhatYearToSignUpController.show().url} aria-describedby="section_1_item_1_status" id="select_tax_year_not_confirmed">
+                        {messages("business.task-list.content.section1.action")}
+                    </a>
+
+                    } else {
+                    <a href={controllers.individual.business.routes.WhatYearToSignUpController.show().url} aria-describedby="section_1_item_1_status" id="select_tax_year">
+                        {messages("business.task-list.content.section1.action")}
+                    </a>
+                    }
+                    }
                 </span>
                 <span class="app-task-list__task-completed" id="section_1_thing_1_status">
-                {maybeTaxYear.map(ty => messages("business.task-list.status.completed")).getOrElse(messages("business.task-list.status.not-started"))}
+                    {
+                    if(viewModel.taxYearSelectedAndConfirmed) {
+                        messages("business.task-list.status.completed")
+                    } else if (viewModel.taxYearSelectedNotConfirmed) {
+                        messages("business.task-list.status.in-progress")
+                    } else {
+                        messages("business.task-list.status.not-started")
+                    }
+                    }
                 </span>
             </li>
         </ul>
