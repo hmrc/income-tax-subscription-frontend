@@ -45,7 +45,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
     whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.individual.business.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
-      backUrl = backUrl,
+      backUrl = backUrl(isEditMode),
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode
     )
@@ -66,7 +66,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
         accountingYear => {
           subscriptionDetailsService.saveSelectedTaxYear(AccountingYearModel(accountingYear)) map { _ =>
             if (isEnabled(SaveAndRetrieve)) {
-              Redirect(controllers.individual.business.routes.TaskListController.show())
+              Redirect(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show())
             } else if (isEditMode) {
               Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
             } else {
@@ -77,9 +77,19 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       )
   }
 
-  def backUrl: String = if (isEnabled(SaveAndRetrieve)) {
-    controllers.individual.business.routes.TaskListController.show().url
-  } else {
-    controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+  def backUrl(isEditMode: Boolean): Option[String] = {
+    if (isEnabled(SaveAndRetrieve)) {
+      if(isEditMode) {
+        Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
+      }else{
+        Some(controllers.individual.business.routes.TaskListController.show().url)
+      }
+    } else {
+      if(isEditMode) {
+        Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+      } else {
+        None
+      }
+    }
   }
 }

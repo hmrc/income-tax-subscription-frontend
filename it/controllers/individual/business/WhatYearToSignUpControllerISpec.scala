@@ -142,7 +142,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         Then("Should return a SEE_OTHER with a redirect location of Task List page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(taxYearCyaURI)
         )
       }
     }
@@ -244,7 +244,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         Then("Should return a SEE_OTHER with a redirect location of Task List page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(taxYearCyaURI)
         )
       }
     }
