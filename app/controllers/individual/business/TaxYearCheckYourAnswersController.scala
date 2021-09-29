@@ -29,13 +29,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxYearCheckYourAnswers,
-                                           val accountingPeriodService: AccountingPeriodService,
-                                           val auditingService: AuditingService,
-                                           val authService: AuthService,
-                                           val subscriptionDetailsService: SubscriptionDetailsService)
-                                          (implicit val ec: ExecutionContext,
-                                          val appConfig: AppConfig,
-                                          mcc: MessagesControllerComponents) extends SignUpController {
+                                                  val accountingPeriodService: AccountingPeriodService,
+                                                  val auditingService: AuditingService,
+                                                  val authService: AuthService,
+                                                  val subscriptionDetailsService: SubscriptionDetailsService)
+                                                 (implicit val ec: ExecutionContext,
+                                                  val appConfig: AppConfig,
+                                                  mcc: MessagesControllerComponents) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -67,7 +67,7 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
       }
   }
 
-  private def backUrl(isEditMode: Boolean): String = if (isEditMode) {
+  def backUrl(isEditMode: Boolean): String = if (isEditMode) {
     controllers.individual.business.routes.TaskListController.show().url
   } else {
     controllers.individual.business.routes.WhatYearToSignUpController.show().url
