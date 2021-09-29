@@ -49,6 +49,15 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   private val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
+  "backUrl" should {
+    "go to the Task List Page when isEditMode equals to true" in withController { controller =>
+      controller.backUrl(true) mustBe controllers.individual.business.routes.TaskListController.show().url
+    }
+    "go to the What Year to SignUp Page when isEditMode equals to false" in withController { controller =>
+      controller.backUrl(false) mustBe
+        controllers.individual.business.routes.WhatYearToSignUpController.show().url
+    }
+  }
   "show" should {
     "return an OK status with the check your answers page" in withController { controller =>
       enable(SaveAndRetrieve)

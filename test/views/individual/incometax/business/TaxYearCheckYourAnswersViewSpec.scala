@@ -76,6 +76,14 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
         .selectHead(s"$sectionId-row .govuk-visually-hidden")
         .text() mustBe question
     }
+
+    "The back url" should {
+      "have the value provied to the view" in {
+        val link = document().selectHead(".govuk-back-link")
+        link.text mustBe "Back"
+        link.attr("href") mustBe "/testUrl"
+      }
+    }
   }
 
   private def page(accountingYear: AccountingYear) =
@@ -83,7 +91,7 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
       postAction = postAction,
       viewModel = Some(AccountingYearModel(accountingYear)),
       accountingPeriodService = accountingPeriodService,
-      backUrl = ""
+      backUrl = "/testUrl"
     )
 
   private def document(accountingYear: AccountingYear = Current) = Jsoup.parse(page(accountingYear).body)
