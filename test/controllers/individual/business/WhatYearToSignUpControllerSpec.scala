@@ -112,14 +112,14 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
 
-      "redirect to task list page when Save & Retrieve is enabled" in {
+      "redirect to taxYearCYA page when Save & Retrieve is enabled" in {
         enable(SaveAndRetrieve)
         mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callSubmit(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
@@ -148,7 +148,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
@@ -166,13 +166,19 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     "The back url" should {
       "return the user to the check your answers page" in {
         mockIncomeSource()
-        TestWhatYearToSignUpController.backUrl mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
       }
 
       "return the user to the task list page when Save & Retrieve is enabled" in {
         enable(SaveAndRetrieve)
         mockIncomeSource()
-        TestWhatYearToSignUpController.backUrl mustBe controllers.individual.business.routes.TaskListController.show().url
+        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+      }
+
+      "return the user to the taxYearCYA page when Save & Retrieve is enabled and is in editMode" in {
+        enable(SaveAndRetrieve)
+        mockIncomeSource()
+        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
       }
     }
   }

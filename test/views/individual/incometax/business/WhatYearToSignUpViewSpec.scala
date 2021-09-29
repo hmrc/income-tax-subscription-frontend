@@ -119,10 +119,5 @@ class WhatYearToSignUpViewSpec extends ViewSpecTrait {
         backLink.text mustBe common.back
       }
     }
-    "not have a back button" when {
-      "not in edit mode" in new Setup(isEditMode = false) {
-        Option(document.selectFirst(".govuk-back-link")) mustBe None
-      }
-    }
   }
 }

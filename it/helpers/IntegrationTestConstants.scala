@@ -116,6 +116,7 @@ object IntegrationTestConstants {
   val accountingYearURI = s"$baseURI/business/what-year-to-sign-up"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val taskListURI = s"$baseURI/business/task-list"
+  val taxYearCyaURI= s"$baseURI/business/tax-year-check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val signOutURI = s"$baseURI/logout"
   val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
