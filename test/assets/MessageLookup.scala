@@ -351,6 +351,17 @@ object MessageLookup {
     def next(staringYear: Int, endYear: Int): String = s"Next tax year (6 April $staringYear to 5 April $endYear)"
   }
 
+  object ProgressSaved {
+    val title = "Your progress has been saved - Use software to send Income Tax updates - GOV.UK"
+    val heading = "Your progress has been saved"
+    def contentSummary(expirationDate: String) = s"We will keep your information until $expirationDate."
+    val subheading = "What happens next"
+    val paragraph1 = "You can:"
+    val bullet1 = "return to sign up your business for Making Tax Digital for Income Tax"
+    val bullet2 = "sign out and come back later"
+    val paragraph2 = "If you sign out, you will need to come back to your Government Gateway login to continue. We suggest you bookmark this to make it easier to find when you return."
+  }
+
   object SignUpCompleteIndividual {
     val title = "Sign up complete"
     val heading = "You have signed up to use software to send Income Tax updates"
