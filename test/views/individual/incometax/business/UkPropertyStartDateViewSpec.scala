@@ -21,37 +21,35 @@ import models.common.PropertyStartDateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
 import utilities.ViewSpec
+import views.html.individual.incometax.business.PropertyStartDate
 
 
-class UkPropertyStartDateViewSpec extends ViewSpec  {
+class UkPropertyStartDateViewSpec extends ViewSpec {
 
   object PropertyStartDateMessages {
-    val title = "When did your UK property business start trading?"
-    val heading: String = title
+    val heading: String = "When did your UK property business start trading?"
     val exampleStartDate = "For example, 1 8 2014"
     val continue = "Continue"
     val backLink = "Back"
     val update = "Update"
   }
 
-
-  val backUrl: String = testBackUrl
-  val action: Call = testCall
   val taxYearEnd: Int = 2020
   val testError: FormError = FormError("startDate", "testError")
 
+  val propertyStartDate: PropertyStartDate = app.injector.instanceOf[PropertyStartDate]
+
   class Setup(isEditMode: Boolean = false,
               propertyStartDateForm: Form[PropertyStartDateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")) {
-    val page: HtmlFormat.Appendable = views.html.individual.incometax.business.property_start_date(
+    val page: Html = propertyStartDate(
       propertyStartDateForm,
       testCall,
       isEditMode,
       testBackUrl
-    )(FakeRequest(), implicitly, appConfig)
+    )(FakeRequest(), implicitly)
 
     val document: Document = Jsoup.parse(page.body)
   }
@@ -59,38 +57,70 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
 
   "UK property business start" must {
 
-    "have a title" in new Setup {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-      document.title mustBe PropertyStartDateMessages.title + serviceNameGovUk
+    "have the correct page template" when {
+      "there is no error" in new TemplateViewTest(
+        view = propertyStartDate(
+          PropertyStartDateForm.propertyStartDateForm("testMinMessage", "testMaxMessage"),
+          testCall,
+          isEditMode = false,
+          testBackUrl
+        ),
+        title = PropertyStartDateMessages.heading,
+        isAgent = false,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true
+      )
+
+      "there is an error" in new TemplateViewTest(
+        view = propertyStartDate(
+          PropertyStartDateForm.propertyStartDateForm("testMinMessage", "testMaxMessage").withError(testError),
+          testCall,
+          isEditMode = false,
+          testBackUrl
+        ),
+        title = PropertyStartDateMessages.heading,
+        isAgent = false,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true,
+        error = Some(testError)
+      )
     }
+
     "have a heading" in new Setup {
       document.getH1Element.text mustBe PropertyStartDateMessages.heading
     }
-    "have a Form" in new Setup {
+
+    "have a form" in new Setup {
       document.getForm.attr("method") mustBe testCall.method
       document.getForm.attr("action") mustBe testCall.url
     }
-    "have a fieldset with dateInputs" in new Setup {
-      document.mustHaveDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.exampleStartDate)
+
+    "have a fieldset with dateInputs" in new Setup() {
+      document.mustHaveDateInput(
+        name = PropertyStartDateForm.startDate,
+        label = PropertyStartDateMessages.heading,
+        hint = Some(PropertyStartDateMessages.exampleStartDate)
+      )
     }
+
     "have a continue button when not in edit mode" in new Setup {
-      document.getSubmitButton.text mustBe PropertyStartDateMessages.continue
+      document.selectHead("button").text mustBe PropertyStartDateMessages.continue
     }
+
     "have update button when in edit mode" in new Setup(true) {
-      document.getSubmitButton.text mustBe PropertyStartDateMessages.update
+      document.selectHead("button").text mustBe PropertyStartDateMessages.update
     }
-    "have a backlink " in new Setup {
-      document.getBackLink.text mustBe PropertyStartDateMessages.backLink
-      document.getBackLink.attr("href") mustBe testBackUrl
-    }
+
     "must display form error on page" in new Setup(false, PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage").withError(testError)) {
-      document.mustHaveErrorSummary(List[String](testError.message))
-      document.mustHaveDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.exampleStartDate, Some(testError.message))
+      document.mustHaveDateInput(
+        name = PropertyStartDateForm.startDate,
+        label = PropertyStartDateMessages.heading,
+        hint = Some(PropertyStartDateMessages.exampleStartDate),
+        error = Some(testError)
+      )
     }
 
   }
-
-
 
 
 }

@@ -16,7 +16,7 @@
 
 package forms.individual.business
 
-import forms.formatters.DateModelMapping.dateModelMapping
+import forms.formatters.NewDateModelMapping.dateModelMapping
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import models.common.PropertyStartDateModel

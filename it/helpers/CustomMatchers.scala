@@ -103,6 +103,19 @@ trait CustomMatchers {
       }
     }
 
+  def govukDateField(id: String, expectedValue: DateModel): HavePropertyMatcher[WSResponse, String] = (response: WSResponse) => {
+    val body = Jsoup.parse(response.body)
+    val day = body.getElementById(id + "-dateDay").`val`()
+    val month = body.getElementById(id + "-dateMonth").`val`()
+    val year = body.getElementById(id + "-dateYear").`val`()
+    HavePropertyMatchResult(
+      day == expectedValue.day && month == expectedValue.month && year == expectedValue.year,
+      "day",
+      expectedValue.toString,
+      day + " / " + month + " / " + year
+    )
+  }
+
   def textField(id: String, expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 

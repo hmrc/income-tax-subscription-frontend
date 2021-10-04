@@ -16,8 +16,6 @@
 
 package controllers.individual.business
 
-import java.time.LocalDate
-
 import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
@@ -30,22 +28,28 @@ import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.PropertyStartDate
 import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceProperty}
+import views.individual.mocks.MockPropertyStartDate
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with MockAuditingService {
+class PropertyStartDateControllerSpec extends ControllerBaseSpec
+  with MockSubscriptionDetailsService
+  with MockAuditingService
+  with MockPropertyStartDate {
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestPropertyStartDateController$.show(isEditMode = false),
-    "submit" -> TestPropertyStartDateController$.submit(isEditMode = false)
+    "show" -> TestPropertyStartDateController.show(isEditMode = false),
+    "submit" -> TestPropertyStartDateController.submit(isEditMode = false)
   )
 
-  object TestPropertyStartDateController$ extends PropertyStartDateController(
+  object TestPropertyStartDateController extends PropertyStartDateController(
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
-    mockLanguageUtils
+    mockLanguageUtils,
+    propertyStartDate
   )
 
   trait Test {
@@ -53,7 +57,8 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscr
       mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
-      mockLanguageUtils
+      mockLanguageUtils,
+      propertyStartDate
     )
   }
 
@@ -70,6 +75,8 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscr
 
   "show" should {
     "display the property accounting method view and return OK (200)" in new Test {
+      mockPropertyStartDate()
+
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchAllFromSubscriptionDetails(testCacheMap(
@@ -86,15 +93,15 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscr
   "submit" should {
 
     val testValidMaxDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-    val testValidMinDate: DateModel = DateModel.dateConvert(LocalDate.of(1900,1,1))
+    val testValidMinDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
 
     val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(testValidMaxDate)
 
-    def callShow(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController$.submit(isEditMode = isEditMode)(
+    def callShow(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(testValidMinDate.toString, testValidMaxDate.toString), testPropertyStartDateModel)
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController$.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
@@ -153,6 +160,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec with MockSubscr
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
+        mockPropertyStartDate()
 
         mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
