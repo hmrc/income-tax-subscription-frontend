@@ -38,7 +38,7 @@
     messages("business.what_year_to_sign_up.title.signup")
 }
 @optionCurrentContent = {
-    <p class="govuk-body"> @messages("business.what_year_to_sign_up.conditional.1.line_1.signup") </p>
+        <p class="govuk-body"> @messages("business.what_year_to_sign_up.conditional.1.line_1.signup") </p>
     <ul class="govuk-list--bullet">
         <li>@messages("business.what_year_to_sign_up.quarterly.date_1", (endYearOfCurrentTaxPeriod - 1).toString)</li>
         <li>@messages("business.what_year_to_sign_up.quarterly.date_2", (endYearOfCurrentTaxPeriod - 1).toString)</li>

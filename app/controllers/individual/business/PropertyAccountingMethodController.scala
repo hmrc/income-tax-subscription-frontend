@@ -37,7 +37,6 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
-import javax.inject.{Inject, Singleton}
 import models.common.{AccountingMethodPropertyModel, IncomeSourceModel}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -45,11 +44,14 @@ import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.SubscriptionDataUtil._
+import views.html.individual.incometax.business.PropertyAccountingMethod
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
+                                                   propertyAccountingMethod: PropertyAccountingMethod,
                                                    val authService: AuthService,
                                                    subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
@@ -60,7 +62,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
     for {
       back <- backUrl(isEditMode)
     } yield
-      views.html.individual.incometax.business.property_accounting_method(
+      propertyAccountingMethod(
         accountingMethodForm = accountingMethodPropertyForm,
         postAction = controllers.individual.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
         isEditMode,
