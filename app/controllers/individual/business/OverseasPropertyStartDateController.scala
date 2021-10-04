@@ -24,7 +24,6 @@ import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
 import forms.individual.business.OverseasPropertyStartDateForm
 import forms.individual.business.OverseasPropertyStartDateForm._
-import javax.inject.{Inject, Singleton}
 import models.common.{IncomeSourceModel, OverseasPropertyStartDateModel}
 import play.api.data.Form
 import play.api.libs.functional.~
@@ -34,14 +33,17 @@ import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
+import views.html.individual.incometax.business.OverseasPropertyStartDate
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverseasPropertyStartDateController @Inject()(val auditingService: AuditingService,
                                                     val authService: AuthService,
                                                     val subscriptionDetailsService: SubscriptionDetailsService,
-                                                    val languageUtils: LanguageUtils)
+                                                    val languageUtils: LanguageUtils,
+                                                    overseasPropertyStartDate: OverseasPropertyStartDate)
                                                    (implicit val ec: ExecutionContext,
                                                     val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents)
@@ -49,7 +51,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   def view(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
-    views.html.individual.incometax.business.overseas_property_start_date(
+    overseasPropertyStartDate(
       overseasPropertyStartDateForm = overseasPropertyStartDateForm,
       postAction = controllers.individual.business.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
@@ -73,9 +75,8 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
     implicit user =>
       form.bindFromRequest.fold(
         formWithErrors =>
-          require(incomeSourceModelAnswer) {
-            incomeSourceModel =>
-              Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
+          require(incomeSourceModelAnswer) { incomeSourceModel =>
+            Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
           },
         startDate =>
           subscriptionDetailsService.saveOverseasPropertyStartDate(startDate) flatMap { _ =>
@@ -85,7 +86,6 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
               Future.successful(Redirect(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show()))
             }
           }
-
       )
   }
 

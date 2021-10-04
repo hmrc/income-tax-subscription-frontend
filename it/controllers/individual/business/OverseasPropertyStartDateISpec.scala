@@ -30,7 +30,7 @@ class OverseasPropertyStartDateISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(messages("overseas.property.name.title") + serviceNameGovUk),
-          dateField("startDate", testPropertyStartDate.startDate)
+          govukDateField("startDate", testPropertyStartDate.startDate)
         )
       }
     }

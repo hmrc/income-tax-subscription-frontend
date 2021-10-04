@@ -16,8 +16,6 @@
 
 package controllers.individual.business
 
-import java.time.LocalDate
-
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
@@ -33,11 +31,13 @@ import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.OverseasPropertyStartDate
 import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceOverseasProperty}
+import views.individual.mocks.MockOverseasPropertyStartDate
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuthService with MockAuditingService with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAuthService with MockAuditingService with FeatureSwitching with MockOverseasPropertyStartDate {
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
@@ -54,7 +54,8 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
-    mockLanguageUtils
+    mockLanguageUtils,
+    overseasPropertyStartDate
   )
 
   trait Test {
@@ -62,7 +63,8 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
-      mockLanguageUtils
+      mockLanguageUtils,
+      overseasPropertyStartDate
     )
   }
 
@@ -74,7 +76,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   val incomeSourceOverseasPropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
 
-
   def foreignPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceOverseasProperty)
 
   def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
@@ -82,6 +83,8 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   "show" should {
     "display the foreign property start date view and return OK (200)" in new Test {
+      mockOverseasPropertyStartDate()
+
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockIndividualWithNoEnrolments()
@@ -172,6 +175,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
+        mockOverseasPropertyStartDate()
         mockIndividualWithNoEnrolments()
         mockFetchIndividualIncomeSourceFromSubscriptionDetails(Some(testIncomeSourceOverseasProperty))
 
