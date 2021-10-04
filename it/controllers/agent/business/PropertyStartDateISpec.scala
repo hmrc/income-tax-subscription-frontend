@@ -19,10 +19,11 @@ package controllers.agent.business
 import java.time.LocalDate
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, checkYourAnswersURI}
+import helpers.agent.IntegrationTestConstants.{propertyAccountingMethodURI, checkYourAnswersURI}
 import helpers.IntegrationTestModels.{subscriptionData, testPropertyStartDate}
-import helpers.servicemocks.AuthStub
-import helpers.{ComponentSpecBase, IntegrationTestModels}
+import helpers.agent.servicemocks.AuthStub
+import helpers.IntegrationTestModels
+import helpers.agent.ComponentSpecBase
 import models.DateModel
 import models.common.{IncomeSourceModel, PropertyStartDateModel}
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
@@ -39,12 +40,12 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
 
         When("GET /property-commencement-date is called")
-        val res = IncomeTaxSubscriptionFrontend.propertyStartDate()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDate()
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the property commencement page with populated commencement date")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("business.property.name.title") + serviceNameGovUk),
+          pageTitle(messages("agent.property.name.heading") + serviceNameGovUk),
           dateField("startDate", testPropertyStartDate.startDate)
         )
       }
@@ -59,12 +60,12 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
 
         When("GET /property-commencement-date is called")
-        val res = IncomeTaxSubscriptionFrontend.propertyStartDate()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDate()
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the property commencement date page with no commencement date")
         res should have(
           httpStatus(OK),
-          pageTitle(messages("business.property.name.title") +serviceNameGovUk)
+          pageTitle(messages("agent.property.name.heading") + serviceNameGovUk)
         )
       }
     }
@@ -83,12 +84,12 @@ class PropertyStartDateISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyStartDate, userInput)
 
           When("POST /property-commencement-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = false, Some(userInput))
+          val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(accountingMethodPropertyURI)
+            redirectURI(propertyAccountingMethodURI)
           )
         }
       }
@@ -102,7 +103,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyStartDate, "")
 
         When("POST /property-commencement-date is called")
-        val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = false, None)
+        val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, None)
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
         res should have(
@@ -122,7 +123,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.BusinessName, userInput)
 
         When("POST /property-commencement-date is called")
-        val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = false, Some(userInput))
+        val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
         res should have(
@@ -143,7 +144,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyStartDate, userInput)
 
         When("POST /property-commencement-date is called")
-        val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
+        val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
@@ -167,7 +168,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyStartDate, userInput)
 
         When("POST /property-commencement-date is called")
-        val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
+        val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(

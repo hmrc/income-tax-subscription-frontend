@@ -23,6 +23,7 @@ import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
 import forms.individual.business.PropertyStartDateForm
 import forms.individual.business.PropertyStartDateForm._
+
 import javax.inject.{Inject, Singleton}
 import models.common.{IncomeSourceModel, PropertyStartDateModel}
 import play.api.data.Form
@@ -33,6 +34,7 @@ import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
+import views.html.individual.incometax.business.PropertyStartDate
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,7 +42,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class PropertyStartDateController @Inject()(val auditingService: AuditingService,
                                             val authService: AuthService,
                                             val subscriptionDetailsService: SubscriptionDetailsService,
-                                            val languageUtils: LanguageUtils)
+                                            val languageUtils: LanguageUtils,
+                                            propertyStartDate: PropertyStartDate)
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends SignUpController
@@ -48,7 +51,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
 
   def view(propertyStartDateForm: Form[PropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
-    views.html.individual.incometax.business.property_start_date(
+    propertyStartDate(
       propertyStartDateForm = propertyStartDateForm,
       postAction = controllers.individual.business.routes.PropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,

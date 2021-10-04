@@ -300,6 +300,22 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessName(): WSResponse = get("/business/name")
 
+    def ukPropertyStartDate(): WSResponse = get("/business/property-commencement-date")
+
+    def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[PropertyStartDateModel]): WSResponse = {
+      val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
+      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
+      val uri = s"/business/property-commencement-date?editMode=$isEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate, testValidMaxStartDate).fill(model).data.map { case (k, v) =>
+              (k, Seq(v))
+            }
+        )
+      )
+    }
+
     def overseasPropertyStartDate(): WSResponse = get("/business/overseas-commencement-date")
 
     def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[OverseasPropertyStartDateModel]): WSResponse = {
