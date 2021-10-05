@@ -18,18 +18,22 @@ package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
-import controllers.ControllerBaseSpec
 import config.featureswitch._
-import utilities.TestModels._
+import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodPropertyForm
 import models.Cash
 import models.common.AccountingMethodPropertyModel
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.PropertyAccountingMethod
+import utilities.TestModels._
+import views.html.individual.incometax.business.PropertyAccountingMethod
 
 import scala.concurrent.Future
 
@@ -37,24 +41,31 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
 
   override val controllerName: String = "PropertyAccountingMethod"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestPropertyAccountingMethodController.show(isEditMode = false),
-    "submit" -> TestPropertyAccountingMethodController.submit(isEditMode = false)
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestPropertyAccountingMethodController extends PropertyAccountingMethodController(
-    mockAuditingService,
-    mockAuthService,
-    MockSubscriptionDetailsService
-  )
+  private def withController(testCode: PropertyAccountingMethodController => Any): Unit = {
+    val propertyAccountingMethodView = mock[PropertyAccountingMethod]
+
+    when(propertyAccountingMethodView(any(), any(), any(), any())(any(), any(), any()))
+      .thenReturn(HtmlFormat.empty)
+
+    val controller = new PropertyAccountingMethodController(
+      mockAuditingService,
+      propertyAccountingMethodView,
+      mockAuthService,
+      MockSubscriptionDetailsService
+    )
+
+    testCode(controller)
+  }
 
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceProperty)
 
   def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
   "show" should {
-    "display the property accounting method view and return OK (200)" in {
-      lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
+    "display the property accounting method view and return OK (200)" in withController { controller =>
+      lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchPropertyAccountingFromSubscriptionDetails(None)
       mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType) // for the back url
@@ -66,18 +77,18 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "submit" should {
+  "submit" should withController { controller =>
 
-    def callShow(isEditMode: Boolean): Future[Result] = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
+    def callShow(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, AccountingMethodPropertyModel(Cash))
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      "return a redirect status (SEE_OTHER - 303)" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callShow(isEditMode = false)
 
@@ -88,7 +99,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsFetchAll(2)
       }
 
-      "redirect to checkYourAnswer page" in {
+      "redirect to checkYourAnswer page" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
@@ -103,7 +114,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      "return a redirect status (SEE_OTHER - 303)" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
@@ -115,7 +126,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsFetchAll(1)
       }
 
-      "redirect to checkYourAnswer page" in {
+      "redirect to checkYourAnswer page" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
@@ -130,7 +141,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
 
     "when there is an invalid submission with an error form" should {
-      "return bad request status (400)" in {
+      "return bad request status (400)" in withController { controller =>
 
         mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
@@ -146,17 +157,17 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "The back url is not in edit mode" when {
       "the user has rental property and it is the only income source" should {
-        "redirect to income source page" in {
+        "redirect to income source page" in withController { controller =>
           mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
+          await(controller.backUrl(isEditMode = false)) mustBe
             controllers.individual.incomesource.routes.IncomeSourceController.show().url
         }
       }
 
       "the user has rental property and it is not the only income source and the user has a business" should {
-        "redirect to business accounting method page" in {
+        "redirect to business accounting method page" in withController { controller =>
           mockFetchAllFromSubscriptionDetails(bothIncomeSourceType)
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
+          await(controller.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.BusinessAccountingMethodController.show().url
         }
       }
@@ -164,19 +175,19 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
     "The back url is in edit mode" when {
       "the user click back url" should {
-        "redirect to check your answer page" in {
+        "redirect to check your answer page" in withController { controller =>
           setupMockSubscriptionDetailsSaveFunctions()
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = true)) mustBe
+          await(controller.backUrl(isEditMode = true)) mustBe
             controllers.individual.subscription.routes.CheckYourAnswersController.show().url
         }
       }
     }
     "The back URL with Release Four enabled" when {
       "the user clicks the back url" should {
-        "redirect to the Property Start Date page" in {
+        "redirect to the Property Start Date page" in withController { controller =>
           enable(ReleaseFour)
           mockFetchAllFromSubscriptionDetails(bothIncomeSourceType)
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
+          await(controller.backUrl(isEditMode = false)) mustBe
             controllers.individual.business.routes.PropertyStartDateController.show().url
         }
       }
