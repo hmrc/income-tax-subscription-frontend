@@ -956,3 +956,14 @@ business.check-your-answers.title                               = Check your ans
 business.check-your-answers.content.tax-year.question           = Tax year you are signing up for
 business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
+
+## Progress saved
+business.progress-saved.title                                   = Your progress has been saved
+business.progress-saved.content.summary                         = We will keep your information until {0}.
+business.progress-saved.content.subheading                      = What happens next
+business.progress-saved.content.paragraph1                      = You can:
+business.progress-saved.content.paragraph2.part1                = If you sign out, you will need to come back to your
+business.progress-saved.content.paragraph2.part2                = to continue. We suggest you bookmark this to make it easier to find when you return.
+business.progress-saved.content.sign-up-link                    = return to sign up your business for Making Tax Digital for Income Tax
+business.progress-saved.content.sign-out-link                   = sign out and come back later
+business.progress-saved.content.sign-in-link                    = Government Gateway login

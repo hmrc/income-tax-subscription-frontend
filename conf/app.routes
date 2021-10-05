@@ -147,3 +147,6 @@ POST        /business/task-list                                  controllers.ind
 # Check Your Answers Routes
 GET         /business/tax-year-check-your-answers                controllers.individual.business.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
 POST        /business/tax-year-check-your-answers                controllers.individual.business.TaxYearCheckYourAnswersController.submit()
+
+# Progress saved
+GET         /business/progress-saved                             controllers.individual.business.ProgressSavedController.show()
