@@ -19,6 +19,7 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import forms.individual.business._
+
 import javax.inject.Inject
 import models.common.OverseasAccountingMethodPropertyModel
 import play.api.data.Form
@@ -26,12 +27,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
+import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class OverseasPropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
                                                            val authService: AuthService,
-                                                           val subscriptionDetailsService: SubscriptionDetailsService)
+                                                           val subscriptionDetailsService: SubscriptionDetailsService,
+                                                           overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod)
                                                           (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends SignUpController {
@@ -39,7 +42,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
   def view(overseasPropertyAccountingMethodForm: Form[OverseasAccountingMethodPropertyModel], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
-    views.html.individual.incometax.business.overseas_property_accounting_method(
+   overseasPropertyAccountingMethod(
       overseasPropertyAccountingMethodForm = overseasPropertyAccountingMethodForm,
       postAction = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,

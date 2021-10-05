@@ -16,6 +16,7 @@
 
 package views.individual.incometax.business
 
+import assets.MessageLookup.OverseasPropertyAccountingMethod.{radioAccruals, radioAccrualsDetail, radioCash, radioCashDetail}
 import assets.MessageLookup.{Base => common, OverseasPropertyAccountingMethod => messages}
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import org.jsoup.Jsoup
@@ -25,6 +26,7 @@ import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
+import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 
 class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
 
@@ -32,9 +34,10 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
   val action: Call = ViewSpecTrait.testCall
 
   implicit val request: Request[_] = FakeRequest()
+  val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
 
   class Setup(isEditMode: Boolean = false) {
-    val page: HtmlFormat.Appendable = views.html.individual.incometax.business.overseas_property_accounting_method(
+    val page: HtmlFormat.Appendable = overseasPropertyAccountingMethod(
       overseasPropertyAccountingMethodForm = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm,
       postAction = action,
       isEditMode,
@@ -44,7 +47,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
     val document: Document = Jsoup.parse(page.body)
   }
 
-  "property accounting method" must {
+  "overseas property accounting method" must {
 
     "have a title" in new Setup {
       val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
@@ -56,7 +59,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
     }
 
     "have a back button" in new Setup {
-      val backButton: Elements = document.select(".link-back")
+      val backButton: Elements = document.select(".govuk-back-link")
       backButton.attr("href") mustBe backUrl
       backButton.text mustBe common.back
     }
@@ -81,30 +84,22 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
         form.attr("action") mustBe action.url
       }
 
-      "has a cash radio button" in new Setup {
-        val radioWithLabel: Elements = document.select("form fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingMethodOverseasProperty]").`val` mustBe "Cash"
-        radioWithLabel.select("label[for=accountingMethodOverseasProperty]").text mustBe Seq(
-          messages.radioCash,
-          messages.radioCashDetail
-        ).mkString(" ")
+      "has a cash radio button and hint" in new Setup {
+        document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe radioCash
+        document.select("#accountingMethodOverseasProperty-item-hint").text mustBe radioCashDetail
       }
 
       "has a accruals radio button" in new Setup {
-        val radioWithLabel: Elements = document.select("form fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingMethodOverseasProperty-2]").`val` mustBe "Accruals"
-        radioWithLabel.select("label[for=accountingMethodOverseasProperty-2]").text mustBe Seq(
-          messages.radioAccruals,
-          messages.radioAccrualsDetail
-        ).mkString(" ")
+        document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe radioAccruals
+        document.select("#accountingMethodOverseasProperty-2-item-hint").text mustBe radioAccrualsDetail
       }
 
       "has a continue button" that {
         s"displays ${common.continue} when not in edit mode" in new Setup {
-          document.select("button[type=submit]").text mustBe common.continue
+          document.select(".govuk-button").text mustBe common.continue
         }
         s"displays ${common.update} when in edit mode" in new Setup(isEditMode = true) {
-          document.select("button[type=submit]").text mustBe common.update
+          document.select(".govuk-button").text mustBe common.update
         }
       }
     }
