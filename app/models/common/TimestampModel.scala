@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package utilities
+package models.common
 
 import org.joda.time.DateTime
-import play.api.i18n.Messages
-import uk.gov.hmrc.play.language.LanguageUtils
+import play.api.libs.json.{Format, JsPath, JsString, JsValue, Json, Reads, Writes}
 
-import javax.inject.{Inject, Singleton}
+case class TimestampModel(dateTime: DateTime)
 
-@Singleton
-class CacheExpiryDateProvider @Inject()(val languageUtils: LanguageUtils) {
+object TimestampModel {
+  private val reads: Reads[TimestampModel] =
+    ((JsPath \ "$date").read[Long])
+      .map[TimestampModel](dateTime => TimestampModel(new DateTime(dateTime)))
 
-  val cacheRetentionDays = 30
-
-  def format(dateTime: DateTime)(implicit messages: Messages): String = {
-    languageUtils.Dates.formatEasyReadingTimestamp(Option(dateTime), "")(messages)
-      .replaceFirst("^.*, ", "").replaceFirst(" (?=\\d)", ", ")
+  private val writes: Writes[TimestampModel] = new Writes[TimestampModel] {
+    def writes(model: TimestampModel): JsValue = JsString(model.dateTime.toString())
   }
 
-  def expiryDateOf(dateTime: DateTime)(implicit messages: Messages): String = {
-    format(dateTime.plusDays(cacheRetentionDays))
-  }
+  implicit val format: Format[TimestampModel] = Format[TimestampModel](reads, writes)
 }

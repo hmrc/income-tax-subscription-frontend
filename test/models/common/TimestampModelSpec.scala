@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package utilities
+package models.common
 
 import org.joda.time.DateTime
-import play.api.i18n.Messages
-import uk.gov.hmrc.play.language.LanguageUtils
+import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import play.api.libs.json.{JsResult, Json}
+import uk.gov.hmrc.play.test.UnitSpec
 
-import javax.inject.{Inject, Singleton}
+class TimestampModelSpec extends UnitSpec {
+  "TimestampModel" should {
+    "deserialize the MongoDB response" in {
+      val actual: JsResult[TimestampModel] = Json.fromJson[TimestampModel](Json.parse("""{"$date":0}"""))
+      val expected = TimestampModel(
+        new DateTime(1970, 1, 1, 1, 0, 0, 0)
+      )
 
-@Singleton
-class CacheExpiryDateProvider @Inject()(val languageUtils: LanguageUtils) {
-
-  val cacheRetentionDays = 30
-
-  def format(dateTime: DateTime)(implicit messages: Messages): String = {
-    languageUtils.Dates.formatEasyReadingTimestamp(Option(dateTime), "")(messages)
-      .replaceFirst("^.*, ", "").replaceFirst(" (?=\\d)", ", ")
-  }
-
-  def expiryDateOf(dateTime: DateTime)(implicit messages: Messages): String = {
-    format(dateTime.plusDays(cacheRetentionDays))
+      actual.get mustBe expected
+    }
   }
 }

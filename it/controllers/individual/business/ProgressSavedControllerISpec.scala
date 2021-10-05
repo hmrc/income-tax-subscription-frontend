@@ -17,9 +17,12 @@
 package controllers.individual.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.libs.json.{JsNumber, JsObject}
+import utilities.SubscriptionDataKeys.lastUpdatedTimestamp
 
 class ProgressSavedControllerISpec  extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/business/progress-saved" should {
@@ -27,6 +30,8 @@ class ProgressSavedControllerISpec  extends ComponentSpecBase {
       "the save & retrieve feature switch is enabled" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
 
         And("save & retrieve feature switch is enabled")
         enable(SaveAndRetrieve)
