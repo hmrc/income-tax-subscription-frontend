@@ -17,14 +17,14 @@
 package services
 
 import connectors.IncomeTaxSubscriptionConnector
-import javax.inject._
 import models.common._
 import models.common.business._
-import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys._
 
+import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -118,5 +118,8 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
   def saveOverseasPropertyStartDate(overseasPropertyStartDate: OverseasPropertyStartDateModel)
                                    (implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyStartDateModel]): FA =
     save[OverseasPropertyStartDateModel](OverseasPropertyStartDate, overseasPropertyStartDate)
+
+  def fetchLastUpdatedTimestamp()(implicit hc: HeaderCarrier, reads: Reads[TimestampModel]): Future[Option[TimestampModel]] =
+    subscriptionDetailsSession.getSubscriptionDetails[TimestampModel](lastUpdatedTimestamp)
 }
 

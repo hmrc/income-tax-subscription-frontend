@@ -18,13 +18,13 @@ package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import models.common.{PropertyStartDateModel, _}
-import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
+import models.common._
+import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json.{JsObject, Json, Writes}
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -114,6 +114,11 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
 
   protected final def mockFetchPaperlessPreferenceToken(fetchPaperlessPreferenceToken: Option[String]): Unit = {
     mockFetchFromSubscriptionDetails[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
+  }
+
+  protected final def mockFetchLastUpdatedTimestamp(fetchLastUpdatedTimestamp: Option[TimestampModel]): Unit = {
+    when(mockConnector.getSubscriptionDetails[TimestampModel](ArgumentMatchers.eq(lastUpdatedTimestamp))(
+      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchLastUpdatedTimestamp))
   }
 
   protected final def mockFetchAllFromSubscriptionDetails(fetchAll: Option[CacheMap]): Unit = {

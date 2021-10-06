@@ -21,9 +21,10 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
-import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.NotFoundException
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
+import utilities.CacheExpiryDateProvider
 import views.html.individual.incometax.business.ProgressSaved
 
 import javax.inject.{Inject, Singleton}
@@ -33,7 +34,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class ProgressSavedController @Inject()(
                                          val progressSavedView: ProgressSaved,
                                          val auditingService: AuditingService,
-                                         val authService: AuthService)
+                                         val authService: AuthService,
+                                         val subscriptionDetailsService: SubscriptionDetailsService,
+                                         val cacheExpiryDateProvider: CacheExpiryDateProvider
+                                       )
                                        (implicit val ec: ExecutionContext,
                                          val appConfig: AppConfig,
                                          val config: Configuration,
@@ -43,9 +47,12 @@ class ProgressSavedController @Inject()(
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       if (isEnabled(SaveAndRetrieve)) {
-        Future.successful(Ok(progressSavedView("Monday, 20 October 2021", signInUrl)))
+        subscriptionDetailsService.fetchLastUpdatedTimestamp() map {
+          case Some(timestamp) => Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+          case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
+        }
       } else {
-        Future.failed(new NotFoundException("[ProgressSavedController][submit] - The save and retrieve feature switch is disabled"))
+        Future.failed(new NotFoundException("[ProgressSavedController][show] - The save and retrieve feature switch is disabled"))
       }
   }
 

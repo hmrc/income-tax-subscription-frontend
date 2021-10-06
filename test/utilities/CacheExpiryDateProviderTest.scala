@@ -23,8 +23,6 @@ import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.UnitSpec
 
-import java.time.{ZoneOffset, ZonedDateTime}
-
 class CacheExpiryDateProviderTest extends UnitSpec with GuiceOneAppPerSuite {
 
   "format date" should {
@@ -47,8 +45,8 @@ class CacheExpiryDateProviderTest extends UnitSpec with GuiceOneAppPerSuite {
     "return the date 30 days in the future in the correct format" in {
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
       val provider = app.injector.instanceOf[CacheExpiryDateProvider]
-      val aDate = ZonedDateTime.of(2021, 10, 8, 0, 0, 0, 0, ZoneOffset.UTC)
-      provider.expiryDateOf(aDate.toString) should be("Sunday, 7 November 2021")
+      val aDate = new DateTime(2021, 10, 8, 0, 0, 0, 0, DateTimeZone.UTC)
+      provider.expiryDateOf(aDate) should be("Sunday, 7 November 2021")
     }
   }
 
