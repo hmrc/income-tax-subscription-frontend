@@ -23,13 +23,17 @@ import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import models.Cash
 import models.common.{IncomeSourceModel, OverseasAccountingMethodPropertyModel}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import utilities.TestModels._
+import views.html.individual.incometax.business.{OverseasPropertyAccountingMethod, PropertyAccountingMethod}
 
 import scala.concurrent.Future
 
@@ -42,16 +46,23 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   override val controllerName: String = "ForeignPropertyAccountingMethod"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestOverseasPropertyAccountingMethodController.show(isEditMode = false),
-    "submit" -> TestOverseasPropertyAccountingMethodController.submit(isEditMode = false)
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
-    mockAuditingService,
-    mockAuthService,
-    MockSubscriptionDetailsService
-  )
+  private def withController(testCode: OverseasPropertyAccountingMethodController => Any): Unit = {
+    val overseasPropertyAccountingMethodView = mock[OverseasPropertyAccountingMethod]
+
+    when(overseasPropertyAccountingMethodView(any(), any(), any(), any())(any(), any(), any()))
+      .thenReturn(HtmlFormat.empty)
+
+    val controller = new OverseasPropertyAccountingMethodController(
+      mockAuditingService,
+      mockAuthService,
+      MockSubscriptionDetailsService,
+      overseasPropertyAccountingMethodView
+    )
+
+    testCode(controller)
+  }
 
   val incomeSourceAllTypes: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
 
@@ -66,8 +77,8 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
   "show" should {
-    "display the foreign property accounting method view and return OK (200)" in {
-      lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
+    "display the foreign property accounting method view and return OK (200)" in withController { controller =>
+      lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
 
       mockFetchForeignPropertyAccountingFromSubscriptionDetails(None)
@@ -79,13 +90,13 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "submit" should {
+  "submit" should withController { controller =>
 
-    def callShow(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
+    def callShow(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, OverseasAccountingMethodPropertyModel(Cash))
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
@@ -159,9 +170,9 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "The back url is not in edit mode" when {
       "the user has foreign property and it is the only income source" should {
-        "redirect to overseas property start date page" in {
+        "redirect to overseas property start date page" in withController { controller =>
           mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
-          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
+          controller.backUrl(isEditMode = false) mustBe
             controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
         }
       }
@@ -169,9 +180,9 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
     "The back url is in edit mode" when {
       "the user click back url" should {
-        "redirect to check your answer page" in {
+        "redirect to check your answer page" in withController { controller =>
           setupMockSubscriptionDetailsSaveFunctions()
-          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
+          controller.backUrl(isEditMode = true) mustBe
             controllers.individual.subscription.routes.CheckYourAnswersController.show().url
         }
       }

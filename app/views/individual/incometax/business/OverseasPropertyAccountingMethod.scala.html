@@ -14,15 +14,15 @@
  * limitations under the License.
  *@
 
+@import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers._
 @import config.AppConfig
-@import forms.individual.business.AccountingMethodPropertyForm
+@import forms.individual.business.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
-@import models.common.AccountingMethodPropertyModel
+@import models.common.OverseasAccountingMethodPropertyModel
 @import views.html.templates.PrincipalMainTemplate
 @import views.individual.helpers._
-@import play.api.data.Form
 @import views.html.helpers.injected.{ContinueButton, RadioHelper, DetailsHelper}
 
 @this(
@@ -33,18 +33,17 @@
     continueButton: ContinueButton
 )
 
-@(accountingMethodForm: Form[AccountingMethodPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(overseasPropertyAccountingMethodForm: Form[OverseasAccountingMethodPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
-    messages("property.accounting_method.heading")
+    messages("overseas.property.accounting_method.heading")
 }
 
 @detailsContent = {
-
     <p>@Messages("property.accounting_method.accordion.content.para")</p>
     <ul class="govuk-list govuk-list--bullet">
-        <li>@Messages("property.accounting_method.accordion.content.bullet1")</li>
-        <li>@Messages("property.accounting_method.accordion.content.bullet2")</li>
+        <li>@Messages("overseas.property.accounting_method.accordion.content.bullet1")</li>
+        <li>@Messages("overseas.property.accounting_method.accordion.content.bullet2")</li>
     </ul>
 }
 
@@ -52,35 +51,37 @@
     <h1 class="govuk-heading-l">@heading</h1>
 }
 
-@mainTemplate(title = messages("property.accounting_method.title"), optForm = accountingMethodForm, backLink = backUrl) {
+@mainTemplate(title = messages("overseas.property.accounting_method.title"), optForm = overseasPropertyAccountingMethodForm, backLink = backUrl)  {
 
     @form(action = postAction) {
-        @heading(messages("property.accounting_method.heading"))
+
+        @heading(messages("overseas.property.accounting_method.heading"))
         @detailsHelper(
-                    summary = messages("property.accounting_method.accordion.summary"),
-                    content = detailsContent
+            summary = messages("overseas.property.accounting_method.accordion.summary"),
+            content = detailsContent
         )
         @radioHelper(
 
-            field = accountingMethodForm(AccountingMethodPropertyForm.accountingMethodProperty),
+            field = overseasPropertyAccountingMethodForm(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty),
             legend = question,
             isPageHeading = false,
             hint = None,
             radioItems = Seq(
                 RadioItem(
                     content = Text(messages("summary.income_type.cash")),
-                    hint = Some(Hint(content = HtmlContent(messages("property.accounting_method.cash")))),
+                    hint = Some(Hint(content = HtmlContent(messages("overseas.property.accounting_method.cash")))),
                     value = Some(AccountingMethodMapping.option_cash)
                 ),
                 RadioItem(
                     content = Text(messages("summary.income_type.accruals")),
-                    hint = Some(Hint(content = HtmlContent(messages("property.accounting_method.accruals")))),
+                    hint = Some(Hint(content = HtmlContent(messages("overseas.property.accounting_method.accruals")))),
                     value = Some(AccountingMethodMapping.option_accruals)
                 )
             )
         )
 
         @continueButton(isEditMode = isEditMode)
-    }
+
+        }
 
 }

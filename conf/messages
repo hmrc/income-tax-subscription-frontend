@@ -174,8 +174,8 @@ overseas.property.accounting_method.accordion.summary            = Show me an ex
 overseas.property.accounting_method.accordion.content.para       = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
 overseas.property.accounting_method.accordion.content.bullet1    = May 2017, you use ‘cash accounting’
 overseas.property.accounting_method.accordion.content.bullet2    = March 2017, you use ‘standard accounting’
-overseas.property.accounting_method.cash                         = <span class="heading-small">Cash accounting</span><br>You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-overseas.property.accounting_method.accruals                     = <span class="heading-small">Standard accounting</span><br>You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’.
+overseas.property.accounting_method.cash                         = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
+overseas.property.accounting_method.accruals                     = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’.
 
 ## Business Name
 business.name.title                                             = Business name
