@@ -16,7 +16,7 @@
 
 package models.common
 
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeZone}
 import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import play.api.libs.json.{JsResult, Json}
 import uk.gov.hmrc.play.test.UnitSpec
@@ -26,7 +26,7 @@ class TimestampModelSpec extends UnitSpec {
     "deserialize the MongoDB response" in {
       val actual: JsResult[TimestampModel] = Json.fromJson[TimestampModel](Json.parse("""{"$date":0}"""))
       val expected = TimestampModel(
-        new DateTime(1970, 1, 1, 1, 0, 0, 0)
+        new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC)
       )
 
       actual.get mustBe expected

@@ -16,7 +16,7 @@
 
 package models.common
 
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.{Format, JsPath, JsString, JsValue, Json, Reads, Writes}
 
 case class TimestampModel(dateTime: DateTime)
@@ -24,7 +24,7 @@ case class TimestampModel(dateTime: DateTime)
 object TimestampModel {
   private val reads: Reads[TimestampModel] =
     ((JsPath \ "$date").read[Long])
-      .map[TimestampModel](dateTime => TimestampModel(new DateTime(dateTime)))
+      .map[TimestampModel](dateTime => TimestampModel(new DateTime(dateTime, DateTimeZone.UTC)))
 
   private val writes: Writes[TimestampModel] = new Writes[TimestampModel] {
     def writes(model: TimestampModel): JsValue = JsString(model.dateTime.toString())
