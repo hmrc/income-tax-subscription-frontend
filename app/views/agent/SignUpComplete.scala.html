@@ -71,7 +71,7 @@
         <p class = "govuk-body">@messages("agent.sign-up-complete.whatNow.para2") </p>
 
         @form(action = postAction) {
-            @buttonHelper(messages("agent.base.sign_up_another_client"))
+            @buttonHelper(buttonText = messages("agent.base.sign_up_another_client"))
         }
         @signOutLink()
     </section>

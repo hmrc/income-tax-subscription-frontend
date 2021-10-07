@@ -34,7 +34,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
 import models.common.{AccountingMethodPropertyModel, IncomeSourceModel}
@@ -58,7 +58,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                                                    val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
-  def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
+  def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean, isSaveAndRetrieve: Boolean)(implicit request: Request[_]): Future[Html] = {
     for {
       back <- backUrl(isEditMode)
     } yield
@@ -66,7 +66,8 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
         accountingMethodForm = accountingMethodPropertyForm,
         postAction = controllers.individual.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
         isEditMode,
-        backUrl = back
+        backUrl = back,
+        isSaveAndRetrieve
       )
   }
 
@@ -75,7 +76,8 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
       subscriptionDetailsService.fetchAccountingMethodProperty() flatMap { accountingMethodProperty =>
         view(
           accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethodProperty),
-          isEditMode = isEditMode
+          isEditMode = isEditMode,
+          isSaveAndRetrieve = isEnabled(SaveAndRetrieve)
         ).map(view => Ok(view))
       }
   }
@@ -84,13 +86,15 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
     implicit user =>
       AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
         formWithErrors =>
-          view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
+          view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode, isEnabled(SaveAndRetrieve)).map(view => BadRequest(view)),
         accountingMethodProperty => {
           subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) flatMap { _ =>
-            if (isEditMode) {
-              Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
+            if (isEnabled(SaveAndRetrieve)) {
+              Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
             } else {
-              subscriptionDetailsService.fetchIncomeSource() map {
+              if (isEditMode) {
+                Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
+              } else subscriptionDetailsService.fetchIncomeSource() map {
                 case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
                   Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
                 case _ =>
@@ -102,19 +106,29 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
       )
   }
 
-  def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] =
-    if (isEditMode) {
-      Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-    } else if (isEnabled(ReleaseFour)) {
-      Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
+  def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] = {
+    if (isEnabled(SaveAndRetrieve)) {
+      if (isEditMode) {
+        Future.successful(controllers.individual.business.routes.TaskListController.show().url)
+      } else {
+        Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
+      }
     } else {
-      subscriptionDetailsService.fetchAll() map { cacheMap =>
-        cacheMap.getIncomeSource match {
-          case Some(IncomeSourceModel(false, true, _)) =>
-            controllers.individual.incomesource.routes.IncomeSourceController.show().url
-          case _ =>
-            controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+      if (isEditMode) {
+        Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+      } else if (isEnabled(ReleaseFour)) {
+        Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
+      } else {
+        subscriptionDetailsService.fetchAll() map { cacheMap =>
+          cacheMap.getIncomeSource match {
+            case Some(IncomeSourceModel(false, true, _)) =>
+              controllers.individual.incomesource.routes.IncomeSourceController.show().url
+            case _ =>
+              controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+          }
         }
       }
     }
+
+  }
 }

@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
 import config.featureswitch._
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodPropertyForm
@@ -43,10 +43,15 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
+
   private def withController(testCode: PropertyAccountingMethodController => Any): Unit = {
     val propertyAccountingMethodView = mock[PropertyAccountingMethod]
 
-    when(propertyAccountingMethodView(any(), any(), any(), any())(any(), any(), any()))
+    when(propertyAccountingMethodView(any(), any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyAccountingMethodController(
@@ -88,7 +93,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     )
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in withController { controller =>
+      "return a redirect status (SEE_OTHER - 303)" in {
         setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callShow(isEditMode = false)
 
@@ -99,7 +104,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsFetchAll(2)
       }
 
-      "redirect to checkYourAnswer page" in withController { controller =>
+      "redirect to checkYourAnswer page" in {
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
@@ -114,7 +119,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in withController { controller =>
+      "return a redirect status (SEE_OTHER - 303)" in {
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
@@ -126,7 +131,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsFetchAll(1)
       }
 
-      "redirect to checkYourAnswer page" in withController { controller =>
+      "redirect to checkYourAnswer page" in {
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
@@ -140,8 +145,28 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
     }
 
+    "Save and retrieve feature switch is enabled" when {
+      "click on save and continue button" should {
+        "return status (SEE_OTHER - 303) and redirect to task list page" in {
+          enable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+
+          val goodRequest = callShow(isEditMode = true)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+
+          await(goodRequest)
+          verifySubscriptionDetailsSave(PropertyAccountingMethod, 1)
+          verifySubscriptionDetailsFetchAll(1)
+        }
+
+      }
+    }
+
     "when there is an invalid submission with an error form" should {
-      "return bad request status (400)" in withController { controller =>
+      "return bad request status (400)" in {
 
         mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
 
@@ -192,6 +217,26 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         }
       }
     }
-  }
 
+    "back link" when {
+      "save and retrieve feature switch is enabled " when {
+        "is in edit mode" should {
+          "redirect to task list page" in withController { controller =>
+            enable(SaveAndRetrieve)
+            setupMockSubscriptionDetailsSaveFunctions()
+            await(controller.backUrl(isEditMode = true)) mustBe
+              controllers.individual.business.routes.TaskListController.show().url
+          }
+        }
+        "is not in edit mode" should {
+          "redirect to property start date page" in withController { controller =>
+            enable(SaveAndRetrieve)
+            setupMockSubscriptionDetailsSaveFunctions()
+            await(controller.backUrl(isEditMode = false)) mustBe
+              controllers.individual.business.routes.PropertyStartDateController.show().url
+          }
+        }
+      }
+    }
+  }
 }
