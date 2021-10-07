@@ -21,6 +21,9 @@ base.go_back                                                    = Go back
 base.userResearch.title                                         = Help to improve our service
 base.userResearch.link                                          = Answer some questions about yourself to join the research panel
 
+#Save and retrieve
+base.save-and-continue                                          = Save and continue
+
 error-notification.prefix                                       = Error:
 
 ## base.userResearch.text                                       = This link opens in a new tab. Please note that this service is not available in Welsh.

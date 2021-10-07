@@ -33,6 +33,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val heading: String = "When did your UK property business start trading?"
     val exampleStartDate = "For example, 1 8 2014"
     val continue = "Continue"
+    val saveAndContinue = "Save and continue"
     val backLink = "Back"
     val update = "Update"
   }
@@ -42,19 +43,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
   val propertyStartDate: PropertyStartDate = app.injector.instanceOf[PropertyStartDate]
 
-  class Setup(isEditMode: Boolean = false,
-              propertyStartDateForm: Form[PropertyStartDateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")) {
-    val page: Html = propertyStartDate(
-      propertyStartDateForm,
-      testCall,
-      isEditMode,
-      testBackUrl
-    )(FakeRequest(), implicitly)
-
-    val document: Document = Jsoup.parse(page.body)
-  }
-
-
   "UK property business start" must {
 
     "have the correct page template" when {
@@ -63,7 +51,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
           PropertyStartDateForm.propertyStartDateForm("testMinMessage", "testMaxMessage"),
           testCall,
           isEditMode = false,
-          testBackUrl
+          testBackUrl,
+          isSaveAndRetrieve = false
         ),
         title = PropertyStartDateMessages.heading,
         isAgent = false,
@@ -76,7 +65,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
           PropertyStartDateForm.propertyStartDateForm("testMinMessage", "testMaxMessage").withError(testError),
           testCall,
           isEditMode = false,
-          testBackUrl
+          testBackUrl,
+          isSaveAndRetrieve = false
         ),
         title = PropertyStartDateMessages.heading,
         isAgent = false,
@@ -86,33 +76,38 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
       )
     }
 
-    "have a heading" in new Setup {
-      document.getH1Element.text mustBe PropertyStartDateMessages.heading
+    "have a heading" in {
+      document().getH1Element.text mustBe PropertyStartDateMessages.heading
     }
 
-    "have a form" in new Setup {
-      document.getForm.attr("method") mustBe testCall.method
-      document.getForm.attr("action") mustBe testCall.url
+    "have a form" in {
+      document().getForm.attr("method") mustBe testCall.method
+      document().getForm.attr("action") mustBe testCall.url
     }
 
-    "have a fieldset with dateInputs" in new Setup() {
-      document.mustHaveDateInput(
+    "have a fieldset with dateInputs" in {
+      document().mustHaveDateInput(
         name = PropertyStartDateForm.startDate,
         label = PropertyStartDateMessages.heading,
         hint = Some(PropertyStartDateMessages.exampleStartDate)
       )
     }
 
-    "have a continue button when not in edit mode" in new Setup {
-      document.selectHead("button").text mustBe PropertyStartDateMessages.continue
+    "have a continue button when not in edit mode" in {
+      document().selectHead("button").text mustBe PropertyStartDateMessages.continue
     }
 
-    "have update button when in edit mode" in new Setup(true) {
-      document.selectHead("button").text mustBe PropertyStartDateMessages.update
+    "have a save & continue button when not in edit mode and save & retrieve feature is enabled" in {
+      document(isSaveAndRetrieve = true).selectHead("button").text mustBe PropertyStartDateMessages.saveAndContinue
     }
 
-    "must display form error on page" in new Setup(false, PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage").withError(testError)) {
-      document.mustHaveDateInput(
+    "have update button when in edit mode" in {
+      document(isEditMode = true).selectHead("button").text mustBe PropertyStartDateMessages.update
+    }
+
+    "must display form error on page" in {
+      val formWithError = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage").withError(testError)
+      document(propertyStartDateForm = formWithError).mustHaveDateInput(
         name = PropertyStartDateForm.startDate,
         label = PropertyStartDateMessages.heading,
         hint = Some(PropertyStartDateMessages.exampleStartDate),
@@ -122,5 +117,21 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
   }
 
+  private def page(isEditMode: Boolean, isSaveAndRetrieve: Boolean, propertyStartDateForm: Form[PropertyStartDateModel]): Html = {
+    propertyStartDate(
+      propertyStartDateForm,
+      testCall,
+      isEditMode,
+      testBackUrl,
+      isSaveAndRetrieve
+    )(FakeRequest(), implicitly)
+  }
 
+  private def document(
+                        isEditMode: Boolean = false,
+                        isSaveAndRetrieve: Boolean = false,
+                        propertyStartDateForm: Form[PropertyStartDateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")
+                      ): Document = {
+    Jsoup.parse(page(isEditMode, isSaveAndRetrieve, propertyStartDateForm).body)
+  }
 }

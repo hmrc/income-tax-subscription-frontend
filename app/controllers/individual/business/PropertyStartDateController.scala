@@ -18,6 +18,8 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import controllers.utils.IndividualAnswers._
 import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
@@ -47,65 +49,80 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends SignUpController
-  with ImplicitDateFormatter with RequireAnswer {
+  with ImplicitDateFormatter with RequireAnswer with FeatureSwitching  {
 
-  def view(propertyStartDateForm: Form[PropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
+  def view(propertyStartDateForm: Form[PropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: Option[IncomeSourceModel])
           (implicit request: Request[_]): Html = {
     propertyStartDate(
       propertyStartDateForm = propertyStartDateForm,
       postAction = controllers.individual.business.routes.PropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode, incomeSourceModel)
+      backUrl = backUrl(isEditMode, incomeSourceModel),
+      isSaveAndRetrieve = isEnabled(SaveAndRetrieve)
     )
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optPropertyStartDateAnswer and incomeSourceModelAnswer) {
-        case propertyStartDate ~ incomeSource =>
-          Future.successful(Ok(view(
-            propertyStartDateForm = form.fill(propertyStartDate),
-            isEditMode = isEditMode,
-            incomeSourceModel = incomeSource
-          )))
+      if (isEnabled(SaveAndRetrieve)) {
+        require(optPropertyStartDateAnswer) {
+          propertyStartDate =>
+            Future.successful(Ok(view(
+              propertyStartDateForm = form.fill(propertyStartDate),
+              isEditMode = isEditMode,
+              incomeSourceModel = None
+            )))
+        }
+      } else {
+        require(optPropertyStartDateAnswer and incomeSourceModelAnswer) {
+          case propertyStartDate ~ incomeSource =>
+            Future.successful(Ok(view(
+              propertyStartDateForm = form.fill(propertyStartDate),
+              isEditMode = isEditMode,
+              incomeSourceModel = Some(incomeSource)
+            )))
+        }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       form.bindFromRequest.fold(
-        formWithErrors =>
-          require(incomeSourceModelAnswer) {
-            incomeSourceModel =>
-              Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
-          },
+        formWithErrors => {
+          if (isEnabled(SaveAndRetrieve)) {
+            Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode, None)))
+          } else {
+            require(incomeSourceModelAnswer) {
+              incomeSourceModel =>
+                Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode, Some(incomeSourceModel))))
+            }
+          }
+        },
         startDate =>
           subscriptionDetailsService.savePropertyStartDate(startDate) flatMap { _ =>
-            if (isEditMode) {
-              Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
+            val redirectUrl = if (isEditMode && !isEnabled(SaveAndRetrieve)) {
+              controllers.individual.subscription.routes.CheckYourAnswersController.show()
             } else {
-              Future.successful(Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show()))
+              controllers.individual.business.routes.PropertyAccountingMethodController.show()
             }
+
+            Future.successful(Redirect(redirectUrl))
           }
 
       )
   }
 
-  def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)(implicit hc: HeaderCarrier): String = {
-    if (isEditMode) {
-      controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-    } else {
-      if (incomeSourceModel.selfEmployment) {
+  def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel])(implicit hc: HeaderCarrier): String =
+    (isEditMode, isEnabled(SaveAndRetrieve), maybeIncomeSourceModel) match {
+      case (true, true, _) => controllers.individual.business.routes.TaskListController.show().url
+      case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      case (false, false, Some(incomeSourceModel)) if (incomeSourceModel.selfEmployment) =>
         appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
-      } else {
+      case _ =>
         controllers.individual.incomesource.routes.IncomeSourceController.show().url
-      }
     }
-  }
-
 
   def form(implicit request: Request[_]): Form[PropertyStartDateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate.toLongDate, PropertyStartDateForm.maxStartDate.toLongDate)
   }
-
 }
