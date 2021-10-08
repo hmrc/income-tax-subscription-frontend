@@ -32,6 +32,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     val heading: String = title
     val exampleStartDate = "For example, 1 8 2014"
     val continue = "Continue"
+    val saveAndContinue = "Save and continue"
     val backLink = "Back"
     val update = "Update"
   }
@@ -42,13 +43,15 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
 
   class Setup(isEditMode: Boolean = false,
-              form: Form[OverseasPropertyStartDateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("testMessage", "testMessage")) {
+              form: Form[OverseasPropertyStartDateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("testMessage", "testMessage"),
+              isSaveAndRetrieveEnabled: Boolean = false) {
 
     val page: Html = overseasPropertyStartDate(
       form,
       testCall,
       isEditMode,
-      testBackUrl
+      testBackUrl,
+      isSaveAndRetrieveEnabled
     )
 
     val document: Document = Jsoup.parse(page.body)
@@ -114,6 +117,10 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
     "have a continue button when not in edit mode" in new Setup {
       document.selectHead("button").text mustBe OverseasPropertyStartDateMessages.continue
+    }
+
+    "have a Save and Continue button when not in edit mode and feature SaveAndRetrieve is enabled" in new Setup( isSaveAndRetrieveEnabled = true ) {
+      document.selectHead("button").text mustBe OverseasPropertyStartDateMessages.saveAndContinue
     }
 
     "have update button when in edit mode" in new Setup(true) {
