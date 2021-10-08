@@ -967,7 +967,7 @@ business.check-your-answers.content.tax-year.next-tax-year      = ?
 
 ## Progress saved
 business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi’i gadw
-business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan
+business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
 business.progress-saved.content.subheading                      = Yr hyn sy’n digwydd nesaf
 business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
 business.progress-saved.content.paragraph2.part1                = Os byddwch yn allgofnodi, bydd angen i chi ddod yn ôl i’ch
