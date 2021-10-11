@@ -21,6 +21,9 @@ base.go_back                                                    = Ewch yn ôl
 base.userResearch.title                                         = Helpu i wella ein gwasanaeth
 base.userResearch.link                                          = Atebwch ychydig o gwestiynau am eich hunan er mwyn ymuno â’r panel ymchwil
 
+#Save and retrieve
+base.save-and-continue                                          = Cadw ac yn eich blaen
+
 error-notification.prefix                                       = Gwall:
 
 ## base.userResearch.text                                       = Mae’r cysylltiad hwn yn agor tab newydd. Sylwer - nid yw’r gwasanaeth hwn ar gael yn Gymraeg.

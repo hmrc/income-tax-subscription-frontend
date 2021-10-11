@@ -29,7 +29,15 @@
         implicit appConfig: AppConfig
 )
 
-@(propertyStartDateForm: Form[PropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(propertyStartDateForm: Form[PropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean)(implicit request: Request[_], messages: Messages)
+
+@continueButtonContent = @{
+  if(isSaveAndRetrieve) {
+    Some(messages("base.save-and-continue"))
+  } else {
+    None
+  }
+}
 
 @mainTemplate(title = messages("business.property.name.title"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
 
@@ -48,7 +56,7 @@
             hintText = Some(messages("business.property.start_date.exampleStartDate"))
         )
 
-        @continueButton(isEditMode = isEditMode)
+        @continueButton(alternateText = continueButtonContent, isEditMode = isEditMode)
 
     }
 
