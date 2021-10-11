@@ -36,11 +36,12 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
   implicit val request: Request[_] = FakeRequest()
   val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
 
-  class Setup(isEditMode: Boolean = false) {
+  class Setup(isEditMode: Boolean = false, isSaveAndRetrieve: Boolean = false) {
     val page: HtmlFormat.Appendable = overseasPropertyAccountingMethod(
       overseasPropertyAccountingMethodForm = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm,
       postAction = action,
       isEditMode,
+      isSaveAndRetrieve,
       backUrl = backUrl
     )(FakeRequest(), implicitly, appConfig)
 
@@ -100,6 +101,20 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
         }
         s"displays ${common.update} when in edit mode" in new Setup(isEditMode = true) {
           document.select(".govuk-button").text mustBe common.update
+        }
+      }
+
+      "has a save and continue button" that {
+        s"displays ${common.saveAndContinue} when save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+          document.select(".save-and-continue").text mustBe common.saveAndContinue
+        }
+      }
+
+      "has a save and come back later button" that {
+        s"displays ${common.saveAndComeBackLater} when save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+          val saveAndComeBackButton = document.select(".save-and-come-back-later")
+          saveAndComeBackButton.text mustBe common.saveAndComeBackLater
+          saveAndComeBackButton.attr("href") mustBe controllers.individual.business.routes.ProgressSavedController.show().url
         }
       }
     }

@@ -19,10 +19,12 @@
 )
 
 @(
-    buttonText: String
+    buttonText: String, classes: Option[String] = None, href: Option[String] = None
 )(implicit messages: Messages)
 
 
 @govukButton(Button(
-    content = Text(buttonText)
+    content = Text(buttonText),
+    classes = classes.getOrElse(""),
+    href = href
 ))

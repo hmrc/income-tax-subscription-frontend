@@ -20,6 +20,8 @@ base.no                                                         = Na
 base.go_back                                                    = Ewch yn ôl
 base.userResearch.title                                         = Helpu i wella ein gwasanaeth
 base.userResearch.link                                          = Atebwch ychydig o gwestiynau am eich hunan er mwyn ymuno â’r panel ymchwil
+base.save-and-continue                                          = Cadw ac yn eich blaen
+base.save-and-come-back-later                                   = Cadw a dod yn ôl yn nes ymlaen
 
 error-notification.prefix                                       = Gwall:
 

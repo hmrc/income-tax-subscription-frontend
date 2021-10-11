@@ -20,6 +20,8 @@ base.no                                                         = No
 base.go_back                                                    = Go back
 base.userResearch.title                                         = Help to improve our service
 base.userResearch.link                                          = Answer some questions about yourself to join the research panel
+base.save-and-continue                                          = Save and continue
+base.save-and-come-back-later                                   = Save and come back later
 
 error-notification.prefix                                       = Error:
 
