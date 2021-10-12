@@ -18,20 +18,26 @@ package views.agent
 
 import agent.assets.MessageLookup.{Base => common, ClientDetails => messages}
 import forms.agent.ClientDetailsForm
+import models.usermatching.UserDetailsModel
+import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
+import views.html.agent.ClientDetails
 
 class ClientDetailsViewSpec extends ViewSpecTrait {
 
+  val clientDetails: ClientDetails = app.injector.instanceOf[ClientDetails]
   val action: Call = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.agent.client_details(
+  val clientDetailsForm: Form[UserDetailsModel] = ClientDetailsForm.clientDetailsForm.form
+
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = clientDetails(
     clientDetailsForm = ClientDetailsForm.clientDetailsForm.form.addError(addFormErrors),
     postAction = action,
     isEditMode = isEditMode
-  )(FakeRequest(), implicitly, appConfig)
+  )(FakeRequest(), mockMessages, appConfig)
 
   def documentCore(isEditMode: Boolean): TestView = TestView(
     name = "Client Details View",
@@ -83,7 +89,7 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore():TestView = TestView(
+    def documentCore(): TestView = TestView(
       name = "Client Details View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
