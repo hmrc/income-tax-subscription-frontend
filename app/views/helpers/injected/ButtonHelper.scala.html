@@ -18,11 +18,10 @@
     govukButton : GovukButton
 )
 
-@(
-    buttonText: String
-)(implicit messages: Messages)
-
+@(classes: Option[String] = None, buttonText: String, href: Option[String] = None)(implicit messages: Messages)
 
 @govukButton(Button(
-    content = Text(buttonText)
+    classes = classes.getOrElse(""),
+    content = Text(buttonText),
+    href = href
 ))

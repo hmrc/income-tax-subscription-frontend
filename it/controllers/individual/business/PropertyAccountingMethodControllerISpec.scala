@@ -16,6 +16,8 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -26,7 +28,12 @@ import models.{Accruals, Cash}
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys
 
-class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
+class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-method-property" when {
 
@@ -122,6 +129,31 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
         httpStatus(BAD_REQUEST),
         errorDisplayed()
       )
+    }
+
+    "save and retrieve feature switch is enabled" when {
+      "select the Cash radio button on the property accounting method page" when {
+        "click save and continue button" should {
+          "redirect to task list page" in {
+            enable(SaveAndRetrieve)
+            val userInput = AccountingMethodPropertyModel(Cash)
+
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyAccountingMethod, userInput)
+
+            When("POST /business/accounting-method-property is called")
+            val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(taskListURI)
+            )
+          }
+        }
+      }
     }
   }
 }

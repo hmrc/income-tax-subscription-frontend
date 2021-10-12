@@ -317,6 +317,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     def confirmation(): WSResponse = confirmation(Map.empty)
 
     def confirmation(additionalCookies: Map[String, String]): WSResponse = get("/confirmation", additionalCookies)
+
     def submitConfirmation(): WSResponse = post("/confirmation")(Map.empty)
 
     def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {

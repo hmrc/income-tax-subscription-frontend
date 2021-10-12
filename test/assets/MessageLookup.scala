@@ -22,6 +22,8 @@ object MessageLookup {
 
   object Base {
     val continue = "Continue"
+    val saveAndContinue = "Save and continue"
+    val saveAndComeBackLater = "Save and come back later"
     val continueToSignUp = "Continue to sign up"
     val submit = "Submit"
     val update = "Update"

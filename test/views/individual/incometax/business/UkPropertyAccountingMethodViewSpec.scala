@@ -18,6 +18,7 @@ package views.individual.incometax.business
 
 import assets.MessageLookup.PropertyAccountingMethod.{radioAccrualsDetail, radioCash, radioCashDetail}
 import assets.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
+import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -28,7 +29,7 @@ import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 import views.html.individual.incometax.business.PropertyAccountingMethod
 
-class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
+class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait with FeatureSwitching {
 
   val backUrl: String = ViewSpecTrait.testBackUrl
   val action: Call = ViewSpecTrait.testCall
@@ -36,12 +37,13 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
   implicit val request: Request[_] = FakeRequest()
   val propertyAccountingMethod: PropertyAccountingMethod = app.injector.instanceOf[PropertyAccountingMethod]
 
-  class Setup(isEditMode: Boolean = false) {
+  class Setup(isEditMode: Boolean = false, isSaveAndRetrieve: Boolean = false) {
     val page: HtmlFormat.Appendable = propertyAccountingMethod(
       accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm,
       postAction = action,
       isEditMode,
-      backUrl = backUrl
+      backUrl = backUrl,
+      isSaveAndRetrieve
     )(FakeRequest(), implicitly, appConfig)
 
     val document: Document = Jsoup.parse(page.body)
@@ -102,6 +104,21 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
           document.select(".govuk-button").text mustBe common.update
         }
       }
+
+      "has a save and continue button" that {
+        s"displays ${common.saveAndContinue} save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+          document.select("#main-content > div > div > form > div.govuk-button-group > button:nth-child(1)").text mustBe common.saveAndContinue
+        }
+      }
+
+      "has a save and come back later button and with a link that redirect to save and retrieve page" that {
+        s"displays ${common.saveAndComeBackLater} save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+          val saveAndComeBackButton = document.select("#main-content > div > div > form > div.govuk-button-group > a")
+          saveAndComeBackButton.text mustBe common.saveAndComeBackLater
+          saveAndComeBackButton.attr("href") mustBe controllers.individual.business.routes.ProgressSavedController.show().url
+        }
+      }
+
     }
 
   }
