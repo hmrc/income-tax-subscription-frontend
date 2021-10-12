@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
@@ -51,7 +51,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   private def withController(testCode: OverseasPropertyAccountingMethodController => Any): Unit = {
     val overseasPropertyAccountingMethodView = mock[OverseasPropertyAccountingMethod]
 
-    when(overseasPropertyAccountingMethodView(any(), any(), any(), any())(any(), any(), any()))
+    when(overseasPropertyAccountingMethodView(any(), any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new OverseasPropertyAccountingMethodController(
@@ -102,6 +102,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
+        disable(SaveAndRetrieve)
         setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callShow(isEditMode = false)
 
@@ -140,6 +141,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
 
       "redirect to checkYourAnswer page" in {
+        disable(SaveAndRetrieve)
         setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
@@ -149,7 +151,19 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         await(goodRequest)
         verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
         verifySubscriptionDetailsFetchAll(1)
+      }
 
+      "redirect to taskList page if Save & retrieve feature is enabled" in {
+        enable(SaveAndRetrieve)
+        setupMockSubscriptionDetailsSaveFunctions()
+
+        val goodRequest = callShow(isEditMode = true)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+
+        await(goodRequest)
+        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
+        verifySubscriptionDetailsFetchAll(1)
       }
     }
 
@@ -176,18 +190,26 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
             controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
         }
       }
-
     }
+
     "The back url is in edit mode" when {
       "the user click back url" should {
         "redirect to check your answer page" in withController { controller =>
+          disable(SaveAndRetrieve)
+
           setupMockSubscriptionDetailsSaveFunctions()
           controller.backUrl(isEditMode = true) mustBe
             controllers.individual.subscription.routes.CheckYourAnswersController.show().url
         }
+
+        "redirect to taskList page if Save & retrieve feature is enabled" in withController { controller =>
+          enable(SaveAndRetrieve)
+
+          setupMockSubscriptionDetailsSaveFunctions()
+          controller.backUrl(isEditMode = true) mustBe
+            controllers.individual.business.routes.TaskListController.show().url
+        }
       }
     }
-
   }
-
 }
