@@ -17,8 +17,8 @@
 package forms.agent
 
 import java.time.LocalDate
-
 import forms.formatters.DateModelMapping._
+import forms.usermatching.UserDetailsForm.{userDateOfBirth, userFirstName, userLastName, userNino}
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.DateModel
@@ -43,9 +43,9 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
                     dob: DateModel = dob
                    ): Map[String, String] = {
     Map(
-      clientDateOfBirth * day -> dob.day,
-      clientDateOfBirth * month -> dob.month,
-      clientDateOfBirth * year -> dob.year,
+      s"$clientDateOfBirth-$day" -> dob.day,
+      s"$clientDateOfBirth-$month" -> dob.month,
+      s"$clientDateOfBirth-$year" -> dob.year,
       clientFirstName -> fname,
       clientNino -> nino,
       clientLastName -> lname
@@ -142,7 +142,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
             val testInput = setupTestData(dob = DateModel("32", "12", "1980"))
             val errors = clientDetailsForm.bind(testInput).errors
-            errors must contain(FormError(s"$clientDateOfBirth.dateDay", error))
+            errors must contain(FormError(s"$clientDateOfBirth-dateDay", error))
           }
           "has an invalid month" in {
             val error = s"$dateErrorContext.invalid"
@@ -173,21 +173,21 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
             val testInput = setupTestData(dob = DateModel("", "12", "1980"))
             val errors = clientDetailsForm.bind(testInput).errors
-            errors must contain(FormError(s"$clientDateOfBirth.dateDay", error))
+            errors must contain(FormError(s"$clientDateOfBirth-dateDay", error))
           }
           "has an empty month" in {
             val error = s"$dateErrorContext.month.empty"
 
             val testInput = setupTestData(dob = DateModel("31", "", "1980"))
             val errors = clientDetailsForm.bind(testInput).errors
-            errors must contain(FormError(s"$clientDateOfBirth.dateMonth", error))
+            errors must contain(FormError(s"$clientDateOfBirth-dateMonth", error))
           }
           "has an empty year" in {
             val error = s"$dateErrorContext.year.empty"
 
             val testInput = setupTestData(dob = DateModel("31", "12", ""))
             val errors = clientDetailsForm.bind(testInput).errors
-            errors must contain(FormError(s"$clientDateOfBirth.dateYear", error))
+            errors must contain(FormError(s"$clientDateOfBirth-dateYear", error))
           }
           "has multiple empty fields" in {
             val error = s"$dateErrorContext.day_month.empty"

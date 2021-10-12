@@ -30,6 +30,7 @@ import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.agent.TestConstants
+import views.html.agent.ClientDetails
 
 import scala.concurrent.Future
 
@@ -41,23 +42,29 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "ClientDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestClientDetailsController.show(isEditMode = false),
-    "submit" -> TestClientDetailsController.submit(isEditMode = false)
   )
 
-  object TestClientDetailsController extends ClientDetailsController(
-    mockAuditingService,
-    mockAuthService,
-    MockSubscriptionDetailsService,
-    mockUserLockoutService
-  )
+  private def withController(testCode: ClientDetailsController => Any): Unit = {
+
+    val clientDetailsView = app.injector.instanceOf[ClientDetails]
+
+    val controller = new ClientDetailsController(
+      mockAuditingService,
+      mockAuthService,
+      MockSubscriptionDetailsService,
+      mockUserLockoutService,
+      clientDetailsView
+
+    )
+    testCode(controller)
+  }
 
   val testNino: String = TestConstants.testNino
   val testARN: String = TestConstants.testARN
 
-  "Calling the show action of the ClientDetailsController with an authorised user" should {
+  "Calling the show action of the ClientDetailsController with an authorised user" should withController { controller =>
 
-    def call(request: Request[AnyContent]): Future[Result] = TestClientDetailsController.show(isEditMode = false)(request)
+    def call(request: Request[AnyContent]): Future[Result] = controller.show(isEditMode = false)(request)
 
     "return ok (200) when not locked out" in {
       lazy val r = userMatchingRequest.buildRequest(None)
@@ -73,10 +80,12 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         charset(result) must be(Some("utf-8"))
       }
 
-      withClue("render the 'Not subscribed to Agent Services page'") {
+      withClue("render the 'Enter your client’s details' page") {
         val document = Jsoup.parse(contentAsString(result))
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-        document.title mustBe messages.title + serviceNameGovUk
+        val title = document.getElementsByTag("title").text()
+
+        title mustBe messages.title + serviceNameGovUk
       }
     }
 
@@ -109,7 +118,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
     s"when editMode=$editMode and" when {
 
-      "Calling the submit action of the ClientDetailsController with an authorised user and valid submission and" when {
+      "Calling the submit action of the ClientDetailsController with an authorised user and valid submission and" when withController { controller =>
 
         val testClientDetails =
           UserDetailsModel(
@@ -120,7 +129,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
           )
 
         def callSubmit(request: FakeRequest[AnyContentAsEmpty.type])(isEditMode: Boolean): Future[Result] =
-          TestClientDetailsController.submit(isEditMode = isEditMode)(
+          controller.submit(isEditMode = isEditMode)(
             request.post(ClientDetailsForm.clientDetailsForm.form, testClientDetails)
           )
 
@@ -184,7 +193,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "Calling the submit action of the ClientDetailsController with an authorised user and invalid submission" should {
+      "Calling the submit action of the ClientDetailsController with an authorised user and invalid submission" should withController { controller =>
 
         val newTestUserDetails = UserDetailsModel(
           firstName = "Abc",
@@ -193,7 +202,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
           dateOfBirth = DateModel("00", "01", "1980"))
 
         def callSubmit(isEditMode: Boolean): Future[Result] =
-          TestClientDetailsController.submit(isEditMode = isEditMode)(
+          controller.submit(isEditMode = isEditMode)(
             userMatchingRequest
               .post(ClientDetailsForm.clientDetailsForm.form, newTestUserDetails)
           )
@@ -226,7 +235,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
           val badResult = callSubmit(isEditMode = editMode)
           val document = Jsoup.parse(contentAsString(badResult))
           val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-          document.title mustBe "Error: " + messages.title + serviceNameGovUk
+          document.getElementsByTag("title").text mustBe "Error: " + messages.title + serviceNameGovUk
         }
 
       }
@@ -234,17 +243,17 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
   }
 
-  "If the agent is locked out" should {
+  "If the agent is locked out" should withController { controller =>
     s"calling show should redirect them to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show().url}" in {
       setupMockLockedOut(testARN)
-      lazy val result = TestClientDetailsController.show(isEditMode = false)(userMatchingRequest)
+      lazy val result = controller.show(isEditMode = false)(userMatchingRequest)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show().url
     }
 
     s"calling submit should redirect them to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show().url}" in {
       setupMockLockedOut(testARN)
-      lazy val result = TestClientDetailsController.submit(isEditMode = false)(userMatchingRequest)
+      lazy val result = controller.submit(isEditMode = false)(userMatchingRequest)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show().url
     }

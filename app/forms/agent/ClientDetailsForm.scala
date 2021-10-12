@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import forms.formatters.DateModelMapping
+import forms.formatters.NewDateModelMapping
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
 import forms.validation.utils.ConstraintUtil._
@@ -67,7 +67,7 @@ object ClientDetailsForm {
       clientFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       clientNino -> default(text, "").verifying(emptyClientNino andThen validateClientNino),
-      clientDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = true, errorContext = errorContext).verifying(dateInPast)
+      clientDateOfBirth -> NewDateModelMapping.dateModelMapping(isAgent = true, errorContext = errorContext).verifying(dateInPast)
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 

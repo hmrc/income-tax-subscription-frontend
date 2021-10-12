@@ -22,10 +22,13 @@ import controllers.SignOutController
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import play.api.data.Form
+import org.scalatest.{Assertion, MustMatchers, WordSpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import utilities.UnitTestTrait
 
 
@@ -169,7 +172,7 @@ trait ViewSpecTrait extends UnitTestTrait {
         }
 
         for ((radio, index) <- options.zip(1 to options.length)) {
-          val ignoredFirstIndex = if(index == 1) "" else s"-$index"
+          val ignoredFirstIndex = if (index == 1) "" else s"-$index"
           s"has a radio option for '$radioName-$index'" in {
             val radioButton = element.select(s"#$radioName$ignoredFirstIndex")
             radioButton.attr("type") mustBe "radio"
@@ -308,8 +311,7 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveSubmitButton(text: String): Unit =
       s"$name must have the a submit button (Button) '$text'" in {
-        import collection.JavaConversions._
-        val submitButtons = element.select("button").toSeq.filter(_.attr("type") == "submit")
+        val submitButtons = element.select("button")
         submitButtons.size mustBe 1
         submitButtons.head.text() mustBe text
       }
@@ -349,7 +351,7 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveContinueButtonWithText(text: String): Unit = {
       s"$name must have a button with id 'continue-button' with text '$text'" in {
-        element.getElementById("continue-button").text() mustBe(text)
+        element.getElementById("continue-button").text() mustBe (text)
       }
     }
 
@@ -381,23 +383,27 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveDateField(id: String, legend: String, exampleDate: String, isPageHeading: Boolean = true): Unit = {
       val selector = s"#$id"
-      s"${this.name} have a fieldset with id '$id' with the legend '$legend'" in {
-        val fieldset = element.getElementById(id)
+      s"${this.name} have a fieldset with class 'govuk-fieldset' with the legend '$legend'" in {
+        val fieldset = element.getElementsByClass("govuk-fieldset")
+
+        println("FIELDSET: " + fieldset)
+
         if(isPageHeading) {
           fieldset.select("legend").select("h1").text mustBe legend
         } else {
-          fieldset.select("legend").select("div.form-label-bold").text() mustBe legend
+          fieldset.select("legend").text() mustBe legend
         }
-        fieldset.select("div.form-hint").text() mustBe exampleDate
-        fieldset.tag().toString mustBe "fieldset"
+        fieldset.select("div#clientDateOfBirth-hint").text() mustBe exampleDate
+        fieldset.first().tag().toString mustBe "fieldset"
       }
       val date = selectHead(id, selector)
       val numericPattern = "[0-9]*"
       val inputMode = "numeric"
-      date.mustHaveTextField(s"$id.dateDay", common.day, maxLength = 2, pattern = numericPattern, inputMode = inputMode)
-      date.mustHaveTextField(s"$id.dateMonth", common.month, maxLength = 2, pattern = numericPattern, inputMode = inputMode)
-      date.mustHaveTextField(s"$id.dateYear", common.year, maxLength = 4, pattern = numericPattern, inputMode = inputMode)
+      date.mustHaveTextField(s"$id-dateDay", common.day, pattern = numericPattern, inputMode = inputMode)
+      date.mustHaveTextField(s"$id-dateMonth", common.month, pattern = numericPattern, inputMode = inputMode)
+      date.mustHaveTextField(s"$id-dateYear", common.year, pattern = numericPattern, inputMode = inputMode)
     }
+
 
     def mustHaveHrefValue(id: String, href: String): Unit = {
       s"${this.name} have a href attribute value with id '$id' " in {
@@ -432,7 +438,7 @@ trait ViewSpecTrait extends UnitTestTrait {
                  heading: String,
                  page: => Html,
                  showSignOutInBanner: Boolean = true,
-                  isAgent: Boolean = false) extends ElementTest {
+                 isAgent: Boolean = false) extends ElementTest {
 
     lazy val document: Document = Jsoup.parse(page.body)
     override lazy val element: Element = Option(document.getElementById("content")).getOrElse(document.getElementById("main-content"))
@@ -451,12 +457,12 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
     }
 
-    if(isAgent) {
-    s"$name must have the title '$title'" in {
-      val agentServiceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
-      document.title() mustBe title + agentServiceNameGovUK
+    if (isAgent) {
+      s"$name must have the title '$title'" in {
+        val agentServiceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
+        document.title() mustBe title + agentServiceNameGovUK
       }
-    }else {
+    } else {
       s"$name must have the title '$title'" in {
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         document.title() mustBe title + serviceNameGovUk
