@@ -18,22 +18,25 @@ package controllers.agent
 
 import auth.agent.UserMatchingController
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import views.html.agent.ClientAlreadySubscribed
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClientAlreadySubscribedController @Inject()(val auditingService: AuditingService,
-                                                  val authService: AuthService)
+                                                  val authService: AuthService,
+                                                  clientAlreadySubscribed: ClientAlreadySubscribed
+                                                 )
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
                                                   mcc: MessagesControllerComponents) extends UserMatchingController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Ok(views.html.agent.client_already_subscribed(
+      Future.successful(Ok(clientAlreadySubscribed(
         postAction = controllers.agent.routes.ClientAlreadySubscribedController.submit()
       )))
   }

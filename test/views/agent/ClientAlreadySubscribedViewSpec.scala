@@ -18,13 +18,15 @@ package views.agent
 
 import agent.assets.MessageLookup.{Base => common, ClientAlreadySubscribed => messages}
 import views.ViewSpecTrait
+import views.html.agent.ClientAlreadySubscribed
 
 class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
   val request = ViewSpecTrait.viewTestRequest
+  val clientAlreadySubscribed: ClientAlreadySubscribed = app.injector.instanceOf[ClientAlreadySubscribed]
 
-  lazy val page = views.html.agent.client_already_subscribed(action)(request, implicitly, appConfig)
+  lazy val page = clientAlreadySubscribed(action)(request, implicitly, appConfig)
 
   "The Client Already Enrolled view" should {
     val testPage = TestView(
@@ -43,7 +45,7 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
 
     form.mustHaveSubmitButton(common.goBack)
 
-    testPage.mustHaveSignOutLink(common.signOut, request.path)
+    testPage.mustHaveSignOutLinkGovUk(common.signOut, request.path)
 
   }
 }

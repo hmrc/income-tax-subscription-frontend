@@ -89,7 +89,6 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase with Feature
         }
 
         "return SEE_OTHER when selecting clicking sign up another client" in new Setup{
-
           val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
           val expectedRedirect: String = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/covid-19"
 
