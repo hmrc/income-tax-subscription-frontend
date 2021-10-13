@@ -18,13 +18,15 @@ package views.agent
 
 import agent.assets.MessageLookup.{Base => commonMessages, ClientDetailsLockout => messages}
 import views.ViewSpecTrait
+import views.html.agent.ClientDetailsLockout
 
 class ClientDetailsLockoutViewSpec extends ViewSpecTrait {
 
   val testTime = "test time"
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.agent.client_details_lockout(testTime)(request, implicitly, appConfig)
+  val clientDetailsLockout: ClientDetailsLockout = app.injector.instanceOf[ClientDetailsLockout]
+  lazy val page = clientDetailsLockout(testTime)(request, implicitly, appConfig)
 
   "The Client Details Lockout view" should {
     val testPage = TestView(

@@ -16,8 +16,6 @@
 
 package controllers.agent.matching
 
-import java.time.Duration
-
 import agent.assets.MessageLookup.{ClientDetailsLockout => messages}
 import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
@@ -30,26 +28,33 @@ import play.api.test.Helpers.{contentAsString, contentType, _}
 import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.agent.TestConstants.testARN
+import views.html.agent.ClientDetailsLockout
+
+import java.time.Duration
 
 class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
   with MockUserLockoutService with MockAuditingService {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "ClientDetailsLockoutController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestClientDetailsLockoutController.show
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestClientDetailsLockoutController extends ClientDetailsLockoutController(
-    mockAuditingService,
-    mockAuthService,
-    mockUserLockoutService
-  )
+  private def withController(testCode: ClientDetailsLockoutController => Any): Unit = {
+
+    val clientDetailsLockoutView = app.injector.instanceOf[ClientDetailsLockout]
+    val controller = new ClientDetailsLockoutController(
+      mockAuditingService,
+      mockAuthService,
+      mockUserLockoutService,
+      clientDetailsLockoutView
+    )
+    testCode(controller)
+  }
 
   "Calling the 'show' action of the ClientDetailsLockoutController" when {
 
-    "the agent is locked out" should {
-      lazy val result = TestClientDetailsLockoutController.show(userMatchingRequest)
+    "the agent is locked out" should withController { controller =>
+      lazy val result = controller.show(userMatchingRequest)
       lazy val document = Jsoup.parse(contentAsString(result))
 
       "return 200" in {
@@ -69,10 +74,10 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
     }
 
     "the agent is not locked out" should {
-      s"redirect to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in {
+      s"redirect to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in withController { controller =>
         setupMockNotLockedOut(testARN)
 
-        lazy val result = TestClientDetailsLockoutController.show(userMatchingRequest)
+        lazy val result = controller.show(userMatchingRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsController.show().url
@@ -80,10 +85,10 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
     }
 
     "there is a failure response from the lockout service" should {
-      "return an internal server exception" in {
+      "return an internal server exception" in withController { controller =>
         setupMockLockStatusFailureResponse(testARN)
 
-        lazy val result = TestClientDetailsLockoutController.show(userMatchingRequest)
+        lazy val result = controller.show(userMatchingRequest)
 
         intercept[InternalServerException](await(result)).getMessage mustBe "[ClientDetailsLockoutController][handleLockOut] lockout status failure"
       }
@@ -94,45 +99,45 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
   "durationText" when {
     "the language is English" should {
       implicit lazy val r: Request[_] = FakeRequest()
-      "convert time using correct singular units" in {
+      "convert time using correct singular units" in withController { controller =>
         val testDuration = List(Duration.ofHours(1), Duration.ofMinutes(1), Duration.ofSeconds(1)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration) mustBe "1 hour 1 minute 1 second"
+        controller.durationText(testDuration) mustBe "1 hour 1 minute 1 second"
       }
 
-      "convert time using correct plural units" in {
+      "convert time using correct plural units" in withController { controller =>
         val testDuration = List(Duration.ofHours(2), Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration) mustBe "2 hours 2 minutes 2 seconds"
+        controller.durationText(testDuration) mustBe "2 hours 2 minutes 2 seconds"
       }
 
-      "convert different combinations of hour minute seconds correctly" in {
+      "convert different combinations of hour minute seconds correctly" in withController { controller =>
         val testDuration1 = List(Duration.ofHours(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration1) mustBe "2 hours 2 seconds"
+        controller.durationText(testDuration1) mustBe "2 hours 2 seconds"
         val testDuration2 = List(Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration2) mustBe "2 minutes 2 seconds"
+        controller.durationText(testDuration2) mustBe "2 minutes 2 seconds"
         val testDuration3 = List(Duration.ofMinutes(2)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration3) mustBe "2 minutes"
+        controller.durationText(testDuration3) mustBe "2 minutes"
       }
     }
 
     "the language is Welsh" should {
       implicit lazy val r: Request[_] = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
-      "convert time using correct singular units" in {
+      "convert time using correct singular units" in withController { controller =>
         val testDuration = List(Duration.ofHours(1), Duration.ofMinutes(1), Duration.ofSeconds(1)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration) mustBe "1 awr 1 munud 1 eiliad"
+        controller.durationText(testDuration) mustBe "1 awr 1 munud 1 eiliad"
       }
 
-      "convert time using correct plural units" in {
+      "convert time using correct plural units" in withController { controller =>
         val testDuration = List(Duration.ofHours(2), Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration) mustBe "2 oriau 2 munudau 2 eiliadau"
+        controller.durationText(testDuration) mustBe "2 oriau 2 munudau 2 eiliadau"
       }
 
-      "convert different combinations of hour minute seconds correctly" in {
+      "convert different combinations of hour minute seconds correctly" in withController { controller =>
         val testDuration1 = List(Duration.ofHours(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration1) mustBe "2 oriau 2 eiliadau"
+        controller.durationText(testDuration1) mustBe "2 oriau 2 eiliadau"
         val testDuration2 = List(Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration2) mustBe "2 munudau 2 eiliadau"
+        controller.durationText(testDuration2) mustBe "2 munudau 2 eiliadau"
         val testDuration3 = List(Duration.ofMinutes(2)).reduce(_.plus(_))
-        TestClientDetailsLockoutController.durationText(testDuration3) mustBe "2 munudau"
+        controller.durationText(testDuration3) mustBe "2 munudau"
       }
     }
   }
