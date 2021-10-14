@@ -16,15 +16,20 @@
 
 @import config.AppConfig
 @import views.html.helpers._
-@import views.html.templates.agent_main_template
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.injected.SignOutButton
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    signOutButton: SignOutButton
+)
 
 @(durationText: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent_main_template(title = Messages("agent.client-details-lockout.title")) {
+
+@mainTemplate(title = Messages("agent.client-details-lockout.title")) {
     <h1 class="heading-large">@Messages("agent.client-details-lockout.heading")</h1>
     <p>@Messages("agent.client-details-lockout.line_1", durationText)</p>
-    <div class="form-group">
-        @signOutButton()
-    </div>
-
+    @signOutButton()
 }
