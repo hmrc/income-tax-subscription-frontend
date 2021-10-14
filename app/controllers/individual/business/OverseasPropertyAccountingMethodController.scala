@@ -18,6 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import forms.individual.business._
 
 import javax.inject.Inject
@@ -39,17 +40,16 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends SignUpController {
 
-
   def view(overseasPropertyAccountingMethodForm: Form[OverseasAccountingMethodPropertyModel], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
-   overseasPropertyAccountingMethod(
+    overseasPropertyAccountingMethod(
       overseasPropertyAccountingMethodForm = overseasPropertyAccountingMethodForm,
       postAction = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
+      isSaveAndRetrieve = isEnabled(SaveAndRetrieve),
       backUrl = backUrl(isEditMode)
     )
   }
-
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -67,7 +67,11 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
           Future.successful(BadRequest(view(overseasPropertyAccountingMethodForm = formWithErrors, isEditMode = isEditMode))),
         overseasPropertyAccountingMethod => {
           subscriptionDetailsService.saveOverseasAccountingMethodProperty(overseasPropertyAccountingMethod) map { _ =>
-            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+            if (isEnabled(SaveAndRetrieve)) {
+              Redirect(controllers.individual.business.routes.TaskListController.show())
+            } else {
+              Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+            }
           }
         }
       )
@@ -75,11 +79,12 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {
-    if (isEditMode) {
+    if (isEditMode && isEnabled(SaveAndRetrieve)) {
+      controllers.individual.business.routes.TaskListController.show().url
+    } else if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
       controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
     }
-
   }
 }

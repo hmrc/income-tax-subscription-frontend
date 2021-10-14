@@ -1,5 +1,3 @@
-
-
 ## Base ##
 base.service_name                                               = Use software to send Income Tax updates
 base.back                                                       = Back
@@ -22,11 +20,8 @@ base.no                                                         = No
 base.go_back                                                    = Go back
 base.userResearch.title                                         = Help to improve our service
 base.userResearch.link                                          = Answer some questions about yourself to join the research panel
-base.save-and-continue-button                                   = Save and continue
-base.save-and-come-back-later                                   = Save and come back later
-
-#Save and retrieve
 base.save-and-continue                                          = Save and continue
+base.save-and-come-back-later                                   = Save and come back later
 
 error-notification.prefix                                       = Error:
 
