@@ -20,19 +20,31 @@ import assets.MessageLookup
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.test.Helpers._
+import views.html.agent.ClientNoSa
 
 class NoSAControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "NoSAController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestNoSAController extends NoSAController(mockMessagesControllerComponents)
+  private def withController(testCode: NoSAController => Any): Unit = {
+    val mockClientNoSaView: ClientNoSa = app.injector.instanceOf[ClientNoSa]
 
-  "Calling the show action of the NoSAController" should {
+    implicit lazy val mockMessagesControllerComponents: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
-    lazy val result = TestNoSAController.show(subscriptionRequest)
+    val controller = new NoSAController(
+      mockClientNoSaView,
+      mockMessagesControllerComponents
+    )
+
+    testCode(controller)
+  }
+
+  "Calling the show action of the NoSAController" should withController { controller =>
+
+    lazy val result = controller.show(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
