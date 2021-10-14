@@ -22,6 +22,7 @@ import config.AppConfig
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.ITSASessionKeys
 import controllers.agent.ITSASessionKeys.FailedClientMatching
+
 import javax.inject.{Inject, Singleton}
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
@@ -31,6 +32,7 @@ import play.twirl.api.Html
 import services._
 import services.agent._
 import uk.gov.hmrc.http.InternalServerException
+import views.html.agent.CheckYourClientDetails
 
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,17 +40,18 @@ import scala.util.Left
 
 
 @Singleton
-class ConfirmClientController @Inject()(val auditingService: AuditingService,
+class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourClientDetails,
+                                        val auditingService: AuditingService,
                                         val authService: AuthService,
-                                        agentQualificationService: AgentQualificationService,
-                                        eligibilityService: GetEligibilityStatusService,
-                                        lockOutService: UserLockoutService)
+                                        val agentQualificationService: AgentQualificationService,
+                                        val eligibilityService: GetEligibilityStatusService,
+                                        val lockOutService: UserLockoutService)
                                        (implicit val ec: ExecutionContext,
                                         val appConfig: AppConfig,
                                         mcc: MessagesControllerComponents) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
-    views.html.agent.check_your_client_details(
+    checkYourClientDetails(
       userDetailsModel,
       routes.ConfirmClientController.submit(),
       backUrl
