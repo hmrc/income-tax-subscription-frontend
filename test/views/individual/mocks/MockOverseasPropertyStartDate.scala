@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.twirl.api.HtmlFormat
-import views.html.individual.incometax.business.{OverseasPropertyStartDate, PropertyStartDate}
+import views.html.individual.incometax.business.OverseasPropertyStartDate
 
 trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
@@ -34,7 +34,7 @@ trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with Befo
   }
 
   def mockOverseasPropertyStartDate(): Unit = {
-    when(overseasPropertyStartDate(any(), any(), any(), any())(any(), any()))
+    when(overseasPropertyStartDate(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 
