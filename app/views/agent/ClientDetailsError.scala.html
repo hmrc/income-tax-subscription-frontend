@@ -15,16 +15,23 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.templates.agent_main_template
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.injected.{ContinueButton, SignOutLink}
 @import views.html.helpers._
 @import views.agent.helpers._
 @import config.AppConfig
 
+@this(
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    continueButton: ContinueButton
+)
+
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent_main_template(title = Messages("agent.client-details-error.title")) {
-    <h1 class="heading-large">@Messages("agent.client-details-error.heading")</h1>
-    <p>@Messages("agent.client-details-error.line_1")</p>
+@mainTemplate(title = Messages("agent.client-details-error.title")) {
+    <h1 class="govuk-heading-l">@Messages("agent.client-details-error.heading")</h1>
+    <p class="govuk-body">@Messages("agent.client-details-error.line_1")</p>
     <div class="form-group">
     @form(action = postAction) {
         @continueButton(Messages("agent.base.try_again"))
