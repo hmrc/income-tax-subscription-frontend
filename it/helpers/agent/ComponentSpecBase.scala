@@ -433,6 +433,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def content: Element = element.firstOf("article")
 
+    def mainContent: Element = element.firstOf("main")
+
     def getParagraphs: Elements = element.getElementsByTag("p")
 
     def getNthParagraph(nth: Int): Element = element.firstOf(s"p:nth-of-type($nth)")
@@ -462,6 +464,8 @@ trait ComponentSpecBase extends UnitSpec
     def getFieldset: Element = element.firstOf("fieldset")
 
     def getBackLink: Element = element.firstOf(s"a[class=link-back]")
+
+    def getGovukBackLink: Element = element.firstOf("a[class=govuk-back-link]")
 
     def getParagraphNth(index: Int = 0): String = {
       element.select("p").get(index).text()

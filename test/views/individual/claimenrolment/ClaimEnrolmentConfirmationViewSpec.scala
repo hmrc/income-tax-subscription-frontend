@@ -86,9 +86,8 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpecTrait {
         a attr "href" mustBe (appConfig.incomeTaxViewChangeUrl)
       }
 
-      "have a sign out button" in {
+      "have a sign out link" in {
         val actionSignOut = document.getElementById("sign-out-button")
-        actionSignOut.attr("role") mustBe "button"
         actionSignOut.text() mustBe MessageLookup.Base.signOut
         actionSignOut.attr("href") mustBe SignOutController.signOut.url
       }

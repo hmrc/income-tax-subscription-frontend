@@ -14,25 +14,30 @@
  * limitations under the License.
  *@
 
-@import play.api.mvc.Request
-@import play.api.i18n.Messages
 @import config.AppConfig
-@import views.html.templates.agent_main_template
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers.continueButton
-@import views.html.helpers.signOutLink
-@import views.html.helpers.back_link
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@import play.api.i18n.Messages
+@import play.api.mvc.Request
+@import views.html.helpers.injected.{ContinueButton, SignOutLink}
+@import views.html.templates.AgentMainTemplate
 
-@agent_main_template(title = messages("agent.cannot_take_part.title")) {
+@this(
+        mainTemplate: AgentMainTemplate,
+        form: FormWithCSRF,
+        continueButton: ContinueButton,
+        signOutLink: SignOutLink
+)(
+        implicit appConfig: AppConfig
+)
 
-    @back_link("javascript:history.back()")
+@()(implicit request: Request[_], messages: Messages)
 
-    <h1>@messages("agent.cannot_take_part.heading")</h1>
+@mainTemplate(title = messages("agent.cannot_take_part.title")) {
 
-    <p>@messages("agent.cannot_take_part.income")</p>
+    <h1 class="govuk-heading-l">@messages("agent.cannot_take_part.heading")</h1>
 
-    <ul class="list list-bullet">
+    <p class="govuk-body">@messages("agent.cannot_take_part.income")</p>
+
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("agent.cannot_take_part.income.point1")</li>
         <li>@messages("agent.cannot_take_part.income.point2")</li>
         <li>@messages("agent.cannot_take_part.income.point3")</li>
@@ -40,28 +45,27 @@
         <li>@messages("agent.cannot_take_part.income.point5")</li>
     </ul>
 
-    <p>@messages("agent.cannot_take_part.other")</p>
+    <p class="govuk-body">@messages("agent.cannot_take_part.other")</p>
 
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("agent.cannot_take_part.other.point1")</li>
         <li>@messages("agent.cannot_take_part.other.point2")</li>
         <li>@messages("agent.cannot_take_part.other.point3")</li>
         <li>@messages("agent.cannot_take_part.other.point4")</li>
     </ul>
 
-    <p>
+    <p class="govuk-body">
         @Html(messages(
             "agent.cannot_take_part.alternative",
-            <a href="https://www.gov.uk/self-assessment-tax-returns/sending-return">{messages("agent.cannot_take_part.alternative.link")}</a>
+                <a class="govuk-link" href="https://www.gov.uk/self-assessment-tax-returns/sending-return">{messages("agent.cannot_take_part.alternative.link")}</a>
         ))
     </p>
 
     @form(action = controllers.agent.eligibility.routes.Covid19ClaimCheckController.show()) {
-        <div class="form-group">
-            @continueButton(Some(messages("agent.base.sign_up_another_client")))
+        <div class="govuk-form-group">
+            <div>@continueButton(Some(messages("agent.base.sign_up_another_client")))</div>
+            <div>@signOutLink()</div>
         </div>
     }
-
-    @signOutLink()
 
 }

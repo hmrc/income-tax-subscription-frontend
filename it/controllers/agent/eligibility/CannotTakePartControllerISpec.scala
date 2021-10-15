@@ -30,10 +30,8 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart
     val doc: Document = Jsoup.parse(result.body)
-    val pageContent: Element = doc.content
+    val pageContent: Element = doc.mainContent
   }
-
-
 
   object CannotTakePartMessages {
     val back: String = "Back"
@@ -68,10 +66,6 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
       "has the correct title" in new Setup {
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         doc.title shouldBe CannotTakePartMessages.title + serviceNameGovUk
-      }
-
-      "has a back link" in new Setup {
-        pageContent.getBackLink.text shouldBe CannotTakePartMessages.back
       }
 
       "has the correct heading" in new Setup {
@@ -139,11 +133,11 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
         form.attr("method") shouldBe "GET"
         form.attr("action") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show().url
 
-        form.getSubmitButton.text shouldBe CannotTakePartMessages.signUpAnother
+        form.firstOf("button").text shouldBe CannotTakePartMessages.signUpAnother
       }
 
       "has a link to sign out" in new Setup {
-        val link: Element = pageContent.getLink("sign-out")
+        val link: Element = pageContent.getLink("sign-out-button")
 
         link.attr("href") shouldBe controllers.SignOutController.signOut.url
         link.text shouldBe CannotTakePartMessages.signOut
