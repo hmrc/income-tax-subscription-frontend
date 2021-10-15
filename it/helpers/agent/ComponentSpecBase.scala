@@ -455,6 +455,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def getSubmitButton: Element = element.firstOf("button[type=submit]")
 
+    def getGovUkSubmitButton: Element = element.getElementsByClass("govuk-button").head
+
     def getHintText: String = element.select(s"""[class=form-hint]""").text()
 
     def getForm: Element = element.firstOf("form")

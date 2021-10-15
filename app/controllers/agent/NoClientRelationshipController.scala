@@ -20,29 +20,32 @@ import auth.agent.UserMatchingController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import config.featureswitch.FeatureSwitching
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import views.html.agent.NoClientRelationship
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NoClientRelationshipController @Inject()(val auditingService: AuditingService,
-                                               val authService: AuthService)
+                                               val authService: AuthService,
+                                               noClientRelationship: NoClientRelationship
+                                              )
                                               (implicit val ec: ExecutionContext,
                                                mcc: MessagesControllerComponents,
                                                val appConfig: AppConfig) extends UserMatchingController with FeatureSwitching {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Ok(views.html.agent.no_client_relationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit())))
+      Future.successful(Ok(noClientRelationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit())))
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
         Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show()))
-  } else {
+      } else {
         Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show()))
       }
   }
