@@ -18,23 +18,24 @@ package controllers.agent.eligibility
 
 import auth.agent.StatelessController
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import views.html.agent.eligibility.cannot_take_part
+import views.html.agent.eligibility.CannotTakePart
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class CannotTakePartController @Inject()(val auditingService: AuditingService,
-                                         val authService: AuthService)
+                                         val authService: AuthService,
+                                         cannotTakePart: CannotTakePart)
                                         (implicit val appConfig: AppConfig,
                                          mcc: MessagesControllerComponents,
                                          val ec: ExecutionContext) extends StatelessController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(cannot_take_part())
+      Ok(cannotTakePart())
   }
 
 }

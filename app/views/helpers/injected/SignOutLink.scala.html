@@ -20,4 +20,4 @@
 
 @(alternativeText: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-<a id="sign-out-button" class="button govuk-link" role="button" href="@signOut">@alternativeText.getOrElse(messages("base.sign-out"))</a>
+<a id="sign-out-button" class="govuk-link" href="@signOut">@alternativeText.getOrElse(messages("base.sign-out"))</a>

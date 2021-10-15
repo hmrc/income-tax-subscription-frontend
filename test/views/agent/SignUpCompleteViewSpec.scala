@@ -219,7 +219,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
     }
 
     "have a sign out link" in {
-      documentNextTaxYear.getElementsByClass("button govuk-link").get(0).text() mustBe MessageLookup.Base.signOut
+      documentNextTaxYear.getElementsByClass("govuk-link").get(0).text() mustBe MessageLookup.Base.signOut
     }
 
   }
