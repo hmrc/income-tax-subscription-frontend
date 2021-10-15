@@ -14,25 +14,33 @@
  * limitations under the License.
  *@
 
-@import views.html.templates.agent_main_template
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.injected.{ContinueButton, SignOutLink}
 @import config.AppConfig
-@import views.html.helpers._
-@import views.agent.helpers._
-@import uk.gov.hmrc.play.views.html.helpers.form
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    continueButton: ContinueButton,
+    signOutLink: SignOutLink
+)
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent_main_template(title = Messages("agent.client-already-subscribed.title")) {
+@mainTemplate(title = Messages("agent.client-already-subscribed.title")) {
 
-  <h1 class="heading-large">@Messages("agent.client-already-subscribed.heading")</h1>
+    <h1 class="govuk-heading-l">@Messages("agent.client-already-subscribed.heading")</h1>
 
-  <div class="form-group">
-    <p>@Messages("agent.client-already-subscribed.para1")</p>
-  </div>
-  <div class="form-group">
+    <p class="govuk-body">@Messages("agent.client-already-subscribed.para1")</p>
+
+
     @form(action = postAction) {
-      @continueButton(Messages("agent.base.go_back"))
+
+        <div class="govuk-form-group">
+            <div>@continueButton(alternateText = Some(Messages("agent.base.go_back")))</div>
+            <div>@signOutLink()</div>
+        </div>
+
     }
-  </div>
-  @signOutLink()
+
 }

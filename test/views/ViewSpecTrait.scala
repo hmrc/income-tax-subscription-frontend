@@ -341,6 +341,20 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
     }
 
+    def mustHaveSignOutLinkGovUk(text: String, optOrigin: Option[String] = None): Unit = {
+      val id = "sign-out-button"
+      optOrigin match {
+        case Some(origin) => mustHaveALink(id, text, SignOutController.signOut.url)
+        case _ =>
+          s"$name have a link with text '$text' pointed to 'Sign Out'" in {
+            val link = element.getElementById(id)
+            if (link.isEmpty) fail(s"Unable to locate $id")
+            if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
+            link.text() mustBe text
+          }
+      }
+    }
+
     def mustHaveContinueButton(): Unit = mustHaveSubmitButton(common.continue)
 
     def mustHaveContinueToSignUpButton(): Unit = mustHaveSubmitButton(common.continueToSignUp)
@@ -388,7 +402,7 @@ trait ViewSpecTrait extends UnitTestTrait {
 
         println("FIELDSET: " + fieldset)
 
-        if(isPageHeading) {
+        if (isPageHeading) {
           fieldset.select("legend").select("h1").text mustBe legend
         } else {
           fieldset.select("legend").text() mustBe legend

@@ -22,23 +22,28 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import views.html.agent.ClientAlreadySubscribed
 
 class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
 
   override val controllerName: String = "ClientAlreadySubscribedController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestClientAlreadySubscribedController.show(),
-    "submit" -> TestClientAlreadySubscribedController.submit()
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestClientAlreadySubscribedController extends ClientAlreadySubscribedController(
-    mockAuditingService,
-    mockAuthService
-  )(executionContext, appConfig, mockMessagesControllerComponents)
+  private def withController(testCode: ClientAlreadySubscribedController => Any): Unit = {
 
-  "Calling the show action of the ClientAlreadySubscribedController with an Authenticated User" should {
+    val clientAlreadySubscribedView = app.injector.instanceOf[ClientAlreadySubscribed]
 
-    lazy val result = TestClientAlreadySubscribedController.show(userMatchingRequest)
+    val controller = new ClientAlreadySubscribedController(
+      mockAuditingService,
+      mockAuthService,
+      clientAlreadySubscribedView
+    )
+    testCode(controller)
+  }
+
+  "Calling the show action of the ClientAlreadySubscribedController with an Authenticated User" should withController { controller =>
+
+    lazy val result = controller.show(userMatchingRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -61,10 +66,9 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec with
 
   }
 
-  "Calling the submit action of the ClientAlreadySubscribedController with an Authenticated User" should {
+  "Calling the submit action of the ClientAlreadySubscribedController with an Authenticated User" should withController { controller =>
 
-    lazy val result = TestClientAlreadySubscribedController.submit(userMatchingRequest)
-    lazy val document = Jsoup.parse(contentAsString(result))
+    lazy val result = controller.submit(userMatchingRequest)
 
     "return 303" in {
       status(result) must be(Status.SEE_OTHER)
