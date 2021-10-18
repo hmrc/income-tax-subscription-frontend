@@ -28,6 +28,7 @@ import play.twirl.api.HtmlFormat
 import utilities.agent.TestConstants
 import utilities.{TestModels, UnitTestTrait}
 import views.agent.helpers.ConfirmClientIdConstants._
+import views.html.agent.CheckYourClientDetails
 
 class CheckYourClientDetailsViewSpec extends UnitTestTrait {
 
@@ -44,7 +45,9 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
   lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit()
   lazy val backUrl: String = "testBackUrl"
 
-  def page(): HtmlFormat.Appendable = views.html.agent.check_your_client_details(
+  private val checkYourClientDetails = app.injector.instanceOf[CheckYourClientDetails]
+
+  def page(): HtmlFormat.Appendable = checkYourClientDetails(
     userDetailsModel = testClientDetails,
     postAction = postAction,
     backUrl = backUrl
@@ -71,7 +74,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
   "Confirm Client page view" should {
 
     s"have a back buttong pointed to $backUrl" in {
-      val backLink = document().select("#back")
+      val backLink = document().select("#back-link")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
     }
@@ -110,11 +113,10 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
                     expectedEditLink: Option[String],
                     rowNo: Int,
                     expectedHiddenContent: Option[String]): Unit = {
-      val accountingPeriod = document().getElementById(sectionId)
       val question = document().getElementById(questionId(sectionId))
       val answer = document().getElementById(answerId(sectionId))
       val editLink = document().getElementById(editLinkId(sectionId))
-      val hiddenContent = document.getElementsByClass("visuallyhidden").get(rowNo).text()
+      val hiddenContent = document.getElementsByClass("govuk-visually-hidden").get(rowNo).text()
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -123,10 +125,10 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       question.text() shouldBe expectedQuestion
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
-        val link = editLink.select("a")
+        val link = editLink.select(".govuk-link")
         link.attr("href") shouldBe expectedEditLink.get
         link.text() should include(MessageLookup.Base.change)
-        link.select(".visuallyhidden").get(0).text() shouldBe hiddenContent
+        link.select(".govuk-visually-hidden").get(0).text() shouldBe hiddenContent
       }
     }
 
@@ -142,7 +144,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 1,
+        rowNo = 2,
         expectedHiddenContent = expectedHiddenContent
       )
     }
@@ -158,7 +160,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 2,
+        rowNo = 3,
         expectedHiddenContent = expectedHiddenContent
       )
     }
@@ -174,7 +176,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 3,
+        rowNo = 4,
         expectedHiddenContent = expectedHiddenContent
       )
     }
@@ -190,7 +192,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 4,
+        rowNo = 5,
         expectedHiddenContent = expectedHiddenContent
       )
     }

@@ -22,9 +22,14 @@
   continueButton: ContinueButton
 )
 
-@(heading: String, postAction: Call)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@(heading: String, postAction: Call, headingHidden: Option[String] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-<h1 class="govuk-heading-xl">@heading</h1>
+<h1 class="govuk-heading-xl">
+  @heading
+  @headingHidden.map { hiddenContent =>
+    <span class="govuk-visually-hidden">@hiddenContent</span>
+  }
+</h1>
 
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
   @contentBlock
