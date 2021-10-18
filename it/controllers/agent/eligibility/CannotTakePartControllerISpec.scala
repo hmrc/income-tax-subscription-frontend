@@ -68,6 +68,12 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
         doc.title shouldBe CannotTakePartMessages.title + serviceNameGovUk
       }
 
+      "has a back button" in new Setup {
+        val link: Element = doc.getGovukBackLink
+        link.attr("href") shouldBe "javascript:history.back()"
+        link.text shouldBe CannotTakePartMessages.back
+      }
+
       "has the correct heading" in new Setup {
         pageContent.getH1Element.text() shouldBe CannotTakePartMessages.heading
       }

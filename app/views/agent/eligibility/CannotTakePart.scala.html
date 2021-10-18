@@ -31,7 +31,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.cannot_take_part.title")) {
+@mainTemplate(title = messages("agent.cannot_take_part.title"), backLink = Some("javascript:history.back()")) {
 
     <h1 class="govuk-heading-l">@messages("agent.cannot_take_part.heading")</h1>
 
