@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helper.form
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.injected.{ContinueButton, SignOutLink}
 @import views.html.helpers._
@@ -24,6 +24,7 @@
 @this(
     mainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
+    signOutLink: SignOutLink,
     continueButton: ContinueButton
 )
 
@@ -36,7 +37,8 @@
     @form(action = postAction) {
         @continueButton(Messages("agent.base.try_again"))
     }
+        @signOutLink()
     </div>
-    @signOutLink()
+
 
 }
