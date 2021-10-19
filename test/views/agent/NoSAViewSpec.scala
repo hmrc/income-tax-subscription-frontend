@@ -21,12 +21,13 @@ import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
+import views.html.agent.ClientNoSa
 
 class NoSAViewSpec extends ViewSpecTrait {
   val action: Call = ViewSpecTrait.testCall
   val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
-
-  lazy val page: HtmlFormat.Appendable = views.html.agent.no_sa()(request, implicitly, appConfig)
+  val clientNoSa: ClientNoSa = app.injector.instanceOf[ClientNoSa]
+  lazy val page: HtmlFormat.Appendable = clientNoSa()(request, implicitly, appConfig)
 
   "The No SA view" should {
 

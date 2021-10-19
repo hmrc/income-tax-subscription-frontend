@@ -17,18 +17,20 @@
 package controllers.agent.matching
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.html.agent.ClientNoSa
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class NoSAController @Inject()(mcc: MessagesControllerComponents)
+class NoSAController @Inject()(clientNoSa: ClientNoSa,
+                               mcc: MessagesControllerComponents)
                               (implicit appConfig: AppConfig) extends FrontendController(mcc) {
 
   val show: Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(views.html.agent.no_sa()))
+    implicit request => Future.successful(Ok(clientNoSa()))
   }
 
 }
