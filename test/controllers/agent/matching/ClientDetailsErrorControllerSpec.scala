@@ -20,28 +20,35 @@ import agent.assets.MessageLookup.{ClientDetailsError => messages}
 import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.{contentAsString, contentType, _}
+import play.twirl.api.HtmlFormat
+import views.html.agent.ClientDetailsError
+
+import scala.concurrent.Future
 
 class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "ClientDetailsErrorController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestClientDetailsErrorController.show,
-    "submit" -> TestClientDetailsErrorController.submit
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+
+  val mockClientDetailsError: ClientDetailsError = mock[ClientDetailsError]
+  when(mockClientDetailsError(ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
+    .thenReturn(HtmlFormat.empty)
 
   object TestClientDetailsErrorController extends ClientDetailsErrorController(
     mockAuditingService,
-    mockAuthService
+    mockAuthService,
+    mockClientDetailsError
   )
 
   "Calling the 'show' action of the ClientDetailsErrorController" should {
 
     lazy val result = TestClientDetailsErrorController.show(userMatchingRequest)
-    lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
       status(result) must be(Status.OK)
@@ -51,17 +58,6 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with Mock
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
     }
-
-    "render the 'Client Details Error page'" in {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      document.title mustBe messages.title + serviceNameGovUk
-    }
-
-    s"the page must have a link to sign out}" in {
-      document.select("#sign-out").attr("href") mustBe
-        controllers.SignOutController.signOut.url
-    }
-
   }
 
   "Calling the 'submit' action of the ClientDetailsErrorController" should {

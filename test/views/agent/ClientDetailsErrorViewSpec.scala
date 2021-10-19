@@ -18,13 +18,17 @@ package views.agent
 
 import agent.assets.MessageLookup.{Base => commonMessages, ClientDetailsError => messages}
 import views.ViewSpecTrait
+import views.html.agent.ClientDetailsError
 
 class ClientDetailsErrorViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.agent.client_details_error(action)(request, implicitly, appConfig)
+  lazy val clientDetailsError = app.injector.instanceOf[ClientDetailsError]
+  lazy val page = clientDetailsError(action)(request, implicitly, appConfig)
+
+
 
   "The Client Details Error view" should {
     val testPage = TestView(
@@ -36,6 +40,10 @@ class ClientDetailsErrorViewSpec extends ViewSpecTrait {
     )
 
     testPage.mustHavePara(messages.line1)
+
+    val form = testPage.getForm("Client Details Error form")(actionCall = action)
+
+    form.mustHaveContinueButtonWithText(commonMessages.tryAgain)
 
     testPage.mustHaveSignOutLink(commonMessages.signOut, request.path)
 
