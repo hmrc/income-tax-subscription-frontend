@@ -18,11 +18,10 @@ package controllers.individual.incomesource
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import forms.individual.incomesource.IncomeSourceForm
-import javax.inject.{Inject, Singleton}
 import models.IndividualSummary
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
@@ -36,6 +35,7 @@ import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
 import views.html.individual.incometax.incomesource.IncomeSource
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -89,7 +89,12 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
       if (isEnabled(ReleaseFour)) {
         incomeSource match {
           case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true) =>
-            Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+            if (isEnabled(SaveAndRetrieve)) {
+              Redirect(appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl)
+            }
+            else {
+              Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+            }
           case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(releaseFourEnabled = true) =>
             Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
           case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
@@ -141,7 +146,9 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
+    if (isEnabled(SaveAndRetrieve)) {
+      controllers.individual.business.routes.TaskListController.show().url
+    } else if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
       controllers.individual.business.routes.WhatYearToSignUpController.show().url

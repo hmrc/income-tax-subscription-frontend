@@ -100,6 +100,7 @@ trait MockConfig extends AppConfig {
   override val incomeTaxSelfEmploymentsFrontendUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments"
   override val incomeTaxSelfEmploymentsFrontendCheckYourAnswersUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-list"
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details"
+  override val incomeTaxSelfEmploymentsFrontendBusinessNameUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details/business-name"
   override val incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details/business-accounting-method"
   override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
 

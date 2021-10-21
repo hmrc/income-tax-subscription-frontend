@@ -107,6 +107,8 @@ trait AppConfig extends FeatureSwitching {
 
   def incomeTaxSelfEmploymentsFrontendInitialiseUrl: String
 
+  def incomeTaxSelfEmploymentsFrontendBusinessNameUrl: String
+
   def incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String
 
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
@@ -274,6 +276,10 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = {
     s"$incomeTaxSelfEmploymentsFrontendUrl/details"
+  }
+
+  override val incomeTaxSelfEmploymentsFrontendBusinessNameUrl: String = {
+    s"$incomeTaxSelfEmploymentsFrontendUrl/details/business-name"
   }
 
   override val incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String = {
