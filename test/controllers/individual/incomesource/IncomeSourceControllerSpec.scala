@@ -105,199 +105,302 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       )
     }
 
-    "feature switch save and retrieve is enabled" when {
-      "Only self-employed is checked" should {
-        "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
+        "When it is not edit mode" should {
+          "feature switch save and retrieve is enabled" when {
+            "Only self-employed is checked" should {
+              "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
+                setupMockSubscriptionDetailsSaveFunctions()
 
-          enable(SaveAndRetrieve)
-          enable(ReleaseFour)
+                enable(SaveAndRetrieve)
+                enable(ReleaseFour)
 
-          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
+                mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+                mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
+                mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
+                  incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                  selectedTaxYear = Some(AccountingYearModel(Current))
+                )))
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-      }
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
 
-      "self-employed and uk property is checked" should {
-        "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+            }
 
-          enable(SaveAndRetrieve)
-          enable(ReleaseFour)
+            "self-employed and uk property is checked" should {
+              "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
+                setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = false)
+                enable(SaveAndRetrieve)
+                enable(ReleaseFour)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-      }
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = false)
 
-      "self-employed and overseas property is checked" should {
-        "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+            }
 
-          enable(SaveAndRetrieve)
-          enable(ReleaseFour)
+            "self-employed and overseas property is checked" should {
+              "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
+                setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true), isEditMode = false)
+                enable(SaveAndRetrieve)
+                enable(ReleaseFour)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-      }
-      "self-employed, uk property and overseas property is checked" should {
-        "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true), isEditMode = false)
 
-          enable(SaveAndRetrieve)
-          enable(ReleaseFour)
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+            }
+            "self-employed, uk property and overseas property is checked" should {
+              "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
+                setupMockSubscriptionDetailsSaveFunctions()
 
-          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = false)
+                enable(SaveAndRetrieve)
+                enable(ReleaseFour)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-      }
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = false)
 
-    }
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+            }
 
-    "When it is not edit mode" should {
-      "self-employed is checked and rent UK property and foreign property are NOT checked" when {
-        "feature switch save and retrieve is disabled" should {
-          "redirect to BusinessName page if release four is disabled" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
           }
-          "redirect to the start of the self employment journey if release four is enabled" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            enable(ReleaseFour)
 
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
+          "self-employed is checked and rent UK property and foreign property are NOT checked" when {
+            "feature switch save and retrieve is disabled" should {
+              "redirect to BusinessName page if release four is disabled" in {
+                setupMockSubscriptionDetailsSaveFunctions()
 
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
+
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+              "redirect to the start of the self employment journey if release four is enabled" in {
+                setupMockSubscriptionDetailsSaveFunctions()
+                enable(ReleaseFour)
+
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
+
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+            }
+          }
+
+          "self-employed is checked and rent UK property is checked but foreign property is NOT checked" when {
+            "redirect to BusinessName page if release four is disabled" in {
+              setupMockSubscriptionDetailsSaveFunctions()
+              disable(ReleaseFour)
+              val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
+
+              status(goodRequest) must be(Status.SEE_OTHER)
+              redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
+              await(goodRequest)
+              verifySubscriptionDetailsFetch(IncomeSource, 1)
+              verifySubscriptionDetailsSave(IncomeSource, 1)
+            }
+
+            "redirect to self-employments start date page if release four is enabled" in {
+              setupMockSubscriptionDetailsSaveFunctions()
+              enable(ReleaseFour)
+
+              val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = false)
+
+              status(goodRequest) must be(Status.SEE_OTHER)
+              redirectLocation(goodRequest).get mustBe "/report-quarterly/income-and-expenses/sign-up/self-employments/details"
+              await(goodRequest)
+              verifySubscriptionDetailsFetch(IncomeSource, 1)
+              verifySubscriptionDetailsSave(IncomeSource, 1)
+            }
+          }
+
+          "Rent UK property is checked and self-employed, foreign property are NOT checked" should {
+            "Release Four feature switch is disabled" when {
+              "redirect to the PropertyAccounting method page" in {
+                setupMockSubscriptionDetailsSaveFunctions()
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
+                disable(ReleaseFour)
+
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
+
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+            }
+            "Release Four feature switch is enabled" when {
+              "redirect to the PropertyStartDate page" in {
+                enable(ReleaseFour)
+                setupMockSubscriptionDetailsSaveFunctions()
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
+
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyStartDateController.show().url)
+
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+            }
+          }
+          "Foreign property is checked and self-employed, UK property are NOT checked" should {
+            "Release Four and Foreign property feature switch is enabled" when {
+              "redirect to the overseas property start date page" in {
+                enable(ReleaseFour)
+                enable(ForeignProperty)
+                setupMockSubscriptionDetailsSaveFunctions()
+
+                val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = false)
+
+                status(goodRequest) must be(Status.SEE_OTHER)
+                redirectLocation(goodRequest).get must be(controllers.individual.business.routes.OverseasPropertyStartDateController.show().url)
+
+                await(goodRequest)
+                verifySubscriptionDetailsFetch(IncomeSource, 1)
+                verifySubscriptionDetailsSave(IncomeSource, 1)
+              }
+            }
+          }
+
+          "All self-employed, rent UK property and foreign property are checked" when {
+            "redirect to BusinessName page" in {
+              setupMockSubscriptionDetailsSaveFunctions()
+              disable(ReleaseFour)
+
+              val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = false)
+
+              status(goodRequest) must be(Status.SEE_OTHER)
+              redirectLocation(goodRequest).get must be(controllers.individual.business.routes.BusinessNameController.show().url)
+
+              await(goodRequest)
+              verifySubscriptionDetailsFetch(IncomeSource, 1)
+              verifySubscriptionDetailsSave(IncomeSource, 1)
+            }
           }
         }
-      }
-
-      "self-employed is checked and rent UK property is checked but foreign property is NOT checked" when {
-        "redirect to BusinessName page if release four is disabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          disable(ReleaseFour)
-          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-
-        "redirect to self-employments start date page if release four is enabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          enable(ReleaseFour)
-
-          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe "/report-quarterly/income-and-expenses/sign-up/self-employments/details"
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-      }
-
-      "Rent UK property is checked and self-employed, foreign property are NOT checked" should {
-        "Release Four feature switch is disabled" when {
-          "redirect to the PropertyAccounting method page" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
-            disable(ReleaseFour)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-        "Release Four feature switch is enabled" when {
-          "redirect to the PropertyStartDate page" in {
-            enable(ReleaseFour)
-            setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyStartDateController.show().url)
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-      }
-      "Foreign property is checked and self-employed, UK property are NOT checked" should {
-        "Release Four and Foreign property feature switch is enabled" when {
-          "redirect to the overseas property start date page" in {
-            enable(ReleaseFour)
-            enable(ForeignProperty)
-            setupMockSubscriptionDetailsSaveFunctions()
-
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.individual.business.routes.OverseasPropertyStartDateController.show().url)
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-      }
-
-      "All self-employed, rent UK property and foreign property are checked" when {
-        "redirect to BusinessName page" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          disable(ReleaseFour)
-
-          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get must be(controllers.individual.business.routes.BusinessNameController.show().url)
-
-          await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
-          verifySubscriptionDetailsSave(IncomeSource, 1)
-        }
-      }
-    }
 
     "When it is in edit mode" should {
+      "feature switch save and retrieve is enabled" when {
+        "Only self-employed is checked and self-employment journey has not been completed before" should {
+          "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+
+            enable(SaveAndRetrieve)
+            enable(ReleaseFour)
+
+            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
+            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+              selectedTaxYear = Some(AccountingYearModel(Current))
+            )))
+
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
+          }
+        }
+
+        "self-employed and uk property is checked and self-employment journey has not been completed before" should {
+          "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+
+            enable(SaveAndRetrieve)
+            enable(ReleaseFour)
+
+            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
+            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)),
+              selectedTaxYear = Some(AccountingYearModel(Current))
+            )))
+
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = true)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
+          }
+        }
+
+
+        "self-employed and overseas property is checked and self-employment journey has not been completed before" should {
+          "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+
+            enable(SaveAndRetrieve)
+            enable(ReleaseFour)
+            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
+            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)),
+              selectedTaxYear = Some(AccountingYearModel(Current))
+            )))
+
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true), isEditMode = true)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
+          }
+        }
+        "self-employed, uk property and overseas property is checked and self-employment journey has not been completed before" should {
+          "redirect to self-employment BusinessName page if feature switch release four is enabled" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+
+            enable(SaveAndRetrieve)
+            enable(ReleaseFour)
+            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
+            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
+              selectedTaxYear = Some(AccountingYearModel(Current))
+            )))
+
+            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = true)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl
+            await(goodRequest)
+            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsSave(IncomeSource, 1)
+          }
+        }
+      }
+
 
       "the user selects self-employment and self-employment journey has not been completed before" when {
         "FS ReleaseFour is enabled " should {
@@ -323,6 +426,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
+
 
         "FS ReleaseFour is disabled and the user has no uk property and no overseas property income" should {
           s"redirect to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
@@ -721,12 +825,28 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
 
     "The back url" when {
-      "in edit mode" should {
-        "point to the check your answers page" in {
-          new TestIncomeSourceController().backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      "in edit mode" when {
+        "save and retrieve feature switch is enabled" should {
+          "redirect to task list page" in {
+            enable(SaveAndRetrieve)
+            new TestIncomeSourceController().backUrl(isEditMode = true) mustBe controllers.individual.business.routes.TaskListController.show().url
+          }
+        }
+        "save and retrieve feature switch is disabled" should {
+          "point to the check your answers page" in {
+            new TestIncomeSourceController().backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          }
         }
       }
-      "not in edit mode" should {
+      "not in edit mode" when {
+        "save and retrieve feature switch is enabled" should {
+          "redirect to task list page" in {
+            enable(SaveAndRetrieve)
+            new TestIncomeSourceController().backUrl(isEditMode = false) mustBe controllers.individual.business.routes.TaskListController.show().url
+          }
+        }
+      }
+      "save and retrieve feature switch is disabled" should {
         "point to the tax year page" in {
           new TestIncomeSourceController().backUrl(isEditMode = false) mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
         }

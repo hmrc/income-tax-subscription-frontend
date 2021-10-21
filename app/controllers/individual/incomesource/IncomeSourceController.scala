@@ -132,8 +132,13 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
     subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
       incomeSource match {
         case IncomeSourceModel(true, _, _) =>
-          if (isEnabled(ReleaseFour)) Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
-          else Redirect(controllers.individual.business.routes.BusinessNameController.show())
+          if (isEnabled(ReleaseFour)) {
+            if (isEnabled(SaveAndRetrieve)) {
+              Redirect(appConfig.incomeTaxSelfEmploymentsFrontendBusinessNameUrl)
+            } else
+              Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+          } else Redirect(controllers.individual.business.routes.BusinessNameController.show())
+
         case IncomeSourceModel(_, true, _) =>
           if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
           else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
@@ -146,12 +151,16 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    if (isEnabled(SaveAndRetrieve)) {
-      controllers.individual.business.routes.TaskListController.show().url
-    } else if (isEditMode) {
-      controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+    if (isEditMode) {
+      if (isEnabled(SaveAndRetrieve)) {
+        controllers.individual.business.routes.TaskListController.show().url
+      } else
+        controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
-      controllers.individual.business.routes.WhatYearToSignUpController.show().url
+      if (isEnabled(SaveAndRetrieve)) {
+        controllers.individual.business.routes.TaskListController.show().url
+      } else
+        controllers.individual.business.routes.WhatYearToSignUpController.show().url
     }
   }
 }
