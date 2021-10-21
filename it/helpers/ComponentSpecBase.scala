@@ -21,7 +21,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
-import forms.individual.incomesource.IncomeSourceForm
+import forms.individual.incomesource.{BusinessIncomeSourceForm, IncomeSourceForm}
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
@@ -196,6 +196,8 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def incomeSource(): WSResponse = get("/details/income-receive")
 
+    def businessIncomeSource(): WSResponse = get("/details/income-source")
+
     def thankYou(): WSResponse = get("/thank-you")
 
     def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
@@ -310,6 +312,16 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             IncomeSourceForm.incomeSourceForm(true).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def submitBusinessIncomeSource(request: Option[BusinessIncomeSourceModel]): WSResponse = {
+      val uri = s"/details/income-source"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            BusinessIncomeSourceForm.businessIncomeSourceForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

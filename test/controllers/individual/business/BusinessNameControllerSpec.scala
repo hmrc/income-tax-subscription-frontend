@@ -17,6 +17,8 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.BusinessNameForm
 import models.common.business.BusinessNameModel
@@ -29,7 +31,7 @@ import utilities.TestModels._
 
 import scala.concurrent.Future
 
-class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with MockAuditingService {
+class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -120,8 +122,14 @@ class BusinessNameControllerSpec extends ControllerBaseSpec with MockSubscriptio
       }
     }
     "not in edit mode" should {
-      s"redirect to ${controllers.individual.incomesource.routes.IncomeSourceController.show().url}" in {
+      s"redirect to ${controllers.individual.incomesource.routes.IncomeSourceController.show().url} when SaveAndRetrieve is disabled" in {
+        disable(SaveAndRetrieve)
         TestBusinessNameController.backUrl(isEditMode = false) mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+      }
+
+      s"redirect to ${controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url} when SaveAndRetrieve is enabled" in {
+        enable(SaveAndRetrieve)
+        TestBusinessNameController.backUrl(isEditMode = false) mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
       }
     }
   }

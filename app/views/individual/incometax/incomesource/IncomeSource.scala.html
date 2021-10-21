@@ -30,50 +30,50 @@
 @(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, foreignProperty: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @optionalOverseasPropertyCheckbox = @{
-    if(foreignProperty) {
-        Some(CheckboxItem(
-            content = Text(messages("income_source.foreignProperty")),
-            value = IncomeSourceForm.overseasPropertyKey
-        ))
-    } else {
-        None
-    }
+  if(foreignProperty) {
+    Some(CheckboxItem(
+      content = Text(messages("income_source.foreignProperty")),
+      value = IncomeSourceForm.overseasPropertyKey
+    ))
+  } else {
+    None
+  }
 }
 
 @mainTemplate(
-    title = messages("income_source.heading"),
-    optForm = Some(incomeSourceForm),
-    backLink = Some(backUrl)
+  title = messages("income_source.heading"),
+  optForm = Some(incomeSourceForm),
+  backLink = Some(backUrl)
 ) {
 
-    <h1 class="govuk-heading-l">
-        @messages("income_source.heading")
-    </h1>
+  <h1 class="govuk-heading-l">
+  @messages("income_source.heading")
+  </h1>
 
-    <p id="income-info" class="govuk-body">
-        @messages("income_source.para1")
-    </p>
+  <p id="income-info" class="govuk-body">
+  @messages("income_source.para1")
+  </p>
 
-    @form(action = postAction) {
+  @form(action = postAction) {
 
-        @checkboxHelper(
-            field = incomeSourceForm(IncomeSourceForm.incomeSourceKey),
-            legend = messages("income_source.heading"),
-            isPageHeading = false,
-            hint = Some(messages("income_source.checkbox.hint")),
-            inputs = Seq(
-                CheckboxItem(
-                    content = Text(messages("income_source.selfEmployed")),
-                    value = IncomeSourceForm.selfEmployedKey
-                ),
-                CheckboxItem(
-                    content = Text(messages("income_source.rentUkProperty")),
-                    value = IncomeSourceForm.ukPropertyKey
-                )
-            ) ++ optionalOverseasPropertyCheckbox
+    @checkboxHelper(
+      field = incomeSourceForm(IncomeSourceForm.incomeSourceKey),
+      legend = messages("income_source.heading"),
+      isPageHeading = false,
+      hint = Some(messages("income_source.checkbox.hint")),
+      inputs = Seq(
+        CheckboxItem(
+          content = Text(messages("income_source.selfEmployed")),
+          value = IncomeSourceForm.selfEmployedKey
+        ),
+        CheckboxItem(
+          content = Text(messages("income_source.rentUkProperty")),
+          value = IncomeSourceForm.ukPropertyKey
         )
+      ) ++ optionalOverseasPropertyCheckbox
+    )
 
-        @continueButton(isEditMode = isEditMode)
+    @continueButton(isEditMode = isEditMode)
 
-    }
+  }
 }

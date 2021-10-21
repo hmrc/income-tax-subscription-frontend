@@ -96,7 +96,6 @@ object MessageLookup {
     val errorSummary = "Select your sources of income"
   }
 
-
   object Property {
 
     object Income {
