@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
@@ -40,6 +40,11 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockPropertyStartDate
   with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -252,22 +257,53 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
     }
 
     "The back url is in edit mode" when {
-      "the user click back url" should {
-        "redirect to check your answer page if the Save & retrieve feature is disabled" in new Test {
-          disable(SaveAndRetrieve)
-
-          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
-            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-        }
-
-        "redirect to check your answer page if the Save & retrieve feature is enabled" in new Test {
+      "save and retrieve is enabled" should {
+        "redirect to task list page" in new Test {
           enable(SaveAndRetrieve)
 
           controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
             controllers.individual.business.routes.TaskListController.show().url
         }
       }
+
+      "save and retrieve is disabled" should {
+        "redirect to check your answer page" in new Test {
+
+          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
+            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        }
+      }
     }
+
+    "The back url is not in edit mode" when {
+      "save and retrieve is enabled" should {
+        "redirect to the add business page" in new Test {
+          enable(SaveAndRetrieve)
+
+          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
+      }
+
+      "save and retrieve is disabled and the user has selected self-employment income too" should {
+        "redirect to the add business page" in new Test {
+
+          controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
+            appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
+        }
+      }
+
+      "save and retrieve is disabled and the user has only uk property income" should {
+        "redirect to income source page" in new Test {
+
+          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
+      }
+
+    }
+
+
   }
 
 }

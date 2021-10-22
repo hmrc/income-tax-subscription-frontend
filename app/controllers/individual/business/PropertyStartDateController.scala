@@ -25,8 +25,6 @@ import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
 import forms.individual.business.PropertyStartDateForm
 import forms.individual.business.PropertyStartDateForm._
-
-import javax.inject.{Inject, Singleton}
 import models.common.{IncomeSourceModel, PropertyStartDateModel}
 import play.api.data.Form
 import play.api.libs.functional.~
@@ -38,6 +36,7 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.individual.incometax.business.PropertyStartDate
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -49,7 +48,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends SignUpController
-  with ImplicitDateFormatter with RequireAnswer with FeatureSwitching  {
+  with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
 
   def view(propertyStartDateForm: Form[PropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: Option[IncomeSourceModel])
           (implicit request: Request[_]): Html = {
@@ -115,6 +114,8 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
   def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel])(implicit hc: HeaderCarrier): String =
     (isEditMode, isEnabled(SaveAndRetrieve), maybeIncomeSourceModel) match {
       case (true, true, _) => controllers.individual.business.routes.TaskListController.show().url
+      //        below case the IncomeSourceController will need to be updated to the new AddBusinessController Route
+      case (false, true, _) => controllers.individual.incomesource.routes.IncomeSourceController.show().url
       case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
       case (false, false, Some(incomeSourceModel)) if (incomeSourceModel.selfEmployment) =>
         appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"

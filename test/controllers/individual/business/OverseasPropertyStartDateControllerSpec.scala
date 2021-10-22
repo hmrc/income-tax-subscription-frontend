@@ -41,6 +41,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
+    disable(SaveAndRetrieve)
     super.beforeEach()
   }
 
@@ -113,7 +114,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     def callShow(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
       controller.submit(isEditMode = isEditMode)(
         subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate.toString, testValidMaxStartDate.toString),
-        testOverseasPropertyStartDateModel)
+          testOverseasPropertyStartDateModel)
       )
 
     def callShowWithErrorForm(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
@@ -226,44 +227,56 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   }
 
   "backUrl" when {
-    "in edit mode" should {
-      "redirect to the check your answers page" in withController { controller =>
-        disable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
-        controller.backUrl(isEditMode = true, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-          controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+    "in edit mode" when {
+      "save and retrieve is enabled" should {
+        "redirect to the task list page" in withController { controller =>
+          enable(SaveAndRetrieve)
+          controller.backUrl(isEditMode = true, maybeIncomeSourceModel = None) mustBe
+            controllers.individual.business.routes.TaskListController.show().url
+        }
       }
-
-      "redirect to the task list page" in withController { controller =>
-        enable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
-        controller.backUrl(isEditMode = true, maybeIncomeSourceModel = None) mustBe
-          controllers.individual.business.routes.TaskListController.show().url
+      "save and retrieve is disabled" should {
+        "redirect to the check your answer page" in withController { controller =>
+          controller.backUrl(isEditMode = true, maybeIncomeSourceModel = None) mustBe
+            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        }
       }
     }
+
     "not in edit mode" when {
-      "the user has uk property income" in withController { controller =>
-        disable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
-        controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-          controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+      "save and retrieve is enabled" should {
+        "redirect to add business page" in withController { controller =>
+          enable(SaveAndRetrieve)
+
+          controller.backUrl(isEditMode = false, maybeIncomeSourceModel = None) mustBe
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
       }
-      "the user has self employment income but no uk property income" in withController { controller =>
-        disable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
-        controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-          appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
+      "save and retrieve is disabled and the user has uk property income" should {
+        "redirect to uk property accounting method page" in withController { controller =>
+
+          val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
+          controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
+            controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+        }
       }
-      "the user has no self employment or uk property income" in withController { controller =>
-        disable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
-        controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-          controllers.individual.incomesource.routes.IncomeSourceController.show().url
+
+      "save and retrieve is disabled and the user has self-employment income but no uk property" should {
+        "redirect to uk business accounting method page" in withController { controller =>
+
+          val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
+          controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
+            appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
+        }
       }
-      "the feature switch SaveAndRetrieve is enabled" in withController { controller =>
-        enable(SaveAndRetrieve)
-        controller.backUrl(isEditMode = false, maybeIncomeSourceModel = None) mustBe
-          controllers.individual.incomesource.routes.IncomeSourceController.show().url
+
+      "save and retrieve is disabled and the user only has overseas property" should {
+        "redirect to income source page" in withController { controller =>
+
+          val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
+          controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
+            controllers.individual.incomesource.routes.IncomeSourceController.show().url
+        }
       }
     }
   }
