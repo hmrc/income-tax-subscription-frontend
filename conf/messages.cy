@@ -109,6 +109,17 @@ individual.error.income_source.invalid                          = Dewiswch eich 
 individual.error.income_source_foreignProperty.invalid          = Dewiswch eich ffynonellau incwm
 income_source.checkbox.hint                                     = Dewiswch bob un sy’n gymwys
 
+## Individual what income source to sign up page
+what_income_source_to_sign_up.title                             = Pa ffynhonnell incwm ydych chi am ei gofrestru?
+what_income_source_to_sign_up.heading                           = Pa ffynhonnell incwm ydych chi am ei gofrestru?
+what_income_source_to_sign_up.para1                             = Gall eich cleient fod ag unrhyw nifer o fusnesau unig fasnachwr. Fodd bynnag, dim ond un eiddo ar osod yn y DU ac un eiddo ar osod dramor y gallai ei gael.
+what_income_source_to_sign_up.para2                             = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod.
+what_income_source_to_sign_up.selfEmployed                      = Busnes unig fasnachwr
+what_income_source_to_sign_up.ukProperty                        = Rhoi eiddo ar osod yn y DU
+what_income_source_to_sign_up.foreignProperty                   = Rhoi eiddo ar osod dramor
+individual.error.business_income_source.invalid                 = Dewiswch ‘busnes unig fasnachwr’, ‘rhoi eiddo ar osod yn y DU’ neu ‘rhoi eiddo ar osod dramor’
+individual.error.business_income_source_foreignProperty.invalid = Dewiswch ‘busnes unig fasnachwr’, ‘rhoi eiddo ar osod yn y DU’ neu ‘rhoi eiddo ar osod dramor’
+
 ## Rent Uk Property page
 rent_uk_property.title                                          = Ydych chi’n gosod eiddo yn y DU?
 rent_uk_property.heading                                        = Ydych chi’n gosod eiddo yn y DU?

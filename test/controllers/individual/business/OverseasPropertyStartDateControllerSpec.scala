@@ -263,7 +263,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       "the feature switch SaveAndRetrieve is enabled" in withController { controller =>
         enable(SaveAndRetrieve)
         controller.backUrl(isEditMode = false, maybeIncomeSourceModel = None) mustBe
-          controllers.individual.incomesource.routes.IncomeSourceController.show().url
+          controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
       }
     }
   }

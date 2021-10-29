@@ -115,6 +115,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
   def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel])(implicit hc: HeaderCarrier): String =
     (isEditMode, isEnabled(SaveAndRetrieve), maybeIncomeSourceModel) match {
       case (true, true, _) => controllers.individual.business.routes.TaskListController.show().url
+      case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
       case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
       case (false, false, Some(incomeSourceModel)) if (incomeSourceModel.selfEmployment) =>
         appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"

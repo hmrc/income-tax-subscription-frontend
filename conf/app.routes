@@ -26,6 +26,9 @@ GET         /sps-callback                                        controllers.ind
 GET         /details/income-receive                              controllers.individual.incomesource.IncomeSourceController.show(editMode: Boolean ?= false)
 POST        /details/income-receive                              controllers.individual.incomesource.IncomeSourceController.submit(editMode: Boolean ?= false)
 
+GET         /details/income-source                              controllers.individual.incomesource.WhatIncomeSourceToSignUpController.show()
+POST        /details/income-source                              controllers.individual.incomesource.WhatIncomeSourceToSignUpController.submit()
+
 # Summary Routes
 GET         /check-your-answers                                  controllers.individual.subscription.CheckYourAnswersController.show
 POST        /check-your-answers                                  controllers.individual.subscription.CheckYourAnswersController.submit

@@ -18,7 +18,10 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import forms.individual.business.BusinessNameForm
+
 import javax.inject.{Inject, Singleton}
 import models.common.business.BusinessNameModel
 import play.api.data.Form
@@ -34,7 +37,7 @@ class BusinessNameController @Inject()(val auditingService: AuditingService,
                                        subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends SignUpController {
+                                       mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
     views.html.individual.incometax.business.business_name(
@@ -70,7 +73,9 @@ class BusinessNameController @Inject()(val auditingService: AuditingService,
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-    } else {
+    } else if(isEnabled(SaveAndRetrieve)) {
+      controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+    }else {
       controllers.individual.incomesource.routes.IncomeSourceController.show().url
     }
   }

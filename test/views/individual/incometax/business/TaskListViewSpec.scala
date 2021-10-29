@@ -131,7 +131,7 @@ class TaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document().mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectHead("a")
           businessLink.text mustBe addBusiness
-          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
 
         "display the sign up incomplete text" in {
@@ -201,7 +201,7 @@ class TaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 5).selectHead("a")
           businessLink.text mustBe addBusiness
-          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
         "display the sign up incomplete text" in {
           val incompleteText = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectHead("span")
@@ -254,7 +254,7 @@ class TaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4).selectHead("a")
           businessLink.text mustBe addBusiness
-          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.IncomeSourceController.show().url
+          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
         "display the sign up button" in {
           document(completedTaskListComplete).mainContent.selectHead("button").text mustBe continue

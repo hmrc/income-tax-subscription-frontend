@@ -242,11 +242,11 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
 
       "the Save & retrieve feature is enabled" should {
-        "redirect to business accounting method page" in new Test {
+        "redirect to What Income Source To Sign Up page" in new Test {
           enable(SaveAndRetrieve)
 
           controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
-            controllers.individual.incomesource.routes.IncomeSourceController.show().url
+            controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
       }
     }
