@@ -1,8 +1,8 @@
 @import config.AppConfig
 @import models.common.TaskListModel
+@import services.AccountingPeriodService
 @import views.html.helpers.injected.ContinueButton
 @import views.html.templates.PrincipalMainTemplate
-@import services.AccountingPeriodService
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -40,7 +40,7 @@
             <a href={s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${se.id}&isEditMode=true"} aria-describedby={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>{se.businessName.map(bn => bn.businessName).getOrElse("")} {se.businessTradeName.map(btn => btn.businessTradeName).getOrElse("")}</a>
             </span>
             <span class="app-task-list__task-completed" id={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>
-             {if(se.isComplete && viewModel.selfEmploymentAccountingMethod.isDefined) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
+             {if(se.confirmed && viewModel.selfEmploymentAccountingMethod.isDefined) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
             </span>
             </li>
             )}

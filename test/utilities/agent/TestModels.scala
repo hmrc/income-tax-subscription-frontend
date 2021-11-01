@@ -17,8 +17,8 @@
 package utilities.agent
 
 
-import models.common.{AccountingMethodPropertyModel, AccountingPeriodModel, AccountingYearModel, _}
-import models.common.business.{AccountingMethodModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.common.business._
+import models.common._
 import models.usermatching.UserDetailsModel
 import models.{AccountingMethod => _, _}
 import play.api.libs.json.JsValue
@@ -49,7 +49,7 @@ object TestModels extends Implicits {
   val testSelectedTaxYearCurrent = AccountingYearModel(Current)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testSelfEmployments = Some(Seq(SelfEmploymentData("1", Some(BusinessStartDate(testStartDate)), Some(testBusinessName),
-    Some(BusinessTradeNameModel("plumbing")))))
+    Some(BusinessTradeNameModel("plumbing")), confirmed = true)))
 
   val emptyCacheMap = CacheMap("", Map())
 
