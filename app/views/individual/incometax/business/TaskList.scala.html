@@ -37,13 +37,13 @@
         {viewModel.selfEmployments.map(se =>
             <li class="app-task-list__item">
             <span class="app-task-list__task-name">
-            <a href={appConfig.incomeTaxSelfEmploymentsFrontendCheckYourAnswersUrl} aria-describedby={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>{se.businessName.map(bn => bn.businessName).getOrElse("")} {se.businessTradeName.map(btn => btn.businessTradeName).getOrElse("")}</a>
+            <a href={appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl} aria-describedby={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>{se.businessName.map(bn => bn.businessName).getOrElse("")} {se.businessTradeName.map(btn => btn.businessTradeName).getOrElse("")}</a>
             </span>
             <span class="app-task-list__task-completed" id={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>
              {if(se.isComplete && viewModel.selfEmploymentAccountingMethod.isDefined) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
             </span>
             </li>
-        )}
+            )}
 
         {viewModel.ukPropertyStart.map(ukps =>
             <li class="app-task-list__item">
