@@ -29,7 +29,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
 import utilities.ITSASessionKeys
-import utilities.TestModels.testCacheMap
+import utilities.TestModels.{testCacheMap, testSelectedTaxYearNext}
 import views.html.individual.incometax.subscription.SignUpComplete
 
 import java.time.LocalDateTime
@@ -52,7 +52,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   object TestConfirmationController extends ConfirmationController(
     mockAuditingService,
     mockAuthService,
-    mockAccountingPeriodService,
     MockSubscriptionDetailsService,
     mockSignUpComplete
   )
@@ -84,17 +83,12 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         mockAuthEnrolled()
         mockFetchAllFromSubscriptionDetails(testCacheMap)
 
-        mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
-        mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
-
-        when(mockSignUpComplete(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
-        (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
+        when(mockSignUpComplete(ArgumentMatchers.eq(testSelectedTaxYearNext.accountingYear), ArgumentMatchers.any())
+        (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime))
 
         status(result) shouldBe OK
-
-
       }
 
       "submitted is not in session" should {

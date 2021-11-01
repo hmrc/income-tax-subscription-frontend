@@ -16,12 +16,11 @@
 
 package controllers.individual.subscription
 
-import config.featureswitch.FeatureSwitch.{ReleaseFour, SPSEnabled}
+import config.featureswitch.FeatureSwitch.ReleaseFour
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{signOutURI, testSubscriptionId}
 import helpers.IntegrationTestModels.testIncomeSourceIndivProperty
-import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
@@ -31,7 +30,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
-    disable(SPSEnabled)
     super.beforeEach()
   }
 
@@ -50,7 +48,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the confirmation page")
       res should have(
         httpStatus(OK),
-        pageTitle(messages("sign-up-complete.title") + serviceNameGovUk)
+        pageTitle(messages("sign-up-complete.heading") + serviceNameGovUk)
       )
     }
 
