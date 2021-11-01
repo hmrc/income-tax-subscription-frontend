@@ -170,7 +170,7 @@ class TaskListViewSpec extends ViewSpec {
           val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
           selfEmploymentLink.text mustBe "Name1"
-          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendCheckYourAnswersUrl
+          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl
           selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
 
         }
@@ -179,7 +179,7 @@ class TaskListViewSpec extends ViewSpec {
           val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
           selfEmploymentLink.text mustBe "Name2 TradeName"
-          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendCheckYourAnswersUrl
+          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl
           selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
 
         }
@@ -234,7 +234,7 @@ class TaskListViewSpec extends ViewSpec {
           val selfEmploymentSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
           selfEmploymentLink.text mustBe "Name1 TradeName"
-          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendCheckYourAnswersUrl
+          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl
           selfEmploymentSection.selectNth("span", 2).text mustBe complete
         }
         "display a complete uk property income" in {
