@@ -67,7 +67,7 @@ class TaskListViewSpec extends ViewSpec {
   val completedTaskListComplete = TaskListModel(
     taxYearSelection = Some(AccountingYearModel(Next, true)),
     selfEmployments = Seq(SelfEmploymentData(
-      id = "",
+      id = "id1",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
       businessName = Some(BusinessNameModel("Name1")),
       businessTradeName = Some(BusinessTradeNameModel("TradeName")),
@@ -170,7 +170,7 @@ class TaskListViewSpec extends ViewSpec {
           val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
           selfEmploymentLink.text mustBe "Name1"
-          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl
+          selfEmploymentLink.attr("href") mustBe s"""${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id1&isEditMode=true"""
           selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
 
         }
@@ -179,7 +179,7 @@ class TaskListViewSpec extends ViewSpec {
           val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
           selfEmploymentLink.text mustBe "Name2 TradeName"
-          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl
+          selfEmploymentLink.attr("href") mustBe s"""${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id2&isEditMode=true"""
           selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
 
         }
@@ -234,7 +234,7 @@ class TaskListViewSpec extends ViewSpec {
           val selfEmploymentSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
           selfEmploymentLink.text mustBe "Name1 TradeName"
-          selfEmploymentLink.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl
+          selfEmploymentLink.attr("href") mustBe s"""${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id1&isEditMode=true"""
           selfEmploymentSection.selectNth("span", 2).text mustBe complete
         }
         "display a complete uk property income" in {
