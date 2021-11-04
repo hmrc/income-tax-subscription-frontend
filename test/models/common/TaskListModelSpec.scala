@@ -29,7 +29,8 @@ class TaskListModelSpec extends UnitSpec {
     businessStartDate = Some(BusinessStartDate(date)),
     businessName = Some(BusinessNameModel("Fake Name")),
     businessTradeName = Some(BusinessTradeNameModel("Trade")),
-    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
+    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode"))),
+    confirmed = true
   )
 
   val incompleteSeModel: SelfEmploymentData = SelfEmploymentData(

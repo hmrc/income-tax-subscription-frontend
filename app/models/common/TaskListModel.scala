@@ -16,8 +16,8 @@
 
 package models.common
 
-import models.{AccountingMethod, AccountingYear, DateModel}
 import models.common.business.SelfEmploymentData
+import models.{AccountingMethod, DateModel}
 import play.api.libs.json.{Format, Json}
 
 case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
@@ -34,14 +34,14 @@ case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
 
   val ukPropertyComplete: Boolean = ukPropertyStart.isDefined && ukPropertyAccountingMethod.isDefined
 
-  var selfEmploymentsComplete: Boolean = selfEmployments.forall(_.isComplete) && selfEmploymentAccountingMethod.isDefined
+  var selfEmploymentsComplete: Boolean = selfEmployments.forall(_.confirmed) && selfEmploymentAccountingMethod.isDefined
 
   val overseasPropertyComplete: Boolean = overseasPropertyStart.isDefined && overseasPropertyAccountingMethod.isDefined
 
   val sectionsTotal: Int = Math.max(2, 1 + selfEmployments.size + ukPropertyStart.size + overseasPropertyStart.size)
 
   val sectionsComplete: Int = (if(taxYearSelectedAndConfirmed) 1 else 0) +
-    selfEmployments.count { business => business.isComplete && selfEmploymentAccountingMethod.isDefined} +
+    selfEmployments.count { business => business.confirmed && selfEmploymentAccountingMethod.isDefined} +
     (if(ukPropertyComplete) 1 else 0) +
     (if(overseasPropertyComplete)1 else 0)
 

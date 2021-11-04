@@ -19,8 +19,8 @@ package views.individual.incometax.business
 import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
 import models._
-import models.common.{AccountingYearModel, TaskListModel}
 import models.common.business._
+import models.common.{AccountingYearModel, TaskListModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -71,7 +71,8 @@ class TaskListViewSpec extends ViewSpec {
       businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
       businessName = Some(BusinessNameModel("Name1")),
       businessTradeName = Some(BusinessTradeNameModel("TradeName")),
-      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode"))),
+      confirmed = true
     )),
     selfEmploymentAccountingMethod = Some(Cash),
     ukPropertyStart = Some(DateModel("1", "2", "1980")),
