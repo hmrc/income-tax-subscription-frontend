@@ -121,5 +121,11 @@ class SubscriptionDetailsService @Inject()(val subscriptionDetailsSession: Incom
 
   def fetchLastUpdatedTimestamp()(implicit hc: HeaderCarrier, reads: Reads[TimestampModel]): Future[Option[TimestampModel]] =
     subscriptionDetailsSession.getSubscriptionDetails[TimestampModel](lastUpdatedTimestamp)
+
+  def fetchProperty()(implicit hc: HeaderCarrier, reads: Reads[PropertyModel]): FO[PropertyModel] =
+    fetch[PropertyModel](Property)
+
+  def saveProperty(property: PropertyModel)(implicit hc: HeaderCarrier, reads: Reads[PropertyModel]): FA =
+    save[PropertyModel](Property, property)
 }
 

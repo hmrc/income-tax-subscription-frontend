@@ -36,6 +36,7 @@ object SubscriptionDataKeys {
   val SelfEmployments = "SelfEmployments"
   val BusinessAccountingMethod = "BusinessAccountingMethod"
   val OverseasPropertyStartDate = "OverseasPropertyStartDate"
+  val Property = "Property"
 
   val subscriptionId = "subscriptionId"
   val lastUpdatedTimestamp = "lastUpdatedTimestamp"
