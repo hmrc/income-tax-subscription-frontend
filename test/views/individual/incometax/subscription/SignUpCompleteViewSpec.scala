@@ -16,205 +16,296 @@
 
 package views.individual.incometax.subscription
 
-import assets.MessageLookup
-import assets.MessageLookup.SignUpCompleteIndividual._
-import assets.MessageLookup.SignUpCompleteIndividual.whatHappensNow._
-import controllers.SignOutController
-import models.DateModel
-import models.common.IncomeSourceModel
+import models._
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import play.api.mvc.{AnyContentAsEmpty, Call}
-import play.api.test.FakeRequest
+import org.jsoup.nodes.{Document, Element}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.inject
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.twirl.api.Html
-import utilities.TestModels.{testSummaryData, testSummaryDataBusinessNextTaxYear}
-import views.ViewSpecTrait
+import services.AccountingPeriodService
+import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.individual.incometax.subscription.SignUpComplete
 
+import java.time.LocalDate
+import java.time.Month._
 
-class SignUpCompleteViewSpec extends ViewSpecTrait {
+class SignUpCompleteViewSpec extends ViewSpec {
 
-  val signUpComplete: SignUpComplete = app.injector.instanceOf[SignUpComplete]
+  val mockAccountingPeriodService: AccountingPeriodService = mock[AccountingPeriodService]
+  val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
-  val submissionDateValue: DateModel = DateModel("1", "1", "2016")
-  val action: Call = ViewSpecTrait.testCall
-  val incomeSourceBusinessNextTaxYear: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
-  val incomeSourceBusinessProperty: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
-  val testEndYearOfCurrentTaxPeriod = 2021
-  val testUpdatesBeforeQ1: List[(String, String)] = List[(String, String)]()
-  val testUpdatesAfterQ1 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"), ("5 January 2021", "2021"), ("5 April 2021", "2021"))
-  val testUpdatesBeforeQ2 = List(("5 July 2020", "2020"))
-  val testUpdatesAfterQ2 = List(("5 October 2020", "2020"), ("5 January 2021", "2021"), ("5 April 2021", "2021"))
-  val testUpdatesBeforeQ3 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"))
-  val testUpdatesAfterQ3 = List(("5 January 2021", "2021"), ("5 April 2021", "2021"))
-  val testUpdatesBeforeQ4 = List(("5 July 2020", "2020"), ("5 October 2020", "2020"), ("5 January 2021", "2021"))
-  val testUpdatesAfterQ4 = List(("5 April 2021", "2021"))
+  import implicitDateFormatter.LongDate
 
-  def page(incomeSource: IncomeSourceModel, taxQuarter: String): Html = signUpComplete(
-    summary = incomeSource match {
-      case IncomeSourceModel(true, false, false) => testSummaryDataBusinessNextTaxYear
-      case _ => testSummaryData
-    },
-    postAction = controllers.individual.subscription.routes.ConfirmationController.submit(),
-    endYearOfCurrentTaxPeriod = testEndYearOfCurrentTaxPeriod,
-    updatesBefore = taxQuarter match {
-      case "Q1" => testUpdatesBeforeQ1
-      case "Q2" => testUpdatesBeforeQ2
-      case "Q3" => testUpdatesBeforeQ3
-      case "Q4" => testUpdatesBeforeQ4
-      case "Next" => testUpdatesBeforeQ1
-    },
-    updatesAfter = taxQuarter match {
-      case "Q1" => testUpdatesAfterQ1
-      case "Q2" => testUpdatesAfterQ2
-      case "Q3" => testUpdatesAfterQ3
-      case "Q4" => testUpdatesAfterQ4
-      case "Next" => testUpdatesBeforeQ1
-    },
-  )(request, implicitly, appConfig)
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAccountingPeriodService)
+  }
 
-  def documentCurrentTaxYear(taxQuarter: String): Document = Jsoup.parse(page(incomeSourceBusinessProperty, taxQuarter).body)
+  val CURRENT_TAX_YEAR: Int = 2021
+  val FIFTH: Int = 5
 
-  def documentNextTaxYear: Document = Jsoup.parse(page(incomeSourceBusinessNextTaxYear, "Next").body)
+  val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
 
-  val serviceNameGovUk = " - Report your income and expenses quarterly - GOV.UK"
+  val signUpComplete: SignUpComplete = GuiceApplicationBuilder()
+    .overrides(inject.bind[AccountingPeriodService].to(mockAccountingPeriodService))
+    .build().injector.instanceOf[SignUpComplete]
 
-  "The Sign Up Complete view" should {
+  def page(selectedTaxYear: AccountingYear): Html = signUpComplete(
+    selectedTaxYear = Some(selectedTaxYear),
+    postAction = testCall
+  )
 
-    s"have the title '$title'" in {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-      documentNextTaxYear.title() mustBe (title + serviceNameGovUk)
+  def document(selectedTaxYear: AccountingYear): Document = Jsoup.parse(page(selectedTaxYear).body)
+
+  object SignUpCompleteMessages {
+    val heading = "You have signed up to use software to send Income Tax updates"
+    val whatNowHeading = "What happens now"
+
+    val findSoftwareLinkText = "find software that’s compatible (opens in new tab)"
+    val findSoftwareText = s"If you have not already done so, $findSoftwareLinkText and allow it to interact with HMRC."
+
+    val fileQuarterly = "You need to file quarterly updates using your software:"
+    val sendUpdatesBy = "You will need to send quarterly updates using your software by:"
+    val sendNextUpdatesBy = "Send next quarterly updates using your software by:"
+    val noPenaltyMidYear = "There is no penalty if you start making updates mid-way through the current tax year."
+
+    val quarterlyFiling = "Quarterly filing"
+    val deadline = "Deadline"
+
+    def submitAnnualBy(year: String): String = s"Submit your annual updates and declare for the tax year by 31 January $year."
+
+    val btaLinkText = "Business Tax account (opens in new tab)"
+    val para1 = s"After you have sent an update you will get an year-to-date Income Tax estimate. You can view your estimates and submission dates in your software or your $btaLinkText."
+    val para2 = "It may take a few hours before new information is displayed."
+
+    val finishAndSignOut = "Finish and sign out"
+  }
+
+  "The sign up complete view" must {
+
+    "be using the correct template details" in {
+      when(mockAccountingPeriodService.getAllUpdateAndDeadlineDates(ArgumentMatchers.eq(Next)))
+        .thenReturn(List(q1Update, q2Update, q3Update, q4Update))
+
+      new TemplateViewTest(
+        view = page(Next),
+        title = SignUpCompleteMessages.heading,
+        hasSignOutLink = true
+      )
     }
 
-    "have a successful transaction confirmation banner" which {
+    "have a confirmation banner heading" in {
+      when(mockAccountingPeriodService.getAllUpdateAndDeadlineDates(ArgumentMatchers.eq(Next)))
+        .thenReturn(List(q1Update, q2Update, q3Update, q4Update))
 
-      "has a turquoise background" in {
-        documentNextTaxYear.select("#comfirmation-panel").hasClass("govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-8") mustBe true
+      document(Next).mainContent.selectHead(".govuk-panel").selectHead("h1").text mustBe SignUpCompleteMessages.heading
+    }
+
+    "have a what now heading" in {
+      when(mockAccountingPeriodService.getAllUpdateAndDeadlineDates(ArgumentMatchers.eq(Next)))
+        .thenReturn(List(q1Update, q2Update, q3Update, q4Update))
+
+      document(Next).mainContent.selectHead("h2").text mustBe SignUpCompleteMessages.whatNowHeading
+    }
+
+    "display the correct details for the filing dates" when {
+      "the user signed up for the next tax year" in {
+        when(mockAccountingPeriodService.getAllUpdateAndDeadlineDates(ArgumentMatchers.eq(Next)))
+          .thenReturn(List(q1Update, q2Update, q3Update, q4Update))
+        when(mockAccountingPeriodService.currentTaxYear) thenReturn CURRENT_TAX_YEAR
+
+        val orderedList: Element = document(Next).mainContent.selectHead("ol")
+
+        val point1: Element = orderedList.selectNth("li", 1)
+        val point1Link: Element = point1.selectHead("a")
+        point1.text mustBe SignUpCompleteMessages.findSoftwareText
+        point1Link.attr("href") mustBe appConfig.softwareUrl
+        point1Link.text mustBe SignUpCompleteMessages.findSoftwareLinkText
+
+        val point2: Element = orderedList.selectNth("li", 2)
+        point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.sendUpdatesBy
+        point2.mustHaveTable(
+          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableRows = List(
+            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate),
+            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate),
+            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate),
+            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+          )
+        )
+
+        val point3: Element = orderedList.selectNth("li", 3)
+        point3.text mustBe SignUpCompleteMessages.submitAnnualBy((CURRENT_TAX_YEAR + 2).toString)
       }
+      "the user signed up for the current tax year in Q1" in {
+        when(mockAccountingPeriodService.getCurrentYearUpdateDates)
+          .thenReturn(UpdateDeadlineDates(previous = List(), next = List(q1Update, q2Update, q3Update, q4Update)))
+        when(mockAccountingPeriodService.currentTaxYear) thenReturn CURRENT_TAX_YEAR
 
-      s"has a heading (H1)" in {
+        val orderedList: Element = document(Current).mainContent.selectHead("ol")
 
-        val heading = documentNextTaxYear.select("H1")
-        heading.text() mustBe MessageLookup.SignUpCompleteIndividual.heading
-        heading.hasClass("govuk-panel__title") mustBe true
+        val point1: Element = orderedList.selectNth("li", 1)
+        val point1Link: Element = point1.selectHead("a")
+        point1.text mustBe SignUpCompleteMessages.findSoftwareText
+        point1Link.attr("href") mustBe appConfig.softwareUrl
+        point1Link.text mustBe SignUpCompleteMessages.findSoftwareLinkText
+
+        val point2: Element = orderedList.selectNth("li", 2)
+        point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.sendNextUpdatesBy
+        point2.mustHaveTable(
+          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableRows = List(
+            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate),
+            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate),
+            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate),
+            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+          )
+        )
+
+        val point3: Element = orderedList.selectNth("li", 3)
+        point3.text mustBe SignUpCompleteMessages.submitAnnualBy((CURRENT_TAX_YEAR + 1).toString)
+      }
+      "the user signed up for the current tax year in Q2" in {
+        when(mockAccountingPeriodService.getCurrentYearUpdateDates)
+          .thenReturn(UpdateDeadlineDates(previous = List(q1Update), next = List(q2Update, q3Update, q4Update)))
+        when(mockAccountingPeriodService.currentTaxYear) thenReturn CURRENT_TAX_YEAR
+
+        val orderedList: Element = document(Current).mainContent.selectHead("ol")
+
+        val point1: Element = orderedList.selectNth("li", 1)
+        val point1Link: Element = point1.selectHead("a")
+        point1.text mustBe SignUpCompleteMessages.findSoftwareText
+        point1Link.attr("href") mustBe appConfig.softwareUrl
+        point1Link.text mustBe SignUpCompleteMessages.findSoftwareLinkText
+
+        val point2: Element = orderedList.selectNth("li", 2)
+        point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.fileQuarterly
+        point2.selectNth("p", 2).text mustBe SignUpCompleteMessages.noPenaltyMidYear
+        point2.mustHaveTable(
+          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableRows = List(
+            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate)
+          )
+        )
+
+        val point3: Element = orderedList.selectNth("li", 3)
+        point3.selectHead("p").text mustBe SignUpCompleteMessages.sendNextUpdatesBy
+        point3.mustHaveTable(
+          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableRows = List(
+            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate),
+            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate),
+            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+          )
+        )
+
+        val point4: Element = orderedList.selectNth("li", 4)
+        point4.text mustBe SignUpCompleteMessages.submitAnnualBy((CURRENT_TAX_YEAR + 1).toString)
+      }
+      "the user signed up for the current tax year in Q3" in {
+        when(mockAccountingPeriodService.getCurrentYearUpdateDates)
+          .thenReturn(UpdateDeadlineDates(previous = List(q1Update, q2Update), next = List(q3Update, q4Update)))
+        when(mockAccountingPeriodService.currentTaxYear) thenReturn CURRENT_TAX_YEAR
+
+        val orderedList: Element = document(Current).mainContent.selectHead("ol")
+
+        val point1: Element = orderedList.selectNth("li", 1)
+        val point1Link: Element = point1.selectHead("a")
+        point1.text mustBe SignUpCompleteMessages.findSoftwareText
+        point1Link.attr("href") mustBe appConfig.softwareUrl
+        point1Link.text mustBe SignUpCompleteMessages.findSoftwareLinkText
+
+        val point2: Element = orderedList.selectNth("li", 2)
+        point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.fileQuarterly
+        point2.selectNth("p", 2).text mustBe SignUpCompleteMessages.noPenaltyMidYear
+        point2.mustHaveTable(
+          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableRows = List(
+            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate),
+            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate)
+          )
+        )
+
+        val point3: Element = orderedList.selectNth("li", 3)
+        point3.selectHead("p").text mustBe SignUpCompleteMessages.sendNextUpdatesBy
+        point3.mustHaveTable(
+          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableRows = List(
+            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate),
+            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+          )
+        )
+
+        val point4: Element = orderedList.selectNth("li", 4)
+        point4.text mustBe SignUpCompleteMessages.submitAnnualBy((CURRENT_TAX_YEAR + 1).toString)
+      }
+      "the user signed up for the current tax year in Q4" in {
+        when(mockAccountingPeriodService.getCurrentYearUpdateDates)
+          .thenReturn(UpdateDeadlineDates(previous = List(q1Update, q2Update, q3Update), next = List(q4Update)))
+        when(mockAccountingPeriodService.currentTaxYear) thenReturn CURRENT_TAX_YEAR
+
+        val orderedList: Element = document(Current).mainContent.selectHead("ol")
+
+        val point1: Element = orderedList.selectNth("li", 1)
+        val point1Link: Element = point1.selectHead("a")
+        point1.text mustBe SignUpCompleteMessages.findSoftwareText
+        point1Link.attr("href") mustBe appConfig.softwareUrl
+        point1Link.text mustBe SignUpCompleteMessages.findSoftwareLinkText
+
+        val point2: Element = orderedList.selectNth("li", 2)
+        point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.fileQuarterly
+        point2.selectNth("p", 2).text mustBe SignUpCompleteMessages.noPenaltyMidYear
+        point2.mustHaveTable(
+          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableRows = List(
+            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate),
+            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate),
+            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate)
+          )
+        )
+
+        val point3: Element = orderedList.selectNth("li", 3)
+        point3.selectHead("p").text mustBe SignUpCompleteMessages.sendNextUpdatesBy
+        point3.mustHaveTable(
+          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableRows = List(
+            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+          )
+        )
+
+        val point4: Element = orderedList.selectNth("li", 4)
+        point4.text mustBe SignUpCompleteMessages.submitAnnualBy((CURRENT_TAX_YEAR + 1).toString)
       }
     }
 
-    "have a sign out link on the top banner" in {
-      val actionSignOut = documentNextTaxYear.getElementsByClass("hmrc-sign-out-nav__link")
-      actionSignOut.text() mustBe signOut
-      actionSignOut.attr("href") mustBe SignOutController.signOut.url
+    "have a description of where to view updates and estimates" in {
+      when(mockAccountingPeriodService.getAllUpdateAndDeadlineDates(ArgumentMatchers.eq(Next)))
+        .thenReturn(List(q1Update, q2Update, q3Update, q4Update))
+
+      document(Next).mainContent.selectNth("div.govuk-grid-column-two-thirds > p", 1).text mustBe SignUpCompleteMessages.para1
     }
 
-    "have a 'What you need to do next' section for Next Tax Year" which {
+    "have a description of how long it might take to update" in {
+      when(mockAccountingPeriodService.getAllUpdateAndDeadlineDates(ArgumentMatchers.eq(Next)))
+        .thenReturn(List(q1Update, q2Update, q3Update, q4Update))
 
-      s"has the section heading '${whatHappensNow.heading}'" in {
-        documentNextTaxYear.select("#whatHappensNow h2").text() mustBe whatHappensNow.heading
-      }
-
-      s"has a paragraph stating complete steps '$para1'" in {
-        documentNextTaxYear.select("#whatHappensNow p").get(0).text() mustBe para1
-      }
-
-      s"has an initial numeric point '$findSoftware'" in {
-        documentNextTaxYear.select("#whatHappensNow > ol > li:nth-of-type(1)").text() mustBe findSoftware
-        documentNextTaxYear.select("#whatHappensNow > ol > li:nth-of-type(1)").select("a").attr("href") mustBe appConfig.softwareUrl
-      }
-
-      s"has a 2nd numeric point '$sendQuarterlyBy'" which {
-        "has some info about updates" in {
-          documentNextTaxYear.select("#whatHappensNow > ol > li:nth-of-type(2) > span").text mustBe sendQuarterlyBy
-        }
-        "has bullet pointed list detailing update dates" in {
-          documentNextTaxYear.select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-of-type(1)").text() mustBe nextTaxYearJulyUpdate
-          documentNextTaxYear.select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-of-type(2)").text() mustBe nextTaxYearOcoberUpdate
-          documentNextTaxYear.select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-of-type(3)").text() mustBe nextTaxYearJanuaryUpdate
-          documentNextTaxYear.select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-of-type(4)").text() mustBe nextTaxYearAprilUpdate
-        }
-      }
-
-      s"has a 3rd numeric point '$submitAnnualAndDeclare'" in {
-        documentNextTaxYear.select("#whatHappensNow > ol > li:nth-of-type(3)").text() mustBe submitAnnualAndDeclare
-      }
-    }
-
-    "have a 'What you need to do next' section for Current Tax Year" which {
-
-      s"has an initial numbered point: '$findSoftware'" in {
-        documentCurrentTaxYear("Q1").select("#whatHappensNow > ol > li:nth-of-type(1)").text() mustBe findSoftware
-        documentCurrentTaxYear("Q1").select("#whatHappensNow > ol > li:nth-of-type(1)").select("a").attr("href") mustBe appConfig.softwareUrl
-      }
-
-      "for Tax Quarter Q1" should {
-        s"have a second numbered point: '$currentYaxYearQuarterlyUpdates'" which {
-          "has info about updates" in {
-            documentCurrentTaxYear("Q1").select("#whatHappensNow > ol > li:nth-of-type(2) > span").text() mustBe currentYaxYearQuarterlyUpdates
-          }
-          "has a bullet pointed list of update dates" in {
-            documentCurrentTaxYear("Q1").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-of-type(1)").text() mustBe currentTaxYearJulyUpdate
-            documentCurrentTaxYear("Q1").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-of-type(2)").text() mustBe currentTaxYearOctoberUpdate
-            documentCurrentTaxYear("Q1").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-of-type(3)").text() mustBe currentTaxYearJanuaryUpdate
-            documentCurrentTaxYear("Q1").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-of-type(4)").text() mustBe currentTaxYearAprilUpdate
-          }
-        }
-        s"have a third numbered point: '$currentTaxYearAnnualUpdates'" in {
-          documentCurrentTaxYear("Q1").select("#whatHappensNow > ol > li:nth-of-type(3)").text() mustBe currentTaxYearAnnualUpdates
-        }
-      }
-
-      "for Tax Quarter Q2, Q3 & Q4" should {
-        s"have a second numbered point: $currentTaxYearPreviousUpdates" which {
-          "has info on previous updates" in {
-            documentCurrentTaxYear("Q2").select("#whatHappensNow > ol > li:nth-of-type(2) > span").text() mustBe currentTaxYearPreviousUpdates
-          }
-          "has a bullet pointed list of previous updates for Q2" in {
-            documentCurrentTaxYear("Q2").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
-          }
-          "has a bullet pointed list of previous updates for Q3" in {
-            documentCurrentTaxYear("Q3").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
-            documentCurrentTaxYear("Q3").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-child(2)").text() mustBe currentTaxYearOctoberUpdate
-          }
-          "has a bullet pointed list of previous updates for Q4" in {
-            documentCurrentTaxYear("Q4").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-child(1)").text() mustBe currentTaxYearJulyUpdate
-            documentCurrentTaxYear("Q4").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-child(2)").text() mustBe currentTaxYearOctoberUpdate
-            documentCurrentTaxYear("Q4").select("#whatHappensNow > ol > li:nth-of-type(2) > ul > li:nth-child(3)").text() mustBe currentTaxYearJanuaryUpdate
-          }
-        }
-
-        s"have a third numbered point $currentYaxYearQuarterlyUpdates" which {
-          "has info on current updates" in {
-            documentCurrentTaxYear("Q2").select("#whatHappensNow > ol > li:nth-of-type(3) > span").text() mustBe currentYaxYearQuarterlyUpdates
-          }
-          "has a bullet pointed list of current updates for Q2" in {
-            documentCurrentTaxYear("Q2").select("#whatHappensNow > ol > li:nth-of-type(3) > ul > li:nth-child(1)").text() mustBe currentTaxYearOctoberUpdate
-            documentCurrentTaxYear("Q2").select("#whatHappensNow > ol > li:nth-of-type(3) > ul > li:nth-child(2)").text() mustBe currentTaxYearJanuaryUpdate
-            documentCurrentTaxYear("Q2").select("#whatHappensNow > ol > li:nth-of-type(3) > ul > li:nth-child(3)").text() mustBe currentTaxYearAprilUpdate
-          }
-          "has a bullet pointed list of current updates for Q3" in {
-            documentCurrentTaxYear("Q3").select("#whatHappensNow > ol > li:nth-of-type(3) > ul > li:nth-child(1)").text() mustBe currentTaxYearJanuaryUpdate
-            documentCurrentTaxYear("Q3").select("#whatHappensNow > ol > li:nth-of-type(3) > ul > li:nth-child(2)").text() mustBe currentTaxYearAprilUpdate
-          }
-          "has a bullet pointed list of current updates for Q4" in {
-            documentCurrentTaxYear("Q4").select("#whatHappensNow > ol > li:nth-of-type(3) > ul > li:nth-child(1)").text() mustBe currentTaxYearAprilUpdate
-          }
-        }
-
-        s"has a paragraph stating Income Tax Estimate '$para1'" in {
-          documentNextTaxYear.select("#whatHappensNow p").get(0).text() mustBe para1
-        }
-
-        s"has a paragraph stating Info delay '$para2'" in {
-          documentNextTaxYear.select("#whatHappensNow p").get(1).text() mustBe para2
-        }
-
-      }
+      document(Next).mainContent.selectNth("div.govuk-grid-column-two-thirds > p", 2).text mustBe SignUpCompleteMessages.para2
     }
 
     "have a finish and sign out button" in {
-      val actionSignOut = documentNextTaxYear.getElementsByClass("govuk-button")
-      actionSignOut.text() mustBe finishAndSignOut
+      when(mockAccountingPeriodService.getAllUpdateAndDeadlineDates(ArgumentMatchers.eq(Next)))
+        .thenReturn(List(q1Update, q2Update, q3Update, q4Update))
+
+      val actionSignOut = document(Next).mainContent.selectHead(".govuk-button")
+      actionSignOut.text() mustBe SignUpCompleteMessages.finishAndSignOut
     }
 
   }
+
 }

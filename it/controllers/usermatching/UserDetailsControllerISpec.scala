@@ -20,7 +20,7 @@ import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, UserLockoutStub}
-import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport, ViewSpec}
+import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import org.scalatest.MustMatchers.convertToAnyMustWrapper

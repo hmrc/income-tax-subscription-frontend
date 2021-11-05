@@ -16,6 +16,7 @@
 
 package services
 
+import models._
 import utilities.AccountingPeriodUtil._
 import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 
@@ -26,6 +27,8 @@ import scala.Ordering.Implicits._
 
 @Singleton
 class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider) {
+
+  val FIFTH: Int = 5
 
   def checkEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate, hasPropertyType: Boolean): Boolean = {
     val taxYear = AccountingPeriodUtil.getTaxEndYear(endDate)
@@ -57,6 +60,39 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
       (taxYearQ2, "agent.sign-up.complete.octoberUpdate", (currentTaxYear - 1).toString),
       (taxYearQ3, "agent.sign-up.complete.januaryUpdate", currentTaxYear.toString),
       (taxYearQ4, "agent.sign-up.complete.aprilUpdate", currentTaxYear.toString))
+  }
+
+  def getAllUpdateAndDeadlineDates(selectedTaxYear: AccountingYear): List[UpdateDeadline] = {
+    val taxYear: Int = selectedTaxYear match {
+      case Current => currentTaxYear
+      case Next => currentTaxYear + 1
+    }
+    List(
+      UpdateDeadline(
+        update = LocalDate.of(taxYear - 1, JULY, FIFTH),
+        deadline = LocalDate.of(taxYear - 1, AUGUST, FIFTH)
+      ),
+      UpdateDeadline(
+        update = LocalDate.of(taxYear - 1, OCTOBER, FIFTH),
+        deadline = LocalDate.of(taxYear - 1, NOVEMBER, FIFTH)
+      ),
+      UpdateDeadline(
+        update = LocalDate.of(taxYear, JANUARY, FIFTH),
+        deadline = LocalDate.of(taxYear, FEBRUARY, FIFTH)
+      ),
+      UpdateDeadline(
+        update = LocalDate.of(taxYear, APRIL, FIFTH),
+        deadline = LocalDate.of(taxYear, MAY, FIFTH)
+      )
+    )
+  }
+
+  def getCurrentYearUpdateDates: UpdateDeadlineDates = {
+    val allUpdateAndDeadlineDates: List[UpdateDeadline] = getAllUpdateAndDeadlineDates(Current)
+    UpdateDeadlineDates(
+      previous = allUpdateAndDeadlineDates.filter(_.update <= AgentUpdateDates.currentDate),
+      next = allUpdateAndDeadlineDates.filter(_.update > AgentUpdateDates.currentDate)
+    )
   }
 
   def updateDatesBefore(): List[(String, String)] = {

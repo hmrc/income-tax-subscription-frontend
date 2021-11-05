@@ -234,8 +234,10 @@ object MessageLookup {
 
     object SelectedTaxYear {
       def current(staringYear: Int, endYear: Int): String = s"Current tax year (6 April $staringYear to 5 April $endYear)"
+
       def next(staringYear: Int, endYear: Int): String = s"Next tax year (6 April $staringYear to 5 April $endYear)"
     }
+
   }
 
   object Timeout {
@@ -310,7 +312,7 @@ object MessageLookup {
     val heading = "Sign up complete"
     val signOut = "Sign out"
 
-  object whatHappensNext {
+    object whatHappensNext {
       val heading = "What happens next"
       val para1 = "You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter."
       val para2 = "After you send a report you’ll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
@@ -326,7 +328,9 @@ object MessageLookup {
     val heading = "Check and complete your business details"
     val subHeadingComplete = "Application complete"
     val subHeadingIncomplete = "Application incomplete"
-    def contentSummary (numberComplete: Int,numberTotal: Int) = s"You have completed $numberComplete of $numberTotal sections."
+
+    def contentSummary(numberComplete: Int, numberTotal: Int) = s"You have completed $numberComplete of $numberTotal sections."
+
     val item1 = "1. Choose a tax year to sign up"
     val item2 = "2. Tell us about your income"
     val item3 = "3. Sign up"
@@ -339,63 +343,33 @@ object MessageLookup {
     val notStarted = "Not started"
     val inProgress = "In progress"
     val addBusiness = "Add a business"
-    val selfEmploymentsBusinessLink= "selfEmploymentsBusinessLink"
-    val ukPropertyBusiness= "UK property business"
-    val overseasPropertyBusiness= "Overseas property business"
+    val selfEmploymentsBusinessLink = "selfEmploymentsBusinessLink"
+    val ukPropertyBusiness = "UK property business"
+    val overseasPropertyBusiness = "Overseas property business"
   }
 
   object TaxYearCheckYourAnswers {
     val title = "Check your answers - Use software to send Income Tax updates - GOV.UK"
     val heading = "Check your answers"
     val question = "Tax year you are signing up for"
+
     def current(staringYear: Int, endYear: Int): String = s"Current tax year (6 April $staringYear to 5 April $endYear)"
+
     def next(staringYear: Int, endYear: Int): String = s"Next tax year (6 April $staringYear to 5 April $endYear)"
   }
 
   object ProgressSaved {
     val title = "Your progress has been saved - Use software to send Income Tax updates - GOV.UK"
     val heading = "Your progress has been saved"
+
     def contentSummary(expirationDate: String) = s"We will keep your information until $expirationDate."
+
     val subheading = "What happens next"
     val paragraph1 = "You can:"
     val bullet1 = "return to sign up your business for Making Tax Digital for Income Tax"
     val bullet2 = "sign out and come back later"
     val paragraph2 = "If you sign out, you will need to come back to your Government Gateway login to continue. We suggest you bookmark this to make it easier to find when you return."
   }
-
-  object SignUpCompleteIndividual {
-    val title = "Sign up complete"
-    val heading = "You have signed up to use software to send Income Tax updates"
-
-    object whatHappensNow {
-      val heading = "What happens now"
-      val linkText = "find software that’s compatible (opens in new tab)"
-      val findSoftware = s"If you have not already done so, $linkText. and allow it interact with HMRC."
-      val allowInteraction = "Allow your software to interact with HMRC."
-      val addIncomeExpensesAlreadyReceived = "Add any income and expenses you have already received or paid out from the start of your tax year into your software."
-      val sendQuarterlyBy = "You will need to send quarterly updates using your software by:"
-      val nextTaxYearJulyUpdate = "5 July 2021"
-      val nextTaxYearOcoberUpdate = "5 October 2021"
-      val nextTaxYearJanuaryUpdate = "5 January 2022"
-      val nextTaxYearAprilUpdate = "5 April 2022"
-      val submitAnnualAndDeclare = "Submit your annual updates and declare for the tax year by 31 January 2023."
-      val currentYaxYearQuarterlyUpdates = "Send next quarterly updates using your software by:"
-      val currentTaxYearJulyUpdate = "5 July 2020"
-      val currentTaxYearOctoberUpdate = "5 October 2020"
-      val currentTaxYearJanuaryUpdate = "5 January 2021"
-      val currentTaxYearAprilUpdate = "5 April 2021"
-      val currentTaxYearAnnualUpdates = "Submit your annual updates and declare for the tax year by 31 January 2022."
-      val currentTaxYearPreviousUpdates = "You need to add all income and expenses for the previous updates using your software for:"
-      val btaLinkText = "Business Tax account (opens in new tab)"
-      val loginToBTA = s"Log in to your $btaLinkText to find out when your first update is due."
-      val para1 = s"After you have sent an update you will get an year-to-date Income Tax estimate. You can view your estimates and submission dates in your software or your $btaLinkText."
-      val para2 = "It may take a few hours before new information is displayed."
-      val signOut = "Sign out"
-      val finishAndSignOut = "Finish and sign out"
-    }
-
-  }
-
 
   object AffinityGroup {
     val title = "You can’t use this service"

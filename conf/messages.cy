@@ -340,10 +340,9 @@ confirmation.whatHappensNext.bullet2                            = <a id="bta" hr
 confirmation.whatHappensNext.para4                              = Gall gymryd rhai oriau cyn eu bod i gyd i’w gweld.
 
 ## Sign Up Complete page ##
-sign-up-complete.title                                          = Rydych wedi gorffen cofrestru
 sign-up-complete.heading                                        = Rydych wedi’ch cofrestru i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
 sign-up-complete.whatHappensNow.heading                         = Yr hyn sy’n digwydd nawr
-sign-up-complete.whatHappensNow.number1                         = Os nad ydych eisoes wedi gwneud hynny,{0} a chaniatáu iddi ryngweithio â CThEM.
+sign-up-complete.whatHappensNow.number1                         = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEM.
 sign-up-complete.whatHappensNow.number1.link                    = dewch o hyd i feddalwedd sy’n cydweddu (yn agor tab newydd)
 sign-up-complete.whatHappensNow.sendPreviousUpdates             = Mae’n rhaid i chi ychwanegu’r holl incwm a threuliau ar gyfer y diweddariadau blaenorol gan ddefnyddio’ch meddalwedd ar gyfer:
 sign-up-complete.whatHappensNow.sendQuarterly                   = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd erbyn:
@@ -357,6 +356,13 @@ sign-up-complete.whatHappensNow.para                            = Ar ôl i chi a
 sign-up-complete.whatHappensNow.para.link                       = cyfrif Treth Busnes (yn agor tab newydd).
 sign-up-complete.whatHappensNow.para2                           = Gall gymryd rhai oriau cyn i wybodaeth newydd ymddangos.
 sign-up-complete.whatHappensNow.signOut                         = Gorffen ac allgofnodi
+sign-up-complete.whatHappensNow.previous-updates                = Mae angen i chi gyflwyno diweddariadau chwarterol gan ddefnyddio’ch meddalwedd:
+sign-up-complete.whatHappensNow.updates-table.update-heading    = Cyflwyno chwarterol
+sign-up-complete.whatHappensNow.updates-table.deadline-heading  = Dyddiad cau
+sign-up-complete.whatHappensNow.send-quarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
+sign-up-complete.whatHappensNow.next-updates                    = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd erbyn:
+sign-up-complete.whatHappensNow.no-penalty                      = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol.
+sign-up-complete.whatHappensNow.submit-annual                   = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
 
 ## Errors ##
 error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen

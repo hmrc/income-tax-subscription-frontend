@@ -20,7 +20,7 @@ import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import org.scalatest.{Assertion, MustMatchers, WordSpec}
+import org.scalatest.{Assertion, BeforeAndAfterEach, MustMatchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
 import play.api.i18n.{Messages, MessagesApi}
@@ -30,7 +30,7 @@ import play.twirl.api.Html
 
 import scala.collection.JavaConversions._
 
-trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
+trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with BeforeAndAfterEach {
 
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -167,6 +167,21 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
   implicit class ElementTests(element: Element) {
 
+    def mustHaveTable(tableHeads: List[String], tableRows: List[List[String]]): Assertion = {
+      val table: Element = element.selectHead("table")
+
+      tableHeads.zip(1 to tableHeads.length).map { case (th, index) =>
+        table.selectHead("thead").selectHead("tr").selectNth("th", index).text mustBe th
+      } forall (_ == succeed) mustBe true
+
+      tableRows.zip(1 to tableRows.length).map { case (tr, index) =>
+        val tableRow = table.selectHead("tbody").selectNth("tr", index)
+        tr.zip(1 to tr.length).map { case (td, index) =>
+          tableRow.selectNth("td", index).text mustBe td
+        } forall (_ == succeed)
+      } forall (_ == true) mustBe true
+    }
+
     def mustHaveTextInput(name: String,
                           label: String,
                           hint: Option[String] = None,
@@ -224,7 +239,7 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       dayInput.attr("type") mustBe "text"
       dayInput.attr("pattern") mustBe "[0-9]*"
       dayInput.attr("inputmode") mustBe "numeric"
-      if(isDateOfBirth) dayInput.attr("autocomplete") mustBe "bday-day"
+      if (isDateOfBirth) dayInput.attr("autocomplete") mustBe "bday-day"
       dayLabel.text mustBe "Day"
       dayLabel.attr("for") mustBe s"$name-dateDay"
 
@@ -232,7 +247,7 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       monthInput.attr("type") mustBe "text"
       monthInput.attr("pattern") mustBe "[0-9]*"
       monthInput.attr("inputmode") mustBe "numeric"
-      if(isDateOfBirth) monthInput.attr("autocomplete") mustBe "bday-month"
+      if (isDateOfBirth) monthInput.attr("autocomplete") mustBe "bday-month"
       monthLabel.text mustBe "Month"
       monthLabel.attr("for") mustBe s"$name-dateMonth"
 
@@ -240,7 +255,7 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       yearInput.attr("type") mustBe "text"
       yearInput.attr("pattern") mustBe "[0-9]*"
       yearInput.attr("inputmode") mustBe "numeric"
-      if(isDateOfBirth) yearInput.attr("autocomplete") mustBe "bday-year"
+      if (isDateOfBirth) yearInput.attr("autocomplete") mustBe "bday-year"
       yearLabel.text mustBe "Year"
       yearLabel.attr("for") mustBe s"$name-dateYear"
 
