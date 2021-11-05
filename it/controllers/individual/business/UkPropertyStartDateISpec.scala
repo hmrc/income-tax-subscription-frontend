@@ -16,9 +16,11 @@
 
 package controllers.individual.business
 
+
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import controllers.Assets.NO_CONTENT
-import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, checkYourAnswersURI}
+import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, checkYourAnswersURI, ukPropertyCYAURI}
 import helpers.IntegrationTestModels.{subscriptionData, testFullPropertyModel, testPropertyStartDate}
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -32,6 +34,11 @@ import utilities.SubscriptionDataKeys.Property
 import java.time.LocalDate
 
 class UkPropertyStartDateISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/property-start-date" when {
 
@@ -79,25 +86,53 @@ class UkPropertyStartDateISpec extends ComponentSpecBase {
 
   "POST /report-quarterly/income-and-expenses/sign-up/property-start-date" when {
     "not in edit mode" when {
-      "enter start date" should {
-        "redirect to the accounting method page" in {
-          val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+      "save and retrieve is enabled" when {
+        "enter start date" should {
+          "redirect to the uk property accounting method page" in {
+            enable(SaveAndRetrieve)
+            val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyStartDate, userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDate = Some(userInput)))
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyStartDate, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDate = Some(userInput)))
 
-          When("POST /property-start-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = false, Some(userInput))
+            When("POST /property-start-date is called")
+            val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(accountingMethodPropertyURI)
-          )
+            Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(accountingMethodPropertyURI)
+            )
+          }
+        }
+      }
+
+      "save and retrieve is disabled" when {
+        "enter start date" should {
+          "redirect to the uk property accounting method page" in {
+            enable(SaveAndRetrieve)
+            val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyStartDate, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDate = Some(userInput)))
+
+            When("POST /property-start-date is called")
+            val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = false, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(accountingMethodPropertyURI)
+            )
+          }
         }
       }
 
@@ -140,47 +175,77 @@ class UkPropertyStartDateISpec extends ComponentSpecBase {
 
     }
 
-    "in edit mode" should {
-      "simulate not changing start date when calling page from Check Your Answers" in {
-        val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+    "in edit mode" when {
+      "save and retrieve is enabled" when {
+        "simulate not changing the start date" should {
+          "redirect to uk property check your answers page" in {
+            enable(SaveAndRetrieve)
+            val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel)
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel)
+            When("POST /property-start-date is called")
+            val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
 
-        When("POST /property-start-date is called")
-        val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
+            Then("Should return a SEE_OTHER with a redirect location of check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(ukPropertyCYAURI)
+            )
+          }
+        }
 
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
+        "simulate changing the start date" should {
+          "redirect to uk property check your answers page" in {
+            enable(SaveAndRetrieve)
+            val SubscriptionDetailsStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
+            val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(startDate = Some(SubscriptionDetailsStartDate))))
+            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel)
+
+            When("POST /property-start-date is called")
+            val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(ukPropertyCYAURI)
+            )
+          }
+        }
       }
 
-      "simulate changing start date when calling page from Check Your Answers" in {
-        val SubscriptionDetailsStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
-        val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+      "save and retrieve is disabled" when {
+        "simulate not changing the start date" should {
+          "redirect to final check your answers page" in {
+            val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(startDate = Some(SubscriptionDetailsStartDate))))
-        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel)
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel)
 
-        When("POST /property-start-date is called")
-        val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
+            When("POST /property-start-date is called")
+            val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
+            Then("Should return a SEE_OTHER with a redirect location of check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(checkYourAnswersURI)
+            )
+          }
+        }
+
       }
-
     }
-
   }
+
 }

@@ -34,7 +34,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
 import models.AccountingMethod
@@ -44,7 +44,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.SubscriptionDataUtil._
 import views.html.individual.incometax.business.PropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
@@ -58,6 +57,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                                                   (implicit val ec: ExecutionContext,
                                                    val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
+  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 
   def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean, isSaveAndRetrieve: Boolean)
           (implicit request: Request[_]): Future[Html] = {
@@ -90,13 +90,10 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
         formWithErrors =>
           view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode, isEnabled(SaveAndRetrieve)).map(view => BadRequest(view)),
         accountingMethodProperty => {
-          subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) flatMap { _ =>
-            if (isEnabled(SaveAndRetrieve)) {
-              Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
-            } else {
-              if (isEditMode) {
-                Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
-              } else subscriptionDetailsService.fetchIncomeSource() map {
+          subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) flatMap { _ => {
+            (isEditMode, isSaveAndRetrieve) match {
+              case (_, true) => Future(Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show()))
+              case (_, false) => subscriptionDetailsService.fetchIncomeSource() map {
                 case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
                   Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
                 case _ =>
@@ -104,32 +101,17 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
               }
             }
           }
+          }
         }
       )
   }
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] = {
-    if (isEnabled(SaveAndRetrieve)) {
-      if (isEditMode) {
-        Future.successful(controllers.individual.business.routes.TaskListController.show().url)
-      } else {
-        Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
-      }
-    } else {
-      if (isEditMode) {
-        Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-      } else if (isEnabled(ReleaseFour)) {
-        Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
-      } else {
-        subscriptionDetailsService.fetchAll() map { cacheMap =>
-          cacheMap.getIncomeSource match {
-            case Some(IncomeSourceModel(false, true, _)) =>
-              controllers.individual.incomesource.routes.IncomeSourceController.show().url
-            case _ =>
-              controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-          }
-        }
-      }
+
+    (isEditMode, isSaveAndRetrieve) match {
+      case (true, true) => Future.successful(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
+      case (false, _) => Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
+      case (true, false) => Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     }
 
   }
