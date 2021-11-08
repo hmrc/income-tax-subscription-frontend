@@ -44,6 +44,8 @@ object SubscriptionDataUtil extends FeatureSwitching {
 
     def getPropertyStartDate: Option[PropertyStartDateModel] = cacheMap.getEntry[PropertyStartDateModel](PropertyStartDate)
 
+    def getProperty: Option[PropertyModel] = cacheMap.getEntry[PropertyModel](Property)
+
     def getOverseasPropertyStartDate: Option[OverseasPropertyStartDateModel] =
       cacheMap.getEntry[OverseasPropertyStartDateModel](OverseasPropertyStartDate)
 

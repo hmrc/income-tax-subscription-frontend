@@ -104,6 +104,10 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     mockFetchFromSubscriptionDetails[PropertyStartDateModel](PropertyStartDate, fetchPropertyStartDateMethod)
   }
 
+  protected final def mockFetchPropertyFromSubscriptionDetails(fetchProperty: Option[PropertyModel]): Unit = {
+    mockFetchFromSubscriptionDetails[PropertyModel](Property, fetchProperty)
+  }
+
   protected final def mockFetchSubscriptionIdFromSubscriptionDetails(fetchSubscriptionId: Option[String]): Unit = {
     mockFetchFromSubscriptionDetails[String](MtditId, fetchSubscriptionId)
   }
