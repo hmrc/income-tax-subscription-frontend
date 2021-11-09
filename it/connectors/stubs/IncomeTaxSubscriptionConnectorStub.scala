@@ -9,10 +9,11 @@ import helpers.agent.IntegrationTestConstants.SessionId
 import helpers.agent.IntegrationTestModels.{fullSubscriptionData, subscriptionData}
 import helpers.agent.WiremockHelper
 import helpers.servicemocks.WireMockMethods
+import models.common.PropertyModel
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.{BusinessesKey, subscriptionId}
+import utilities.SubscriptionDataKeys.{BusinessesKey, Property, subscriptionId}
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
@@ -30,13 +31,18 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   }
 
   def stubSaveSubscriptionDetails[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {
-    when(method = POST, uri = postUri(id))
+    when(method = POST, uri = postUri(subscriptionId))
       .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionData + (id -> Json.toJson(body))))
   }
 
   def stubSaveSubscriptionDetails(id: String): Unit = {
-    when(method = POST, uri = postUri(id))
+    when(method = POST, uri = postUri(subscriptionId))
       .thenReturn(Status.OK, CacheMap(SessionId, fullSubscriptionDataBothPost))
+  }
+
+  def stubSaveProperty(property: PropertyModel): Unit = {
+    when(method = POST, uri = postUri(Property), body = Json.toJson(property))
+      .thenReturn(Status.OK)
   }
 
   def stubFullSubscriptionGet(): Unit = stubSubscriptionData(fullSubscriptionDataAllPost)
@@ -93,7 +99,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   }
 
 
-  def postUri(key: String) = s"${subscriptionUri(subscriptionId)}"
+  def postUri(key: String) = s"${subscriptionUri(key)}"
 
 
   case class SubscriptionData(id: String, data: Map[String, JsValue])

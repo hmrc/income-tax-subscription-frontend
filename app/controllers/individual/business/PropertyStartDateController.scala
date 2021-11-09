@@ -20,16 +20,11 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
-import controllers.utils.IndividualAnswers._
-import controllers.utils.OptionalAnswers._
-import controllers.utils.RequireAnswer
 import forms.individual.business.PropertyStartDateForm
 import forms.individual.business.PropertyStartDateForm._
-
-import javax.inject.{Inject, Singleton}
-import models.common.{IncomeSourceModel, PropertyStartDateModel}
+import models.DateModel
+import models.common.IncomeSourceModel
 import play.api.data.Form
-import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -38,6 +33,7 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.individual.incometax.business.PropertyStartDate
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -49,9 +45,9 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends SignUpController
-  with ImplicitDateFormatter with RequireAnswer with FeatureSwitching  {
+  with ImplicitDateFormatter with FeatureSwitching {
 
-  def view(propertyStartDateForm: Form[PropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: Option[IncomeSourceModel])
+  def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: Option[IncomeSourceModel])
           (implicit request: Request[_]): Html = {
     propertyStartDate(
       propertyStartDateForm = propertyStartDateForm,
@@ -64,23 +60,22 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        require(optPropertyStartDateAnswer) {
-          propertyStartDate =>
-            Future.successful(Ok(view(
-              propertyStartDateForm = form.fill(propertyStartDate),
-              isEditMode = isEditMode,
-              incomeSourceModel = None
-            )))
-        }
-      } else {
-        require(optPropertyStartDateAnswer and incomeSourceModelAnswer) {
-          case propertyStartDate ~ incomeSource =>
-            Future.successful(Ok(view(
+      subscriptionDetailsService.fetchPropertyStartDate() flatMap { propertyStartDate =>
+        if (isEnabled(SaveAndRetrieve)) {
+          Future.successful(Ok(view(
+            propertyStartDateForm = form.fill(propertyStartDate),
+            isEditMode = isEditMode,
+            incomeSourceModel = None
+          )))
+        } else {
+          subscriptionDetailsService.fetchIncomeSource() map {
+            case Some(incomeSource) => Ok(view(
               propertyStartDateForm = form.fill(propertyStartDate),
               isEditMode = isEditMode,
               incomeSourceModel = Some(incomeSource)
-            )))
+            ))
+            case None => Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
+          }
         }
       }
   }
@@ -92,9 +87,9 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
           if (isEnabled(SaveAndRetrieve)) {
             Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode, None)))
           } else {
-            require(incomeSourceModelAnswer) {
-              incomeSourceModel =>
-                Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode, Some(incomeSourceModel))))
+            subscriptionDetailsService.fetchIncomeSource() map {
+              case Some(incomeSource) => BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode, Some(incomeSource)))
+              case None => Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
             }
           }
         },
@@ -117,13 +112,13 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
       case (true, true, _) => controllers.individual.business.routes.TaskListController.show().url
       case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
       case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-      case (false, false, Some(incomeSourceModel)) if (incomeSourceModel.selfEmployment) =>
+      case (false, false, Some(incomeSourceModel)) if incomeSourceModel.selfEmployment =>
         appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
       case _ =>
         controllers.individual.incomesource.routes.IncomeSourceController.show().url
     }
 
-  def form(implicit request: Request[_]): Form[PropertyStartDateModel] = {
+  def form(implicit request: Request[_]): Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate.toLongDate, PropertyStartDateForm.maxStartDate.toLongDate)
   }
 }

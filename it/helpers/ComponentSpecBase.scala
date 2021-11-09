@@ -25,10 +25,10 @@ import forms.individual.incomesource.{BusinessIncomeSourceForm, IncomeSourceForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models.{AccountingYear, DateModel}
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
+import models.{AccountingMethod, AccountingYear, DateModel}
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -250,6 +250,14 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       post("/business/tax-year-check-your-answers", sessionData)(Map.empty)
     }
 
+    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/business/uk-property-check-your-answers", sessionData)
+    }
+
+    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/business/uk-property-check-your-answers", sessionData)(Map.empty)
+    }
+
     def getProgressSaved(sessionData: Map[String, String] = Map.empty): WSResponse = {
       get("/business/progress-saved", sessionData)
     }
@@ -285,7 +293,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def noSA(): WSResponse = get("/register-for-SA")
 
-    def getRouting(): WSResponse = get("/business/routing")
+    def getRouting: WSResponse = get("/business/routing")
 
     def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
 
@@ -360,7 +368,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodPropertyModel]): WSResponse = {
+    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
       val uri = s"/business/accounting-method-property?editMode-=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
@@ -384,7 +392,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def overseasPropertyStartDate(): WSResponse = get("/business/overseas-property-start-date")
 
-    def submitpropertyStartDate(inEditMode: Boolean, request: Option[PropertyStartDateModel]): WSResponse = {
+    def submitpropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
       val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
       val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
       val uri = s"/business/property-commencement-date?editMode=$inEditMode"

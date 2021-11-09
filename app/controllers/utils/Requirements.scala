@@ -76,16 +76,8 @@ object OptionalAnswers {
 
   import utilities.SubscriptionDataUtil._
 
-  val optPropertyAccountingMethod: Answer[Option[AccountingMethodPropertyModel]] = OptionalAnswer(
-    retrieveAnswer = _.getPropertyAccountingMethod
-  )
-
   val optAccountingMethodAnswer: Answer[Option[AccountingMethodModel]] = OptionalAnswer(
     retrieveAnswer = _.getAccountingMethod
-  )
-
-  val optPropertyStartDateAnswer: Answer[Option[PropertyStartDateModel]] = OptionalAnswer(
-    retrieveAnswer = _.getPropertyStartDate
   )
 
   val optOverseasPropertyStartDateAnswer: Answer[Option[OverseasPropertyStartDateModel]] = OptionalAnswer(

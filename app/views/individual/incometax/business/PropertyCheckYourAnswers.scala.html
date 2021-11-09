@@ -1,0 +1,70 @@
+@*
+* Copyright 2021 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
+@import config.AppConfig
+@import models.common.PropertyModel
+@import views.html.helpers.injected.ContinueButton
+@import views.html.templates.PrincipalMainTemplate
+@import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
+
+@this(
+  mainTemplate: PrincipalMainTemplate,
+  checkYourAnswers: CheckYourAnswers,
+  checkYourAnswersRow: CheckYourAnswersRow,
+  continueButton: ContinueButton
+)
+
+@(
+  viewModel: PropertyModel,
+  postAction: Call,
+  backUrl: String
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@startDate(maybeStartDate: Option[DateModel]) = @{
+  maybeStartDate match {
+    case Some(startDate) => startDate.toCheckYourAnswersDateFormat
+    case None => ""
+  }
+}
+
+@accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
+  accountingMethod match {
+    case Some(Cash) => messages("business.check-your-answers.content.uk-property-accounting-method.answer.cash")
+    case Some(Accruals) => messages("business.check-your-answers.content.uk-property-accounting-method.answer.accruals")
+    case None => ""
+  }
+}
+
+@mainTemplate(title = messages("business.check-your-answers.title"), backLink = Some(backUrl)) {
+  @checkYourAnswers(heading = messages("business.check-your-answers.title"), postAction) {
+    @checkYourAnswersRow(
+      field = "start-date",
+      question = messages("business.check-your-answers.content.uk-property-start-date.question"),
+      answer = startDate(viewModel.startDate),
+      changeLabel = if (viewModel.startDate.isDefined) None else Some(messages("base.incomplete")),
+      changeUrl = Some(controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url),
+      hiddenContent = Some(messages("business.check-your-answers.content.uk-property-start-date.question"))
+    )
+    @checkYourAnswersRow(
+      field = "accounting-method",
+      question = messages("business.check-your-answers.content.uk-property-accounting-method.question"),
+      answer = accountingMethod(viewModel.accountingMethod),
+      changeLabel = if (viewModel.accountingMethod.isDefined) None else Some(messages("base.incomplete")),
+      changeUrl = Some(controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url),
+      hiddenContent = Some(messages("business.check-your-answers.content.uk-property-accounting-method.question"))
+    )
+  }
+}

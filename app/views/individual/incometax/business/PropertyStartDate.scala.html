@@ -16,7 +16,6 @@
 
 @import config.AppConfig
 @import forms.individual.business.PropertyStartDateForm._
-@import models.common.PropertyStartDateModel
 @import views.html.helpers.injected.{ContinueButton, DateHelper}
 @import views.html.templates.PrincipalMainTemplate
 
@@ -29,7 +28,7 @@
         implicit appConfig: AppConfig
 )
 
-@(propertyStartDateForm: Form[PropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean)(implicit request: Request[_], messages: Messages)
+@(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean)(implicit request: Request[_], messages: Messages)
 
 @continueButtonContent = @{
   if(isSaveAndRetrieve) {

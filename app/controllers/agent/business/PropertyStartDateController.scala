@@ -20,21 +20,18 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import controllers.utils.AgentAnswers._
-import controllers.utils.OptionalAnswers._
-import controllers.utils.RequireAnswer
 import forms.agent.PropertyStartDateForm
 import forms.agent.PropertyStartDateForm.propertyStartDateForm
-import javax.inject.Inject
-import models.common.{IncomeSourceModel, PropertyStartDateModel}
+import models.DateModel
+import models.common.IncomeSourceModel
 import play.api.data.Form
-import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyStartDateController @Inject()(val auditingService: AuditingService,
@@ -44,9 +41,9 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends AuthenticatedController
-  with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
+  with ImplicitDateFormatter with FeatureSwitching {
 
-  def view(propertyStartDateForm: Form[PropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
+  def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
     views.html.agent.business.property_start_date(
       propertyStartDateForm = propertyStartDateForm,
@@ -58,13 +55,15 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optPropertyStartDateAnswer and incomeSourceModelAnswer) {
-        case propertyStartDate ~ incomeSource =>
-          Future.successful(Ok(view(
+      subscriptionDetailsService.fetchPropertyStartDate() flatMap { propertyStartDate =>
+        subscriptionDetailsService.fetchIncomeSource() map {
+          case Some(incomeSource) => Ok(view(
             propertyStartDateForm = form.fill(propertyStartDate),
             isEditMode = isEditMode,
             incomeSourceModel = incomeSource
-          )))
+          ))
+          case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+        }
       }
   }
 
@@ -72,9 +71,11 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
     implicit user =>
       form.bindFromRequest.fold(
         formWithErrors =>
-          require(incomeSourceModelAnswer) {
-            incomeSourceModel =>
-              Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
+          subscriptionDetailsService.fetchIncomeSource() map {
+            case Some(incomeSource) => BadRequest(view(
+              propertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSource
+            ))
+            case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
           },
         startDate =>
           subscriptionDetailsService.savePropertyStartDate(startDate) flatMap { _ =>
@@ -99,7 +100,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
       }
   }
 
-  def form(implicit request: Request[_]): Form[PropertyStartDateModel] = {
+  def form(implicit request: Request[_]): Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate.toLongDate, PropertyStartDateForm.maxStartDate.toLongDate)
   }
 }

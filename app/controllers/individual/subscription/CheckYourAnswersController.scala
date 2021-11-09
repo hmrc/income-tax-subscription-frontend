@@ -99,11 +99,12 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
     for {
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+      property <- subscriptionDetailsService.fetchProperty()
     } yield {
       if (isEnabled(ReleaseFour)) {
-        cacheMap.getSummary(businesses, businessAccountingMethod, isReleaseFourEnabled = true)
+        cacheMap.getSummary(businesses, businessAccountingMethod, property, isReleaseFourEnabled = true)
       } else {
-        cacheMap.getSummary()
+        cacheMap.getSummary(property = property)
       }
     }
   }

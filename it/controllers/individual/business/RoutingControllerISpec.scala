@@ -24,9 +24,7 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
 import models.common.IncomeSourceModel
-import models.{Accruals, Cash}
 import play.api.http.Status._
-import utilities.SubscriptionDataKeys
 
 class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -39,10 +37,10 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(incomeSource = Some(IncomeSourceModel(false, true, false))))
+          subscriptionData(incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false))))
 
         When("GET /business/routing is called")
-        val res = IncomeTaxSubscriptionFrontend.getRouting()
+        val res = IncomeTaxSubscriptionFrontend.getRouting
 
 
         Then("Should return a SEE_OTHER with the property start date page")
@@ -58,10 +56,10 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(incomeSource = Some(IncomeSourceModel(false, false, true))))
+          subscriptionData(incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true))))
 
         When("GET /business/routing is called")
-        val res = IncomeTaxSubscriptionFrontend.getRouting()
+        val res = IncomeTaxSubscriptionFrontend.getRouting
 
 
         Then("Should return a SEE_OTHER with the overseas property start date page")
@@ -76,10 +74,10 @@ class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, false))))
+          subscriptionData(incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))))
 
         When("GET /business/routing is called")
-        val res = IncomeTaxSubscriptionFrontend.getRouting()
+        val res = IncomeTaxSubscriptionFrontend.getRouting
 
 
         Then("Should return a SEE_OTHER with the check your answers page")

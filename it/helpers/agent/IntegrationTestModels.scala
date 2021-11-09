@@ -24,7 +24,7 @@ object IntegrationTestModels {
                            endDate: DateModel = testEndDate): AccountingPeriodModel =
     AccountingPeriodModel(startDate, endDate)
 
-  val testBusinessName = BusinessNameModel("test business")
+  val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
   val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")
   val testBusinessAddress: BusinessAddressModel = BusinessAddressModel(
     "",
@@ -37,15 +37,15 @@ object IntegrationTestModels {
       postcode = "ZZ11ZZ"
     )
   )
-  val testAccountingMethod = AccountingMethodModel(Cash)
-  val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
-  val testAccountingMethodForeignProperty = OverseasAccountingMethodPropertyModel(Cash)
+  val testAccountingMethod: AccountingMethodModel = AccountingMethodModel(Cash)
+  val testAccountingMethodProperty: AccountingMethodPropertyModel = AccountingMethodPropertyModel(Cash)
+  val testAccountingMethodForeignProperty: OverseasAccountingMethodPropertyModel = OverseasAccountingMethodPropertyModel(Cash)
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
   val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
-  val testPropertyStartDate = PropertyStartDateModel(testValidStartDate)
-  val testOverseasPropertyStartDate = OverseasPropertyStartDateModel(testValidStartDate)
-  val testInvalidOverseasPropertyStartDate = OverseasPropertyStartDateModel(testInvalidStartDate)
-  val testInvalidPropertyStartDate = PropertyStartDateModel(testInvalidStartDate)
+  val testPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
+  val testOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidStartDate)
+  val testInvalidOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testInvalidStartDate)
+  val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
   val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData(
     id = "businessId",
     businessStartDate = Some(BusinessStartDate(DateModel("19", "03", "1999"))),
@@ -55,9 +55,9 @@ object IntegrationTestModels {
   ))
 
 
-  val testBusinessTradeName = BusinessTradeNameModel("test trade name")
-  val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
-  val testBusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
+  val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
+  val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
+  val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
   val testId = "testId"
 
 
@@ -67,7 +67,6 @@ object IntegrationTestModels {
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
-      accountingMethodProperty = Some(testAccountingMethodProperty),
       overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
     )
 
@@ -77,8 +76,6 @@ object IntegrationTestModels {
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = None,
       accountingMethod = None,
-      propertyStartDate = Some(testPropertyStartDate),
-      accountingMethodProperty = Some(testAccountingMethodProperty),
       overseasPropertyAccountingMethod = None,
       overseasPropertyStartDate = None
     )
@@ -88,8 +85,6 @@ object IntegrationTestModels {
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
-                        propertyStartDate: Option[PropertyStartDateModel] = None,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                         overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
                         overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None)
   : Map[String, JsValue] = {
@@ -98,8 +93,6 @@ object IntegrationTestModels {
       selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       businessName.map(model => SubscriptionDataKeys.BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      propertyStartDate.map(model => SubscriptionDataKeys.PropertyStartDate -> PropertyStartDateModel.format.writes(model)) ++
-      accountingMethodProperty.map(model => SubscriptionDataKeys.PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
       overseasPropertyStartDate.map(model => SubscriptionDataKeys.OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model)) ++
       overseasPropertyAccountingMethod.map(model => SubscriptionDataKeys.OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model))
   }

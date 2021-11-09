@@ -20,26 +20,27 @@ package controllers.agent
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.{IncomeSourceModel, PropertyModel}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.agent.mocks._
 import services.mocks._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ImplicitDateFormatterImpl
-import utilities.SubscriptionDataKeys.MtditId
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
 import utilities.SubscriptionDataUtil._
 import utilities.agent.TestConstants.{testNino, _}
 import utilities.agent.TestModels
-import utilities.agent.TestModels.testCacheMap
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, when}
-import scala.concurrent.Future
-import play.twirl.api.HtmlFormat
+import utilities.agent.TestModels.testAccountingMethodProperty
 import views.html.agent.CheckYourAnswers
+
+import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
@@ -73,6 +74,11 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     mockCheckYourAnswers
   )
 
+  val testPropertyModel: PropertyModel = PropertyModel(
+    accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
+    startDate = startDate
+  )
+
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {
 
     def call(request: Request[AnyContent] = subscriptionRequest): Future[Result] = TestCheckYourAnswersController.show(request)
@@ -92,6 +98,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       "return ok (200)" in {
         mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
+        mockFetchProperty(None)
         when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(HtmlFormat.empty)
         status(call()) must be(Status.OK)
@@ -102,8 +109,9 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           enable(ReleaseFour)
           mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
           mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
-          mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
-          mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
+          mockFetchProperty(None)
           when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenReturn(HtmlFormat.empty)
           status(call()) must be(Status.OK)
@@ -157,23 +165,24 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         "return a redirect status (SEE_OTHER - 303) when release four is disabled" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testSummary)
+          mockFetchProperty(testPropertyModel)
 
-          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary())
+          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary(property = testPropertyModel))
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
           verifySubscriptionDetailsSave(MtditId, 1)
-          verifySubscriptionDetailsFetchAll(2)
         }
 
         "return a redirect status (SEE_OTHER - 303) when release four is enabled" in {
           enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testSummary)
-          mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
-          mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
+          mockFetchProperty(testPropertyModel)
 
-          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary(), true)
+          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary(property = testPropertyModel), isReleaseFourEnabled = true)
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
@@ -194,23 +203,12 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         "return a failure if subscription fails" in {
           mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
-          mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getAgentSummary())
+          mockFetchProperty(testPropertyModel)
+          mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getAgentSummary(property = testPropertyModel))
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
           ex.message mustBe "Successful response not received from submission"
           verifySubscriptionDetailsSave(MtditId, 0)
-          verifySubscriptionDetailsFetchAll(1)
-        }
-        "return a failure if create client relationship fails" ignore {
-          val request = authorisedAgentRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
-
-          mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
-          mockCreateSubscriptionSuccess(testARN, testNino, testUtr, testCacheMap.getAgentSummary())
-
-          val ex = intercept[InternalServerException](await(call(request)))
-          ex.message mustBe "Failed to create client relationship"
-          verifySubscriptionDetailsSave(MtditId, 0)
-          verifySubscriptionDetailsFetchAll(1)
         }
       }
     }

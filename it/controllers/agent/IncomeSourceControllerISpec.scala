@@ -19,17 +19,17 @@ package controllers.agent
 import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.agent.IntegrationTestModels.{subscriptionData, testAccountingMethod, testAccountingMethodForeignProperty,
-  testAccountingMethodProperty, testAccountingYearCurrent, testAccountingYearNext, testBusinessName, testOverseasPropertyStartDate, testPropertyStartDate, testSummaryDataSelfEmploymentData}
+import helpers.IntegrationTestModels.testFullPropertyModel
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
+import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.AuthStub
 import models.common.IncomeSourceModel
 import org.jsoup.Jsoup
 import play.api.http.Status._
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, Property, subscriptionId}
 
 class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -122,20 +122,20 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user selects self-employment and self-employment journey has not been completed before" when {
         "FS Release Four is disabled and selected tax year page has not been completed before" should {
           s"redirect to ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-            val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
 
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(true, false, false)),
-                accountingMethodProperty = Some(testAccountingMethodProperty)
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -152,21 +152,21 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         "Selected tax year page has been completed before and ReleaseFour is enabled" should {
           s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
             enable(ReleaseFour)
-            val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
 
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(true, false, false)),
-                selectedTaxYear = Some(testAccountingYearNext),
-                accountingMethodProperty = Some(testAccountingMethodProperty)
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(testAccountingYearNext)
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -183,21 +183,21 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         "Selected tax year page has been completed before and FS ReleaseFour is disabled " +
           "and the user has no uk property and has an overseas property income" should {
           s" redirect to ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-            val userInput: IncomeSourceModel = IncomeSourceModel(true, false, true)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
 
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(true, false, true)),
-                selectedTaxYear = Some(testAccountingYearNext),
-                accountingMethodProperty = Some(testAccountingMethodProperty)
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)),
+                selectedTaxYear = Some(testAccountingYearNext)
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -212,22 +212,22 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
 
         "Selected tax year page has been completed before and FS ReleaseFour is disabled" +
-          "and the user has a uk property and has no overseas property income" should {
+          " and the user has a uk property and has no overseas property income" should {
           s" redirect to ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
-            val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(true, true, false)),
-                selectedTaxYear = Some(testAccountingYearNext),
-                accountingMethodProperty = Some(testAccountingMethodProperty)
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)),
+                selectedTaxYear = Some(testAccountingYearNext)
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -244,21 +244,20 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           "and the user has no uk property and no overseas property income" should {
           s" redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
             enable(ReleaseFour)
-            val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(true, false, false)),
-                selectedTaxYear = Some(testAccountingYearNext),
-                propertyStartDate = Some(testPropertyStartDate),
-                accountingMethodProperty = Some(testAccountingMethodProperty)
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(testAccountingYearNext)
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -275,20 +274,19 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           "and the user has no uk property and no overseas property income" should {
           s" redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
             enable(ReleaseFour)
-            val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(true, false, false)),
-                propertyStartDate = Some(testPropertyStartDate),
-                accountingMethodProperty = Some(testAccountingMethodProperty)
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -307,20 +305,21 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         "when ReleaseFour is enabled" should {
           s" redirect to ${controllers.agent.business.routes.PropertyStartDateController.show()}" in {
             enable(ReleaseFour)
-            val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(false, true, false)),
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
                 overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
                 overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", 200, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", 200, Json.toJson(Some(testAccountingMethod)))
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -336,19 +335,20 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
         "when ReleaseFour is disabled" should {
           s" redirect to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" in {
-            val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(false, true, false)),
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
                 overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", 200, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", 200, Json.toJson(Some(testAccountingMethod)))
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -366,20 +366,19 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         "when ReleaseFour is enabled" should {
           s" redirect to ${controllers.agent.business.routes.OverseasPropertyStartDateController.show().url}" in {
             enable(ReleaseFour)
-            val userInput: IncomeSourceModel = IncomeSourceModel(false, false, true)
+            val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
               subscriptionData(
-                incomeSource = Some(IncomeSourceModel(false, false, true)),
-                propertyStartDate = Some(testPropertyStartDate),
-                accountingMethodProperty = Some(testAccountingMethodProperty)
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true))
               )
             )
 
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", 200, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", 200, Json.toJson(Some(testAccountingMethod)))
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -397,21 +396,20 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user select self-employment and self-employment journey has completed before and ReleaseFour is enabled" should {
         s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
           enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+          val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(true, false, false)),
-              selectedTaxYear = Some(testAccountingYearCurrent),
-              propertyStartDate = Some(testPropertyStartDate),
-              accountingMethodProperty = Some(testAccountingMethodProperty)
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+              selectedTaxYear = Some(testAccountingYearCurrent)
             )
           )
 
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", 200, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", 200, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -428,20 +426,19 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user select self-employment and UK property and both journeys have been completed before and ReleaseFour is enabled" should {
         s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
+          val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(true, true, false)),
-              propertyStartDate = Some(testPropertyStartDate),
-              accountingMethodProperty = Some(testAccountingMethodProperty)
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
             )
           )
 
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", 200, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", 200, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -457,20 +454,21 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user select self-employment and overseas property and both journeys have been completed before and ReleaseFour is enabled" should {
         s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(true, false, true)
+          val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(true, false, true)),
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)),
               overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
               overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
             )
           )
 
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", 200, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", 200, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -487,22 +485,21 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         "and ReleaseFour is enabled" should {
         s"return an SEE OTHER (303)" + s"${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(true, true, true)
+          val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(true, true, true)),
-              propertyStartDate = Some(testPropertyStartDate),
-              accountingMethodProperty = Some(testAccountingMethodProperty),
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
               overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
               overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
             )
           )
 
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", 200, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", 200, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -519,20 +516,19 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user select UK property and UK property journeys has been completed before and ReleaseFour is enabled" should {
         s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
+          val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(false, true, false)),
-              propertyStartDate = Some(testPropertyStartDate),
-              accountingMethodProperty = Some(testAccountingMethodProperty)
+              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false))
             )
           )
 
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -548,20 +544,21 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user select overseas property and overseas property journeys has been completed before and ReleaseFour is enabled" should {
         s"return an SEE OTHER (303)" + s"${controllers.agent.routes.CheckYourAnswersController.submit()}" in {
           enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(false, false, true)
+          val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(false, false, true)),
+              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
               overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
               overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
             )
           )
 
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -577,22 +574,21 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user select UK property and overseas property and both journeys have been completed before and ReleaseFour is enabled" should {
         s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           enable(ReleaseFour)
-          val userInput: IncomeSourceModel = IncomeSourceModel(false, true, true)
+          val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(false, true, true)),
-              propertyStartDate = Some(testPropertyStartDate),
-              accountingMethodProperty = Some(testAccountingMethodProperty),
+              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
               overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
               overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
             )
           )
 
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -608,21 +604,22 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user selects self-employment and no UK property or overseas property and self-employment journey has been completed before and FS Release four " +
         "is disabled" should {
         s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
-          val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+          val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(true, false, false)),
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
               selectedTaxYear = Some(testAccountingYearNext),
               businessName = Some(testBusinessName),
               accountingMethod = Some(testAccountingMethod)
             )
           )
 
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel]("subscriptionId", userInput)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("Businesses", 200, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails("BusinessAccountingMethod", 200, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -642,11 +639,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
     "not in edit mode" when {
 
       "the user is self-employed only" in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails("testId", userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -659,11 +657,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
 
       "the user is self-employed and has a UK property " in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -676,11 +675,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
 
       "the user has only a UK property " in {
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -699,11 +699,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
     "not in edit mode" when {
       "the user is self-employed only" in {
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
 
         When("POST /income is called")
@@ -718,11 +719,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user is self-employed and has a UK property" in {
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -736,11 +738,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user has a UK property only" in {
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -754,11 +757,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user has a foreign property only" in {
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, false, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -772,11 +776,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user has a UK property and has a overseas property" in {
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -790,11 +795,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user is self-employed and has a UK property and a overseas property" in {
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -808,11 +814,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user is self-employed and has a foreign property" in {
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -832,11 +839,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user is self-employed only" in {
         enable(ReleaseFour)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
 
         When("POST /income is called")
@@ -851,11 +859,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user is self-employed and has a UK property" in {
         enable(ReleaseFour)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -869,11 +878,13 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
       "the user has a UK property only" in {
         enable(ReleaseFour)
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
+
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -893,11 +904,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user is self-employed only" in {
         enable(ReleaseFour)
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -912,11 +924,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user is self-employed and has a UK property" in {
         enable(ReleaseFour)
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -931,11 +944,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user is self-employed and has a foreign property" in {
         enable(ReleaseFour)
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, false, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -950,11 +964,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user is self-employed and has a UK property and a foreign property " in {
         enable(ReleaseFour)
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(true, true, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -969,11 +984,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user has a UK property and a foreign property " in {
         enable(ReleaseFour)
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -988,11 +1004,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user has a UK property only" in {
         enable(ReleaseFour)
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, true, false)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -1007,11 +1024,12 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "the user has a foreign property only" in {
         enable(ReleaseFour)
         enable(ForeignProperty)
-        val userInput: IncomeSourceModel = IncomeSourceModel(false, false, true)
+        val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))

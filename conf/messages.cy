@@ -22,6 +22,7 @@ base.userResearch.title                                         = Helpu i wella 
 base.userResearch.link                                          = Atebwch ychydig o gwestiynau am eich hunan er mwyn ymuno â’r panel ymchwil
 base.save-and-continue                                          = Cadw ac yn eich blaen
 base.save-and-come-back-later                                   = Cadw a dod yn ôl yn nes ymlaen
+base.incomplete                                                 = Anghyflawn
 
 error-notification.prefix                                       = Gwall:
 
@@ -983,6 +984,10 @@ business.check-your-answers.title                               = ?
 business.check-your-answers.content.tax-year.question           = ?
 business.check-your-answers.content.tax-year.current-tax-year   = ?
 business.check-your-answers.content.tax-year.next-tax-year      = ?
+business.check-your-answers.content.uk-property-start-date.question = ?
+business.check-your-answers.content.uk-property-accounting-method.question = ?
+business.check-your-answers.content.uk-property-accounting-method.answer.cash = ?
+business.check-your-answers.content.uk-property-accounting-method.answer.accruals = ?
 
 ## Progress saved
 business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi’i gadw

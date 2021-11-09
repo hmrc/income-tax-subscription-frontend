@@ -18,17 +18,14 @@ package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
 import models.usermatching.UserDetailsModel
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.Matchers._
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockSpsService, MockSubscriptionDetailsService, MockUserMatchingService}
-import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels
 import utilities.agent.TestModels._
 import views.html.agent.SignUpComplete

@@ -37,7 +37,8 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
-import models.common.{AccountingMethodPropertyModel, IncomeSourceModel}
+import models.AccountingMethod
+import models.common.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -58,7 +59,8 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                                                    val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
-  def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean, isSaveAndRetrieve: Boolean)(implicit request: Request[_]): Future[Html] = {
+  def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean, isSaveAndRetrieve: Boolean)
+          (implicit request: Request[_]): Future[Html] = {
     for {
       back <- backUrl(isEditMode)
     } yield

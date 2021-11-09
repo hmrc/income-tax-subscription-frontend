@@ -14,8 +14,8 @@
 * limitations under the License.
 *@
 
-@import views.html.helpers.injected.ContinueButton
 @import views.html.helper.form
+@import views.html.helpers.injected.ContinueButton
 
 @this(
   form: FormWithCSRF,
@@ -24,7 +24,7 @@
 
 @(heading: String, postAction: Call, headingHidden: Option[String] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-<h1 class="govuk-heading-xl">
+<h1 class="govuk-heading-l">
   @heading
   @headingHidden.map { hiddenContent =>
     <span class="govuk-visually-hidden">@hiddenContent</span>

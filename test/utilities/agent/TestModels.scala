@@ -17,8 +17,8 @@
 package utilities.agent
 
 
-import models.common.business._
 import models.common._
+import models.common.business._
 import models.usermatching.UserDetailsModel
 import models.{AccountingMethod => _, _}
 import play.api.libs.json.JsValue
@@ -58,42 +58,36 @@ object TestModels extends Implicits {
       incomeSource = testIncomeSourceBusinessAndUkProperty,
       selectedTaxYear = testSelectedTaxYearNext,
       businessName = testBusinessName,
-      accountingMethod = testAccountingMethod,
-      accountingMethodProperty = testAccountingMethodProperty)
+      accountingMethod = testAccountingMethod)
 
   val testCurrentCacheMap: CacheMap =
     testCacheMap(
       incomeSource = testIncomeSourceBusinessAndUkProperty,
       selectedTaxYear = testSelectedTaxYearCurrent,
       businessName = testBusinessName,
-      accountingMethod = testAccountingMethod,
-      accountingMethodProperty = testAccountingMethodProperty)
+      accountingMethod = testAccountingMethod)
 
   def testCacheMapCustom(
                           incomeSource: Option[IncomeSourceModel] = testIncomeSourceBusinessAndUkProperty,
                           selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                           businessName: Option[BusinessNameModel] = testBusinessName,
-                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
-                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty): CacheMap =
+                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
       selectedTaxYear = selectedTaxYear,
       businessName = businessName,
-      accountingMethod = accountingMethod,
-      accountingMethodProperty = accountingMethodProperty)
+      accountingMethod = accountingMethod)
 
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    businessName: Option[BusinessNameModel] = None,
-                   accountingMethod: Option[AccountingMethodModel] = None,
-                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): CacheMap = {
+                   accountingMethod: Option[AccountingMethodModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
-      accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
-      accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)))
+      accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model)))
     CacheMap("", map)
   }
 
