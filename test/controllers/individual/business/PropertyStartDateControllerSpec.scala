@@ -22,14 +22,14 @@ import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
-import models.common.{IncomeSourceModel, PropertyStartDateModel}
+import models.common.{IncomeSourceModel, PropertyModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.PropertyStartDate
-import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceProperty}
+import utilities.TestModels.{testCacheMap, testFullPropertyModel, testIncomeSourceBoth, testIncomeSourceProperty}
 import views.individual.mocks.MockPropertyStartDate
 
 import java.time.LocalDate
@@ -86,10 +86,10 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = Some(incomeSourceBoth)
       ))
+      mockFetchProperty(None)
 
       status(result) must be(Status.OK)
       verifySubscriptionDetailsSave(PropertyStartDate, 0)
-      verifySubscriptionDetailsFetchAll(1)
     }
 
     "display the property accounting method view and return OK (200) when Save & Retrieve feature is enabled" in new Test {
@@ -99,10 +99,10 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchAllFromSubscriptionDetails(testCacheMap())
+      mockFetchProperty(None)
 
       status(result) must be(Status.OK)
       verifySubscriptionDetailsSave(PropertyStartDate, 0)
-      verifySubscriptionDetailsFetchAll(1)
     }
   }
 
@@ -111,7 +111,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
     val testValidMaxDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
     val testValidMinDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
 
-    val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(testValidMaxDate)
+    val testPropertyStartDateModel: DateModel = testValidMaxDate
 
     def callShow(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(testValidMinDate.toString, testValidMaxDate.toString), testPropertyStartDateModel)
@@ -125,70 +125,57 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "return a redirect status (SEE_OTHER - 303)" in {
         disable(SaveAndRetrieve)
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchProperty(None)
+
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyPropertySave(Some(PropertyModel(startDate = testValidMaxDate)))
       }
 
-      "redirect to businessAccountingMethod page" in {
+      "redirect to property accounting method page" in {
         disable(SaveAndRetrieve)
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchProperty(None)
 
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyPropertySave(Some(PropertyModel(startDate = testValidMaxDate)))
       }
 
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      "return a redirect status (SEE_OTHER - 303) to check your answers" in {
         disable(SaveAndRetrieve)
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchProperty(testFullPropertyModel)
 
         val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
-      }
-
-      "redirect to checkYourAnswer page" in {
-        disable(SaveAndRetrieve)
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = true)
-
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
-
+        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
       }
 
       "redirect to taskListPage if save & retrieve feature is enabled page" in {
         enable(SaveAndRetrieve)
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchProperty(testFullPropertyModel)
 
         val goodRequest = callShow(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
-
+        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
       }
     }
 
@@ -204,7 +191,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifySubscriptionDetailsSave(PropertyStartDate, 0)
+        verifyPropertySave(None)
         verifySubscriptionDetailsFetchAll(1)
       }
 
@@ -217,7 +204,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifySubscriptionDetailsSave(PropertyStartDate, 0)
+        verifyPropertySave(None)
         verifySubscriptionDetailsFetchAll(0)
       }
     }

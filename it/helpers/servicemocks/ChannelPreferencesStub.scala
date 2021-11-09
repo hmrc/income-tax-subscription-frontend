@@ -23,11 +23,22 @@ import play.api.libs.json.Json
 object ChannelPreferencesStub extends WireMockMethods {
 
   val channelPreferencesUrl = "/channel-preferences/confirm"
+  val channelPreferencesAgentUrl = "/channel-preferences/enrolment"
 
   def stubChannelPreferenceConfirm(): Unit = {
     when (
       method = POST,
       uri = channelPreferencesUrl
+    ) thenReturn (
+      status = OK,
+      body = Json.obj()
+    )
+  }
+
+  def stubAgentChannelPreferencesConfirm(): Unit = {
+    when(
+      method = POST,
+      uri = channelPreferencesAgentUrl
     ) thenReturn (
       status = OK,
       body = Json.obj()

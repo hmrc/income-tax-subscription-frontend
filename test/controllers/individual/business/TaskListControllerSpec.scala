@@ -19,11 +19,11 @@ package controllers.individual.business
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.{OK, SEE_OTHER}
+import controllers.Assets.OK
 import controllers.ControllerBaseSpec
+import models.common.business._
+import models.common.{AccountingYearModel, OverseasAccountingMethodPropertyModel, OverseasPropertyStartDateModel, PropertyModel}
 import models.{Accruals, Cash, DateModel, Next}
-import models.common.{AccountingMethodPropertyModel, AccountingYearModel, OverseasAccountingMethodPropertyModel, OverseasPropertyStartDateModel, PropertyStartDateModel}
-import models.common.business.{AccountingMethodModel, Address, BusinessAddressModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -35,8 +35,8 @@ import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
-import utilities.SubscriptionDataKeys.MtditId
-import utilities.TestModels.{testCacheMap, testCacheMapIndiv}
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
+import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testValidStartDate}
 import utilities.individual.TestConstants.{testCreateIncomeSources, testNino}
 import views.html.individual.incometax.business.TaskList
 
@@ -87,13 +87,11 @@ class TaskListControllerSpec extends ControllerBaseSpec
 
       val testBusinessCacheMap = testCacheMap(
         selectedTaxYear = Some(AccountingYearModel(Next)),
-        accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash)),
-        ukPropertyStartDate = Some(PropertyStartDateModel(DateModel("1", "1", "1980"))),
         overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Accruals)),
         overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("1", "1", "1980")))
       )
       mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
-      mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(Some(Seq(
+      mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(Seq(
         SelfEmploymentData(
           id = "id",
           businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -102,7 +100,12 @@ class TaskListControllerSpec extends ControllerBaseSpec
           businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), "ZZ1 1ZZ")))
         )
       )))
-      mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(Some(AccountingMethodModel(Cash)))
+      mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(Some(AccountingMethodModel(Cash)))
+      mockFetchProperty(Some(PropertyModel(
+        accountingMethod = Some(Cash),
+        startDate = Some(DateModel("1", "1", "1980")),
+        confirmed = true
+      )))
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequest)
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
@@ -114,13 +117,11 @@ class TaskListControllerSpec extends ControllerBaseSpec
 
       val testBusinessCacheMap = testCacheMap(
         selectedTaxYear = Some(AccountingYearModel(Next)),
-        accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash)),
-        ukPropertyStartDate = Some(PropertyStartDateModel(DateModel("1", "1", "1980"))),
         overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Accruals)),
         overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("1", "1", "1980")))
       )
       mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
-      mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(Some(Seq(
+      mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(Seq(
         SelfEmploymentData(
           id = "id",
           businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -129,7 +130,12 @@ class TaskListControllerSpec extends ControllerBaseSpec
           businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), "ZZ1 1ZZ")))
         )
       )))
-      mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(Some(AccountingMethodModel(Cash)))
+      mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(Some(AccountingMethodModel(Cash)))
+      mockFetchProperty(Some(PropertyModel(
+        accountingMethod = Some(Cash),
+        startDate = Some(DateModel("1", "1", "1980")),
+        confirmed = true
+      )))
 
       val result: Future[Result] = await(TestTaskListController.show()(subscriptionRequest))
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
@@ -143,8 +149,13 @@ class TaskListControllerSpec extends ControllerBaseSpec
           enable(SaveAndRetrieve)
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testCacheMapIndiv)
-          mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
-          mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
+          mockFetchProperty(Some(PropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
           val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None, overseasProperty = None)
           mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(testNino, testIncomeSourceModel)
 
@@ -152,7 +163,6 @@ class TaskListControllerSpec extends ControllerBaseSpec
           status(result) must be(Status.SEE_OTHER)
           await(result)
           verifySubscriptionDetailsSave(MtditId, 1)
-          verifySubscriptionDetailsFetchAll(2)
 
           redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show().url)
         }
@@ -162,14 +172,18 @@ class TaskListControllerSpec extends ControllerBaseSpec
         "return an internalServer error" in {
           enable(SaveAndRetrieve)
           mockFetchAllFromSubscriptionDetails(testCacheMapIndiv)
-          mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
-          mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None, overseasProperty = None)
           mockSignUpAndCreateIncomeSourcesFromTaskListFailure(testNino, testIncomeSourceModel)
+          mockFetchProperty(Some(PropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
 
           val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
           intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
-          verifySubscriptionDetailsFetchAll(1)
           verifySubscriptionDetailsSave(MtditId, 0)
         }
       }
@@ -177,10 +191,9 @@ class TaskListControllerSpec extends ControllerBaseSpec
     }
     "save and retrieve feature switch is disabled" should {
       "throw NotFoundException" in {
-
         mockFetchAllFromSubscriptionDetails(testCacheMapIndiv)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
-        mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+        mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
 
         intercept[NotFoundException](await(TestTaskListController.submit()(subscriptionRequest)))
           .getMessage mustBe "[TaskListController][submit] - The save and retrieve feature switch is disabled"

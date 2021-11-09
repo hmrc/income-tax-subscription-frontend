@@ -31,7 +31,7 @@ import play.api.data.{Form, FormError}
 
 class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  def form: Form[PropertyStartDateModel] = {
+  def form: Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate.toString, PropertyStartDateForm.maxStartDate.toString)
   }
 
@@ -43,9 +43,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       val testInput = Map(
         s"$startDate-$day" -> testDateDay, s"$startDate-$month" -> testDateMonth, s"$startDate-$year" -> testDateYear
       )
-      val expected = PropertyStartDateModel(
-        DateModel(testDateDay, testDateMonth, testDateYear)
-      )
+      val expected = DateModel(testDateDay, testDateMonth, testDateYear)
       val actual = form.bind(testInput).value
       actual shouldBe Some(expected)
     }

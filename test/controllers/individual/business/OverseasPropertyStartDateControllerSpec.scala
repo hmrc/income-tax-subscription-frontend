@@ -113,7 +113,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     def callShow(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
       controller.submit(isEditMode = isEditMode)(
         subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate.toString, testValidMaxStartDate.toString),
-        testOverseasPropertyStartDateModel)
+          testOverseasPropertyStartDateModel)
       )
 
     def callShowWithErrorForm(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =

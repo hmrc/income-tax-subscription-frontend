@@ -68,14 +68,18 @@ object TestModels extends Implicits {
 
   val emptyCacheMap = CacheMap("", Map())
 
+  val testFullPropertyModel: PropertyModel = PropertyModel(
+    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+    startDate = Some(testPropertyStartDateModel.startDate),
+    confirmed = true
+  )
+
   lazy val testCacheMap: CacheMap =
     testCacheMap(
       incomeSource = testAgentIncomeSourceBusinessProperty,
       businessName = testBusinessName,
       selectedTaxYear = testSelectedTaxYearNext,
-      accountingMethod = testAccountingMethod,
-      ukPropertyStartDate = testPropertyStartDateModel,
-      accountingMethodProperty = testAccountingMethodProperty
+      accountingMethod = testAccountingMethod
     )
 
   lazy val testCacheMapIndiv: CacheMap =
@@ -83,31 +87,25 @@ object TestModels extends Implicits {
       incomeSource = testIncomeSourceBoth,
       businessName = testBusinessName,
       selectedTaxYear = testSelectedTaxYearCurrent,
-      accountingMethod = testAccountingMethod,
-      ukPropertyStartDate = testPropertyStartDateModel,
-      accountingMethodProperty = testAccountingMethodProperty
+      accountingMethod = testAccountingMethod
     )
 
   def testCacheMapCustom(incomeSource: Option[IncomeSourceModel] = testAgentIncomeSourceBusinessProperty,
                          businessName: Option[BusinessNameModel] = testBusinessName,
                          selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
-                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty,
                          overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = testOverseasAccountingMethodProperty): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
       businessName = businessName,
       selectedTaxYear = selectedTaxYear,
       accountingMethod = accountingMethod,
-      accountingMethodProperty = accountingMethodProperty,
       overseasPropertyAccountingMethod = overseasPropertyAccountingMethod)
 
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   ukPropertyStartDate: Option[PropertyStartDateModel] = None,
-                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                    overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
                    overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
@@ -115,9 +113,7 @@ object TestModels extends Implicits {
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
-      ukPropertyStartDate.fold(emptyMap)(model => Map(PropertyStartDate -> PropertyStartDateModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
-      accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))) ++
       overseasPropertyStartDate.fold(emptyMap)(model => Map(OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model))) ++
       overseasPropertyAccountingMethod.fold(emptyMap)(model => Map(OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)))
     CacheMap("", map)

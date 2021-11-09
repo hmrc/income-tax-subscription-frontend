@@ -17,6 +17,7 @@
 package views.individual.incometax.business
 
 import forms.individual.business.PropertyStartDateForm
+import models.DateModel
 import models.common.PropertyStartDateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -117,7 +118,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
   }
 
-  private def page(isEditMode: Boolean, isSaveAndRetrieve: Boolean, propertyStartDateForm: Form[PropertyStartDateModel]): Html = {
+  private def page(isEditMode: Boolean, isSaveAndRetrieve: Boolean, propertyStartDateForm: Form[DateModel]): Html = {
     propertyStartDate(
       propertyStartDateForm,
       testCall,
@@ -130,7 +131,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
   private def document(
                         isEditMode: Boolean = false,
                         isSaveAndRetrieve: Boolean = false,
-                        propertyStartDateForm: Form[PropertyStartDateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")
+                        propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")
                       ): Document = {
     Jsoup.parse(page(isEditMode, isSaveAndRetrieve, propertyStartDateForm).body)
   }

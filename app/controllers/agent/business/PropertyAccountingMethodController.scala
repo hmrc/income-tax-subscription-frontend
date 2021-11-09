@@ -20,18 +20,15 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
-import controllers.utils.AgentAnswers._
-import controllers.utils.OptionalAnswers._
-import controllers.utils.RequireAnswer
 import forms.agent.AccountingMethodPropertyForm
-import javax.inject.{Inject, Singleton}
-import models.common.{AccountingMethodPropertyModel, IncomeSourceModel}
+import models.AccountingMethod
+import models.common.IncomeSourceModel
 import play.api.data.Form
-import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -40,9 +37,9 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents,
-                                                   val appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching with RequireAnswer {
+                                                   val appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching {
 
-  def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], incomeSource: IncomeSourceModel, isEditMode: Boolean)
+  def view(accountingMethodPropertyForm: Form[AccountingMethod], incomeSource: IncomeSourceModel, isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
     views.html.agent.business.property_accounting_method(
       accountingMethodPropertyForm = accountingMethodPropertyForm,
@@ -54,34 +51,35 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(incomeSourceModelAnswer and optPropertyAccountingMethod) { case incomeSource ~ propertyAccountingMethod =>
-        Future.successful(Ok(view(
-          accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(propertyAccountingMethod),
-          incomeSource = incomeSource,
-          isEditMode = isEditMode
-        )))
+      subscriptionDetailsService.fetchAccountingMethodProperty() flatMap { accountingMethod =>
+        subscriptionDetailsService.fetchIncomeSource() map {
+          case Some(incomeSource) => Ok(view(
+            accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethod),
+            incomeSource = incomeSource,
+            isEditMode = isEditMode
+          ))
+          case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+        }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(incomeSourceModelAnswer) { incomeSource =>
-        AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(
-              accountingMethodPropertyForm = formWithErrors,
-              incomeSource = incomeSource,
-              isEditMode = isEditMode
-            ))),
-          accountingMethodProperty => {
-            subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) map { _ =>
+      subscriptionDetailsService.fetchIncomeSource() flatMap {
+        case Some(incomeSource) => AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
+          formWithErrors => Future.successful(BadRequest(view(
+            accountingMethodPropertyForm = formWithErrors,
+            incomeSource = incomeSource,
+            isEditMode = isEditMode
+          ))),
+          accountingMethod =>
+            subscriptionDetailsService.saveAccountingMethodProperty(accountingMethod) map { _ =>
               if (isEditMode || !incomeSource.foreignProperty) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show())
               } else {
                 Redirect(routes.OverseasPropertyStartDateController.show())
               }
             }
-          }
         )
       }
   }

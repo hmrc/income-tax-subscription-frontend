@@ -21,12 +21,13 @@ import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{subscriptionData, testAccountingMethodProperty}
+import helpers.IntegrationTestModels.{subscriptionData, testFullPropertyModel}
 import helpers.servicemocks.AuthStub
-import models.common.AccountingMethodPropertyModel
 import models.{Accruals, Cash}
 import play.api.http.Status._
+import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
+import utilities.SubscriptionDataKeys.Property
 
 class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -42,6 +43,8 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+
         When("GET /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
 
@@ -60,7 +63,8 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       "show the property accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(propertyAccountingMethod = Some(testAccountingMethodProperty)))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("GET /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
@@ -79,12 +83,13 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
   "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-method-property" when {
 
     "select the Cash radio button on the property accounting method page" in {
-      val userInput = AccountingMethodPropertyModel(Cash)
+      val userInput = Cash
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyAccountingMethod, userInput)
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = None)))
+      IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
 
       When("POST /business/accounting-method-property is called")
       val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -97,12 +102,13 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
     }
 
     "select the Accruals radio button on the accounting method page" in {
-      val userInput = AccountingMethodPropertyModel(Accruals)
+      val userInput = Accruals
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyAccountingMethod, userInput)
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = None)))
+      IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
 
       When("POST /business/accounting-method-property is called")
       val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -118,7 +124,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyAccountingMethod, "")
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
       When("POST /business/accounting-method-property is called")
 
@@ -136,12 +142,13 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         "click save and continue button" should {
           "redirect to task list page" in {
             enable(SaveAndRetrieve)
-            val userInput = AccountingMethodPropertyModel(Cash)
+            val userInput = Cash
 
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.PropertyAccountingMethod, userInput)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = Some(Accruals))))
+            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
 
             When("POST /business/accounting-method-property is called")
             val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))

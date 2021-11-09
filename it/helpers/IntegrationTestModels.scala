@@ -1,7 +1,20 @@
+/*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package helpers
-
-import java.time.LocalDate
 
 import helpers.IntegrationTestConstants._
 import models._
@@ -15,6 +28,7 @@ import utilities.AccountingPeriodUtil
 import utilities.individual.Constants
 import utilities.individual.Constants.GovernmentGateway._
 
+import java.time.LocalDate
 
 object IntegrationTestModels {
 
@@ -31,7 +45,7 @@ object IntegrationTestModels {
   val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1).plusDays(-1)
   val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
-  val testAccountingYearCurrentConfirmed: AccountingYearModel = AccountingYearModel(Current, true)
+  val testAccountingYearCurrentConfirmed: AccountingYearModel = AccountingYearModel(Current, confirmed = true)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
@@ -53,16 +67,16 @@ object IntegrationTestModels {
       postcode = "ZZ11ZZ"
     )
   )
-  val testAccountingMethod = AccountingMethodModel(Cash)
-  val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
-  val testAccountingMethodForeignProperty = OverseasAccountingMethodPropertyModel(Cash)
+  val testAccountingMethod: AccountingMethodModel = AccountingMethodModel(Cash)
+  val testAccountingMethodProperty: AccountingMethodPropertyModel = AccountingMethodPropertyModel(Cash)
+  val testAccountingMethodForeignProperty: OverseasAccountingMethodPropertyModel = OverseasAccountingMethodPropertyModel(Cash)
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
   val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
-  val testPropertyStartDate = PropertyStartDateModel(testValidStartDate)
-  val testPropertyStartDateModel = PropertyStartDateModel(DateModel("05","04","2017"))
-  val testOverseasPropertyStartDate = OverseasPropertyStartDateModel(testValidStartDate)
-  val testOverseasPropertyStartDateModel = OverseasPropertyStartDateModel(DateModel("05","04","2017"))
-  val testInvalidPropertyStartDate = PropertyStartDateModel(testInvalidStartDate)
+  val testPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
+  val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))
+  val testOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidStartDate)
+  val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(DateModel("05", "04", "2017"))
+  val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
   val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData(
     id = "12345",
     businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
@@ -70,39 +84,39 @@ object IntegrationTestModels {
     businessTradeName = Some(testBusinessTrade),
     businessAddress = Some(testBusinessAddress)
   ))
-  val testInvalidOverseasPropertyStartDate = OverseasPropertyStartDateModel(testInvalidStartDate)
+  val testInvalidOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testInvalidStartDate)
+  val testFullPropertyModel: PropertyModel = PropertyModel(
+    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+    startDate = Some(testPropertyStartDate.startDate),
+    confirmed = true
+  )
 
-  val testBusinessTradeName = BusinessTradeNameModel("test trade name")
-  val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
-  val testBusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
+  val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
+  val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
+  val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
   val testId = "testId"
 
   lazy val fullSubscriptionDataBothPost: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(IncomeSourceModel(true, true, true)),
+      incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
-      accountingMethod = Some(testAccountingMethod),
-      propertyStartDate = Some(testPropertyStartDate),
-      propertyAccountingMethod = Some(testAccountingMethodProperty)
+      accountingMethod = Some(testAccountingMethod)
     )
 
   lazy val fullSubscriptionDataAllPost: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(IncomeSourceModel(true, true, true)),
+      incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
-      propertyStartDate = Some(testPropertyStartDate),
-      propertyAccountingMethod = Some(testAccountingMethodProperty),
       overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
       overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
     )
 
   lazy val fullSubscriptionDataPropertyPost: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(IncomeSourceModel(false, true, false)),
-      propertyAccountingMethod = Some(testAccountingMethodProperty),
+      incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
       overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
 
     )
@@ -113,8 +127,6 @@ object IntegrationTestModels {
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
-      propertyStartDate = None,
-      propertyAccountingMethod = None,
       overseasPropertyAccountingMethod = None,
       overseasPropertyStartDate = None
     )
@@ -125,8 +137,6 @@ object IntegrationTestModels {
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = None,
       accountingMethod = None,
-      propertyStartDate = Some(testPropertyStartDateModel),
-      propertyAccountingMethod = Some(testAccountingMethodProperty),
       overseasPropertyAccountingMethod = None,
       overseasPropertyStartDate = None
     )
@@ -137,8 +147,6 @@ object IntegrationTestModels {
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = None,
       accountingMethod = None,
-      propertyStartDate = None,
-      propertyAccountingMethod = None,
       overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
       overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
     )
@@ -149,8 +157,6 @@ object IntegrationTestModels {
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
-      propertyStartDate = Some(testPropertyStartDateModel),
-      propertyAccountingMethod = Some(testAccountingMethodProperty),
       overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
       overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
     )
@@ -160,8 +166,6 @@ object IntegrationTestModels {
                        selectedTaxYear: Option[AccountingYearModel] = None,
                        businessName: Option[BusinessNameModel] = None,
                        accountingMethod: Option[AccountingMethodModel] = None,
-                       propertyStartDate: Option[PropertyStartDateModel] = None,
-                       propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None,
                        overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None,
                        overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None
                       ): Map[String, JsValue] = {
@@ -170,37 +174,33 @@ object IntegrationTestModels {
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      propertyStartDate.map(model => PropertyStartDate -> PropertyStartDateModel.format.writes(model)) ++
-      propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
       overseasPropertyAccountingMethod.map(model => OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)) ++
       overseasPropertyStartDate.map(model => OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model))
   }
 
-  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
+  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
 
-  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
+  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
 
-  lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
+  lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
 
-  lazy val testIncomeSourceOverseas: IncomeSourceModel = IncomeSourceModel(false, false, true)
+  lazy val testIncomeSourceOverseas: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
 
-  lazy val testIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(true, true, true)
+  lazy val testIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
 
-  lazy val testIncomeSourceIndivProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
+  lazy val testIncomeSourceIndivProperty: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
 
-  lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testOneDayAgo)
+  lazy val testUserDetails: UserDetailsModel = UserDetailsModel(testFirstName, testLastName, testNino, testOneDayAgo)
 
   lazy val testMTDITEnrolmentKey: EnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMtdId)
   lazy val testIRSAEnrolmentKey: EnrolmentKey = EnrolmentKey(Constants.utrEnrolmentName, Constants.utrEnrolmentIdentifierKey -> testUtr)
 
   lazy val testSummaryDataSelfEmploymentData =
-    Seq(SelfEmploymentData
-    (
+    Seq(SelfEmploymentData(
       id = testId,
       businessStartDate = Some(testBusinessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
       businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
-    )
-    )
+    ))
 }
