@@ -17,6 +17,7 @@
 package views.agent.business
 
 import forms.agent.PropertyStartDateForm
+import models.DateModel
 import models.common.PropertyStartDateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -45,7 +46,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
   val testError: FormError = FormError("startDate", "testError")
 
   class Setup(isEditMode: Boolean = false,
-              propertyStartDateForm: Form[PropertyStartDateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")) {
+              propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")) {
     val page: HtmlFormat.Appendable = views.html.agent.business.property_start_date(
       propertyStartDateForm,
       testCall,

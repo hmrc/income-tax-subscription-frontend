@@ -33,7 +33,7 @@ import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import utilities.TestModels._
-import views.html.individual.incometax.business.{OverseasPropertyAccountingMethod, PropertyAccountingMethod}
+import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 
 import scala.concurrent.Future
 

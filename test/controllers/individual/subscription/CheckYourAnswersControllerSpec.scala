@@ -20,8 +20,8 @@ import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.{IncomeSourceModel, PropertyModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
@@ -83,6 +83,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+      mockFetchProperty(None)
       when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -95,6 +96,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testPropertyCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+      mockFetchProperty(None)
       when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -104,6 +106,10 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
+      mockFetchProperty(PropertyModel(
+        accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
+        startDate = testPropertyStartDateModel.startDate
+      ))
       when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -125,11 +131,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(), isReleaseFourEnabled = false)
+        mockFetchProperty(testFullPropertyModel.copy(startDate = None))
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = testFullPropertyModel.copy(startDate = None)), isReleaseFourEnabled = false)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
-        verifySubscriptionDetailsFetchAll(2)
       }
 
       s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
@@ -146,11 +152,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true), isReleaseFourEnabled = true)
+        mockFetchProperty(testFullPropertyModel)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true, property = testFullPropertyModel), isReleaseFourEnabled = true)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
-        verifySubscriptionDetailsFetchAll(2)
       }
 
       s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
@@ -166,9 +172,9 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true), isReleaseFourEnabled = true)
+        mockFetchProperty(testFullPropertyModel)
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true, property = testFullPropertyModel), isReleaseFourEnabled = true)
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
-        verifySubscriptionDetailsFetchAll(1)
         verifySubscriptionDetailsSave(MtditId, 0)
       }
     }

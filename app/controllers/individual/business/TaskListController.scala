@@ -21,9 +21,9 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
+import models.common.TaskListModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
-import models.common.{IncomeSourceModel, TaskListModel}
 import play.api.Logger
 import play.api.mvc._
 import services.individual.SubscriptionOrchestrationService
@@ -82,8 +82,9 @@ class TaskListController @Inject()(val taskListView: TaskList,
     for {
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+      property <- subscriptionDetailsService.fetchProperty()
     } yield {
-      cacheMap.getTaskListModel(businesses, businessAccountingMethod)
+      cacheMap.getTaskListModel(businesses, businessAccountingMethod, property)
     }
   }
 
@@ -112,8 +113,9 @@ class TaskListController @Inject()(val taskListView: TaskList,
             cacheMap <- subscriptionDetailsService.fetchAll()
             selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
             selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+            property <- subscriptionDetailsService.fetchProperty()
           } yield {
-            cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod)
+            cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property)
           }
           model.flatMap { model =>
             processFunc(user)(request)(model)

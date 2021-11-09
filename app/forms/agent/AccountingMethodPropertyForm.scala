@@ -17,23 +17,23 @@
 package forms.agent
 
 import forms.submapping.AccountingMethodMapping
+import models.AccountingMethod
 import models.common.AccountingMethodPropertyModel
 import play.api.data.Form
-import play.api.data.Forms.mapping
+import play.api.data.Forms.{mapping, single}
 import play.api.data.validation.Invalid
 
 object AccountingMethodPropertyForm {
 
   val accountingMethodProperty = "accountingMethodProperty"
 
-  val accountingMethodPropertyForm = Form(
-    mapping(
+  val accountingMethodPropertyForm: Form[AccountingMethod] = Form(
+    single(
       accountingMethodProperty -> AccountingMethodMapping(
-
         errInvalid = Invalid("agent.error.accounting-method-property.invalid"),
         errEmpty = Some(Invalid("agent.error.accounting-method-property.invalid"))
       )
-    )(AccountingMethodPropertyModel.apply)(AccountingMethodPropertyModel.unapply)
+    )
   )
 
 }

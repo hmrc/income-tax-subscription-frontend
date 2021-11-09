@@ -18,7 +18,7 @@ import helpers.servicemocks.AuditStub
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
-import models.{AccountingYear, DateModel, YesNo}
+import models.{AccountingMethod, AccountingYear, DateModel, YesNo}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest._
@@ -35,7 +35,7 @@ import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.play.test.UnitSpec
 import utilities.UserMatchingSessionUtil
 
@@ -49,7 +49,7 @@ trait ComponentSpecBase extends UnitSpec
   with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with CustomMatchers with WireMockMethods with SessionCookieBaker with FeatureSwitching {
 
-  lazy val ws = app.injector.instanceOf[WSClient]
+  lazy val ws: WSClient = app.injector.instanceOf[WSClient]
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -302,7 +302,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def ukPropertyStartDate(): WSResponse = get("/business/property-commencement-date")
 
-    def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[PropertyStartDateModel]): WSResponse = {
+    def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel]): WSResponse = {
       val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
       val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
       val uri = s"/business/property-commencement-date?editMode=$isEditMode"
@@ -377,7 +377,7 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
-    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodPropertyModel]): WSResponse = {
+    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
       val uri = s"/business/accounting-method-property?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(

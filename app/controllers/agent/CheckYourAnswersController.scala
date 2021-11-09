@@ -91,9 +91,10 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
           require(incomeSourceModelAnswer) { incomeSource =>
             for {
               (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
+              property <- subscriptionDetailsService.fetchProperty()
             } yield {
               Ok(checkYourAnswers(
-                cache.getAgentSummary(businesses, businessAccountingMethod, true),
+                cache.getAgentSummary(businesses, businessAccountingMethod, property, isReleaseFourEnabled = true),
                 controllers.agent.routes.CheckYourAnswersController.submit(),
                 backUrl = backUrl(incomeSource),
                 implicitDateFormatter,
@@ -103,13 +104,17 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
           }
         } else {
           require(incomeSourceModelAnswer) { incomeSource =>
-            Future.successful(Ok(checkYourAnswers(
-              cache.getAgentSummary(),
-              controllers.agent.routes.CheckYourAnswersController.submit(),
-              backUrl = backUrl(incomeSource),
-              implicitDateFormatter,
-              releaseFour = false
-            )))
+            for {
+              property <- subscriptionDetailsService.fetchProperty()
+            } yield {
+              Ok(checkYourAnswers(
+                cache.getAgentSummary(property = property),
+                controllers.agent.routes.CheckYourAnswersController.submit(),
+                backUrl = backUrl(incomeSource),
+                implicitDateFormatter,
+                releaseFour = false
+              ))
+            }
           }
         }
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
@@ -118,7 +123,8 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                       (implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {
-      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary())(headerCarrier)
+      property <- subscriptionDetailsService.fetchProperty()
+      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary(property = property))(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)
@@ -132,8 +138,9 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {
       (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
+      property <- subscriptionDetailsService.fetchProperty()
       mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr,
-        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, true), true)(headerCarrier)
+        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, isReleaseFourEnabled = true), isReleaseFourEnabled = true)(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)

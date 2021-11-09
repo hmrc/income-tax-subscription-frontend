@@ -16,23 +16,21 @@
 
 package controllers.agent.business
 
-import java.time.LocalDate
-
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.PropertyStartDateForm
 import models.DateModel
-import models.common.{IncomeSourceModel, PropertyStartDateModel}
+import models.common.{IncomeSourceModel, PropertyModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.PropertyStartDate
-import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceProperty}
+import utilities.TestModels.{testCacheMap, testFullPropertyModel, testIncomeSourceBoth, testIncomeSourceProperty}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
@@ -77,16 +75,15 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
 
   "show" should {
-    "display the property accounting method view and return OK (200)" in new Test {
+    "display the property start date view and return OK (200)" in new Test {
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = Some(incomeSourceBoth)
       ))
+      mockFetchProperty(None)
 
       status(result) must be(Status.OK)
-      verifySubscriptionDetailsFetchAll(1)
-
     }
   }
 
@@ -95,7 +92,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
     val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
 
-    val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(testValidMaxStartDate)
+    val testPropertyStartDateModel: DateModel = testValidMaxStartDate
 
     def callSubmit(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController$.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate.toString, testValidMaxStartDate.toString),
@@ -107,58 +104,33 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     )
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      "return a redirect status (SEE_OTHER - 303) to the property accounting method page" in {
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchProperty(None)
+
         val goodRequest = callSubmit(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsFetchAll(1)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
-
-      }
-
-      "redirect to businessAccountingMethod page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callSubmit(isEditMode = false)
-
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetchAll(1)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
+        verifyPropertySave(PropertyModel(startDate = Some(testValidMaxStartDate)))
       }
 
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      "return a redirect status (SEE_OTHER - 303) to the check your answers page" in {
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchProperty(testFullPropertyModel)
 
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsFetchAll(1)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
-
-      }
-
-      "redirect to checkYourAnswer page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callSubmit(isEditMode = true)
-
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsFetchAll(1)
-        verifySubscriptionDetailsSave(PropertyStartDate, 1)
-
-
+        verifyPropertySave(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false))
       }
     }
 

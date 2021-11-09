@@ -34,7 +34,7 @@
     buttonHelper: ButtonHelper
 )
 
-@(accountingMethodForm: Form[AccountingMethodPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     messages("property.accounting_method.heading")

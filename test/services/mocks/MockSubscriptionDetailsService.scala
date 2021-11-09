@@ -21,10 +21,11 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{atMostOnce, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsObject, Json, Writes}
+import play.api.libs.json.{Json, Writes}
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -35,18 +36,17 @@ import scala.concurrent.Future
 
 trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
-
   val mockSubscriptionDetailsService: SubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   val returnedCacheMap: CacheMap = CacheMap("", Map())
-  val mockConnector = mock[IncomeTaxSubscriptionConnector]
+  val mockConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
   var testData: CacheMap = CacheMap("", Map.empty)
 
   object MockSubscriptionDetailsService extends SubscriptionDetailsService(mockConnector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(MockSubscriptionDetailsService.subscriptionDetailsSession)
+    reset(mockConnector)
     testData = CacheMap("", Map.empty)
   }
 
@@ -100,7 +100,7 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   }
 
   protected final def mockFetchPropertyStartDateFromSubscriptionDetails(fetchPropertyStartDateMethod:
-                                                                               Option[PropertyStartDateModel]): Unit = {
+                                                                        Option[PropertyStartDateModel]): Unit = {
     mockFetchFromSubscriptionDetails[PropertyStartDateModel](PropertyStartDate, fetchPropertyStartDateMethod)
   }
 
@@ -128,6 +128,18 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   protected final def mockFetchAllFromSubscriptionDetails(fetchAll: Option[CacheMap]): Unit = {
     when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.eq(subscriptionId))(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchAll))
+  }
+
+  protected final def mockFetchProperty(property: Option[PropertyModel]): Unit = {
+    when(mockConnector.getSubscriptionDetails[PropertyModel](ArgumentMatchers.eq(Property))(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(Future.successful(property))
+  }
+
+  protected final def verifyPropertySave(property: Option[PropertyModel]): Unit = {
+    property match {
+      case Some(value) => verify(mockConnector, times(1)).saveSubscriptionDetails[PropertyModel](ArgumentMatchers.eq(Property), ArgumentMatchers.eq(value))(any(), any())
+      case None => verify(mockConnector, times(0)).saveSubscriptionDetails[PropertyModel](ArgumentMatchers.eq(Property), any())(any(), any())
+    }
   }
 
   protected final def mockDeleteAllFromSubscriptionDetails(deleteAll: HttpResponse): Unit = {

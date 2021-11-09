@@ -23,7 +23,7 @@
 @import models.common.PropertyStartDateModel
 @import forms.agent.PropertyStartDateForm._
 
-@(propertyStartDateForm: Form[PropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @inputContent = {
     <p>@Messages("agent.property.line_1")</p>
