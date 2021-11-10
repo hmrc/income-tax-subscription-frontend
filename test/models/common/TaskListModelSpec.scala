@@ -17,6 +17,8 @@
 package models.common
 
 import models.common.business._
+
+
 import models.{Cash, DateModel, Next}
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -49,8 +51,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -64,8 +65,8 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukPropertyStart = None,
-        ukPropertyAccountingMethod = None,
+        ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")), false)),
+
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -79,8 +80,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -94,8 +94,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -109,8 +108,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -125,8 +123,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -140,8 +137,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = None,
         overseasPropertyAccountingMethod = None
       )
@@ -155,8 +151,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -170,8 +165,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = None,
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -185,8 +179,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -200,8 +193,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = None
       )
@@ -212,11 +204,10 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a complete foreign property, an unfinished ukProperty and a complete self employment, taskListComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), false)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = None,
+        ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")), false)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -230,8 +221,7 @@ class TaskListModelSpec extends UnitSpec {
         taxYearSelection = Some(AccountingYearModel((Next), true)),
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = None,
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -253,8 +243,7 @@ class TaskListModelSpec extends UnitSpec {
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -277,8 +266,7 @@ class TaskListModelSpec extends UnitSpec {
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = None,
-        ukPropertyAccountingMethod = None,
+        ukProperty = None,
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -301,8 +289,9 @@ class TaskListModelSpec extends UnitSpec {
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), false)),
+
         overseasPropertyStart = None,
         overseasPropertyAccountingMethod = None
       )
@@ -325,8 +314,7 @@ class TaskListModelSpec extends UnitSpec {
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),
-        ukPropertyStart = Some(date),
-        ukPropertyAccountingMethod = Some(Cash),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
         overseasPropertyStart = Some(date),
         overseasPropertyAccountingMethod = Some(Cash)
       )
@@ -345,8 +333,7 @@ class TaskListModelSpec extends UnitSpec {
           taxYearSelection = Some(AccountingYearModel((Next), true)),
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukPropertyStart = Some(date),
-          ukPropertyAccountingMethod = Some(Cash),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
           overseasPropertyStart = Some(date),
           overseasPropertyAccountingMethod = Some(Cash)
         )
@@ -370,8 +357,7 @@ class TaskListModelSpec extends UnitSpec {
           taxYearSelection = Some(AccountingYearModel((Next), false)),
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukPropertyStart = Some(date),
-          ukPropertyAccountingMethod = Some(Cash),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
           overseasPropertyStart = Some(date),
           overseasPropertyAccountingMethod = Some(Cash)
         )
@@ -395,8 +381,9 @@ class TaskListModelSpec extends UnitSpec {
           taxYearSelection = None,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukPropertyStart = Some(date),
-          ukPropertyAccountingMethod = Some(Cash),
+
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
+
           overseasPropertyStart = Some(date),
           overseasPropertyAccountingMethod = Some(Cash)
         )

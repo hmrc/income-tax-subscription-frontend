@@ -3,6 +3,8 @@
 @import services.AccountingPeriodService
 @import views.html.helpers.injected.ContinueButton
 @import views.html.templates.PrincipalMainTemplate
+@import models.common.PropertyModel
+
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -14,7 +16,7 @@
 @(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @signUpSectionContent = @{
-    if(viewModel.taskListComplete) {
+    if(viewModel.taskListComplete ) {
         continueButton()
     } else {
             <span class="app-task-list__task-name">
@@ -45,13 +47,13 @@
             </li>
             )}
 
-        {viewModel.ukPropertyStart.map(ukps =>
+        {viewModel.ukProperty.map(ukps =>
             <li class="app-task-list__item">
             <span class="app-task-list__task-name">
-            <a href={controllers.individual.business.routes.PropertyStartDateController.show().url} aria-describedby="uk_property_status" id="uk_property_business">{messages("business.task-list.content.section2.property.uk")}</a>
+            <a href={controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url} aria-describedby="uk_property_status" id="uk_property_business">{messages("business.task-list.content.section2.property.uk")}</a>
             </span>
             <span class="app-task-list__task-completed" id="uk_property_status">
-            {if(viewModel.ukPropertyComplete) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
+            {if(viewModel.ukPropertyComplete ) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
             </span>
             </li>
 

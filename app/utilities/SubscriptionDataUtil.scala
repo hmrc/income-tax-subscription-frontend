@@ -55,9 +55,8 @@ object SubscriptionDataUtil extends FeatureSwitching {
           case Some(businesses) => businesses
           case None => Seq.empty[SelfEmploymentData]
         },
+        ukProperty = property,
         selfEmploymentAccountingMethod = selfEmploymentAccountingMethod.map(_.accountingMethod),
-        ukPropertyStart = property.flatMap(_.startDate),
-        ukPropertyAccountingMethod = property.flatMap(_.accountingMethod),
         overseasPropertyStart = getOverseasPropertyStartDate.map(_.startDate),
         overseasPropertyAccountingMethod = getOverseasPropertyAccountingMethod.map(_.overseasPropertyAccountingMethod)
       )

@@ -20,7 +20,7 @@ import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
 import models._
 import models.common.business._
-import models.common.{AccountingYearModel, TaskListModel}
+import models.common.{AccountingYearModel, PropertyModel, TaskListModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -40,15 +40,13 @@ class TaskListViewSpec extends ViewSpec {
   def customTaskListModel(taxYearSelection: Option[AccountingYearModel] = None,
                           selfEmployments: Seq[SelfEmploymentData] = Nil,
                           selfEmploymentAccountingMethod: Option[AccountingMethod] = None,
-                          ukPropertyStart: Option[DateModel] = None,
-                          ukPropertyAccountingMethod: Option[AccountingMethod] = None,
+                          ukProperty: Option[PropertyModel] = None,
                           overseasPropertyStart: Option[DateModel] = None,
                           overseasPropertyAccountingMethod: Option[AccountingMethod] = None): TaskListModel = {
     TaskListModel(taxYearSelection,
       selfEmployments,
       selfEmploymentAccountingMethod,
-      ukPropertyStart,
-      ukPropertyAccountingMethod,
+      ukProperty,
       overseasPropertyStart,
       overseasPropertyAccountingMethod
     )
@@ -61,7 +59,7 @@ class TaskListViewSpec extends ViewSpec {
       SelfEmploymentData("id1", businessName = Some(BusinessNameModel("Name1"))),
       SelfEmploymentData("id2", businessName = Some(BusinessNameModel("Name2")), businessTradeName = Some(BusinessTradeNameModel("TradeName")))
     ),
-    ukPropertyStart = Some(DateModel("1", "2", "3")),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")),false)),
     overseasPropertyStart = Some(DateModel("1", "2", "3"))
   )
   val completedTaskListComplete = TaskListModel(
@@ -75,8 +73,7 @@ class TaskListViewSpec extends ViewSpec {
       confirmed = true
     )),
     selfEmploymentAccountingMethod = Some(Cash),
-    ukPropertyStart = Some(DateModel("1", "2", "1980")),
-    ukPropertyAccountingMethod = Some(Cash),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")),true)),
     overseasPropertyStart = Some(DateModel("1", "2", "1980")),
     overseasPropertyAccountingMethod = Some(Cash)
   )
@@ -189,14 +186,14 @@ class TaskListViewSpec extends ViewSpec {
           val ukPropertyIncomeSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
           val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
           ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
-          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyStartDateController.show().url
+          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url
           ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
         }
         "display an incomplete overseas property income" in {
           val overseasPropertySection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
           overseasPropertyLink.text mustBe overseasPropertyBusiness
-          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.PropertyStartDateController.show().url
+          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
           overseasPropertySection.selectNth("span", 2).text mustBe incomplete
         }
         "display the add a business link" in {
