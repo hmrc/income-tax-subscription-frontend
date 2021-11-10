@@ -22,6 +22,8 @@ base.userResearch.title                                         = Help to improv
 base.userResearch.link                                          = Answer some questions about yourself to join the research panel
 base.save-and-continue                                          = Save and continue
 base.save-and-come-back-later                                   = Save and come back later
+base.incomplete                                                 = Incomplete
+base.confirm-and-continue                                       = Confirm and continue
 
 error-notification.prefix                                       = Error:
 
@@ -974,6 +976,14 @@ business.check-your-answers.title                               = Check your ans
 business.check-your-answers.content.tax-year.question           = Tax year you are signing up for
 business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
+business.check-your-answers.content.accounting-method.cash      = Cash accounting
+business.check-your-answers.content.accounting-method.accruals  = Standard accounting
+business.check-your-answers.content.uk-property-start-date.question = UK property business trading start date
+business.check-your-answers.content.uk-property-start-date.add  = Add UK property business trading start date
+business.check-your-answers.content.uk-property-start-date.change = Change UK property business trading start date
+business.check-your-answers.content.uk-property-accounting-method.question = UK property business accounting method
+business.check-your-answers.content.uk-property-accounting-method.add = Add UK property business accounting method
+business.check-your-answers.content.uk-property-accounting-method.change = Change UK property business accounting method
 
 ## Progress saved
 business.progress-saved.title                                   = Your progress has been saved

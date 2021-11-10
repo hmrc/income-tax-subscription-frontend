@@ -22,6 +22,8 @@ base.userResearch.title                                         = Helpu i wella 
 base.userResearch.link                                          = Atebwch ychydig o gwestiynau am eich hunan er mwyn ymuno â’r panel ymchwil
 base.save-and-continue                                          = Cadw ac yn eich blaen
 base.save-and-come-back-later                                   = Cadw a dod yn ôl yn nes ymlaen
+base.incomplete                                                 = Anghyflawn
+base.confirm-and-continue                                       = Cadarnhau ac yn eich blaen
 
 error-notification.prefix                                       = Gwall:
 
@@ -979,10 +981,18 @@ business.task-list.status.not-started                           = ?
 business.task-list.status.cannot-start-yet                      = ?
 
 ## Check Your Answers
-business.check-your-answers.title                               = ?
+business.check-your-answers.title                               = Gwiriwch eich atebion
 business.check-your-answers.content.tax-year.question           = ?
 business.check-your-answers.content.tax-year.current-tax-year   = ?
 business.check-your-answers.content.tax-year.next-tax-year      = ?
+business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu arian parod
+business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu safonol
+business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property-start-date.change = ?
+business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property-accounting-method.change = ?
 
 ## Progress saved
 business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi’i gadw

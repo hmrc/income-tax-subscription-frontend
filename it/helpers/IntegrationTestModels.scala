@@ -166,6 +166,7 @@ object IntegrationTestModels {
                        selectedTaxYear: Option[AccountingYearModel] = None,
                        businessName: Option[BusinessNameModel] = None,
                        accountingMethod: Option[AccountingMethodModel] = None,
+                       ukProperty: Option[PropertyModel] = None,
                        overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None,
                        overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None
                       ): Map[String, JsValue] = {
@@ -174,6 +175,7 @@ object IntegrationTestModels {
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
+      ukProperty.map(model => Property -> PropertyModel.format.writes(model)) ++
       overseasPropertyAccountingMethod.map(model => OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)) ++
       overseasPropertyStartDate.map(model => OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model))
   }

@@ -250,6 +250,14 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       post("/business/tax-year-check-your-answers", sessionData)(Map.empty)
     }
 
+    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/business/uk-property-check-your-answers", sessionData)
+    }
+
+    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/business/uk-property-check-your-answers", sessionData)(Map.empty)
+    }
+
     def getProgressSaved(sessionData: Map[String, String] = Map.empty): WSResponse = {
       get("/business/progress-saved", sessionData)
     }
