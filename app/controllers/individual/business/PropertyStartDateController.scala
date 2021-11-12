@@ -47,6 +47,8 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
                                             mcc: MessagesControllerComponents) extends SignUpController
   with ImplicitDateFormatter with FeatureSwitching {
 
+  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
+
   def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: Option[IncomeSourceModel])
           (implicit request: Request[_]): Html = {
     propertyStartDate(
@@ -95,12 +97,12 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
         },
         startDate =>
           subscriptionDetailsService.savePropertyStartDate(startDate) flatMap { _ =>
-            val redirectUrl = if (isEditMode && !isEnabled(SaveAndRetrieve)) {
-              controllers.individual.subscription.routes.CheckYourAnswersController.show()
-            } else {
-              controllers.individual.business.routes.PropertyAccountingMethodController.show()
-            }
 
+            val redirectUrl = (isEditMode, isSaveAndRetrieve) match {
+              case (true, true) => controllers.individual.business.routes.PropertyCheckYourAnswersController.show()
+              case (true, false) => controllers.individual.subscription.routes.CheckYourAnswersController.show()
+              case (false, _) => controllers.individual.business.routes.PropertyAccountingMethodController.show()
+            }
             Future.successful(Redirect(redirectUrl))
           }
 
@@ -108,8 +110,8 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
   }
 
   def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel])(implicit hc: HeaderCarrier): String =
-    (isEditMode, isEnabled(SaveAndRetrieve), maybeIncomeSourceModel) match {
-      case (true, true, _) => controllers.individual.business.routes.TaskListController.show().url
+    (isEditMode, isSaveAndRetrieve, maybeIncomeSourceModel) match {
+      case (true, true, _) => controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url
       case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
       case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
       case (false, false, Some(incomeSourceModel)) if incomeSourceModel.selfEmployment =>

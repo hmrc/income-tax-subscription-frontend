@@ -41,6 +41,11 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockPropertyStartDate
   with FeatureSwitching {
 
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
+
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestPropertyStartDateController.show(isEditMode = false),
@@ -121,61 +126,67 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       subscriptionRequest
     )
 
-    "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        disable(SaveAndRetrieve)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(None)
+    "When it is not in edit mode" when {
+      "save and retrieve is disabled" should {
+        "redirect to uk property accounting method page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(None)
+          val goodRequest = callShow(isEditMode = false)
 
-        val goodRequest = callShow(isEditMode = false)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          await(goodRequest)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          verifyPropertySave(Some(PropertyModel(startDate = testValidMaxDate)))
+        }
 
-        await(goodRequest)
-        verifyPropertySave(Some(PropertyModel(startDate = testValidMaxDate)))
       }
 
-      "redirect to property accounting method page" in {
-        disable(SaveAndRetrieve)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(None)
+      "save and retrieve is enabled" should {
+        "redirect to uk property accounting method page" in {
+          enable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(None)
 
-        val goodRequest = callShow(isEditMode = false)
+          val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          await(goodRequest)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
-        await(goodRequest)
-        verifyPropertySave(Some(PropertyModel(startDate = testValidMaxDate)))
+          verifyPropertySave(Some(PropertyModel(startDate = testValidMaxDate)))
+
+        }
       }
-
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303) to check your answers" in {
-        disable(SaveAndRetrieve)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(testFullPropertyModel)
 
-        val goodRequest = callShow(isEditMode = true)
+    "When it is in edit mode" when {
+      "save and retrieve is disabled" should {
+        "redirect to final check your answer page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(testFullPropertyModel)
+          val goodRequest = callShow(isEditMode = true)
+          await(goodRequest)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
-        await(goodRequest)
-        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
+          verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
+        }
       }
 
-      "redirect to taskListPage if save & retrieve feature is enabled page" in {
-        enable(SaveAndRetrieve)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(testFullPropertyModel)
+      "save and retrieve is enabled" should {
+        "redirect to uk property check your answers page" in {
+          enable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(testFullPropertyModel)
+          val goodRequest = callShow(isEditMode = true)
+          await(goodRequest)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
 
-        val goodRequest = callShow(isEditMode = true)
+          verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
-
-        await(goodRequest)
-        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
+        }
       }
     }
 
@@ -209,52 +220,51 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The back url is not in edit mode" when {
-      "the user has rental property and it is the only income source" should {
-        "redirect to income source page" in new Test {
-          disable(SaveAndRetrieve)
-
-          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
-            controllers.individual.incomesource.routes.IncomeSourceController.show().url
-        }
-      }
-
-      "the user has rental property and has a business" should {
-        "redirect to business accounting method page" in new Test {
-          disable(SaveAndRetrieve)
-
-          controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
-            appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
-        }
-      }
-
-      "the Save & retrieve feature is enabled" should {
-        "redirect to What Income Source To Sign Up page" in new Test {
+    "The back url is in edit mode" when {
+      "save and retrieve is enabled" should {
+        "redirect back to uk property check your answers page" in new Test {
           enable(SaveAndRetrieve)
+          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
+            controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url
+        }
+      }
 
+      "save and retrieve is disabled" should {
+        "redirect back to final check your answers page" in new Test {
+          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
+            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        }
+      }
+    }
+
+    "The back url is not in edit mode" when {
+      "save and retrieve is enabled" should {
+        "redirect back to what income source page" in new Test {
+          enable(SaveAndRetrieve)
           controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
             controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
       }
-    }
 
-    "The back url is in edit mode" when {
-      "the user click back url" should {
-        "redirect to check your answer page if the Save & retrieve feature is disabled" in new Test {
-          disable(SaveAndRetrieve)
-
-          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
-            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      "save and retrieve is disabled" when {
+        "there is at least one self-employed income source" should {
+          "redirect back to business accounting method page" in new Test {
+            controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
+              appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
+          }
         }
 
-        "redirect to check your answer page if the Save & retrieve feature is enabled" in new Test {
-          enable(SaveAndRetrieve)
-
-          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
-            controllers.individual.business.routes.TaskListController.show().url
+        "there is no self-employed income source" should {
+          "redirect back to income source page" in new Test {
+            controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+              controllers.individual.incomesource.routes.IncomeSourceController.show().url
+          }
         }
       }
     }
+
+
   }
 
 }
+
