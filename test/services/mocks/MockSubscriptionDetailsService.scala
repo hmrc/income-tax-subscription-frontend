@@ -22,7 +22,7 @@ import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{atMostOnce, reset, times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{Json, Writes}
@@ -102,10 +102,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   protected final def mockFetchPropertyStartDateFromSubscriptionDetails(fetchPropertyStartDateMethod:
                                                                         Option[PropertyStartDateModel]): Unit = {
     mockFetchFromSubscriptionDetails[PropertyStartDateModel](PropertyStartDate, fetchPropertyStartDateMethod)
-  }
-
-  protected final def mockFetchPropertyFromSubscriptionDetails(fetchProperty: Option[PropertyModel]): Unit = {
-    mockFetchFromSubscriptionDetails[PropertyModel](Property, fetchProperty)
   }
 
   protected final def mockFetchSubscriptionIdFromSubscriptionDetails(fetchSubscriptionId: Option[String]): Unit = {

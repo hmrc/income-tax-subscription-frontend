@@ -19,12 +19,13 @@
 )
 
 @(
-    buttonText: String, classes: Option[String] = None, href: Option[String] = None
+    buttonText: String, classes: Option[String] = None, href: Option[String] = None, disabled: Boolean = false
 )(implicit messages: Messages)
 
 
 @govukButton(Button(
     content = Text(buttonText),
     classes = classes.getOrElse(""),
-    href = href
+    href = href,
+    disabled = disabled
 ))

@@ -14,17 +14,19 @@
 * limitations under the License.
 *@
 
-@import views.html.helpers.injected.ContinueButton
 @import views.html.helper.form
+@import views.html.helpers.injected.ContinueButton
+@import views.html.helpers.injected.SaveAndContinueButtonHelper
 
 @this(
   form: FormWithCSRF,
-  continueButton: ContinueButton
+  continueButton: ContinueButton,
+  saveAndContinueButton: SaveAndContinueButtonHelper
 )
 
-@(heading: String, postAction: Call, headingHidden: Option[String] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@(heading: String, postAction: Call, headingHidden: Option[String] = None, isComplete: Boolean = false, saveAndContinue: Boolean = false)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-<h1 class="govuk-heading-xl">
+<h1 class="govuk-heading-l">
   @heading
   @headingHidden.map { hiddenContent =>
     <span class="govuk-visually-hidden">@hiddenContent</span>
@@ -37,6 +39,10 @@
 
 @form(action = postAction) {
   <div class="form-group">
-  @continueButton()
+    @if(saveAndContinue) {
+      @saveAndContinueButton(saveAndContinueText = Some(messages("base.confirm-and-continue")), disabled = !isComplete)
+    } else {
+      @continueButton()
+    }
   </div>
 }

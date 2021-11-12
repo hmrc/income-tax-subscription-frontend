@@ -16,7 +16,19 @@
 
 @this()
 
-@(field: String, question: String, answer: String, changeUrl: Option[String] = None, hiddenContent: Option[String] = None)(implicit messages: Messages)
+@(field: String, question: String, answer: String, changeUrl: Option[String] = None, changeText: Option[String] = None, hiddenContent: Option[String] = None)(implicit messages: Messages)
+
+@accessibleText(text: String, hiddenContent: String) = {
+  <span aria-hidden=“true”>@text</span>
+  <span class="govuk-visually-hidden"> @hiddenContent</span>
+}
+
+@displayLinkContent(content: String, maybeHiddenContent: Option[String]) = @{
+  maybeHiddenContent match {
+    case Some(hiddenContent) => accessibleText(content, hiddenContent)
+    case None => content
+  }
+}
 
 <div class="govuk-summary-list__row" id="@field-row">
   <dt class="govuk-summary-list__key" id="@field-question">
@@ -28,7 +40,7 @@
   <dd class="govuk-summary-list__actions" id="@field-edit">
   @changeUrl.map { url =>
     <a class="govuk-link" data-journey-click="itsa:changeLink:@field" href="@url">
-      @messages("base.change")<span class="govuk-visually-hidden"> @hiddenContent</span>
+      @displayLinkContent(changeText.getOrElse(messages("base.change")), hiddenContent)
     </a>
   }
   </dd>
