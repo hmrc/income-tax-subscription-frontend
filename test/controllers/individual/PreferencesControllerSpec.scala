@@ -17,6 +17,7 @@
 package controllers.individual
 
 import agent.audit.mocks.MockAuditingService
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
@@ -55,12 +56,22 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
     def result: Future[Result] = TestPreferencesController.checkPreferences(request)
 
-    "Redirect to income source page if paperless is activated and in SignUp journey" in {
+    "Redirect to income source page if paperless is activated, save and retrieve disabled and in SignUp journey" in {
+      disable(SaveAndRetrieve)
       mockStoreNinoSuccess(testNino)
       mockCheckPaperlessActivated(testToken)
 
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get must be(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
+    }
+
+    "Redirect to income source page if paperless is activated, save and retrieve enabled and in SignUp journey" in {
+      enable(SaveAndRetrieve)
+      mockStoreNinoSuccess(testNino)
+      mockCheckPaperlessActivated(testToken)
+
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result).get must be(controllers.individual.business.routes.TaskListController.show().url)
     }
 
     "Redirect to returned preferences service if paperless was previously unspecified" in {
@@ -79,12 +90,22 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
     def result: Future[Result] = TestPreferencesController.callback(request)
 
-    "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
+    "Redirect to rent uk property if paperless is activated, save and retrieve disabled and in SignUp journey" in {
+      disable(SaveAndRetrieve)
       mockStoreNinoSuccess(testNino)
       mockCheckPaperlessActivated(testToken)
 
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get must be(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
+    }
+
+    "Redirect to rent uk property if paperless is activated, save and retrieve enabled and in SignUp journey" in {
+      enable(SaveAndRetrieve)
+      mockStoreNinoSuccess(testNino)
+      mockCheckPaperlessActivated(testToken)
+
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result).get must be(controllers.individual.business.routes.TaskListController.show().url)
     }
 
     "Redirect to the preferences error page if paperless preferences was not selected" in {

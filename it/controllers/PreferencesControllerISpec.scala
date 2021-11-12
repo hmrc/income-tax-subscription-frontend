@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
@@ -29,23 +30,48 @@ import utilities.SubscriptionDataKeys._
 class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /preferences" when {
-    "where the user has previously accepted paperless where optedIn is set to True" in {
+    "save and retrieve is enabled" should {
+      "return redirect to task list page where the user has previously accepted paperless where optedIn is set to True" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        PreferencesTokenStub.stubStoreNinoSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
+        PreferencesStub.newStubPaperlessActivated()
+        And("save and retrieve is enabled")
+        enable(SaveAndRetrieve)
 
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      PreferencesTokenStub.stubStoreNinoSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
-      PreferencesStub.newStubPaperlessActivated()
+        When("GET /preferences is called")
+        val res = IncomeTaxSubscriptionFrontend.preferences()
 
-      When("GET /preferences is called")
-      val res = IncomeTaxSubscriptionFrontend.preferences()
+        Then("Should return a SEE_OTHER with a re-direct location of the next page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
+    }
 
-      Then("Should return a SEE_OTHER with a re-direct location of the next page")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(accountingYearURI)
-      )
+    "save and retrieve is disabled" should {
+      "return redirect to accounting year page where the user has previously accepted paperless where optedIn is set to True" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        PreferencesTokenStub.stubStoreNinoSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
+        PreferencesStub.newStubPaperlessActivated()
+        And("save and retrieve is disabled")
+        disable(SaveAndRetrieve)
+
+        When("GET /preferences is called")
+        val res = IncomeTaxSubscriptionFrontend.preferences()
+
+        Then("Should return a SEE_OTHER with a re-direct location of the next page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
     }
 
     "where the user has previously accepted paperless where optedIn is set to false and a redirect location is returned" in {
@@ -122,6 +148,50 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
   }
 
   "GET /callback" should {
+
+    "save and retrieve is enabled" should {
+      "return redirect to task list page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        PreferencesTokenStub.stubStoreNinoSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
+        PreferencesStub.newStubPaperlessActivated()
+        And("save and retrieve is enabled")
+        enable(SaveAndRetrieve)
+
+        When("GET /callback is called")
+        val res = IncomeTaxSubscriptionFrontend.callback()
+
+        Then("Should return a SEE_OTHER with a re-direct location of the next page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
+    }
+
+    "save and retrieve is disabled" should {
+      "return redirect to accounting year page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        PreferencesTokenStub.stubStoreNinoSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(PaperlessPreferenceToken)
+        PreferencesStub.newStubPaperlessActivated()
+        And("save and retrieve is disabled")
+        disable(SaveAndRetrieve)
+
+        When("GET /callback is called")
+        val res = IncomeTaxSubscriptionFrontend.callback()
+
+        Then("Should return a SEE_OTHER with a re-direct location of the next page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
+      }
+    }
 
     "where the user has previously accepted paperless where optedIn is set to False and redirect location returned" in {
       Given("I setup the Wiremock stubs")
