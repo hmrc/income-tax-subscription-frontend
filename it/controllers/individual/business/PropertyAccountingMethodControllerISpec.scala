@@ -26,7 +26,6 @@ import helpers.servicemocks.AuthStub
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
@@ -137,30 +136,112 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       )
     }
 
-    "save and retrieve feature switch is enabled" when {
-      "select the Cash radio button on the property accounting method page" when {
-        "click save and continue button" should {
-          "redirect to task list page" in {
-            enable(SaveAndRetrieve)
-            val userInput = Cash
+    "in edit mode" when {
+      "save and retrieve feature switch is enabled" when {
+        "select the Cash radio button on the property accounting method page" when {
+          "click save and continue button" should {
+            "redirect to uk property check your answers page" in {
+              enable(SaveAndRetrieve)
+              val userInput = Cash
 
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = Some(Accruals))))
-            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
+              Given("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = Some(Accruals))))
+              IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
 
-            When("POST /business/accounting-method-property is called")
-            val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+              When("POST /business/accounting-method-property is called")
+              val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))
 
-            Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res should have(
-              httpStatus(SEE_OTHER),
-              redirectURI(taskListURI)
-            )
+              Then("Should return a SEE_OTHER with a redirect location of check your answers")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(ukPropertyCYAURI)
+              )
+            }
+          }
+        }
+      }
+
+      "save and retrieve feature switch is disabled" when {
+        "select the Cash radio button on the property accounting method page" when {
+          "click save and continue button" should {
+            "redirect to final check your answers page" in {
+              val userInput = Cash
+
+              Given("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = Some(Accruals))))
+              IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
+
+              When("POST /business/accounting-method-property is called")
+              val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))
+
+              Then("Should return a SEE_OTHER with a redirect location of check your answers")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(checkYourAnswersURI)
+              )
+            }
           }
         }
       }
     }
+
+
+    "not in edit mode" when {
+      "save and retrieve feature switch is enabled" when {
+        "select the Cash radio button on the property accounting method page" when {
+          "click save and continue button" should {
+            "redirect to uk property check your answers page" in {
+              enable(SaveAndRetrieve)
+              val userInput = Cash
+
+              Given("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = Some(Accruals))))
+              IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
+
+              When("POST /business/accounting-method-property is called")
+              val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+
+              Then("Should return a SEE_OTHER with a redirect location of check your answers")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(ukPropertyCYAURI)
+              )
+            }
+          }
+        }
+      }
+
+      "save and retrieve feature switch is disabled" when {
+        "select the Cash radio button on the property accounting method page" when {
+          "click save and continue button" should {
+            "redirect to final check your answers page" in {
+              val userInput = Cash
+
+              Given("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = Some(Accruals))))
+              IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
+
+              When("POST /business/accounting-method-property is called")
+              val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+
+              Then("Should return a SEE_OTHER with a redirect location of check your answers")
+              res should have(
+                httpStatus(SEE_OTHER),
+                redirectURI(checkYourAnswersURI)
+              )
+            }
+          }
+        }
+      }
+    }
+
   }
 }

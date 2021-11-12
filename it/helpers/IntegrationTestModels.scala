@@ -71,6 +71,7 @@ object IntegrationTestModels {
   val testAccountingMethodProperty: AccountingMethodPropertyModel = AccountingMethodPropertyModel(Cash)
   val testAccountingMethodForeignProperty: OverseasAccountingMethodPropertyModel = OverseasAccountingMethodPropertyModel(Cash)
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
+  val testValidStartDate2: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
   val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
   val testPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
   val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))

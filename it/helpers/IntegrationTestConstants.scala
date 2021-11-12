@@ -115,6 +115,7 @@ object IntegrationTestConstants {
   val errorPreferencesURI = s"$baseURI/paperless-error"
   val accountingYearURI = s"$baseURI/business/what-year-to-sign-up"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
+  val ukPropertyCYAURI = s"$baseURI/business/uk-property-check-your-answers"
   val taskListURI = s"$baseURI/business/task-list"
   val saveAndRetrieveURI = s"$baseURI/business/progress-saved"
   val taxYearCyaURI= s"$baseURI/business/tax-year-check-your-answers"

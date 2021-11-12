@@ -17,12 +17,12 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.{ForeignProperty, SaveAndRetrieve}
 import config.featureswitch._
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodPropertyForm
 import models.common.PropertyModel
-import models.{Accruals, Cash}
+import models.{AccountingMethod, Accruals, Cash}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
@@ -31,7 +31,6 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.PropertyAccountingMethod
 import utilities.TestModels._
 import views.html.individual.incometax.business.PropertyAccountingMethod
 
@@ -66,6 +65,8 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceProperty)
 
+  def allThreeIncomeSourcesType: CacheMap = testCacheMap(incomeSource = testIncomeSourceAll)
+
   def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
   "show" should {
@@ -89,60 +90,60 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       subscriptionRequest
     )
 
+    val testAccountingMethod: AccountingMethod = Cash
+
     "When it is not in edit mode" when {
-      "the user hasn't selected overseas property income" should {
-        "return a redirect status (SEE_OTHER - 303) to the check your answers page" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceProperty))
-          mockFetchProperty(None)
 
+      "save and retrieve is enabled" should {
+        "redirect to uk property check your answers page" in {
+          enable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(None)
           val goodRequest = callShow(isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-
           await(goodRequest)
-          verifyPropertySave(PropertyModel(accountingMethod = Some(Cash)))
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
+
+
+          verifyPropertySave(Some(PropertyModel(accountingMethod = testAccountingMethod)))
         }
       }
-      "the user has selected overseas property income" should {
-        "return a redirect status (SEE_OTHER - 303) to the overseas property start date page" in {
-          enable(ForeignProperty)
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceAll))
-          mockFetchProperty(None)
+      "save and retrieve is disabled" when {
+        "there is an overseas income source" should {
+          "redirect to overseas accounting method page" in {
+            enable(ForeignProperty)
+            setupMockSubscriptionDetailsSaveFunctions()
+            mockFetchAllFromSubscriptionDetails(testCacheMap(incomeSource = testIncomeSourceAll))
+            mockFetchProperty(None)
 
-          val goodRequest = callShow(isEditMode = false)
+            val goodRequest = callShow(isEditMode = false)
+            await(goodRequest)
+            redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyStartDateController.show().url)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyStartDateController.show().url)
 
-          await(goodRequest)
-          verifyPropertySave(PropertyModel(accountingMethod = Some(Cash)))
+            verifyPropertySave(Some(PropertyModel(accountingMethod = testAccountingMethod)))
+          }
+        }
+
+        "there is no overseas income source" should {
+          "redirect to final check your answers page" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+            mockFetchProperty(None)
+            val goodRequest = callShow(isEditMode = false)
+            await(goodRequest)
+            redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+
+
+            verifyPropertySave(Some(PropertyModel(accountingMethod = testAccountingMethod)))
+          }
         }
       }
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303) to the check your answers page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(testFullPropertyModel)
 
-        val goodRequest = controller.submit(isEditMode = true)(
-          subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)
-        )
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-
-        await(goodRequest)
-        verifyPropertySave(testFullPropertyModel.copy(accountingMethod = Some(Accruals), confirmed = false))
-      }
-    }
-
-    "Save and retrieve feature switch is enabled" when {
-      "click on save and continue button" should {
-        "return status (SEE_OTHER - 303) and redirect to task list page" in {
+    "When it is in edit mode" when {
+      "save and retrieve is enabled" should {
+        "redirect to uk property check your answers page " in {
           enable(SaveAndRetrieve)
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchProperty(testFullPropertyModel)
@@ -151,14 +152,33 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
             subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)
           )
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
 
-          await(goodRequest)
+
           verifyPropertySave(testFullPropertyModel.copy(accountingMethod = Some(Accruals), confirmed = false))
         }
       }
+
+      "save and retrieve is disabled" should {
+        "redirect to final check your answers page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(testFullPropertyModel)
+
+          val goodRequest = controller.submit(isEditMode = true)(
+            subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)
+          )
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+
+          await(goodRequest)
+          verifyPropertySave(testFullPropertyModel.copy(accountingMethod = Some(Accruals), confirmed = false))
+
+
+        }
+      }
     }
+
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
@@ -169,68 +189,50 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifySubscriptionDetailsSave(PropertyAccountingMethod, 0)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyPropertySave(None)
       }
     }
 
-    "The back url is not in edit mode" when {
-      "the user has rental property and it is the only income source" should {
-        "redirect to income source page" in withController { controller =>
-          mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
-          await(controller.backUrl(isEditMode = false)) mustBe
-            controllers.individual.incomesource.routes.IncomeSourceController.show().url
-        }
-      }
-
-      "the user has rental property and it is not the only income source and the user has a business" should {
-        "redirect to business accounting method page" in withController { controller =>
-          mockFetchAllFromSubscriptionDetails(bothIncomeSourceType)
-          await(controller.backUrl(isEditMode = false)) mustBe
-            controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-        }
-      }
-
-    }
-    "The back url is in edit mode" when {
-      "the user click back url" should {
-        "redirect to check your answer page" in withController { controller =>
-          setupMockSubscriptionDetailsSaveFunctions()
-          await(controller.backUrl(isEditMode = true)) mustBe
-            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-        }
-      }
-    }
-    "The back URL with Release Four enabled" when {
-      "the user clicks the back url" should {
-        "redirect to the Property Start Date page" in withController { controller =>
-          enable(ReleaseFour)
-          mockFetchAllFromSubscriptionDetails(bothIncomeSourceType)
-          await(controller.backUrl(isEditMode = false)) mustBe
-            controllers.individual.business.routes.PropertyStartDateController.show().url
-        }
-      }
-    }
-
-    "back link" when {
-      "save and retrieve feature switch is enabled " when {
-        "is in edit mode" should {
-          "redirect to task list page" in withController { controller =>
+    "The back url" when {
+      "is not in edit mode" when {
+        "save and retrieve is enabled" should {
+          "redirect back to uk property start date page" in withController { controller =>
             enable(SaveAndRetrieve)
-            setupMockSubscriptionDetailsSaveFunctions()
-            await(controller.backUrl(isEditMode = true)) mustBe
-              controllers.individual.business.routes.TaskListController.show().url
-          }
-        }
-        "is not in edit mode" should {
-          "redirect to property start date page" in withController { controller =>
-            enable(SaveAndRetrieve)
-            setupMockSubscriptionDetailsSaveFunctions()
+            mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
             await(controller.backUrl(isEditMode = false)) mustBe
               controllers.individual.business.routes.PropertyStartDateController.show().url
           }
         }
+
+        "save and retrieve is disabled" should {
+          "redirect back to uk property start date page" in withController { controller =>
+            mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
+            await(controller.backUrl(isEditMode = false)) mustBe
+              controllers.individual.business.routes.PropertyStartDateController.show().url
+          }
+        }
+
       }
+      "is in edit mode" when {
+        "save and retrieve is enabled" should {
+          "redirect back to uk property check your answers page" in withController { controller =>
+            enable(SaveAndRetrieve)
+            setupMockSubscriptionDetailsSaveFunctions()
+            await(controller.backUrl(isEditMode = true)) mustBe
+              controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url
+          }
+        }
+
+
+        "save and retrieve is disabled" should {
+          "redirect back to final check your answers page" in withController { controller =>
+            setupMockSubscriptionDetailsSaveFunctions()
+            await(controller.backUrl(isEditMode = true)) mustBe
+              controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          }
+        }
+      }
+
     }
   }
 }
