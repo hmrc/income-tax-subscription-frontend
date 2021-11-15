@@ -196,7 +196,7 @@ class TaskListViewSpec extends ViewSpec {
           val overseasPropertySection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
           overseasPropertyLink.text mustBe overseasPropertyBusiness
-          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.PropertyStartDateController.show().url
           overseasPropertySection.selectNth("span", 2).text mustBe incomplete
         }
         "display the add a business link" in {
@@ -242,7 +242,7 @@ class TaskListViewSpec extends ViewSpec {
           val ukPropertyIncomeSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
           val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
           ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
-          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyStartDateController.show().url
+          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url
           ukPropertyIncomeSection.selectNth("span", 2).text mustBe complete
         }
         "display a complete overseas property income" in {
