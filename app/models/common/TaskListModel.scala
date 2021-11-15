@@ -19,12 +19,12 @@ package models.common
 import models.common.business.SelfEmploymentData
 import models.{AccountingMethod, DateModel}
 import play.api.libs.json.{Format, Json}
+import utilities.Implicits.EitherUtilLeft
 
 case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
                          selfEmployments: Seq[SelfEmploymentData],
                          selfEmploymentAccountingMethod: Option[AccountingMethod],
-                         ukPropertyStart: Option[DateModel],
-                         ukPropertyAccountingMethod: Option[AccountingMethod],
+                         ukProperty:  Option[PropertyModel],
                          overseasPropertyStart: Option[DateModel],
                          overseasPropertyAccountingMethod: Option[AccountingMethod]) {
 
@@ -32,20 +32,20 @@ case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
 
   val taxYearSelectedNotConfirmed: Boolean = taxYearSelection.exists(!_.confirmed)
 
-  val ukPropertyComplete: Boolean = ukPropertyStart.isDefined && ukPropertyAccountingMethod.isDefined
+  val ukPropertyComplete: Boolean =  ukProperty.exists(_.confirmed)
 
   var selfEmploymentsComplete: Boolean = selfEmployments.forall(_.confirmed) && selfEmploymentAccountingMethod.isDefined
 
   val overseasPropertyComplete: Boolean = overseasPropertyStart.isDefined && overseasPropertyAccountingMethod.isDefined
 
-  val sectionsTotal: Int = Math.max(2, 1 + selfEmployments.size + ukPropertyStart.size + overseasPropertyStart.size)
+  val sectionsTotal: Int = Math.max(2, 1 + selfEmployments.size + ukProperty.size + overseasPropertyStart.size)
 
   val sectionsComplete: Int = (if(taxYearSelectedAndConfirmed) 1 else 0) +
     selfEmployments.count { business => business.confirmed && selfEmploymentAccountingMethod.isDefined} +
     (if(ukPropertyComplete) 1 else 0) +
     (if(overseasPropertyComplete)1 else 0)
 
-  var canAddMoreBusinesses: Boolean = selfEmployments.size < 50  || ukPropertyStart.isEmpty || overseasPropertyStart.isEmpty
+  var canAddMoreBusinesses: Boolean = selfEmployments.size < 50  || ukProperty.isEmpty || overseasPropertyStart.isEmpty
 
   def taskListComplete: Boolean = sectionsComplete == sectionsTotal
 
