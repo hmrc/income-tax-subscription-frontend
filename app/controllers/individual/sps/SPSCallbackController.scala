@@ -18,9 +18,9 @@ package controllers.individual.sps
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SPSEnabled
+import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.ITSASessionKeys
@@ -39,9 +39,16 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
     implicit user =>
       if(isEnabled(SPSEnabled)) {
         request.queryString.get("entityId").flatMap(_.headOption) match {
-          case Some(entityId) => Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show()).addingToSession(
-            ITSASessionKeys.SPSEntityId -> entityId
-          )
+          case Some(entityId) => {
+            val result = if(isEnabled(SaveAndRetrieve))
+              Redirect(controllers.individual.business.routes.TaskListController.show())
+            else
+              Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+
+            result.addingToSession(
+              ITSASessionKeys.SPSEntityId -> entityId
+            )
+          }
           case None => throw new InternalServerException("[SPSCallbackController][callback] - Entity Id was not found")
         }
       } else {

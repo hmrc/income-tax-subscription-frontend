@@ -19,6 +19,8 @@ package controllers.individual
 import auth.individual.AuthPredicate.AuthPredicate
 import auth.individual.{IncomeTaxSAUser, StatelessController}
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+
 import javax.inject.{Inject, Singleton}
 import models.{Activated, Unset}
 import play.api.mvc._
@@ -52,6 +54,7 @@ class PreferencesController @Inject()(val auditingService: AuditingService,
         token <- paperlessPreferenceTokenService.storeNino(user.nino.get)
         res <- preferencesService.checkPaperless(token)
       } yield res match {
+        case Right(Activated) if(isEnabled(SaveAndRetrieve)) => Redirect(controllers.individual.business.routes.TaskListController.show())
         case Right(Activated) => Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
         case Right(Unset(url)) => Redirect(url)
         case _ => throw new InternalServerException("Could not get paperless preferences")
@@ -63,6 +66,7 @@ class PreferencesController @Inject()(val auditingService: AuditingService,
       paperlessPreferenceTokenService.storeNino(user.nino.get) flatMap {
         token =>
           preferencesService.checkPaperless(token).map {
+            case Right(Activated) if(isEnabled(SaveAndRetrieve)) => Redirect(controllers.individual.business.routes.TaskListController.show())
             case Right(Activated) => Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
             case Right(Unset(url)) => Redirect(controllers.individual.routes.PreferencesController.show())
               .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)

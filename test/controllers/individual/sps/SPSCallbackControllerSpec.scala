@@ -18,7 +18,7 @@ package controllers.individual.sps
 
 import agent.audit.mocks.MockAuditingService
 import auth.individual.SignUp
-import config.featureswitch.FeatureSwitch.SPSEnabled
+import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import controllers.Assets.SEE_OTHER
 import controllers.ControllerBaseSpec
@@ -62,6 +62,22 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
   }
 
   "callback" when {
+    "the save and retrieve feature switch is enabled" should {
+      "the SPS feature switch is enabled" when {
+        "an entityId is passed through to the url" should {
+          "save the entityId in session and redirect to the tax year selection page" in {
+            enable(SaveAndRetrieve)
+            enable(SPSEnabled)
+
+            val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = true)).run()
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+          }
+        }
+      }
+    }
+
     "the SPS feature switch is disabled" should {
       "return a not found exception" in {
         val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = true)).run()
@@ -69,24 +85,28 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
         intercept[NotFoundException](await(result)).message mustBe "[SPSCallbackController][callback] - SPS Enabled feature switch not enabled"
       }
     }
-    "the SPS feature switch is enabled" when {
-      "an entityId is passed through to the url" should {
-        "save the entityId in session and redirect to the tax year selection page" in {
-          enable(SPSEnabled)
 
-          val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = true)).run()
+    "the save and retrieve feature switch is disabled" should {
+      "the SPS feature switch is enabled" when {
+        "an entityId is passed through to the url" should {
+          "save the entityId in session and redirect to the tax year selection page" in {
+            disable(SaveAndRetrieve)
+            enable(SPSEnabled)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
+            val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = true)).run()
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
+          }
         }
-      }
-      "no entityId is present in the url" should {
-        "throw an InternalServerException" in {
-          enable(SPSEnabled)
+        "no entityId is present in the url" should {
+          "throw an InternalServerException" in {
+            enable(SPSEnabled)
 
-          val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = false)).run()
+            val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = false)).run()
 
-          intercept[InternalServerException](await(result)).message mustBe "[SPSCallbackController][callback] - Entity Id was not found"
+            intercept[InternalServerException](await(result)).message mustBe "[SPSCallbackController][callback] - Entity Id was not found"
+          }
         }
       }
     }
