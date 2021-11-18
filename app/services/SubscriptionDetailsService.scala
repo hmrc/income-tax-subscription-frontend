@@ -117,6 +117,12 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def saveProperty(property: PropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[PropertyModel](Property, property)
 
+  def fetchOverseasProperty()(implicit hc: HeaderCarrier): Future[Option[OverseasPropertyModel]] =
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](Property)
+
+  def saveOverseasProperty(overseasProperty: OverseasPropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[OverseasPropertyModel](OverseasProperty, overseasProperty)
+
   def fetchPropertyStartDate()(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
     fetchProperty().map(_.flatMap(_.startDate))
 

@@ -149,4 +149,9 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   protected final def verifySubscriptionDetailsDeleteAll(deleteAll: Option[Int]): Unit = {
     deleteAll map (count => verify(mockConnector, times(count)).deleteAll()(ArgumentMatchers.any()))
   }
+
+  protected final def mockFetchOverseasProperty(overseasProperty: Option[OverseasPropertyModel]): Unit = {
+    when(mockConnector.getSubscriptionDetails[OverseasPropertyModel](ArgumentMatchers.eq(OverseasProperty))(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(Future.successful(overseasProperty))
+  }
 }
