@@ -17,7 +17,7 @@
 package views.individual.incometax.business
 
 import models.common.PropertyModel
-import models.{Cash, DateModel}
+import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import utilities.ViewSpec
@@ -33,7 +33,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
   )
 
   private val completeAccrualsProperty = PropertyModel(
-    accountingMethod = Some(Cash),
+    accountingMethod = Some(Accruals),
     startDate = Some(DateModel("8", "11", "2021")),
   )
 
@@ -99,7 +99,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           section = "accruals accounting method",
           index = 2,
           PropertyCheckYourAnswers.accountMethodQuestion,
-          answer = Some("Cash accounting"),
+          answer = Some("Standard accounting"),
           changeLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
 

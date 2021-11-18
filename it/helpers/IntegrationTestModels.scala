@@ -169,7 +169,8 @@ object IntegrationTestModels {
                        accountingMethod: Option[AccountingMethodModel] = None,
                        ukProperty: Option[PropertyModel] = None,
                        overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None,
-                       overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None
+                       overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
+                       overseasProperty: Option[OverseasPropertyModel] = None,
                       ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
@@ -178,7 +179,8 @@ object IntegrationTestModels {
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       ukProperty.map(model => Property -> PropertyModel.format.writes(model)) ++
       overseasPropertyAccountingMethod.map(model => OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)) ++
-      overseasPropertyStartDate.map(model => OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model))
+      overseasPropertyStartDate.map(model => OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model)) ++
+      overseasProperty.map(model => Property -> OverseasPropertyModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)

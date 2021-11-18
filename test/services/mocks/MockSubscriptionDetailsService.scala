@@ -154,4 +154,20 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     when(mockConnector.getSubscriptionDetails[OverseasPropertyModel](ArgumentMatchers.eq(OverseasProperty))(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(overseasProperty))
   }
+
+  protected final def verifyOverseasPropertySave(property: Option[OverseasPropertyModel]): Unit = {
+    property match {
+      case Some(value) => verify(
+        mockConnector,
+        times(1)
+      ).saveSubscriptionDetails[OverseasPropertyModel](
+        ArgumentMatchers.eq(OverseasProperty),
+        ArgumentMatchers.eq(value)
+      )(any(), any())
+      case None => verify(
+        mockConnector,
+        times(0)
+      ).saveSubscriptionDetails[OverseasPropertyModel](ArgumentMatchers.eq(Property), any())(any(), any())
+    }
+  }
 }
