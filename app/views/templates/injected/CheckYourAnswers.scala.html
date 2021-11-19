@@ -24,7 +24,14 @@
   saveAndContinueButton: SaveAndContinueButtonHelper
 )
 
-@(heading: String, postAction: Call, headingHidden: Option[String] = None, isComplete: Boolean = false, saveAndContinue: Boolean = false)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@(
+  heading: String,
+  postAction: Call,
+  headingHidden: Option[String] = None,
+  isComplete: Boolean = false,
+  isConfirmed: Boolean = false,
+  saveAndContinue: Boolean = false
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 <h1 class="govuk-heading-l">
   @heading
@@ -40,7 +47,10 @@
 @form(action = postAction) {
   <div class="form-group">
     @if(saveAndContinue) {
-      @saveAndContinueButton(saveAndContinueText = Some(messages("base.confirm-and-continue")), disabled = !isComplete)
+      @saveAndContinueButton(
+        saveAndContinueText = if(isConfirmed) Some(messages("base.continue")) else Some(messages("base.confirm-and-continue")),
+        disabled = !isComplete
+      )
     } else {
       @continueButton()
     }

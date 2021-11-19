@@ -987,12 +987,20 @@ business.check-your-answers.content.tax-year.current-tax-year   = ?
 business.check-your-answers.content.tax-year.next-tax-year      = ?
 business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu arian parod
 business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu safonol
+## UK property
 business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.change = ?
 business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.change = ?
+## Overseas property
+business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property-start-date.change = ?
+business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property-accounting-method.change = ?
 
 ## Progress saved
 business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi’i gadw

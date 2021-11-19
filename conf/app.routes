@@ -151,8 +151,11 @@ POST        /business/task-list                                  controllers.ind
 GET         /business/tax-year-check-your-answers                controllers.individual.business.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
 POST        /business/tax-year-check-your-answers                controllers.individual.business.TaxYearCheckYourAnswersController.submit()
 
-GET         /business/uk-property-check-your-answers        controllers.individual.business.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/uk-property-check-your-answers        controllers.individual.business.PropertyCheckYourAnswersController.submit()
+GET         /business/uk-property-check-your-answers             controllers.individual.business.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/uk-property-check-your-answers             controllers.individual.business.PropertyCheckYourAnswersController.submit()
+
+GET         /business/overseas-property-check-your-answers       controllers.individual.business.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-check-your-answers       controllers.individual.business.OverseasPropertyCheckYourAnswersController.submit()
 
 # Progress saved
 GET         /business/progress-saved                             controllers.individual.business.ProgressSavedController.show()
