@@ -18,6 +18,7 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel
@@ -34,10 +35,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                            val authService: AuthService,
                                            accountingPeriodService: AccountingPeriodService,
-                                           subscriptionDetailsService: SubscriptionDetailsService,
+                                           val subscriptionDetailsService: SubscriptionDetailsService,
                                            whatYearToSignUp: WhatYearToSignUp)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                           val appConfig: AppConfig) extends AuthenticatedController {
+                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
 
   val backUrl: String = controllers.agent.routes.CheckYourAnswersController.show().url
 
@@ -53,26 +54,30 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYearModel =>
-        Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
-          isEditMode = isEditMode))
+      withAgentReference { reference =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
+          Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
+            isEditMode = isEditMode))
+        }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      AccountingYearForm.accountingYearForm.bindFromRequest.fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
-        accountingYear => {
-          Future.successful(subscriptionDetailsService.saveSelectedTaxYear(AccountingYearModel(accountingYear))) map { _ =>
-            if (isEditMode) {
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-            } else {
-              Redirect(controllers.agent.routes.IncomeSourceController.show())
+      withAgentReference { reference =>
+        AccountingYearForm.accountingYearForm.bindFromRequest.fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
+          accountingYear => {
+            Future.successful(subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear))) map { _ =>
+              if (isEditMode) {
+                Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+              } else {
+                Redirect(controllers.agent.routes.IncomeSourceController.show())
+              }
             }
           }
-        }
-      )
+        )
+      }
   }
 }

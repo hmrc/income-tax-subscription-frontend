@@ -31,6 +31,7 @@ POST        /check-your-answers                     controllers.agent.CheckYourA
 
 # Confirmation Routes
 GET         /confirmation                           controllers.agent.ConfirmationAgentController.show
+POST        /confirmation                           controllers.agent.ConfirmationAgentController.submit
 
 # Session Timeout Route
 GET         /session-timeout                        controllers.agent.SessionTimeoutController.show
@@ -81,14 +82,6 @@ GET         /error/covid-cannot-sign-up             controllers.agent.eligibilit
 #What Tax Year To Sign Up Routes
 GET         /business/what-year-to-sign-up                      controllers.agent.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                      controllers.agent.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
-
-#Name Routes
-GET         /business/name                                      controllers.agent.business.BusinessNameController.show(editMode: Boolean ?= false)
-POST        /business/name                                      controllers.agent.business.BusinessNameController.submit(editMode: Boolean ?= false)
-
-#Business Income Type Routes
-GET         /business/accounting-method                         controllers.agent.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/accounting-method                         controllers.agent.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Property Income Type Routes
 GET         /business/accounting-method-property                controllers.agent.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)

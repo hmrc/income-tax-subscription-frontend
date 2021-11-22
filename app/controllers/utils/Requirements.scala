@@ -86,8 +86,11 @@ trait RequireAnswer {
 
   val subscriptionDetailsService: SubscriptionDetailsService
 
-  def require[A](answer: Answer[A])(f: A => Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Result] = {
-    subscriptionDetailsService.fetchAll() flatMap {
+  def require[A](reference: String)
+                (answer: Answer[A])
+                (f: A => Future[Result])
+                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Result] = {
+    subscriptionDetailsService.fetchAll(reference) flatMap {
       cacheMap =>
         answer(cacheMap) match {
           case Right(answers) => f(answers)

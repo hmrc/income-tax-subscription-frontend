@@ -20,7 +20,7 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.utils.AgentAnswers._
-import controllers.utils.RequireAnswer
+import controllers.utils.{ReferenceRetrieval, RequireAnswer}
 import forms.agent.OverseasPropertyStartDateForm
 import forms.agent.OverseasPropertyStartDateForm._
 import models.DateModel
@@ -43,7 +43,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
                                                    (implicit val ec: ExecutionContext,
                                                     val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents)
-  extends AuthenticatedController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
+  extends AuthenticatedController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching with ReferenceRetrieval {
 
   def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
@@ -57,36 +57,40 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchOverseasPropertyStartDate flatMap { overseasPropertyStartDate =>
-        subscriptionDetailsService.fetchIncomeSource map {
-          case Some(incomeSource) => Ok(view(
-            overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
-            isEditMode = isEditMode,
-            incomeSourceModel = incomeSource
-          ))
-          case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+      withAgentReference { reference =>
+        subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) flatMap { overseasPropertyStartDate =>
+          subscriptionDetailsService.fetchIncomeSource(reference) map {
+            case Some(incomeSource) => Ok(view(
+              overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
+              isEditMode = isEditMode,
+              incomeSourceModel = incomeSource
+            ))
+            case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+          }
         }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      form.bindFromRequest.fold(
-        formWithErrors =>
-          require(incomeSourceModelAnswer) {
-            incomeSourceModel =>
-              Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
-          },
-        startDate =>
-          subscriptionDetailsService.saveOverseasPropertyStartDate(startDate) flatMap { _ =>
-            if (isEditMode) {
-              Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
-            } else {
-              Future.successful(Redirect(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit()))
+      withAgentReference { reference =>
+        form.bindFromRequest.fold(
+          formWithErrors =>
+            require(reference)(incomeSourceModelAnswer) {
+              incomeSourceModel =>
+                Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
+            },
+          startDate =>
+            subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) flatMap { _ =>
+              if (isEditMode) {
+                Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
+              } else {
+                Future.successful(Redirect(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit()))
+              }
             }
-          }
 
-      )
+        )
+      }
   }
 
   def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel): String = {
@@ -95,7 +99,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
     } else {
       (incomeSourceModel.selfEmployment, incomeSourceModel.ukProperty) match {
         case (_, true) => controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-        case (true, _) => appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
+        case (true, _) => appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method"
         case _ => controllers.agent.routes.IncomeSourceController.show().url
       }
     }

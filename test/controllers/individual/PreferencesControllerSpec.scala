@@ -47,6 +47,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   object TestPreferencesController extends PreferencesController(
     mockAuditingService,
     mockAuthService,
+    MockSubscriptionDetailsService,
     mockPreferencesService,
     mockPaperlessPreferenceTokenService
   )(executionContext, appConfig, mockMessagesControllerComponents)

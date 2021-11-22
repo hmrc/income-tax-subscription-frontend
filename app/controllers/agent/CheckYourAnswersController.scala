@@ -15,12 +15,13 @@
  */
 
 package controllers.agent
+
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.AgentAnswers._
-import controllers.utils.RequireAnswer
+import controllers.utils.{ReferenceRetrieval, RequireAnswer}
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.SubscriptionSuccess
@@ -45,71 +46,78 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                            subscriptionService: SubscriptionOrchestrationService,
                                            incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            implicitDateFormatter: ImplicitDateFormatterImpl,
-                                           checkYourAnswers: CheckYourAnswers )
+                                           checkYourAnswers: CheckYourAnswers)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching with RequireAnswer {
-
+                                           mcc: MessagesControllerComponents) extends AuthenticatedController
+  with FeatureSwitching
+  with RequireAnswer
+  with ReferenceRetrieval {
 
   private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
                               (noCacheMapErrMessage: String): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        if (user.clientNino.isDefined && user.clientUtr.isDefined) {
-          subscriptionDetailsService.fetchAll().flatMap {
-            case cache => processFunc(user)(request)(cache)
-            case _ => error(noCacheMapErrMessage)
+        withAgentReference { reference =>
+          if (user.clientNino.isDefined && user.clientUtr.isDefined) {
+            subscriptionDetailsService.fetchAll(reference).flatMap {
+              case cache => processFunc(user)(request)(cache)
+              case _ => error(noCacheMapErrMessage)
+            }
+          } else {
+            Future.successful(Redirect(controllers.agent.matching.routes.ConfirmClientController.show()))
           }
-        } else {
-          Future.successful(Redirect(controllers.agent.matching.routes.ConfirmClientController.show()))
         }
     }
 
-  private def getSelfEmploymentsData()(implicit request: Request[AnyContent]): Future[(Option[Seq[SelfEmploymentData]], Option[AccountingMethodModel])] = {
+  private def getSelfEmploymentsData(reference: String)
+                                    (implicit request: Request[AnyContent]): Future[(Option[Seq[SelfEmploymentData]], Option[AccountingMethodModel])] = {
     for {
-      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
-      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
     } yield (businesses, businessAccountingMethod)
   }
 
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        require(incomeSourceModelAnswer) { incomeSource =>
-          for {
-            (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
-            property <- subscriptionDetailsService.fetchProperty()
-            overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
-          } yield {
-            Ok(checkYourAnswers(
-              cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
-              controllers.agent.routes.CheckYourAnswersController.submit(),
-              backUrl = backUrl(incomeSource),
-              implicitDateFormatter,
-              releaseFour = true
-            ))
+        withAgentReference { reference =>
+          require(reference)(incomeSourceModelAnswer) { incomeSource =>
+            for {
+              (businesses, businessAccountingMethod) <- getSelfEmploymentsData(reference)
+              property <- subscriptionDetailsService.fetchProperty(reference)
+              overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+            } yield {
+              Ok(checkYourAnswers(
+                cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
+                controllers.agent.routes.CheckYourAnswersController.submit(),
+                backUrl = backUrl(incomeSource),
+                implicitDateFormatter,
+                releaseFour = true
+              ))
+            }
           }
         }
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
 
-  private def submitForAuthorisedAgent(arn: String, nino: String, utr: String)
-                                                            (implicit user: IncomeTaxAgentUser, request: Request[AnyContent],
-                                                             cache: CacheMap): Future[Result] = {
+  private def submitForAuthorisedAgent(reference: String, arn: String, nino: String, utr: String)
+                                      (implicit user: IncomeTaxAgentUser, request: Request[AnyContent],
+                                       cache: CacheMap): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {
-      (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
-      property <- subscriptionDetailsService.fetchProperty()
-      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
+      (businesses, businessAccountingMethod) <- getSelfEmploymentsData(reference)
+      property <- subscriptionDetailsService.fetchProperty(reference)
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       mtditid <- subscriptionService.createSubscription(
-            arn = arn,
-            nino = nino,
-            utr = utr,
-            summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
-            isReleaseFourEnabled = true
-          )(headerCarrier)
-          .collect { case Right(SubscriptionSuccess(id)) => id }
-          .recoverWith { case _ => error("Successful response not received from submission") }
-      _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)
+        arn = arn,
+        nino = nino,
+        utr = utr,
+        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
+        isReleaseFourEnabled = true
+      )(headerCarrier)
+        .collect { case Right(SubscriptionSuccess(id)) => id }
+        .recoverWith { case _ => error("Successful response not received from submission") }
+      _ <- subscriptionDetailsService.saveSubscriptionId(reference, mtditid)
         .recoverWith { case _ => error("Failed to save to Subscription Details ") }
     } yield Redirect(controllers.agent.routes.ConfirmationAgentController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }
@@ -117,17 +125,18 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       implicit cache =>
-        val arn: String = user.arn.getOrElse(
-          throw new InternalServerException("[CheckYourAnswers][submit] - ARN not found")
-        )
-        val nino: String = user.clientNino.getOrElse(
-          throw new InternalServerException("[CheckYourAnswersController][submit] - Client nino not found")
-        )
-        val utr: String = user.clientUtr.getOrElse(
-          throw new InternalServerException("[CheckYourAnswersController][submit] - Client utr not found")
-        )
-
-        submitForAuthorisedAgent(arn = arn, nino = nino, utr = utr)
+        withAgentReference { reference =>
+          val arn: String = user.arn.getOrElse(
+            throw new InternalServerException("[CheckYourAnswers][submit] - ARN not found")
+          )
+          val nino: String = user.clientNino.getOrElse(
+            throw new InternalServerException("[CheckYourAnswersController][submit] - Client nino not found")
+          )
+          val utr: String = user.clientUtr.getOrElse(
+            throw new InternalServerException("[CheckYourAnswersController][submit] - Client utr not found")
+          )
+          submitForAuthorisedAgent(reference = reference, arn = arn, nino = nino, utr = utr)
+        }
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any Subscription Details  cached data")
 
   def error(message: String): Future[Nothing] = {
@@ -142,7 +151,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       case IncomeSourceModel(_, true, _) =>
         controllers.agent.business.routes.PropertyAccountingMethodController.show().url
       case _ =>
-        controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method"
     }
   }
 }

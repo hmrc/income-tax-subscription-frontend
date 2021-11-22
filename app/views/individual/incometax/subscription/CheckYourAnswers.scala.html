@@ -15,14 +15,11 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers._
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.injected.ButtonHelper
 @import models.common.business._
 @import models.common._
 @import models.IndividualSummary
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import models.{Yes, No}
 @import views.individual.helpers._
 @import views.individual.helpers.SummaryHelper._
 @import views.individual.helpers.SummaryIdConstants._
@@ -31,8 +28,9 @@
 @import models.common.OverseasPropertyStartDateModel
 
 @this(
-    principalMainTemplate: PrincipalMainTemplate,
-    buttonHelper: ButtonHelper
+        principalMainTemplate: PrincipalMainTemplate,
+        buttonHelper: ButtonHelper,
+        form: FormWithCSRF
 )
 
 @(summaryModel: IndividualSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter, releaseFour: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -66,7 +64,7 @@
     val rowAnswer = incomeSourceText(incomeSourceModel)
     val rowUrl = controllers.individual.incomesource.routes.IncomeSourceController.show(editMode = true).url
     val hiddenContent = Some(messages("final.cya.change.incomereceived"))
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, true)
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
 }
 
 @selfEmployments(businesses:Seq[SelfEmploymentData]) = @{
@@ -75,15 +73,6 @@
     val rowAnswer = businesses.count(_.isComplete).toString
     val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list"
     val hiddenContent = Some(messages("final.cya.change.signupbusinessnumber"))
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
-}
-
-@businessName(name: BusinessNameModel) = @{
-    val rowName = BusinessNameId
-    val rowQuestion = messages("summary.business_name")
-    val rowAnswer = name.businessName
-    val rowUrl = controllers.individual.business.routes.BusinessNameController.show(editMode = true).url
-    val hiddenContent = Some(messages("final.cya.change.businessname"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -100,11 +89,7 @@
     val rowName = AccountingMethodId
     val rowQuestion = messages("summary.income_type")
     val rowAnswer = accountingMethodText(accountingModel.accountingMethod)
-    val rowUrl = if(releaseFour){
-                    appConfig.incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl+"?isEditMode=true"
-                    } else {
-                    controllers.individual.business.routes.BusinessAccountingMethodController.show(editMode = true).url
-                    }
+    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl+"?isEditMode=true"
     val hiddenContent = Some(messages("final.cya.change.soletraderaccountingmethod"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -160,11 +145,7 @@
     <dl class="govuk-summary-list">
         @selectedTaxYear(summaryModel.selectedTaxYear)
         @summaryModel.incomeSource.map(incomeReceivedFrom)
-        @if(releaseFour) {
-            @summaryModel.selfEmployments.map(selfEmployments)
-        } else {
-            @summaryModel.businessName.map(businessName)
-        }
+        @summaryModel.selfEmployments.map(selfEmployments)
         @summaryModel.accountingMethod.map(accountingMethod)
         @summaryModel.propertyStartDate.map(propertyStart)
         @summaryModel.accountingMethodProperty.map(accountingMethodProperty)

@@ -400,8 +400,6 @@ trait ViewSpecTrait extends UnitTestTrait {
       s"${this.name} have a fieldset with class 'govuk-fieldset' with the legend '$legend'" in {
         val fieldset = element.getElementsByClass("govuk-fieldset")
 
-        println("FIELDSET: " + fieldset)
-
         if (isPageHeading) {
           fieldset.select("legend").select("h1").text mustBe legend
         } else {

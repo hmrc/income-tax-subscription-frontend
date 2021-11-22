@@ -18,14 +18,13 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
-import config.featureswitch.FeatureSwitching
+import controllers.utils.ReferenceRetrieval
 import forms.agent.PropertyStartDateForm
 import forms.agent.PropertyStartDateForm.propertyStartDateForm
 import models.DateModel
 import models.common.IncomeSourceModel
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -41,7 +40,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends AuthenticatedController
-  with ImplicitDateFormatter with FeatureSwitching {
+  with ImplicitDateFormatter with ReferenceRetrieval {
 
   def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
@@ -55,52 +54,57 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchPropertyStartDate() flatMap { propertyStartDate =>
-        subscriptionDetailsService.fetchIncomeSource() map {
-          case Some(incomeSource) => Ok(view(
-            propertyStartDateForm = form.fill(propertyStartDate),
-            isEditMode = isEditMode,
-            incomeSourceModel = incomeSource
-          ))
-          case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+      withAgentReference { reference =>
+        subscriptionDetailsService.fetchPropertyStartDate(reference) flatMap { propertyStartDate =>
+          subscriptionDetailsService.fetchIncomeSource(reference) map {
+            case Some(incomeSource) => Ok(view(
+              propertyStartDateForm = form.fill(propertyStartDate),
+              isEditMode = isEditMode,
+              incomeSourceModel = incomeSource
+            ))
+            case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+          }
         }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      form.bindFromRequest.fold(
-        formWithErrors =>
-          subscriptionDetailsService.fetchIncomeSource() map {
-            case Some(incomeSource) => BadRequest(view(
-              propertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSource
-            ))
-            case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
-          },
-        startDate =>
-          subscriptionDetailsService.savePropertyStartDate(startDate) flatMap { _ =>
-            if (isEditMode) {
-              Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
-            } else {
-              Future.successful(Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show()))
+      withAgentReference { reference =>
+        form.bindFromRequest.fold(
+          formWithErrors =>
+            subscriptionDetailsService.fetchIncomeSource(reference) map {
+              case Some(incomeSource) => BadRequest(view(
+                propertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSource
+              ))
+              case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+            },
+          startDate =>
+            subscriptionDetailsService.savePropertyStartDate(reference, startDate) flatMap { _ =>
+              if (isEditMode) {
+                Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
+              } else {
+                Future.successful(Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show()))
+              }
             }
-          }
 
-      )
+        )
+      }
   }
 
   def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel): String = {
-    if (isEditMode) controllers.agent.routes.CheckYourAnswersController.show().url
-    else
+    if (isEditMode) {
+      controllers.agent.routes.CheckYourAnswersController.show().url
+    } else {
       incomeSourceModel match {
-        case IncomeSourceModel(true, _, _) =>
-          if (isEnabled(ReleaseFour)) controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-          else controllers.agent.routes.IncomeSourceController.show().url
+        case IncomeSourceModel(true, _, _) => appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method"
         case _ => controllers.agent.routes.IncomeSourceController.show().url
       }
+    }
   }
 
   def form(implicit request: Request[_]): Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate.toLongDate, PropertyStartDateForm.maxStartDate.toLongDate)
   }
+
 }

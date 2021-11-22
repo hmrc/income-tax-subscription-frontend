@@ -17,26 +17,19 @@
 package controllers.usermatching
 
 import agent.audit.mocks.MockAuditingService
-import assets.MessageLookup.{UserDetails => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
 import forms.usermatching.UserDetailsForm
 import models.DateModel
 import models.usermatching.UserDetailsModel
-import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, contentAsString, contentType, _}
-import play.twirl.api.HtmlFormat
+import play.api.test.Helpers.{await, contentType, _}
 import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService}
 import uk.gov.hmrc.http.HttpResponse
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants._
-import views.html.individual.usermatching.{UserDetails, UserDetailsError}
 import views.individual.usermatching.mocks.MockUserDetails
 
 import scala.concurrent.Future
@@ -47,7 +40,6 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockUserDetails {
 
-
   override val controllerName: String = "UserDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestUserDetailsController.show(isEditMode = false),
@@ -57,7 +49,6 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
   object TestUserDetailsController extends UserDetailsController(
     mockAuditingService,
     mockAuthService,
-    MockSubscriptionDetailsService,
     userDetails,
     mockUserLockoutService
   )
@@ -87,8 +78,6 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
       status(result) must be(Status.OK)
       await(result).verifyStoredUserDetailsIs(None)(r)
-
-      verifySubscriptionDetailsDeleteAll(0)
 
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
@@ -124,7 +113,6 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
             // the submitted details is now stored in session
             await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
-            verifySubscriptionDetailsDeleteAll(0)
           }
 
         }
@@ -146,7 +134,6 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.usermatching.routes.ConfirmUserController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
-            verifySubscriptionDetailsDeleteAll(1)
           }
 
         }
@@ -165,7 +152,6 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.usermatching.routes.ConfirmUserController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
-            verifySubscriptionDetailsDeleteAll(0)
           }
 
         }
@@ -194,7 +180,6 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
           status(badResult) must be(Status.BAD_REQUEST)
 
           await(badResult).verifyStoredUserDetailsIs(None)(testRequest)
-          verifySubscriptionDetailsDeleteAll(0)
         }
 
         "return HTML" in {

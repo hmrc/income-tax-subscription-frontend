@@ -19,25 +19,22 @@ package controllers.agent.matching
 import auth.agent.{IncomeTaxAgentUser, UserMatchingController}
 import config.AppConfig
 import forms.agent.ClientDetailsForm
-
-import javax.inject.{Inject, Singleton}
 import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService, UserLockoutService}
+import services.{AuditingService, AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.ClientDetails
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClientDetailsController @Inject()(val auditingService: AuditingService,
                                         val authService: AuthService,
-                                        subscriptionDetailsService: SubscriptionDetailsService,
                                         lockOutService: UserLockoutService,
-                                        clientDetails: ClientDetails
-                                       )
+                                        clientDetails: ClientDetails)
                                        (implicit val ec: ExecutionContext,
                                         mcc: MessagesControllerComponents,
                                         val appConfig: AppConfig) extends UserMatchingController {
@@ -69,12 +66,8 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
       handleLockOut {
         ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
-          clientDetails => {
-            val continue = Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails)
-
-            if (request.fetchUserDetails.fold(false)(_ != clientDetails)) subscriptionDetailsService.deleteAll().map(_ => continue)
-            else Future.successful(continue)
-          }
+          clientDetails =>
+            Future.successful(Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails))
         )
       }
   }

@@ -18,6 +18,7 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.AccountingMethod
 import play.api.data.Form
@@ -35,7 +36,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                            val subscriptionDetailsService: SubscriptionDetailsService)
                                                           (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
-                                                           mcc: MessagesControllerComponents) extends AuthenticatedController {
+                                                           mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
 
   def view(accountingMethodOverseasPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
@@ -49,24 +50,28 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchOverseasPropertyAccountingMethod() flatMap { accountingMethodOverseasProperty =>
-        Future.successful(Ok(view(accountingMethodOverseasPropertyForm =
-          AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(accountingMethodOverseasProperty),
-          isEditMode = isEditMode)))
+      withAgentReference { reference =>
+        subscriptionDetailsService.fetchOverseasPropertyAccountingMethod(reference) flatMap { accountingMethodOverseasProperty =>
+          Future.successful(Ok(view(accountingMethodOverseasPropertyForm =
+            AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(accountingMethodOverseasProperty),
+            isEditMode = isEditMode)))
+        }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.bindFromRequest.fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(accountingMethodOverseasPropertyForm = formWithErrors, isEditMode = isEditMode))),
-        overseasPropertyAccountingMethod => {
-          subscriptionDetailsService.saveOverseasAccountingMethodProperty(overseasPropertyAccountingMethod) map { _ =>
-            Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+      withAgentReference { reference =>
+        AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.bindFromRequest.fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(accountingMethodOverseasPropertyForm = formWithErrors, isEditMode = isEditMode))),
+          overseasPropertyAccountingMethod => {
+            subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map { _ =>
+              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+            }
           }
-        }
-      )
+        )
+      }
   }
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {

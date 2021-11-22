@@ -18,10 +18,8 @@ package services
 
 import models.common.business.BusinessNameModel
 import org.scalatest.Matchers._
-import play.api.http.Status
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import uk.gov.hmrc.http.HttpResponse
 import utilities.SubscriptionDataKeys.BusinessName
 import utilities.{TestModels, UnitTestTrait}
 
@@ -40,8 +38,8 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
 
       val businessName = await(
         for {
-          businessName <- TestSubscriptionDetails.subscriptionDetailsService.fetchBusinessName()
-          _ <- TestSubscriptionDetails.subscriptionDetailsService.saveBusinessName(testBusinessName)
+          businessName <- TestSubscriptionDetails.subscriptionDetailsService.fetchBusinessName("test-reference")
+          _ <- TestSubscriptionDetails.subscriptionDetailsService.saveBusinessName("test-reference", testBusinessName)
         } yield businessName
       )
 
@@ -55,19 +53,12 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
       val testFetchAll = TestModels.emptyCacheMap
       mockFetchAllFromSubscriptionDetails(testFetchAll)
 
-      val fetched = await(TestSubscriptionDetails.subscriptionDetailsService.fetchAll())
+      val fetched = await(TestSubscriptionDetails.subscriptionDetailsService.fetchAll("test-reference"))
       fetched shouldBe testFetchAll
 
       verifySubscriptionDetailsFetchAll(1)
     }
 
-    "configure and verify remove all as specified" in {
-      val testDeleteAll = HttpResponse(Status.OK)
-      mockDeleteAllFromSubscriptionDetails(testDeleteAll)
-
-      val response = await(TestSubscriptionDetails.subscriptionDetailsService.deleteAll())
-      verifySubscriptionDetailsDeleteAll(1)
-    }
 
   }
 

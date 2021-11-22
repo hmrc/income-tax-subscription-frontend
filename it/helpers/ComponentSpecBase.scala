@@ -142,13 +142,13 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse = await(
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name) ++ additionalCookies))
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalCookies))
         .get()
     )
 
     def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse = await(
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name) ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
     )
 
@@ -283,8 +283,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
 
-    def businessName(): WSResponse = get("/business/name")
-
     def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(JourneyStateKey -> state.name))
 
     def submitBusinessAddress(editMode: Boolean, state: JourneyState): WSResponse =
@@ -347,16 +345,6 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     def confirmation(additionalCookies: Map[String, String]): WSResponse = get("/confirmation", additionalCookies)
 
     def submitConfirmation(): WSResponse = post("/confirmation")(Map.empty)
-
-    def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
-      val uri = s"/business/name?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            BusinessNameForm.businessNameValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def claimEnrolmentConfirmation(): WSResponse = get("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
 

@@ -115,7 +115,6 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           pageTitle("Error: " + messages("user-details.title") + serviceNameGovUk)
         )
         res.verifyStoredUserDetailsIs(None)
-        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -137,7 +136,6 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         )
 
         res.verifyStoredUserDetailsIs(Some(userDetails))
-        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -158,7 +156,6 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         )
 
         res.verifyStoredUserDetailsIs(Some(userDetails))
-        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -179,8 +176,6 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmUserController.show().url)
         )
-
-        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
       }
     }

@@ -51,8 +51,6 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       val cookie = getSessionMap(res)
       cookie.keys should not contain ITSASessionKeys.MTDITID
       cookie.keys should not contain ITSASessionKeys.JourneyStateKey
-
-      IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
     }
   }
 
@@ -75,8 +73,6 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       val cookie = getSessionMap(res)
       cookie.keys should not contain ITSASessionKeys.MTDITID
       cookie.keys should not contain ITSASessionKeys.JourneyStateKey
-
-      IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
     }
   }
 

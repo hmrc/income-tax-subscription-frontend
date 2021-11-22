@@ -17,23 +17,29 @@
 package connectors.httpparser
 
 import play.api.http.Status._
-import play.api.libs.json.{JsSuccess, Reads}
-import uk.gov.hmrc.http.{HttpReads, HttpResponse, InternalServerException}
+import play.api.libs.json.JsSuccess
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 
-object GetSubscriptionDetailsHttpParser {
+object RetrieveReferenceHttpParser {
 
-  implicit def getSubscriptionDetailsHttpReads[T](implicit reads: Reads[T]): HttpReads[Option[T]] =
+  type RetrieveReferenceResponse = Either[RetrieveReferenceFailure, String]
+
+  implicit def retrieveReferenceHttpReads: HttpReads[RetrieveReferenceResponse] =
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
-        case OK => response.json.validate[T] match {
-          case JsSuccess(value, _) => Some(value)
-          case _ =>
-            throw new InternalServerException("Invalid Json for getSubscriptionDetailsHttpReads")
+        case OK => (response.json \ "reference").validate[String] match {
+          case JsSuccess(value, _) => Right(value)
+          case _ => Left(InvalidJsonFailure)
         }
-        case NO_CONTENT => None
-        case status => throw new InternalServerException(s"Unexpected status: $status")
+        case status => Left(UnexpectedStatusFailure(status))
       }
     }
+
+  sealed trait RetrieveReferenceFailure
+
+  case object InvalidJsonFailure extends RetrieveReferenceFailure
+
+  case class UnexpectedStatusFailure(status: Int) extends RetrieveReferenceFailure
 
 }

@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching with MockUserLockoutService with MockAuditingService  {
+  with MockSubscriptionDetailsService with FeatureSwitching with MockUserLockoutService with MockAuditingService {
 
   override def beforeEach(): Unit = {
     disable(RemoveCovidPages)
@@ -43,8 +43,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
   object TestAddAnotherClientController extends AddAnotherClientController(
     mockAuditingService,
     mockAuthService,
-    appConfig,
-    MockSubscriptionDetailsService
+    appConfig
   )(executionContext, mockMessagesControllerComponents)
 
   "AddAnotherClientController.addAnother" should {
@@ -67,8 +66,6 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       result.session(request).get(ITSASessionKeys.UTR) mustBe None
       result.session(request).get(ITSASessionKeys.NINO) mustBe None
       result.verifyStoredUserDetailsIs(None)(request)
-
-      verifySubscriptionDetailsDeleteAll(1)
     }
 
 
@@ -94,8 +91,6 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       result.session(request).get(ITSASessionKeys.UTR) mustBe None
       result.session(request).get(ITSASessionKeys.NINO) mustBe None
       result.verifyStoredUserDetailsIs(None)(request)
-
-      verifySubscriptionDetailsDeleteAll(1)
     }
 
 

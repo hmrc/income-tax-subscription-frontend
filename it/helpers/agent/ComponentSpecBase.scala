@@ -129,7 +129,8 @@ trait ComponentSpecBase extends UnitSpec
 
     val defaultCookies: Map[String, String] = Map(
       ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN,
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name
+      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+      ITSASessionKeys.REFERENCE -> "test-reference"
     )
 
     val headers: Seq[(String, String)] = Seq(
@@ -298,8 +299,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
 
-    def businessName(): WSResponse = get("/business/name")
-
     def ukPropertyStartDate(): WSResponse = get("/business/property-commencement-date")
 
     def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel]): WSResponse = {
@@ -353,16 +352,6 @@ trait ComponentSpecBase extends UnitSpec
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
-      val uri = s"/business/name?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            BusinessNameForm.businessNameValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

@@ -24,18 +24,19 @@ object PostSubscriptionDetailsHttpParser {
   type PostSubscriptionDetailsResponse = Either[PostSubscriptionDetailsFailure, PostSubscriptionDetailsSuccess]
 
   implicit def postSubscriptionDetailsHttpReads: HttpReads[PostSubscriptionDetailsResponse] =
-    new HttpReads[PostSubscriptionDetailsResponse] {
-      override def read(method: String, url: String, response: HttpResponse): PostSubscriptionDetailsResponse = {
-        response.status match {
-          case OK => Right(PostSubscriptionDetailsSuccessResponse)
-          case status => Left(UnexpectedStatusFailure(status))
-        }
+    (_: String, _: String, response: HttpResponse) => {
+      response.status match {
+        case OK => Right(PostSubscriptionDetailsSuccessResponse)
+        case status => Left(UnexpectedStatusFailure(status))
       }
     }
+
   sealed trait PostSubscriptionDetailsSuccess
+
   case object PostSubscriptionDetailsSuccessResponse extends PostSubscriptionDetailsSuccess
 
   sealed trait PostSubscriptionDetailsFailure
+
   case class UnexpectedStatusFailure(status: Int) extends PostSubscriptionDetailsFailure
 
 }

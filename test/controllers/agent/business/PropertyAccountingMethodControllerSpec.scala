@@ -63,18 +63,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   }
 
   "show" when {
-    "the user hasn't answered their income source" should {
-      "redirect to the income source page" in {
-        lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
-
-        mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = None))
-        mockFetchProperty(None)
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
-      }
-    }
-
     "there is no previous selected answer" should {
       "display the property accounting method view and return OK (200)" in {
         lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
@@ -191,39 +179,16 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     "in edit mode" should {
       "redirect to the check your answers" in {
         TestPropertyAccountingMethodController.backUrl(
-          incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
           isEditMode = true
         ) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
       }
     }
 
-    "not in edit mode" when {
-      "release four feature switch is enabled" should {
-        "redirect to the uk property commencement date" in {
-          enable(ReleaseFour)
-          TestPropertyAccountingMethodController.backUrl(
-            incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
-            isEditMode = false
-          ) mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
-        }
-      }
-      "release four feature switch is not enabled" should {
-        "redirect to the business accounting method page" when {
-          "the user has self employment income" in {
-            TestPropertyAccountingMethodController.backUrl(
-              incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
-              isEditMode = false
-            ) mustBe controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-          }
-        }
-        "redirect to the income sources page" when {
-          "the user doesn't have self employment income" in {
-            TestPropertyAccountingMethodController.backUrl(
-              incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true),
-              isEditMode = false
-            ) mustBe controllers.agent.routes.IncomeSourceController.show().url
-          }
-        }
+    "not in edit mode" should {
+      "redirect to the uk property commencement date" in {
+        TestPropertyAccountingMethodController.backUrl(
+          isEditMode = false
+        ) mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
       }
     }
   }

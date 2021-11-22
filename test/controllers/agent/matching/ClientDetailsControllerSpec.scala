@@ -51,7 +51,6 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
     val controller = new ClientDetailsController(
       mockAuditingService,
       mockAuthService,
-      MockSubscriptionDetailsService,
       mockUserLockoutService,
       clientDetailsView
 
@@ -147,14 +146,13 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifySubscriptionDetailsDeleteAll(0)
           }
 
         }
 
         "stored user details is different to the new user details" should {
 
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} and deleted all pre-existing entries in Subscription Details " in {
+          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
@@ -168,7 +166,6 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifySubscriptionDetailsDeleteAll(1)
           }
 
         }
@@ -187,7 +184,6 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
-            verifySubscriptionDetailsDeleteAll(0)
           }
 
         }
@@ -217,7 +213,6 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
           // bad requests do not trigger a save
           await(badResult).verifyStoredUserDetailsIs(None)(userMatchingRequest)
-          verifySubscriptionDetailsDeleteAll(0)
         }
 
         "return HTML" in {

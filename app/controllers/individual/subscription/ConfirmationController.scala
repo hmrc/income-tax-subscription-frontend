@@ -19,6 +19,7 @@ package controllers.individual.subscription
 import auth.individual.PostSubmissionController
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
+import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.SubscriptionDataUtil._
@@ -30,19 +31,21 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        val authService: AuthService,
-                                       subscriptionDetailsService: SubscriptionDetailsService,
+                                       val subscriptionDetailsService: SubscriptionDetailsService,
                                        signUpComplete: SignUpComplete)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends PostSubmissionController with FeatureSwitching {
+                                       mcc: MessagesControllerComponents) extends PostSubmissionController with FeatureSwitching with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchAll() map { cacheMap =>
-        Ok(signUpComplete(
-          selectedTaxYear = cacheMap.getSelectedTaxYear.map(_.accountingYear),
-          postAction = routes.ConfirmationController.submit()
-        ))
+      withReference { reference =>
+        subscriptionDetailsService.fetchAll(reference) map { cacheMap =>
+          Ok(signUpComplete(
+            selectedTaxYear = cacheMap.getSelectedTaxYear.map(_.accountingYear),
+            postAction = routes.ConfirmationController.submit()
+          ))
+        }
       }
   }
 

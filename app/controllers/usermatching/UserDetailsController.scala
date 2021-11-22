@@ -24,7 +24,7 @@ import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService, UserLockoutService}
+import services.{AuditingService, AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.usermatching.UserDetails
 
@@ -34,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class UserDetailsController @Inject()(val auditingService: AuditingService,
                                       val authService: AuthService,
-                                      subscriptionDetailsService: SubscriptionDetailsService,
                                       val userDetails: UserDetails,
                                       lockOutService: UserLockoutService)
                                      (implicit val ec: ExecutionContext,
@@ -73,12 +72,8 @@ class UserDetailsController @Inject()(val auditingService: AuditingService,
           formWithErrors => Future.successful(BadRequest(view(
             formWithErrors,
             isEditMode = isEditMode))),
-          userDetails => {
-            val continue = Redirect(controllers.usermatching.routes.ConfirmUserController.show()).saveUserDetails(userDetails)
-
-            if (request.fetchUserDetails.fold(false)(_ != userDetails)) subscriptionDetailsService.deleteAll().map(_ => continue)
-            else Future.successful(continue)
-          }
+          userDetails =>
+            Future.successful(Redirect(controllers.usermatching.routes.ConfirmUserController.show()).saveUserDetails(userDetails))
         )
       }
   }

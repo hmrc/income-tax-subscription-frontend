@@ -20,6 +20,7 @@ import auth.individual.SignUpController
 import com.google.inject.Inject
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -37,48 +38,51 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
                                                   )(implicit val ec: ExecutionContext,
                                                     val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents
-                                                  ) extends SignUpController  {
+                                                  ) extends SignUpController with ReferenceRetrieval {
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        withProperty() { property =>
-          Future.successful(Ok(
-            propertyCheckYourAnswersView(
-              viewModel = property,
-              controllers.individual.business.routes.PropertyCheckYourAnswersController.submit(),
-              backUrl(isEditMode)
-            )
-          ))
+      withReference { reference =>
+        if (isEnabled(SaveAndRetrieve)) {
+          withProperty(reference) { property =>
+            Future.successful(Ok(
+              propertyCheckYourAnswersView(
+                viewModel = property,
+                controllers.individual.business.routes.PropertyCheckYourAnswersController.submit(),
+                backUrl(isEditMode)
+              )
+            ))
+          }
+        } else {
+          Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][show] - The save and retrieve feature switch is disabled"))
         }
-
-      } else {
-        Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][show] - The save and retrieve feature switch is disabled"))
       }
   }
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        withProperty() { property =>
-          subscriptionDetailsService.saveProperty(property.copy(confirmed = true)).map(_ => {
-            Redirect(routes.TaskListController.show())
-          })
+      withReference { reference =>
+        if (isEnabled(SaveAndRetrieve)) {
+          withProperty(reference) { property =>
+            subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map(_ => {
+              Redirect(routes.TaskListController.show())
+            })
+          }
+        } else {
+          Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
         }
-      } else {
-        Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
       }
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    if(isEditMode) {
+    if (isEditMode) {
       controllers.individual.business.routes.TaskListController.show().url
     } else {
       controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }
   }
 
-  private def withProperty()(f: PropertyModel => Future[Result])(implicit hc: HeaderCarrier) = {
-    subscriptionDetailsService.fetchProperty.flatMap { maybeProperty =>
+  private def withProperty(reference: String)(f: PropertyModel => Future[Result])(implicit hc: HeaderCarrier) = {
+    subscriptionDetailsService.fetchProperty(reference).flatMap { maybeProperty =>
       val property = maybeProperty.getOrElse(
         throw new InternalServerException("[PropertyCheckYourAnswersController] - Could not retrieve property details")
       )

@@ -19,6 +19,8 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import controllers.utils.ReferenceRetrieval
+import models.common.AccountingYearModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
@@ -35,34 +37,36 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
                                                   val subscriptionDetailsService: SubscriptionDetailsService)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends SignUpController {
+                                                  mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        subscriptionDetailsService.fetchSelectedTaxYear() map { maybeAccountingYearModel =>
-          Ok(checkYourAnswersView(
-            postAction = controllers.individual.business.routes.TaxYearCheckYourAnswersController.submit(),
-            viewModel = maybeAccountingYearModel,
-            accountingPeriodService = accountingPeriodService,
-            backUrl = backUrl(isEditMode)
-          ))
+      withReference { reference =>
+        if (isEnabled(SaveAndRetrieve)) {
+          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { maybeAccountingYearModel =>
+            Ok(checkYourAnswersView(
+              postAction = controllers.individual.business.routes.TaxYearCheckYourAnswersController.submit(),
+              viewModel = maybeAccountingYearModel,
+              accountingPeriodService = accountingPeriodService,
+              backUrl = backUrl(isEditMode)
+            ))
+          }
+        } else {
+          Future.failed(new NotFoundException("[CheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
         }
-      } else {
-        Future.failed(new NotFoundException("[CheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
       }
-
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchSelectedTaxYear() flatMap { maybeAccountingYearModel =>
-        val accountingYearModel = maybeAccountingYearModel.getOrElse(
-          throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
-        )
-
-        subscriptionDetailsService.saveSelectedTaxYear(accountingYearModel.copy(confirmed = true)) map { _ =>
-          Redirect(routes.TaskListController.show())
+      withReference { reference =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) flatMap { maybeAccountingYearModel =>
+          val accountingYearModel: AccountingYearModel = maybeAccountingYearModel.getOrElse(
+            throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
+          )
+          subscriptionDetailsService.saveSelectedTaxYear(reference, accountingYearModel.copy(confirmed = true)) map { _ =>
+            Redirect(routes.TaskListController.show())
+          }
         }
       }
   }

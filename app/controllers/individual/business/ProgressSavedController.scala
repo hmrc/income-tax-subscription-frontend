@@ -19,6 +19,7 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -31,30 +32,31 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ProgressSavedController @Inject()(
-                                         val progressSavedView: ProgressSaved,
-                                         val auditingService: AuditingService,
-                                         val authService: AuthService,
-                                         val subscriptionDetailsService: SubscriptionDetailsService,
-                                         val cacheExpiryDateProvider: CacheExpiryDateProvider
-                                       )
+class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
+                                        val auditingService: AuditingService,
+                                        val authService: AuthService,
+                                        val subscriptionDetailsService: SubscriptionDetailsService,
+                                        val cacheExpiryDateProvider: CacheExpiryDateProvider)
                                        (implicit val ec: ExecutionContext,
-                                         val appConfig: AppConfig,
-                                         val config: Configuration,
-                                         val env: Environment,
-                                         mcc: MessagesControllerComponents) extends SignUpController with AuthRedirects {
+                                        val appConfig: AppConfig,
+                                        val config: Configuration,
+                                        val env: Environment,
+                                        mcc: MessagesControllerComponents) extends SignUpController with AuthRedirects with ReferenceRetrieval {
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        subscriptionDetailsService.fetchLastUpdatedTimestamp() map {
-          case Some(timestamp) => Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
-          case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
+      withReference { reference =>
+        if (isEnabled(SaveAndRetrieve)) {
+          subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) map {
+            case Some(timestamp) => Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+            case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
+          }
+        } else {
+          Future.failed(new NotFoundException("[ProgressSavedController][show] - The save and retrieve feature switch is disabled"))
         }
-      } else {
-        Future.failed(new NotFoundException("[ProgressSavedController][show] - The save and retrieve feature switch is disabled"))
       }
   }
 
   val signInUrl: String = ggLoginUrl
+
 }

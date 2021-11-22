@@ -19,6 +19,7 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import controllers.utils.ReferenceRetrieval
 import forms.individual.business._
 import models.AccountingMethod
 import play.api.data.Form
@@ -37,7 +38,8 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                            overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod)
                                                           (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
-                                                           mcc: MessagesControllerComponents) extends SignUpController {
+                                                           mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+
   private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 
   def view(overseasPropertyAccountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
@@ -53,31 +55,32 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchOverseasPropertyAccountingMethod() flatMap { accountingMethodOverseasProperty =>
-        Future.successful(Ok(view(overseasPropertyAccountingMethodForm =
-          AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(accountingMethodOverseasProperty),
-          isEditMode = isEditMode)))
+      withReference { reference =>
+        subscriptionDetailsService.fetchOverseasPropertyAccountingMethod(reference) flatMap { accountingMethodOverseasProperty =>
+          Future.successful(Ok(view(overseasPropertyAccountingMethodForm =
+            AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(accountingMethodOverseasProperty),
+            isEditMode = isEditMode)))
+        }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.bindFromRequest.fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(overseasPropertyAccountingMethodForm = formWithErrors, isEditMode = isEditMode))),
-        overseasPropertyAccountingMethod => {
-          subscriptionDetailsService.saveOverseasAccountingMethodProperty(overseasPropertyAccountingMethod) map { _ =>
-            if (isSaveAndRetrieve) {
-              Redirect(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+      withReference { reference =>
+        AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.bindFromRequest.fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(overseasPropertyAccountingMethodForm = formWithErrors, isEditMode = isEditMode))),
+          overseasPropertyAccountingMethod =>
+            subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map { _ =>
+              if (isSaveAndRetrieve) {
+                Redirect(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+              } else {
+                Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+              }
             }
-            else {
-              Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-            }
-          }
-        }
-      )
+        )
+      }
   }
-
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {
     (isEditMode, isSaveAndRetrieve) match {

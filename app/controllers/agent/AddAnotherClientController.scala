@@ -19,42 +19,39 @@ package controllers.agent
 import auth.agent.{AuthPredicates, IncomeTaxAgentUser, StatelessController}
 import auth.individual.AuthPredicate.AuthPredicate
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ReleaseFour, RemoveCovidPages}
+import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import config.featureswitch.FeatureSwitching
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class AddAnotherClientController @Inject()(val auditingService: AuditingService,
                                            val authService: AuthService,
-                                           val appConfig: AppConfig,
-                                           subscriptionDetailsService: SubscriptionDetailsService)
+                                           val appConfig: AppConfig)
                                           (implicit val ec: ExecutionContext,
                                            mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
 
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = AuthPredicates.defaultPredicates
 
-  def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def addAnother(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
-      subscriptionDetailsService.deleteAll() map { _ =>
         Redirect(eligibility.routes.OtherSourcesOfIncomeController.show())
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
           .removingFromSession(ITSASessionKeys.clientData: _*)
+          .removingFromSession(ITSASessionKeys.REFERENCE)
           .clearUserName
-      }
-  } else {
-        subscriptionDetailsService.deleteAll() map { _ =>
-          Redirect(eligibility.routes.Covid19ClaimCheckController.show())
-            .removingFromSession(ITSASessionKeys.JourneyStateKey)
-            .removingFromSession(ITSASessionKeys.clientData: _*)
-            .clearUserName
-        }
+      } else {
+        Redirect(eligibility.routes.Covid19ClaimCheckController.show())
+          .removingFromSession(ITSASessionKeys.JourneyStateKey)
+          .removingFromSession(ITSASessionKeys.clientData: _*)
+          .removingFromSession(ITSASessionKeys.REFERENCE)
+          .clearUserName
       }
   }
 

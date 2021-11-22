@@ -23,12 +23,13 @@ import utilities.UnitTestTrait
 import utilities.individual.TestConstants._
 
 class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperlessPreferenceTokenService {
+
   "storeNino" should {
     "store the NINO against a generated token when there is not already a token in Subscription Details " in {
       setupMockSubscriptionDetailsSaveFunctions()
       mockFetchPaperlessPreferenceToken(None)
       mockStoreNinoSuccess(testNino)
-      val res = TestPaperlessPreferenceTokenService.storeNino(testNino)
+      val res = TestPaperlessPreferenceTokenService.storeNino(testNino, "test-reference")
 
       await(res) mustBe a[String]
       verifySubscriptionDetailsSave(PaperlessPreferenceToken, 1)
@@ -37,7 +38,7 @@ class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperle
     "do not store the token when it is already present in Subscription Details " in {
       mockFetchPaperlessPreferenceToken(testToken)
 
-      val res = TestPaperlessPreferenceTokenService.storeNino(testNino)
+      val res = TestPaperlessPreferenceTokenService.storeNino(testNino, "test-reference")
 
       await(res) mustBe testToken
     }

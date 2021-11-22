@@ -19,7 +19,7 @@ package views.agent
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import models.common._
-import models.common.business.{AccountingMethodModel, Address, BusinessAddressModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import models.common.business._
 import models.{AgentSummary, Current, DateModel, Next}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -28,7 +28,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.TestModels.{testAgentSummaryData, testBusinessName}
-import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, TestModels, UnitTestTrait}
+import utilities._
 import views.agent.helpers.SummaryIdConstants._
 import views.html.agent.CheckYourAnswers
 
@@ -36,7 +36,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
 
   override val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
 
-  val checkYourAnswers : CheckYourAnswers = app.injector.instanceOf[CheckYourAnswers]
+  val checkYourAnswers: CheckYourAnswers = app.injector.instanceOf[CheckYourAnswers]
 
   lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.agent.routes.IncomeSourceController.show().url
@@ -150,7 +150,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val question = document(setupData, releaseFour).getElementById(questionId(sectionId))
       val answer = document(setupData, releaseFour).getElementById(answerId(sectionId))
       val editLink = document(setupData, releaseFour).getElementById(editLinkId(sectionId))
-      val hiddenContent = document(setupData, releaseFour).getElementsByClass("govuk-visually-hidden").get(rowNo+1).text()
+      val hiddenContent = document(setupData, releaseFour).getElementsByClass("govuk-visually-hidden").get(rowNo + 1).text()
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
       if (expectedEditLink.nonEmpty) editLinkStyleCorrectness(editLink)
@@ -265,22 +265,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       )()
     }
 
-    "display the correct info for the business name" in {
-      val sectionId = BusinessNameId
-      val expectedQuestion = messages.business_name
-      val expectedAnswer = testBusinessName.businessName
-      val expectedEditLink = controllers.agent.business.routes.BusinessNameController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + messages.business_name
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        rowNo = 2,
-        expectedHiddenContent = expectedHiddenContent
-      )()
-    }
-
     "display the correct info for the number of businesses and edit link" in {
       val sectionId = SelfEmploymentsId
       val expectedQuestion = messages.number_of_businesses
@@ -297,23 +281,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedHiddenContent = expectedHiddenContent,
         releaseFour = true
       )(setupData = customTestSummary())
-    }
-
-    "display the correct info for the accounting method when release four is disabled" in {
-      val sectionId = AccountingMethodId
-      val expectedQuestion = messages.business_accountingmethod
-      val expectedAnswer = messages.AccountingMethod.cash
-      val expectedEditLink = controllers.agent.business.routes.BusinessAccountingMethodController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + messages.business_accountingmethod
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        rowNo = 3,
-        expectedHiddenContent = expectedHiddenContent
-      )()
     }
 
     "display the correct info for the accounting method when release four is enabled" in {
@@ -345,9 +312,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 4,
+        rowNo = 3,
         expectedHiddenContent = expectedHiddenContent,
-        testSummaryModel = customTestSummary(propertyStartDate = testPropertyStartDate)
+        testSummaryModel = customTestSummary(propertyStartDate = testPropertyStartDate),
+        releaseFour = true
       )()
     }
 
@@ -363,9 +331,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 5,
+        rowNo = 4,
         expectedHiddenContent = expectedHiddenContent,
-        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
+        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel),
+        releaseFour = true
       )()
     }
 
@@ -381,8 +350,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 6,
-        expectedHiddenContent = expectedHiddenContent
+        rowNo = 5,
+        expectedHiddenContent = expectedHiddenContent,
+        releaseFour = true
       )()
     }
 
@@ -398,8 +368,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
-        rowNo = 7,
-        expectedHiddenContent = expectedHiddenContent
+        rowNo = 6,
+        expectedHiddenContent = expectedHiddenContent,
+        releaseFour = true
       )()
     }
   }

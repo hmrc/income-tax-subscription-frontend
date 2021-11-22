@@ -30,14 +30,14 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, TestModels, UnitTestTrait}
-import views.individual.helpers.SummaryIdConstants._
 import views.html.individual.incometax.subscription.CheckYourAnswers
+import views.individual.helpers.SummaryIdConstants._
 
 class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter with FeatureSwitching {
 
   override val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
 
-  val checkYourAnswers : CheckYourAnswers = app.injector.instanceOf[CheckYourAnswers]
+  val checkYourAnswers: CheckYourAnswers = app.injector.instanceOf[CheckYourAnswers]
 
   def selfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(
     id = id,
@@ -85,7 +85,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
   def page(testSummaryModel: IndividualSummary, releaseFour: Boolean = false): HtmlFormat.Appendable =
-   checkYourAnswers(
+    checkYourAnswers(
       summaryModel = testSummaryModel,
       postAction = postAction,
       backUrl = backUrl,
@@ -160,7 +160,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       val question = doc.getElementById(questionId(sectionId))
       val answer = doc.getElementById(answerId(sectionId))
       val editLink = doc.getElementById(editLinkId(sectionId))
-      val hiddenContent = doc.getElementsByClass("govuk-visually-hidden").get(rowNo+1).text()
+      val hiddenContent = doc.getElementsByClass("govuk-visually-hidden").get(rowNo + 1).text()
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -194,42 +194,22 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     }
 
     "display the correct info" should {
-      "release four is disabled" when {
-        "business name is displayed" in {
-          val sectionId = BusinessNameId
-          val expectedQuestion = messages.business_name
-          val expectedAnswer = testBusinessName.businessName
-          val expectedEditLink = controllers.individual.business.routes.BusinessNameController.show(editMode = true).url
-          val expectedHiddenContent = "Change" + messages.business_name
-          sectionTest(
-            sectionId = sectionId,
-            expectedQuestion = expectedQuestion,
-            expectedAnswer = expectedAnswer,
-            expectedEditLink = expectedEditLink,
-            rowNo = 3,
-            expectedHiddenContent = expectedHiddenContent
-          )
-        }
-      }
+      "Self Employments is displayed" in {
+        val sectionId = SelfEmploymentsId
+        val expectedQuestion = messages.selfEmployments
+        val expectedAnswer = "2"
+        val expectedEditLink = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list"
+        val expectedHiddenContent = "Change" + messages.selfEmployments
 
-      "release four is enabled" when {
-        "Self Employments is displayed" in {
-          val sectionId = SelfEmploymentsId
-          val expectedQuestion = messages.selfEmployments
-          val expectedAnswer = "2"
-          val expectedEditLink = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list"
-          val expectedHiddenContent = "Change" + messages.selfEmployments
-
-          sectionTest(
-            sectionId = sectionId,
-            releaseFour = true,
-            expectedQuestion = expectedQuestion,
-            expectedAnswer = expectedAnswer,
-            expectedEditLink = expectedEditLink,
-            rowNo = 3,
-            expectedHiddenContent = expectedHiddenContent
-          )
-        }
+        sectionTest(
+          sectionId = sectionId,
+          releaseFour = true,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          rowNo = 3,
+          expectedHiddenContent = expectedHiddenContent
+        )
       }
 
 
@@ -275,23 +255,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         }
       }
 
-      "display the correct info for the accounting method when releaseFour is not enabled" in {
-        val sectionId = AccountingMethodId
-        val expectedQuestion = messages.business_accountingmethod
-        val expectedAnswer = messages.AccountingMethod.cash
-        val expectedEditLink = controllers.individual.business.routes.BusinessAccountingMethodController.show(editMode = true).url
-        val expectedHiddenContent = "Change" + messages.business_accountingmethod
-        sectionTest(
-          sectionId = sectionId,
-          expectedQuestion = expectedQuestion,
-          expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
-          rowNo = 4,
-          expectedHiddenContent = expectedHiddenContent
-        )
-      }
-
-      "display the correct info for the accounting method releaseFour is enabled" in {
+      "display the correct info for the accounting method" in {
         val sectionId = AccountingMethodId
         val expectedQuestion = messages.business_accountingmethod
         val expectedAnswer = messages.AccountingMethod.cash
