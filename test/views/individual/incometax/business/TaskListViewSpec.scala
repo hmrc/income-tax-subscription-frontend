@@ -153,7 +153,6 @@ class TaskListViewSpec extends ViewSpec {
           "the user has selected the tax year but not confirmed the answer in tax year CYA page" in {
             val selectTaxYearSection = document(partialTaskListComplete).mainContent.selectNth("ul", 1)
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
-
             selectTaxYearLink.text mustBe selectTaxYear
             selectTaxYearSection.selectNth("span", 2).text mustBe inProgress
             selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
@@ -192,7 +191,7 @@ class TaskListViewSpec extends ViewSpec {
             selectNth("li", 4)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
           overseasPropertyLink.text mustBe overseasPropertyBusiness
-          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
           overseasPropertySection.selectNth("span", 2).text mustBe incomplete
         }
         "display the add a business link" in {
@@ -251,7 +250,7 @@ class TaskListViewSpec extends ViewSpec {
           val overseasPropertySection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
           overseasPropertyLink.text mustBe overseasPropertyBusiness
-          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
           overseasPropertySection.selectNth("span", 2).text mustBe complete
         }
 
