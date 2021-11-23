@@ -17,7 +17,7 @@
 package views.agent.business
 
 import forms.individual.business.OverseasPropertyStartDateForm
-import models.common.OverseasPropertyStartDateModel
+import models.DateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
@@ -42,7 +42,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val testError: FormError = FormError("startDate", "testError")
   val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  class Setup(isEditMode: Boolean = false, overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel] =
+  class Setup(isEditMode: Boolean = false, overseasPropertyStartDateForm: Form[DateModel] =
   OverseasPropertyStartDateForm.overseasPropertyStartDateForm("minStartDateError", "maxStartDateError")) {
 
     val page: HtmlFormat.Appendable = views.html.agent.business.overseas_property_start_date(

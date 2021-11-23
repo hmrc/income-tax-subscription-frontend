@@ -25,10 +25,10 @@ import forms.individual.incomesource.{BusinessIncomeSourceForm, IncomeSourceForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models.{AccountingMethod, AccountingYear, DateModel}
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel}
 import models.usermatching.UserDetailsModel
+import models.{AccountingMethod, AccountingYear, DateModel}
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -386,7 +386,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def submitForeignPropertyAccountingMethod(inEditMode: Boolean, request: Option[OverseasAccountingMethodPropertyModel]): WSResponse = {
+    def submitForeignPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
       val uri = s"/business/overseas-property-accounting-method?editMode-=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
@@ -398,7 +398,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
 
     def propertyStartDate(): WSResponse = get("/business/property-commencement-date")
 
-    def overseasPropertyStartDate(): WSResponse = get("/business/overseas-property-start-date")
+    def getOverseasPropertyStartDate(): WSResponse = get("/business/overseas-property-start-date")
 
     def submitpropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
       val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
@@ -412,7 +412,7 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
       )
     }
 
-    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[OverseasPropertyStartDateModel]): WSResponse = {
+    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
       val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
       val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
       val uri = s"/business/overseas-property-start-date?editMode=$inEditMode"

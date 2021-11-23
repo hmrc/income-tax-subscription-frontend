@@ -17,8 +17,6 @@
 package models.common
 
 import models.common.business._
-
-
 import models.{Cash, DateModel, Next}
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -48,12 +46,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a uk property, ukPropertyComplete returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.ukPropertyComplete shouldBe true
@@ -62,13 +59,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data without a uk property, ukPropertyComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")), false)),
-
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")))),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.ukPropertyComplete shouldBe false
@@ -77,12 +72,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a completed self-employment, selfEmploymentsComplete returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.selfEmploymentsComplete shouldBe true
@@ -91,12 +85,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with an incomplete self-employment, selfEmploymentsComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.selfEmploymentsComplete shouldBe false
@@ -105,12 +98,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with an incomplete self-employment accounting method, selfEmploymentsComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.selfEmploymentsComplete shouldBe false
@@ -120,12 +112,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a foreign property, overseasPropertyComplete returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.overseasPropertyComplete shouldBe true
@@ -134,12 +125,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data without a foreign property, overseasPropertyComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = None,
-        overseasPropertyAccountingMethod = None
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash)))
       )
 
       summary.overseasPropertyComplete shouldBe false
@@ -148,12 +138,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a foreign property, ukProperty and a complete self employment, sectionsTotal returns 4" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.sectionsTotal shouldBe 4
@@ -162,12 +151,11 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a foreign property, ukProperty and an incomplete self employment, sectionsCompleted returns 3" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.sectionsComplete shouldBe 3
@@ -176,86 +164,85 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a foreign property, ukProperty and a complete self employment, taskListComplete returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.taskListComplete shouldBe true
     }
 
-    "provided income summary data with an unfinished foreign property, a complete ukProperty and a complete self employment, taskListComplete returns false" in {
+    "taskListComplete returns false" when {
+      "income summary data with an unfinished foreign property, a complete ukProperty and a complete self employment" in {
+        val summary = TaskListModel(
+          taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+          selfEmployments = Seq(completeSeModel),
+          selfEmploymentAccountingMethod = Some(Cash),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          overseasProperty = Some(OverseasPropertyModel(None, Some(date), confirmed = false))
+        )
 
-      val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = None
-      )
-
-      summary.taskListComplete shouldBe false
+        summary.taskListComplete shouldBe false
+      }
     }
 
-    "provided income summary data with a complete foreign property, an unfinished ukProperty and a complete self employment, taskListComplete returns false" in {
+    "taskListComplete returns false" when {
+      "income summary data with a complete foreign property, an unfinished ukProperty and a complete self employment" in {
+        val summary = TaskListModel(
+          taxYearSelection = Some(AccountingYearModel((Next))),
+          selfEmployments = Seq(completeSeModel),
+          selfEmploymentAccountingMethod = Some(Cash),
+          ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")))),
+          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
+        )
 
-      val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), false)),
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")), false)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
-      )
-
-      summary.taskListComplete shouldBe false
+        summary.taskListComplete shouldBe false
+      }
     }
 
-    "provided income summary data with a complete foreign property, a complete ukProperty and an incomplete self employment, taskListComplete returns false" in {
+    "taskListComplete returns false" when {
+      "income summary data with a complete foreign property, a complete ukProperty and an incomplete self employment" in {
 
-      val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
-        selfEmployments = Seq(incompleteSeModel),
-        selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
-      )
+        val summary = TaskListModel(
+          taxYearSelection = Some(AccountingYearModel((Next), true)),
+          selfEmployments = Seq(incompleteSeModel),
+          selfEmploymentAccountingMethod = None,
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
+          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
+        )
 
-      summary.taskListComplete shouldBe false
+        summary.taskListComplete shouldBe false
+      }
     }
 
-    "provided income summary data with a foreign property, ukProperty and with less than 50 complete self employment summaries, canAddMoreBusinesses returns true" in {
+    "canAddMoreBusinesses returns true" when {
+      "provided income summary data with a foreign property, ukProperty and with less than 50 complete self employment summaries, " in {
+        val summary = TaskListModel(
+          taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+          selfEmployments = (1 to 30).toSeq.map { _ =>
+            SelfEmploymentData(
+              id = "",
+              businessStartDate = Some(BusinessStartDate(date)),
+              businessName = Some(BusinessNameModel("Fake Name")),
+              businessTradeName = Some(BusinessTradeNameModel("Trade")),
+              businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
+            )
+          },
+          selfEmploymentAccountingMethod = Some(Cash),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
+        )
 
-      val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
-        selfEmployments = (1 to 30).toSeq.map { _ =>
-          SelfEmploymentData(
-            id = "",
-            businessStartDate = Some(BusinessStartDate(date)),
-            businessName = Some(BusinessNameModel("Fake Name")),
-            businessTradeName = Some(BusinessTradeNameModel("Trade")),
-            businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
-          )
-        },
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
-      )
-
-      summary.canAddMoreBusinesses shouldBe true
-
+        summary.canAddMoreBusinesses shouldBe true
+      }
     }
 
     "provided income summary data with a foreign property and with 50 complete self employment summaries, canAddMoreBusinesses returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = (1 to 50).toSeq.map { _ =>
           SelfEmploymentData(
             id = "",
@@ -267,8 +254,7 @@ class TaskListModelSpec extends UnitSpec {
         },
         selfEmploymentAccountingMethod = Some(Cash),
         ukProperty = None,
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.canAddMoreBusinesses shouldBe true
@@ -278,7 +264,7 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a ukProperty and with 50 complete self employment summaries, canAddMoreBusinesses returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = (1 to 50).toSeq.map { _ =>
           SelfEmploymentData(
             id = "",
@@ -290,10 +276,8 @@ class TaskListModelSpec extends UnitSpec {
         },
         selfEmploymentAccountingMethod = Some(Cash),
 
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), false)),
-
-        overseasPropertyStart = None,
-        overseasPropertyAccountingMethod = None
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")))),
+        overseasProperty = None
       )
 
       summary.canAddMoreBusinesses shouldBe true
@@ -303,7 +287,7 @@ class TaskListModelSpec extends UnitSpec {
     "provided income summary data with a foreign property, ukProperty and with 50 complete self employment summaries, canAddMoreBusinesses returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), true)),
+        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
         selfEmployments = (1 to 50).toSeq.map { _ =>
           SelfEmploymentData(
             id = "",
@@ -314,9 +298,8 @@ class TaskListModelSpec extends UnitSpec {
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-        overseasPropertyStart = Some(date),
-        overseasPropertyAccountingMethod = Some(Cash)
+        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
       summary.canAddMoreBusinesses shouldBe false
@@ -330,12 +313,11 @@ class TaskListModelSpec extends UnitSpec {
 
 
         val summary = TaskListModel(
-          taxYearSelection = Some(AccountingYearModel((Next), true)),
+          taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-          overseasPropertyStart = Some(date),
-          overseasPropertyAccountingMethod = Some(Cash)
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
         summary.sectionsTotal shouldBe 4
@@ -354,12 +336,11 @@ class TaskListModelSpec extends UnitSpec {
 
 
         val summary = TaskListModel(
-          taxYearSelection = Some(AccountingYearModel((Next), false)),
+          taxYearSelection = Some(AccountingYearModel((Next))),
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-          overseasPropertyStart = Some(date),
-          overseasPropertyAccountingMethod = Some(Cash)
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
         summary.sectionsTotal shouldBe 4
@@ -382,10 +363,8 @@ class TaskListModelSpec extends UnitSpec {
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
 
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
-
-          overseasPropertyStart = Some(date),
-          overseasPropertyAccountingMethod = Some(Cash)
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
         summary.sectionsTotal shouldBe 4

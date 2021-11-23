@@ -19,14 +19,14 @@ package controllers.agent.business
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.AccountingMethodOverseasPropertyForm
-import javax.inject.{Inject, Singleton}
-import models.common.OverseasAccountingMethodPropertyModel
+import models.AccountingMethod
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -37,7 +37,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends AuthenticatedController {
 
-  def view(accountingMethodOverseasPropertyForm: Form[OverseasAccountingMethodPropertyModel], isEditMode: Boolean)
+  def view(accountingMethodOverseasPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
     views.html.agent.business.overseas_property_accounting_method(
       accountingMethodOverseasPropertyForm = accountingMethodOverseasPropertyForm,

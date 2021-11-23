@@ -20,9 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import forms.individual.business._
-
-import javax.inject.Inject
-import models.common.OverseasAccountingMethodPropertyModel
+import models.AccountingMethod
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -30,6 +28,7 @@ import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OverseasPropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
@@ -40,7 +39,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends SignUpController {
 
-  def view(overseasPropertyAccountingMethodForm: Form[OverseasAccountingMethodPropertyModel], isEditMode: Boolean)
+  def view(overseasPropertyAccountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
     overseasPropertyAccountingMethod(
       overseasPropertyAccountingMethodForm = overseasPropertyAccountingMethodForm,

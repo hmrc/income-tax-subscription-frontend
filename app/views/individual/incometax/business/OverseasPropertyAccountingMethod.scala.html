@@ -16,11 +16,9 @@
 
 @import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers._
 @import config.AppConfig
 @import forms.individual.business.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
-@import models.common.OverseasAccountingMethodPropertyModel
 @import views.html.templates.PrincipalMainTemplate
 @import views.individual.helpers._
 @import views.html.helpers.injected.{ContinueButton, RadioHelper, DetailsHelper}
@@ -35,7 +33,7 @@
     buttonHelper: ButtonHelper
 )
 
-@(overseasPropertyAccountingMethodForm: Form[OverseasAccountingMethodPropertyModel], postAction: Call, isEditMode: Boolean, isSaveAndRetrieve: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(overseasPropertyAccountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, isSaveAndRetrieve: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     messages("overseas.property.accounting_method.heading")

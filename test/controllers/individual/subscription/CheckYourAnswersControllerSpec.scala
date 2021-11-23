@@ -21,7 +21,7 @@ import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
-import models.common.{IncomeSourceModel, PropertyModel}
+import models.common.{IncomeSourceModel, OverseasPropertyModel, PropertyModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
@@ -84,6 +84,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
+      mockFetchOverseasProperty(None)
       when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -97,6 +98,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
+      mockFetchOverseasProperty(None)
       when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -110,6 +112,10 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
         startDate = testPropertyStartDateModel.startDate
       ))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(
+        accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
+        startDate = testPropertyStartDateModel.startDate
+      )))
       when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -132,6 +138,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(testFullPropertyModel.copy(startDate = None))
+        mockFetchOverseasProperty(testFullOverseasPropertyModel)
         mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = testFullPropertyModel.copy(startDate = None)), isReleaseFourEnabled = false)
         status(result) must be(Status.SEE_OTHER)
         await(result)
@@ -153,6 +160,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(testFullPropertyModel)
+        mockFetchOverseasProperty(testFullOverseasPropertyModel)
         mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true, property = testFullPropertyModel), isReleaseFourEnabled = true)
         status(result) must be(Status.SEE_OTHER)
         await(result)
@@ -173,6 +181,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(testFullPropertyModel)
+        mockFetchOverseasProperty(testFullOverseasPropertyModel)
         mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true, property = testFullPropertyModel), isReleaseFourEnabled = true)
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifySubscriptionDetailsSave(MtditId, 0)

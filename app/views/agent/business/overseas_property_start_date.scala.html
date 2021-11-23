@@ -20,10 +20,9 @@
 @import views.html.helpers._
 @import views.agent.helpers._
 
-@import models.common.OverseasPropertyStartDateModel
 @import forms.agent.OverseasPropertyStartDateForm._
 
-@(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @inputContent = {
     <p>@Messages("agent.overseas.property.line_1")</p>

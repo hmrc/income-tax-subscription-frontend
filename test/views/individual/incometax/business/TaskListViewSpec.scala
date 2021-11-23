@@ -20,7 +20,7 @@ import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
 import models._
 import models.common.business._
-import models.common.{AccountingYearModel, PropertyModel, TaskListModel}
+import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TaskListModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -41,29 +41,28 @@ class TaskListViewSpec extends ViewSpec {
                           selfEmployments: Seq[SelfEmploymentData] = Nil,
                           selfEmploymentAccountingMethod: Option[AccountingMethod] = None,
                           ukProperty: Option[PropertyModel] = None,
-                          overseasPropertyStart: Option[DateModel] = None,
-                          overseasPropertyAccountingMethod: Option[AccountingMethod] = None): TaskListModel = {
+                          overseasProperty: Option[OverseasPropertyModel] = None): TaskListModel = {
     TaskListModel(taxYearSelection,
       selfEmployments,
       selfEmploymentAccountingMethod,
       ukProperty,
-      overseasPropertyStart,
-      overseasPropertyAccountingMethod
+      overseasProperty
     )
 
   }
 
-  val partialTaskListComplete = customTaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Current, false)),
+  private val partialTaskListComplete = customTaskListModel(
+    taxYearSelection = Some(AccountingYearModel(Current)),
     selfEmployments = Seq(
       SelfEmploymentData("id1", businessName = Some(BusinessNameModel("Name1"))),
       SelfEmploymentData("id2", businessName = Some(BusinessNameModel("Name2")), businessTradeName = Some(BusinessTradeNameModel("TradeName")))
     ),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")),false)),
-    overseasPropertyStart = Some(DateModel("1", "2", "3"))
+    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")))),
+    overseasProperty = Some(OverseasPropertyModel(startDate = Some(DateModel("1", "2", "3"))))
   )
-  val completedTaskListComplete = TaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Next, true)),
+
+  private val completedTaskListComplete = TaskListModel(
+    taxYearSelection = Some(AccountingYearModel(Next, confirmed = true)),
     selfEmployments = Seq(SelfEmploymentData(
       id = "id1",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
@@ -73,9 +72,8 @@ class TaskListViewSpec extends ViewSpec {
       confirmed = true
     )),
     selfEmploymentAccountingMethod = Some(Cash),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")),true)),
-    overseasPropertyStart = Some(DateModel("1", "2", "1980")),
-    overseasPropertyAccountingMethod = Some(Cash)
+    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true))
   )
 
 
@@ -105,7 +103,6 @@ class TaskListViewSpec extends ViewSpec {
     }
 
     "display the dynamic content correctly" when {
-
       "there is no user data" must {
         "display the application is incomplete" in {
           document().selectNth("h2", 1).text mustBe subHeadingIncomplete
@@ -114,7 +111,6 @@ class TaskListViewSpec extends ViewSpec {
         "display the number of sections complete out of the total" in {
           document().mainContent.selectNth("p", 1).text mustBe contentSummary(0, 2)
         }
-
 
         "in the select tax year section: display the select tax year link with status incomplete" when {
           "the user has not selected any tax year to sign up" in {
@@ -143,13 +139,13 @@ class TaskListViewSpec extends ViewSpec {
       }
 
       "there is partial user data" must {
-
         "display the application is incomplete" in {
           document(partialTaskListComplete).selectNth("h2", 1).text mustBe subHeadingIncomplete
         }
 
         "display the number of sections complete out of the total" in {
-          document(partialTaskListComplete).mainContent.selectNth("p", 1).text mustBe contentSummary(0, 5)
+          document(partialTaskListComplete).mainContent.selectNth("p", 1).text mustBe
+            contentSummary(numberComplete = 0, numberTotal = 5)
         }
 
 
@@ -190,14 +186,21 @@ class TaskListViewSpec extends ViewSpec {
           ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
         }
         "display an incomplete overseas property income" in {
-          val overseasPropertySection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4)
+          val overseasPropertySection = document(partialTaskListComplete)
+            .mainContent.
+            selectHead("ol > li:nth-of-type(2) > ul").
+            selectNth("li", 4)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
           overseasPropertyLink.text mustBe overseasPropertyBusiness
           overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
           overseasPropertySection.selectNth("span", 2).text mustBe incomplete
         }
         "display the add a business link" in {
-          val businessLink = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 5).selectHead("a")
+          val businessLink = document(partialTaskListComplete)
+            .mainContent
+            .selectHead("ol > li:nth-of-type(2) > ul")
+            .selectNth("li", 5)
+            .selectHead("a")
           businessLink.text mustBe addBusiness
           businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
@@ -209,7 +212,6 @@ class TaskListViewSpec extends ViewSpec {
           document(partialTaskListComplete).mainContent.selectOptionally("button") mustBe None
         }
       }
-
 
       "there is full user data" must {
         "display the application is complete" in {
@@ -228,6 +230,7 @@ class TaskListViewSpec extends ViewSpec {
             selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url
           }
         }
+
         "display a complete self employment" in {
           val selfEmploymentSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
@@ -235,6 +238,7 @@ class TaskListViewSpec extends ViewSpec {
           selfEmploymentLink.attr("href") mustBe s"""${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id1&isEditMode=true"""
           selfEmploymentSection.selectNth("span", 2).text mustBe complete
         }
+
         "display a complete uk property income" in {
           val ukPropertyIncomeSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
           val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
@@ -242,6 +246,7 @@ class TaskListViewSpec extends ViewSpec {
           ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url
           ukPropertyIncomeSection.selectNth("span", 2).text mustBe complete
         }
+
         "display a complete overseas property income" in {
           val overseasPropertySection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
@@ -249,21 +254,21 @@ class TaskListViewSpec extends ViewSpec {
           overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
           overseasPropertySection.selectNth("span", 2).text mustBe complete
         }
+
         "display the add a business link" in {
           val businessLink = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4).selectHead("a")
           businessLink.text mustBe addBusiness
           businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
+
         "display the sign up button" in {
           document(completedTaskListComplete).mainContent.selectHead("button").text mustBe continue
         }
+
         "do not display the sign up incomplete text" in {
           document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectOptionally("span") mustBe None
-
         }
       }
     }
-
-
   }
 }

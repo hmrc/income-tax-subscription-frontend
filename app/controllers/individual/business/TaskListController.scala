@@ -28,7 +28,6 @@ import play.api.Logger
 import play.api.mvc._
 import services.individual.SubscriptionOrchestrationService
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
 import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys.SPSEntityId
@@ -51,48 +50,38 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
-
-  private def withSubscriptionDetails(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result]): Action[AnyContent] =
-    Authenticated.async { implicit request =>
-      implicit user =>
-        subscriptionDetailsService.fetchAll().flatMap { cache =>
-          processFunc(user)(request)(cache)
-        }
-    }
-
-  val show: Action[AnyContent] = withSubscriptionDetails { implicit user =>
+  val show: Action[AnyContent] = Authenticated.async { implicit user =>
     implicit request => {
-      cache =>
-        getTaskListModel(cache).map {
+      if (isEnabled(SaveAndRetrieve)) {
+        getTaskListModel map {
           viewModel =>
-            if (isEnabled(SaveAndRetrieve)) {
-              Ok(taskListView(
-                postAction = controllers.individual.business.routes.TaskListController.submit(),
-                viewModel = viewModel,
-                accountingPeriodService = accountingPeriodService
-              ))
-            } else {
-              throw new NotFoundException("[TaskListController][show] - The save and retrieve feature switch is disabled")
-            }
+            Ok(taskListView(
+              postAction = controllers.individual.business.routes.TaskListController.submit(),
+              viewModel = viewModel,
+              accountingPeriodService = accountingPeriodService
+            ))
         }
+      } else {
+        Future.failed(new NotFoundException("[TaskListController][show] - The save and retrieve feature switch is disabled"))
+      }
     }
   }
 
-  private def getTaskListModel(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
+  private def getTaskListModel()(implicit hc: HeaderCarrier): Future[TaskListModel] = {
     for {
+      cacheMap <- subscriptionDetailsService.fetchAll()
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty()
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
     } yield {
-      cacheMap.getTaskListModel(businesses, businessAccountingMethod, property)
+      cacheMap.getTaskListModel(businesses, businessAccountingMethod, property, overseasProperty)
     }
   }
 
   def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
-
     implicit request =>
       incomeSourcesModel =>
-
         val nino = user.nino.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
         val session = request.session
@@ -114,8 +103,9 @@ class TaskListController @Inject()(val taskListView: TaskList,
             selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
             selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
             property <- subscriptionDetailsService.fetchProperty()
+            overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
           } yield {
-            cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property)
+            cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
           }
           model.flatMap { model =>
             processFunc(user)(request)(model)
@@ -123,12 +113,10 @@ class TaskListController @Inject()(val taskListView: TaskList,
         } else {
           throw new NotFoundException("[TaskListController][submit] - The save and retrieve feature switch is disabled")
         }
-
     }
 
   def error(message: String): Future[Nothing] = {
     Logger.warn(message)
     Future.failed(new InternalServerException(message))
   }
-
 }

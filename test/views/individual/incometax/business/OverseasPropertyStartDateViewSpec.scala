@@ -17,7 +17,7 @@
 package views.individual.incometax.business
 
 import forms.individual.business.OverseasPropertyStartDateForm
-import models.common.OverseasPropertyStartDateModel
+import models.DateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
@@ -43,7 +43,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
 
   class Setup(isEditMode: Boolean = false,
-              form: Form[OverseasPropertyStartDateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("testMessage", "testMessage"),
+              form: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("testMessage", "testMessage"),
               isSaveAndRetrieveEnabled: Boolean = false) {
 
     val page: Html = overseasPropertyStartDate(

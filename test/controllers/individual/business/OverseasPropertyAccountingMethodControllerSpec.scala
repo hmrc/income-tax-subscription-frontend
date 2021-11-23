@@ -22,7 +22,7 @@ import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import models.Cash
-import models.common.{IncomeSourceModel, OverseasAccountingMethodPropertyModel}
+import models.common.{IncomeSourceModel, OverseasPropertyModel}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
@@ -81,7 +81,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
 
-      mockFetchForeignPropertyAccountingFromSubscriptionDetails(None)
+      mockFetchOverseasProperty(None)
       mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
 
       status(result) must be(Status.OK)
@@ -92,78 +92,60 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "submit" should withController { controller =>
 
-    def callShow(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, OverseasAccountingMethodPropertyModel(Cash))
+    def callSubmit(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
+      subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, Cash)
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
+    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      "redirect to checkYourAnswer page" in {
         disable(SaveAndRetrieve)
         setupMockSubscriptionDetailsSaveFunctions()
-        val goodRequest = callShow(isEditMode = false)
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        val goodRequest = callSubmit(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
-      }
-
-      "redirect to checkYourAnswer page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
       }
-
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockSubscriptionDetailsSaveFunctions()
+    "When it is in edit mode" when {
+      "Save and retrieve is disabled" should {
+        "redirect to checkYourAnswer page" in {
+          disable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
-        val goodRequest = callShow(isEditMode = true)
+          val goodRequest = callSubmit(isEditMode = true)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
-        await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
+          await(goodRequest)
+          verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+        }
       }
 
-      "redirect to checkYourAnswer page" in {
-        disable(SaveAndRetrieve)
-        setupMockSubscriptionDetailsSaveFunctions()
+      "Save and retrieve is enabled" should {
+        "redirect to taskList page" in {
+          enable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
-        val goodRequest = callShow(isEditMode = true)
+          val goodRequest = callSubmit(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
 
-        await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
-      }
-
-      "redirect to taskList page if Save & retrieve feature is enabled" in {
-        enable(SaveAndRetrieve)
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = true)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
+          await(goodRequest)
+          verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+        }
       }
     }
 
@@ -172,7 +154,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
 
-        val badRequest = callShowWithErrorForm(isEditMode = false)
+        val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
@@ -185,7 +167,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     "The back url is not in edit mode" when {
       "the user has foreign property and it is the only income source" should {
         "redirect to overseas property start date page" in withController { controller =>
-          mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
           controller.backUrl(isEditMode = false) mustBe
             controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
         }
@@ -193,19 +174,17 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
 
     "The back url is in edit mode" when {
-      "the user click back url" should {
+      "save and retrieve is disabled" should {
         "redirect to check your answer page" in withController { controller =>
           disable(SaveAndRetrieve)
-
-          setupMockSubscriptionDetailsSaveFunctions()
           controller.backUrl(isEditMode = true) mustBe
             controllers.individual.subscription.routes.CheckYourAnswersController.show().url
         }
+      }
 
-        "redirect to taskList page if Save & retrieve feature is enabled" in withController { controller =>
+      "save and retrieve is enabled" should {
+        "redirect to taskList page" in withController { controller =>
           enable(SaveAndRetrieve)
-
-          setupMockSubscriptionDetailsSaveFunctions()
           controller.backUrl(isEditMode = true) mustBe
             controllers.individual.business.routes.TaskListController.show().url
         }

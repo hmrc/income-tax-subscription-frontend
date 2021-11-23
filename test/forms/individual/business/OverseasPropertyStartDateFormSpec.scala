@@ -16,22 +16,21 @@
 
 package forms.individual.business
 
-import java.time.LocalDate
-
-import forms.individual.business.OverseasPropertyStartDateForm.{overseasPropertyStartDateForm, startDate}
 import forms.formatters.DateModelMapping.{day, month, year}
+import forms.individual.business.OverseasPropertyStartDateForm.{overseasPropertyStartDateForm, startDate}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
-import models.common.OverseasPropertyStartDateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
 
+import java.time.LocalDate
+
 
 class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  def form: Form[OverseasPropertyStartDateModel] = {
+  def form: Form[DateModel] = {
     overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate.toString, OverseasPropertyStartDateForm.maxStartDate.toString)
   }
 
@@ -43,9 +42,7 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
       val testInput = Map(
         s"$startDate-$day" -> testDateDay, s"$startDate-$month" -> testDateMonth, s"$startDate-$year" -> testDateYear
       )
-      val expected = OverseasPropertyStartDateModel(
-        DateModel(testDateDay, testDateMonth, testDateYear)
-      )
+      val expected = DateModel(testDateDay, testDateMonth, testDateYear)
       val actual = form.bind(testInput).value
       actual shouldBe Some(expected)
     }

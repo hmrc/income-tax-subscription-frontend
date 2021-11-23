@@ -22,9 +22,8 @@ import forms.validation.testutils._
 import models.Cash
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
-import play.api.data.FormError
-import models.common.OverseasAccountingMethodPropertyModel
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
+import play.api.data.FormError
 
 class AccountingMethodOverseasFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
@@ -34,10 +33,9 @@ class AccountingMethodOverseasFormSpec extends PlaySpec with GuiceOneAppPerTest 
     "transform the request to the form case class" in {
       val testAccountingMethodOverseas = Cash
       val testInput = Map(accountingMethodOverseasProperty -> AccountingMethodMapping.option_cash)
-      val expected = OverseasAccountingMethodPropertyModel(testAccountingMethodOverseas)
       val actual = accountingMethodOverseasPropertyForm.bind(testInput).value
 
-      actual shouldBe Some(expected)
+      actual shouldBe Some(Cash)
     }
 
     "validate income type correctly" should {

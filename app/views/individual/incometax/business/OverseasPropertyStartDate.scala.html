@@ -16,7 +16,6 @@
 
 @import config.AppConfig
 @import forms.individual.business.OverseasPropertyStartDateForm._
-@import models.common.OverseasPropertyStartDateModel
 @import views.html.helpers.injected.{ContinueButton, DateHelper}
 @import views.html.templates.PrincipalMainTemplate
 
@@ -29,7 +28,7 @@
         implicit appConfig: AppConfig
 )
 
-@(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean = false)(implicit request: Request[_], messages: Messages)
+@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean = false)(implicit request: Request[_], messages: Messages)
 
 @maybeAlternativeButtonText = @{if (isSaveAndRetrieve) Some(messages("base.save-and-continue")) else None}
 

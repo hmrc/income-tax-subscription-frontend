@@ -15,15 +15,12 @@
  */
 
 package controllers.agent
-import views.html.agent.CheckYourAnswers
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.AgentAnswers._
 import controllers.utils.RequireAnswer
-import javax.inject.{Inject, Singleton}
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.SubscriptionSuccess
@@ -36,7 +33,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.ImplicitDateFormatterImpl
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
+import views.html.agent.CheckYourAnswers
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -66,17 +65,6 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
         }
     }
 
-  def backUrl(incomeSource: IncomeSourceModel): String = {
-    incomeSource match {
-      case IncomeSourceModel(_, _, true) =>
-        controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show().url
-      case IncomeSourceModel(_, true, _) =>
-        controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-      case _ =>
-        controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-    }
-  }
-
   private def getSelfEmploymentsData()(implicit request: Request[AnyContent]): Future[(Option[Seq[SelfEmploymentData]], Option[AccountingMethodModel])] = {
     for {
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
@@ -87,62 +75,40 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        if (isEnabled(ReleaseFour)) {
-          require(incomeSourceModelAnswer) { incomeSource =>
-            for {
-              (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
-              property <- subscriptionDetailsService.fetchProperty()
-            } yield {
-              Ok(checkYourAnswers(
-                cache.getAgentSummary(businesses, businessAccountingMethod, property, isReleaseFourEnabled = true),
-                controllers.agent.routes.CheckYourAnswersController.submit(),
-                backUrl = backUrl(incomeSource),
-                implicitDateFormatter,
-                releaseFour = true
-              ))
-            }
-          }
-        } else {
-          require(incomeSourceModelAnswer) { incomeSource =>
-            for {
-              property <- subscriptionDetailsService.fetchProperty()
-            } yield {
-              Ok(checkYourAnswers(
-                cache.getAgentSummary(property = property),
-                controllers.agent.routes.CheckYourAnswersController.submit(),
-                backUrl = backUrl(incomeSource),
-                implicitDateFormatter,
-                releaseFour = false
-              ))
-            }
+        require(incomeSourceModelAnswer) { incomeSource =>
+          for {
+            (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
+            property <- subscriptionDetailsService.fetchProperty()
+            overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
+          } yield {
+            Ok(checkYourAnswers(
+              cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
+              controllers.agent.routes.CheckYourAnswersController.submit(),
+              backUrl = backUrl(incomeSource),
+              implicitDateFormatter,
+              releaseFour = true
+            ))
           }
         }
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
 
   private def submitForAuthorisedAgent(arn: String, nino: String, utr: String)
-                                      (implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap): Future[Result] = {
-    val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
-    for {
-      property <- subscriptionDetailsService.fetchProperty()
-      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr, summaryModel = cache.getAgentSummary(property = property))(headerCarrier)
-        .collect { case Right(SubscriptionSuccess(id)) => id }
-        .recoverWith { case _ => error("Successful response not received from submission") }
-      _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)
-        .recoverWith { case _ => error("Failed to save to Subscription Details ") }
-    } yield Redirect(controllers.agent.routes.ConfirmationAgentController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
-  }
-
-  private def submitForAuthorisedAgentWithReleaseFourEnabled(arn: String, nino: String, utr: String)
                                                             (implicit user: IncomeTaxAgentUser, request: Request[AnyContent],
                                                              cache: CacheMap): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {
       (businesses, businessAccountingMethod) <- getSelfEmploymentsData()
       property <- subscriptionDetailsService.fetchProperty()
-      mtditid <- subscriptionService.createSubscription(arn = arn, nino = nino, utr = utr,
-        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, isReleaseFourEnabled = true), isReleaseFourEnabled = true)(headerCarrier)
-        .collect { case Right(SubscriptionSuccess(id)) => id }
-        .recoverWith { case _ => error("Successful response not received from submission") }
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
+      mtditid <- subscriptionService.createSubscription(
+            arn = arn,
+            nino = nino,
+            utr = utr,
+            summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
+            isReleaseFourEnabled = true
+          )(headerCarrier)
+          .collect { case Right(SubscriptionSuccess(id)) => id }
+          .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(mtditid)
         .recoverWith { case _ => error("Failed to save to Subscription Details ") }
     } yield Redirect(controllers.agent.routes.ConfirmationAgentController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
@@ -160,12 +126,8 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
         val utr: String = user.clientUtr.getOrElse(
           throw new InternalServerException("[CheckYourAnswersController][submit] - Client utr not found")
         )
-        if (isEnabled(ReleaseFour)) {
-          submitForAuthorisedAgentWithReleaseFourEnabled(arn = arn, nino = nino, utr = utr)
-        } else {
-          submitForAuthorisedAgent(arn = arn, nino = nino, utr = utr)
-        }
 
+        submitForAuthorisedAgent(arn = arn, nino = nino, utr = utr)
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any Subscription Details  cached data")
 
   def error(message: String): Future[Nothing] = {
@@ -173,4 +135,14 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
     Future.failed(new InternalServerException(message))
   }
 
+  def backUrl(incomeSource: IncomeSourceModel): String = {
+    incomeSource match {
+      case IncomeSourceModel(_, _, true) =>
+        controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show().url
+      case IncomeSourceModel(_, true, _) =>
+        controllers.agent.business.routes.PropertyAccountingMethodController.show().url
+      case _ =>
+        controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+    }
+  }
 }

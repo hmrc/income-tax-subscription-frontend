@@ -33,7 +33,7 @@ trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with Befo
     reset(overseasPropertyStartDate)
   }
 
-  def mockOverseasPropertyStartDate(): Unit = {
+  def mockOverseasPropertyStartDateView(): Unit = {
     when(overseasPropertyStartDate(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }

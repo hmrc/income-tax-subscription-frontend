@@ -97,12 +97,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "save and retrieve is enabled" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(ukProperty = Some(PropertyModel(accountingMethod = Some(Cash)))))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[PropertyModel](
-          "subscriptionId",
-          PropertyModel(accountingMethod = Some(Cash), confirmed = true)
-        )
+        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(accountingMethod = Some(Cash), confirmed = true))
         And("save & retrieve feature switch is enabled")
         enable(SaveAndRetrieve)
 
@@ -114,6 +110,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
         )
+
+        IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), confirmed = true), Some(1))
       }
     }
 

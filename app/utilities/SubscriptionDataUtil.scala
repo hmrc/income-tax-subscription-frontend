@@ -16,7 +16,6 @@
 
 package utilities
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import models.common._
 import models.common.business._
@@ -40,15 +39,11 @@ object SubscriptionDataUtil extends FeatureSwitching {
 
     def getAccountingMethod: Option[AccountingMethodModel] = cacheMap.getEntry[AccountingMethodModel](AccountingMethod)
 
-    def getOverseasPropertyStartDate: Option[OverseasPropertyStartDateModel] =
-      cacheMap.getEntry[OverseasPropertyStartDateModel](OverseasPropertyStartDate)
-
-    def getOverseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] =
-      cacheMap.getEntry[OverseasAccountingMethodPropertyModel](OverseasPropertyAccountingMethod)
-
     def getTaskListModel(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                          selfEmploymentAccountingMethod: Option[AccountingMethodModel] = None,
-                         property: Option[PropertyModel]): TaskListModel = {
+                         property: Option[PropertyModel],
+                         overseasProperty: Option[OverseasPropertyModel]
+                        ): TaskListModel = {
       TaskListModel(
         taxYearSelection = getSelectedTaxYear,
         selfEmployments = selfEmployments match {
@@ -56,9 +51,8 @@ object SubscriptionDataUtil extends FeatureSwitching {
           case None => Seq.empty[SelfEmploymentData]
         },
         ukProperty = property,
-        selfEmploymentAccountingMethod = selfEmploymentAccountingMethod.map(_.accountingMethod),
-        overseasPropertyStart = getOverseasPropertyStartDate.map(_.startDate),
-        overseasPropertyAccountingMethod = getOverseasPropertyAccountingMethod.map(_.overseasPropertyAccountingMethod)
+        overseasProperty = overseasProperty,
+        selfEmploymentAccountingMethod = selfEmploymentAccountingMethod.map(_.accountingMethod)
       )
     }
 
@@ -66,7 +60,9 @@ object SubscriptionDataUtil extends FeatureSwitching {
     def createIncomeSources(nino: String,
                             selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                             selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
-                            property: Option[PropertyModel] = None): CreateIncomeSourcesModel = {
+                            property: Option[PropertyModel] = None,
+                            overseasProperty: Option[OverseasPropertyModel] = None
+                           ): CreateIncomeSourcesModel = {
 
       val accountingPeriod: AccountingPeriodModel = {
         getSelectedTaxYear.getOrElse(
@@ -121,12 +117,12 @@ object SubscriptionDataUtil extends FeatureSwitching {
       }
 
       val overseas: Option[OverseasProperty] = {
-        (getOverseasPropertyStartDate, getOverseasPropertyAccountingMethod) match {
+        (overseasProperty.flatMap(_.startDate), overseasProperty.flatMap(_.accountingMethod)) match {
           case (Some(startDate), Some(accountingMethod)) =>
             Some(OverseasProperty(
               accountingPeriod = accountingPeriod,
-              tradingStartDate = startDate.startDate,
-              accountingMethod = accountingMethod.overseasPropertyAccountingMethod
+              tradingStartDate = startDate,
+              accountingMethod = accountingMethod
             ))
 
           case (Some(_), None) =>
@@ -151,16 +147,18 @@ object SubscriptionDataUtil extends FeatureSwitching {
     def getSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                    selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                    property: Option[PropertyModel] = None,
+                   overseasProperty: Option[OverseasPropertyModel] = None,
                    isReleaseFourEnabled: Boolean = false): IndividualSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
             applyPropertyData(
-              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment).asInstanceOf[IndividualSummary],
+              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, isReleaseFourEnabled).asInstanceOf[IndividualSummary],
               property,
               hasProperty,
               isReleaseFourEnabled = isReleaseFourEnabled
             ).asInstanceOf[IndividualSummary],
+            overseasProperty,
             hasForeignProperty,
             isReleaseFourEnabled = isReleaseFourEnabled
           ).asInstanceOf[IndividualSummary]
@@ -171,17 +169,19 @@ object SubscriptionDataUtil extends FeatureSwitching {
     def getAgentSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
                         selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                         property: Option[PropertyModel] = None,
+                        overseasProperty: Option[OverseasPropertyModel] = None,
                         isReleaseFourEnabled: Boolean = false): AgentSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
             applyPropertyData(
-              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, isAgent = true).asInstanceOf[AgentSummary],
+              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, isReleaseFourEnabled, isAgent = true).asInstanceOf[AgentSummary],
               property,
               hasProperty,
               isAgent = true,
               isReleaseFourEnabled = isReleaseFourEnabled
             ).asInstanceOf[AgentSummary],
+            overseasProperty,
             hasForeignProperty,
             isAgent = true,
             isReleaseFourEnabled = isReleaseFourEnabled
@@ -193,6 +193,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
     private def applySelfEmploymentsData(selfEmployments: Option[Seq[SelfEmploymentData]],
                                          selfEmploymentsAccountingMethod: Option[AccountingMethodModel],
                                          hasSelfEmployments: Boolean,
+                                         isReleaseFourEnabled: Boolean,
                                          isAgent: Boolean = false): SummaryModel = {
       if (hasSelfEmployments) {
         if (selfEmploymentsAccountingMethod.isDefined) {
@@ -236,7 +237,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
         if (isAgent) {
           AgentSummary(
             incomeSource = getIncomeSource,
-            selectedTaxYear = if (isEnabled(ReleaseFour)) getSelectedTaxYear else None
+            selectedTaxYear = if (isReleaseFourEnabled) getSelectedTaxYear else None
           )
         } else {
           IndividualSummary(
@@ -256,7 +257,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
           summaryModel.asInstanceOf[AgentSummary].copy(
             propertyStartDate = property.flatMap(_.startDate.map(PropertyStartDateModel.apply)),
             accountingMethodProperty = property.flatMap(_.accountingMethod.map(AccountingMethodPropertyModel.apply)),
-            selectedTaxYear = if (isEnabled(ReleaseFour)) summaryModel.selectedTaxYear else None
+            selectedTaxYear = if (isReleaseFourEnabled) summaryModel.selectedTaxYear else None
           )
         } else {
           summaryModel.asInstanceOf[IndividualSummary].copy(
@@ -269,20 +270,21 @@ object SubscriptionDataUtil extends FeatureSwitching {
     }
 
     private def applyForeignPropertyData(summaryModel: SummaryModel,
+                                         overseasProperty: Option[OverseasPropertyModel],
                                          hasForeignProperty: Boolean,
                                          isAgent: Boolean = false,
                                          isReleaseFourEnabled: Boolean = false): SummaryModel = {
       if (hasForeignProperty) {
         if (isAgent) {
           summaryModel.asInstanceOf[AgentSummary].copy(
-            overseasPropertyStartDate = getOverseasPropertyStartDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
-            selectedTaxYear = if (isEnabled(ReleaseFour)) summaryModel.selectedTaxYear else None
+            overseasPropertyStartDate = overseasProperty.flatMap(_.startDate.map(OverseasPropertyStartDateModel.apply)),
+            overseasAccountingMethodProperty = overseasProperty.flatMap(_.accountingMethod.map(OverseasAccountingMethodPropertyModel.apply)),
+            selectedTaxYear = if (isReleaseFourEnabled) summaryModel.selectedTaxYear else None
           )
         } else {
           summaryModel.asInstanceOf[IndividualSummary].copy(
-            overseasPropertyStartDate = getOverseasPropertyStartDate,
-            overseasAccountingMethodProperty = getOverseasPropertyAccountingMethod,
+            overseasPropertyStartDate = overseasProperty.flatMap(_.startDate.map(OverseasPropertyStartDateModel.apply)),
+            overseasAccountingMethodProperty = overseasProperty.flatMap(_.accountingMethod.map(OverseasAccountingMethodPropertyModel.apply)),
             selectedTaxYear = if (isReleaseFourEnabled) getSelectedTaxYear else None
           )
         }

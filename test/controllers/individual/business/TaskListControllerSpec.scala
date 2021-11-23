@@ -22,8 +22,8 @@ import config.featureswitch.FeatureSwitching
 import controllers.Assets.OK
 import controllers.ControllerBaseSpec
 import models.common.business._
-import models.common.{AccountingYearModel, OverseasAccountingMethodPropertyModel, OverseasPropertyStartDateModel, PropertyModel}
-import models.{Accruals, Cash, DateModel, Next}
+import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
+import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -79,16 +79,13 @@ class TaskListControllerSpec extends ControllerBaseSpec
     mockAuthService
   )
 
-
   "show" should {
     "return an OK status with the task list page" in {
       enable(SaveAndRetrieve)
       mockTaskList()
 
       val testBusinessCacheMap = testCacheMap(
-        selectedTaxYear = Some(AccountingYearModel(Next)),
-        overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Accruals)),
-        overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("1", "1", "1980")))
+        selectedTaxYear = Some(AccountingYearModel(Next))
       )
       mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
       mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(Seq(
@@ -106,45 +103,33 @@ class TaskListControllerSpec extends ControllerBaseSpec
         startDate = Some(DateModel("1", "1", "1980")),
         confirmed = true
       )))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(
+        accountingMethod = Some(Cash),
+        startDate = Some(DateModel("1", "1", "1980")),
+        confirmed = true
+      )))
+
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequest)
+
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
     }
 
-    "Throw an exception if feature not enabled" in {
-      disable(SaveAndRetrieve)
+    "throw an exception" when {
+      "save and retrieve is disabled" in {
+        disable(SaveAndRetrieve)
 
-      val testBusinessCacheMap = testCacheMap(
-        selectedTaxYear = Some(AccountingYearModel(Next)),
-        overseasPropertyAccountingMethod = Some(OverseasAccountingMethodPropertyModel(Accruals)),
-        overseasPropertyStartDate = Some(OverseasPropertyStartDateModel(DateModel("1", "1", "1980")))
-      )
-      mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
-      mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(Seq(
-        SelfEmploymentData(
-          id = "id",
-          businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-          businessName = Some(BusinessNameModel("business name")),
-          businessTradeName = Some(BusinessTradeNameModel("business trade")),
-          businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), "ZZ1 1ZZ")))
-        )
-      )))
-      mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(Some(AccountingMethodModel(Cash)))
-      mockFetchProperty(Some(PropertyModel(
-        accountingMethod = Some(Cash),
-        startDate = Some(DateModel("1", "1", "1980")),
-        confirmed = true
-      )))
+        val result: Future[Result] = await(TestTaskListController.show()(subscriptionRequest))
 
-      val result: Future[Result] = await(TestTaskListController.show()(subscriptionRequest))
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
+      }
     }
   }
 
-  "if submit button shows" when {
+  "submit" when {
     "save and retrieve and Sps feature switch is enabled" when {
-      "the submission is successful" should {
+      "sign up income source is successful" should {
         "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
           enable(SaveAndRetrieve)
           setupMockSubscriptionDetailsSaveFunctions()
@@ -156,7 +141,12 @@ class TaskListControllerSpec extends ControllerBaseSpec
             startDate = Some(testValidStartDate),
             confirmed = true
           )))
-          val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None, overseasProperty = None)
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
+          val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None)
           mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(testNino, testIncomeSourceModel)
 
           val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
@@ -168,27 +158,32 @@ class TaskListControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "the submission is failed" should {
+      "sign up income source fails" should {
         "return an internalServer error" in {
           enable(SaveAndRetrieve)
           mockFetchAllFromSubscriptionDetails(testCacheMapIndiv)
           mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
-          val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None, overseasProperty = None)
-          mockSignUpAndCreateIncomeSourcesFromTaskListFailure(testNino, testIncomeSourceModel)
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             startDate = Some(testValidStartDate),
             confirmed = true
           )))
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
+          val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None)
+          mockSignUpAndCreateIncomeSourcesFromTaskListFailure(testNino, testIncomeSourceModel)
 
           val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
           intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
           verifySubscriptionDetailsSave(MtditId, 0)
         }
       }
-
     }
+
     "save and retrieve feature switch is disabled" should {
       "throw NotFoundException" in {
         mockFetchAllFromSubscriptionDetails(testCacheMapIndiv)

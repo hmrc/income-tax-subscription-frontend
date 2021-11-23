@@ -318,7 +318,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def overseasPropertyStartDate(): WSResponse = get("/business/overseas-commencement-date")
 
-    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[OverseasPropertyStartDateModel]): WSResponse = {
+    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
       val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
       val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
       val uri = s"/business/overseas-commencement-date?editMode=$inEditMode"
@@ -387,7 +387,7 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
-    def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[OverseasAccountingMethodPropertyModel]): WSResponse = {
+    def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
       val uri = s"/business/overseas-property-accounting-method?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
