@@ -22,8 +22,8 @@ import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import controllers.utils.IndividualAnswers._
 import controllers.utils.RequireAnswer
-import forms.individual.business.OverseasPropertyStartDateForm
 import forms.individual.business.OverseasPropertyStartDateForm._
+import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
 import models.common.IncomeSourceModel
 import play.api.data.Form
@@ -99,18 +99,22 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
           },
         startDate =>
           subscriptionDetailsService.saveOverseasPropertyStartDate(startDate) flatMap { _ =>
-            if (isEditMode && !isEnabled(SaveAndRetrieve)) {
-              Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
-            } else {
-              Future.successful(Redirect(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show()))
+
+            val redirectUrl = (isEditMode, isSaveAndRetrieve) match {
+              case (true, true) => controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode)
+              case (true, false) => controllers.individual.subscription.routes.CheckYourAnswersController.show()
+              case (false, _) => controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show()
             }
+            Future.successful(Redirect(redirectUrl))
           }
       )
   }
 
   def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel])(implicit hc: HeaderCarrier): String = {
     (isEditMode, isSaveAndRetrieve, maybeIncomeSourceModel) match {
-      case (true, true, _) => controllers.individual.business.routes.TaskListController.show().url
+
+
+      case (true, true, _) => controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
       case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
       case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
       case (false, false, Some(incomeSourceModel)) if incomeSourceModel.ukProperty =>

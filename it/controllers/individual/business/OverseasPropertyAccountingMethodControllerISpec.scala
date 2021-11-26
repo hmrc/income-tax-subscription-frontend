@@ -1,6 +1,7 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -10,11 +11,15 @@ import models._
 import models.common.OverseasPropertyModel
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 
 class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/overseas-property-accounting-method" when {
 
@@ -59,25 +64,101 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/overseas-property-accounting-method" when {
-    "select the Cash radio button on the foreign property accounting method page" in {
-      val userInput = Cash
-      val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
+    "select the Cash radio button on the foreign property accounting method page" when {
+      "not in edit mode" when {
+        "save and retrieve is enabled" should {
+          "redirect to overseas property check your answers page" in {
+            val userInput = Cash
+            val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
+            enable(SaveAndRetrieve)
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
+            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
 
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
-      IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+            When("POST /business/overseas-property-accounting-method is called")
+            val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
-      When("POST /business/overseas-property-accounting-method is called")
-      val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
+            Then("Should return a SEE_OTHER with a redirect location of overseas check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(overseasPropertyCYAURI)
+            )
 
-      Then("Should return a SEE_OTHER with a redirect location of check your answers")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(checkYourAnswersURI)
-      )
+            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+          }
+        }
 
-      IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+        "save and retrieve is disabled" should {
+          "redirect to final check your answers page" in {
+            val userInput = Cash
+            val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
+            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+
+            When("POST /business/overseas-property-accounting-method is called")
+            val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(checkYourAnswersURI)
+            )
+
+            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+          }
+        }
+      }
+
+      "in edit mode" when {
+        "save and retrieve is enabled" should {
+          "redirect to overseas property check your answers page" in {
+            val userInput = Cash
+            val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
+            enable(SaveAndRetrieve)
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
+            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+
+            When("POST /business/overseas-property-accounting-method is called")
+            val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = true, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of overseas check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(overseasPropertyCYAURI)
+            )
+
+            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+          }
+        }
+
+        "save and retrieve is disabled" should {
+          "redirect to final check your answers page" in {
+            val userInput = Cash
+            val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
+            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+
+            When("POST /business/overseas-property-accounting-method is called")
+            val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = true, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(checkYourAnswersURI)
+            )
+
+            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+          }
+        }
+      }
+
     }
 
     "select the Accruals radio button on the foreign property accounting method page" in {
@@ -98,8 +179,6 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         httpStatus(SEE_OTHER),
         redirectURI(checkYourAnswersURI)
       )
-
-      IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
     }
 
     "not select an option on the foreign property accounting method page" in {
