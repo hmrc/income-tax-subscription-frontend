@@ -22,7 +22,7 @@ import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
-import models.common.{IncomeSourceModel, OverseasPropertyModel}
+import models.common.{IncomeSourceModel, OverseasPropertyModel, OverseasPropertyStartDateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -41,6 +41,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
+    disable(SaveAndRetrieve)
     super.beforeEach()
   }
 
@@ -75,7 +76,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     "display the foreign property start date view and return OK (200)" in withController { controller =>
       disable(SaveAndRetrieve)
       mockOverseasPropertyStartDateView()
-      mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
       mockIndividualWithNoEnrolments()
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = Some(incomeSourceAllTypes)
@@ -91,7 +92,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     "display the foreign property start date view and return OK (200) when Save & Retrieve feature is enabled" in withController { controller =>
       enable(SaveAndRetrieve)
       mockOverseasPropertyStartDateView()
-      mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
 
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
@@ -120,80 +121,73 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         subscriptionRequest
       )
 
-    "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in withController { controller =>
-        mockIndividualWithNoEnrolments()
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
-        val goodRequest = callPost(controller, isEditMode = false)
+    "When it is not in edit mode" when {
+      "save and retrieve is enabled" should {
+        "redirect to foreign property accounting method page" in withController { controller =>
+          mockIndividualWithNoEnrolments()
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          val goodRequest = callPost(controller, isEditMode = false)
 
-        await(goodRequest)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url)
+
+          await(goodRequest)
+          verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+        }
       }
 
-      "redirect to foreign property accounting method page" in withController { controller =>
-        mockIndividualWithNoEnrolments()
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
+      "save and retrieve is disabled" should {
+        "redirect to foreign property accounting method page" in withController { controller =>
+          mockIndividualWithNoEnrolments()
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
+          val goodRequest = callPost(controller, isEditMode = false)
 
-        val goodRequest = callPost(controller, isEditMode = false)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url)
-
-        await(goodRequest)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+          await(goodRequest)
+          verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+        }
       }
-
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in withController { controller =>
-        mockIndividualWithNoEnrolments()
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
+    "When it is in edit mode" when {
+      "save and retrieve is disabled" should {
+        "redirect to checkYourAnswer page" in withController { controller =>
+          disable(SaveAndRetrieve)
+          mockIndividualWithNoEnrolments()
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
 
-        val goodRequest = callPost(controller, isEditMode = true)
+          val goodRequest = callPost(controller, isEditMode = true)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
-        await(goodRequest)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+          await(goodRequest)
+          verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+
+        }
       }
 
-      "redirect to checkYourAnswer page" in withController { controller =>
-        disable(SaveAndRetrieve)
-        mockIndividualWithNoEnrolments()
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
+      "save and retrieve is enabled" should {
+        "redirect to overseas property check your answers page" in withController { controller =>
+          enable(SaveAndRetrieve)
+          mockIndividualWithNoEnrolments()
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
+          val goodRequest = callPost(controller, isEditMode = true)
 
-        val goodRequest = callPost(controller, isEditMode = true)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-
-        await(goodRequest)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
-      }
-
-      "redirect to taskList page" in withController { controller =>
-        enable(SaveAndRetrieve)
-        mockIndividualWithNoEnrolments()
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
-
-        val goodRequest = callPost(controller, isEditMode = true)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url)
-
-        await(goodRequest)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+          await(goodRequest)
+          verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+        }
       }
     }
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in withController { controller =>
-        disable(SaveAndRetrieve)
         mockOverseasPropertyStartDateView()
         mockIndividualWithNoEnrolments()
         mockFetchIndividualIncomeSourceFromSubscriptionDetails(Some(testIncomeSourceOverseasProperty))
@@ -219,47 +213,65 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsFetchAll(0)
       }
     }
-  }
 
-  "backUrl" when {
-    "in edit mode" should {
-      "redirect to the check your answers page" in withController { controller =>
-        disable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
-        controller.backUrl(isEditMode = true, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-          controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+
+    "backUrl" when {
+      "in edit mode" when {
+        "save and retrieve is disabled" should {
+          "redirect to the final check your answers page" in withController { controller =>
+            val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
+            controller.backUrl(isEditMode = true, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
+              controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          }
+        }
+
+        "save and retrieve is enabled" should {
+          "redirect to overseas property check your answers page" in withController { controller =>
+            enable(SaveAndRetrieve)
+            val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
+            controller.backUrl(isEditMode = true, maybeIncomeSourceModel = None) mustBe
+              controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
+          }
+        }
       }
 
-      "redirect to the task list page" in withController { controller =>
-        enable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
-        controller.backUrl(isEditMode = true, maybeIncomeSourceModel = None) mustBe
-          controllers.individual.business.routes.TaskListController.show().url
-      }
-    }
-    "not in edit mode" when {
-      "the user has uk property income" in withController { controller =>
-        disable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
-        controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-          controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-      }
-      "the user has self employment income but no uk property income" in withController { controller =>
-        disable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
-        controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-          appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
-      }
-      "the user has no self employment or uk property income" in withController { controller =>
-        disable(SaveAndRetrieve)
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
-        controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-          controllers.individual.incomesource.routes.IncomeSourceController.show().url
-      }
-      "the feature switch SaveAndRetrieve is enabled" in withController { controller =>
-        enable(SaveAndRetrieve)
-        controller.backUrl(isEditMode = false, maybeIncomeSourceModel = None) mustBe
-          controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+      "not in edit mode" when {
+        "save and retrieve is disabled" when {
+          "the user has uk property income" should {
+            " redirect to uk property accounting method page" in withController { controller =>
+
+              val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
+              controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
+                controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+            }
+          }
+
+          "the user has self employment income but no uk property income" should {
+            "redirect to self employment accounting method page" in withController { controller =>
+
+              val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
+              controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
+                appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
+            }
+          }
+
+          "the user has no self employment or uk property income" should {
+            "redirect to income source page" in withController { controller =>
+
+              val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
+              controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
+                controllers.individual.incomesource.routes.IncomeSourceController.show().url
+            }
+          }
+        }
+
+        "save and retrieve is enabled" should {
+          "redirect to what income source to sign up page" in withController { controller =>
+            enable(SaveAndRetrieve)
+            controller.backUrl(isEditMode = false, maybeIncomeSourceModel = None) mustBe
+              controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+          }
+        }
       }
     }
   }

@@ -152,7 +152,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
             subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)
           )
 
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url)
 
 
           verifyPropertySave(testFullPropertyModel.copy(accountingMethod = Some(Accruals), confirmed = false))
@@ -219,7 +219,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
             enable(SaveAndRetrieve)
             setupMockSubscriptionDetailsSaveFunctions()
             await(controller.backUrl(isEditMode = true)) mustBe
-              controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url
+              controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url
           }
         }
 

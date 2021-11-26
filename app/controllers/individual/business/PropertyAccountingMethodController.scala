@@ -92,7 +92,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
         accountingMethodProperty => {
           subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) flatMap { _ => {
             (isEditMode, isSaveAndRetrieve) match {
-              case (_, true) => Future(Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show()))
+              case (_, true) => Future(Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
               case (_, false) => subscriptionDetailsService.fetchIncomeSource() map {
                 case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
                   Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
@@ -109,7 +109,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] = {
 
     (isEditMode, isSaveAndRetrieve) match {
-      case (true, true) => Future.successful(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
+      case (true, true) => Future.successful(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url)
       case (false, _) => Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
       case (true, false) => Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     }

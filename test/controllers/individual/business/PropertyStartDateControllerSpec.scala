@@ -182,7 +182,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
           mockFetchProperty(testFullPropertyModel)
           val goodRequest = callShow(isEditMode = true)
           await(goodRequest)
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url)
 
           verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
 
@@ -225,7 +225,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         "redirect back to uk property check your answers page" in new Test {
           enable(SaveAndRetrieve)
           controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
-            controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url
+            controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url
         }
       }
 

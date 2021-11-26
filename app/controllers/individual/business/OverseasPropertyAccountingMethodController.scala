@@ -38,6 +38,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                           (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends SignUpController {
+  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 
   def view(overseasPropertyAccountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
@@ -66,9 +67,10 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
           Future.successful(BadRequest(view(overseasPropertyAccountingMethodForm = formWithErrors, isEditMode = isEditMode))),
         overseasPropertyAccountingMethod => {
           subscriptionDetailsService.saveOverseasAccountingMethodProperty(overseasPropertyAccountingMethod) map { _ =>
-            if (isEnabled(SaveAndRetrieve)) {
-              Redirect(controllers.individual.business.routes.TaskListController.show())
-            } else {
+            if (isSaveAndRetrieve) {
+              Redirect(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+            }
+            else {
               Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
             }
           }
@@ -78,12 +80,10 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {
-    if (isEditMode && isEnabled(SaveAndRetrieve)) {
-      controllers.individual.business.routes.TaskListController.show().url
-    } else if (isEditMode) {
-      controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-    } else {
-      controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+    (isEditMode, isSaveAndRetrieve) match {
+      case (true, true) => controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+      case (false, _) => controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+      case (true, false) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     }
   }
 }
