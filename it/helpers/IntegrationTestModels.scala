@@ -92,6 +92,12 @@ object IntegrationTestModels {
     confirmed = true
   )
 
+  val testFullOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
+    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+    startDate = Some(testPropertyStartDateModel.startDate),
+    confirmed = true
+  )
+
   val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
   val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
   val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
@@ -110,16 +116,12 @@ object IntegrationTestModels {
       incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
-      accountingMethod = Some(testAccountingMethod),
-      overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
-      overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
+      accountingMethod = Some(testAccountingMethod)
     )
 
   lazy val fullSubscriptionDataPropertyPost: Map[String, JsValue] =
     subscriptionData(
-      incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-      overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
-
+      incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false))
     )
 
   val selfEmploymentSubscriptionData: Map[String, JsValue] =
@@ -127,9 +129,7 @@ object IntegrationTestModels {
       incomeSource = Some(testIncomeSourceBusiness),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
-      accountingMethod = Some(testAccountingMethod),
-      overseasPropertyAccountingMethod = None,
-      overseasPropertyStartDate = None
+      accountingMethod = Some(testAccountingMethod)
     )
 
   val ukPropertySubscriptionData: Map[String, JsValue] =
@@ -137,9 +137,7 @@ object IntegrationTestModels {
       incomeSource = Some(testIncomeSourceProperty),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = None,
-      accountingMethod = None,
-      overseasPropertyAccountingMethod = None,
-      overseasPropertyStartDate = None
+      accountingMethod = None
     )
 
   val overseasPropertySubscriptionData: Map[String, JsValue] =
@@ -147,9 +145,7 @@ object IntegrationTestModels {
       incomeSource = Some(testIncomeSourceOverseas),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = None,
-      accountingMethod = None,
-      overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
-      overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
+      accountingMethod = None
     )
 
   val AllSubscriptionData: Map[String, JsValue] =
@@ -157,9 +153,7 @@ object IntegrationTestModels {
       incomeSource = Some(testIncomeSourceAll),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
-      accountingMethod = Some(testAccountingMethod),
-      overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty),
-      overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
+      accountingMethod = Some(testAccountingMethod)
     )
 
 
@@ -168,8 +162,6 @@ object IntegrationTestModels {
                        businessName: Option[BusinessNameModel] = None,
                        accountingMethod: Option[AccountingMethodModel] = None,
                        ukProperty: Option[PropertyModel] = None,
-                       overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None,
-                       overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
                        overseasProperty: Option[OverseasPropertyModel] = None,
                       ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
@@ -178,8 +170,6 @@ object IntegrationTestModels {
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       ukProperty.map(model => Property -> PropertyModel.format.writes(model)) ++
-      overseasPropertyAccountingMethod.map(model => OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model)) ++
-      overseasPropertyStartDate.map(model => OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model)) ++
       overseasProperty.map(model => Property -> OverseasPropertyModel.format.writes(model))
   }
 

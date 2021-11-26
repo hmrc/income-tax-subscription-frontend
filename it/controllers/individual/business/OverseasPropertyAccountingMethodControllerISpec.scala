@@ -4,12 +4,14 @@ package controllers.individual.business
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{subscriptionData, testAccountingMethodForeignProperty}
+import helpers.IntegrationTestModels.testFullOverseasPropertyModel
 import helpers.servicemocks.AuthStub
 import models._
-import models.common.OverseasAccountingMethodPropertyModel
+import models.common.OverseasPropertyModel
 import play.api.http.Status._
+import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
+import utilities.SubscriptionDataKeys.OverseasProperty
 
 
 class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase {
@@ -20,7 +22,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
       "show the foreign property accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionPropertyPost()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
         When("GET /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
@@ -40,7 +42,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
       "show the foreign property accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
         When("GET /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
@@ -57,14 +59,14 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/overseas-property-accounting-method" when {
-
     "select the Cash radio button on the foreign property accounting method page" in {
-      val userInput = OverseasAccountingMethodPropertyModel(Cash)
+      val userInput = Cash
+      val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.OverseasPropertyAccountingMethod, userInput)
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
+      IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
 
       When("POST /business/overseas-property-accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -74,15 +76,19 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         httpStatus(SEE_OTHER),
         redirectURI(checkYourAnswersURI)
       )
+
+      IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
     }
 
     "select the Accruals radio button on the foreign property accounting method page" in {
-      val userInput = OverseasAccountingMethodPropertyModel(Accruals)
+      val userInput = Accruals
+      val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.OverseasPropertyAccountingMethod, userInput)
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+      IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
 
       When("POST /business/overseas-property-accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -92,13 +98,14 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         httpStatus(SEE_OTHER),
         redirectURI(checkYourAnswersURI)
       )
+
+      IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
     }
 
     "not select an option on the foreign property accounting method page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.OverseasPropertyAccountingMethod, "")
 
       When("POST /business/overseas-property-accounting-method is called")
 

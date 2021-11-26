@@ -16,15 +16,13 @@
 
 package controllers.agent.business
 
-import java.time.LocalDate
-
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.OverseasPropertyStartDateForm
 import models.DateModel
-import models.common.{IncomeSourceModel, OverseasPropertyStartDateModel}
+import models.common.{IncomeSourceModel, OverseasPropertyModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -32,8 +30,9 @@ import services.agent.mocks.MockAgentAuthService
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.OverseasPropertyStartDate
-import utilities.TestModels.{testCacheMap, testIncomeSourceBoth, testIncomeSourceOverseasProperty}
+import utilities.TestModels.{testAccountingMethodProperty, testCacheMap, testIncomeSourceBoth, testIncomeSourceOverseasProperty, testPropertyStartDateModel}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
@@ -87,10 +86,13 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = Some(incomeSourceAllTypes)
       ))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(
+        accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+        startDate = Some(testPropertyStartDateModel.startDate)
+      )))
 
       status(result) must be(Status.OK)
-      verifySubscriptionDetailsSave(OverseasPropertyStartDate, 0)
-      verifySubscriptionDetailsFetchAll(1)
+      verifyOverseasPropertySave(None)
     }
   }
 
@@ -101,10 +103,13 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = None
       ))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(
+        accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+        startDate = Some(testPropertyStartDateModel.startDate)
+      )))
 
       status(result) must be(Status.SEE_OTHER)
-      verifySubscriptionDetailsSave(OverseasPropertyStartDate, 0)
-      verifySubscriptionDetailsFetchAll(1)
+      verifyOverseasPropertySave(None)
     }
   }
 
@@ -113,11 +118,9 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
     val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
 
-    val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidMaxStartDate)
-
     def callSubmit(isEditMode: Boolean): Future[Result] = TestOverseasPropertyStartDateController$.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate.toString, testValidMaxStartDate.toString),
-        testOverseasPropertyStartDateModel)
+        testValidMaxStartDate)
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestOverseasPropertyStartDateController$.submit(isEditMode = isEditMode)(
@@ -125,60 +128,34 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     )
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-
-        setupMockSubscriptionDetailsSaveFunctions()
-        val goodRequest = callSubmit(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
-      }
-
       "redirect to foreign property accounting method page" in {
 
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
         val goodRequest = callSubmit(isEditMode = false)
 
+        status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
       }
-
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      "redirect to checkYourAnswer page" in {
 
         setupMockSubscriptionDetailsSaveFunctions()
-
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
-      }
-
-      "redirect to checkYourAnswer page" in {
-
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callSubmit(isEditMode = true)
-
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
-
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
       }
     }
 

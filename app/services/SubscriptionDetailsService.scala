@@ -75,15 +75,8 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def fetchAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FO[AccountingMethodModel] =
     fetch[AccountingMethodModel](SubscriptionDataKeys.AccountingMethod)
 
-  def fetchOverseasPropertyAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[OverseasAccountingMethodPropertyModel]): FO[OverseasAccountingMethodPropertyModel] =
-    fetch[OverseasAccountingMethodPropertyModel](OverseasPropertyAccountingMethod)
-
   def saveAccountingMethod(accountingMethod: AccountingMethodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FA =
     save[AccountingMethodModel](SubscriptionDataKeys.AccountingMethod, accountingMethod)
-
-  def saveOverseasAccountingMethodProperty(overseasPropertyAccountingMethod: OverseasAccountingMethodPropertyModel)
-                                          (implicit hc: HeaderCarrier, reads: Reads[OverseasAccountingMethodPropertyModel]): FA = save[OverseasAccountingMethodPropertyModel](
-    OverseasPropertyAccountingMethod, overseasPropertyAccountingMethod)
 
   def fetchSelectedTaxYear()(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FO[AccountingYearModel] =
     fetch[AccountingYearModel](SelectedTaxYear)
@@ -100,13 +93,6 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
 
   def savePaperlessPreferenceToken(token: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FA =
     save[String](PaperlessPreferenceToken, token)
-
-  def fetchOverseasPropertyStartDate()(implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyStartDateModel]):
-  FO[OverseasPropertyStartDateModel] = fetch[OverseasPropertyStartDateModel](OverseasPropertyStartDate)
-
-  def saveOverseasPropertyStartDate(overseasPropertyStartDate: OverseasPropertyStartDateModel)
-                                   (implicit hc: HeaderCarrier, reads: Reads[OverseasPropertyStartDateModel]): FA =
-    save[OverseasPropertyStartDateModel](OverseasPropertyStartDate, overseasPropertyStartDate)
 
   def fetchLastUpdatedTimestamp()(implicit hc: HeaderCarrier, reads: Reads[TimestampModel]): Future[Option[TimestampModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[TimestampModel](lastUpdatedTimestamp)
@@ -141,6 +127,26 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
       case Some(property) => property.copy(accountingMethod = Some(accountingMethod), confirmed = false)
       case None => PropertyModel(accountingMethod = Some(accountingMethod))
     } flatMap saveProperty
+  }
+
+  def fetchOverseasPropertyStartDate()(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
+    fetchOverseasProperty().map(_.flatMap(_.startDate))
+
+  def saveOverseasPropertyStartDate(propertyStartDate: DateModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchOverseasProperty() map {
+      case Some(property) => property.copy(startDate = Some(propertyStartDate), confirmed = false)
+      case None => OverseasPropertyModel(startDate = Some(propertyStartDate))
+    } flatMap saveOverseasProperty
+  }
+
+  def fetchOverseasPropertyAccountingMethod()(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
+    fetchOverseasProperty().map(_.flatMap(_.accountingMethod))
+
+  def saveOverseasAccountingMethodProperty(accountingMethod: AccountingMethod)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchOverseasProperty() map {
+      case Some(property) => property.copy(accountingMethod = Some(accountingMethod), confirmed = false)
+      case None => OverseasPropertyModel(accountingMethod = Some(accountingMethod))
+    } flatMap saveOverseasProperty
   }
 
 }

@@ -95,12 +95,9 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       "save and retrieve is enabled" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash)))))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[OverseasPropertyModel](
-          "subscriptionId",
-          OverseasPropertyModel(accountingMethod = Some(Cash), confirmed = true)
-        )
+        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash), confirmed = true))
+
         And("save & retrieve feature switch is enabled")
         enable(SaveAndRetrieve)
 
@@ -112,6 +109,8 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
         )
+
+        IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash), confirmed = true), Some(1))
       }
     }
 

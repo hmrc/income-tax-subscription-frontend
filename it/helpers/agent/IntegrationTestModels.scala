@@ -1,14 +1,14 @@
 
 package helpers.agent
 
-import java.time.LocalDate
-
 import models._
 import models.common.business._
-import models.common.{AccountingPeriodModel, _}
+import models.common._
 import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
+
+import java.time.LocalDate
 
 object IntegrationTestModels {
   val testStartDate: DateModel = DateModel.dateConvert(LocalDate.now)
@@ -66,8 +66,7 @@ object IntegrationTestModels {
       incomeSource = Some(testIncomeSourceAll),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = Some(testBusinessName),
-      accountingMethod = Some(testAccountingMethod),
-      overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
+      accountingMethod = Some(testAccountingMethod)
     )
 
   val ukPropertySubscriptionData: Map[String, JsValue] =
@@ -75,26 +74,20 @@ object IntegrationTestModels {
       incomeSource = Some(testIncomeSourceProperty),
       selectedTaxYear = Some(testAccountingYearCurrent),
       businessName = None,
-      accountingMethod = None,
-      overseasPropertyAccountingMethod = None,
-      overseasPropertyStartDate = None
+      accountingMethod = None
     )
 
   def subscriptionData(
                         incomeSource: Option[IncomeSourceModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         businessName: Option[BusinessNameModel] = None,
-                        accountingMethod: Option[AccountingMethodModel] = None,
-                        overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
-                        overseasPropertyAccountingMethod: Option[OverseasAccountingMethodPropertyModel] = None)
+                        accountingMethod: Option[AccountingMethodModel] = None)
   : Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       businessName.map(model => SubscriptionDataKeys.BusinessName -> BusinessNameModel.format.writes(model)) ++
-      accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      overseasPropertyStartDate.map(model => SubscriptionDataKeys.OverseasPropertyStartDate -> OverseasPropertyStartDateModel.format.writes(model)) ++
-      overseasPropertyAccountingMethod.map(model => SubscriptionDataKeys.OverseasPropertyAccountingMethod -> OverseasAccountingMethodPropertyModel.format.writes(model))
+      accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
@@ -109,14 +102,11 @@ object IntegrationTestModels {
   lazy val testClientDetails: UserDetailsModel = helpers.IntegrationTestModels.testUserDetails
 
   lazy val testSummaryDataSelfEmploymentData =
-    Seq(SelfEmploymentData
-    (
+    Seq(SelfEmploymentData(
       id = testId,
       businessStartDate = Some(testBusinessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
       businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
-    )
-    )
-
+    ))
 }

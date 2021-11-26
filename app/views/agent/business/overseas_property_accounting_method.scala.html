@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.common.OverseasAccountingMethodPropertyModel
 @import play.api.data.Form
 @import forms.agent.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
@@ -24,7 +23,7 @@
 @import views.agent.helpers._
 @import views.helpers.RadioOption
 
-@(accountingMethodOverseasPropertyForm: Form[OverseasAccountingMethodPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingMethodOverseasPropertyForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     Messages("agent.overseas.property.accounting_method.title")

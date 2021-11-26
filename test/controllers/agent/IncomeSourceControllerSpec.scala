@@ -24,14 +24,14 @@ import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import forms.agent.IncomeSourceForm
 import models.Current
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
-import models.common.{AccountingYearModel, IncomeSourceModel, PropertyModel}
+import models.common.{AccountingYearModel, IncomeSourceModel, OverseasPropertyModel, PropertyModel}
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource, Property}
-import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testFullPropertyModel, testOverseasAccountingMethodProperty, testOverseasPropertyStartDateModel, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource}
+import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
 import views.agent.mocks.MockIncomeSource
 
 import scala.concurrent.Future
@@ -191,6 +191,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
             mockFetchProperty(None)
+            mockFetchOverseasProperty(None)
             mockFetchAllFromSubscriptionDetails(Some(testCacheMap(incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))))
 
             val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
@@ -214,10 +215,10 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
             mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
               incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-              selectedTaxYear = Some(AccountingYearModel(Current)),
-              overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty
+              selectedTaxYear = Some(AccountingYearModel(Current))
             )))
             mockFetchProperty(None)
+            mockFetchOverseasProperty(None)
 
             val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = true)
 
@@ -240,6 +241,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
             mockFetchProperty(None)
+            mockFetchOverseasProperty(None)
             mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
               incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
               selectedTaxYear = testSelectedTaxYearCurrent
@@ -265,6 +267,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
           mockFetchProperty(None)
+          mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
             selectedTaxYear = testSelectedTaxYearCurrent
@@ -291,6 +294,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
             startDate = testPropertyStartDateModel.startDate
           )))
+          mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
           )))
@@ -316,6 +320,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
             startDate = testPropertyStartDateModel.startDate
           )))
+          mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
           )))
@@ -339,11 +344,13 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
           mockFetchProperty(None)
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
+            startDate = testPropertyStartDateModel.startDate
+          )))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)),
-            selectedTaxYear = Some(AccountingYearModel(Current)),
-            overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel),
-            overseasPropertyAccountingMethod = Some(testOverseasAccountingMethodProperty)
+            selectedTaxYear = Some(AccountingYearModel(Current))
           )))
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true), isEditMode = true)
@@ -368,11 +375,13 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
             startDate = testPropertyStartDateModel.startDate
           )))
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
+            startDate = testPropertyStartDateModel.startDate
+          )))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-            selectedTaxYear = Some(AccountingYearModel(Current)),
-            overseasPropertyStartDate = testOverseasPropertyStartDateModel,
-            overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty
+            selectedTaxYear = Some(AccountingYearModel(Current))
           )))
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = true)
@@ -396,6 +405,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
             startDate = testPropertyStartDateModel.startDate
           )))
+          mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false))
           )))
@@ -418,10 +428,12 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(None)
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
+            startDate = testPropertyStartDateModel.startDate
+          )))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
-            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-            overseasPropertyStartDate = testOverseasPropertyStartDateModel,
-            overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty
+            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true))
           )))
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = true)
@@ -445,10 +457,12 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
             startDate = testPropertyStartDateModel.startDate
           )))
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
+            startDate = testPropertyStartDateModel.startDate
+          )))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
-            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
-            overseasPropertyStartDate = testOverseasPropertyStartDateModel,
-            overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty
+            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true))
           )))
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true), isEditMode = true)
@@ -475,6 +489,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             accountingMethod = Some(testAccountingMethod)
           )))
           mockFetchProperty(None)
+          mockFetchOverseasProperty(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 

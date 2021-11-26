@@ -80,10 +80,6 @@ object OptionalAnswers {
     retrieveAnswer = _.getAccountingMethod
   )
 
-  val optOverseasPropertyStartDateAnswer: Answer[Option[OverseasPropertyStartDateModel]] = OptionalAnswer(
-    retrieveAnswer = _.getOverseasPropertyStartDate
-  )
-
 }
 
 trait RequireAnswer {

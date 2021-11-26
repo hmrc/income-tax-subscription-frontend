@@ -21,13 +21,12 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import controllers.utils.IndividualAnswers._
-import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
 import forms.individual.business.OverseasPropertyStartDateForm
 import forms.individual.business.OverseasPropertyStartDateForm._
-import models.common.{IncomeSourceModel, OverseasPropertyStartDateModel}
+import models.DateModel
+import models.common.IncomeSourceModel
 import play.api.data.Form
-import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -52,7 +51,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 
-  def view(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: Option[IncomeSourceModel])
+  def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: Option[IncomeSourceModel])
           (implicit request: Request[_]): Html = {
 
     overseasPropertyStartDateView(
@@ -67,20 +66,21 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       if (!isSaveAndRetrieve) {
-        require(optOverseasPropertyStartDateAnswer and incomeSourceModelAnswer) {
-          case overseasPropertyStartDate ~ incomeSource =>
-            Future.successful(Ok(view(
+        subscriptionDetailsService.fetchOverseasPropertyStartDate() flatMap { overseasPropertyStartDate =>
+          subscriptionDetailsService.fetchIncomeSource map {
+            case Some(incomeSource) => Ok(view(
               overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
               isEditMode = isEditMode,
               incomeSourceModel = Some(incomeSource)
-            )))
+            ))
+            case None => Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
+          }
         }
       } else {
-        require(optOverseasPropertyStartDateAnswer) {
-          case overseasPropertyStartDate =>
-            Future.successful(Ok(view(
-              overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
-              isEditMode = isEditMode, None)))
+        subscriptionDetailsService.fetchOverseasPropertyStartDate() flatMap { overseasPropertyStartDate =>
+          Future.successful(Ok(view(
+            overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
+            isEditMode = isEditMode, None)))
         }
       }
     }
@@ -121,7 +121,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
     }
   }
 
-  def form(implicit request: Request[_]): Form[OverseasPropertyStartDateModel] = {
+  def form(implicit request: Request[_]): Form[DateModel] = {
     overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate.toLongDate, OverseasPropertyStartDateForm.maxStartDate.toLongDate)
   }
 }

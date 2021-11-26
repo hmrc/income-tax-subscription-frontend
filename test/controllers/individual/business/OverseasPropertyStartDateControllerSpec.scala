@@ -22,7 +22,7 @@ import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
-import models.common.{IncomeSourceModel, OverseasPropertyStartDateModel}
+import models.common.{IncomeSourceModel, OverseasPropertyModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -74,23 +74,24 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   "show" should {
     "display the foreign property start date view and return OK (200)" in withController { controller =>
       disable(SaveAndRetrieve)
-      mockOverseasPropertyStartDate()
-
-      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
-
+      mockOverseasPropertyStartDateView()
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
       mockIndividualWithNoEnrolments()
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = Some(incomeSourceAllTypes)
       ))
 
+      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+
       status(result) must be(Status.OK)
-      verifySubscriptionDetailsSave(OverseasPropertyStartDate, 0)
-      verifySubscriptionDetailsFetchAll(1)
+      verifyOverseasPropertySave(None)
+      verifySubscriptionDetailsFetchAll(2)
     }
 
     "display the foreign property start date view and return OK (200) when Save & Retrieve feature is enabled" in withController { controller =>
       enable(SaveAndRetrieve)
-      mockOverseasPropertyStartDate()
+      mockOverseasPropertyStartDateView()
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
 
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
@@ -98,7 +99,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       mockFetchAllFromSubscriptionDetails(testCacheMap())
 
       status(result) must be(Status.OK)
-      verifySubscriptionDetailsSave(OverseasPropertyStartDate, 0)
+      verifyOverseasPropertySave(None)
       verifySubscriptionDetailsFetchAll(1)
     }
   }
@@ -108,15 +109,13 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
     val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
 
-    val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidMaxStartDate)
-
-    def callShow(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
+    def callPost(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
       controller.submit(isEditMode = isEditMode)(
         subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate.toString, testValidMaxStartDate.toString),
-          testOverseasPropertyStartDateModel)
+          testValidMaxStartDate)
       )
 
-    def callShowWithErrorForm(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
+    def callPostWithErrorForm(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
       controller.submit(isEditMode = isEditMode)(
         subscriptionRequest
       )
@@ -125,26 +124,26 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       "return a redirect status (SEE_OTHER - 303)" in withController { controller =>
         mockIndividualWithNoEnrolments()
         setupMockSubscriptionDetailsSaveFunctions()
-        val goodRequest = callShow(controller, isEditMode = false)
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
+        val goodRequest = callPost(controller, isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
       }
 
       "redirect to foreign property accounting method page" in withController { controller =>
         mockIndividualWithNoEnrolments()
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
 
-        val goodRequest = callShow(controller, isEditMode = false)
+        val goodRequest = callPost(controller, isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
       }
 
     }
@@ -153,68 +152,65 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       "return a redirect status (SEE_OTHER - 303)" in withController { controller =>
         mockIndividualWithNoEnrolments()
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
 
-
-        val goodRequest = callShow(controller, isEditMode = true)
+        val goodRequest = callPost(controller, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
       }
 
       "redirect to checkYourAnswer page" in withController { controller =>
         disable(SaveAndRetrieve)
         mockIndividualWithNoEnrolments()
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
 
-        val goodRequest = callShow(controller, isEditMode = true)
+        val goodRequest = callPost(controller, isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
-
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
       }
 
       "redirect to taskList page" in withController { controller =>
         enable(SaveAndRetrieve)
         mockIndividualWithNoEnrolments()
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22","11","2021")))))
 
-        val goodRequest = callShow(controller, isEditMode = true)
+        val goodRequest = callPost(controller, isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
       }
     }
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in withController { controller =>
         disable(SaveAndRetrieve)
-        mockOverseasPropertyStartDate()
+        mockOverseasPropertyStartDateView()
         mockIndividualWithNoEnrolments()
         mockFetchIndividualIncomeSourceFromSubscriptionDetails(Some(testIncomeSourceOverseasProperty))
 
-        val badRequest = callShowWithErrorForm(controller, isEditMode = false)
+        val badRequest = callPostWithErrorForm(controller, isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyStartDate, 0)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(None)
       }
 
       "return bad request status (400) when Save & Retrieve feature is enabled" in withController { controller =>
         enable(SaveAndRetrieve)
-        mockOverseasPropertyStartDate()
+        mockOverseasPropertyStartDateView()
 
-        val badRequest = callShowWithErrorForm(controller, isEditMode = false)
+        val badRequest = callPostWithErrorForm(controller, isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 

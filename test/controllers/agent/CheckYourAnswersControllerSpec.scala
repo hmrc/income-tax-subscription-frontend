@@ -16,12 +16,10 @@
 
 package controllers.agent
 
-
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
-import models.common.{IncomeSourceModel, PropertyModel}
+import models.common.{IncomeSourceModel, OverseasPropertyModel, PropertyModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
@@ -35,7 +33,7 @@ import uk.gov.hmrc.http.InternalServerException
 import utilities.ImplicitDateFormatterImpl
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
 import utilities.SubscriptionDataUtil._
-import utilities.agent.TestConstants.{testNino, _}
+import utilities.agent.TestConstants._
 import utilities.agent.TestModels
 import utilities.agent.TestModels.testAccountingMethodProperty
 import views.html.agent.CheckYourAnswers
@@ -53,7 +51,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   val mockCheckYourAnswers: CheckYourAnswers = mock[CheckYourAnswers]
 
   override def beforeEach(): Unit = {
-    disable(ReleaseFour)
     reset(mockCheckYourAnswers)
     super.beforeEach()
   }
@@ -79,7 +76,12 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     startDate = startDate
   )
 
-  "Calling the show action of the CheckYourAnswersController with an authorised user" when {
+  val testOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
+    accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
+    startDate = startDate
+  )
+
+  "Show with an authorised user" when {
 
     def call(request: Request[AnyContent] = subscriptionRequest): Future[Result] = TestCheckYourAnswersController.show(request)
 
@@ -94,34 +96,30 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "There are both a matched nino and terms in Subscription Details " should {
+    "there are both a matched nino and terms in Subscription Details " should {
       "return ok (200)" in {
         mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
         mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
+        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+        mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
         mockFetchProperty(None)
-        when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(HtmlFormat.empty)
-        status(call()) must be(Status.OK)
-      }
+        mockFetchOverseasProperty(None)
 
-      "There are both a matched nino and terms in Subscription Details with release four enabled" should {
-        "return ok (200)" in {
-          enable(ReleaseFour)
-          mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
-          mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
-          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
-          mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
-          mockFetchProperty(None)
-          when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-            .thenReturn(HtmlFormat.empty)
-          status(call()) must be(Status.OK)
-          disable(ReleaseFour)
-        }
+        when(mockCheckYourAnswers(
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any()
+        )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+        .thenReturn(HtmlFormat.empty)
+
+        status(call()) must be(Status.OK)
       }
     }
 
     "There are no a matched nino in session" should {
-      s"return redirect ${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
+      "redirect the user to the confirm client page" in {
         mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
 
         val result = call(subscriptionRequest.removeFromSession(ITSASessionKeys.NINO))
@@ -132,7 +130,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "Calling the submit action of the CheckYourAnswersController with an authorised user" when {
+  "Submit with an authorised user" when {
     lazy val testSummary = TestModels.testCacheMap
 
     def call(request: Request[AnyContent]): Future[Result] = TestCheckYourAnswersController.submit(request)
@@ -150,7 +148,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     }
 
     "The agent is authorised and" should {
-      "There is a matched nino and utr in Subscription Details  and the submission is successful" should {
+      "There is a matched nino and utr in Subscription Details and the submission is successful" should {
         // generate a new nino specifically for this test,
         // since the default value in test constant may be used by accident
         lazy val newTestNino = new Generator().nextNino.nino
@@ -162,34 +160,27 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         lazy val result = call(authorisedAgentRequest)
 
-        "return a redirect status (SEE_OTHER - 303) when release four is disabled" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(testSummary)
-          mockFetchProperty(testPropertyModel)
-
-          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary(property = testPropertyModel))
-
-          status(result) must be(Status.SEE_OTHER)
-          await(result)
-          verifySubscriptionDetailsSave(MtditId, 1)
-        }
-
-        "return a redirect status (SEE_OTHER - 303) when release four is enabled" in {
-          enable(ReleaseFour)
+        "return a redirect status (SEE_OTHER - 303)" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(testSummary)
           mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(testPropertyModel)
+          mockFetchOverseasProperty(testOverseasPropertyModel)
 
-          mockCreateSubscriptionSuccess(testARN, newTestNino, testUtr, testSummary.getAgentSummary(property = testPropertyModel), isReleaseFourEnabled = true)
+          mockCreateSubscriptionSuccess(
+            testARN,
+            newTestNino,
+            testUtr,
+            testSummary.getAgentSummary(property = testPropertyModel, overseasProperty = testOverseasPropertyModel, isReleaseFourEnabled = true),
+            isReleaseFourEnabled = true
+          )
 
           status(result) must be(Status.SEE_OTHER)
           await(result)
-          disable(ReleaseFour)
         }
 
-        s"redirect to '${controllers.agent.routes.ConfirmationAgentController.show().url}'" in {
+        "redirect the user to the agent confirmation agent page" in {
           redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show().url)
         }
       }
@@ -203,8 +194,17 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         "return a failure if subscription fails" in {
           mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
+          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(testPropertyModel)
-          mockCreateSubscriptionFailure(testARN, testNino, testUtr, TestModels.testCacheMap.getAgentSummary(property = testPropertyModel))
+          mockFetchOverseasProperty(testOverseasPropertyModel)
+          mockCreateSubscriptionFailure(
+            testARN,
+            testNino,
+            testUtr,
+            TestModels.testCacheMap.getAgentSummary(property = testPropertyModel, overseasProperty = testOverseasPropertyModel, isReleaseFourEnabled = true),
+            isReleaseFourEnabled = true
+          )
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
           ex.message mustBe "Successful response not received from submission"
@@ -241,9 +241,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
       ) mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
     }
-
   }
 
   authorisationTests()
-
 }

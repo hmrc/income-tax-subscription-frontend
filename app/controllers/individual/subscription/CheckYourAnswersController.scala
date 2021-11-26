@@ -26,7 +26,7 @@ import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.SubscriptionSuccess
 import play.api.Logger
-import play.api.mvc.{Action, AnyContent, Request, Result, _}
+import play.api.mvc._
 import services.individual.SubscriptionOrchestrationService
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -100,11 +100,12 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty()
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
     } yield {
       if (isEnabled(ReleaseFour)) {
-        cacheMap.getSummary(businesses, businessAccountingMethod, property, isReleaseFourEnabled = true)
+        cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true)
       } else {
-        cacheMap.getSummary(property = property)
+        cacheMap.getSummary(property = property, overseasProperty = overseasProperty)
       }
     }
   }

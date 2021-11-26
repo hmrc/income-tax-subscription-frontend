@@ -22,7 +22,6 @@ import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import forms.individual.incomesource.IncomeSourceForm
-import javax.inject.{Inject, Singleton}
 import models.IndividualSummary
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
@@ -36,6 +35,7 @@ import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
 import views.html.individual.incometax.incomesource.IncomeSource
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -115,11 +115,12 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty()
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
     } yield {
       if (isEnabled(ReleaseFour)) {
-        cacheMap.getSummary(businesses, businessAccountingMethod, property, isReleaseFourEnabled = true)
+        cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true)
       } else {
-        cacheMap.getSummary(property = property)
+        cacheMap.getSummary(property = property, overseasProperty = overseasProperty)
       }
     }
   }

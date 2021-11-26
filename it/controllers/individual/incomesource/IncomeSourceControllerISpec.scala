@@ -28,7 +28,7 @@ import models.common.IncomeSourceModel
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, Property, subscriptionId}
+import utilities.SubscriptionDataKeys._
 
 class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -90,6 +90,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -109,6 +110,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -127,6 +129,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -145,6 +148,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -163,6 +167,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -181,6 +186,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -199,6 +205,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -218,6 +225,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.IncomeSource, userInput)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /details/income-receive is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
@@ -247,6 +255,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -276,6 +285,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -306,6 +316,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -333,6 +344,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -362,6 +374,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
             When("POST /details/income-receive is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -392,6 +405,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -421,6 +435,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -441,15 +456,14 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)),
-              overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
-              overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true))
             )
           )
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -471,15 +485,14 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-              overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
-              overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true))
             )
           )
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -507,6 +520,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -527,15 +541,14 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-              overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
-              overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
+              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true))
             )
           )
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -556,15 +569,14 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
-              overseasPropertyStartDate = Some(testOverseasPropertyStartDate),
-              overseasPropertyAccountingMethod = Some(testAccountingMethodForeignProperty)
+              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true))
             )
           )
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
@@ -596,6 +608,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(Some(testSummaryDataSelfEmploymentData)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(Some(testAccountingMethod)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
           When("POST /details/income-receive is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))

@@ -9,11 +9,11 @@ import helpers.agent.IntegrationTestConstants.SessionId
 import helpers.agent.IntegrationTestModels.{fullSubscriptionData, subscriptionData}
 import helpers.agent.WiremockHelper
 import helpers.servicemocks.WireMockMethods
-import models.common.PropertyModel
+import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.{BusinessesKey, Property, subscriptionId}
+import utilities.SubscriptionDataKeys.{BusinessesKey, OverseasProperty, Property, subscriptionId}
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
@@ -43,6 +43,19 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   def stubSaveProperty(property: PropertyModel): Unit = {
     when(method = POST, uri = postUri(Property), body = Json.toJson(property))
       .thenReturn(Status.OK)
+  }
+
+  def verifySaveProperty[T](property: PropertyModel, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
+    WiremockHelper.verifyPost(postUri(Property), Some((Json.toJson(property): JsValue).toString()), count)
+  }
+
+  def stubSaveOverseasProperty(property: OverseasPropertyModel): Unit = {
+    when(method = POST, uri = postUri(OverseasProperty), body = Json.toJson(property))
+      .thenReturn(Status.OK)
+  }
+
+  def verifySaveOverseasProperty[T](property: OverseasPropertyModel, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
+    WiremockHelper.verifyPost(postUri(OverseasProperty), Some((Json.toJson(property): JsValue).toString()), count)
   }
 
   def stubFullSubscriptionGet(): Unit = stubSubscriptionData(fullSubscriptionDataAllPost)

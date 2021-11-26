@@ -91,19 +91,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     mockFetchFromSubscriptionDetails[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
   }
 
-  protected final def mockFetchPropertyAccountingFromSubscriptionDetails(fetchPropertyAccountingMethod: Option[AccountingMethodPropertyModel]): Unit = {
-    mockFetchFromSubscriptionDetails[AccountingMethodPropertyModel](PropertyAccountingMethod, fetchPropertyAccountingMethod)
-  }
-
-  protected final def mockFetchForeignPropertyAccountingFromSubscriptionDetails(fetchForeignPropertyAccountingMethod: Option[AccountingMethodPropertyModel]): Unit = {
-    mockFetchFromSubscriptionDetails[AccountingMethodPropertyModel](OverseasPropertyAccountingMethod, fetchForeignPropertyAccountingMethod)
-  }
-
-  protected final def mockFetchPropertyStartDateFromSubscriptionDetails(fetchPropertyStartDateMethod:
-                                                                        Option[PropertyStartDateModel]): Unit = {
-    mockFetchFromSubscriptionDetails[PropertyStartDateModel](PropertyStartDate, fetchPropertyStartDateMethod)
-  }
-
   protected final def mockFetchSubscriptionIdFromSubscriptionDetails(fetchSubscriptionId: Option[String]): Unit = {
     mockFetchFromSubscriptionDetails[String](MtditId, fetchSubscriptionId)
   }

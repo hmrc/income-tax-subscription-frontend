@@ -20,7 +20,7 @@ import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.Cash
-import models.common.{AccountingMethodPropertyModel, OverseasAccountingMethodPropertyModel}
+import models.common.OverseasPropertyModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -52,88 +52,66 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
     "there is no previously selected accounting method" should {
       "display the overseas property accounting method view and return OK (200)" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
-
-        mockFetchForeignPropertyAccountingFromSubscriptionDetails(None)
+        mockFetchOverseasProperty(None)
         mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 0)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(None)
       }
     }
     "there is a previously selected answer of CASH" should {
       "display the overseas property accounting method view and return OK (200)" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchForeignPropertyAccountingFromSubscriptionDetails(AccountingMethodPropertyModel(Cash))
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(
+          accountingMethod = Some(Cash)
+        )))
         mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
 
         status(result) must be(Status.OK)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 0)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(None)
       }
     }
   }
 
   "submit" should {
 
-    def callShow(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode)(
-      subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, OverseasAccountingMethodPropertyModel(Cash))
+    def callSubmit(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode)(
+      subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, Cash)
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode)(
+    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode)(
       subscriptionRequest
     )
 
     "When it is not in edit mode" when {
-      "turn a redirect status (SEE_OTHER - 303)" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
-      }
-
       "redirect to CheckYourAnswer page" in {
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
-        val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callSubmit(isEditMode = false)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
       }
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
-      }
-
       "redirect to CheckYourAnswer page" in {
         setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
-        val goodRequest = callShow(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = true)
 
+        status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 1)
-        verifySubscriptionDetailsFetchAll(1)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
       }
     }
 
@@ -141,7 +119,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       "return bad request status (400)" in {
         mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
 
-        val badRequest = callShowWithErrorForm(isEditMode = false)
+        val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 

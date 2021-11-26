@@ -20,20 +20,19 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.utils.AgentAnswers._
-import controllers.utils.OptionalAnswers._
 import controllers.utils.RequireAnswer
 import forms.agent.OverseasPropertyStartDateForm
 import forms.agent.OverseasPropertyStartDateForm._
-import javax.inject.{Inject, Singleton}
-import models.common.{IncomeSourceModel, OverseasPropertyStartDateModel}
+import models.DateModel
+import models.common.IncomeSourceModel
 import play.api.data.Form
-import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -46,7 +45,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
                                                     mcc: MessagesControllerComponents)
   extends AuthenticatedController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching {
 
-  def view(overseasPropertyStartDateForm: Form[OverseasPropertyStartDateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
+  def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
     views.html.agent.business.overseas_property_start_date(
       overseasPropertyStartDateForm = overseasPropertyStartDateForm,
@@ -58,13 +57,15 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      require(optOverseasPropertyStartDateAnswer and incomeSourceModelAnswer) {
-        case overseasPropertyStartDate ~ incomeSource =>
-          Future.successful(Ok(view(
+      subscriptionDetailsService.fetchOverseasPropertyStartDate flatMap { overseasPropertyStartDate =>
+        subscriptionDetailsService.fetchIncomeSource map {
+          case Some(incomeSource) => Ok(view(
             overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
             isEditMode = isEditMode,
             incomeSourceModel = incomeSource
-          )))
+          ))
+          case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+        }
       }
   }
 
@@ -101,7 +102,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   }
 
 
-  def form(implicit request: Request[_]): Form[OverseasPropertyStartDateModel] = {
+  def form(implicit request: Request[_]): Form[DateModel] = {
     overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate.toLongDate, OverseasPropertyStartDateForm.maxStartDate.toLongDate)
   }
 

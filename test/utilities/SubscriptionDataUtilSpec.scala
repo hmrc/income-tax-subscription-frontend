@@ -20,7 +20,7 @@ import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import models.common.subscription.CreateIncomeSourcesModel
 import models.common.{AccountingYearModel, IncomeSourceModel}
-import models.{AgentSummary, Current, IndividualSummary}
+import models.{AgentSummary, Current, IndividualSummary, Next}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
 import uk.gov.hmrc.http.InternalServerException
@@ -200,9 +200,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           def result: CreateIncomeSourcesModel = testCacheMap(
             incomeSource = testIncomeSourceOverseasProperty,
             selectedTaxYear = testSelectedTaxYearCurrent,
-            overseasPropertyStartDate = testOverseasPropertyStartDateModel,
-            overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty
-          ).createIncomeSources(testNino)
+          ).createIncomeSources(testNino, overseasProperty = testFullOverseasPropertyModel)
 
           result shouldBe
             CreateIncomeSourcesModel(
@@ -218,8 +216,10 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       "the data returns overseas property start date but not overseas property accounting Method" should {
         "throw InternalServerException" in {
 
-          def result: CreateIncomeSourcesModel = testCacheMap(incomeSource = testIncomeSourceOverseasProperty, selectedTaxYear = testSelectedTaxYearCurrent,
-            overseasPropertyStartDate = testOverseasPropertyStartDateModel, overseasPropertyAccountingMethod = None).createIncomeSources(testNino)
+          def result: CreateIncomeSourcesModel = testCacheMap(
+            incomeSource = testIncomeSourceOverseasProperty,
+            selectedTaxYear = testSelectedTaxYearCurrent,
+          ).createIncomeSources(testNino, overseasProperty = testFullOverseasPropertyModel.copy(accountingMethod = None))
 
 
           intercept[InternalServerException](result).message mustBe
@@ -231,8 +231,10 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       "the data returns overseas property accounting Method but not overseas property start date" should {
         "throw InternalServerException" in {
 
-          def result: CreateIncomeSourcesModel = testCacheMap(incomeSource = testIncomeSourceOverseasProperty, selectedTaxYear = testSelectedTaxYearCurrent,
-            overseasPropertyStartDate = None, overseasPropertyAccountingMethod = testOverseasAccountingMethodProperty).createIncomeSources(testNino)
+          def result: CreateIncomeSourcesModel = testCacheMap(
+            incomeSource = testIncomeSourceOverseasProperty,
+            selectedTaxYear = testSelectedTaxYearCurrent
+          ).createIncomeSources(testNino, overseasProperty = testFullOverseasPropertyModel.copy(startDate = None))
 
           intercept[InternalServerException](result).message mustBe
             "[SubscriptionDataUtil][createIncomeSource] - oversea property start date missing"
@@ -246,7 +248,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           def result: CreateIncomeSourcesModel = testCacheMap(
             incomeSource = testIncomeSourceProperty,
             selectedTaxYear = testSelectedTaxYearCurrent
-          ).createIncomeSources(testNino)
+          ).createIncomeSources(testNino, overseasProperty = testFullOverseasPropertyModel.copy(accountingMethod = None, startDate = None))
 
           intercept[IllegalArgumentException] {
             result
@@ -265,10 +267,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
             testIncomeSourceBusiness,
             testBusinessName,
             testSelectedTaxYearCurrent,
-            testAccountingMethod,
-            testOverseasPropertyStartDateModel,
-            testOverseasAccountingMethodProperty
-          ).createIncomeSources(testNino, testSelfEmploymentData, testAccountingMethod, testFullPropertyModel)
+            testAccountingMethod
+          ).createIncomeSources(testNino, testSelfEmploymentData, testAccountingMethod, testFullPropertyModel, testFullOverseasPropertyModel)
 
           result shouldBe
             CreateIncomeSourcesModel(
@@ -302,7 +302,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         )
     }
     "income source is only foreign property" in {
-      testCacheMapCustom(incomeSource = testIncomeSourceOverseasProperty).getSummary() shouldBe
+      testCacheMapCustom(
+        incomeSource = testIncomeSourceOverseasProperty
+      ).getSummary(overseasProperty = testFullOverseasPropertyModel.copy(startDate = None)) shouldBe
         IndividualSummary(
           incomeSource = testIncomeSourceOverseasProperty,
           selectedTaxYear = None,
@@ -310,7 +312,12 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         )
     }
     "income source is all property and business and the feature switches are disabled" in {
-      testCacheMapCustom(incomeSource = testIncomeSourceAll).getSummary(property = testFullPropertyModel.copy(startDate = None)) shouldBe
+      testCacheMapCustom(
+        incomeSource = testIncomeSourceAll
+      ).getSummary(
+        property = testFullPropertyModel.copy(startDate = None),
+        overseasProperty = testFullOverseasPropertyModel.copy(startDate = None)
+      ) shouldBe
         IndividualSummary(
           incomeSource = testIncomeSourceAll,
           businessName = testBusinessName,
@@ -326,6 +333,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         selfEmployments = Some(testSelfEmploymentData),
         selfEmploymentsAccountingMethod = Some(testAccountingMethod),
         property = Some(testFullPropertyModel),
+        overseasProperty = Some(testFullOverseasPropertyModel),
         isReleaseFourEnabled = true
       ) shouldBe
         IndividualSummary(
@@ -335,6 +343,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           accountingMethodProperty = testAccountingMethodProperty,
           propertyStartDate = testPropertyStartDateModel,
           overseasAccountingMethodProperty = testOverseasAccountingMethodProperty,
+          overseasPropertyStartDate = testOverseasPropertyStartDateModel,
           selectedTaxYear = testSelectedTaxYearNext,
           selfEmployments = testSelfEmploymentData
         )
@@ -397,7 +406,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         isReleaseFourEnabled = true
       ) shouldBe AgentSummary(
         incomeSource = Some(testAgentIncomeSourceProperty),
-        selectedTaxYear = None,
+        selectedTaxYear = Some(AccountingYearModel(Next)),
         businessName = None,
         accountingMethod = None,
         accountingMethodProperty = Some(testAccountingMethodProperty),
@@ -450,16 +459,17 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         businessName = None,
         accountingMethod = None,
         accountingMethodProperty = None,
-        overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+        overseasAccountingMethodProperty = None
       )
     }
 
     "the income type is foreign property with the property tax year feature switch enabled" in {
       enable(ReleaseFour)
       testCacheMapCustom(
-        incomeSource = Some(testAgentIncomeSourceForeignProperty)
+        incomeSource = Some(testAgentIncomeSourceForeignProperty),
       ).getAgentSummary(selfEmployments = testSelfEmployments,
         selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+        overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None)),
         isReleaseFourEnabled = true) shouldBe AgentSummary(
         incomeSource = Some(testAgentIncomeSourceForeignProperty),
         selectedTaxYear = Some(testSelectedTaxYearNext),
@@ -493,6 +503,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         incomeSource = Some(testAgentIncomeSourceBusinessOverseasProperty)
       ).getAgentSummary(selfEmployments = testSelfEmployments,
         selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+        overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None)),
         isReleaseFourEnabled = true) shouldBe
         AgentSummary(
           incomeSource = testAgentIncomeSourceBusinessOverseasProperty,
@@ -511,14 +522,16 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       ).getAgentSummary(selfEmployments = testSelfEmployments,
         selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
         property = testFullPropertyModel,
+        overseasProperty = testFullOverseasPropertyModel,
         isReleaseFourEnabled = true) shouldBe AgentSummary(
         incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
-        selectedTaxYear = None,
+        selectedTaxYear = Some(AccountingYearModel(Next)),
         businessName = None,
         accountingMethod = None,
         accountingMethodProperty = Some(testAccountingMethodProperty),
         propertyStartDate = Some(testPropertyStartDateModel),
-        overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+        overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty),
+        overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
       )
     }
 
@@ -529,6 +542,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       ).getAgentSummary(selfEmployments = testSelfEmployments,
         selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
         property = testFullPropertyModel,
+        overseasProperty = Some(testFullOverseasPropertyModel),
         isReleaseFourEnabled = true) shouldBe AgentSummary(
         incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
         selectedTaxYear = Some(testSelectedTaxYearNext),
@@ -536,7 +550,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         accountingMethod = None,
         accountingMethodProperty = Some(testAccountingMethodProperty),
         propertyStartDate = Some(testPropertyStartDateModel),
-        overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
+        overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty),
+        overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
       )
     }
 

@@ -127,9 +127,10 @@ class IncomeSourceController @Inject()(
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty()
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
     } yield {
       if (isEnabled(ReleaseFour)) {
-        cacheMap.getAgentSummary(businesses, businessAccountingMethod, property)
+        cacheMap.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty)
       } else {
         cacheMap.getAgentSummary()
       }
