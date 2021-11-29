@@ -34,7 +34,7 @@ case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
 
   var selfEmploymentsComplete: Boolean = selfEmployments.forall(_.confirmed) && selfEmploymentAccountingMethod.isDefined
 
-  val overseasPropertyComplete: Boolean = overseasProperty.exists(_.startDate.isDefined) && overseasProperty.exists(_.accountingMethod.isDefined)
+  val overseasPropertyComplete: Boolean = overseasProperty.exists(_.confirmed)
 
   val sectionsTotal: Int = Math.max(2, 1 + selfEmployments.size + ukProperty.size + overseasProperty.size)
 
