@@ -20,30 +20,33 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
-import javax.inject.{Inject, Singleton}
+import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSourceModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class RoutingController @Inject()(val auditingService: AuditingService,
                                   val authService: AuthService,
                                   val appConfig: AppConfig,
-                                  subscriptionDetailsService: SubscriptionDetailsService)
+                                  val subscriptionDetailsService: SubscriptionDetailsService)
                                  (implicit val ec: ExecutionContext,
-                                  mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
+                                  mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchIncomeSource() map {
-        case Some(IncomeSourceModel(_, true, _)) =>
-          Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
-        case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
-          Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
-        case _ =>
-          Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+      withReference { reference =>
+        subscriptionDetailsService.fetchIncomeSource(reference) map {
+          case Some(IncomeSourceModel(_, true, _)) =>
+            Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
+          case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
+            Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
+          case _ =>
+            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+        }
       }
   }
 

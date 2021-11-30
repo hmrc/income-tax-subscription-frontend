@@ -88,14 +88,6 @@ GET         /thank-you                                           controllers.Fee
 GET         /business/what-year-to-sign-up                       controllers.individual.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                       controllers.individual.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
-#Business Name Routes
-GET         /business/name                                       controllers.individual.business.BusinessNameController.show(editMode: Boolean ?= false)
-POST        /business/name                                       controllers.individual.business.BusinessNameController.submit(editMode: Boolean ?= false)
-
-#Income Type Routes
-GET         /business/accounting-method                          controllers.individual.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/accounting-method                          controllers.individual.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
-
 #Property Accounting Method Routes
 GET         /business/accounting-method-property                 controllers.individual.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/accounting-method-property                 controllers.individual.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)

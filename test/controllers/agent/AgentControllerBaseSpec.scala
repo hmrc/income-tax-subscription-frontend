@@ -110,7 +110,8 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
   lazy val subscriptionRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
-    ITSASessionKeys.UTR -> TestConstants.testUtr
+    ITSASessionKeys.UTR -> TestConstants.testUtr,
+    ITSASessionKeys.REFERENCE -> "test-reference"
   )
 
 }

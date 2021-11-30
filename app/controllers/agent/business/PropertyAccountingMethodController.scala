@@ -18,11 +18,10 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
+import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodPropertyForm
 import models.AccountingMethod
-import models.common.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -37,63 +36,57 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents,
-                                                   val appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching {
+                                                   val appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching with ReferenceRetrieval {
 
-  def view(accountingMethodPropertyForm: Form[AccountingMethod], incomeSource: IncomeSourceModel, isEditMode: Boolean)
+  def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
     views.html.agent.business.property_accounting_method(
       accountingMethodPropertyForm = accountingMethodPropertyForm,
       postAction = controllers.agent.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl(incomeSource, isEditMode)
+      backUrl = backUrl(isEditMode)
     )
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchAccountingMethodProperty() flatMap { accountingMethod =>
-        subscriptionDetailsService.fetchIncomeSource() map {
-          case Some(incomeSource) => Ok(view(
+      withAgentReference { reference =>
+        subscriptionDetailsService.fetchAccountingMethodProperty(reference) map { accountingMethod =>
+          Ok(view(
             accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethod),
-            incomeSource = incomeSource,
             isEditMode = isEditMode
           ))
-          case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
         }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchIncomeSource() flatMap {
-        case Some(incomeSource) => AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(view(
-            accountingMethodPropertyForm = formWithErrors,
-            incomeSource = incomeSource,
-            isEditMode = isEditMode
-          ))),
-          accountingMethod =>
-            subscriptionDetailsService.saveAccountingMethodProperty(accountingMethod) map { _ =>
-              if (isEditMode || !incomeSource.foreignProperty) {
-                Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-              } else {
-                Redirect(routes.OverseasPropertyStartDateController.show())
+      withAgentReference { reference =>
+        subscriptionDetailsService.fetchIncomeSource(reference) flatMap {
+          case Some(incomeSource) => AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
+            formWithErrors => Future.successful(BadRequest(view(
+              accountingMethodPropertyForm = formWithErrors,
+              isEditMode = isEditMode
+            ))),
+            accountingMethod =>
+              subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethod) map { _ =>
+                if (isEditMode || !incomeSource.foreignProperty) {
+                  Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+                } else {
+                  Redirect(routes.OverseasPropertyStartDateController.show())
+                }
               }
-            }
-        )
+          )
+        }
       }
   }
 
-  def backUrl(incomeSource: IncomeSourceModel, isEditMode: Boolean): String = {
+  def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       controllers.agent.routes.CheckYourAnswersController.show().url
-    } else if (isEnabled(ReleaseFour)) {
-      controllers.agent.business.routes.PropertyStartDateController.show().url
     } else {
-      incomeSource match {
-        case IncomeSourceModel(true, _, _) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-        case _ => controllers.agent.routes.IncomeSourceController.show().url
-      }
+      controllers.agent.business.routes.PropertyStartDateController.show().url
     }
   }
 

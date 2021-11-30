@@ -18,6 +18,7 @@ package controllers.utils
 
 import models.Cash
 import models.common.business.AccountingMethodModel
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.{MustMatchers, WordSpecLike}
@@ -38,10 +39,12 @@ import scala.concurrent.Future
 
 class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar {
 
-  implicit val hc = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val testResult: Result = Redirect("/custom-result")
   val testResult2: Result = Redirect("/custom-result2")
+
+  val testReference: String = "test-reference"
 
   val testSingleAnswer: Answer[AccountingMethodModel] = SingleAnswer[AccountingMethodModel](
     retrieveAnswer = _.getEntry[AccountingMethodModel]("testKey"),
@@ -117,9 +120,9 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
   "require" must {
     "return a result" when {
       "the required data is available" in new Setup {
-        when(subscriptionDetailsService.fetchAll()(any()))
+        when(subscriptionDetailsService.fetchAll(ArgumentMatchers.eq(testReference))(any()))
           .thenReturn(Future.successful(CacheMap("testId", Map("testKey" -> Json.toJson(testModel)))))
-        val result: Future[Result] = require(testSingleAnswer) { answer =>
+        val result: Future[Result] = require(testReference)(testSingleAnswer) { answer =>
           Future.successful(Ok(Json.toJson(answer)))
         }
 
@@ -127,9 +130,9 @@ class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar 
         contentAsJson(result) mustBe Json.toJson(testModel)
       }
       "the required data is not available in the returned CacheMap" in new Setup {
-        when(subscriptionDetailsService.fetchAll()(any()))
+        when(subscriptionDetailsService.fetchAll(ArgumentMatchers.eq(testReference))(any()))
           .thenReturn(Future.successful(CacheMap("testId", Map("testKey2" -> Json.toJson(testModel)))))
-        val result: Future[Result] = require(testSingleAnswer) { answer =>
+        val result: Future[Result] = require(testReference)(testSingleAnswer) { answer =>
           Future.successful(Ok(Json.toJson(answer)))
         }
 

@@ -28,18 +28,21 @@ import utilities.individual.TestConstants._
 import scala.concurrent.Future
 
 trait MockPaperlessPreferenceTokenService extends UnitTestTrait with MockitoSugar {
-  val mockPaperlessPreferenceTokenService = mock[PaperlessPreferenceTokenService]
+
+  val mockPaperlessPreferenceTokenService: PaperlessPreferenceTokenService = mock[PaperlessPreferenceTokenService]
 
   private def mockStoreNino(nino: String)(result: Future[String]) =
-    when(mockPaperlessPreferenceTokenService.storeNino(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+    when(mockPaperlessPreferenceTokenService.storeNino(ArgumentMatchers.eq(nino), ArgumentMatchers.any())(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
   def mockStoreNinoSuccess(nino: String): Unit = mockStoreNino(nino)(Future.successful(testToken))
 
   def verifyStoreNino(nino: String): Unit = verify(mockPaperlessPreferenceTokenService)
-    .storeNino(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier])
+    .storeNino(ArgumentMatchers.eq(nino), ArgumentMatchers.any())(ArgumentMatchers.any[HeaderCarrier])
 }
 
 trait TestPaperlessPreferenceTokenService extends MockPaperlessPreferenceTokenConnector with MockSubscriptionDetailsService {
+
   object TestPaperlessPreferenceTokenService extends PaperlessPreferenceTokenService(MockSubscriptionDetailsService, mockPaperlessPreferenceTokenConnector)
+
 }

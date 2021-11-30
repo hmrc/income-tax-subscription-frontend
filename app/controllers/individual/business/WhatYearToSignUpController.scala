@@ -19,6 +19,7 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel
@@ -36,10 +37,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            val auditingService: AuditingService,
                                            val authService: AuthService,
                                            accountingPeriodService: AccountingPeriodService,
-                                           subscriptionDetailsService: SubscriptionDetailsService)
+                                           val subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController {
+                                           mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -53,39 +54,43 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchSelectedTaxYear() map { accountingYearModel =>
-        Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
+      withReference { reference =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
+          Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
+        }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      AccountingYearForm.accountingYearForm.bindFromRequest.fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
-        accountingYear => {
-          subscriptionDetailsService.saveSelectedTaxYear(AccountingYearModel(accountingYear)) map { _ =>
-            if (isEnabled(SaveAndRetrieve)) {
-              Redirect(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show())
-            } else if (isEditMode) {
-              Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-            } else {
-              Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
+      withReference { reference =>
+        AccountingYearForm.accountingYearForm.bindFromRequest.fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
+          accountingYear => {
+            subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map { _ =>
+              if (isEnabled(SaveAndRetrieve)) {
+                Redirect(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show())
+              } else if (isEditMode) {
+                Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+              } else {
+                Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
+              }
             }
           }
-        }
-      )
+        )
+      }
   }
 
   def backUrl(isEditMode: Boolean): Option[String] = {
     if (isEnabled(SaveAndRetrieve)) {
-      if(isEditMode) {
+      if (isEditMode) {
         Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
-      }else{
+      } else {
         Some(controllers.individual.business.routes.TaskListController.show().url)
       }
     } else {
-      if(isEditMode) {
+      if (isEditMode) {
         Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
       } else {
         None

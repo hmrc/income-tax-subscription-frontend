@@ -18,6 +18,7 @@ package services
 
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
+import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business._
 import models.{AccountingMethod, DateModel}
@@ -30,123 +31,140 @@ import utilities.SubscriptionDataKeys._
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
+//scalastyle:off
+
 @Singleton
 class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
                                           (implicit ec: ExecutionContext) {
 
-  type FO[T] = Future[Option[T]]
-  type FA = Future[Any]
+  private[services] def fetch[T](reference: String, location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] =
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](reference, subscriptionId).map(_.flatMap(cache => cache.getEntry(location)))
 
-  private[services] def fetch[T](location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): FO[T] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](subscriptionId).map(_.flatMap(cache => cache.getEntry(location)))
-
-  private[services] def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): Future[CacheMap] = {
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](subscriptionId).flatMap { optCache =>
+  private[services] def save[T](reference: String, location: String, obj: T)
+                               (implicit hc: HeaderCarrier, reads: Writes[T]): Future[CacheMap] = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](reference, subscriptionId).flatMap { optCache =>
       val newCache = optCache match {
         case None => CacheMap("", Map(location -> Json.toJson(obj)))
         case Some(cache) => CacheMap("", cache.data.updated(location, Json.toJson(obj)))
       }
-      incomeTaxSubscriptionConnector.saveSubscriptionDetails(subscriptionId, newCache) map {
+      incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, subscriptionId, newCache) map {
         case Right(_) => newCache
         case Left(_) => CacheMap("", Map.empty[String, JsValue])
       }
     }
   }
 
-  def fetchAll()(implicit hc: HeaderCarrier): Future[CacheMap] = incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](subscriptionId) map {
-    case Some(cacheMap) => cacheMap
-    case None => CacheMap("", Map.empty)
+  def fetchAll(reference: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](reference, subscriptionId) map {
+      case Some(cacheMap) => cacheMap
+      case None => CacheMap("", Map.empty)
+    }
   }
 
-  def deleteAll()(implicit hc: HeaderCarrier): Future[HttpResponse] = incomeTaxSubscriptionConnector.deleteAll()
+  def deleteAll(reference: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    incomeTaxSubscriptionConnector.deleteAll(reference)
+  }
 
-  def fetchIncomeSource()(implicit hc: HeaderCarrier): FO[IncomeSourceModel] =
-    fetch[IncomeSourceModel](IncomeSource)
+  def fetchIncomeSource(reference: String)(implicit hc: HeaderCarrier): Future[Option[IncomeSourceModel]] =
+    fetch[IncomeSourceModel](reference, IncomeSource)
 
-  def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
-    save[IncomeSourceModel](IncomeSource, incomeSource)
+  def saveIncomeSource(reference: String, incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
+    save[IncomeSourceModel](reference, IncomeSource, incomeSource)
 
-  def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
-    fetch[BusinessNameModel](BusinessName)
+  def fetchBusinessName(reference: String)(implicit hc: HeaderCarrier): Future[Option[BusinessNameModel]] =
+    fetch[BusinessNameModel](reference, BusinessName)
 
-  def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FA =
-    save[BusinessNameModel](BusinessName, businessName)
+  def saveBusinessName(reference: String, businessName: BusinessNameModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
+    save[BusinessNameModel](reference, BusinessName, businessName)
 
-  def fetchAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FO[AccountingMethodModel] =
-    fetch[AccountingMethodModel](SubscriptionDataKeys.AccountingMethod)
+  def fetchAccountingMethod(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingMethodModel]] =
+    fetch[AccountingMethodModel](reference, SubscriptionDataKeys.AccountingMethod)
 
-  def saveAccountingMethod(accountingMethod: AccountingMethodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FA =
-    save[AccountingMethodModel](SubscriptionDataKeys.AccountingMethod, accountingMethod)
+  def saveAccountingMethod(reference: String, accountingMethod: AccountingMethodModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
+    save[AccountingMethodModel](reference: String, SubscriptionDataKeys.AccountingMethod, accountingMethod)
 
-  def fetchSelectedTaxYear()(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FO[AccountingYearModel] =
-    fetch[AccountingYearModel](SelectedTaxYear)
+  def fetchSelectedTaxYear(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] =
+    fetch[AccountingYearModel](reference, SelectedTaxYear)
 
-  def saveSelectedTaxYear(selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FA =
-    save[AccountingYearModel](SelectedTaxYear, selectedTaxYear)
+  def saveSelectedTaxYear(reference: String, selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
+    save[AccountingYearModel](reference, SelectedTaxYear, selectedTaxYear)
 
-  def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
+  def fetchSubscriptionId(reference: String)(implicit hc: HeaderCarrier): Future[Option[String]] = fetch[String](reference, MtditId)
 
-  def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FA = save[String](MtditId, mtditId)
+  def saveSubscriptionId(reference: String, mtditId: String)(implicit hc: HeaderCarrier): Future[CacheMap] = save[String](reference, MtditId, mtditId)
 
-  def fetchPaperlessPreferenceToken()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] =
-    fetch[String](PaperlessPreferenceToken)
+  def fetchPaperlessPreferenceToken(reference: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
+    fetch[String](reference, PaperlessPreferenceToken)
 
-  def savePaperlessPreferenceToken(token: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FA =
-    save[String](PaperlessPreferenceToken, token)
+  def savePaperlessPreferenceToken(reference: String, token: String)(implicit hc: HeaderCarrier): Future[CacheMap] =
+    save[String](reference, PaperlessPreferenceToken, token)
 
-  def fetchLastUpdatedTimestamp()(implicit hc: HeaderCarrier, reads: Reads[TimestampModel]): Future[Option[TimestampModel]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[TimestampModel](lastUpdatedTimestamp)
+  def fetchLastUpdatedTimestamp(reference: String)(implicit hc: HeaderCarrier): Future[Option[TimestampModel]] =
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[TimestampModel](reference, lastUpdatedTimestamp)
 
-  def fetchProperty()(implicit hc: HeaderCarrier): Future[Option[PropertyModel]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[PropertyModel](Property)
+  def fetchProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[PropertyModel]] =
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[PropertyModel](reference, Property)
 
-  def saveProperty(property: PropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[PropertyModel](Property, property)
+  def saveProperty(reference: String, property: PropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[PropertyModel](reference, Property, property)
 
-  def fetchOverseasProperty()(implicit hc: HeaderCarrier): Future[Option[OverseasPropertyModel]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](OverseasProperty)
+  def fetchOverseasProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[OverseasPropertyModel]] =
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](reference, OverseasProperty)
 
-  def saveOverseasProperty(overseasProperty: OverseasPropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[OverseasPropertyModel](OverseasProperty, overseasProperty)
+  def saveOverseasProperty(reference: String, overseasProperty: OverseasPropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[OverseasPropertyModel](reference, OverseasProperty, overseasProperty)
 
-  def fetchPropertyStartDate()(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
-    fetchProperty().map(_.flatMap(_.startDate))
+  def fetchPropertyStartDate(reference: String)(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
+    fetchProperty(reference).map(_.flatMap(_.startDate))
 
-  def savePropertyStartDate(propertyStartDate: DateModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-    fetchProperty() map {
+  def savePropertyStartDate(reference: String, propertyStartDate: DateModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchProperty(reference) map {
       case Some(property) => property.copy(startDate = Some(propertyStartDate), confirmed = false)
       case None => PropertyModel(startDate = Some(propertyStartDate))
-    } flatMap saveProperty
+    } flatMap { model =>
+      saveProperty(reference, model)
+    }
   }
 
-  def fetchAccountingMethodProperty()(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
-    fetchProperty().map(_.flatMap(_.accountingMethod))
+  def fetchAccountingMethodProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
+    fetchProperty(reference).map(_.flatMap(_.accountingMethod))
 
-  def saveAccountingMethodProperty(accountingMethod: AccountingMethod)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-    fetchProperty() map {
+  def saveAccountingMethodProperty(reference: String, accountingMethod: AccountingMethod)
+                                  (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchProperty(reference) map {
       case Some(property) => property.copy(accountingMethod = Some(accountingMethod), confirmed = false)
       case None => PropertyModel(accountingMethod = Some(accountingMethod))
-    } flatMap saveProperty
+    } flatMap { model =>
+      saveProperty(reference, model)
+    }
   }
 
-  def fetchOverseasPropertyStartDate()(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
-    fetchOverseasProperty().map(_.flatMap(_.startDate))
+  def retrieveReference(utr: String)(implicit hc: HeaderCarrier): Future[RetrieveReferenceResponse] = {
+    incomeTaxSubscriptionConnector.retrieveReference(utr)
+  }
 
-  def saveOverseasPropertyStartDate(propertyStartDate: DateModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-    fetchOverseasProperty() map {
+  def fetchOverseasPropertyStartDate(reference: String)(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
+    fetchOverseasProperty(reference).map(_.flatMap(_.startDate))
+
+  def saveOverseasPropertyStartDate(reference: String, propertyStartDate: DateModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchOverseasProperty(reference) map {
       case Some(property) => property.copy(startDate = Some(propertyStartDate), confirmed = false)
       case None => OverseasPropertyModel(startDate = Some(propertyStartDate))
-    } flatMap saveOverseasProperty
+    } flatMap { model =>
+      saveOverseasProperty(reference, model)
+    }
   }
 
-  def fetchOverseasPropertyAccountingMethod()(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
-    fetchOverseasProperty().map(_.flatMap(_.accountingMethod))
+  def fetchOverseasPropertyAccountingMethod(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
+    fetchOverseasProperty(reference).map(_.flatMap(_.accountingMethod))
 
-  def saveOverseasAccountingMethodProperty(accountingMethod: AccountingMethod)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-    fetchOverseasProperty() map {
+  def saveOverseasAccountingMethodProperty(reference: String, accountingMethod: AccountingMethod)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchOverseasProperty(reference) map {
       case Some(property) => property.copy(accountingMethod = Some(accountingMethod), confirmed = false)
       case None => OverseasPropertyModel(accountingMethod = Some(accountingMethod))
-    } flatMap saveOverseasProperty
+    } flatMap { model =>
+      saveOverseasProperty(reference, model)
+    }
   }
 
 }

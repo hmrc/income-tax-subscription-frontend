@@ -25,6 +25,7 @@ object ITSASessionKeys {
   val JourneyStateKey = "Journey-State"
   val NINO = "NINO"
   val UTR = "UTR"
+  val REFERENCE = "reference"
 
   val sessionId = "sessionId"
 

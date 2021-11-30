@@ -20,33 +20,36 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
-import javax.inject.{Inject, Singleton}
+import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSourceModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RoutingController @Inject()(val auditingService: AuditingService,
                                   val authService: AuthService,
-                                  subscriptionDetailsService: SubscriptionDetailsService)
+                                  val subscriptionDetailsService: SubscriptionDetailsService)
                                  (implicit val ec: ExecutionContext,
                                   val appConfig: AppConfig,
-                                  mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching {
+                                  mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching with ReferenceRetrieval {
 
   def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (editMode) {
-        Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
-      } else {
-        subscriptionDetailsService.fetchIncomeSource() map {
-          case Some(IncomeSourceModel(_, true, _)) =>
-            Redirect(routes.PropertyStartDateController.show())
-          case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
-            Redirect(routes.OverseasPropertyStartDateController.show())
-          case _ =>
-            Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+      withAgentReference { reference =>
+        if (editMode) {
+          Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
+        } else {
+          subscriptionDetailsService.fetchIncomeSource(reference) map {
+            case Some(IncomeSourceModel(_, true, _)) =>
+              Redirect(routes.PropertyStartDateController.show())
+            case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
+              Redirect(routes.OverseasPropertyStartDateController.show())
+            case _ =>
+              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+          }
         }
       }
   }

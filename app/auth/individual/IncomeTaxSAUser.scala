@@ -34,17 +34,23 @@ case class IncomeTaxSAUser(enrolments: Enrolments,
                            confidenceLevel: ConfidenceLevel,
                            userId: String) extends IncomeTaxUser {
 
-  def nino(implicit request: Request[AnyContent]): Option[String] =
+  def nino(implicit request: Request[AnyContent]): Option[String] = {
     getEnrolment(Constants.ninoEnrolmentName) match {
       case None => request.session.get(ITSASessionKeys.NINO)
       case x => x
     }
+  }
 
-  def utr(implicit request: Request[AnyContent]): Option[String] =
+  def utr(implicit request: Request[AnyContent]): Option[String] = {
     getEnrolment(Constants.utrEnrolmentName) match {
       case None => request.session.get(ITSASessionKeys.UTR)
       case x => x
     }
+  }
+
+  def reference(implicit request: Request[AnyContent]): Option[String] = {
+    request.session.get(ITSASessionKeys.REFERENCE)
+  }
 
   lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
 

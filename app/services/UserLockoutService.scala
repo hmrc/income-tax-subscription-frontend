@@ -16,16 +16,15 @@
 
 package services
 
-import java.net.URLEncoder
-
 import config.AppConfig
 import connectors.usermatching.UserLockoutConnector
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import javax.inject.{Inject, Singleton}
 import models.usermatching.{LockoutStatus, LockoutStatusFailure, NotLockedOut}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.net.URLEncoder
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class LockoutUpdate(status: LockoutStatus, updatedCount: Option[Int])
@@ -49,17 +48,16 @@ class UserLockoutService @Inject()(appConfig: AppConfig,
     userLockoutConnector.getLockoutStatus(encodedToken)
   }
 
-  def incrementLockout(token: String, currentFailedMatches: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext)
-  : Future[Either[LockoutStatusFailure, LockoutUpdate]] = {
+  def incrementLockout(token: String, currentFailedMatches: Int)
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[LockoutStatusFailure, LockoutUpdate]] = {
     val encodedToken = encodeToken(token)
-
     val incrementedFailedMatches = currentFailedMatches + 1
     if (incrementedFailedMatches < appConfig.matchingAttempts) {
       Future.successful(Right(LockoutUpdate(NotLockedOut, Some(incrementedFailedMatches))))
     } else {
-      userLockoutConnector.lockoutUser(encodedToken) flatMap {
-        case Right(status) => subscriptionDetailsService.deleteAll().map(_ => Right(LockoutUpdate(status, None)))
-        case Left(failure) => Future.successful(Left(failure))
+      userLockoutConnector.lockoutUser(encodedToken) map {
+        case Right(status) => Right(LockoutUpdate(status, None))
+        case Left(failure) => Left(failure)
       }
     }
   }

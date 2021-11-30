@@ -36,6 +36,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ForeignProperty, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
+import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingMethodPropertyForm
 import models.AccountingMethod
 import models.common.IncomeSourceModel
@@ -53,10 +54,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class PropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
                                                    propertyAccountingMethod: PropertyAccountingMethod,
                                                    val authService: AuthService,
-                                                   subscriptionDetailsService: SubscriptionDetailsService)
+                                                   val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    val appConfig: AppConfig,
-                                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
+                                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
+
   private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 
   def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean, isSaveAndRetrieve: Boolean)
@@ -75,39 +77,41 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchAccountingMethodProperty() flatMap { accountingMethodProperty =>
-        view(
-          accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethodProperty),
-          isEditMode = isEditMode,
-          isSaveAndRetrieve = isEnabled(SaveAndRetrieve)
-        ).map(view => Ok(view))
+      withReference { reference =>
+        subscriptionDetailsService.fetchAccountingMethodProperty(reference) flatMap { accountingMethodProperty =>
+          view(
+            accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethodProperty),
+            isEditMode = isEditMode,
+            isSaveAndRetrieve = isEnabled(SaveAndRetrieve)
+          ).map(view => Ok(view))
+        }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
-        formWithErrors =>
-          view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode, isEnabled(SaveAndRetrieve)).map(view => BadRequest(view)),
-        accountingMethodProperty => {
-          subscriptionDetailsService.saveAccountingMethodProperty(accountingMethodProperty) flatMap { _ => {
-            (isEditMode, isSaveAndRetrieve) match {
-              case (_, true) => Future(Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
-              case (_, false) => subscriptionDetailsService.fetchIncomeSource() map {
-                case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
-                  Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
-                case _ =>
-                  Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+      withReference { reference =>
+        AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
+          formWithErrors =>
+            view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode, isEnabled(SaveAndRetrieve)).map(view => BadRequest(view)),
+          accountingMethodProperty => {
+            subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) flatMap { _ =>
+              (isEditMode, isSaveAndRetrieve) match {
+                case (_, true) => Future(Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
+                case (_, false) => subscriptionDetailsService.fetchIncomeSource(reference) map {
+                  case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
+                    Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
+                  case _ =>
+                    Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+                }
               }
             }
           }
-          }
-        }
-      )
+        )
+      }
   }
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] = {
-
     (isEditMode, isSaveAndRetrieve) match {
       case (true, true) => Future.successful(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url)
       case (false, _) => Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)

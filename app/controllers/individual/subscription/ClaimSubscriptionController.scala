@@ -20,7 +20,7 @@ import auth.individual.SignUpController
 import cats.data.EitherT
 import cats.implicits._
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
+import controllers.utils.ReferenceRetrieval
 import models.ConnectorError
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -29,31 +29,34 @@ import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.MtditId
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClaimSubscriptionController @Inject()(val auditingService: AuditingService,
                                             val authService: AuthService,
-                                            subscriptionDetailsService: SubscriptionDetailsService,
+                                            val subscriptionDetailsService: SubscriptionDetailsService,
                                             subscriptionOrchestrationService: SubscriptionOrchestrationService)
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
-                                            mcc: MessagesControllerComponents) extends SignUpController {
+                                            mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>
-      user =>
-        val res = for {
-          mtditId <- EitherT(getMtditId)
-          nino = user.nino.get
-          _ <- EitherT(subscriptionOrchestrationService.enrolAndRefresh(mtditId, nino))
-        } yield Ok(confirmationPage)
+      implicit user =>
+        withReference { reference =>
+          val res = for {
+            mtditId <- EitherT(getMtditId(reference))
+            nino = user.nino.get
+            _ <- EitherT(subscriptionOrchestrationService.enrolAndRefresh(mtditId, nino))
+          } yield Ok(confirmationPage)
 
-        res.valueOr(ex => throw new InternalServerException(ex.toString))
+          res.valueOr(ex => throw new InternalServerException(ex.toString))
+        }
   }
 
-  private def getMtditId(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
-    subscriptionDetailsService.fetchSubscriptionId() map (_.toRight(left = SubscriptionDetailsMissingError(MtditId)))
+  private def getMtditId(reference: String)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
+    subscriptionDetailsService.fetchSubscriptionId(reference) map (_.toRight(left = SubscriptionDetailsMissingError(MtditId)))
   }
 
   private def confirmationPage(implicit request: Request[AnyContent]): Html = {

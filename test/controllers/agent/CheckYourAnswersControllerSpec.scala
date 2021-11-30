@@ -228,11 +228,11 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    s"point to ${controllers.agent.business.routes.BusinessAccountingMethodController.show().url}" when {
+    s"point to ${appConfig.incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl}" when {
       "on the business only journey" in {
         TestCheckYourAnswersController.backUrl(
           IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
-        ) mustBe controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        ) mustBe appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method"
       }
     }
 

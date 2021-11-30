@@ -126,7 +126,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(None)
-        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -148,7 +147,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(Some(clientDetails))
-        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -169,7 +167,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(Some(clientDetails))
-        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(0))
       }
     }
 
@@ -191,7 +188,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           redirectURI(routes.ConfirmClientController.show().url)
         )
 
-        IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
 
       }

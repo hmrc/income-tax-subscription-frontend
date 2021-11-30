@@ -23,15 +23,16 @@ import config.featureswitch.FeatureSwitch.SPSEnabled
 import config.featureswitch.FeatureSwitching
 import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
-import javax.inject.{Inject, Singleton}
+import controllers.utils.ReferenceRetrieval
 import models.common.subscription.SubscriptionSuccess
 import play.api.mvc._
-import services.individual._
 import services._
+import services.individual._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys._
 import utilities.Implicits._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -39,11 +40,11 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                val authService: AuthService,
                                citizenDetailsService: CitizenDetailsService,
                                getEligibilityStatusService: GetEligibilityStatusService,
-                               subscriptionDetailsService: SubscriptionDetailsService,
+                               val subscriptionDetailsService: SubscriptionDetailsService,
                                subscriptionService: SubscriptionService)
                               (implicit val ec: ExecutionContext,
                                val appConfig: AppConfig,
-                               mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
+                               mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching with ReferenceRetrieval {
 
   def home: Action[AnyContent] = Action { implicit request =>
     val redirect = routes.HomeController.index()
@@ -58,7 +59,9 @@ class HomeController @Inject()(val auditingService: AuditingService,
           case OptionalIdentifiers(Some(nino), Some(utr)) =>
             getSubscription(nino) flatMap {
               case Some(SubscriptionSuccess(mtditId)) =>
-                claimSubscription(mtditId)
+                withReference(utr) { reference =>
+                  claimSubscription(reference, mtditId, nino, utr)
+                }
               case None =>
                 getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
                   case Right(Eligible) =>
@@ -95,17 +98,18 @@ class HomeController @Inject()(val auditingService: AuditingService,
         .addingToSession(StartTime -> timestamp)
         .withJourneyState(SignUp)
     } else {
-    goToPreferences
-      .addingToSession(StartTime -> timestamp)
-      .withJourneyState(SignUp)
+      goToPreferences
+        .addingToSession(StartTime -> timestamp)
+        .withJourneyState(SignUp)
 
     }
   }
 
-
-  private def claimSubscription(mtditId: String)(implicit request: Request[AnyContent]): Future[Result] =
-    subscriptionDetailsService.saveSubscriptionId(mtditId) map { _ =>
+  private def claimSubscription(reference: String, mtditId: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Result] =
+    subscriptionDetailsService.saveSubscriptionId(reference, mtditId) map { _ =>
       Redirect(controllers.individual.subscription.routes.ClaimSubscriptionController.claim())
         .withJourneyState(SignUp)
+        .addingToSession(NINO -> nino)
+        .addingToSession(UTR -> utr)
     }
 }

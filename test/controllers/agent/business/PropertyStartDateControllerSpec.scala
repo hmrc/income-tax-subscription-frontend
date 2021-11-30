@@ -150,27 +150,17 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "The back url is not in edit mode" when {
       "the user has rental property and it is the only income source" should {
-        "redirect to income source page when FS ReleaseFour is not enabled" in new Test {
-          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
-            controllers.agent.routes.IncomeSourceController.show().url
-        }
-
-        "redirect to income source page when FS ReleaseFour is enabled" in new Test {
-          enable(ReleaseFour)
+        "redirect to income source page" in new Test {
           controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
             controllers.agent.routes.IncomeSourceController.show().url
         }
       }
 
       "the user has rental property and has a business" should {
-        "redirect to income source page when FS ReleaseFour is not enabled" in new Test {
-          controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
-            controllers.agent.routes.IncomeSourceController.show().url
-        }
-        "redirect to Business Accounting Method page when FS ReleaseFour is enabled" in new Test {
+        "redirect to Business Accounting Method page" in new Test {
           enable(ReleaseFour)
           controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
-            controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+            appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method"
         }
       }
     }

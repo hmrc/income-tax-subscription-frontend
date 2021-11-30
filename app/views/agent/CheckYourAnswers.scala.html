@@ -5,7 +5,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+* http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,184 +13,161 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
-
-@import models.common.business.SelfEmploymentData
-@import views.html.templates.AgentMainTemplate
-@import views.html.helpers.injected.ButtonHelper
-@import models.common.business.{BusinessNameModel, AccountingMethodModel}
-@import models.common.{IncomeSourceModel, AccountingYearModel, AccountingMethodPropertyModel,  OverseasAccountingMethodPropertyModel}
-@import models.SummaryModel
 @import config.AppConfig
-@import models.{No, Yes}
-@import views.html.helpers._
-@import views.agent.helpers._
-@import uk.gov.hmrc.play.views.html.helpers.form
+@import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+@import models.common.{AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel, OverseasPropertyStartDateModel, PropertyStartDateModel}
+@import utilities.ImplicitDateFormatter
 @import views.agent.helpers.SummaryHelper._
 @import views.agent.helpers.SummaryIdConstants._
-@import utilities.ImplicitDateFormatter
-@import models.common.PropertyStartDateModel
-@import models.common.OverseasPropertyStartDateModel
-
+@import views.agent.helpers._
+@import views.html.helpers.injected.ButtonHelper
+@import views.html.templates.AgentMainTemplate
 
 @this(
-agentMainTemplate: AgentMainTemplate,
-buttonHelper: ButtonHelper
+        agentMainTemplate: AgentMainTemplate,
+        buttonHelper: ButtonHelper,
+        form: FormWithCSRF
 )
 
 @(summaryModel: AgentSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter, releaseFour: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, hiddenContent: Option[String] = None, enableHtml: Boolean = false) = {
-<div class="govuk-summary-list__row" id="@field-row">
-    <dt class="govuk-summary-list__key" id="@field-question">
+    <div class="govuk-summary-list__row" id="@field-row">
+        <dt class="govuk-summary-list__key" id="@field-question">
         @question
-    </dt>
-    <dd class="govuk-summary-list__value" id="@field-answer">
+        </dt>
+        <dd class="govuk-summary-list__value" id="@field-answer">
         @if(enableHtml) {@Html(answer)} else {
-        @answer
+            @answer
         }
-    </dd>
-    <dd class="govuk-summary-list__actions" id="@field-edit">
+        </dd>
+        <dd class="govuk-summary-list__actions" id="@field-edit">
         @changeUrl.map { url =>
-        <a class="govuk-link"
-           data-journey-click="itsa:changeLink:@field"
-           href="@url"
-        >
-            <span aria-hidden="true">@messages("agent.base.change")</span>
-            <span class="govuk-visually-hidden">@hiddenContent</span>
-        </a>
+            <a class="govuk-link"
+            data-journey-click="itsa:changeLink:@field"
+            href="@url"
+            >
+                <span aria-hidden="true">@messages("agent.base.change")</span>
+                <span class="govuk-visually-hidden">@hiddenContent</span>
+            </a>
         }
-    </dd>
-</div>
+        </dd>
+    </div>
 }
 
 @incomeSource(source: IncomeSourceModel) = @{
-val rowName = IncomeSourceId
-val rowQuestion = Messages("agent.summary.income_source")
-val rowAnswer = incomeSourceText(source)
-val rowUrl = controllers.agent.routes.IncomeSourceController.show(editMode = true).url
-val hiddenContent = Some(Messages("final.cya.change.incomereceived"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
+    val rowName = IncomeSourceId
+    val rowQuestion = Messages("agent.summary.income_source")
+    val rowAnswer = incomeSourceText(source)
+    val rowUrl = controllers.agent.routes.IncomeSourceController.show(editMode = true).url
+    val hiddenContent = Some(Messages("final.cya.change.incomereceived"))
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
 }
 
-@selfEmployments(businesses:Seq[SelfEmploymentData]) = @{
-val rowName = SelfEmploymentsId
-val rowQuestion = Messages("agent.summary.self_employments")
-val rowAnswer = businesses.count(_.isComplete).toString
-val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-list"
-val hiddenContent = Some(Messages("final.cya.change.signupbusinessnumber"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
-}
-
-@businessName(name: BusinessNameModel) = @{
-val rowName = BusinessNameId
-val rowQuestion = Messages("agent.summary.business_name")
-val rowAnswer = name.businessName
-val rowUrl = controllers.agent.business.routes.BusinessNameController.show(editMode = true).url
-val hiddenContent = Some(Messages("agent.final.cya.change.businessname"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
+@selfEmployments(businesses: Seq[SelfEmploymentData]) = @{
+    val rowName = SelfEmploymentsId
+    val rowQuestion = Messages("agent.summary.self_employments")
+    val rowAnswer = businesses.count(_.isComplete).toString
+    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-list"
+    val hiddenContent = Some(Messages("final.cya.change.signupbusinessnumber"))
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
 @selectedTaxYear(selectedTaxYear: AccountingYearModel) = @{
-val rowName = SelectedTaxYearId
-val rowQuestion = if(releaseFour) {
-Messages("agent.summary.selected_year.release4")
-} else {
-Messages("agent.summary.selected_year")
-}
-val rowAnswer = accountingYearText(selectedTaxYear, releaseFour)
-val rowUrl = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
-val hiddenContent = Some(Messages("final.cya.change.taxyearstartfiling"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
+    val rowName = SelectedTaxYearId
+    val rowQuestion = if(releaseFour) {
+        Messages("agent.summary.selected_year.release4")
+    } else {
+        Messages("agent.summary.selected_year")
+    }
+    val rowAnswer = accountingYearText(selectedTaxYear, releaseFour)
+    val rowUrl = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
+    val hiddenContent = Some(Messages("final.cya.change.taxyearstartfiling"))
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
 }
 
 @accountingMethod(accountingModel: AccountingMethodModel) = @{
-val rowName = AccountingMethodId
-val rowQuestion = Messages("agent.summary.income_type")
-val rowAnswer = accountingMethodText(accountingModel.accountingMethod)
-val rowUrl = if (releaseFour) {
-appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method?isEditMode=true"
-} else {
-controllers.agent.business.routes.BusinessAccountingMethodController.show(editMode = true).url
-}
-val hiddenContent = Some(Messages("agent.final.cya.change.soletraderaccountingmethod"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
+    val rowName = AccountingMethodId
+    val rowQuestion = Messages("agent.summary.income_type")
+    val rowAnswer = accountingMethodText(accountingModel.accountingMethod)
+    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method?isEditMode=true"
+    val hiddenContent = Some(Messages("agent.final.cya.change.soletraderaccountingmethod"))
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
 @propertyStartDate(propertyStartDateModel: PropertyStartDateModel) = @{
-import implicitDateFormatter.LongDate
-val rowName = PropertyStartDateId
-val rowQuestion = messages("agent.summary.property_start_date")
-val rowAnswer = propertyStartDateModel.startDate.toLocalDate.toLongDate
-val rowUrl = controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url
-val hiddenContent = Some(Messages("agent.final.cya.change.ukpropertystradestartdate"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
+    import implicitDateFormatter.LongDate
+    val rowName = PropertyStartDateId
+    val rowQuestion = messages("agent.summary.property_start_date")
+    val rowAnswer = propertyStartDateModel.startDate.toLocalDate.toLongDate
+    val rowUrl = controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url
+    val hiddenContent = Some(Messages("agent.final.cya.change.ukpropertystradestartdate"))
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
 @accountingMethodProperty(propertyModel: AccountingMethodPropertyModel) = @{
-val rowName = AccountingMethodPropertyId
-val rowQuestion = messages("agent.summary.income_type_property")
-val rowAnswer = accountingMethodText(propertyModel.propertyAccountingMethod)
-val rowUrl = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
-val hiddenContent = Some(Messages("agent.final.cya.change.ukpropertyaccountingmethod"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
+    val rowName = AccountingMethodPropertyId
+    val rowQuestion = messages("agent.summary.income_type_property")
+    val rowAnswer = accountingMethodText(propertyModel.propertyAccountingMethod)
+    val rowUrl = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+    val hiddenContent = Some(Messages("agent.final.cya.change.ukpropertyaccountingmethod"))
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
 @overseasPropertyStartDate(overseasPropertyStartDateModel: OverseasPropertyStartDateModel) = @{
-import implicitDateFormatter.LongDate
-val rowName = OverseasPropertyStartDateId
-val rowQuestion = messages("agent.summary.overseas_property_start_date")
-val rowAnswer = overseasPropertyStartDateModel.startDate.toLocalDate.toLongDate
-val rowUrl = controllers.agent.business.routes.OverseasPropertyStartDateController.show(editMode = true).url
-val hiddenContent = Some(Messages("agent.final.cya.change.overseaspropertytradestartdate"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
+    import implicitDateFormatter.LongDate
+    val rowName = OverseasPropertyStartDateId
+    val rowQuestion = messages("agent.summary.overseas_property_start_date")
+    val rowAnswer = overseasPropertyStartDateModel.startDate.toLocalDate.toLongDate
+    val rowUrl = controllers.agent.business.routes.OverseasPropertyStartDateController.show(editMode = true).url
+    val hiddenContent = Some(Messages("agent.final.cya.change.overseaspropertytradestartdate"))
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
 @overseasAccountingMethodProperty(overseasPropertyModel: OverseasAccountingMethodPropertyModel) = @{
-val rowName = OverseasAccountingMethodPropertyId
-val rowQuestion = messages("agent.summary.income_type_overseas_property")
-val rowAnswer = accountingMethodText(overseasPropertyModel.overseasPropertyAccountingMethod)
-val rowUrl = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
-val hiddenContent = Some(Messages("agent.final.cya.change.overseaspropertyaccountingmethod"))
-summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
+    val rowName = OverseasAccountingMethodPropertyId
+    val rowQuestion = messages("agent.summary.income_type_overseas_property")
+    val rowAnswer = accountingMethodText(overseasPropertyModel.overseasPropertyAccountingMethod)
+    val rowUrl = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
+    val hiddenContent = Some(Messages("agent.final.cya.change.overseaspropertyaccountingmethod"))
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
 @agentMainTemplate(title = Messages("agent.summary.title"), backLink = backUrl) {
 
 
-<h1 class="govuk-heading-l">@Messages("agent.summary.heading") <span class="govuk-visually-hidden">@Messages("agent.summary.heading_hidden")</span>
-</h1>
+    <h1 class="govuk-heading-l">@Messages("agent.summary.heading") <span class="govuk-visually-hidden">@Messages("agent.summary.heading_hidden")</span>
+    </h1>
 
-<div class="govuk-form-group">
+    <div class="govuk-form-group">
 
     @if(releaseFour) {
-    <dl class="govuk-summary-list">
-        @summaryModel.selectedTaxYear.map(selectedTaxYear)
-        @summaryModel.incomeSource.map(incomeSource)
-        @summaryModel.selfEmployments.map(selfEmployments)
-        @summaryModel.accountingMethod.map(accountingMethod)
-        @summaryModel.propertyStartDate.map(propertyStartDate)
-        @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
-        @summaryModel.overseasPropertyStartDate.map(overseasPropertyStartDate)
-        @summaryModel.overseasAccountingMethodProperty.map(overseasAccountingMethodProperty)
-    </dl>
+        <dl class="govuk-summary-list">
+            @summaryModel.selectedTaxYear.map(selectedTaxYear)
+            @summaryModel.incomeSource.map(incomeSource)
+            @summaryModel.selfEmployments.map(selfEmployments)
+            @summaryModel.accountingMethod.map(accountingMethod)
+            @summaryModel.propertyStartDate.map(propertyStartDate)
+            @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
+            @summaryModel.overseasPropertyStartDate.map(overseasPropertyStartDate)
+            @summaryModel.overseasAccountingMethodProperty.map(overseasAccountingMethodProperty)
+        </dl>
     } else {
-    <dl class="govuk-summary-list">
-        @summaryModel.incomeSource.map(incomeSource)
-        @summaryModel.selectedTaxYear.map(selectedTaxYear)
-        @summaryModel.businessName.map(businessName)
-        @summaryModel.accountingMethod.map(accountingMethod)
-        @summaryModel.propertyStartDate.map(propertyStartDate)
-        @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
-        @summaryModel.overseasPropertyStartDate.map(overseasPropertyStartDate)
-        @summaryModel.overseasAccountingMethodProperty.map(overseasAccountingMethodProperty)
-    </dl>
+        <dl class="govuk-summary-list">
+            @summaryModel.incomeSource.map(incomeSource)
+            @summaryModel.selectedTaxYear.map(selectedTaxYear)
+            @summaryModel.accountingMethod.map(accountingMethod)
+            @summaryModel.propertyStartDate.map(propertyStartDate)
+            @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
+            @summaryModel.overseasPropertyStartDate.map(overseasPropertyStartDate)
+            @summaryModel.overseasAccountingMethodProperty.map(overseasAccountingMethodProperty)
+        </dl>
     }
 
-</div>
+    </div>
 
-@form(action = postAction) {
-@buttonHelper(Messages("agent.summary.confirm_and_sign_up"))
-}
+    @form(action = postAction) {
+        @buttonHelper(Messages("agent.summary.confirm_and_sign_up"))
+    }
 
 }

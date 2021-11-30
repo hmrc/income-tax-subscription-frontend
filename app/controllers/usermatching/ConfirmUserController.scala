@@ -20,21 +20,20 @@ import auth.individual.JourneyState.ResultFunctions
 import auth.individual.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-
-import javax.inject.{Inject, Singleton}
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.mvc._
-
 import play.twirl.api.Html
 import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys._
+import views.html.individual.usermatching.CheckYourUserDetails
+
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
-import views.html.individual.usermatching.CheckYourUserDetails
 
 @Singleton
 class ConfirmUserController @Inject()(val auditingService: AuditingService,

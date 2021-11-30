@@ -88,6 +88,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
           setupMockGetSubscriptionFound(testNino)
           setupMockSubscriptionDetailsSaveFunctions()
+          mockRetrieveReferenceSuccess(testUtr)("test-reference")
 
           val result = testHomeController().index(fakeRequest)
 
@@ -216,6 +217,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
           setupMockGetSubscriptionFound(testNino)
           setupMockSubscriptionDetailsSaveFunctions()
+          mockRetrieveReferenceSuccess(testUtr)("test-reference")
 
           val result = testHomeController().index(fakeRequest)
 

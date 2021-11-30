@@ -19,7 +19,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
   implicit val SubscriptionDetailsFormat: OFormat[SubscriptionData] = Json.format[SubscriptionData]
 
-  private def subscriptionUri(id: String) = s"/income-tax-subscription/self-employments/id/$id"
+  private def subscriptionUri(id: String) = s"/income-tax-subscription/subscription-data/test-reference/id/$id"
 
   private def subscriptionDeleteUri = s"/income-tax-subscription/subscription-data/all"
 

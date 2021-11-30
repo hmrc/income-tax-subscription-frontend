@@ -18,9 +18,10 @@ package controllers.individual.incomesource
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
+import controllers.utils.ReferenceRetrieval
 import forms.individual.incomesource.IncomeSourceForm
 import models.IndividualSummary
 import models.common.IncomeSourceModel
@@ -42,11 +43,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncomeSourceController @Inject()(incomeSource: IncomeSource,
                                        val auditingService: AuditingService,
                                        val authService: AuthService,
-                                       subscriptionDetailsService: SubscriptionDetailsService,
+                                       val subscriptionDetailsService: SubscriptionDetailsService,
                                        incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
+                                       mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
 
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     incomeSource(
@@ -59,81 +60,66 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      subscriptionDetailsService.fetchIncomeSource() map { incomeSource =>
-        Ok(view(incomeSourceForm = incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
+      withReference { reference =>
+        subscriptionDetailsService.fetchIncomeSource(reference) map { incomeSource =>
+          Ok(view(incomeSourceForm = incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
+        }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      incomeSourceForm.bindFromRequest.fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
-        incomeSource => {
-          if (!isEditMode) {
-            linearJourney(incomeSource)
-          } else {
-            editJourney(incomeSource)
+      withReference { reference =>
+        incomeSourceForm.bindFromRequest.fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
+          incomeSource => {
+            if (!isEditMode) {
+              linearJourney(reference, incomeSource)
+            } else {
+              editJourney(reference, incomeSource)
+            }
           }
-        }
-      )
+        )
+      }
   }
 
   private def incomeSourceForm: Form[IncomeSourceModel] = IncomeSourceForm.incomeSourceForm(isEnabled(ForeignProperty))
 
-  private[controllers] def editJourney(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier): Future[Result] = {
+  private def editJourney(reference: String, incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier): Future[Result] = {
     for {
-      cacheMap <- subscriptionDetailsService.saveIncomeSource(incomeSource)
-      summaryModel <- getSummaryModel(cacheMap)
+      cacheMap <- subscriptionDetailsService.saveIncomeSource(reference, incomeSource)
+      summaryModel <- getSummaryModel(reference, cacheMap)
     } yield {
-      if (isEnabled(ReleaseFour)) {
-        incomeSource match {
-          case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true) =>
-            Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
-          case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(releaseFourEnabled = true) =>
-            Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
-          case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
-            Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
-          case _ =>
-            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-        }
-      } else {
-        incomeSource match {
-          case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = false) =>
-            Redirect(controllers.individual.business.routes.BusinessNameController.show())
-          case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(releaseFourEnabled = false) =>
-            Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-          case _ =>
-            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-        }
-      }
-    }
-  }
-
-  private def getSummaryModel(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[IndividualSummary] = {
-    for {
-      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
-      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
-      property <- subscriptionDetailsService.fetchProperty()
-      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
-    } yield {
-      if (isEnabled(ReleaseFour)) {
-        cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true)
-      } else {
-        cacheMap.getSummary(property = property, overseasProperty = overseasProperty)
-      }
-    }
-  }
-
-  private def linearJourney(incomeSource: IncomeSourceModel)(implicit request: Request[_]): Future[Result] = {
-    subscriptionDetailsService.saveIncomeSource(incomeSource) map { _ =>
       incomeSource match {
-        case IncomeSourceModel(true, _, _) =>
-          if (isEnabled(ReleaseFour)) Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
-          else Redirect(controllers.individual.business.routes.BusinessNameController.show())
-        case IncomeSourceModel(_, true, _) =>
-          if (isEnabled(ReleaseFour)) Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
-          else Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+        case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true) =>
+          Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+        case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(releaseFourEnabled = true) =>
+          Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
+        case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
+          Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
+        case _ =>
+          Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+      }
+    }
+  }
+
+  private def getSummaryModel(reference: String, cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[IndividualSummary] = {
+    for {
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+      property <- subscriptionDetailsService.fetchProperty(reference)
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+    } yield {
+      cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true)
+    }
+  }
+
+  private def linearJourney(reference: String, incomeSource: IncomeSourceModel)(implicit request: Request[_]): Future[Result] = {
+    subscriptionDetailsService.saveIncomeSource(reference, incomeSource) map { _ =>
+      incomeSource match {
+        case IncomeSourceModel(true, _, _) => Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+        case IncomeSourceModel(_, true, _) => Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
         case IncomeSourceModel(_, _, true) if isEnabled(ForeignProperty) =>
           Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
         case _ =>

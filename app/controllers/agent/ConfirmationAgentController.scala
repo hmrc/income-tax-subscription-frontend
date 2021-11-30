@@ -18,6 +18,7 @@ package controllers.agent
 
 import auth.agent.PostSubmissionController
 import config.AppConfig
+import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.SubscriptionDataUtil._
@@ -33,10 +34,10 @@ class ConfirmationAgentController @Inject()(val auditingService: AuditingService
                                             val authService: AuthService,
                                             accountingPeriodService: AccountingPeriodService,
                                             signUpComplete: SignUpComplete,
-                                            subscriptionDetailsService: SubscriptionDetailsService)
+                                            val subscriptionDetailsService: SubscriptionDetailsService)
                                            (implicit val ec: ExecutionContext,
-                                       val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends PostSubmissionController {
+                                            val appConfig: AppConfig,
+                                            mcc: MessagesControllerComponents) extends PostSubmissionController with ReferenceRetrieval {
 
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
@@ -63,9 +64,18 @@ class ConfirmationAgentController @Inject()(val auditingService: AuditingService
 
       val formattedClientNino = formatNino(clientNino)
 
-      subscriptionDetailsService.fetchAll() map { cacheMap =>
-        Ok(signUpComplete(cacheMap.getAgentSummary(), clientName, formattedClientNino, endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter, postAction, signOutAction))
+      withAgentReference { reference =>
+        subscriptionDetailsService.fetchAll(reference) map { cacheMap =>
+          Ok(signUpComplete(cacheMap.getAgentSummary(), clientName, formattedClientNino, endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter, postAction, signOutAction))
+        }
       }
+  }
+
+  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
+     withAgentReference { reference =>
+       subscriptionDetailsService.deleteAll(reference).map(_ => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
+     }
   }
 
 }

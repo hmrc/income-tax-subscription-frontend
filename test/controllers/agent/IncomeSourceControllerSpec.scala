@@ -18,7 +18,7 @@ package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import forms.agent.IncomeSourceForm
@@ -31,7 +31,8 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource}
-import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testBusinessName, testCacheMap, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testCacheMap, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import utilities.individual.TestConstants.testSelfEmploymentData
 import views.agent.mocks.MockIncomeSource
 
 import scala.concurrent.Future
@@ -53,7 +54,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
   )
 
   override def beforeEach(): Unit = {
-    disable(ReleaseFour)
     disable(ForeignProperty)
     super.beforeEach()
   }
@@ -104,15 +104,14 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
     }
 
     "When it is not edit mode" when {
-
       "self-employed is checked and rent UK property and foreign property are NOT checked" should {
-        "redirect to BusinessName page" in {
+        "redirect to the income tax self employment initialise route" in {
           setupMockSubscriptionDetailsSaveFunctions()
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
+          redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
           verifySubscriptionDetailsSave(IncomeSource, 1)
@@ -120,43 +119,26 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       }
 
       "Rent UK property is checked and self-employed, foreign property are NOT checked" should {
-        "Release Four feature switch is disabled" should {
-          "redirect to the Property Accounting Method page" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
+        "redirect to the Property Start Date page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
 
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyStartDateController.show().url)
 
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-
-        "Release Four feature switch is enabled" should {
-          "redirect to the Property Start Date page" in {
-            enable(ReleaseFour)
-            setupMockSubscriptionDetailsSaveFunctions()
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyStartDateController.show().url)
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
         }
 
         "Self-employed, rent UK property are checked" should {
-          "redirect to BusinessName page" in {
+          "redirect to income tax self employment initialise route" in {
             setupMockSubscriptionDetailsSaveFunctions()
 
             val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get must be(controllers.agent.business.routes.BusinessNameController.show().url)
+            redirectLocation(goodRequest).get must be(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -185,8 +167,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
     "When it is in edit mode" should {
 
       "the user selects self-employment and self-employment journey has not been completed before" when {
-        "ReleaseFour is disabled and selected tax year page has not been completed before" should {
-          s"redirect to ${controllers.agent.business.routes.BusinessNameController.show().url}" in {
+        "and selected tax year page has not been completed before" should {
+          s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
             setupMockSubscriptionDetailsSaveFunctions()
             mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
             mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -197,33 +179,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.BusinessNameController.show().url
-
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
-        }
-      }
-
-      "the user selected UK property and UK property journey has not been completed before" when {
-
-        "when ReleaseFour is disabled" should {
-          s" redirect to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" in {
-            setupMockSubscriptionDetailsSaveFunctions()
-            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
-            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
-            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-              selectedTaxYear = Some(AccountingYearModel(Current))
-            )))
-            mockFetchProperty(None)
-            mockFetchOverseasProperty(None)
-
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = true)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
+            redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
 
             await(goodRequest)
             verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -233,36 +189,56 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       }
 
 
-      "the user selected overseas property and overseas property journey has not been completed before" when {
-        "when ReleaseFour is enabled" should {
-          s" redirect to ${controllers.agent.business.routes.OverseasPropertyStartDateController.show().url}" in {
-            enable(ReleaseFour)
-            setupMockSubscriptionDetailsSaveFunctions()
-            mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
-            mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
-            mockFetchProperty(None)
-            mockFetchOverseasProperty(None)
-            mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-              selectedTaxYear = testSelectedTaxYearCurrent
-            )))
+      "the user selected UK property and UK property journey has not been completed before" should {
+        s"redirect to ${controllers.agent.business.routes.PropertyStartDateController.show().url}" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
+          mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
+            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
+            selectedTaxYear = Some(AccountingYearModel(Current))
+          )))
+          mockFetchProperty(None)
+          mockFetchOverseasProperty(None)
 
-            val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = true)
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = true)
 
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
 
-            await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
-            verifySubscriptionDetailsSave(IncomeSource, 1)
-          }
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
 
 
-      "the user select self-employment and self-employment journey ( include tax year to sign up) has completed before and ReleaseFour is enabled" should {
-        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-          enable(ReleaseFour)
+      "the user selected overseas property and overseas property journey has not been completed before" should {
+        s"redirect to ${controllers.agent.business.routes.OverseasPropertyStartDateController.show().url}" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
+          mockFetchProperty(None)
+          mockFetchOverseasProperty(None)
+          mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
+            incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
+            selectedTaxYear = testSelectedTaxYearCurrent
+          )))
+
+          val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = true)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
+
+          await(goodRequest)
+          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsSave(IncomeSource, 1)
+        }
+      }
+
+
+      "the user select self-employment and self-employment journey ( include tax year to sign up) has completed before" should {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -284,9 +260,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "the user select self-employment and UK property and both journeys have been completed before and ReleaseFour is enabled" should {
-        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
-          enable(ReleaseFour)
+      "the user select self-employment and UK property and both journeys have been completed before" should {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -310,9 +285,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "ReleaseFour is enabled and the user select self-employment and UK property and self-employment journeys has not been completed before" should {
-        s" redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
-          enable(ReleaseFour)
+      "the user select self-employment and UK property and self-employment journeys has not been completed before" should {
+        s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -337,9 +311,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       }
 
 
-      "the user select self-employment and overseas property and both journeys have been completed before and ReleaseFour is enabled" should {
-        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
-          enable(ReleaseFour)
+      "the user select self-employment and overseas property and both journeys have been completed before" should {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -364,10 +337,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "the user select self-employment, UK property and overseas property and all three journeys have been completed before " +
-        "and ReleaseFour is enabled" should {
-        s"return an SEE OTHER (303)" + s"${controllers.agent.routes.CheckYourAnswersController.show()}" in {
-          enable(ReleaseFour)
+      "the user select self-employment, UK property and overseas property and all three journeys have been completed before" should {
+        s"return an SEE OTHER (303)" + s" ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -395,9 +366,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "the user select UK property and UK property journeys has been completed before and ReleaseFour is enabled" should {
+      "the user select UK property and UK property journeys has been completed before" should {
         s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
-          enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -421,9 +391,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "the user select overseas property and overseas property journeys has been completed before and ReleaseFour is enabled" should {
+      "the user select overseas property and overseas property journeys has been completed before" should {
         s"return an SEE OTHER (303)" + s"${controllers.agent.routes.CheckYourAnswersController.submit()}" in {
-          enable(ReleaseFour)
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -447,9 +416,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "the user select UK property and overseas property and both journeys have been completed before and ReleaseFour is enabled" should {
-        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
-          enable(ReleaseFour)
+      "the user select UK property and overseas property and both journeys have been completed before" should {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -476,17 +444,14 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "the user selects self-employment and no UK property or overseas property and self-employment journey has been completed before and FS Release four " +
-        "is disabled" should {
-        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
+      "the user selects self-employment and no UK property or overseas property and self-employment journey has been completed before" should {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
-          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
+          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSelfEmploymentData)
+          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(testSelectedTaxYearCurrent),
-            businessName = Some(testBusinessName),
-            accountingMethod = Some(testAccountingMethod)
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
           )))
           mockFetchProperty(None)
           mockFetchOverseasProperty(None)

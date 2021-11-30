@@ -21,6 +21,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
+import controllers.utils.ReferenceRetrieval
 import models.IndividualSummary
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
@@ -43,14 +44,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                            val authService: AuthService,
-                                           subscriptionDetailsService: SubscriptionDetailsService,
+                                           val subscriptionDetailsService: SubscriptionDetailsService,
                                            subscriptionService: SubscriptionOrchestrationService,
                                            incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            implicitDateFormatter: ImplicitDateFormatterImpl,
                                            checkYourAnswers: CheckYourAnswers)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
+                                           mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
 
   def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
@@ -59,7 +60,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       case IncomeSourceModel(_, true, _) =>
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
       case IncomeSourceModel(true, _, _) =>
-        controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+        appConfig.incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl
       case _ => throw new InternalServerException("[CheckYourAnswersController][backUrl] - Invalid income source state")
     }
   }
@@ -67,40 +68,46 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        getSummaryModel(cache).map {
-          summaryModel =>
-            Ok(checkYourAnswers(
-              summaryModel,
-              controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
-              backUrl = backUrl(cache.getIncomeSource.get),
-              implicitDateFormatter,
-              isEnabled(ReleaseFour)
-            ))
+        withReference { reference =>
+          getSummaryModel(reference, cache).map {
+            summaryModel =>
+              Ok(checkYourAnswers(
+                summaryModel,
+                controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
+                backUrl = backUrl(cache.getIncomeSource.get),
+                implicitDateFormatter,
+                isEnabled(ReleaseFour)
+              ))
+          }
         }
   }
 
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        val nino = user.nino.get
-        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
-        val session = request.session
-        getSummaryModel(cache).flatMap { summaryModel =>
-          subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour), session.get(SPSEntityId))(headerCarrier).flatMap {
-            case Right(SubscriptionSuccess(id)) =>
-              subscriptionDetailsService.saveSubscriptionId(id).map(_ => Redirect(controllers.individual.subscription.routes.ConfirmationController.show()))
-            case Left(failure) =>
-              error("Successful response not received from submission: \n" + failure.toString)
+        withReference { reference =>
+          val nino = user.nino.get
+          val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+          val session = request.session
+          getSummaryModel(reference, cache).flatMap { summaryModel =>
+            subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour), session.get(SPSEntityId))(headerCarrier).flatMap {
+              case Right(SubscriptionSuccess(id)) =>
+                subscriptionDetailsService.saveSubscriptionId(reference, id).map { _ =>
+                  Redirect(controllers.individual.subscription.routes.ConfirmationController.show())
+                }
+              case Left(failure) =>
+                error("Successful response not received from submission: \n" + failure.toString)
+            }
           }
         }
   }
 
-  private def getSummaryModel(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[IndividualSummary] = {
+  private def getSummaryModel(reference: String, cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[IndividualSummary] = {
     for {
-      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)
-      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)
-      property <- subscriptionDetailsService.fetchProperty()
-      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty()
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+      property <- subscriptionDetailsService.fetchProperty(reference)
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
     } yield {
       if (isEnabled(ReleaseFour)) {
         cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true)
@@ -113,8 +120,10 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        subscriptionDetailsService.fetchAll().flatMap { cache =>
-          processFunc(user)(request)(cache)
+        withReference { reference =>
+          subscriptionDetailsService.fetchAll(reference).flatMap { cache =>
+            processFunc(user)(request)(cache)
+          }
         }
     }
 

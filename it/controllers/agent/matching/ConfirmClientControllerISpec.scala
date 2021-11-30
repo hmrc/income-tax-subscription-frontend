@@ -114,8 +114,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
 
           val cookie = getSessionMap(res)
           cookie.keys should not contain ITSASessionKeys.FailedClientMatching
-
-          IncomeTaxSubscriptionConnectorStub.verifySubscriptionDelete(Some(1))
         }
       }
     }

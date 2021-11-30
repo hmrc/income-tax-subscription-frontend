@@ -23,7 +23,6 @@ import org.mockito.Mockito.{reset, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
 
 import scala.concurrent.Future
@@ -39,18 +38,15 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
 
   def mockGetSubscriptionDetails[T](id: String)(response: Option[T]): OngoingStubbing[Future[Option[T]]] = {
     when(mockIncomeTaxSubscriptionConnector.getSubscriptionDetails[T](
-      ArgumentMatchers.eq(id))(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
-  }
-
-  def mockSaveSubscriptionDetails[T](id: String, value: T)
-                                (response: PostSubscriptionDetailsResponse): OngoingStubbing[Future[PostSubscriptionDetailsResponse]] = {
-    when(mockIncomeTaxSubscriptionConnector.saveSubscriptionDetails[T](
-      ArgumentMatchers.eq(id), ArgumentMatchers.eq(value)
+      ArgumentMatchers.any(), ArgumentMatchers.eq(id)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
   }
 
-  def mockDeleteAll()(): OngoingStubbing[Future[HttpResponse]] ={
-    when(mockIncomeTaxSubscriptionConnector.deleteAll()(ArgumentMatchers.any()))
+  def mockSaveSubscriptionDetails[T](id: String, value: T)
+                                    (response: PostSubscriptionDetailsResponse): OngoingStubbing[Future[PostSubscriptionDetailsResponse]] = {
+    when(mockIncomeTaxSubscriptionConnector.saveSubscriptionDetails[T](
+      ArgumentMatchers.any(), ArgumentMatchers.eq(id), ArgumentMatchers.eq(value)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
   }
 
 }
