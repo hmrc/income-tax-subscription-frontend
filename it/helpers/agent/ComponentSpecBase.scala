@@ -16,7 +16,7 @@ import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import models.common._
-import models.common.business.{AccountingMethodModel, BusinessNameModel}
+import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
 import models.{AccountingMethod, AccountingYear, DateModel, YesNo}
 import org.jsoup.nodes.Element
@@ -414,6 +414,10 @@ trait ComponentSpecBase extends UnitSpec
         case Some(element) => element
         case None => fail(s"No elements returned for selector: $selector")
       }
+    }
+
+    def selectNth(selector: String, nth: Int): Element = {
+      firstOf(s"$selector:nth-of-type($nth)")
     }
 
     def selectOptionally(selector: String): Option[Element] = {

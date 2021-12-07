@@ -16,27 +16,29 @@
 
 package controllers.agent.eligibility
 
-import java.time.LocalDate
-
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.PropertyTradingStartDateForm.propertyTradingStartDateForm
-import javax.inject.{Inject, Singleton}
 import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
-import models.{No, Yes}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import models.{No, Yes, YesNo}
+import play.api.data.Form
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.twirl.api.Html
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
-import views.html.agent.eligibility.property_trading_after
+import views.html.agent.eligibility.PropertyTradingAfter
 
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class PropertyTradingStartAfterController @Inject()(val auditingService: AuditingService,
                                                     val authService: AuthService,
-                                                    val languageUtils: LanguageUtils)
+                                                    val languageUtils: LanguageUtils,
+                                                    propertyTradingAfter: PropertyTradingAfter)
                                                    (implicit val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents,
                                                     val ec: ExecutionContext) extends StatelessController with ImplicitDateFormatter {
@@ -45,18 +47,31 @@ class PropertyTradingStartAfterController @Inject()(val auditingService: Auditin
 
   def backUrl: String = routes.SoleTraderController.show().url
 
+  def view(form: Form[YesNo], startDateLimit: LocalDate)(implicit request: Request[_]): Html = {
+    propertyTradingAfter(
+      propertyTradingBeforeDateForm = form,
+      postAction = routes.PropertyTradingStartAfterController.submit(),
+      startDateLimit = startDateLimit.toLongDate,
+      backUrl = backUrl
+    )
+  }
+
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(property_trading_after(propertyTradingStartDateForm(startDateLimit.toLongDate),
-        routes.PropertyTradingStartAfterController.submit(), startDateLimit.toLongDate, backUrl))
+      Ok(view(
+        form = propertyTradingStartDateForm(startDateLimit.toLongDate),
+        startDateLimit = startDateLimit
+      ))
   }
 
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
       propertyTradingStartDateForm(startDateLimit.toLongDate).bindFromRequest.fold(
-        formWithErrors => BadRequest(property_trading_after(
-          formWithErrors, routes.PropertyTradingStartAfterController.submit(), startDateLimit.toLongDate, backUrl)), {
+        formWithErrors => BadRequest(view(
+          form = formWithErrors,
+          startDateLimit = startDateLimit
+        )), {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "propertyBusinessStartDate", arn))

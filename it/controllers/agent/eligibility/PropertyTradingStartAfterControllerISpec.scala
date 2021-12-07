@@ -16,9 +16,8 @@
 
 package controllers.agent.eligibility
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import forms.agent.PropertyTradingStartDateForm
+import forms.submapping.YesNoMapping
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
@@ -29,6 +28,9 @@ import org.jsoup.select.Elements
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.{BAD_REQUEST, OK, SEE_OTHER}
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
   trait GetSetup {
@@ -36,7 +38,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
     lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showPropertyTradingStartAfter
     lazy val doc: Document = Jsoup.parse(response.body)
-    lazy val pageContent: Element = doc.content
+    lazy val pageContent: Element = doc.mainContent
   }
 
   val date: String = LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("d MMMM y"))
@@ -58,7 +60,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     val continue: String = "Continue"
   }
 
-  "GET /eligibility/property-start-date " should {
+  "GET /eligibility/property-start-date" should {
 
     "return OK" in new GetSetup {
       response should have(
@@ -73,35 +75,48 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct heading" in new GetSetup {
-      doc.getH1Element.text shouldBe PropertyStartAfterMessage.title(date)
+      pageContent.getH1Element.text shouldBe PropertyStartAfterMessage.title(date)
     }
 
     "have a view with the correct hint" in new GetSetup {
-      doc.getElementById("property-trading-hint").text() shouldBe PropertyStartAfterMessage.hint
+      pageContent.firstOf("p").text shouldBe PropertyStartAfterMessage.hint
       pageContent.getNthUnorderedList(1).getNthListItem(1).text shouldBe PropertyStartAfterMessage.point1
       pageContent.getNthUnorderedList(1).getNthListItem(2).text shouldBe PropertyStartAfterMessage.point2
       pageContent.getNthUnorderedList(1).getNthListItem(3).text shouldBe PropertyStartAfterMessage.point3
     }
 
     "have a view with a back link" in new GetSetup {
-      val backLink: Element = doc.getBackLink
+      val backLink: Element = doc.getGovukBackLink
       backLink.attr("href") shouldBe controllers.agent.eligibility.routes.SoleTraderController.show().url
       backLink.text shouldBe PropertyStartAfterMessage.back
     }
 
-    "have a view with the correct values displayed in the form" in new GetSetup {
-      val form: Elements = doc.select("form")
-      val labels: Elements = doc.select("form").select("label")
-      val radios: Elements = form.select("input[type=radio]")
+    "have a form with the correct inputs and values" in new GetSetup {
+      val form: Element = doc.firstOf("form")
 
-      radios.size() shouldBe 2
-      radios.get(0).attr("id") shouldBe "yes-no"
-      labels.get(0).text() shouldBe PropertyStartAfterMessage.yes
+      val yesRadio: Element = form.selectNth(".govuk-radios__item", 1).firstOf("input")
+      val yesLabel: Element = form.selectNth(".govuk-radios__item", 1).firstOf("label")
 
-      radios.get(1).attr("id") shouldBe "yes-no-2"
-      labels.get(1).text() shouldBe PropertyStartAfterMessage.no
+      val noRadio: Element = form.selectNth(".govuk-radios__item", 2).firstOf("input")
+      val noLabel: Element = form.selectNth(".govuk-radios__item", 2).firstOf("label")
 
-      val submitButton: Elements = form.select("button[type=submit]")
+      yesRadio.attr("type") shouldBe "radio"
+      yesRadio.attr("value") shouldBe YesNoMapping.option_yes
+      yesRadio.attr("name") shouldBe PropertyTradingStartDateForm.fieldName
+      yesRadio.attr("id") shouldBe PropertyTradingStartDateForm.fieldName
+
+      yesLabel.text shouldBe PropertyStartAfterMessage.yes
+      yesLabel.attr("for") shouldBe PropertyTradingStartDateForm.fieldName
+
+      noRadio.attr("type") shouldBe "radio"
+      noRadio.attr("value") shouldBe YesNoMapping.option_no
+      noRadio.attr("name") shouldBe PropertyTradingStartDateForm.fieldName
+      noRadio.attr("id") shouldBe s"${PropertyTradingStartDateForm.fieldName}-2"
+
+      noLabel.text shouldBe PropertyStartAfterMessage.no
+      noLabel.attr("for") shouldBe s"${PropertyTradingStartDateForm.fieldName}-2"
+
+      val submitButton: Elements = form.select("button[class=govuk-button]")
       submitButton.text shouldBe PropertyStartAfterMessage.continue
     }
 
@@ -141,10 +156,10 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
         httpStatus(BAD_REQUEST)
       )
 
-      val pageContent: Element = Jsoup.parse(response.body).content
+      val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-      pageContent.select("div[class=error-notification]").text shouldBe s"Error: ${PropertyStartAfterMessage.error(date)}"
-      pageContent.select(s"a[href=#${PropertyTradingStartDateForm.fieldName}]").text shouldBe PropertyStartAfterMessage.error(date)
+      pageContent.firstOf("span[class=govuk-error-message]").text shouldBe s"Error: ${PropertyStartAfterMessage.error(date)}"
+      pageContent.firstOf(s"a[href=#${PropertyTradingStartDateForm.fieldName}]").text shouldBe PropertyStartAfterMessage.error(date)
     }
 
   }
