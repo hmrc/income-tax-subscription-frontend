@@ -9,7 +9,7 @@ import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 
 
-class CovidCannotSignUpControllerISpec extends ComponentSpecBase{
+class CovidCannotSignUpControllerISpec extends ComponentSpecBase {
 
 
   trait Setup {
@@ -17,7 +17,7 @@ class CovidCannotSignUpControllerISpec extends ComponentSpecBase{
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCovidCannotSignUp()
     val doc: Document = Jsoup.parse(result.body)
-    val pageContent: Element = doc.content
+    val pageContent: Element = doc.mainContent
   }
 
   object CovidCannotSignUpMessages {
@@ -55,18 +55,17 @@ class CovidCannotSignUpControllerISpec extends ComponentSpecBase{
     }
 
     "have a back link" in new Setup {
-      pageContent.getBackLink.text shouldBe CovidCannotSignUpMessages.backLink
+      doc.getElementById("back-link").text shouldBe CovidCannotSignUpMessages.backLink
     }
 
     "have a Sign up another client button" in new Setup {
-      val submitButton: Element = pageContent.getForm.getSubmitButton
+      val submitButton: Element = pageContent.getForm.getGovUkSubmitButton
       submitButton.text shouldBe CovidCannotSignUpMessages.button
-      submitButton.attr("class") shouldBe "button"
-      submitButton.attr("type") shouldBe "submit"
+      submitButton.attr("class") shouldBe "govuk-button"
     }
 
     "have a Sign Out link" in new Setup {
-      val signOutLink: Element = pageContent.getLink("sign-out")
+      val signOutLink: Element = pageContent.getLink("sign-out-button")
       signOutLink.attr("href") shouldBe controllers.SignOutController.signOut.url
       signOutLink.text shouldBe CovidCannotSignUpMessages.signOut
     }
