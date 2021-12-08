@@ -25,12 +25,13 @@ import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import views.html.agent.eligibility.accounting_period_check
+import views.html.agent.eligibility.AccountingPeriodCheck
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class AccountingPeriodCheckController @Inject()(val auditingService: AuditingService,
+                                                accountingPeriodCheck: AccountingPeriodCheck,
                                                 val authService: AuthService)
                                                (implicit val appConfig: AppConfig,
                                                 mcc: MessagesControllerComponents,
@@ -38,14 +39,14 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(accounting_period_check(accountingPeriodCheckForm, routes.AccountingPeriodCheckController.submit(), backLink))
+      Ok(accountingPeriodCheck(accountingPeriodCheckForm, routes.AccountingPeriodCheckController.submit(), backLink))
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
       accountingPeriodCheckForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(accounting_period_check(formWithErrors, routes.AccountingPeriodCheckController.submit(), backLink)),
+        formWithErrors => BadRequest(accountingPeriodCheck(formWithErrors, routes.AccountingPeriodCheckController.submit(), backLink)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "yes",

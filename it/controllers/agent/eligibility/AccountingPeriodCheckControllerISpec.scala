@@ -30,7 +30,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showAccountingPeriodCheck
     lazy val doc: Document = Jsoup.parse(response.body)
-    lazy val pageContent: Element = doc.content
+    lazy val pageMainContent: Element = doc.mainContent
   }
 
   "GET /client/eligibility/accounting-period-check" should {
@@ -47,34 +47,36 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with a back link" in new GetSetup {
-      val backLink: Element = pageContent.getBackLink
+      val backLink: Element = doc.getGovukBackLink
       backLink.attr("href") shouldBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show().url
       backLink.text shouldBe AccountingPeriodCheckMessages.back
     }
 
     "have a view with the correct heading" in new GetSetup {
-      pageContent.getH1Element.text shouldBe AccountingPeriodCheckMessages.heading
+      pageMainContent.getH1Element.text shouldBe AccountingPeriodCheckMessages.heading
     }
 
     "have a form" which {
       "has the correct attributes" in new GetSetup {
-        val form: Element = pageContent.getForm
+        val form: Element = pageMainContent.getForm
         form.attr("method") shouldBe "POST"
         form.attr("action") shouldBe controllers.agent.eligibility.routes.AccountingPeriodCheckController.submit().url
       }
 
       "has a fieldset containing a yes and no radiobutton" in new GetSetup {
-        val fieldset: Element = pageContent.getForm.getFieldset
+        val fieldset: Element = pageMainContent.getForm.getFieldset
 
-        fieldset.attr("class") shouldBe "inline"
+        fieldset.attr("class") shouldBe "govuk-fieldset"
 
         fieldset.selectFirst("legend").text shouldBe AccountingPeriodCheckMessages.heading
 
-        val firstRadioWithLabel: Element = fieldset.selectFirst(".multiple-choice:nth-of-type(1)")
+        val firstRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(1)")
+        firstRadioWithLabel shouldNot be (null)
         val firstRadioLabel: Element = firstRadioWithLabel.selectFirst("label")
         val firstRadioButton: Element = firstRadioWithLabel.selectFirst("input")
 
-        val secondRadioWithLabel: Element = fieldset.selectFirst(".multiple-choice:nth-of-type(2)")
+        val secondRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(2)")
+        secondRadioWithLabel shouldNot be (null)
         val secondRadioLabel: Element = secondRadioWithLabel.selectFirst("label")
         val secondRadioButton: Element = secondRadioWithLabel.selectFirst("input")
 
@@ -92,10 +94,9 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
       }
 
       "has a button to submit" in new GetSetup {
-        val submitButton: Element = pageContent.getForm.getSubmitButton
+        val submitButton: Element = pageMainContent.getForm.getGovUkSubmitButton
         submitButton.text shouldBe AccountingPeriodCheckMessages.continue
-        submitButton.attr("class") shouldBe "button"
-        submitButton.attr("type") shouldBe "submit"
+        submitButton.attr("class") shouldBe "govuk-button"
       }
     }
   }
@@ -129,10 +130,9 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
         httpStatus(BAD_REQUEST)
       )
 
-      val pageContent: Element = Jsoup.parse(response.body).content
+      val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-      pageContent.select("div[class=error-notification]").text shouldBe s"Error: ${AccountingPeriodCheckMessages.invalidError}"
-      pageContent.select(s"a[href=#${AccountingPeriodCheckForm.accountingPeriodCheck}]").text shouldBe AccountingPeriodCheckMessages.invalidError
+      pageContent.select(".govuk-error-message").text shouldBe s"Error: ${AccountingPeriodCheckMessages.invalidError}"
     }
 
   }

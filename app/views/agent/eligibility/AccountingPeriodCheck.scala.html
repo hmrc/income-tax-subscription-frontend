@@ -14,40 +14,44 @@
  * limitations under the License.
  *@
 
-@import play.api.data.Form
-@import models.YesNo
-@import play.api.mvc.Call
-@import play.api.mvc.Request
-@import play.api.i18n.Messages
 @import config.AppConfig
-@import views.html.templates.agent_main_template
-@import views.html.helpers.summaryErrorHelper
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers.radioHelper
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.injected.RadioHelper
 @import forms.agent.AccountingPeriodCheckForm
-@import views.helpers.RadioOption
+@import views.html.helpers.injected.ContinueButton
+@import models.Yes
+@import models.No
 @import forms.submapping.YesNoMapping
-@import views.html.helpers.continueButton
 
-@import views.html.helpers.back_link
-@(accountingPeriodCheckForm: Form[YesNo], postAction: Call, backLink: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@this(
+mainTemplate: AgentMainTemplate,
+form : FormWithCSRF,
+radioHelper: RadioHelper,
+continueButton: ContinueButton
+)
 
-@agent_main_template(title = messages("agent.accounting_period_check.title")) {
+@(accountingPeriodCheckForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @back_link(backLink)
+@mainTemplate(title = messages("agent.accounting_period_check.title"), backLink = Some(backUrl)) {
 
-    @summaryErrorHelper(accountingPeriodCheckForm)
+    <h1 class="govuk-heading-l">@messages("agent.accounting_period_check.heading")</h1>
 
     @form(action = postAction) {
 
         @radioHelper(
             field = accountingPeriodCheckForm(AccountingPeriodCheckForm.accountingPeriodCheck),
             legend = messages("agent.accounting_period_check.heading"),
-            options = Seq(
-                RadioOption(YesNoMapping.option_yes, messages("base.yes")),
-                RadioOption(YesNoMapping.option_no, messages("base.no"))
+            isPageHeading = false,
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(Yes.toMessageString),
+                    value = Some(YesNoMapping.option_yes)
+                ),
+                RadioItem(
+                    content = Text(No.toMessageString),
+                    value = Some(YesNoMapping.option_no)
+                )
             ),
-            parentForm = accountingPeriodCheckForm,
             inline = true
         )
 
