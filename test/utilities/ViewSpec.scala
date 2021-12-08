@@ -140,6 +140,10 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
       element.select("p").get(index).text()
     }
 
+    def getLinkNth(index: Int = 0): Element = {
+      element.select(".govuk-link").get(index)
+    }
+
     def getRadioButtonByIndex(index: Int = 0): Element = element.select("div .multiple-choice").get(index)
 
     def getSpan(id: String): Elements = element.select(s"""span[id=$id]""")
