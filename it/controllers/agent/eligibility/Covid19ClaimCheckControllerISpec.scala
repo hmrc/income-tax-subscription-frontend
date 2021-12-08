@@ -18,7 +18,7 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCovid19ClaimCheck()
     val doc: Document = Jsoup.parse(result.body)
-    val pageContent: Element = doc.content
+    val pageContent: Element = doc.firstOf("#main-content")
   }
 
   object Covid19ClaimCheckMessages {
@@ -81,24 +81,21 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
     }
 
     "have a button to submit" in new GetSetup {
-      val submitButton: Element = pageContent.getForm.getSubmitButton
+      val submitButton: Element = pageContent.getForm.firstOf("#continue-button")
       submitButton.text shouldBe Covid19ClaimCheckMessages.continue
-      submitButton.attr("class") shouldBe "button"
-      submitButton.attr("type") shouldBe "submit"
+      submitButton.attr("class") shouldBe "govuk-button"
     }
 
     "have a fieldset containing a yes and no radiobutton" in new GetSetup {
       val fieldset: Element = pageContent.getFieldset
 
-      fieldset.attr("class") shouldBe "inline"
+      fieldset.attr("class") shouldBe "govuk-fieldset"
 
-      fieldset.selectFirst("legend").text shouldBe Covid19ClaimCheckMessages.heading
-
-      val firstRadioWithLabel: Element = fieldset.selectFirst(".multiple-choice:nth-of-type(1)")
+      val firstRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(1)")
       val firstRadioLabel: Element = firstRadioWithLabel.selectFirst("label")
       val firstRadioButton: Element = firstRadioWithLabel.selectFirst("input")
 
-      val secondRadioWithLabel: Element = fieldset.selectFirst(".multiple-choice:nth-of-type(2)")
+      val secondRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(2)")
       val secondRadioLabel: Element = secondRadioWithLabel.selectFirst("label")
       val secondRadioButton: Element = secondRadioWithLabel.selectFirst("input")
 
@@ -143,9 +140,9 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
         httpStatus(BAD_REQUEST)
       )
 
-      val pageContent: Element = Jsoup.parse(response.body).content
+      val pageContent: Element = Jsoup.parse(response.body)
 
-      pageContent.select("div[class=error-notification]").text shouldBe s"Error: ${Covid19ClaimCheckMessages.error}"
+      pageContent.select("#yes-no-error").text shouldBe s"Error: ${Covid19ClaimCheckMessages.error}"
       pageContent.select(s"a[href=#${Covid19ClaimCheckForm.fieldName}]").text shouldBe Covid19ClaimCheckMessages.error
     }
   }

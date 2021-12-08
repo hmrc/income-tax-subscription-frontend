@@ -49,7 +49,7 @@
     @form(action = postAction) {
 
         @radioHelper(
-            hint = Some(messages("agent.business.what_year_to_sign_up.line_1")),
+            hint = Some(Text(messages("agent.business.what_year_to_sign_up.line_1"))),
             field = accountingYearForm(AccountingYearForm.accountingYear),
             legend = question,
             radioItems = Seq(

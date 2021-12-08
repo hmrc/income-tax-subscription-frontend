@@ -1,0 +1,99 @@
+@*
+* Copyright 2021 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
+@import config.AppConfig
+@import forms.agent.Covid19ClaimCheckForm
+@import forms.submapping.YesNoMapping
+@import views.html.helpers.injected.{ContinueButton, RadioHelper}
+@import views.html.templates.AgentMainTemplate
+
+@this(
+  agentMainTemplate: AgentMainTemplate,
+  radioHelper: RadioHelper,
+  continueButton: ContinueButton,
+  form: FormWithCSRF
+)
+
+@(covid19ClaimCheckForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+  @content = {
+    <p class="govuk-body">@messages("agent.covid_19_claim_check.join_pilot")</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>
+        <a class="govuk-link" id="supportScheme" href="https://www.gov.uk/guidance/claim-a-grant-through-the-coronavirus-covid-19-self-employment-income-support-scheme" target="_blank">
+          @messages("agent.covid_19_claim_check.join_pilot_support_scheme_point.link")
+          <span class="govuk-visually-hidden">@messages("agent.covid_19_claim_check.open_new_tab")</span>
+        </a>
+
+      </li>
+      <li>
+        <a class="govuk-link" id="retentionScheme" href="https://www.gov.uk/guidance/claim-for-wage-costs-through-the-coronavirus-job-retention-scheme" target="_blank">
+          @messages("agent.covid_19_claim_check.join_pilot_retention_scheme.link")
+          <span class="govuk-visually-hidden">@messages("agent.covid_19_claim_check.open_new_tab")</span>
+        </a>
+      </li>
+    </ul>
+
+    <p class="govuk-body">@messages("agent.covid_19_claim_check.still_sign_your_client")</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>
+        <a class="govuk-link" id="sickPayRebateScheme" href="https://www.gov.uk/guidance/claim-back-statutory-sick-pay-paid-to-employees-due-to-coronavirus-covid-19" target="_blank">
+          @messages("agent.covid_19_claim_check.claim_sick_pay.link")
+          <span class="govuk-visually-hidden">@messages("agent.covid_19_claim_check.open_new_tab")</span>
+        </a>
+      </li>
+      <li>
+        <a class="govuk-link" id="testAndTraceSupportPayScheme" href="https://www.gov.uk/government/publications/test-and-trace-support-payment-scheme-claiming-financial-support/claiming-financial-support-under-the-test-and-trace-support-payment-scheme" target="_blank">
+          @messages("agent.covid_19_claim_check.test_and_trace_support_pay.link")
+          <span class="govuk-visually-hidden">@messages("agent.covid_19_claim_check.open_new_tab")</span>
+        </a>
+      </li>
+      <li>
+        <a class="govuk-link" id="localAuthorityGrants" href="https://www.gov.uk/government/publications/coronavirus-grant-funding-local-authority-payments-to-small-and-medium-businesses" target="_blank">
+          @messages("agent.covid_19_claim_check.local_authority_grants.link")
+          <span class="govuk-visually-hidden">@messages("agent.covid_19_claim_check.open_new_tab")</span>
+        </a>
+      </li>
+    </ul>
+  }
+
+@agentMainTemplate(title = messages("agent.covid_19_claim_check.title"), optForm = Some(covid19ClaimCheckForm), backLink = Some(backUrl)) {
+  @form(action = postAction) {
+    <h1 class="govuk-heading-l">@messages("agent.covid_19_claim_check.title")</h1>
+
+    @content
+
+    @radioHelper(
+      field = covid19ClaimCheckForm(Covid19ClaimCheckForm.fieldName),
+      legend = "",
+      inline = true,
+      radioItems = Seq(
+        RadioItem(
+          content = Text(Yes.toMessageString),
+          value = Some(YesNoMapping.option_yes)
+        ),
+        RadioItem(
+          content = Text(No.toMessageString),
+          value = Some(YesNoMapping.option_no)
+        )
+      )
+    )
+
+    @continueButton()
+  }
+}
