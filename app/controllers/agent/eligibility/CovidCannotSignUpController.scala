@@ -24,13 +24,14 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
-import views.html.agent.eligibility.covid_cannot_sign_up
+import views.html.agent.eligibility.CovidCannotSignUp
 
 import scala.concurrent.ExecutionContext
 
 
 @Singleton
-class CovidCannotSignUpController @Inject()(val auditingService: AuditingService,
+class CovidCannotSignUpController @Inject()(val covidCannotSignUp: CovidCannotSignUp,
+                                            val auditingService: AuditingService,
                                             val authService: AuthService)
                                            (implicit val ec: ExecutionContext,
                                             mcc: MessagesControllerComponents,
@@ -41,7 +42,7 @@ class CovidCannotSignUpController @Inject()(val auditingService: AuditingService
       if (isEnabled(RemoveCovidPages)) {
         Redirect(routes.OtherSourcesOfIncomeController.show())
       } else {
-        Ok(covid_cannot_sign_up(postAction = routes.Covid19ClaimCheckController.show(), backUrl))
+        Ok(covidCannotSignUp(postAction = routes.Covid19ClaimCheckController.show(), backUrl))
       }
   }
 
