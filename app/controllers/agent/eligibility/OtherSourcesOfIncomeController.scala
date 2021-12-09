@@ -27,12 +27,13 @@ import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import views.html.agent.eligibility.other_sources_of_income
+import views.html.agent.eligibility.OtherSourcesOfIncome
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class OtherSourcesOfIncomeController @Inject()(val auditingService: AuditingService,
+class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSourcesOfIncome,
+                                                val auditingService: AuditingService,
                                                val authService: AuthService)
                                               (implicit val appConfig: AppConfig,
                                                mcc: MessagesControllerComponents,
@@ -47,14 +48,14 @@ class OtherSourcesOfIncomeController @Inject()(val auditingService: AuditingServ
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(other_sources_of_income(otherSourcesOfIncomeForm, routes.OtherSourcesOfIncomeController.submit(), backUrl))
+      Ok(otherSourcesOfIncome(otherSourcesOfIncomeForm, routes.OtherSourcesOfIncomeController.submit(), backUrl))
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
       otherSourcesOfIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(other_sources_of_income(formWithErrors, routes.OtherSourcesOfIncomeController.submit(), backUrl)),
+        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit(), backUrl)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
