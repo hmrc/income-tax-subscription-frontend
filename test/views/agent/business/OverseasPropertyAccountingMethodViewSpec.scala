@@ -16,69 +16,110 @@
 
 package views.agent.business
 
-import agent.assets.MessageLookup.{OverseasPropertyAccountingMethod => messages}
 import forms.agent.AccountingMethodOverseasPropertyForm
 import forms.submapping.AccountingMethodMapping
-import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import models.AccountingMethod
+import org.jsoup.Jsoup
+import org.jsoup.nodes.{Document, Element}
+import play.api.data.{Form, FormError}
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import utilities.ViewSpec
+import views.html.agent.business.OverseasPropertyAccountingMethod
 
-class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
-  val backUrl = ViewSpecTrait.testBackUrl
-  val action = ViewSpecTrait.testCall
+class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.agent.business.overseas_property_accounting_method(
-    accountingMethodOverseasPropertyForm = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.addError(addFormErrors),
-    postAction = action,
-    isEditMode,
-    backUrl = backUrl
-  )(FakeRequest(), implicitly, appConfig)
+  val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
+  val testError: FormError = FormError(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty, "testError")
 
-  def documentCore(isEditMode: Boolean): TestView = TestView(
-    name = "Overseas Property Accounting Method View",
-    title = messages.title,
-    heading = messages.heading,
-    isAgent = true,
-    page = page(isEditMode = isEditMode, addFormErrors = false)
-  )
-
-  "The overseas property accounting method view" should {
-
-    val testPage = documentCore(isEditMode = false)
-
-    testPage.mustHaveBackLinkTo(backUrl)
-
-    val form = testPage.getForm("Overseas Property Accounting Method form")(actionCall = action)
-
-    form.mustHaveRadioSet(
-      legend = messages.heading,
-      radioName = AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty
-    )(
-      AccountingMethodMapping.option_cash -> messages.cash,
-      AccountingMethodMapping.option_accruals -> messages.accruals
+  def page(form: Form[AccountingMethod] = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm,
+           isEditMode: Boolean = false): Html = {
+    overseasPropertyAccountingMethod(
+      accountingMethodOverseasPropertyForm = form,
+      postAction = testCall,
+      isEditMode = isEditMode,
+      backUrl = testBackUrl
     )
-
-    form.mustHaveContinueButton()
-
   }
 
-  "The overseas property accounting method view in edit mode" should {
-    val editModePage = documentCore(isEditMode = true)
-    editModePage.mustHaveUpdateButton()
+  def document(form: Form[AccountingMethod] = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm,
+               isEditMode: Boolean = false): Document = {
+    Jsoup.parse(page(form, isEditMode).body)
   }
 
-  "Append Error to the page title if the form has error" should {
+  object OverseasPropertyAccountingMethodMessages {
+    val heading: String = "What accounting method does your client use for their overseas property business?"
+    val cash: String = "Cash accounting"
+    val accruals: String = "Standard accounting"
+    val continue: String = "Continue"
+    val update: String = "Update"
+  }
 
-    def documentCore(): TestView = TestView(
-      name = "Overseas Property Accounting Method View",
-      title = titleErrPrefix + messages.title,
-      heading = messages.heading,
-      isAgent = true,
-      page = page(isEditMode = false, addFormErrors = true)
-    )
+  "OverseasPropertyAccountingMethod" must {
+    "display the correct template details" when {
+      "there is no error" in new TemplateViewTest(
+        view = page(),
+        title = OverseasPropertyAccountingMethodMessages.heading,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true
+      )
+      "there is an error" in new TemplateViewTest(
+        view = page(
+          form = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm
+            .withError(testError)
+        ),
+        title = OverseasPropertyAccountingMethodMessages.heading,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true,
+        error = Some(testError)
+      )
+    }
 
-    val testPage = documentCore()
+    "have a heading" in {
+      document().mainContent.getH1Element.text mustBe OverseasPropertyAccountingMethodMessages.heading
+    }
 
+    "have a form" which {
+      "has the correct details" in {
+        val form: Element = document().mainContent.getForm
+        form.attr("action") mustBe testCall.url
+        form.attr("method") mustBe testCall.method
+      }
+
+      "has a set of radio buttons inputs" in {
+        document().mainContent.mustHaveRadioInput(
+          name = AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty,
+          radioItems = Seq(
+            RadioItem(
+              content = Text(OverseasPropertyAccountingMethodMessages.cash),
+              value = Some(AccountingMethodMapping.option_cash),
+              id = Some(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty)
+            ),
+            RadioItem(
+              content = Text(OverseasPropertyAccountingMethodMessages.accruals),
+              value = Some(AccountingMethodMapping.option_accruals),
+              id = Some(s"${AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty}-2")
+            )
+          )
+        )
+      }
+    }
+  }
+
+  "OverseasPropertyAccountingMethod" when {
+    "not in edit mode" should {
+      "have a continue button" in {
+        document().mainContent.selectHead("button").text mustBe OverseasPropertyAccountingMethodMessages.continue
+      }
+    }
+    "in edit mode" should {
+      "have an update button" in {
+        document(isEditMode = true).mainContent.selectHead("button").text mustBe OverseasPropertyAccountingMethodMessages.update
+      }
+    }
   }
 
 }

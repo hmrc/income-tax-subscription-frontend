@@ -28,11 +28,12 @@ import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import utilities.agent.TestModels._
+import views.agent.mocks.MockOverseasPropertyAccountingMethod
 
 import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService {
+  with MockSubscriptionDetailsService with MockAuditingService with MockOverseasPropertyAccountingMethod {
 
   override val controllerName: String = "OverseasPropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -43,7 +44,8 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
   object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
     mockAuditingService,
     mockAuthService,
-    MockSubscriptionDetailsService
+    MockSubscriptionDetailsService,
+    overseasPropertyAccountingMethod
   )
 
   def overseasPropertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceOverseasProperty))
@@ -54,6 +56,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
         mockFetchOverseasProperty(None)
         mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+        mockOverseasPropertyAccountingMethod()
 
         status(result) must be(Status.OK)
         verifyOverseasPropertySave(None)
@@ -67,6 +70,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
           accountingMethod = Some(Cash)
         )))
         mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+        mockOverseasPropertyAccountingMethod()
 
         status(result) must be(Status.OK)
         verifyOverseasPropertySave(None)
@@ -118,6 +122,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
         mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+        mockOverseasPropertyAccountingMethod()
 
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
@@ -133,7 +138,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       "the user clicks the back link" should {
         "redirect to the Overseas Property Start Date page" in {
           mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
-          TestOverseasPropertyAccountingMethodController.backUrl(false) mustBe
+          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
             controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
         }
       }
@@ -143,7 +148,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       "the user clicks the back link" should {
         "redirect to the Check Your Answers page" in {
           mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
-          TestOverseasPropertyAccountingMethodController.backUrl(true) mustBe
+          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
             controllers.agent.routes.CheckYourAnswersController.show().url
         }
       }

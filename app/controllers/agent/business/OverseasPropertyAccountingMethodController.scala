@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
+import views.html.agent.business.OverseasPropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,14 +34,15 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class OverseasPropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
                                                            val authService: AuthService,
-                                                           val subscriptionDetailsService: SubscriptionDetailsService)
+                                                           val subscriptionDetailsService: SubscriptionDetailsService,
+                                                           overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod)
                                                           (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
 
   def view(accountingMethodOverseasPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
-    views.html.agent.business.overseas_property_accounting_method(
+    overseasPropertyAccountingMethod(
       accountingMethodOverseasPropertyForm = accountingMethodOverseasPropertyForm,
       postAction = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
