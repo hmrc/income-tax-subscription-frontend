@@ -26,22 +26,25 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import views.html.agent.business.PropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
+class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: PropertyAccountingMethod,
+                                                    val auditingService: AuditingService,
                                                    val authService: AuthService,
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents,
                                                    val appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching with ReferenceRetrieval {
 
-  def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
+  def view(accountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
-    views.html.agent.business.property_accounting_method(
-      accountingMethodPropertyForm = accountingMethodPropertyForm,
+
+  propertyAccountingMethod (
+    accountingMethodForm = accountingMethodForm,
       postAction = controllers.agent.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode)
@@ -53,7 +56,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
       withAgentReference { reference =>
         subscriptionDetailsService.fetchAccountingMethodProperty(reference) map { accountingMethod =>
           Ok(view(
-            accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethod),
+            accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethod),
             isEditMode = isEditMode
           ))
         }
@@ -66,7 +69,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
         subscriptionDetailsService.fetchIncomeSource(reference) flatMap {
           case Some(incomeSource) => AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
             formWithErrors => Future.successful(BadRequest(view(
-              accountingMethodPropertyForm = formWithErrors,
+              accountingMethodForm = formWithErrors,
               isEditMode = isEditMode
             ))),
             accountingMethod =>
