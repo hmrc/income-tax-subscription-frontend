@@ -3,14 +3,15 @@ package controllers.agent.eligibility
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-import forms.agent.SoleTraderForm
+import forms.agent.{PropertyTradingStartDateForm, SoleTraderForm}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
+import forms.submapping.YesNoMapping
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 
@@ -21,7 +22,7 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showSoleTrader()
     val doc: Document = Jsoup.parse(result.body)
-    val pageContent: Element = doc.content
+    lazy val pageContent: Element = doc.mainContent
   }
 
   val date: String = LocalDate.now().minusYears(2).format(DateTimeFormatter.ofPattern("d MMMM y"))
@@ -41,7 +42,6 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
   }
 
   "GET /eligibility/sole-trader-start-date" should {
-
     "return OK" in new GetSetup {
       result should have(
         httpStatus(OK)
@@ -50,11 +50,11 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
     "have a view with the correct title" in new GetSetup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      doc.title shouldBe s"${SoleTraderPageMessages.heading(date)}" + serviceNameGovUk
+       doc.title shouldBe s"${SoleTraderPageMessages.heading(date)}" + serviceNameGovUk
     }
 
     "have a view with a back link" in new GetSetup {
-      val backLink: Element = pageContent.getBackLink
+      val backLink: Element = doc.getGovukBackLink
       backLink.attr("href") shouldBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show().url
       backLink.text shouldBe SoleTraderPageMessages.back
     }
@@ -70,38 +70,35 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
     }
 
     "have a button to submit" in new GetSetup {
-      val submitButton: Element = pageContent.getForm.getSubmitButton
+
+      val submitButton: Elements = pageContent.getForm.select("button[class=govuk-button]")
       submitButton.text shouldBe SoleTraderPageMessages.continue
-      submitButton.attr("class") shouldBe "button"
-      submitButton.attr("type") shouldBe "submit"
     }
 
     "have a fieldset containing a yes and no radiobutton" in new GetSetup {
-      val fieldset: Element = pageContent.getFieldset
 
-      fieldset.attr("class") shouldBe "inline"
+      val form: Element = doc.firstOf("form")
+      val yesRadio: Element = form.selectNth(".govuk-radios__item", 1).firstOf("input")
+      val yesLabel: Element = form.selectNth(".govuk-radios__item", 1).firstOf("label")
 
-      fieldset.selectFirst("legend").text shouldBe s"${SoleTraderPageMessages.title(date)}"
+      val noRadio: Element = form.selectNth(".govuk-radios__item", 2).firstOf("input")
+      val noLabel: Element = form.selectNth(".govuk-radios__item", 2).firstOf("label")
 
-      val firstRadioWithLabel: Element = fieldset.selectFirst(".multiple-choice:nth-of-type(1)")
-      val firstRadioLabel: Element = firstRadioWithLabel.selectFirst("label")
-      val firstRadioButton: Element = firstRadioWithLabel.selectFirst("input")
+      yesRadio.attr("type") shouldBe "radio"
+      yesRadio.attr("value") shouldBe YesNoMapping.option_yes
+      yesRadio.attr("name") shouldBe PropertyTradingStartDateForm.fieldName
+      yesRadio.attr("id") shouldBe PropertyTradingStartDateForm.fieldName
 
-      val secondRadioWithLabel: Element = fieldset.selectFirst(".multiple-choice:nth-of-type(2)")
-      val secondRadioLabel: Element = secondRadioWithLabel.selectFirst("label")
-      val secondRadioButton: Element = secondRadioWithLabel.selectFirst("input")
+      yesLabel.text shouldBe SoleTraderPageMessages.yes
+      yesLabel.attr("for") shouldBe PropertyTradingStartDateForm.fieldName
 
-      firstRadioLabel.attr("for") shouldBe SoleTraderForm.fieldName
-      firstRadioLabel.text shouldBe SoleTraderPageMessages.yes
-      firstRadioButton.attr("id") shouldBe SoleTraderForm.fieldName
-      firstRadioButton.attr("name") shouldBe SoleTraderForm.fieldName
-      firstRadioButton.attr("value") shouldBe "Yes"
+      noRadio.attr("type") shouldBe "radio"
+      noRadio.attr("value") shouldBe YesNoMapping.option_no
+      noRadio.attr("name") shouldBe PropertyTradingStartDateForm.fieldName
+      noRadio.attr("id") shouldBe s"${PropertyTradingStartDateForm.fieldName}-2"
 
-      secondRadioLabel.attr("for") shouldBe SoleTraderForm.fieldName + "-2"
-      secondRadioLabel.text shouldBe SoleTraderPageMessages.no
-      secondRadioButton.attr("id") shouldBe SoleTraderForm.fieldName + "-2"
-      secondRadioButton.attr("name") shouldBe SoleTraderForm.fieldName
-      secondRadioButton.attr("value") shouldBe "No"
+      noLabel.text shouldBe SoleTraderPageMessages.no
+      noLabel.attr("for") shouldBe s"${PropertyTradingStartDateForm.fieldName}-2"
     }
 
     class PostSetup(answer: Option[YesNo]) {
@@ -133,10 +130,10 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
           httpStatus(BAD_REQUEST)
         )
 
-        val pageContent: Element = Jsoup.parse(response.body).content
+        val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-        pageContent.select("div[class=error-notification]").text shouldBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
-        pageContent.select(s"a[href=#${SoleTraderForm.fieldName}]").text shouldBe s"${SoleTraderPageMessages.invalidError(date)}"
+        pageContent.firstOf("span[class=govuk-error-message]").text shouldBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
+        pageContent.firstOf(s"a[href=#${SoleTraderForm.fieldName}]").text shouldBe s"${SoleTraderPageMessages.invalidError(date)}"
       }
 
     }

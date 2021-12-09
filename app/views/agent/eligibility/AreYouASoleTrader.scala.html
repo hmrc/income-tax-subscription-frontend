@@ -14,45 +14,50 @@
  * limitations under the License.
  *@
 
-@import play.api.data.Form
-@import models.YesNo
-@import play.api.mvc.Call
-@import play.api.mvc.Request
-@import play.api.i18n.Messages
+
+
 @import config.AppConfig
-@import views.html.templates.agent_main_template
-@import views.html.helpers.summaryErrorHelper
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers.radioHelper
 @import forms.agent.SoleTraderForm
-@import views.helpers.RadioOption
 @import forms.submapping.YesNoMapping
-@import views.html.helpers.continueButton
-@import views.html.helpers.back_link
+@import models.YesNo
+@import play.api.data.Form
+@import play.api.i18n.Messages
+@import play.api.mvc.{Call, Request}
+@import views.html.helpers.injected.{ContinueButton, RadioHelper}
+@import views.html.templates.AgentMainTemplate
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton
+)(
+implicit appConfig: AppConfig
+)
 
 @(soleTraderForm: Form[YesNo], postAction: Call, startDateLimit: String, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@mainTemplate(title = messages("agent.eligibility.sole_trader.heading", startDateLimit), optForm = Some(soleTraderForm), backLink = Some(backUrl)) {
 
-@agent_main_template(title = messages("agent.eligibility.sole_trader.heading", startDateLimit)) {
-
-    @back_link(backUrl)
-
-    @summaryErrorHelper(soleTraderForm)
+    <h1 class="govuk-heading-l">@messages("agent.eligibility.sole_trader.heading", startDateLimit)</h1>
 
     @form(action = postAction) {
 
         @radioHelper(
             field = soleTraderForm(SoleTraderForm.fieldName),
             legend = messages("agent.eligibility.sole_trader.heading", startDateLimit),
-            options = Seq(
-                RadioOption(YesNoMapping.option_yes, messages("base.yes")),
-                RadioOption(YesNoMapping.option_no, messages("base.no"))
+            isPageHeading = false,
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages("base.yes")),
+                    value = Some(YesNoMapping.option_yes)
+                ),
+                RadioItem(
+                    content = Text(messages("base.no")),
+                    value = Some(YesNoMapping.option_no)
+                )
             ),
-            parentForm = soleTraderForm,
             inline = true
         )
-
         @continueButton()
-
     }
-
 }
