@@ -27,6 +27,8 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 import scala.collection.JavaConversions._
 
@@ -102,21 +104,21 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
       selectHead(s"$selector:nth-of-type($nth)")
     }
 
-    def content: Element = element.selectFirst("article")
+    def content: Element = element.selectHead("article")
 
-    def mainContent: Element = element.selectFirst("main")
+    def mainContent: Element = element.selectHead("main")
 
     def getParagraphs: Elements = element.getElementsByTag("p")
 
-    def getNthParagraph(nth: Int): Element = element.selectFirst(s"p:nth-of-type($nth)")
+    def getNthParagraph(nth: Int): Element = element.selectHead(s"p:nth-of-type($nth)")
 
-    def getNthUnorderedList(nth: Int): Element = element.selectFirst(s"ul:nth-of-type($nth)")
+    def getNthUnorderedList(nth: Int): Element = element.selectHead(s"ul:nth-of-type($nth)")
 
-    def getNthListItem(nth: Int): Element = element.selectFirst(s"li:nth-of-type($nth)")
+    def getNthListItem(nth: Int): Element = element.selectHead(s"li:nth-of-type($nth)")
 
     def getBulletPoints: Elements = element.getElementsByTag("li")
 
-    def getH1Element: Element = element.selectFirst("h1")
+    def getH1Element: Element = element.selectHead("h1")
 
     def getH2Elements: Elements = element.getElementsByTag("h2")
 
@@ -126,13 +128,13 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
 
     def getErrorSummary: Elements = element.select("#error-summary-display")
 
-    def getSubmitButton: Element = element.selectFirst("button[type=submit]")
+    def getSubmitButton: Element = element.selectHead("button[type=submit]")
 
     def getHintText: String = element.select(s"""[class=form-hint]""").text()
 
-    def getForm: Element = element.selectFirst("form")
+    def getForm: Element = element.selectHead("form")
 
-    def getFieldset: Element = element.selectFirst("fieldset")
+    def getFieldset: Element = element.selectHead("fieldset")
 
     def getBackLink: Elements = element.select(s"a[class=link-back]")
 
@@ -148,28 +150,43 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
 
     def getSpan(id: String): Elements = element.select(s"""span[id=$id]""")
 
-    def getLink(id: String): Element = element.selectFirst(s"""a[id=$id]""")
+    def getLink(id: String): Element = element.selectHead(s"""a[id=$id]""")
 
     def getTextFieldInput(id: String): Elements = element.select(s"""input[id=$id]""")
 
     def getFieldErrorMessage(id: String): Elements = element.select(s"""a[id=$id-error-summary]""")
 
     //Check your answers selectors
-    def getSummaryList: Element = element.selectFirst("dl.govuk-summary-list")
+    def getSummaryList: Element = element.selectHead("dl.govuk-summary-list")
 
     def getSummaryListRow(nth: Int): Element = {
-      element.selectFirst(s"div.govuk-summary-list__row:nth-of-type($nth)")
+      element.selectHead(s"div.govuk-summary-list__row:nth-of-type($nth)")
     }
 
-    def getSummaryListKey: Element = element.selectFirst("dt.govuk-summary-list__key")
+    def getSummaryListKey: Element = element.selectHead("dt.govuk-summary-list__key")
 
-    def getSummaryListValue: Element = element.selectFirst("dd.govuk-summary-list__value")
+    def getSummaryListValue: Element = element.selectHead("dd.govuk-summary-list__value")
 
-    def getSummaryListActions: Element = element.selectFirst("dd.govuk-summary-list__actions")
+    def getSummaryListActions: Element = element.selectHead("dd.govuk-summary-list__actions")
 
   }
 
   implicit class ElementTests(element: Element) {
+
+    def mustHaveRadioInput(name: String, radioItems: Seq[RadioItem]): Assertion = {
+      radioItems.zip(1 to radioItems.length) map { case (radioItem, index) =>
+        val radioElement: Element = element.selectNth(".govuk-radios__item", index)
+        val radioInput: Element = radioElement.selectHead("input")
+        radioItem.id mustBe Some(radioInput.attr("id"))
+        radioInput.attr("name") mustBe name
+        radioInput.attr("type") mustBe "radio"
+        Some(radioInput.attr("value")) mustBe radioItem.value
+
+        val radioLabel: Element = radioElement.selectHead("label")
+        radioLabel.attr("for") mustBe radioInput.attr("id")
+        Text(radioLabel.text) mustBe radioItem.content
+      } forall (_ == succeed) mustBe true
+    }
 
     def mustHaveTable(tableHeads: List[String], tableRows: List[List[String]]): Assertion = {
       val table: Element = element.selectHead("table")
