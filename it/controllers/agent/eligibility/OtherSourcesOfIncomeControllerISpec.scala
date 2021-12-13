@@ -18,7 +18,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
     lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showOtherSourcesOfIncome
     lazy val doc: Document = Jsoup.parse(response.body)
-    lazy val pageContent: Element = doc.content
+    lazy val pageContent: Element = doc.mainContent
   }
 
   object OtherSourcesOfIncomeMessages {
@@ -56,7 +56,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with a back link" in new GetSetup {
-      val backLink: Element = pageContent.getBackLink
+      val backLink: Element = doc.getElementById("back-link")
       backLink.attr("href") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show().url
       backLink.text shouldBe OtherSourcesOfIncomeMessages.back
     }
@@ -93,24 +93,23 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "have a button to submit" in new GetSetup {
-      val submitButton: Element = pageContent.getForm.getSubmitButton
+      val submitButton: Element = pageContent.getForm.getGovUkSubmitButton
       submitButton.text shouldBe OtherSourcesOfIncomeMessages.continue
-      submitButton.attr("class") shouldBe "button"
-      submitButton.attr("type") shouldBe "submit"
+      submitButton.attr("class") shouldBe "govuk-button"
     }
 
     "have a fieldset containing a yes and no radiobutton" in new GetSetup {
       val fieldset: Element = pageContent.getFieldset
 
-      fieldset.attr("class") shouldBe "inline"
+      fieldset.attr("class") shouldBe "govuk-fieldset"
 
       fieldset.selectFirst("legend").text shouldBe OtherSourcesOfIncomeMessages.heading
 
-      val firstRadioWithLabel: Element = fieldset.selectFirst(".multiple-choice:nth-of-type(1)")
+      val firstRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(1)")
       val firstRadioLabel: Element = firstRadioWithLabel.selectFirst("label")
       val firstRadioButton: Element = firstRadioWithLabel.selectFirst("input")
 
-      val secondRadioWithLabel: Element = fieldset.selectFirst(".multiple-choice:nth-of-type(2)")
+      val secondRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(2)")
       val secondRadioLabel: Element = secondRadioWithLabel.selectFirst("label")
       val secondRadioButton: Element = secondRadioWithLabel.selectFirst("input")
 
@@ -157,10 +156,10 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
         httpStatus(BAD_REQUEST)
       )
 
-      val pageContent: Element = Jsoup.parse(response.body).content
+      val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-      pageContent.select("div[class=error-notification]").text shouldBe s"Error: ${OtherSourcesOfIncomeMessages.invalidError}"
-      pageContent.select(s"a[href=#${OtherSourcesOfIncomeForm.fieldName}]").text shouldBe OtherSourcesOfIncomeMessages.invalidError
+      pageContent.firstOf("span[class=govuk-error-message]").text shouldBe s"Error: ${OtherSourcesOfIncomeMessages.invalidError}"
+      pageContent.firstOf(s"a[href=#${OtherSourcesOfIncomeForm.fieldName}]").text shouldBe OtherSourcesOfIncomeMessages.invalidError
 
       val form: Element = pageContent.getForm
       form.attr("method") shouldBe "POST"

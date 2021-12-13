@@ -20,22 +20,25 @@
 @import play.api.mvc.Request
 @import play.api.i18n.Messages
 @import config.AppConfig
-@import views.html.templates.agent_main_template
-@import views.html.helpers.summaryErrorHelper
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers.radioHelper
 @import forms.agent.OtherSourcesOfIncomeForm
-@import views.helpers.RadioOption
 @import forms.submapping.YesNoMapping
-@import views.html.helpers.continueButton
+@import views.html.helpers.injected.{ContinueButton, SignOutLink, RadioHelper, ButtonHelper}
+@import views.html.templates.AgentMainTemplate
 
-@import views.html.helpers.back_link
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton,
+    form: FormWithCSRF
+)
+
 @(otherSourcesOfIncomeForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @inputContent = {
-    <p class="bold">@messages("agent.other_sources_of_income.include")</p>
+    <p class="govuk-body">@messages("agent.other_sources_of_income.include")</p>
 
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("agent.other_sources_of_income.includePoint1")</li>
         <li>@messages("agent.other_sources_of_income.includePoint2")</li>
         <li>@messages("agent.other_sources_of_income.includePoint3")</li>
@@ -43,33 +46,38 @@
         <li>@messages("agent.other_sources_of_income.includePoint5")</li>
     </ul>
 
-    <p class="bold">@messages("agent.other_sources_of_income.notInclude")</p>
+    <p class="govuk-body">@messages("agent.other_sources_of_income.notInclude")</p>
 
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("agent.other_sources_of_income.notIncludePoint1")</li>
         <li>@messages("agent.other_sources_of_income.notIncludePoint2")</li>
     </ul>
 }
 
-@agent_main_template(title = messages("agent.other_sources_of_income.title")) {
+@mainTemplate(title = messages("agent.other_sources_of_income.title"), optForm = Some(otherSourcesOfIncomeForm), backLink = Some(backUrl)) {
 
-    @back_link(backUrl)
+<h1 class="govuk-heading-l">@messages("agent.other_sources_of_income.title")</h1>
 
-    @summaryErrorHelper(otherSourcesOfIncomeForm)
+@inputContent
 
     @form(action = postAction) {
+
         @radioHelper(
             field = otherSourcesOfIncomeForm(OtherSourcesOfIncomeForm.fieldName),
             legend = messages("agent.other_sources_of_income.title"),
-            content = Some(inputContent),
-            options = Seq(
-                RadioOption(YesNoMapping.option_yes, messages("base.yes")),
-                RadioOption(YesNoMapping.option_no, messages("base.no"))
+            isPageHeading = false,
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages("base.yes")),
+                    value = Some(YesNoMapping.option_yes)
+                ),
+                RadioItem(
+                    content = Text(messages("base.no")),
+                    value = Some(YesNoMapping.option_no)
+                )
             ),
-            parentForm = otherSourcesOfIncomeForm,
-            inline = true
-        )
-
+                inline = true
+            )
         @continueButton()
 
     }
