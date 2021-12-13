@@ -74,13 +74,14 @@
 
 @agentMainTemplate(title = messages("agent.covid_19_claim_check.title"), optForm = Some(covid19ClaimCheckForm), backLink = Some(backUrl)) {
   @form(action = postAction) {
-    <h1 class="govuk-heading-l">@messages("agent.covid_19_claim_check.title")</h1>
+    <h1 class="govuk-heading-l">@messages("agent.covid_19_claim_check.heading")</h1>
 
     @content
 
     @radioHelper(
       field = covid19ClaimCheckForm(Covid19ClaimCheckForm.fieldName),
-      legend = "",
+      legend = messages("agent.covid_19_claim_check.heading"),
+      isPageHeading = false,
       inline = true,
       radioItems = Seq(
         RadioItem(

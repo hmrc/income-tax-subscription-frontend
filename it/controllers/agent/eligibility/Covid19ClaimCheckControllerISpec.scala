@@ -91,6 +91,8 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
 
       fieldset.attr("class") shouldBe "govuk-fieldset"
 
+      fieldset.selectFirst("legend").text shouldBe Covid19ClaimCheckMessages.heading
+
       val firstRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(1)")
       val firstRadioLabel: Element = firstRadioWithLabel.selectFirst("label")
       val firstRadioButton: Element = firstRadioWithLabel.selectFirst("input")
