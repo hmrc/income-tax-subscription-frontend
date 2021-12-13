@@ -69,6 +69,10 @@ class Covid19ClaimCheckViewSpec extends ViewSpec {
       document().selectHead("h1").text mustBe Covid19ClaimCheck.heading
     }
 
+    "have the legend for the page" in {
+      document().selectHead("legend").text mustBe Covid19ClaimCheck.heading
+    }
+
     "have join pilot paragraph" in {
       document().selectNth(".govuk-body", 1).text mustBe Covid19ClaimCheck.paragraph1
     }
