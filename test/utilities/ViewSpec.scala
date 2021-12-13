@@ -128,7 +128,11 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
 
     def getErrorSummary: Elements = element.select("#error-summary-display")
 
+    def getGovukErrorSummary: Elements = element.select(".govuk-error-summary")
+
     def getSubmitButton: Element = element.selectHead("button[type=submit]")
+
+    def getGovukSubmitButton: Element = element.selectHead(".govuk-button")
 
     def getHintText: String = element.select(s"""[class=form-hint]""").text()
 
@@ -137,6 +141,8 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
     def getFieldset: Element = element.selectHead("fieldset")
 
     def getBackLink: Elements = element.select(s"a[class=link-back]")
+
+    def getGovukBackLink: Elements = element.select("a[class=govuk-back-link]")
 
     def getParagraphNth(index: Int = 0): String = {
       element.select("p").get(index).text()
@@ -319,6 +325,24 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
       }.getOrElse(succeed)
     }
 
+    def mustHaveGovukDateField(id: String, legend: String, exampleDate: String, error: Option[String] = None): Assertion = {
+      val fieldset: Element = element.selectHead("fieldset")
+
+      fieldset.attr("aria-describedby") mustBe s"$id-hint" + error.map(_ => s" $id-error").getOrElse("")
+
+      fieldset.selectHead("fieldset").selectHead("legend").text() mustBe legend
+
+      fieldset.selectHead("fieldset").select(".govuk-hint").text() mustBe exampleDate
+
+      fieldset.mustHaveTextField(s"$id-dateDay", "Day")
+      fieldset.mustHaveTextField(s"$id-dateMonth", "Month")
+      fieldset.mustHaveTextField(s"$id-dateYear", "Year")
+
+      error.map { message =>
+        fieldset.select("fieldset").select(".govuk-error-message").text mustBe s"Error: $message"
+      }.getOrElse(succeed)
+    }
+
     def mustHavePara(paragraph: String): Assertion = {
       element.getElementsByTag("p").text() must include(paragraph)
     }
@@ -333,7 +357,14 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
       element.getErrorSummary.select("ul > li").text mustBe errors.mkString(" ")
     }
 
-
+    def mustHaveGovukErrorSummary(error: String): Assertion = {
+      element.getGovukErrorSummary.attr("role") mustBe "alert"
+      element.getGovukErrorSummary.attr("aria-labelledby") mustBe "error-summary-title"
+      element.getGovukErrorSummary.attr("tabindex") mustBe "-1"
+      element.getGovukErrorSummary.select("h2").attr("id") mustBe "error-summary-title"
+      element.getGovukErrorSummary.select("h2").text mustBe "There is a problem"
+      element.getGovukErrorSummary.select("ul > li a").text mustBe error
+    }
   }
 
 }

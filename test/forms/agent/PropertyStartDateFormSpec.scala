@@ -16,17 +16,16 @@
 
 package forms.agent
 
-import java.time.LocalDate
-
 import forms.agent.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
-import models.common.PropertyStartDateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
+
+import java.time.LocalDate
 
 
 class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
@@ -41,7 +40,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       val testDateMonth = "05"
       val testDateYear = "2017"
       val testInput = Map(
-        s"$startDate.$day" -> testDateDay, s"$startDate.$month" -> testDateMonth, s"$startDate.$year" -> testDateYear
+        s"$startDate-$day" -> testDateDay, s"$startDate-$month" -> testDateMonth, s"$startDate-$year" -> testDateYear
       )
       val expected = DateModel(testDateDay, testDateMonth, testDateYear)
       val actual = form.bind(testInput).value
@@ -54,9 +53,9 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         val afterMax = "agent.error.property.start_date.maxStartDate"
         val beforeMin = "agent.error.property.start_date.minStartDate"
 
-        val dayKeyError: String = s"$startDate.$day"
-        val monthKeyError: String = s"$startDate.$month"
-        val yearKeyError: String = s"$startDate.$year"
+        val dayKeyError: String = s"$startDate-$day"
+        val monthKeyError: String = s"$startDate-$month"
+        val yearKeyError: String = s"$startDate-$year"
 
         val errorContext: String = "agent.error.property"
 
@@ -65,7 +64,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
         "it is within 1 years" in {
           val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)
-          val maxTest = form.bind(DataMap.date(startDate)(
+          val maxTest = form.bind(DataMap.govukDate(startDate)(
             oneYearAgo.getDayOfMonth.toString,
             oneYearAgo.getMonthValue.toString,
             oneYearAgo.getYear.toString
@@ -73,39 +72,39 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           maxTest.errors must contain(FormError(startDate, afterMax, Seq(PropertyStartDateForm.maxStartDate.toString)))
         }
         "it is before year 1900" in {
-          val minTest = form.bind(DataMap.date(startDate)("31", "12", "1899"))
+          val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
           minTest.errors must contain(FormError(startDate, beforeMin, Seq(PropertyStartDateForm.minStartDate.toString)))
         }
         "it is missing the day" in {
-          val test = form.bind(DataMap.date(startDate)("", "4", "2017"))
+          val test = form.bind(DataMap.govukDate(startDate)("", "4", "2017"))
           test.errors must contain(FormError(dayKeyError, s"$errorContext.day.empty"))
         }
         "it is missing the month" in {
-          val test = form.bind(DataMap.date(startDate)("1", "", "2017"))
+          val test = form.bind(DataMap.govukDate(startDate)("1", "", "2017"))
           test.errors must contain(FormError(monthKeyError, s"$errorContext.month.empty"))
         }
         "it is missing the year" in {
-          val test = form.bind(DataMap.date(startDate)("1", "1", ""))
+          val test = form.bind(DataMap.govukDate(startDate)("1", "1", ""))
           test.errors must contain(FormError(yearKeyError, s"$errorContext.year.empty"))
         }
         "it is missing multiple fields" in {
-          val test = form.bind(DataMap.date(startDate)("", "", "2017"))
+          val test = form.bind(DataMap.govukDate(startDate)("", "", "2017"))
           test.errors must contain(FormError(startDate, s"$errorContext.day_month.empty"))
         }
         "it has an invalid day" in {
-          val test = form.bind(DataMap.date(startDate)("0", "1", "2017"))
+          val test = form.bind(DataMap.govukDate(startDate)("0", "1", "2017"))
           test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
         }
         "it has an invalid month" in {
-          val test = form.bind(DataMap.date(startDate)("1", "13", "2017"))
+          val test = form.bind(DataMap.govukDate(startDate)("1", "13", "2017"))
           test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
         }
         "it has an invalid year" in {
-          val test = form.bind(DataMap.date(startDate)("1", "1", "invalid"))
+          val test = form.bind(DataMap.govukDate(startDate)("1", "1", "invalid"))
           test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
         }
         "it has multiple invalid fields" in {
-          val test = form.bind(DataMap.date(startDate)("0", "0", "2017"))
+          val test = form.bind(DataMap.govukDate(startDate)("0", "0", "2017"))
           test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
         }
       }
@@ -113,7 +112,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
     "accept a valid date" when {
       "the date is exactly one years ago" in {
         val oneYearAgo: LocalDate = LocalDate.now.minusYears(1)
-        val testData = DataMap.date(startDate)(
+        val testData = DataMap.govukDate(startDate)(
           day = oneYearAgo.getDayOfMonth.toString,
           month = oneYearAgo.getMonthValue.toString,
           year = oneYearAgo.getYear.toString
@@ -124,7 +123,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       }
       "the date is the first of january 1900" in {
         val earliestAllowedDate: LocalDate = LocalDate.of(1900, 1, 1)
-        val testData = DataMap.date(startDate)(
+        val testData = DataMap.govukDate(startDate)(
           day = earliestAllowedDate.getDayOfMonth.toString,
           month = earliestAllowedDate.getMonthValue.toString,
           year = earliestAllowedDate.getYear.toString

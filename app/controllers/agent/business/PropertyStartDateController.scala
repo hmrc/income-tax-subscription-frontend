@@ -29,11 +29,13 @@ import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
+import views.html.agent.business.PropertyStartDate
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PropertyStartDateController @Inject()(val auditingService: AuditingService,
+class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStartDate,
+                                            val auditingService: AuditingService,
                                             val authService: AuthService,
                                             val subscriptionDetailsService: SubscriptionDetailsService,
                                             val languageUtils: LanguageUtils)
@@ -44,7 +46,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
 
   def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
-    views.html.agent.business.property_start_date(
+    propertyStartDate(
       propertyStartDateForm = propertyStartDateForm,
       postAction = controllers.agent.business.routes.PropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,

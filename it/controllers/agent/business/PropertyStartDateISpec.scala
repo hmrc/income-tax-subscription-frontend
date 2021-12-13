@@ -49,7 +49,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(messages("agent.property.name.heading") + serviceNameGovUk),
-          dateField("startDate", testPropertyStartDate.startDate)
+          govukDateField("startDate", testPropertyStartDate.startDate)
         )
       }
     }
@@ -70,7 +70,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(messages("agent.property.name.heading") + serviceNameGovUk),
-          dateField("startDate", DateModel("", "", ""))
+          govukDateField("startDate", DateModel("", "", ""))
         )
       }
     }
