@@ -17,26 +17,29 @@
 package controllers.agent.eligibility
 
 import java.time.LocalDate
-
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.SoleTraderForm.soleTraderForm
+
 import javax.inject.{Inject, Singleton}
 import models._
 import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
+import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.twirl.api.Html
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
-import views.html.agent.eligibility.are_you_a_sole_trader
+import views.html.agent.eligibility.AreYouASoleTrader
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class SoleTraderController @Inject()(val auditingService: AuditingService,
-                                     val authService: AuthService)
+                                     val authService: AuthService,
+                                     areYouASoleTrader: AreYouASoleTrader)
                                     (implicit val appConfig: AppConfig,
                                      mcc: MessagesControllerComponents,
                                      override val languageUtils: LanguageUtils,
@@ -45,18 +48,30 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
   private def startDateLimit: LocalDate = LocalDate.now.minusYears(2)
 
   def backUrl: String = routes.OtherSourcesOfIncomeController.show().url
-
+  def view(form: Form[YesNo], startDateLimit: LocalDate)(implicit request: Request[_]): Html = {
+    areYouASoleTrader(
+      soleTraderForm = form,
+      postAction = routes.SoleTraderController.submit(),
+      startDateLimit = startDateLimit.toLongDate,
+      backUrl = backUrl
+    )
+  }
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(are_you_a_sole_trader(soleTraderForm(startDateLimit.toLongDate), routes.SoleTraderController.submit(), startDateLimit.toLongDate, backUrl))
+      Ok(view(
+        form = soleTraderForm(startDateLimit.toLongDate),
+        startDateLimit = startDateLimit
+      ))
   }
 
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
       soleTraderForm(startDateLimit.toLongDate).bindFromRequest.fold(
-        formWithErrors => BadRequest(are_you_a_sole_trader(formWithErrors, routes.SoleTraderController.submit(), startDateLimit.toLongDate, backUrl)),
-        {
+        formWithErrors => BadRequest(view(
+          form = formWithErrors,
+          startDateLimit = startDateLimit
+        )),{
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "soleTraderBusinessStartDate", arn))
