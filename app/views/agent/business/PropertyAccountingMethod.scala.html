@@ -1,0 +1,71 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.data.Form
+@import forms.agent.AccountingMethodPropertyForm
+@import forms.submapping.AccountingMethodMapping
+@import config.AppConfig
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.injected.{ContinueButton, RadioHelper}
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton
+)
+
+@(accountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@question = @{
+    messages("agent.property.accounting_method.title")
+}
+
+@heading(heading: String) = {
+    <h1 class="govuk-heading-l">@heading</h1>
+}
+
+@mainTemplate(title = messages("agent.property.accounting_method.title"), optForm = Some(accountingMethodForm), backLink = Some(backUrl)) {
+
+    @form(action = postAction) {
+
+        @heading(messages("agent.property.accounting_method.title"))
+
+        @radioHelper(
+
+            field = accountingMethodForm(AccountingMethodPropertyForm.accountingMethodProperty),
+            legend = question,
+            isPageHeading = false,
+            inline = true,
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages("agent.property.accounting_method.radio.cash")),
+                    hint = None,
+                    value = Some(AccountingMethodMapping.option_cash)
+                ),
+                RadioItem(
+                    content = Text(messages("agent.property.accounting_method.radio.accruals")),
+                    hint = None,
+                    value = Some(AccountingMethodMapping.option_accruals)
+                )
+            )
+        )
+
+        @continueButton(isEditMode = isEditMode)
+
+    }
+
+}

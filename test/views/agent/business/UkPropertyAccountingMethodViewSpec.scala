@@ -16,68 +16,86 @@
 
 package views.agent.business
 
-import agent.assets.MessageLookup.{PropertyAccountingMethod => messages}
+import agent.assets.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
 import forms.agent.AccountingMethodPropertyForm
-import forms.submapping.AccountingMethodMapping
-import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import models.AccountingMethod
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import play.api.data.{Form, FormError}
+import play.twirl.api.Html
+import utilities.ViewSpec
+import views.html.agent.business.PropertyAccountingMethod
 
-class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
-  val backUrl = ViewSpecTrait.testBackUrl
-  val action = ViewSpecTrait.testCall
+class UkPropertyAccountingMethodViewSpec extends ViewSpec {
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.agent.business.property_accounting_method(
-    accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.addError(addFormErrors),
-    postAction = action,
-    isEditMode,
-    backUrl = backUrl
-  )(FakeRequest(), implicitly, appConfig)
+  val testError: FormError = FormError("startDate", "testError")
 
-  def documentCore(isEditMode: Boolean): TestView = TestView(
-    name = "Property Accounting Method View",
-    title = messages.title,
-    heading = messages.heading,
-    isAgent = true,
-    page = page(isEditMode = isEditMode, addFormErrors = false)
-  )
+  val propertyAccountingMethod: PropertyAccountingMethod = app.injector.instanceOf[PropertyAccountingMethod]
 
-  "The Property accounting method view" should {
+  class Setup(isEditMode: Boolean = false,
+              form: Form[AccountingMethod] = AccountingMethodPropertyForm.accountingMethodPropertyForm) {
 
-    val testPage = documentCore(isEditMode = false)
-
-    testPage.mustHaveBackLinkTo(backUrl)
-
-    val form = testPage.getForm("Property Accounting Method form")(actionCall = action)
-
-    form.mustHaveRadioSet(
-      legend = messages.heading,
-      radioName = AccountingMethodPropertyForm.accountingMethodProperty
-    )(
-      AccountingMethodMapping.option_cash -> messages.cash,
-      AccountingMethodMapping.option_accruals -> messages.accruals
+    val page: Html = propertyAccountingMethod(
+      form,
+      testCall,
+      isEditMode = isEditMode,
+      testBackUrl
     )
 
-    form.mustHaveContinueButton()
+    val document: Document = Jsoup.parse(page.body)
 
   }
 
-  "The Property accounting method view in edit mode" should {
-    val editModePage = documentCore(isEditMode = true)
-    editModePage.mustHaveUpdateButton()
-  }
+  "property accounting method" must {
 
-  "Append Error to the page title if the form has error" should {
+    "have the correct template" when {
+      "there is no error" in new TemplateViewTest(
+        view = propertyAccountingMethod(
+          accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm,
+          postAction = testCall,
+          isEditMode = false,
+          backUrl = testBackUrl
+        ),
+        title = messages.title,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true
+      )
+      "there is an error" in new TemplateViewTest(
+        view = propertyAccountingMethod(
+          accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.withError(testError),
+          postAction = testCall,
+          isEditMode = false,
+          backUrl = testBackUrl
+        ),
+        title = messages.title,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true,
+        error = Some(testError)
+      )
+    }
 
-    def documentCore(): TestView = TestView(
-      name = "Property Accounting Method View",
-      title = titleErrPrefix + messages.title,
-      heading = messages.heading,
-      isAgent = true,
-      page = page(isEditMode = false, addFormErrors = true)
-    )
+    "have a form" which {
 
-    val testPage = documentCore()
+      "has a cash radio button" in new Setup {
+        document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe messages.cash
+      }
+
+      "has a accruals radio button" in new Setup {
+        document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe messages.accruals
+      }
+
+      "has a continue button" that {
+        s"displays ${common.continue} when not in edit mode" in new Setup {
+          document.select(".govuk-button").text mustBe common.continue
+        }
+        s"displays ${common.update} when in edit mode" in new Setup(isEditMode = true) {
+          document.select(".govuk-button").text mustBe common.update
+        }
+      }
+
+    }
 
   }
 
