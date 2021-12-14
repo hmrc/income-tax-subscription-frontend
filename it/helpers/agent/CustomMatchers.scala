@@ -157,10 +157,10 @@ trait CustomMatchers {
     new HavePropertyMatcher[WSResponse, String] {
       def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
-        val errorHeader = Option(body.getElementById("error-summary-title")).getOrElse(body.getElementById("error-summary-heading"))
+        val errorHeaderPresent = Option(body.getElementsByClass("govuk-error-message")).isDefined
 
         HavePropertyMatchResult(
-          errorHeader != null,
+          errorHeaderPresent,
           "errorDisplayed",
           "error heading found",
           "no error heading found"

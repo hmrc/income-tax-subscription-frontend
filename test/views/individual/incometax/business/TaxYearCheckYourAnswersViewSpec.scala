@@ -78,7 +78,7 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "The back url" should {
-      "have the value provied to the view" in {
+      "have the value provided to the view" in {
         val link = document().selectHead(".govuk-back-link")
         link.text mustBe "Back"
         link.attr("href") mustBe "/testUrl"

@@ -18,14 +18,13 @@ package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestModels
-import helpers.IntegrationTestModels.{subscriptionData, testFullOverseasPropertyModel, testInvalidStartDate, testPropertyStartDate}
+import helpers.IntegrationTestModels.{subscriptionData, testInvalidStartDate, testPropertyStartDate}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import models.common.{IncomeSourceModel, OverseasPropertyModel}
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
@@ -51,7 +50,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(messages("agent.overseas.property.name.heading") + serviceNameGovUk),
-          dateField("startDate", testPropertyStartDate.startDate)
+          govukDateField("startDate", testPropertyStartDate.startDate)
         )
       }
     }

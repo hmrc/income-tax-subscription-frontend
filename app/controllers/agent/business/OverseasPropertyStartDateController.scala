@@ -31,12 +31,14 @@ import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
+import views.html.agent.business.OverseasPropertyStartDate
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverseasPropertyStartDateController @Inject()(val auditingService: AuditingService,
+                                                    overseasPropertyStartDate: OverseasPropertyStartDate,
                                                     val authService: AuthService,
                                                     val subscriptionDetailsService: SubscriptionDetailsService,
                                                     val languageUtils: LanguageUtils)
@@ -47,12 +49,11 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
           (implicit request: Request[_]): Html = {
-    views.html.agent.business.overseas_property_start_date(
+    overseasPropertyStartDate(
       overseasPropertyStartDateForm = overseasPropertyStartDateForm,
-      postAction = controllers.agent.business.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
-      isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode, incomeSourceModel)
-    )
+      routes.OverseasPropertyStartDateController.submit(),
+      backUrl(isEditMode, incomeSourceModel),
+      isEditMode)
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -60,10 +61,8 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
       withAgentReference { reference =>
         subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) flatMap { overseasPropertyStartDate =>
           subscriptionDetailsService.fetchIncomeSource(reference) map {
-            case Some(incomeSource) => Ok(view(
-              overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
-              isEditMode = isEditMode,
-              incomeSourceModel = incomeSource
+            case Some(incomeSourceModel) => Ok(view(
+              overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate), isEditMode, incomeSourceModel
             ))
             case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
           }
@@ -78,7 +77,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
           formWithErrors =>
             require(reference)(incomeSourceModelAnswer) {
               incomeSourceModel =>
-                Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel)))
+                Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSourceModel = incomeSourceModel)))
             },
           startDate =>
             subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) flatMap { _ =>
