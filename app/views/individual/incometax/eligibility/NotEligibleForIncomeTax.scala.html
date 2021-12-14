@@ -16,11 +16,16 @@
 
 @import views.html.helpers._
 @import config.AppConfig
-@import views.html.templates.main_template
+@import views.html.templates.PrincipalMainTemplate
+
+@this(
+    mainTemplate: PrincipalMainTemplate
+)
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("not_eligible_for_income_tax.title")) {
+@mainTemplate(title = messages("not_eligible_for_income_tax.title")) {
+
     @back_link("javascript:history.back()")
 
     <h1 class="heading-large">@Messages("not_eligible_for_income_tax.heading")</h1>

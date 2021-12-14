@@ -17,6 +17,7 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
+import agent.audit.mocks.MockOverseasPropertyStartDate
 import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
@@ -36,7 +37,7 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with MockOverseasPropertyStartDate with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
@@ -51,6 +52,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   object TestOverseasPropertyStartDateController$ extends OverseasPropertyStartDateController(
     mockAuditingService,
+    mockOverseasPropertyStartDate,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockLanguageUtils
@@ -59,6 +61,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   trait Test {
     val controller = new OverseasPropertyStartDateController(
       mockAuditingService,
+      mockOverseasPropertyStartDate,
       mockAuthService,
       MockSubscriptionDetailsService,
       mockLanguageUtils

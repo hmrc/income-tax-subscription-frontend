@@ -25,6 +25,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
+import views.html.agent.business.OverseasPropertyStartDate
 
 class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
@@ -36,6 +37,8 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     val backLink = "Back"
   }
 
+  val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
+
   val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
@@ -45,11 +48,11 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   class Setup(isEditMode: Boolean = false, overseasPropertyStartDateForm: Form[DateModel] =
   OverseasPropertyStartDateForm.overseasPropertyStartDateForm("minStartDateError", "maxStartDateError")) {
 
-    val page: HtmlFormat.Appendable = views.html.agent.business.overseas_property_start_date(
+    val page: HtmlFormat.Appendable = overseasPropertyStartDate(
       overseasPropertyStartDateForm,
       action,
-      isEditMode,
-      backUrl
+      backUrl,
+      isEditMode
     )(FakeRequest(), implicitly, appConfig)
 
     val document: Document = Jsoup.parse(page.body)
@@ -70,22 +73,25 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a fieldset with dateInputs" in new Setup {
-      document.mustHaveDateField("startDate", OverseasPropertyStartDateMessages.heading, OverseasPropertyStartDateMessages.exampleStartDate)
+      document.mustHaveGovukDateField(
+        "startDate",
+        OverseasPropertyStartDateMessages.heading,
+        OverseasPropertyStartDateMessages.exampleStartDate)
     }
 
     "have a continue button when not in edit mode" in new Setup {
-      document.getSubmitButton.text mustBe OverseasPropertyStartDateMessages.continue
+      document.getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.continue
     }
 
     "have a backlink " in new Setup {
-      document.getBackLink.text mustBe OverseasPropertyStartDateMessages.backLink
-      document.getBackLink.attr("href") mustBe testBackUrl
+      document.getGovukBackLink.text mustBe OverseasPropertyStartDateMessages.backLink
+      document.getGovukBackLink.attr("href") mustBe testBackUrl
     }
 
-    "must display form error on page" in new Setup(false, OverseasPropertyStartDateForm.overseasPropertyStartDateForm(
+    "display form error on page" in new Setup(false, OverseasPropertyStartDateForm.overseasPropertyStartDateForm(
       "minStartDateError", "maxStartDateError").withError(testError)) {
-      document.mustHaveErrorSummary(List[String](testError.message))
-      document.mustHaveDateField(
+      document.mustHaveGovukErrorSummary(testError.message)
+      document.mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
         OverseasPropertyStartDateMessages.exampleStartDate,
