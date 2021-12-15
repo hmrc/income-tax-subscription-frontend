@@ -28,12 +28,13 @@ import services.{AuditingService, AuthService}
 import services.individual.KnownFactsService
 import testonly.form.individual.KnownFactsForm._
 import testonly.models.KnownFactsModel
-import testonly.views.html.individual.add_known_facts
+import testonly.views.html.individual.AddKnownFacts
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class KnownFactsController @Inject()(val auditingService: AuditingService,
+                                     addKnownFacts: AddKnownFacts,
                                      val authService: AuthService,
                                      knownFactsService: KnownFactsService)
                                     (implicit val ec: ExecutionContext,
@@ -41,7 +42,7 @@ class KnownFactsController @Inject()(val auditingService: AuditingService,
                                      mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
-    add_known_facts(
+    addKnownFacts(
       knownFactsForm = form,
       postAction = testonly.controllers.individual.routes.KnownFactsController.submit()
     )
