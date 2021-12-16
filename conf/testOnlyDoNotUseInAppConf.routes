@@ -29,12 +29,6 @@ POST        /report-quarterly/income-and-expenses/sign-up/test-only/feature-swit
 + nocsrf
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/preferences-token                      testonly.controllers.individual.PreferenceTokenController.addToken()
 
-
-
-GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     testonly.controllers.agent.MatchingStubController.show
-
-+ nocsrf
-POST        /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     testonly.controllers.agent.MatchingStubController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-user                      testonly.controllers.agent.ResetUserController.resetUser
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-lockout                   testonly.controllers.agent.ResetAgentLockoutController.resetLockout
 
