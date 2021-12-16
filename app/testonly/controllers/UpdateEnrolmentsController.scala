@@ -17,31 +17,33 @@
 package testonly.controllers
 
 import config.AppConfig
-import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
 import testonly.connectors.EnrolmentStoreStubConnector
 import testonly.form.UpdateEnrolmentsForm
-import testonly.views.html.individual.update_enrolments
+import testonly.views.html.individual.UpdateEnrolments
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 
 class UpdateEnrolmentsController @Inject()(mcc: MessagesControllerComponents,
                                            authService: AuthService,
-                                           enrolmentStoreStubConnector: EnrolmentStoreStubConnector)
-                                          (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc){
+                                           enrolmentStoreStubConnector: EnrolmentStoreStubConnector,
+                                           updateEnrolments: UpdateEnrolments
+                                          )
+                                          (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) {
 
   import authService._
 
   def show: Action[AnyContent] = Action.async(implicit req =>
     authorised().retrieve(Retrievals.credentials) {
       case Some(Credentials(credId, _)) =>
-        Future.successful(Ok(update_enrolments(
+        Future.successful(Ok(updateEnrolments(
           UpdateEnrolmentsForm.updateEnrolmentsForm.fill(credId),
           testonly.controllers.routes.UpdateEnrolmentsController.submit()
         )))
@@ -52,7 +54,7 @@ class UpdateEnrolmentsController @Inject()(mcc: MessagesControllerComponents,
   def submit: Action[AnyContent] = Action.async(implicit req =>
     UpdateEnrolmentsForm.updateEnrolmentsForm.bindFromRequest.fold(
       formWithErrors =>
-        Future.successful(BadRequest(update_enrolments(
+        Future.successful(BadRequest(updateEnrolments(
           formWithErrors,
           testonly.controllers.routes.UpdateEnrolmentsController.submit()
         ))),
