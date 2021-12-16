@@ -67,7 +67,7 @@
 }
 
 @inputCssClass = @{
-    if (field.error.isDefined || forceError) "form-control form-control--error" else "form-control"
+    if (field.error.isDefined || forceError) "form-control form-control--error govuk-body" else "form-control govuk-body"
 }
 
 <div class="form-group form-field@divClass.map(cls => s" $cls") @if(hasError && showErrorBorder) { form-field--error}">
