@@ -17,13 +17,10 @@
 package controllers.individual.eligibility
 
 import agent.audit.mocks.MockAuditingService
-import assets.MessageLookup.{NotEligibleForIncomeTax => messages}
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.individual.incometax.eligibility.NotEligibleForIncomeTax
@@ -36,7 +33,7 @@ class NotEligibleForIncomeTaxControllerSpec extends ControllerBaseSpec with Mock
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   val mockNotEligibleForIncomeTax: NotEligibleForIncomeTax = mock[NotEligibleForIncomeTax]
-  when(mockNotEligibleForIncomeTax()(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
+  when(mockNotEligibleForIncomeTax()(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
   object TestCannotUseServiceController extends NotEligibleForIncomeTaxController(
@@ -51,9 +48,9 @@ class NotEligibleForIncomeTaxControllerSpec extends ControllerBaseSpec with Mock
 
     "return ok (200)" in {
       val result = call
-      status(result) must be(Status.OK)
-      contentType(result) must be(Some("text/html"))
-      charset(result) must be(Some("utf-8"))
+      status(result) mustBe OK
+      contentType(result) mustBe Some(HTML)
+      charset(result) mustBe Some(Codec.utf_8.charset)
     }
   }
 }
