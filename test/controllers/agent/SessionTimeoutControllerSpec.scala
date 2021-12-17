@@ -18,11 +18,15 @@ package controllers.agent
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.Configuration
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
+import views.html.agent.Timeout
 
 class SessionTimeoutControllerSpec extends AgentControllerBaseSpec {
 
@@ -30,8 +34,12 @@ class SessionTimeoutControllerSpec extends AgentControllerBaseSpec {
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
   implicit lazy val config:Configuration = app.injector.instanceOf[Configuration]
 
+  private val agentTimeoutView = mock[Timeout]
 
-  object TestSessionTimeoutController extends SessionTimeoutController(mockMessagesControllerComponents)(appConfig, config, env)
+  when(agentTimeoutView()(any(), any(), any()))
+    .thenReturn(HtmlFormat.empty)
+
+  object TestSessionTimeoutController extends SessionTimeoutController(agentTimeoutView, mockMessagesControllerComponents)(appConfig, config, env)
 
   "Calling the timeout action of the SessionTimeoutController" should {
 
@@ -45,11 +53,6 @@ class SessionTimeoutControllerSpec extends AgentControllerBaseSpec {
     "return HTML" in {
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-    }
-
-    s"have the title '${MessageLookup.Timeout.title}'" in {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      document.title() must be(MessageLookup.Timeout.title + serviceNameGovUk)
     }
   }
 }

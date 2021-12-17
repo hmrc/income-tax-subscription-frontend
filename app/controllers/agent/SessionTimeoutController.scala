@@ -17,22 +17,22 @@
 package controllers.agent
 
 import config.AppConfig
+import play.api.mvc._
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.html.agent.Timeout
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-
 import scala.concurrent.Future
 
 @Singleton
-class SessionTimeoutController @Inject()(mcc: MessagesControllerComponents)
+class SessionTimeoutController @Inject()(val agentTimeout: Timeout, mcc: MessagesControllerComponents)
                                         (implicit appConfig: AppConfig, val config: Configuration, val env: Environment)
   extends FrontendController(mcc) with AuthRedirects {
 
   val show: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.agent.timeout()))
+    Future.successful(Ok(agentTimeout()))
   }
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
