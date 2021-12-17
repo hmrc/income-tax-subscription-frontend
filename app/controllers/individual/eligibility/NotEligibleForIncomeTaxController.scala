@@ -21,17 +21,19 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import views.html.individual.incometax.eligibility.NotEligibleForIncomeTax
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NotEligibleForIncomeTaxController @Inject()(val auditingService: AuditingService,
+class NotEligibleForIncomeTaxController @Inject()(val notEligibleForIncomeTax: NotEligibleForIncomeTax,
+                                                  val auditingService: AuditingService,
                                                   val authService: AuthService)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
                                                   mcc: MessagesControllerComponents) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    implicit user => Future.successful(Ok(views.html.individual.incometax.eligibility.not_eligible_for_income_tax()))
+    implicit user => Future.successful(Ok(notEligibleForIncomeTax()))
   }
 }

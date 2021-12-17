@@ -18,13 +18,15 @@ package views.individual.incometax.eligibility
 
 import assets.MessageLookup.{Base => common, NotEligibleForIncomeTax => messages}
 import views.ViewSpecTrait
+import views.html.individual.incometax.eligibility.NotEligibleForIncomeTax
 
 class NotEligibleForIncomeTaxSpec extends ViewSpecTrait {
 
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.individual.incometax.eligibility.not_eligible_for_income_tax()(request, implicitly, appConfig)
+  val NotEligibleForIncomeTaxView: NotEligibleForIncomeTax = app.injector.instanceOf[NotEligibleForIncomeTax]
 
+  lazy val page = NotEligibleForIncomeTaxView()(request, implicitly, appConfig)
 
   "The Income Tax Not Eligible view" should {
 
