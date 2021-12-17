@@ -440,6 +440,19 @@ user-details.field_4                                            = Date of birth
 user_details.formhint.1.line_1                                  = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 user-details.formhint.2                                         = For example, 10 12 1990
 
+## Stub User Details ##
+stub.user.details.title                                         = User stubbing service - Use software to send Income Tax updates - GOV.UK
+stub.user.details.heading                                       = User stubbing service
+stub.user.details.line_1                                        = We will check these details with information we currently have.
+stub.user.details.field_1                                       = First name
+stub.user.details.field_2                                       = Last name
+stub.user.details.field_3                                       = National Insurance number
+stub.user.details.field_4                                       = Self Assessment Unique Tax Reference
+stub.user.details.field_5                                       = Date of birth
+stub.user.details.formhint.1.line_1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
+stub.user.details.formhint.2                                    = For example, 10 12 1990
+stub.user.details.formhint.3                                    = For example, '1234546734'
+
 # User details page
 user-details-error.title                                        = User match error
 user-details-error.heading                                      = We couldn’t confirm your details

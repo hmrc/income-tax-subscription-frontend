@@ -16,10 +16,11 @@
 
 package testonly.form.individual
 
+import forms.formatters.NewDateModelMapping
 import forms.prevalidation.CaseOption._
 import forms.prevalidation.TrimOption._
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
-import forms.formatters.DateModelMapping.dateMapping
+import forms.usermatching.UserDetailsForm.{dateInPast, userDateOfBirth}
 import forms.validation.Constraints._
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
@@ -27,8 +28,8 @@ import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
+import testonly.form.individual.UserToStubForm.userDateOfBirth
 import testonly.models.UserToStubModel
-
 import scala.util.Try
 
 object UserToStubForm {
@@ -84,7 +85,7 @@ object UserToStubForm {
       userLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       userNino -> oText.toText.verifying(emptyNino andThen validateNino),
       userSautr -> oText.verifying(validateUtr),
-      userDateOfBirth -> dateMapping.verifying(dobEmpty andThen dobValidation)
+      userDateOfBirth -> NewDateModelMapping.dateModelMapping(errorContext = "user_details.date_of_birth").verifying(dobEmpty andThen dobValidation)
     )(UserToStubModel.apply)(UserToStubModel.unapply)
   )
 
