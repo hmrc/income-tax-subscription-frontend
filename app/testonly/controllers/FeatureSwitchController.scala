@@ -26,12 +26,13 @@ import play.twirl.api.Html
 import services.{AuditingService, AuthService}
 import testonly.connectors.{BackendFeatureSwitchConnector, EligibilityFeatureSwitchConnector}
 import testonly.models.FeatureSwitchSetting
-import testonly.views.html.feature_switch
+import testonly.views.html.FeatureSwitchSettings
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.{ExecutionContext, Future}
 
 class FeatureSwitchController @Inject()(val auditingService: AuditingService,
+                                        featureSwitchSettings: FeatureSwitchSettings,
                                         val authService: AuthService,
                                         backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
                                         eligibilityFeatureSwitchConnector: EligibilityFeatureSwitchConnector)
@@ -42,7 +43,7 @@ class FeatureSwitchController @Inject()(val auditingService: AuditingService,
   private def view(switchNames: Map[FeatureSwitch, Boolean],
                    backendFeatureSwitches: Map[String, Boolean],
                    eligibilityFeatureSwitches: Map[String, Boolean])(implicit request: Request[_]): Html =
-    feature_switch(
+    featureSwitchSettings(
       switchNames = switchNames,
       backendFeatureSwitches = backendFeatureSwitches,
       eligibilityFeatureSwitches = eligibilityFeatureSwitches,
