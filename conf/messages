@@ -867,7 +867,7 @@ agent.no-nino.line_1                                            = You can sign u
 ## Not Enrolled to Agent Services
 agent.not_enrolled_agent_services.title                         = You can’t use this service yet
 agent.not_enrolled_agent_services.heading                       = You can’t use this service yet
-agent.not_enrolled_agent_services.para1                         = To use this service, you need to <a href="{0}">set up an agent services account</a>.
+agent.not_enrolled_agent_services.para1                         = To use this service, you need to <a class="govuk-link" href="{0}">set up an agent services account</a>.
 
 ## Client Details ##
 agent.client-details.title                                      = Enter your client’s details

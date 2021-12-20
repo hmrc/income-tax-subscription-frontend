@@ -17,19 +17,21 @@
 package controllers.agent
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.agent.NotEnrolledAgentServices
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class NotEnrolledAgentServicesController @Inject()(mcc: MessagesControllerComponents)
+class NotEnrolledAgentServicesController @Inject()(notEnrolledAgentServices: NotEnrolledAgentServices,
+                                                    mcc: MessagesControllerComponents)
                                                   (implicit appConfig: AppConfig) extends FrontendController(mcc) {
 
   val show: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.agent.not_enrolled_agent_services()))
+      Future.successful(Ok(notEnrolledAgentServices()))
   }
 
 }
