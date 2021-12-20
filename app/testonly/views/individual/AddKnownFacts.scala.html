@@ -16,36 +16,41 @@
 
 @import testonly.models.KnownFactsModel
 @import testonly.form.individual.KnownFactsForm._
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
-@import views.html.templates.main_template
+@import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers._
+@import views.html.helpers.injected.{TextInputHelper, ContinueButton}
 @import views.individual.helpers._
+
+@this(
+   mainTemplate: PrincipalMainTemplate,
+   inputHelper: TextInputHelper,
+   continueButton: ContinueButton,
+   form: FormWithCSRF
+)
 
 @(knownFactsForm: Form[KnownFactsModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("Add known facts"), form = knownFactsForm) {
+@mainTemplate(title = Messages("Add known facts"), optForm = Some(knownFactsForm) ) {
 
-    @summaryErrorHelper(knownFactsForm)
-
-    <h1 class="heading-large">@Messages("Add known facts")</h1>
+    <h1 class="govuk-heading-l">@Messages("Add known facts")</h1>
 
     @form(action = postAction) {
 
-        <div class="form-group">
+        <div class="govuk-form-group">
             @inputHelper(
                 field = knownFactsForm(nino),
                 label = Messages("Nino"),
-                parentForm = knownFactsForm
+                isPageHeading = false
             )
         </div>
 
-        <div class="form-group">
-        @inputHelper(
-            field = knownFactsForm(mtdid),
-            label = Messages("MTD-IT-SA"),
-            parentForm = knownFactsForm
-        )
+        <div class="govuk-form-group">
+            @inputHelper(
+                field = knownFactsForm(mtdid),
+                label = Messages("MTD-IT-SA"),
+                isPageHeading = false
+            )
         </div>
         @continueButton("Add known facts")
     }

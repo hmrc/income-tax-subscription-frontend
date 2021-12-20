@@ -24,7 +24,7 @@
 }
 
 @errMsg(err: FormError) = {
-    <li class="bold"><a href="#@err.key">@{Messages(err.message, err.args: _*)}</a></li>
+    <li class="bold govuk-body"><a href="#@err.key">@{Messages(err.message, err.args: _*)}</a></li>
 }
 
 @if(form.hasErrors) {
@@ -34,7 +34,7 @@
          role="alert"
          aria-labelledby="error-summary-heading"
          tabindex="-1">
-        <h2 id="error-summary-heading" class="heading-medium">@Messages("base.error_heading")</h2>
+        <h2 id="error-summary-heading" class="govuk-heading-m">@Messages("base.error_heading")</h2>
         <ul>
             @errors.map(errMsg)
         </ul>
