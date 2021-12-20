@@ -452,6 +452,19 @@ eligible.heading                                                = Gallwch anfon 
 eligible.line_1                                                 = Mae’ch atebion yn golygu y dylech allu dechrau anfon diweddariadau digidol i CThEM ar ôl i chi gofrestru.
 eligible.line_2                                                 = Dim ond ychydig o fanylion eraill sydd angen i chi eu rhoi.
 
+## Stub User Details ##
+stub.user.details.title                                         = User stubbing service - Use software to send Income Tax updates - GOV.UK
+stub.user.details.heading                                       = User stubbing service
+stub.user.details.line_1                                        = We will check these details with information we currently have.
+stub.user.details.field_1                                       = First name
+stub.user.details.field_2                                       = Last name
+stub.user.details.field_3                                       = National Insurance number
+stub.user.details.field_4                                       = Self Assessment Unique Tax Reference
+stub.user.details.field_5                                       = Date of birth
+stub.user.details.formhint.1.line_1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
+stub.user.details.formhint.2                                    = For example, 10 12 1990
+stub.user.details.formhint.3                                    = For example, '1234546734'
+
 ## User Details ##
 user-details.title                                              = Cadarnhau’ch manylion
 user-details.heading                                            = Cadarnhau’ch manylion
@@ -462,6 +475,7 @@ user-details.field_3                                            = Rhif Yswiriant
 user-details.field_4                                            = Dyddiad geni
 user_details.formhint.1.line_1                                  = Mae hwn ar eich cerdyn Yswiriant Gwladol, llythyr ynghylch budd-daliadau, slip cyflog neu P60. Er enghraifft, ‘QQ 12 34 56 C’.
 user-details.formhint.2                                         = Er enghraifft, 10 12 1990
+
 
 # User details page
 user-details-error.title                                        = Gwall paru defnyddiwr

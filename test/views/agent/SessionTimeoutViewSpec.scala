@@ -19,10 +19,11 @@ package views.agent
 import agent.assets.MessageLookup.{Timeout => messages}
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
+import views.html.agent.Timeout
 
 class SessionTimeoutViewSpec extends ViewSpecTrait {
 
-  lazy val page = views.html.agent.timeout()(FakeRequest(), implicitly, appConfig)
+  lazy val page = app.injector.instanceOf[Timeout]
 
   "The Session timeout view" should {
 
@@ -30,14 +31,13 @@ class SessionTimeoutViewSpec extends ViewSpecTrait {
       name = "Session timeout view",
       title = messages.title,
       heading = messages.heading,
-      page = page,
+      page = page()(FakeRequest(), implicitly, appConfig),
       isAgent = true,
       showSignOutInBanner = false)
 
     testPage.mustHavePara(messages.returnToHome)
 
-    val para = testPage.selectHead("return content body", ".content__body").selectHead("return home paragraph", "p")
-
+    val para = testPage.selectHead("return content body", "#main-content").selectHead("return home paragraph", "p")
     para.mustHaveALink("sign in", controllers.agent.routes.HomeController.index().url)
   }
 

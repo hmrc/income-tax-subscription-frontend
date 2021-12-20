@@ -1,0 +1,96 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import testonly.models.UserToStubModel
+@import testonly.form.individual.UserToStubForm._
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import config.AppConfig
+@import models.usermatching._
+@import views.html.helpers._
+@import views.html.helpers.injected.{ContinueButton, TextInputHelper, DateHelper}
+@import views.html.templates.PrincipalMainTemplate
+
+@this(
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    continueButton: ContinueButton,
+    inputHelper: TextInputHelper,
+    dateHelper: DateHelper
+)
+
+
+@(userToStubform: Form[UserToStubModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@mainTemplate(
+    title = Messages("stub.user.details.title"),
+    optForm = Some(userToStubform)
+) {
+
+    @form(action = postAction) {
+
+    <h1 class="govuk-heading-l">@messages("stub.user.details.heading")</h1>
+
+
+            @inputHelper(
+            field = userToStubform(userFirstName),
+            label = messages("stub.user.details.field_1"),
+            isLabelHidden = false,
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-half"),
+            autoComplete = Some("Test")
+            )
+
+            @inputHelper(
+            field = userToStubform(userLastName),
+            label = messages("stub.user.details.field_1"),
+            isLabelHidden = false,
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-half"),
+            autoComplete = Some("User")
+            )
+
+            @inputHelper(
+            field = userToStubform(userNino),
+            label = messages("stub.user.details.field_3"),
+            isLabelHidden = false,
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-half"),
+            hint = Some(messages("user_details.formhint.1.line_1"))
+            )
+
+            @inputHelper(
+            field =  userToStubform(userSautr),
+            label = messages("stub.user.details.field_4"),
+            isLabelHidden = false,
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-half"),
+            hint = Some(messages("stub.user.details.formhint.3"))
+            )
+
+            @dateHelper(
+            field = userToStubform(userDateOfBirth),
+            legendContent = messages("stub.user.details.field_5"),
+            hintText = Some(messages("stub.user.details.formhint.2")),
+            parentForm = userToStubform,
+            isPageHeading = false,
+            isLegendVisible = true,
+            isDateOfBirth = true
+            )
+
+        @continueButton(Some("Stub User"))
+
+    }
+}
