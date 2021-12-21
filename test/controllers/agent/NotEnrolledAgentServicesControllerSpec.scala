@@ -18,9 +18,13 @@ package controllers.agent
 
 import agent.assets.MessageLookup.{NotEnrolledAgentServices => messages}
 import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
+import play.twirl.api.HtmlFormat
+import views.html.agent.NotEnrolledAgentServices
 
 class NotEnrolledAgentServicesControllerSpec extends AgentControllerBaseSpec {
 
@@ -28,7 +32,13 @@ class NotEnrolledAgentServicesControllerSpec extends AgentControllerBaseSpec {
   override val controllerName: String = "NotEnrolledAgentServices"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestNotEnrolledAgentServicesController extends NotEnrolledAgentServicesController(mockMessagesControllerComponents)
+  val mockNotEnrolledAgentService: NotEnrolledAgentServices = mock[NotEnrolledAgentServices]
+  when(mockNotEnrolledAgentService()(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+    .thenReturn(HtmlFormat.empty)
+
+  object TestNotEnrolledAgentServicesController extends NotEnrolledAgentServicesController(
+    mockNotEnrolledAgentService,
+    mockMessagesControllerComponents)
 
   "Calling the 'show' action of the NotEnrolledAgentServicesController" should {
 
@@ -42,11 +52,6 @@ class NotEnrolledAgentServicesControllerSpec extends AgentControllerBaseSpec {
     "return HTML" in {
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-    }
-
-    "render the 'Not subscribed to Agent Services page'" in {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      document.title mustBe messages.title + serviceNameGovUk
     }
 
   }

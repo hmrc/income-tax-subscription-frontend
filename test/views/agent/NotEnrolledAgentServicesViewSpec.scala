@@ -18,13 +18,16 @@ package views.agent
 
 import agent.assets.MessageLookup.{Base => commonMessages, NotEnrolledAgentServices => messages}
 import views.ViewSpecTrait
+import views.html.agent.NotEnrolledAgentServices
 
 class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.agent.not_enrolled_agent_services()(request, implicitly, appConfig)
+  val NotEnrolledAgentServicesView: NotEnrolledAgentServices = app.injector.instanceOf[NotEnrolledAgentServices]
+
+  lazy val page = NotEnrolledAgentServicesView()(request, implicitly, appConfig)
 
   "The Agent not Enrolled to Agent Services view" should {
     val testPage = TestView(
@@ -37,7 +40,7 @@ class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.para1)
 
-    val paragraph1 = testPage.selectHead("return content body", ".content__body").selectHead("paragraph 1", "p")
+    val paragraph1 = testPage.selectHead("return content body", "#main-content").selectHead("paragraph 1", "p")
     paragraph1.mustHaveALink(messages.linkText, appConfig.agentServicesUrl)
 
     testPage.mustHaveSignOutButton(commonMessages.signOut, request.path)
