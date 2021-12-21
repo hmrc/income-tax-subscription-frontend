@@ -26,13 +26,14 @@ import services.{AuditingService, AuthService}
 import testonly.connectors.individual.ClearPreferencesConnector
 import testonly.form.individual.ClearPreferencesForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
-import testonly.views.html.individual.clear_preferences
+import testonly.views.html.individual.ClearPreferences
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClearPreferencesController @Inject()(val auditingService: AuditingService,
+                                           clearPreferences: ClearPreferences,
                                            val authService: AuthService,
                                            clearPreferencesConnector: ClearPreferencesConnector)
                                           (implicit val ec: ExecutionContext,
@@ -60,7 +61,7 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
 
 
   private def showView(form: Form[ClearPreferencesModel])(implicit request: Request[_]): Html =
-    clear_preferences(
+    clearPreferences(
       clearPreferencesForm = form,
       postAction = testonly.controllers.individual.routes.ClearPreferencesController.submit()
     )
