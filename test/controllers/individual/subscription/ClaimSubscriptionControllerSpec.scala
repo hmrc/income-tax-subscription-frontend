@@ -17,14 +17,19 @@
 package controllers.individual.subscription
 
 import agent.audit.mocks.MockAuditingService
-import controllers.ControllerBaseSpec
+import controllers.{ControllerBaseSpec, FeedbackController}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants._
+import views.html.individual.incometax.subscription.enrolled.ClaimSubscription
+import views.html.{Feedback, FeedbackThankyou}
 
 class ClaimSubscriptionControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService with MockSubscriptionOrchestrationService with MockAuditingService {
@@ -35,6 +40,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec
   )
 
   object TestClaimSubscriptionController extends ClaimSubscriptionController(
+    mock[ClaimSubscription],
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
@@ -42,41 +48,58 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec
   )
 
   "Calling the claim action of the ClaimSubscriptionController with a subscribed Authenticated User" should {
-    "return a a redirect to the confirmation page" in {
+    "return a a redirect to the confirmation page" in withController { controller =>
       mockFetchSubscriptionIdFromSubscriptionDetails(testMTDID)
       mockEnrolAndRefreshSuccess(testMTDID, testNino)
 
-      lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
+      lazy val result = controller.claim(subscriptionRequest)
 
       status(result) must be(Status.OK)
     }
 
-    "return an error where enrolment fails" in {
+    "return an error where enrolment fails" in withController { controller =>
       mockFetchSubscriptionIdFromSubscriptionDetails(testMTDID)
       mockEnrolFailure(testMTDID, testNino)
 
-      lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
+      lazy val result = controller.claim(subscriptionRequest)
 
       intercept[InternalServerException](await(result))
     }
 
-    "return an error where refresh profile fails" in {
+    "return an error where refresh profile fails" in withController { controller =>
       mockFetchSubscriptionIdFromSubscriptionDetails(testMTDID)
       mockRefreshFailure(testMTDID, testNino)
 
-      lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
+      lazy val result = controller.claim(subscriptionRequest)
 
       intercept[InternalServerException](await(result))
     }
 
-    "return an error where Subscription Details  does not contain the MtditId" in {
+    "return an error where Subscription Details  does not contain the MtditId" in withController { controller =>
       mockFetchSubscriptionIdFromSubscriptionDetails(fetchSubscriptionId = None)
 
-      lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
+      lazy val result = controller.claim(subscriptionRequest)
 
       intercept[InternalServerException](await(result))
     }
   }
 
   authorisationTests()
+
+  private def withController(testCode: ClaimSubscriptionController => Any): Unit = {
+    val claimSubscriptionView = mock[ClaimSubscription]
+
+    when(claimSubscriptionView()(any(), any(), any()))
+      .thenReturn(HtmlFormat.empty)
+
+    val controller = new ClaimSubscriptionController(
+      claimSubscriptionView,
+      mockAuditingService,
+      mockAuthService,
+      MockSubscriptionDetailsService,
+      mockSubscriptionOrchestrationService
+    )
+
+    testCode(controller)
+  }
 }

@@ -21,15 +21,14 @@ import controllers.SignOutController
 import models.DateModel
 import org.jsoup.Jsoup
 import views.ViewSpecTrait
+import views.html.individual.incometax.subscription.enrolled.ClaimSubscription
 
 class ClaimSubscriptionViewSpec extends ViewSpecTrait {
+  private val request = ViewSpecTrait.viewTestRequest
 
-  val submissionDateValue = DateModel("1", "1", "2016")
-  val action = ViewSpecTrait.testCall
-  val request = ViewSpecTrait.viewTestRequest
-
-  lazy val page = views.html.individual.incometax.subscription.enrolled.claim_subscription()(request, implicitly, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+  private val claimSubscriptionView = app.injector.instanceOf[ClaimSubscription]
+  private lazy val page = claimSubscriptionView()(request, implicitly, appConfig)
+  private lazy val document = Jsoup.parse(page.body)
 
   "The Confirmation view" should {
 

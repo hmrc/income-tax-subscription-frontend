@@ -20,7 +20,6 @@ import forms.formatters.NewDateModelMapping
 import forms.prevalidation.CaseOption._
 import forms.prevalidation.TrimOption._
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
-import forms.usermatching.UserDetailsForm.{dateInPast, userDateOfBirth}
 import forms.validation.Constraints._
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
@@ -28,8 +27,8 @@ import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
-import testonly.form.individual.UserToStubForm.userDateOfBirth
 import testonly.models.UserToStubModel
+
 import scala.util.Try
 
 object UserToStubForm {

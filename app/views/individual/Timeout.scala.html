@@ -18,22 +18,12 @@
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
-        mainTemplate: PrincipalMainTemplate
-)(
-        implicit appConfig: AppConfig
+  mainTemplate: PrincipalMainTemplate
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@mainTemplate(
-    title = messages("claim-enrolment.not-subscribed.heading")
-) {
-
-    <h1 class="govuk-heading-xl">@messages("claim-enrolment.not-subscribed.heading")</h1>
-
-    <p class="govuk-body">
-        @messages("claim-enrolment.not-subscribed.info")
-        <a class="govuk-link" href="@{appConfig.btaUrl}">@messages("claim-enrolment.not-subscribed.info.link-text")</a>
-    </p>
-
+@mainTemplate(title = messages("timeout.title"), showSignOutLink = false) {
+  <h1 class="govuk-heading-l">@messages("timeout.title")</h1>
+  <p class="govuk-body">@Html(messages("timeout.returnToHome", controllers.usermatching.routes.HomeController.index().url))</p>
 }

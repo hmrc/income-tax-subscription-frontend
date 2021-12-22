@@ -16,24 +16,30 @@
 
 package controllers.usermatching
 
-import assets.MessageLookup
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
+import views.html.agent.AgentAffinityGroupError
 
 class AffinityGroupErrorControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "AffinityGroupErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestAffinityGroupErrorController extends AffinityGroupErrorController(mockMessagesControllerComponents)
+  private val agentAffinityGroupError = mock[AgentAffinityGroupError]
+
+  when(agentAffinityGroupError()(any(), any(), any()))
+    .thenReturn(HtmlFormat.empty)
+
+  object TestAffinityGroupErrorController extends AffinityGroupErrorController(agentAffinityGroupError, mockMessagesControllerComponents)
 
   "Calling the show action of the AffinityGroupErrorController" should {
 
     lazy val result = TestAffinityGroupErrorController.show(subscriptionRequest)
-    lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
       status(result) must be(Status.OK)
@@ -42,11 +48,6 @@ class AffinityGroupErrorControllerSpec extends ControllerBaseSpec {
     "return HTML" in {
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-    }
-
-    s"have the title '${MessageLookup.AffinityGroup.title}'" in {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      document.title() must be(MessageLookup.AffinityGroup.title + serviceNameGovUk)
     }
   }
 }

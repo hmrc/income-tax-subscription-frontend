@@ -14,8 +14,16 @@
  * limitations under the License.
  *@
 
-@import controllers.SignOutController.signOut
+@import config.AppConfig
+@import views.html.templates.AgentMainTemplate
 
-@(alternativeText: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@this(
+  agentMainTemplate: AgentMainTemplate,
+)
 
-<a id="sign-out" href="@signOut">@alternativeText.fold(Messages("base.sign-out"))(identity)</a>
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@agentMainTemplate(title = messages("affinity-group-error.title")) {
+   <h1 class="govuk-heading-l">@messages("affinity-group-error.heading")</h1>
+   <p class="govuk-body">@Html(messages("affinity-group-error.agent.line1", appConfig.agentSignUpUrl))</p>
+}

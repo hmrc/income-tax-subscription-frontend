@@ -15,10 +15,9 @@
 *@
 
 @import config.AppConfig
-@import models.usermatching._
 @import forms.usermatching.UserDetailsForm._
-@import views.html.helpers._
-@import views.html.helpers.injected.{ContinueButton, SignOutLink, TextInputHelper, DateHelper}
+@import models.usermatching._
+@import views.html.helpers.injected.{ContinueButton, DateHelper, TextInputHelper}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
@@ -32,53 +31,52 @@
 @(userDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainTemplate(
-    title = Messages("user-details.title"),
-    optForm = Some(userDetailsForm)
+  title = Messages("user-details.title"),
+  optForm = Some(userDetailsForm)
 ) {
 
-    @form(action = postAction) {
+  @form(action = postAction) {
 
     <h1 class="govuk-heading-l">@messages("user-details.heading")</h1>
     <p class="govuk-body">@messages("user-details.line_1")</p>
 
     @inputHelper(
-        field = userDetailsForm(userFirstName),
-        label = messages("user-details.field_1"),
-        isLabelHidden = false,
-        isPageHeading = false,
-        classes = Some("govuk-!-width-one-half"),
-        autoComplete = Some("given-name")
+      field = userDetailsForm(userFirstName),
+      label = messages("user-details.field_1"),
+      isLabelHidden = false,
+      isPageHeading = false,
+      classes = Some("govuk-!-width-one-half"),
+      autoComplete = Some("given-name")
     )
 
     @inputHelper(
-        field = userDetailsForm(userLastName),
-        label = messages("user-details.field_2"),
-        isLabelHidden = false,
-        isPageHeading = false,
-        classes = Some("govuk-!-width-one-half"),
-        autoComplete = Some("family-name")
+      field = userDetailsForm(userLastName),
+      label = messages("user-details.field_2"),
+      isLabelHidden = false,
+      isPageHeading = false,
+      classes = Some("govuk-!-width-one-half"),
+      autoComplete = Some("family-name")
     )
 
     @inputHelper(
-        field = userDetailsForm(userNino),
-        label = messages("user-details.field_3"),
-        isLabelHidden = false,
-        isPageHeading = false,
-        classes = Some("govuk-!-width-one-half"),
-        hint = Some(messages("user_details.formhint.1.line_1"))
+      field = userDetailsForm(userNino),
+      label = messages("user-details.field_3"),
+      isLabelHidden = false,
+      isPageHeading = false,
+      classes = Some("govuk-!-width-one-half"),
+      hint = Some(messages("user_details.formhint.1.line_1"))
     )
 
     @dateHelper(
-        field = userDetailsForm(userDateOfBirth),
-        legendContent = messages("user-details.field_4"),
-        hintText = Some(messages("user-details.formhint.2")),
-        parentForm = userDetailsForm,
-        isPageHeading = false,
-        isLegendVisible = true,
-        isDateOfBirth = true
+      field = userDetailsForm(userDateOfBirth),
+      legendContent = messages("user-details.field_4"),
+      hintText = Some(messages("user-details.formhint.2")),
+      parentForm = userDetailsForm,
+      isPageHeading = false,
+      isLegendVisible = true,
+      isDateOfBirth = true
     )
 
     @continueButton(isEditMode = isEditMode)
-
-    }
+  }
 }

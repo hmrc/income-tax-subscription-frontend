@@ -28,12 +28,13 @@ import services.individual.SubscriptionOrchestrationService
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.MtditId
+import views.html.individual.incometax.subscription.enrolled.ClaimSubscription
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClaimSubscriptionController @Inject()(val auditingService: AuditingService,
+class ClaimSubscriptionController @Inject()(val claimSubscriptionView: ClaimSubscription, val auditingService: AuditingService,
                                             val authService: AuthService,
                                             val subscriptionDetailsService: SubscriptionDetailsService,
                                             subscriptionOrchestrationService: SubscriptionOrchestrationService)
@@ -60,7 +61,7 @@ class ClaimSubscriptionController @Inject()(val auditingService: AuditingService
   }
 
   private def confirmationPage(implicit request: Request[AnyContent]): Html = {
-    views.html.individual.incometax.subscription.enrolled.claim_subscription()
+    claimSubscriptionView()
   }
 
   case class SubscriptionDetailsMissingError(key: String) extends ConnectorError

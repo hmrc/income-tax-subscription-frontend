@@ -14,18 +14,12 @@
 * limitations under the License.
 *@
 
-@import testonly.models.UserToStubModel
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
-@import java.time.format.{DateTimeFormatter, ResolverStyle}
-@import views.html.templates.main_template
-@import views.html.helpers._
-@import views.individual.helpers._
-
-@import testonly.form.individual.UserToStubForm._
-@import models.usermatching._
-@import views.html.helpers.injected.{ContinueButton, TextInputHelper, DateHelper}
+@import testonly.models.UserToStubModel
+@import views.html.helpers.injected.{ContinueButton, DateHelper, TextInputHelper}
 @import views.html.templates.PrincipalMainTemplate
+
+@import java.time.format.{DateTimeFormatter, ResolverStyle}
 
 @this(
 mainTemplate: PrincipalMainTemplate,

@@ -18,13 +18,16 @@ package views.individual
 
 import assets.MessageLookup.{PreferencesCallBack => messages}
 import views.ViewSpecTrait
+import views.html.individual.ContinueRegistration
 
 class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = views.html.individual.continue_registration(
+  private val view = app.injector.instanceOf[ContinueRegistration]
+
+  private lazy val page = view(
     postAction = action
   )(request, implicitly, appConfig)
 
@@ -40,7 +43,7 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
     form.mustHaveGoBackButton()
 
-    testPage.mustHaveSignOutLink(text = messages.signOut, optOrigin = request.path)
+    testPage.mustHaveSignOutLinkGovUk(text = messages.signOut, optOrigin = request.path)
 
   }
 }

@@ -17,7 +17,7 @@
 package models.common
 
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.libs.json.{Format, JsPath, JsString, JsValue, Json, Reads, Writes}
+import play.api.libs.json._
 
 case class TimestampModel(dateTime: DateTime)
 

@@ -14,22 +14,28 @@
 * limitations under the License.
 *@
 @import config.AppConfig
-@import views.html.helpers.injected.ContinueButton
+@import views.html.helpers.injected.{ContinueButton, SignOutLink}
 @import views.html.templates.PrincipalMainTemplate
-@import views.individual.helpers._
 
 @this(
-        mainTemplate: PrincipalMainTemplate,
-        form: FormWithCSRF,
-        continueButton: ContinueButton
+  mainTemplate: PrincipalMainTemplate,
+  form: FormWithCSRF,
+  continueButton: ContinueButton,
+  signOutLink: SignOutLink
+)(
+  implicit appConfig: AppConfig
 )
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@mainTemplate(title = messages("user-details-error.title"), showSignOutLink = true) {
-    <h1 class="govuk-heading-l">@messages("user-details-error.heading")</h1>
-    <p class="govuk-body">@messages("user-details-error.line_1")</p>
-    @form(action = postAction) {
-        @continueButton(messages("base.go_back"))
-    }
+@mainTemplate(title = messages("preferences_callback.title")) {
+  <h1 class="govuk-heading-l">@messages("preferences_callback.heading")</h1>
+
+  <p class="govuk-body">@messages("preferences_callback.line_1")</p>
+
+  @form(action = postAction) {
+    @continueButton(Some(messages("preferences_callback.button")))
+  }
+  <br>
+  @signOutLink()
 }
