@@ -26,6 +26,7 @@ private object AppDependencies {
   private val pegdownVersion = "1.6.0"
   private val wiremockVersion = "2.27.2"
 
+
   val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapPlayVersion,

@@ -55,7 +55,7 @@ class CovidCannotSignUpControllerISpec extends ComponentSpecBase {
     }
 
     "have a back link" in new Setup {
-      doc.getElementById("back-link").text shouldBe CovidCannotSignUpMessages.backLink
+      doc.select(".govuk-back-link").text shouldBe CovidCannotSignUpMessages.backLink
     }
 
     "have a Sign up another client button" in new Setup {

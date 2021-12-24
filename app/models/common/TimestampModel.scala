@@ -16,15 +16,18 @@
 
 package models.common
 
-import org.joda.time.{DateTime, DateTimeZone}
+
 import play.api.libs.json._
 
-case class TimestampModel(dateTime: DateTime)
+import java.time.{Instant, LocalDateTime, ZoneId}
+
+case class TimestampModel(dateTime: java.time.LocalDateTime)
 
 object TimestampModel {
   private val reads: Reads[TimestampModel] =
     ((JsPath \ "$date").read[Long])
-      .map[TimestampModel](dateTime => TimestampModel(new DateTime(dateTime, DateTimeZone.UTC)))
+      .map[TimestampModel](dateTimeSecs => TimestampModel(
+        LocalDateTime.ofInstant(Instant.ofEpochSecond(dateTimeSecs), ZoneId.of("UTC"))))
 
   private val writes: Writes[TimestampModel] = new Writes[TimestampModel] {
     def writes(model: TimestampModel): JsValue = JsString(model.dateTime.toString())

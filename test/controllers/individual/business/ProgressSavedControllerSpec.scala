@@ -34,6 +34,7 @@ import services.mocks.MockSubscriptionDetailsService
 import utilities.CacheExpiryDateProvider
 import views.html.individual.incometax.business.ProgressSaved
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class ProgressSavedControllerSpec extends ControllerBaseSpec
@@ -45,7 +46,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   implicit lazy val config:Configuration = app.injector.instanceOf[Configuration]
 
   private val testTimestamp = TimestampModel(
-    new DateTime(1970, 1, 1, 1, 0, 0, 0)
+    LocalDateTime.of(1970, 1, 1, 1, 0, 0, 0)
   )
 
   "signInUrl" should {

@@ -56,8 +56,9 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with a back link" in new GetSetup {
-      val backLink: Element = doc.getElementById("back-link")
-      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show.url
+
+      val backLink: Element = doc.select(".govuk-back-link").first()
+      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show().url
       backLink.text shouldBe OtherSourcesOfIncomeMessages.back
     }
 
