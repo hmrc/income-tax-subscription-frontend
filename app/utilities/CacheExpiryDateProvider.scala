@@ -27,12 +27,12 @@ class CacheExpiryDateProvider @Inject()(val languageUtils: LanguageUtils) {
 
   val cacheRetentionDays = 30
 
-  def format(dateTime: DateTime)(implicit messages: Messages): String = {
+  def format(dateTime: java.time.LocalDateTime)(implicit messages: Messages): String = {
     languageUtils.Dates.formatEasyReadingTimestamp(Option(dateTime), "")(messages)
       .replaceFirst("^.*, ", "").replaceFirst(" (?=\\d)", ", ")
   }
 
-  def expiryDateOf(dateTime: DateTime)(implicit messages: Messages): String = {
+  def expiryDateOf(dateTime: java.time.LocalDateTime)(implicit messages: Messages): String = {
     format(dateTime.plusDays(cacheRetentionDays))
   }
 }

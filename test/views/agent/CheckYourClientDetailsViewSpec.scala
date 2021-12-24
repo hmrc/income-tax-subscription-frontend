@@ -74,7 +74,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
   "Confirm Client page view" should {
 
     s"have a back buttong pointed to $backUrl" in {
-      val backLink = document().select("#back-link")
+      val backLink = document().select(".govuk-back-link")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
     }

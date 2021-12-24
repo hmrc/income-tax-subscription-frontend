@@ -95,15 +95,15 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a continue button when not in edit mode" in {
-      document().selectHead("button").text mustBe PropertyStartDateMessages.continue
+      document().selectHead("#continue-button").text mustBe PropertyStartDateMessages.continue
     }
 
     "have a save & continue button when not in edit mode and save & retrieve feature is enabled" in {
-      document(isSaveAndRetrieve = true).selectHead("button").text mustBe PropertyStartDateMessages.saveAndContinue
+      document(isSaveAndRetrieve = true).selectHead("#continue-button").text mustBe PropertyStartDateMessages.saveAndContinue
     }
 
     "have update button when in edit mode" in {
-      document(isEditMode = true).selectHead("button").text mustBe PropertyStartDateMessages.update
+      document(isEditMode = true).selectHead("#continue-button").text mustBe PropertyStartDateMessages.update
     }
 
     "must display form error on page" in {

@@ -53,15 +53,15 @@ class CovidCannotSignUpViewSpec extends ViewSpec {
   }
 
   "has a paragraph to explain why the client cannot take part in the sign up pilot" in {
-    document.getParagraphNth(2).mkString mustBe CovidCannotSignUpMessages.p1
+    document.getParagraphNth(1).mkString mustBe CovidCannotSignUpMessages.p1
   }
 
   "has a paragraph for self assessment tax return" in {
-    document.getParagraphNth(3).mkString mustBe CovidCannotSignUpMessages.p2
+    document.getParagraphNth(2).mkString mustBe CovidCannotSignUpMessages.p2
   }
 
   "has a link for self assessment tax return" in {
-    val saReturnLink = document.getLinkNth(3)
+    val saReturnLink = document.getLinkNth(5)
     saReturnLink.text() mustBe CovidCannotSignUpMessages.saReturnLink
     saReturnLink.attr("href") mustBe "https://www.gov.uk/self-assessment-tax-returns/sending-return"
   }
