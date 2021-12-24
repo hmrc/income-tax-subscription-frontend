@@ -20,12 +20,15 @@ import assets.MessageLookup.{AffinityGroup => messages}
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
+import views.html.agent.AgentAffinityGroupError
 
 class AgentAffinityGroupErrorViewSpec extends ViewSpecTrait {
 
   implicit val request: Request[_] = FakeRequest()
 
-  lazy val page = views.html.agent.agent_affinity_group_error()(FakeRequest(), implicitly, appConfig)
+  private val agentAffinityGroupErrorView = app.injector.instanceOf[AgentAffinityGroupError]
+
+  lazy val page = agentAffinityGroupErrorView()(FakeRequest(), implicitly, appConfig)
 
   "The Affinity Group Error view" should {
 

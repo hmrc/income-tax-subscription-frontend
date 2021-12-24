@@ -15,15 +15,16 @@
 *@
 @import config.AppConfig
 @import models.AgentSummary
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers._
 @import views.html.helpers.injected.{ButtonHelper, SignOutLink}
 @import views.html.templates.AgentMainTemplate
+@import views.html.helpers.signUpCompleteNextTaxYearHelper
+@import views.html.helpers.signUpCompleteCurrentTaxYearHelper
 
 @this(
         agentMainTemplate: AgentMainTemplate,
         buttonHelper: ButtonHelper,
-        signOutLink: SignOutLink
+        signOutLink: SignOutLink,
+        form: FormWithCSRF
 )
 
 @(summary: AgentSummary, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)], postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)

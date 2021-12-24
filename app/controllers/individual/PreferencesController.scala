@@ -27,12 +27,14 @@ import play.twirl.api.Html
 import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
+import views.html.individual.ContinueRegistration
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class PreferencesController @Inject()(val auditingService: AuditingService,
+class PreferencesController @Inject()(val continueRegistration: ContinueRegistration,
+                                      val auditingService: AuditingService,
                                       val authService: AuthService,
                                       val subscriptionDetailsService: SubscriptionDetailsService,
                                       preferencesService: PreferencesService,
@@ -44,7 +46,7 @@ class PreferencesController @Inject()(val auditingService: AuditingService,
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxSAUser] = preferencesPredicate
 
   def view()(implicit request: Request[AnyContent]): Html = {
-    views.html.individual.continue_registration(
+    continueRegistration(
       postAction = controllers.individual.routes.PreferencesController.submit()
     )
   }

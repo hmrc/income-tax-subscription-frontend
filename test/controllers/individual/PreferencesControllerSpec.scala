@@ -21,14 +21,18 @@ import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService, MockSubscriptionDetailsService}
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants._
+import views.html.individual.ContinueRegistration
 
 import scala.concurrent.Future
 
@@ -45,6 +49,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   )
 
   object TestPreferencesController extends PreferencesController(
+    mock[ContinueRegistration],
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
@@ -52,10 +57,10 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     mockPaperlessPreferenceTokenService
   )(executionContext, appConfig, mockMessagesControllerComponents)
 
-  "Calling the checkPreference action of the PreferencesController with an authorised user" when {
+  "Calling the checkPreference action of the PreferencesController with an authorised user" when withController { controller =>
     implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest
 
-    def result: Future[Result] = TestPreferencesController.checkPreferences(request)
+    def result: Future[Result] = controller.checkPreferences(request)
 
     "Redirect to income source page if paperless is activated, save and retrieve disabled and in SignUp journey" in {
       disable(SaveAndRetrieve)
@@ -82,14 +87,13 @@ class PreferencesControllerSpec extends ControllerBaseSpec
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get mustBe testUrl
     }
-
   }
 
-  "Calling the callback action of the PreferencesController with an authorised user" should {
+  "Calling the callback action of the PreferencesController with an authorised user" should withController { controller =>
 
     implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest
 
-    def result: Future[Result] = TestPreferencesController.callback(request)
+    def result: Future[Result] = controller.callback(request)
 
     "Redirect to rent uk property if paperless is activated, save and retrieve disabled and in SignUp journey" in {
       disable(SaveAndRetrieve)
@@ -120,26 +124,21 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
   }
 
-  "Calling the show action of the PreferencesController with an authorised user" should {
+  "Calling the show action of the PreferencesController with an authorised user" should withController { controller =>
 
-    lazy val result = TestPreferencesController.show()(subscriptionRequest)
+    lazy val result = controller.show()(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
 
     "return status (200)" in {
       status(result) must be(Status.OK)
     }
-
-    "render the Contact Email address view" in {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-      document.title() mustBe Messages("preferences_callback.title") + serviceNameGovUk
-    }
   }
 
-  "Calling the submit action of the PreferencesController with an authorised user with yes" should {
+  "Calling the submit action of the PreferencesController with an authorised user with yes" should withController { controller =>
     implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest
 
-    def callShow(): Future[Result] = TestPreferencesController.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
+    def callShow(): Future[Result] = controller.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
 
     "return a redirect status (SEE_OTHER - 303)" in {
       val goodRequest = callShow()
@@ -155,10 +154,10 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submit action of the PreferencesController with an authorised user with the redirect url in the session" should {
+  "Calling the submit action of the PreferencesController with an authorised user with the redirect url in the session" should withController { controller =>
     implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest
 
-    def callShow(): Future[Result] = TestPreferencesController.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
+    def callShow(): Future[Result] = controller.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
 
     "use the redirect location from the session" in {
       val goodRequest = callShow()
@@ -179,4 +178,21 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
   authorisationTests()
 
+  private def withController(testCode: PreferencesController => Any): Unit = {
+    val continueRegistrationView = mock[ContinueRegistration]
+
+    when(continueRegistrationView(any())(any(), any(), any()))
+      .thenReturn(HtmlFormat.empty)
+
+    val controller = new PreferencesController(
+      continueRegistrationView,
+      mockAuditingService,
+      mockAuthService,
+      MockSubscriptionDetailsService,
+      mockPreferencesService,
+      mockPaperlessPreferenceTokenService
+    )
+
+    testCode(controller)
+  }
 }

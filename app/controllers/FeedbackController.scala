@@ -16,10 +16,7 @@
 
 package controllers
 
-import java.net.URLEncoder
-
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -27,12 +24,14 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.partials._
-import views.html.feedback_thankyou
+import views.html.{Feedback, FeedbackThankyou}
 
+import java.net.URLEncoder
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class FeedbackController @Inject()(http: HttpClient)
+class FeedbackController @Inject()(val feedback: Feedback, val feedbackThankYou: FeedbackThankyou, http: HttpClient)
                                   (implicit formPartialRetriever: FormPartialRetriever,
                                    cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever,
                                    appConfig: AppConfig,
@@ -59,8 +58,8 @@ class FeedbackController @Inject()(http: HttpClient)
   def show: Action[AnyContent] = Action {
     implicit request =>
       (request.session.get(REFERER), request.headers.get(REFERER)) match {
-        case (None, Some(ref)) => Ok(views.html.feedback(feedbackFormPartialUrl, None)).addingToSession(REFERER -> ref)
-        case _ => Ok(views.html.feedback(feedbackFormPartialUrl, None))
+        case (None, Some(ref)) => Ok(feedback(feedbackFormPartialUrl, None)).addingToSession(REFERER -> ref)
+        case _ => Ok(feedback(feedbackFormPartialUrl, None))
       }
   }
 
@@ -73,7 +72,7 @@ class FeedbackController @Inject()(http: HttpClient)
           resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).addingToSession(TICKET_ID -> resp.body)
-              case HttpStatus.BAD_REQUEST => BadRequest(views.html.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
+              case HttpStatus.BAD_REQUEST => BadRequest(feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
               case status => Logger.error(s"Unexpected status code from feedback form: $status")
                 throw new InternalServerException("feedback controller, submit call failed")
             }
@@ -88,7 +87,7 @@ class FeedbackController @Inject()(http: HttpClient)
     implicit request =>
       val ticketId = request.session.get(TICKET_ID).getOrElse("N/A")
       val referer = request.session.get(REFERER).getOrElse("/")
-      Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).removingFromSession(REFERER)
+      Ok(feedbackThankYou(feedbackThankYouPartialUrl(ticketId), referer)).removingFromSession(REFERER)
   }
 
   def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")

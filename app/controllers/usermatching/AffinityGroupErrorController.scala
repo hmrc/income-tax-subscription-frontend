@@ -17,16 +17,16 @@
 package controllers.usermatching
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.agent.AgentAffinityGroupError
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AffinityGroupErrorController @Inject()(mcc: MessagesControllerComponents)
+class AffinityGroupErrorController @Inject()(val agentAffinityGroupError: AgentAffinityGroupError, mcc: MessagesControllerComponents)
                                             (implicit appConfig: AppConfig) extends FrontendController(mcc){
-
   val show: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.agent.agent_affinity_group_error())
+    Ok(agentAffinityGroupError())
   }
-
 }

@@ -14,26 +14,21 @@
 * limitations under the License.
 *@
 
-@import config.AppConfig
+@import uk.gov.hmrc.play.partials.FormPartialRetriever
 @import views.html.templates.PrincipalMainTemplate
+@import config.AppConfig
+@import scala.concurrent.ExecutionContext
 
 @this(
-        mainTemplate: PrincipalMainTemplate
-)(
-        implicit appConfig: AppConfig
+  mainTemplate: PrincipalMainTemplate
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(partialUrl: String, redirectUrl: String)(implicit request: Request[_], formPartialRetriever: FormPartialRetriever,
+        messages: Messages, appConfig: AppConfig, ec: ExecutionContext)
 
-@mainTemplate(
-    title = messages("claim-enrolment.not-subscribed.heading")
-) {
-
-    <h1 class="govuk-heading-xl">@messages("claim-enrolment.not-subscribed.heading")</h1>
-
-    <p class="govuk-body">
-        @messages("claim-enrolment.not-subscribed.info")
-        <a class="govuk-link" href="@{appConfig.btaUrl}">@messages("claim-enrolment.not-subscribed.info.link-text")</a>
-    </p>
-
+@mainTemplate(title = messages("feedback.thankyou.title")) {
+  @formPartialRetriever.getPartialContentAsync(partialUrl)
+  <a id="feedback-back" href='@redirectUrl' role="button" tabindex="0" class="govuk-button" data-module="govuk-button">
+    @messages("base.back")
+  </a>
 }

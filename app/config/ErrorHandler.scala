@@ -21,15 +21,17 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.api.{Configuration, Environment, Logger}
+import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, InsufficientEnrolments}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
-import views.html.templates.error_template
+import views.html.templates.ErrorTemplate
 
 import scala.concurrent.Future
 
-class ErrorHandler @Inject()(val appConfig: AppConfig,
+class ErrorHandler @Inject()(val errorTemplate: ErrorTemplate,
+                             val appConfig: AppConfig,
                              val messagesApi: MessagesApi,
                              val config: Configuration,
                              val env: Environment
@@ -39,9 +41,8 @@ class ErrorHandler @Inject()(val appConfig: AppConfig,
     Future.successful(resolveError(request, exception))
   }
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]):
-  play.twirl.api.HtmlFormat.Appendable =
-    error_template(pageTitle, heading, message)(implicitly, implicitly, appConfig)
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
+    errorTemplate(pageTitle, heading, message)(implicitly, implicitly)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = {
     ex match {

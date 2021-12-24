@@ -18,9 +18,8 @@ package forms.agent
 
 import forms.submapping.AccountingMethodMapping
 import models.AccountingMethod
-import models.common.AccountingMethodPropertyModel
 import play.api.data.Form
-import play.api.data.Forms.{mapping, single}
+import play.api.data.Forms.single
 import play.api.data.validation.Invalid
 
 object AccountingMethodPropertyForm {

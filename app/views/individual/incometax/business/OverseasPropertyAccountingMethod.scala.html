@@ -15,7 +15,6 @@
  *@
 
 @import play.api.data.Form
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
 @import forms.individual.business.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
@@ -65,7 +64,7 @@
   </div>
 }
 
-@mainTemplate(title = messages("overseas.property.accounting_method.title"), optForm = overseasPropertyAccountingMethodForm, backLink = backUrl)  {
+@mainTemplate(title = messages("overseas.property.accounting_method.title"), optForm = overseasPropertyAccountingMethodForm, backLink = Some(backUrl))  {
     @form(action = postAction) {
         @heading(messages("overseas.property.accounting_method.heading"))
 
