@@ -18,9 +18,9 @@ package models.common
 
 import models.common.business._
 import models.{Cash, DateModel, Next}
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class TaskListModelSpec extends UnitSpec {
+class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
 
   val date: DateModel = DateModel("1", "2", "1980")
 

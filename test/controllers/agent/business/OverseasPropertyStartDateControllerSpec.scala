@@ -155,7 +155,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
@@ -209,7 +209,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "the user click back url" should {
         "redirect to check your answer page" in new Test {
           controller.backUrl(isEditMode = true, incomeSourceOverseasPropertyOnly) mustBe
-            controllers.agent.routes.CheckYourAnswersController.show().url
+            controllers.agent.routes.CheckYourAnswersController.show.url
         }
       }
     }

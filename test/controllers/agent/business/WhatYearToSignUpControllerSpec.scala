@@ -140,7 +140,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
@@ -164,7 +164,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "redirect to check your answer page" in {
         mockIncomeSource()
         TestWhatYearToSignUpController.backUrl mustBe
-          controllers.agent.routes.CheckYourAnswersController.show().url
+          controllers.agent.routes.CheckYourAnswersController.show.url
       }
     }
   }

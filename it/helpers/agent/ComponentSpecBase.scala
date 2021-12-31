@@ -29,23 +29,22 @@ import play.api.data.Form
 import play.api.http.HeaderNames
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.crypto.DefaultCookieSigner
+import play.api.libs.crypto.CookieSigner
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import uk.gov.hmrc.play.test.UnitSpec
 import utilities.UserMatchingSessionUtil
 
 import java.time.LocalDate
 import java.util.UUID
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
-trait ComponentSpecBase extends UnitSpec
+trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
   with GivenWhenThen with TestSuite
-  with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
+  with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience
   with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with CustomMatchers with WireMockMethods with SessionCookieBaker with FeatureSwitching {
 
@@ -53,7 +52,9 @@ trait ComponentSpecBase extends UnitSpec
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  override lazy val cookieSigner: DefaultCookieSigner = app.injector.instanceOf[DefaultCookieSigner]
+
+  val cookieSignerCache: Application => CookieSigner = Application.instanceCache[CookieSigner]
+  override lazy val cookieSigner: CookieSigner = cookieSignerCache(app)
 
   lazy val wmConfig: WireMockConfiguration = wireMockConfig().port(wiremockPort)
   lazy val wireMockServer = new WireMockServer(wmConfig)
@@ -141,17 +142,16 @@ trait ComponentSpecBase extends UnitSpec
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(Headers(headers: _*))
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse =
-      await(
-        buildClient(uri)
-          .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies))
-          .get()
-      )
+      buildClient(uri)
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies))
+        .get()
+        .futureValue
 
-    def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse = await(
+    def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse =
       buildClient(uri)
         .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
-    )
+        .futureValue
 
     def startPage(): WSResponse = get("/")
 
@@ -410,7 +410,7 @@ trait ComponentSpecBase extends UnitSpec
   implicit class CustomSelectors(element: Element) {
 
     def firstOf(selector: String): Element = {
-      element.select(selector).headOption match {
+      element.select(selector).asScala.headOption match {
         case Some(element) => element
         case None => fail(s"No elements returned for selector: $selector")
       }
@@ -421,7 +421,7 @@ trait ComponentSpecBase extends UnitSpec
     }
 
     def selectOptionally(selector: String): Option[Element] = {
-      element.select(selector).headOption
+      element.select(selector).asScala.headOption
     }
 
     def content: Element = element.firstOf("article")
@@ -450,7 +450,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def getSubmitButton: Element = element.firstOf("button[type=submit]")
 
-    def getGovUkSubmitButton: Element = element.getElementsByClass("govuk-button").head
+    def getGovUkSubmitButton: Element = element.getElementsByClass("govuk-button").asScala.head
 
     def getHintText: String = element.select(s"""[class=form-hint]""").text()
 
@@ -497,7 +497,7 @@ trait ComponentSpecBase extends UnitSpec
       val eles = element.select(s"input[name=$name]")
       if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
       if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
-      val ele = eles.head
+      val ele = eles.asScala.head
       ele.attr("type") shouldBe "text"
       element.select(s"label[for=$name]").text() shouldBe label
     }

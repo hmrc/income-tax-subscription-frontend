@@ -168,7 +168,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
           mockFetchProperty(testFullPropertyModel)
           val goodRequest = callShow(isEditMode = true)
           await(goodRequest)
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
 
           verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
@@ -232,7 +232,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "save and retrieve is disabled" should {
         "redirect back to final check your answers page" in new Test {
           controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
-            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+            controllers.individual.subscription.routes.CheckYourAnswersController.show.url
         }
       }
     }

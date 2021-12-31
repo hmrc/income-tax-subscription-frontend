@@ -26,7 +26,7 @@ class LanguageSwitchControllerISpec extends ComponentSpecBase {
       resultCy.headers.toString.contains("PLAY_LANG=cy;") shouldBe true
       resultCy should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.usermatching.routes.HomeController.home().url)
+        redirectURI(controllers.usermatching.routes.HomeController.home.url)
       )
     }
   }
@@ -48,7 +48,7 @@ class LanguageSwitchControllerISpec extends ComponentSpecBase {
       resultEn.headers.toString.contains("PLAY_LANG=en;") shouldBe true
       resultEn should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.usermatching.routes.HomeController.home().url)
+        redirectURI(controllers.usermatching.routes.HomeController.home.url)
       )
     }
   }

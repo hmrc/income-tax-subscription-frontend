@@ -72,7 +72,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
               if (isEnabled(SaveAndRetrieve)) {
                 Redirect(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show())
               } else if (isEditMode) {
-                Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+                Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show)
               } else {
                 Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
               }
@@ -87,11 +87,11 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       if (isEditMode) {
         Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
       } else {
-        Some(controllers.individual.business.routes.TaskListController.show().url)
+        Some(controllers.individual.business.routes.TaskListController.show.url)
       }
     } else {
       if (isEditMode) {
-        Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+        Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
       } else {
         None
       }

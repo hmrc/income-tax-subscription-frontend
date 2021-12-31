@@ -118,7 +118,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
       mockCheckPaperlessUnset(testToken, testUrl)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(controllers.individual.routes.PreferencesController.show().url)
+      redirectLocation(result).get must be(controllers.individual.routes.PreferencesController.show.url)
       session(result).get(ITSASessionKeys.PreferencesRedirectUrl) must contain(testUrl)
     }
 
@@ -173,7 +173,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     val res = TestPreferencesController.submit(FakeRequest())
 
     status(res) mustBe SEE_OTHER
-    redirectLocation(res) must contain(controllers.usermatching.routes.HomeController.index().url)
+    redirectLocation(res) must contain(controllers.usermatching.routes.HomeController.index.url)
   }
 
   authorisationTests()

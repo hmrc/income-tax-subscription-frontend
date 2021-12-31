@@ -43,14 +43,14 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
         subscriptionDetailsService.fetchAll(reference) map { cacheMap =>
           Ok(signUpComplete(
             selectedTaxYear = cacheMap.getSelectedTaxYear.map(_.accountingYear),
-            postAction = routes.ConfirmationController.submit()
+            postAction = routes.ConfirmationController.submit
           ))
         }
       }
   }
 
   def submit: Action[AnyContent] = Authenticated {
-    _ => _ => Redirect(controllers.routes.SignOutController.signOut())
+    _ => _ => Redirect(controllers.routes.SignOutController.signOut)
   }
 
 }

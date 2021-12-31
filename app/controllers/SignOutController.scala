@@ -45,5 +45,5 @@ class SignOutController @Inject()(mcc: MessagesControllerComponents, appConfig: 
 object SignOutController {
 
   def signOut: Call =
-    routes.SignOutController.signOut()
+    routes.SignOutController.signOut
 }

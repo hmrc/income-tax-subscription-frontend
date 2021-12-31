@@ -39,14 +39,14 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(accountingPeriodCheck(accountingPeriodCheckForm, routes.AccountingPeriodCheckController.submit(), backLink))
+      Ok(accountingPeriodCheck(accountingPeriodCheckForm, routes.AccountingPeriodCheckController.submit, backLink))
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
       accountingPeriodCheckForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(accountingPeriodCheck(formWithErrors, routes.AccountingPeriodCheckController.submit(), backLink)),
+        formWithErrors => BadRequest(accountingPeriodCheck(formWithErrors, routes.AccountingPeriodCheckController.submit, backLink)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "yes",
@@ -55,11 +55,11 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "no",
               "standardAccountingPeriod", arn))
-            Redirect(routes.CannotTakePartController.show())
+            Redirect(routes.CannotTakePartController.show)
         }
       )
   }
 
-  def backLink: String = routes.PropertyTradingStartAfterController.show().url
+  def backLink: String = routes.PropertyTradingStartAfterController.show.url
 
 }

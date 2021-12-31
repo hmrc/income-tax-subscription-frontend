@@ -84,7 +84,7 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
           startDate =>
             subscriptionDetailsService.savePropertyStartDate(reference, startDate) flatMap { _ =>
               if (isEditMode) {
-                Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
+                Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show))
               } else {
                 Future.successful(Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show()))
               }
@@ -96,7 +96,7 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
 
   def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel): String = {
     if (isEditMode) {
-      controllers.agent.routes.CheckYourAnswersController.show().url
+      controllers.agent.routes.CheckYourAnswersController.show.url
     } else {
       incomeSourceModel match {
         case IncomeSourceModel(true, _, _) => appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method"

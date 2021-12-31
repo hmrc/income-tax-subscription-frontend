@@ -18,9 +18,9 @@ package models.individual.subscription
 
 import models.common.subscription.EnrolmentVerifiers
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class EnrolmentVerifiersSpec extends UnitSpec {
+class EnrolmentVerifiersSpec extends WordSpecLike with Matchers with OptionValues {
   "format" should {
     "produce a correctly formatted json object" in {
       val verifierKey = "verifierKey"

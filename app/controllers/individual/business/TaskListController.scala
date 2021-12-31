@@ -25,7 +25,7 @@ import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc._
 import services.individual.SubscriptionOrchestrationService
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
@@ -49,7 +49,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
+                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval with Logging {
 
   val show: Action[AnyContent] = Authenticated.async { implicit user =>
     implicit request => {
@@ -95,7 +95,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
           )(headerCarrier).flatMap {
             case Right(SubscriptionSuccess(id)) =>
               subscriptionDetailsService.saveSubscriptionId(reference, id).map { _ =>
-                Redirect(controllers.individual.subscription.routes.ConfirmationController.show())
+                Redirect(controllers.individual.subscription.routes.ConfirmationController.show)
               }
             case Left(failure) =>
               error("Successful response not received from submission: \n" + failure.toString)
@@ -127,7 +127,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
     }
 
   def error(message: String): Future[Nothing] = {
-    Logger.warn(message)
+    logger.warn(message)
     Future.failed(new InternalServerException(message))
   }
 }

@@ -20,12 +20,10 @@ import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => F
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI, taskListURI}
-import helpers.IntegrationTestModels._
+import helpers.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
 import helpers.servicemocks.AuthStub
 import models.common._
 import play.api.http.Status._
-import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 
 class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {

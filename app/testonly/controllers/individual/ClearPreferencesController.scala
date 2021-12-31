@@ -63,7 +63,7 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
   private def showView(form: Form[ClearPreferencesModel])(implicit request: Request[_]): Html =
     clearPreferences(
       clearPreferencesForm = form,
-      postAction = testonly.controllers.individual.routes.ClearPreferencesController.submit()
+      postAction = testonly.controllers.individual.routes.ClearPreferencesController.submit
     )
 
   val show: Action[AnyContent] = Action.async { implicit request =>

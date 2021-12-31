@@ -1,14 +1,14 @@
 
 package helpers.agent
 
-import play.api.libs.crypto.DefaultCookieSigner
+import play.api.libs.crypto.CookieSigner
 import play.api.libs.ws.{WSCookie, WSResponse}
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted}
 
 trait SessionCookieCrumbler {
   private val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
 
-  val cookieSigner: DefaultCookieSigner
+  val cookieSigner: CookieSigner
 
   private def crumbleCookie(cookie: WSCookie) = {
     val crypted = Crypted(cookie.value)

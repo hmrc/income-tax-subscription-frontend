@@ -41,9 +41,9 @@ class Covid19ClaimCheckController @Inject()(val covid19ClaimCheck: Covid19ClaimC
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
-        Redirect(routes.OtherSourcesOfIncomeController.show())
+        Redirect(routes.OtherSourcesOfIncomeController.show)
       } else {
-        Ok(covid19ClaimCheck(covid19ClaimCheckForm, routes.Covid19ClaimCheckController.submit(), backUrl))
+        Ok(covid19ClaimCheck(covid19ClaimCheckForm, routes.Covid19ClaimCheckController.submit, backUrl))
       }
   }
 
@@ -51,15 +51,15 @@ class Covid19ClaimCheckController @Inject()(val covid19ClaimCheck: Covid19ClaimC
     implicit user =>
       val arn: Option[String] = user.arn
       covid19ClaimCheckForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(covid19ClaimCheck(formWithErrors, routes.Covid19ClaimCheckController.submit(), backUrl)), {
+        formWithErrors => BadRequest(covid19ClaimCheck(formWithErrors, routes.Covid19ClaimCheckController.submit, backUrl)), {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "claimedCovidGrant", arn))
-            Redirect(routes.CovidCannotSignUpController.show())
+            Redirect(routes.CovidCannotSignUpController.show)
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "claimedCovidGrant", arn))
-            Redirect(routes.OtherSourcesOfIncomeController.show())
+            Redirect(routes.OtherSourcesOfIncomeController.show)
         }
       )
   }

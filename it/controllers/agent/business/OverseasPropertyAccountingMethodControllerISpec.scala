@@ -25,7 +25,6 @@ import models.common.OverseasPropertyModel
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase {

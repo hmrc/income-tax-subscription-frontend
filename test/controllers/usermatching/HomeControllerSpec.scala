@@ -75,7 +75,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.SEE_OTHER)
       }
       "Redirect to the 'Index' page" in {
-        redirectLocation(result).get mustBe controllers.usermatching.routes.HomeController.index().url
+        redirectLocation(result).get mustBe controllers.usermatching.routes.HomeController.index.url
       }
     }
   }
@@ -93,7 +93,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = testHomeController().index(fakeRequest)
 
           status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim().url
+          redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim.url
 
           verifySubscriptionDetailsSave(MtditId, 1)
         }
@@ -113,7 +113,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                     val result = await(testHomeController().index(fakeRequest))
                     status(result) must be(Status.SEE_OTHER)
-                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS().url
+                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
                   }
                 }
                 "feature switch SPSEnabled is disabled" should {
@@ -125,7 +125,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                     val result = await(testHomeController().index(fakeRequest))
                     status(result) must be(Status.SEE_OTHER)
-                    redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
+                    redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences.url
                   }
                 }
               }
@@ -144,7 +144,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     val result = await(testHomeController().index(fakeRequest))
 
                     status(result) mustBe SEE_OTHER
-                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS().url
+                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
                     session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
                   }
@@ -160,7 +160,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     val result = await(testHomeController().index(fakeRequest))
 
                     status(result) mustBe SEE_OTHER
-                    redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
+                    redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences.url
 
                     session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
                   }
@@ -178,7 +178,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   val result = testHomeController().index()(userMatchingRequest)
 
                   status(result) mustBe SEE_OTHER
-                  redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show().url
+                  redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show.url
 
                   await(result).session(userMatchingRequest).get(ITSASessionKeys.UTR) mustBe None
                 }
@@ -222,7 +222,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = testHomeController().index(fakeRequest)
 
           status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim().url
+          redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim.url
 
           verifySubscriptionDetailsSave(MtditId, 1)
         }
@@ -243,7 +243,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   val result = await(testHomeController().index(fakeRequest))
                   status(result) must be(Status.SEE_OTHER)
-                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS().url
+                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
                   session(result).get(ITSASessionKeys.NINO) must contain(testNino)
                 }
               }
@@ -259,7 +259,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   val result = await(testHomeController().index(fakeRequest))
                   status(result) must be(Status.SEE_OTHER)
-                  redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
+                  redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences.url
                   session(result).get(ITSASessionKeys.NINO) must contain(testNino)
                 }
               }

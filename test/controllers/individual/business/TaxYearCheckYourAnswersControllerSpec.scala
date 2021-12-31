@@ -19,7 +19,7 @@ package controllers.individual.business
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.{OK, SEE_OTHER}
+import play.api.http.Status.{OK, SEE_OTHER}
 import controllers.ControllerBaseSpec
 import models.Current
 import models.common.AccountingYearModel

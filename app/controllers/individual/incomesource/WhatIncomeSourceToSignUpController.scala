@@ -71,7 +71,7 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
       )
   }
 
-  def backUrl: String = controllers.individual.business.routes.TaskListController.show().url
+  def backUrl: String = controllers.individual.business.routes.TaskListController.show.url
 
   private def view(form: Form[BusinessIncomeSourceModel])(implicit request: Request[_]): Html =
     whatIncomeSourceToSignUp(

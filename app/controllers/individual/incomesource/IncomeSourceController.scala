@@ -99,7 +99,7 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
         case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
           Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
         case _ =>
-          Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+          Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show)
       }
     }
   }
@@ -130,7 +130,7 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      controllers.individual.subscription.routes.CheckYourAnswersController.show.url
     } else {
       controllers.individual.business.routes.WhatYearToSignUpController.show().url
     }

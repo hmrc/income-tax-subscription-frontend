@@ -116,7 +116,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       val result: Future[Result] = TestConfirmationController.submit(subscriptionRequest)
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.SignOutController.signOut().url)
+      redirectLocation(result) shouldBe Some(controllers.routes.SignOutController.signOut.url)
     }
   }
 

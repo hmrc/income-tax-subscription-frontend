@@ -26,7 +26,7 @@ import models.IndividualSummary
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.SubscriptionSuccess
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc._
 import services.individual.SubscriptionOrchestrationService
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -51,7 +51,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                            checkYourAnswers: CheckYourAnswers)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
+                                           mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval with Logging {
 
   def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {
@@ -73,7 +73,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
             summaryModel =>
               Ok(checkYourAnswers(
                 summaryModel,
-                controllers.individual.subscription.routes.CheckYourAnswersController.submit(),
+                controllers.individual.subscription.routes.CheckYourAnswersController.submit,
                 backUrl = backUrl(cache.getIncomeSource.get),
                 implicitDateFormatter,
                 isEnabled(ReleaseFour)
@@ -93,7 +93,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
             subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour), session.get(SPSEntityId))(headerCarrier).flatMap {
               case Right(SubscriptionSuccess(id)) =>
                 subscriptionDetailsService.saveSubscriptionId(reference, id).map { _ =>
-                  Redirect(controllers.individual.subscription.routes.ConfirmationController.show())
+                  Redirect(controllers.individual.subscription.routes.ConfirmationController.show)
                 }
               case Left(failure) =>
                 error("Successful response not received from submission: \n" + failure.toString)
@@ -128,7 +128,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
     }
 
   def error(message: String): Future[Nothing] = {
-    Logger.warn(message)
+    logger.warn(message)
     Future.failed(new InternalServerException(message))
   }
 }

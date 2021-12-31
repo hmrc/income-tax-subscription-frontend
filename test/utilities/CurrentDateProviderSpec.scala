@@ -19,9 +19,9 @@ package utilities
 import java.time.LocalDate
 
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class CurrentDateProviderSpec extends UnitSpec with GuiceOneAppPerSuite{
+class CurrentDateProviderSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite{
   "getCurrentDate" should {
     "return the current date" in {
       val provider = app.injector.instanceOf[CurrentDateProvider]

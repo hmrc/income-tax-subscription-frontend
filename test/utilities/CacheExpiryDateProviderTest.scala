@@ -21,9 +21,9 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Cookie
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class CacheExpiryDateProviderTest extends UnitSpec with GuiceOneAppPerSuite {
+class CacheExpiryDateProviderTest extends WordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite {
 
   "format date" should {
     "return the date in the correct format" in {

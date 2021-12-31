@@ -34,7 +34,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase with Fea
     disable(ClaimEnrolment)
   }
 
-  s"GET ${controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback().url}" when {
+  s"GET ${controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback.url}" when {
 
     "the user is not authorised" should {
       "redirect the user to login" in {

@@ -44,7 +44,7 @@ class SPSHandoffForClaimEnrolController @Inject()(
       implicit request =>
         implicit user =>
           if (isEnabled(SPSEnabled) && isEnabled(ClaimEnrolment)) {
-            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback(),
+            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback,
               returnLinkText = "I have verified",
               regime = "itsa"
             )(request)

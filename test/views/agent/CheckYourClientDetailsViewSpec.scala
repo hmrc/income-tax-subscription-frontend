@@ -42,7 +42,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
     testNino,
     testDob)
 
-  lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit()
+  lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit
   lazy val backUrl: String = "testBackUrl"
 
   private val checkYourClientDetails = app.injector.instanceOf[CheckYourClientDetails]

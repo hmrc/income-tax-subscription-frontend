@@ -19,9 +19,9 @@ package models.common
 import models.Current
 import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import play.api.libs.json.{JsSuccess, Json}
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class AccountingYearModelSpec extends UnitSpec {
+class AccountingYearModelSpec extends WordSpecLike with Matchers with OptionValues {
 
   "AccountingYearModel" should {
 

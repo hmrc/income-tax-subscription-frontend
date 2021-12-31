@@ -25,7 +25,7 @@ import views.html.agent.eligibility.Covid19ClaimCheck
 
 class Covid19ClaimCheckViewSpec extends ViewSpec {
   private val covid19ClaimCheck = app.injector.instanceOf[Covid19ClaimCheck]
-  private val action = routes.Covid19ClaimCheckController.submit()
+  private val action = routes.Covid19ClaimCheckController.submit
 
   private val testFormError = FormError(Covid19ClaimCheckForm.fieldName, "test message")
 

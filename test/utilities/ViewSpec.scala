@@ -72,7 +72,7 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
     if (hasSignOutLink) {
       val signOutLink: Element = document.selectHead(".hmrc-sign-out-nav__link")
       signOutLink.text mustBe "Sign out"
-      signOutLink.attr("href") mustBe controllers.routes.SignOutController.signOut().url
+      signOutLink.attr("href") mustBe controllers.routes.SignOutController.signOut.url
     } else {
       document.selectOptionally(".hmrc-sign-out-nav__link") mustBe None
     }

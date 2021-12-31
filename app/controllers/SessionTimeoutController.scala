@@ -39,6 +39,6 @@ class SessionTimeoutController @Inject()(val timeoutView: Timeout, mcc: Messages
   }
 
   val timeout: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(toGGLogin(controllers.usermatching.routes.HomeController.home().url).withNewSession)
+    Future.successful(toGGLogin(controllers.usermatching.routes.HomeController.home.url).withNewSession)
   }
 }

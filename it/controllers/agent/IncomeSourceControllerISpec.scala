@@ -235,7 +235,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
 
       "the user select self-employment and self-employment journey has completed before" should {
-        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show().url}" in {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show.url}" in {
           val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -264,7 +264,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
 
       "the user select self-employment and UK property and both journeys have been completed before" should {
-        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -292,7 +292,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
 
       "the user select self-employment and overseas property and both journeys have been completed before" should {
-        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
+        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -320,7 +320,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
 
       "the user select self-employment, UK property and overseas property and all three journeys have been completed before" should {
-        s"return an SEE OTHER (303)" + s"${controllers.agent.routes.CheckYourAnswersController.show()}" in {
+        s"return an SEE OTHER (303)" + s"${controllers.agent.routes.CheckYourAnswersController.show}" in {
           val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -349,7 +349,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
 
       "the user select UK property and UK property journeys has been completed before" should {
-        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
+        s" redirect to ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -377,7 +377,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
 
       "the user select overseas property and overseas property journeys has been completed before" should {
-        s"return an SEE OTHER (303)" + s" ${controllers.agent.routes.CheckYourAnswersController.submit()}" in {
+        s"return an SEE OTHER (303)" + s" ${controllers.agent.routes.CheckYourAnswersController.submit}" in {
           val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -405,7 +405,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
 
       "the user select UK property and overseas property and both journeys have been completed before" should {
-        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -433,7 +433,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
       }
 
       "the user selects self-employment and no UK property or overseas property and self-employment journey has been completed before" should {
-        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show()}" in {
+        s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           val userInput: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()

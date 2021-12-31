@@ -72,7 +72,7 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
   }
 
   def backUrl(isEditMode: Boolean): String = if (isEditMode) {
-    controllers.individual.business.routes.TaskListController.show().url
+    controllers.individual.business.routes.TaskListController.show.url
   } else {
     controllers.individual.business.routes.WhatYearToSignUpController.show().url
   }

@@ -19,7 +19,6 @@ package controllers.individual.business
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.OK
 import controllers.ControllerBaseSpec
 import models.common.TimestampModel
 import org.joda.time.DateTime
@@ -27,6 +26,7 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.Configuration
+import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat

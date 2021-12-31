@@ -19,9 +19,9 @@ package models.common
 import org.joda.time.{DateTime, DateTimeZone}
 import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import play.api.libs.json.{JsResult, Json}
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class TimestampModelSpec extends UnitSpec {
+class TimestampModelSpec extends WordSpecLike with Matchers with OptionValues {
   "TimestampModel" should {
     "deserialize the MongoDB response" in {
       val actual: JsResult[TimestampModel] = Json.fromJson[TimestampModel](Json.parse("""{"$date":0}"""))

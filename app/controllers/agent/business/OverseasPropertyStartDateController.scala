@@ -82,7 +82,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
           startDate =>
             subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) flatMap { _ =>
               if (isEditMode) {
-                Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
+                Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show))
               } else {
                 Future.successful(Redirect(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit()))
               }
@@ -94,7 +94,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   def backUrl(isEditMode: Boolean, incomeSourceModel: IncomeSourceModel): String = {
     if (isEditMode) {
-      controllers.agent.routes.CheckYourAnswersController.show().url
+      controllers.agent.routes.CheckYourAnswersController.show.url
     } else {
       (incomeSourceModel.selfEmployment, incomeSourceModel.ukProperty) match {
         case (_, true) => controllers.agent.business.routes.PropertyAccountingMethodController.show().url

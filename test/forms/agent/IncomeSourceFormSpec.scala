@@ -20,6 +20,7 @@ import forms.agent.IncomeSourceForm._
 import models.common.IncomeSourceModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
+import play.api.data.FormBinding.Implicits.formBinding
 import play.api.data.{Form, FormError}
 import play.api.mvc.Request
 import play.api.test.FakeRequest

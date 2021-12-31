@@ -71,7 +71,7 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
 
             verifyAudit(ClaimEnrolAddToIndivCredAuditingModel(TestConstants.testNino, "mtditid"))
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS().url)
+            redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS.url)
 
           }
         }
@@ -107,7 +107,7 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
           val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ClaimEnrolmentAlreadySignedUpController.show().url)
+          redirectLocation(result) mustBe Some(routes.ClaimEnrolmentAlreadySignedUpController.show.url)
         }
       }
       "the claim enrolment service returns a claim enrolment error" should {

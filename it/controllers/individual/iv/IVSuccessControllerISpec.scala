@@ -16,14 +16,14 @@
 
 package controllers.individual.iv
 
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, IdentityVerification}
 import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{addMTDITOverviewURI, baseURI, claimEnrolmentResolverURI}
+import helpers.IntegrationTestConstants.{baseURI, claimEnrolmentResolverURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import utilities.ITSASessionKeys
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
 class IVSuccessControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -32,7 +32,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase with FeatureSwitching {
     super.beforeEach()
   }
 
-  s"GET ${controllers.individual.iv.routes.IVSuccessController.success().url}" when {
+  s"GET ${controllers.individual.iv.routes.IVSuccessController.success.url}" when {
 
     "the user is not authorised" should {
       "redirect the user to login" in {

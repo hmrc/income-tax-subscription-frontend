@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.usermatching.UserLockoutConnector
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import models.usermatching.{LockoutStatus, LockoutStatusFailure, NotLockedOut}
-import play.api.Logger
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.net.URLEncoder
@@ -32,19 +32,19 @@ case class LockoutUpdate(status: LockoutStatus, updatedCount: Option[Int])
 @Singleton
 class UserLockoutService @Inject()(appConfig: AppConfig,
                                    userLockoutConnector: UserLockoutConnector,
-                                   subscriptionDetailsService: SubscriptionDetailsService) {
+                                   subscriptionDetailsService: SubscriptionDetailsService) extends Logging {
 
   private def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)
 
-    Logger.debug(s"Creating a lock for token=$token encoded=$encodedToken")
+    logger.debug(s"Creating a lock for token=$token encoded=$encodedToken")
     userLockoutConnector.lockoutUser(encodedToken)
   }
 
   def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)
 
-    Logger.debug(s"Getting lockout status for token=$token encoded=$encodedToken")
+    logger.debug(s"Getting lockout status for token=$token encoded=$encodedToken")
     userLockoutConnector.getLockoutStatus(encodedToken)
   }
 

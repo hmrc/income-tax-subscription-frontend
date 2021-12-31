@@ -121,7 +121,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
           val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 
           status(goodRequest) mustBe Status.SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
           await(goodRequest)
           verifyPropertySave(PropertyModel(accountingMethod = Some(Cash)))
@@ -150,7 +150,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifyPropertySave(PropertyModel(accountingMethod = Some(Cash), startDate = Some(testStartDate)))
@@ -166,7 +166,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifyPropertySave(PropertyModel(accountingMethod = Some(Cash), startDate = Some(testStartDate)))
@@ -193,7 +193,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "redirect to the check your answers" in withController { controller =>
         controller.backUrl(
           isEditMode = true
-        ) mustBe controllers.agent.routes.CheckYourAnswersController.show().url
+        ) mustBe controllers.agent.routes.CheckYourAnswersController.show.url
       }
     }
 

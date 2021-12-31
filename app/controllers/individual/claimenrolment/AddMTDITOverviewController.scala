@@ -40,7 +40,7 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
   def show: Action[AnyContent] = Authenticated.unrestricted { implicit request =>
     _ =>
       if (isEnabled(ClaimEnrolment)) {
-        Ok(addmtdit(postAction = routes.AddMTDITOverviewController.submit())).withJourneyState(ClaimEnrolmentJourney)
+        Ok(addmtdit(postAction = routes.AddMTDITOverviewController.submit)).withJourneyState(ClaimEnrolmentJourney)
       } else {
         throw new NotFoundException("[AddMTDITOverviewController][show] - The claim enrolment feature switch is disabled")
       }
@@ -49,7 +49,7 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       if (isEnabled(ClaimEnrolment)) {
-        Redirect(routes.ClaimEnrolmentResolverController.resolve())
+        Redirect(routes.ClaimEnrolmentResolverController.resolve)
       } else {
         throw new NotFoundException("[AddMTDITOverviewController][submit] - The claim enrolment feature switch is disabled")
       }

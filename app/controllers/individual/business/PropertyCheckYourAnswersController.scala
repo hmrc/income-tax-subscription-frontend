@@ -75,7 +75,7 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.individual.business.routes.TaskListController.show().url
+      controllers.individual.business.routes.TaskListController.show.url
     } else {
       controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }

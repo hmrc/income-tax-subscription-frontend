@@ -17,18 +17,18 @@
 package connectors.individual.subscription.httpparsers
 
 import models.common.subscription.{EnrolFailure, EnrolSuccess}
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status.CREATED
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object AllocateEnrolmentResponseHttpParser {
+object AllocateEnrolmentResponseHttpParser extends Logging {
   type AllocateEnrolmentResponse = Either[EnrolFailure, EnrolSuccess.type ]
 
   implicit object AllocateEnrolmentResponseHttpReads extends HttpReads[AllocateEnrolmentResponse] {
     override def read(method: String, url: String, response: HttpResponse): AllocateEnrolmentResponse =
       response.status match {
         case CREATED => Right(EnrolSuccess)
-        case _ =>  Logger.error(s"[AllocateEnrolmentResponseHttpReads] issue allocating enrolment status: ${response.status} body: ${response.body}")
+        case _ =>  logger.error(s"[AllocateEnrolmentResponseHttpReads] issue allocating enrolment status: ${response.status} body: ${response.body}")
           Left(EnrolFailure(response.body))
       }
   }

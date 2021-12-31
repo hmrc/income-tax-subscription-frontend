@@ -69,7 +69,7 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
   }
 
   "submit" must {
-    s"redirect to ${controllers.routes.FeedbackController.thankyou().url}" when {
+    s"redirect to ${controllers.routes.FeedbackController.thankyou.url}" when {
       "the form was successfully submitted" in withController { controller =>
         val request: Request[AnyContent] = FakeRequest().withFormUrlEncodedBody("testKey" -> "testData")
 
@@ -86,7 +86,7 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
         val result: Future[Result] = controller.submit()(request)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.FeedbackController.thankyou().url)
+        redirectLocation(result) mustBe Some(controllers.routes.FeedbackController.thankyou.url)
         session(result).get("ticketId") mustBe Some("test-ticket-id")
       }
     }

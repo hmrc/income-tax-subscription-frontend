@@ -16,8 +16,7 @@
 
 package controllers.individual.business
 
-import java.time.LocalDate
-import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
@@ -25,9 +24,11 @@ import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.common.AccountingYearModel
-import models.{Current, Next}
+import models.{AccountingYear, Current, Next}
 import play.api.http.Status._
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
+
+import java.time.LocalDate
 
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -88,7 +89,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         And("SaveAndRetrieve feature switch is disabled")
         disable(SaveAndRetrieve)
@@ -109,7 +110,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         And("SaveAndRetrieve feature switch is disabled")
         disable(SaveAndRetrieve)
@@ -131,7 +132,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         And("SaveAndRetrieve feature switch is enabled")
         enable(SaveAndRetrieve)
@@ -180,7 +181,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
           subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent))
         )
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         And("SaveAndRetrieve feature switch is disabled")
         disable(SaveAndRetrieve)
@@ -208,7 +209,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
             selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent)
           )
         )
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         And("SaveAndRetrieve feature switch is disabled")
         disable(SaveAndRetrieve)
@@ -233,7 +234,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
           subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent))
         )
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         And("SaveAndRetrieve feature switch is enabled")
         enable(SaveAndRetrieve)

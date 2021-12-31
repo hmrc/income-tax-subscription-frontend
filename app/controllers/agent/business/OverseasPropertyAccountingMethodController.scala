@@ -69,7 +69,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
             Future.successful(BadRequest(view(accountingMethodOverseasPropertyForm = formWithErrors, isEditMode = isEditMode))),
           overseasPropertyAccountingMethod => {
             subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map { _ =>
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+              Redirect(controllers.agent.routes.CheckYourAnswersController.show)
             }
           }
         )
@@ -78,7 +78,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {
     if (isEditMode) {
-      controllers.agent.routes.CheckYourAnswersController.show().url
+      controllers.agent.routes.CheckYourAnswersController.show.url
     } else {
       controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
     }

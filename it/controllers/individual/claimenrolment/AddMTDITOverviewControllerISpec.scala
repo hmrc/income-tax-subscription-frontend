@@ -19,11 +19,10 @@ package controllers.individual.claimenrolment
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.SEE_OTHER
 import helpers.IntegrationTestConstants.claimEnrolmentResolverURI
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.http.Status.{NOT_FOUND, OK, SEE_OTHER}
 import utilities.ITSASessionKeys
 
 class AddMTDITOverviewControllerISpec extends ComponentSpecBase with FeatureSwitching with SessionCookieCrumbler {

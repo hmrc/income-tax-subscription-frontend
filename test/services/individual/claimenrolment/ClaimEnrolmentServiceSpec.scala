@@ -17,7 +17,7 @@
 package services.individual.claimenrolment
 
 import auth.individual.IncomeTaxSAUser
-import controllers.Assets.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
 import org.scalatest.MustMatchers
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.{AnyContent, Request}

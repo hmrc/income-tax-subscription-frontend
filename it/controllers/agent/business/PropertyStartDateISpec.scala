@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import controllers.Assets.NO_CONTENT
 import helpers.IntegrationTestModels
 import helpers.IntegrationTestModels.{subscriptionData, testFullPropertyModel, testPropertyStartDate}
 import helpers.agent.ComponentSpecBase
@@ -25,7 +24,7 @@ import helpers.agent.IntegrationTestConstants.{checkYourAnswersURI, propertyAcco
 import helpers.agent.servicemocks.AuthStub
 import models.DateModel
 import models.common.{IncomeSourceModel, PropertyModel, PropertyStartDateModel}
-import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER, NO_CONTENT}
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 

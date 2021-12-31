@@ -36,7 +36,11 @@ case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[Affi
   def clientReference(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.REFERENCE)
 
-  private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
-    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _) => value
+  private def getEnrolment(key: String) = {
+    enrolments.getEnrolment(key).flatMap { enrolment =>
+      enrolment.identifiers.headOption map { identifier =>
+        identifier.value
+      }
+    }
   }
 }

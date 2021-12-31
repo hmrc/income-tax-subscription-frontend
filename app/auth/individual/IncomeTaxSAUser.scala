@@ -60,7 +60,11 @@ case class IncomeTaxSAUser(enrolments: Enrolments,
     case _ => false
   }
 
-  private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
-    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _) => value
+  private def getEnrolment(key: String) = {
+    enrolments.getEnrolment(key).flatMap { enrolment =>
+      enrolment.identifiers.headOption map { identifier =>
+        identifier.value
+      }
+    }
   }
 }

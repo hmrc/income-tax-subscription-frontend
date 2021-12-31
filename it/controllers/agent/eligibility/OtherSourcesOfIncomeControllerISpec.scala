@@ -57,7 +57,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
     "have a view with a back link" in new GetSetup {
       val backLink: Element = doc.getElementById("back-link")
-      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show().url
+      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show.url
       backLink.text shouldBe OtherSourcesOfIncomeMessages.back
     }
 
@@ -89,7 +89,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     "have a form" in new GetSetup {
       val form: Element = pageContent.getForm
       form.attr("method") shouldBe "POST"
-      form.attr("action") shouldBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.submit().url
+      form.attr("action") shouldBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.submit.url
     }
 
     "have a button to submit" in new GetSetup {
@@ -139,7 +139,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
+        redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
       )
     }
 
@@ -147,7 +147,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.eligibility.routes.SoleTraderController.show().url)
+        redirectURI(controllers.agent.eligibility.routes.SoleTraderController.show.url)
       )
     }
 
@@ -163,7 +163,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
       val form: Element = pageContent.getForm
       form.attr("method") shouldBe "POST"
-      form.attr("action") shouldBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.submit().url
+      form.attr("action") shouldBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.submit.url
     }
 
   }

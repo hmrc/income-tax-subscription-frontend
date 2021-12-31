@@ -19,10 +19,10 @@ package models.individual.subscription
 import models.common.IncomeSourceModel
 import models.common.subscription.SubscriptionRequest
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utilities.individual.TestConstants
 
-class SubscriptionRequestSpec extends UnitSpec {
+class SubscriptionRequestSpec extends WordSpecLike with Matchers with OptionValues {
 
   "FERequest" should {
     "Provide the correct reader for FERequest" in {

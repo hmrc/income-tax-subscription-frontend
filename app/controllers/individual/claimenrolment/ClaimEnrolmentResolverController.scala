@@ -47,13 +47,13 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
               ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid)
             )
             if (isEnabled(SPSEnabled)) {
-              Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS())
+              Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
             } else {
               Redirect(routes.ClaimEnrolmentConfirmationController.show())
             }
 
           case Left(NotSubscribed) => Redirect(routes.NotSubscribedController.show())
-          case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show())
+          case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)
           case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
         }
       }

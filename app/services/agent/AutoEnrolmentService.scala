@@ -21,16 +21,15 @@ import cats.implicits._
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UsersFound
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
 import connectors.agent.{EnrolmentStoreProxyConnector, UsersGroupsSearchConnector}
-
-import javax.inject.{Inject, Singleton}
 import models.ConnectorError
 import models.common.subscription.EnrolmentKey
-import play.api.Logger
+import play.api.Logging
 import services.agent.AutoEnrolmentService._
 import uk.gov.hmrc.auth.core.User
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.individual.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -38,10 +37,10 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
                                      checkEnrolmentAllocationService: CheckEnrolmentAllocationService,
                                      assignEnrolmentToUserService: AssignEnrolmentToUserService,
                                      usersGroupsSearchConnector: UsersGroupsSearchConnector)
-                                    (implicit ec: ExecutionContext) {
+                                    (implicit ec: ExecutionContext) extends Logging {
 
   private def logError(location: String, nino: String, detail: String): Unit = {
-    Logger.error(s"[AutoEnrolmentService][$location] - Auto enrolment failed for nino: $nino - $detail")
+    logger.error(s"[AutoEnrolmentService][$location] - Auto enrolment failed for nino: $nino - $detail")
   }
 
   def autoClaimEnrolment(utr: String, nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[AutoClaimEnrolmentResponse] = {
@@ -53,7 +52,7 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
       _ <- allocateEnrolmentWithoutKnownFacts(mtditid = mtditid, groupId = groupId, credentialId = adminUserId, nino = nino)
       _ <- assignEnrolmentToUser(enrolmentUserIDs filterNot (_ == adminUserId), mtditid = mtditid, nino = nino)
     } yield {
-      Logger.debug(s"[AutoEnrolmentService][autoClaimEnrolment] - Successful auto enrolment for nino: $nino")
+      logger.debug(s"[AutoEnrolmentService][autoClaimEnrolment] - Successful auto enrolment for nino: $nino")
       EnrolmentAssigned
     }
     }.value

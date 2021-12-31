@@ -44,7 +44,7 @@ class KnownFactsController @Inject()(val auditingService: AuditingService,
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
     addKnownFacts(
       knownFactsForm = form,
-      postAction = testonly.controllers.individual.routes.KnownFactsController.submit()
+      postAction = testonly.controllers.individual.routes.KnownFactsController.submit
     )
 
   def show: Action[AnyContent] = Action { implicit request =>

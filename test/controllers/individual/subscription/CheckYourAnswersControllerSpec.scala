@@ -145,8 +145,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsSave(MtditId, 1)
       }
 
-      s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show().url)
+      s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show.url}'" in {
+        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
       }
     }
 
@@ -167,8 +167,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         verifySubscriptionDetailsSave(MtditId, 1)
       }
 
-      s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show().url)
+      s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show.url}'" in {
+        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
       }
     }
 

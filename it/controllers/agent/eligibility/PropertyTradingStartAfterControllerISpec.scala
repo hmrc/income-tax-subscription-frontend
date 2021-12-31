@@ -87,7 +87,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
     "have a view with a back link" in new GetSetup {
       val backLink: Element = doc.getGovukBackLink
-      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.SoleTraderController.show().url
+      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.SoleTraderController.show.url
       backLink.text shouldBe PropertyStartAfterMessage.back
     }
 
@@ -123,7 +123,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     "have a form" in new GetSetup {
       val form: Element = pageContent.getForm
       form.attr("method") shouldBe "POST"
-      form.attr("action") shouldBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.submit().url
+      form.attr("action") shouldBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.submit.url
     }
   }
 
@@ -139,7 +139,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
+        redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
       )
     }
 
@@ -147,7 +147,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show().url)
+        redirectURI(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
       )
     }
 

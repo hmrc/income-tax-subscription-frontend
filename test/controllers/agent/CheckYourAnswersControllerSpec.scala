@@ -125,7 +125,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         val result = call(subscriptionRequest.removeFromSession(ITSASessionKeys.NINO))
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show.url)
       }
     }
   }
@@ -136,14 +136,14 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     def call(request: Request[AnyContent]): Future[Result] = TestCheckYourAnswersController.submit(request)
 
     "There are no a matched nino in session" should {
-      s"return redirect ${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
+      s"return redirect ${controllers.agent.matching.routes.ConfirmClientController.show.url}" in {
         val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN).removeFromSession(ITSASessionKeys.NINO)
 
         mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
         val result = call(request)
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show.url)
       }
     }
 
@@ -181,7 +181,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         }
 
         "redirect the user to the agent confirmation agent page" in {
-          redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show().url)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show.url)
         }
       }
 

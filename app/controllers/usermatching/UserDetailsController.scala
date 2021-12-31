@@ -51,7 +51,7 @@ class UserDetailsController @Inject()(val auditingService: AuditingService,
 
     lockOutService.getLockoutStatus(user.userId) flatMap {
       case Right(NotLockedOut) => f
-      case Right(_) => Future.successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show().url))
+      case Right(_) => Future.successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show.url))
       case Left(_) => throw new InternalServerException("[UserDetailsController][handleLockOut] failure response from lockout service")
     }
   }

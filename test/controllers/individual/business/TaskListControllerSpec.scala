@@ -19,7 +19,6 @@ package controllers.individual.business
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.OK
 import controllers.ControllerBaseSpec
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
@@ -28,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
+import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
@@ -154,7 +154,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
           await(result)
           verifySubscriptionDetailsSave(MtditId, 1)
 
-          redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show().url)
+          redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
         }
       }
 

@@ -81,8 +81,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     overseasPropertyStartDate = overseasPropertyStartDate
   )
 
-  lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
-  lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+  lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit
+  lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
   def page(testSummaryModel: IndividualSummary, releaseFour: Boolean = false): HtmlFormat.Appendable =
     checkYourAnswers(

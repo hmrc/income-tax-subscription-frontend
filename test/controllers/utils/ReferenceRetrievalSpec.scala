@@ -19,7 +19,7 @@ package controllers.utils
 import auth.agent.IncomeTaxAgentUser
 import auth.individual.IncomeTaxSAUser
 import connectors.httpparser.RetrieveReferenceHttpParser.{InvalidJsonFailure, UnexpectedStatusFailure}
-import controllers.Assets.{INTERNAL_SERVER_ERROR, OK}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import controllers.agent.ITSASessionKeys
 import org.scalatest.MustMatchers
 import org.scalatestplus.play.PlaySpec

@@ -109,7 +109,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
           await(goodRequest)
           verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -141,7 +141,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
           mockFetchOverseasProperty(Some(OverseasPropertyModel()))
           val goodRequest = callSubmit(isEditMode = true)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
           await(goodRequest)
           verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -205,7 +205,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
           setupMockSubscriptionDetailsSaveFunctions()
           controller.backUrl(isEditMode = true) mustBe
-            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+            controllers.individual.subscription.routes.CheckYourAnswersController.show.url
         }
       }
 

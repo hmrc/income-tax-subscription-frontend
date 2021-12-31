@@ -38,15 +38,15 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Ok(noClientRelationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit())))
+      Future.successful(Ok(noClientRelationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit)))
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
-        Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show()))
+        Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show))
       } else {
-        Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show()))
+        Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show))
       }
   }
 }

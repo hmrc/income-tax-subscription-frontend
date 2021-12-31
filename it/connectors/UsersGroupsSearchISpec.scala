@@ -22,7 +22,7 @@ class UsersGroupsSearchISpec extends ComponentSpecBase {
 
         val res = connector.getUsersForGroup(testGroupId)
 
-        await(res) shouldBe Right(UsersFound(Map(testCredentialId -> User, testCredentialId2 -> Assistant)))
+        res.futureValue shouldBe Right(UsersFound(Map(testCredentialId -> User, testCredentialId2 -> Assistant)))
       }
     }
   }

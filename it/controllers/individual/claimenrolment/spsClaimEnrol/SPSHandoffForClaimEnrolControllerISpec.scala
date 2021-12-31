@@ -34,7 +34,7 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase with Feat
     disable(ClaimEnrolment)
   }
 
-  s"GET ${controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS().url}" when {
+  s"GET ${controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS.url}" when {
 
     "the user is not authorised" should {
       "redirect the user to login" in {

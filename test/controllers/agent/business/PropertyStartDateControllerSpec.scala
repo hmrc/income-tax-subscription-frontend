@@ -127,7 +127,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
         val goodRequest = callSubmit(controller, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifyPropertySave(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false))
@@ -169,7 +169,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "the user click back url" should {
         "redirect to check your answer page" in withController { controller =>
           controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
-            controllers.agent.routes.CheckYourAnswersController.show().url
+            controllers.agent.routes.CheckYourAnswersController.show.url
         }
       }
     }

@@ -48,7 +48,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     "have a view with a back link" in new GetSetup {
       val backLink: Element = doc.getGovukBackLink
-      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show().url
+      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show.url
       backLink.text shouldBe AccountingPeriodCheckMessages.back
     }
 
@@ -60,7 +60,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
       "has the correct attributes" in new GetSetup {
         val form: Element = pageMainContent.getForm
         form.attr("method") shouldBe "POST"
-        form.attr("action") shouldBe controllers.agent.eligibility.routes.AccountingPeriodCheckController.submit().url
+        form.attr("action") shouldBe controllers.agent.eligibility.routes.AccountingPeriodCheckController.submit.url
       }
 
       "has a fieldset containing a yes and no radiobutton" in new GetSetup {
@@ -121,7 +121,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
-        redirectURI(routes.CannotTakePartController.show().url)
+        redirectURI(routes.CannotTakePartController.show.url)
       )
     }
 

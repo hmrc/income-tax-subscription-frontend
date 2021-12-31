@@ -58,7 +58,7 @@ class AddMTDITOverviewControllerSpec extends ControllerBaseSpec
     "return an OK status with the add mtdit overview page and put the user into a claim enrolment journey state" when {
       "the claim enrolment feature switch is enabled" in {
         enable(ClaimEnrolment)
-        mockAddMTDITOverview(postAction = routes.AddMTDITOverviewController.submit())
+        mockAddMTDITOverview(postAction = routes.AddMTDITOverviewController.submit)
 
         val result: Future[Result] = TestAddMTDITOverviewController.show()(FakeRequest())
 
@@ -90,7 +90,7 @@ class AddMTDITOverviewControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = TestAddMTDITOverviewController.submit()(claimEnrolmentRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.ClaimEnrolmentResolverController.resolve().url)
+        redirectLocation(result) mustBe Some(routes.ClaimEnrolmentResolverController.resolve.url)
       }
     }
   }

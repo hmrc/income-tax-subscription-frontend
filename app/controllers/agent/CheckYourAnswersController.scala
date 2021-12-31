@@ -25,7 +25,7 @@ import controllers.utils.{ReferenceRetrieval, RequireAnswer}
 import models.common.IncomeSourceModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.SubscriptionSuccess
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc._
 import services.agent.SubscriptionOrchestrationService
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -52,7 +52,8 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                            mcc: MessagesControllerComponents) extends AuthenticatedController
   with FeatureSwitching
   with RequireAnswer
-  with ReferenceRetrieval {
+  with ReferenceRetrieval
+  with Logging {
 
   private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
                               (noCacheMapErrMessage: String): Action[AnyContent] =
@@ -65,7 +66,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
               case _ => error(noCacheMapErrMessage)
             }
           } else {
-            Future.successful(Redirect(controllers.agent.matching.routes.ConfirmClientController.show()))
+            Future.successful(Redirect(controllers.agent.matching.routes.ConfirmClientController.show))
           }
         }
     }
@@ -90,7 +91,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
             } yield {
               Ok(checkYourAnswers(
                 cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
-                controllers.agent.routes.CheckYourAnswersController.submit(),
+                controllers.agent.routes.CheckYourAnswersController.submit,
                 backUrl = backUrl(incomeSource),
                 implicitDateFormatter,
                 releaseFour = true
@@ -119,7 +120,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
         .recoverWith { case _ => error("Successful response not received from submission") }
       _ <- subscriptionDetailsService.saveSubscriptionId(reference, mtditid)
         .recoverWith { case _ => error("Failed to save to Subscription Details ") }
-    } yield Redirect(controllers.agent.routes.ConfirmationAgentController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
+    } yield Redirect(controllers.agent.routes.ConfirmationAgentController.show).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }
 
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
@@ -140,7 +141,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any Subscription Details  cached data")
 
   def error(message: String): Future[Nothing] = {
-    Logger.warn(message)
+    logger.warn(message)
     Future.failed(new InternalServerException(message))
   }
 

@@ -17,12 +17,12 @@
 package models.individual.subscription
 
 import models.common.subscription.EnrolmentKey
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utilities.individual.Constants.GovernmentGateway._
 import utilities.individual.Constants._
 import utilities.individual.TestConstants._
 
-class EnrolmentKeySpec extends UnitSpec {
+class EnrolmentKeySpec extends WordSpecLike with Matchers with OptionValues {
   "asString" should {
     "format the enrolment key correctly" in {
       val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)

@@ -105,7 +105,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
               val redirectUrl = (isEditMode, isSaveAndRetrieve) match {
                 case (true, true) => controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode)
-                case (true, false) => controllers.individual.subscription.routes.CheckYourAnswersController.show()
+                case (true, false) => controllers.individual.subscription.routes.CheckYourAnswersController.show
                 case (false, _) => controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show()
               }
               Future.successful(Redirect(redirectUrl))
@@ -117,8 +117,8 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel])(implicit hc: HeaderCarrier): String = {
     (isEditMode, isSaveAndRetrieve, maybeIncomeSourceModel) match {
       case (true, true, _) => controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
-      case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
-      case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show.url
+      case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show.url
       case (false, false, Some(incomeSourceModel)) if incomeSourceModel.ukProperty =>
         controllers.individual.business.routes.PropertyAccountingMethodController.show().url
       case (false, false, Some(incomeSourceModel)) if incomeSourceModel.selfEmployment =>

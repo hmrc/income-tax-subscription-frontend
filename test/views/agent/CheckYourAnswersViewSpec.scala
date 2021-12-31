@@ -38,7 +38,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
 
   val checkYourAnswers: CheckYourAnswers = app.injector.instanceOf[CheckYourAnswers]
 
-  lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit()
+  lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit
   lazy val backUrl: String = controllers.agent.routes.IncomeSourceController.show().url
 
   def selfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(

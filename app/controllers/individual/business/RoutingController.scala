@@ -45,7 +45,7 @@ class RoutingController @Inject()(val auditingService: AuditingService,
           case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
             Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
           case _ =>
-            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+            Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show)
         }
       }
   }

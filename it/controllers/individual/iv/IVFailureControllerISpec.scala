@@ -29,7 +29,7 @@ class IVFailureControllerISpec extends ComponentSpecBase with FeatureSwitching {
     super.beforeEach()
   }
 
-  s"GET ${controllers.individual.iv.routes.IVFailureController.failure().url}" when {
+  s"GET ${controllers.individual.iv.routes.IVFailureController.failure.url}" when {
 
     "the user is not authorised" should {
       "redirect the user to login" in {

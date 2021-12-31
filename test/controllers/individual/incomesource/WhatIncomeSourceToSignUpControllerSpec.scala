@@ -21,7 +21,6 @@ import config.MockConfig
 import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
 import config.featureswitch.FeatureSwitching
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
-import controllers.Assets.OK
 import controllers.ControllerBaseSpec
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import models.common._
@@ -29,12 +28,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
+import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
-import utilities.SubscriptionDataKeys.IncomeSource
 import views.html.individual.incometax.incomesource.WhatIncomeSourceToSignUp
 import views.individual.mocks.MockIncomeSource
 

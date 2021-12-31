@@ -47,7 +47,7 @@ class FeatureSwitchController @Inject()(val auditingService: AuditingService,
       switchNames = switchNames,
       backendFeatureSwitches = backendFeatureSwitches,
       eligibilityFeatureSwitches = eligibilityFeatureSwitches,
-      testonly.controllers.routes.FeatureSwitchController.submit()
+      testonly.controllers.routes.FeatureSwitchController.submit
     )
 
   lazy val show: Action[AnyContent] = Action.async { implicit req =>
@@ -83,7 +83,7 @@ class FeatureSwitchController @Inject()(val auditingService: AuditingService,
       eligibilityFeatureSwitches <- settingsFromFeatureSwitchMap(eligibilityFeatureSwitchConnector.getEligibilityFeatureSwitches)
       _ <- backendFeatureSwitchConnector.submitBackendFeatureSwitches(backendFeatureSwitches)
       _ <- eligibilityFeatureSwitchConnector.submitEligibilityFeatureSwitches(eligibilityFeatureSwitches)
-    } yield Redirect(testonly.controllers.routes.FeatureSwitchController.show())
+    } yield Redirect(testonly.controllers.routes.FeatureSwitchController.show)
   }
 
 }

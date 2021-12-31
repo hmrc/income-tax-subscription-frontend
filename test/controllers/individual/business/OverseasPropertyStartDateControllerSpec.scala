@@ -162,7 +162,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
           val goodRequest = callPost(controller, isEditMode = true)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
           await(goodRequest)
           verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
@@ -221,7 +221,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
           "redirect to the final check your answers page" in withController { controller =>
             val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
             controller.backUrl(isEditMode = true, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
-              controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+              controllers.individual.subscription.routes.CheckYourAnswersController.show.url
           }
         }
 

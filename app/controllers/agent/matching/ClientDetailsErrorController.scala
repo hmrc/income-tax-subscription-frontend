@@ -37,7 +37,7 @@ class ClientDetailsErrorController @Inject()(val auditingService: AuditingServic
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Ok(clientDetailsError(
-        postAction = controllers.agent.matching.routes.ClientDetailsErrorController.submit()
+        postAction = controllers.agent.matching.routes.ClientDetailsErrorController.submit
       ))
   }
 

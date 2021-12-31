@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment
 
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.{CREATED, INTERNAL_SERVER_ERROR, NO_CONTENT, SEE_OTHER}
+import play.api.http.Status.{CREATED, INTERNAL_SERVER_ERROR, NO_CONTENT, SEE_OTHER}
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.testMTDITEnrolmentKey
 import helpers.servicemocks.AuditStub.verifyAudit

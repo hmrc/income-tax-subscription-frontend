@@ -16,9 +16,9 @@
 
 package config.featureswitch
 
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class FeatureSwitchingSpec extends UnitSpec with FeatureSwitching {
+class FeatureSwitchingSpec extends WordSpecLike with Matchers with OptionValues with FeatureSwitching {
 
   FeatureSwitch.switches foreach { switch =>
     s"isEnabled(${switch.name})" should {

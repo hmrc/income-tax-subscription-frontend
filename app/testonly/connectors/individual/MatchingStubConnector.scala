@@ -24,7 +24,7 @@ import java.time.format.{DateTimeFormatter, ResolverStyle}
 import connectors.RawResponseReads
 import javax.inject.{Inject, Singleton}
 import models.DateModel
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json, OFormat}
 import testonly.TestOnlyAppConfig
@@ -102,7 +102,7 @@ import utilities.Implicits._
 @Singleton
 class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
                                       http: HttpClient)
-                                     (implicit ec: ExecutionContext) extends RawResponseReads {
+                                     (implicit ec: ExecutionContext) extends RawResponseReads with Logging {
 
   lazy val dynamicStubUrl: String = appConfig.matchingStubsURL + "/dynamic-cid"
 
@@ -117,10 +117,10 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
       response =>
         response.status match {
           case CREATED =>
-            Logger.info("MatchingStubConnector.newUser successful")
+            logger.info("MatchingStubConnector.newUser successful")
             true
           case status =>
-            Logger.warn(
+            logger.warn(
               s"""MatchingStubConnector.newUser failure:
                  | Request {
                  |   dynamicStubUrl: $dynamicStubUrl

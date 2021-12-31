@@ -16,12 +16,11 @@
 
 package controllers.agent
 
-import controllers.Assets.SEE_OTHER
 import helpers.SessionCookieCrumbler
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.{testARN, testNino, testUtr}
 import helpers.agent.servicemocks.AuthStub
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
 
 class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 

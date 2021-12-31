@@ -97,8 +97,8 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
       await(result).verifyStoredUserDetailsIs(None)(r)
 
-      withClue(s"redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show().url}") {
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show().url)
+      withClue(s"redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url}") {
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url)
       }
     }
 
@@ -134,7 +134,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
         "there are no stored data" should {
 
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
+          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show.url}" in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
@@ -143,7 +143,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             val goodResult = callSubmit(r)(isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
+            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show.url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
           }
@@ -152,7 +152,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
         "stored user details is different to the new user details" should {
 
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
+          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show.url}" in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
@@ -163,7 +163,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             val goodResult = callSubmit(r)(isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
+            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show.url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
           }
@@ -172,7 +172,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
         "stored user details is the same as the new user details" should {
 
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} but do not delete Subscription Details " in {
+          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show.url} but do not delete Subscription Details " in {
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
             setupMockNotLockedOut(testARN)
 
@@ -181,7 +181,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             val goodResult = callSubmit(r)(isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
+            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show.url)
 
             await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
           }
@@ -239,18 +239,18 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
   }
 
   "If the agent is locked out" should withController { controller =>
-    s"calling show should redirect them to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show().url}" in {
+    s"calling show should redirect them to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url}" in {
       setupMockLockedOut(testARN)
       lazy val result = controller.show(isEditMode = false)(userMatchingRequest)
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show().url
+      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show.url
     }
 
-    s"calling submit should redirect them to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show().url}" in {
+    s"calling submit should redirect them to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url}" in {
       setupMockLockedOut(testARN)
       lazy val result = controller.submit(isEditMode = false)(userMatchingRequest)
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show().url
+      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show.url
     }
   }
 

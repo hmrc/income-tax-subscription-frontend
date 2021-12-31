@@ -26,7 +26,7 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
-import helpers.servicemocks.{ChannelPreferencesStub, EnrolmentStoreProxyStub, SubscriptionStub}
+import helpers.servicemocks.{ChannelPreferencesStub, EnrolmentStoreProxyStub}
 import models.common._
 import models.common.business.BusinessSubscriptionDetailsModel
 import models.sps.AgentSPSPayload

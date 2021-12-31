@@ -40,9 +40,9 @@ class CovidCannotSignUpController @Inject()(val covidCannotSignUp: CovidCannotSi
   val show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
-        Redirect(routes.OtherSourcesOfIncomeController.show())
+        Redirect(routes.OtherSourcesOfIncomeController.show)
       } else {
-        Ok(covidCannotSignUp(postAction = routes.Covid19ClaimCheckController.show(), backUrl))
+        Ok(covidCannotSignUp(postAction = routes.Covid19ClaimCheckController.show, backUrl))
       }
   }
 
@@ -50,7 +50,7 @@ class CovidCannotSignUpController @Inject()(val covidCannotSignUp: CovidCannotSi
     if (isEnabled(RemoveCovidPages)) {
       throw new InternalServerException("Remove Covid Pages Feature Switch - Enabled")
   } else {
-      routes.Covid19ClaimCheckController.show().url
+      routes.Covid19ClaimCheckController.show.url
     }
   }
 

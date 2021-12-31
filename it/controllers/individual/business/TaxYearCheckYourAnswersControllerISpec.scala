@@ -19,14 +19,13 @@ package controllers.individual.business
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave
-import controllers.Assets.INTERNAL_SERVER_ERROR
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.taskListURI
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
 import models.Current
 import models.common.AccountingYearModel
-import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys

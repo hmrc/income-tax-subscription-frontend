@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import connectors.PaperlessPreferenceHttpParser._
 import models.{PaperlessPreferenceError, PaperlessState}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
@@ -38,7 +38,7 @@ class PreferenceFrontendConnector @Inject()(val messagesApi: MessagesApi,
                                             applicationCrypto: ApplicationCrypto,
                                             http: HttpClient,
                                             headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter)
-                                           (implicit ec: ExecutionContext) {
+                                           (implicit ec: ExecutionContext) extends Logging {
 
 
   lazy val returnUrl: String = returnUrl(appConfig.baseUrl)
@@ -58,7 +58,7 @@ class PreferenceFrontendConnector @Inject()(val messagesApi: MessagesApi,
     http.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl(token), "") map {
       case Right(paperlessState) => Right(paperlessState)
       case Left(error) =>
-        Logger.warn(s"PreferencesFrontendConnector#checkPaperless failed. Returned status:${error.httpResponse.status} body:${error.httpResponse.body}")
+        logger.warn(s"PreferencesFrontendConnector#checkPaperless failed. Returned status:${error.httpResponse.status} body:${error.httpResponse.body}")
         Left(PaperlessPreferenceError)
     }
   }
@@ -68,7 +68,7 @@ class PreferenceFrontendConnector @Inject()(val messagesApi: MessagesApi,
   private def encryptAndEncode(s: String) = urlEncode(applicationCrypto.QueryParameterCrypto.encrypt(PlainText(s)).value)
 
   def returnUrl(baseUrl: String): String =
-    encryptAndEncode(baseUrl + controllers.individual.routes.PreferencesController.callback().url)
+    encryptAndEncode(baseUrl + controllers.individual.routes.PreferencesController.callback.url)
 
   private def returnLinkText(implicit messages: Messages): String = encryptAndEncode(Messages("preferences.returnLinkText"))
 

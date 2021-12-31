@@ -20,8 +20,8 @@ import agent.audit.mocks.MockAuditingService
 import auth.individual.SignUp
 import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.SEE_OTHER
 import controllers.ControllerBaseSpec
+import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
@@ -54,7 +54,7 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
     } else {
       ""
     }
-    FakeRequest("GET", controllers.individual.sps.routes.SPSCallbackController.callback().url + entityIdParam).withSession(
+    FakeRequest("GET", controllers.individual.sps.routes.SPSCallbackController.callback.url + entityIdParam).withSession(
       ITSASessionKeys.JourneyStateKey -> SignUp.name,
       ITSASessionKeys.NINO -> TestConstants.testNino,
       ITSASessionKeys.UTR -> TestConstants.testUtr

@@ -34,7 +34,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
       Then("the result should have a status of SEE_OTHER and the front page title")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.routes.HomeController.index().url)
+        redirectURI(controllers.agent.routes.HomeController.index.url)
       )
     }
   }

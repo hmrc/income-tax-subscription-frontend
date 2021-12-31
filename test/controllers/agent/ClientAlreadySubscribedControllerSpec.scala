@@ -60,8 +60,8 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec with
       document.title mustBe messages.heading + serviceNameGovUk
     }
 
-    s"the post action of the page rendered should be '${controllers.agent.routes.ClientAlreadySubscribedController.submit().url}'" in {
-      document.select("form").attr("action") mustBe controllers.agent.routes.ClientAlreadySubscribedController.submit().url
+    s"the post action of the page rendered should be '${controllers.agent.routes.ClientAlreadySubscribedController.submit.url}'" in {
+      document.select("form").attr("action") mustBe controllers.agent.routes.ClientAlreadySubscribedController.submit.url
     }
 
   }

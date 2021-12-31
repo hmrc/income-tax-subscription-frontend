@@ -44,12 +44,12 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
         }
         if (isEnabled(ClaimEnrolmentFeatureSwitch) && request.session.isInState(ClaimEnrolmentJourney)) {
           Future.successful(
-            Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve())
+            Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
               .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
           )
         } else {
           Future.successful(
-            Redirect(controllers.usermatching.routes.HomeController.home())
+            Redirect(controllers.usermatching.routes.HomeController.home)
               .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
           )
         }
