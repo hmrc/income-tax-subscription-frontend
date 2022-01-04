@@ -127,7 +127,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     "has a form" which {
 
       "has a submit button" in {
-        val submit = document().select("button")
+        val submit = document().select("button").last()
         submit.isEmpty mustBe false
         submit.text shouldBe MessageLookup.Summary.confirm_and_sign_up
       }

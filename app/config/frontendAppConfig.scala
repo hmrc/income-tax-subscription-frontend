@@ -72,6 +72,7 @@ trait AppConfig extends FeatureSwitching {
   val citizenDetailsURL: String
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
+  val urBannerUrl: String
 
   def storeNinoUrl(token: String): String
 
@@ -324,6 +325,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   val feedbackFrontendRedirectUrl: String = config.getString("feedback-frontend.url")
 
   val feedbackFrontendAgentRedirectUrl: String = config.getString("feedback-frontend-A.url")
+
+  val urBannerUrl: String = config.getString("urBannerUrl.url")
 
   override lazy val countdownLength: String = config.getString("timeout.countdown")
   override lazy val timeoutLength: String = config.getString("timeout.length")

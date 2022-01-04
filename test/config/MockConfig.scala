@@ -44,6 +44,7 @@ trait MockConfig extends AppConfig {
   override lazy val authenticatorUrl: String = ""
   override val userMatchingUrl = "/income-tax-subscription/user-matching"
   override lazy val ggUrl = ""
+  override lazy val urBannerUrl: String = " "
 
   override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/bas-gateway/sign-out-without-state?continue=$redirectionUrl"
 

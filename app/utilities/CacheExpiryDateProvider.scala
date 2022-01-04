@@ -16,10 +16,10 @@
 
 package utilities
 
-import org.joda.time.DateTime
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.language.LanguageUtils
 
+import java.time.LocalDateTime
 import javax.inject.{Inject, Singleton}
 
 @Singleton
@@ -27,12 +27,12 @@ class CacheExpiryDateProvider @Inject()(val languageUtils: LanguageUtils) {
 
   val cacheRetentionDays = 30
 
-  def format(dateTime: DateTime)(implicit messages: Messages): String = {
+  def format(dateTime: LocalDateTime)(implicit messages: Messages): String = {
     languageUtils.Dates.formatEasyReadingTimestamp(Option(dateTime), "")(messages)
       .replaceFirst("^.*, ", "").replaceFirst(" (?=\\d)", ", ")
   }
 
-  def expiryDateOf(dateTime: DateTime)(implicit messages: Messages): String = {
+  def expiryDateOf(dateTime: LocalDateTime)(implicit messages: Messages): String = {
     format(dateTime.plusDays(cacheRetentionDays))
   }
 }
