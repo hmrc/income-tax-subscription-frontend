@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -252,7 +252,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "the user select self-employment and self-employment journey has completed before" should {
-        s" redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+        s" redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show.url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -266,7 +266,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -275,7 +275,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "the user select self-employment and UK property and both journeys have been completed before" should {
-        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show()}" in {
+        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -291,7 +291,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -323,7 +323,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
 
       "the user select self-employment and overseas property and both journeys have been completed before and ReleaseFour is enabled" should {
-        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show()}" in {
+        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -340,7 +340,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true), isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -349,7 +349,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "the user select self-employment, UK property and overseas property and all three journeys have been completed before" should {
-        s"return an SEE OTHER (303)" + s"${controllers.individual.subscription.routes.CheckYourAnswersController.show()}" in {
+        s"return an SEE OTHER (303)" + s"${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -369,7 +369,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -378,7 +378,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "the user select UK property and UK property journeys has been completed before" should {
-        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show.url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -394,7 +394,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -403,7 +403,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "the user select overseas property and overseas property journeys has been completed before" should {
-        s"return an SEE OTHER (303)" + s" ${controllers.individual.subscription.routes.CheckYourAnswersController.submit()}" in {
+        s"return an SEE OTHER (303)" + s" ${controllers.individual.subscription.routes.CheckYourAnswersController.submit}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -419,7 +419,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -428,7 +428,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "the user select UK property and overseas property and both journeys have been completed before" should {
-        s" redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show()}" in {
+        s" redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
@@ -447,7 +447,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true), isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -456,7 +456,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
       "the user selects self-employment and no UK property or overseas property and self-employment journey has been completed before" should {
-        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show()}" in {
+        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
@@ -472,7 +472,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
           verifySubscriptionDetailsFetch(IncomeSource, 1)
@@ -499,7 +499,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     "The back url" when {
       "in edit mode" should {
         "point to the check your answers page" in {
-          new TestIncomeSourceController().backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          new TestIncomeSourceController().backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show.url
         }
       }
       "not in edit mode" should {

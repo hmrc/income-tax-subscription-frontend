@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,11 +38,12 @@ trait UserMatchingTestSupport {
             dobY -> model.dateOfBirth.year,
             nino -> model.nino
           )
-        case _ => request.withHeaders(play.api.http.HeaderNames.COOKIE ->
-          Cookies.mergeCookieHeader(request.headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
-            Seq(Session.encodeAsCookie(new Session(request.session.data - (firstName, lastName, dobD, dobM, dobY, nino))))
-          )
-        )
+        case _ => request
+//          .withHeaders(play.api.http.HeaderNames.COOKIE ->
+//          Cookies.mergeCookieHeader(request.headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
+//            Seq(Session.encodeAsCookie(new Session(request.session.data - (firstName, lastName, dobD, dobM, dobY, nino))))
+//          )
+//        )
       }
     }
 

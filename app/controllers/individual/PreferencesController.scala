@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ class PreferencesController @Inject()(val continueRegistration: ContinueRegistra
 
   def view()(implicit request: Request[AnyContent]): Html = {
     continueRegistration(
-      postAction = controllers.individual.routes.PreferencesController.submit()
+      postAction = controllers.individual.routes.PreferencesController.submit
     )
   }
 
@@ -74,7 +74,7 @@ class PreferencesController @Inject()(val continueRegistration: ContinueRegistra
             preferencesService.checkPaperless(token).map {
               case Right(Activated) if isEnabled(SaveAndRetrieve) => Redirect(controllers.individual.business.routes.TaskListController.show())
               case Right(Activated) => Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
-              case Right(Unset(url)) => Redirect(controllers.individual.routes.PreferencesController.show())
+              case Right(Unset(url)) => Redirect(controllers.individual.routes.PreferencesController.show)
                 .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
               case _ => throw new InternalServerException("Could not get paperless preferences")
             }

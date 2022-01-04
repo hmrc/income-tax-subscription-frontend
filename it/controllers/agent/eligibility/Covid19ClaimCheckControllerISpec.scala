@@ -77,7 +77,7 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
     "have a form" in new GetSetup {
       val form: Element = pageContent.getForm
       form.attr("method") shouldBe "POST"
-      form.attr("action") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.submit().url
+      form.attr("action") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.submit.url
     }
 
     "have a button to submit" in new GetSetup {
@@ -125,7 +125,7 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.eligibility.routes.CovidCannotSignUpController.show().url)
+        redirectURI(controllers.agent.eligibility.routes.CovidCannotSignUpController.show.url)
       )
     }
 
@@ -133,7 +133,7 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response should have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show().url)
+        redirectURI(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
       )
     }
 

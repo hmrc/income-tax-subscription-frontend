@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package controllers.individual.iv
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.IdentityVerification
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.OK
 import controllers.ControllerBaseSpec
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import org.mockito.ArgumentMatchers.{any, eq => matches}
 import org.mockito.Mockito.{never, verify, when}
+import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentType, defaultAwaitTimeout, session, status}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import models.common.business.BusinessSubscriptionDetailsModel
 import models.common.subscription.{BusinessIncomeModel, CreateIncomeSourcesModel, PropertyIncomeModel, SubscriptionRequest}
 import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel, subscription}
 import models.{AgentSummary, IndividualSummary, Next, SummaryModel}
-import play.api.Logger
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 @Singleton
 class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: MultipleIncomeSourcesSubscriptionConnector,
                                     subscriptionConnector: SubscriptionConnector
-                                   ) extends FeatureSwitching {
+                                   ) extends FeatureSwitching with Logging {
 
 
   private[services] def getAccountingPeriod(summaryData: SummaryModel): Option[AccountingPeriodModel] = {
@@ -100,24 +100,24 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
                         )(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
 
     val requestPost = buildRequestPost(nino, summaryData, arn)
-    Logger.debug(s"Submitting subscription with request: $requestPost")
+    logger.debug(s"Submitting subscription with request: $requestPost")
     subscriptionConnector.subscribe(requestPost)
   }
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
-    Logger.debug(s"Getting subscription for nino=$nino")
+    logger.debug(s"Getting subscription for nino=$nino")
     subscriptionConnector.getSubscription(nino)
   }
 
   def signUpIncomeSources(nino: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] = {
-    Logger.debug(s"SignUp IncomeSources request for nino:$nino")
+    logger.debug(s"SignUp IncomeSources request for nino:$nino")
     multipleIncomeSourcesSubscriptionConnector.signUp(nino)
   }
 
 
   def createIncomeSources(nino: String, mtdbsa: String, summaryModel: SummaryModel)
                          (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
-    Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
+    logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
     val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = summaryModel match {
       case summary: IndividualSummary =>
         summary.toBusinessSubscriptionDetailsModel(nino)
@@ -133,7 +133,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
                                       createIncomeSourcesModel: CreateIncomeSourcesModel
                                      )
                                      (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
-    Logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa from task list")
+    logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa from task list")
 
     multipleIncomeSourcesSubscriptionConnector.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)
   }

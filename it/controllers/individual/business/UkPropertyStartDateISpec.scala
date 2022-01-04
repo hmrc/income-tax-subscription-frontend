@@ -19,14 +19,13 @@ package controllers.individual.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import controllers.Assets.NO_CONTENT
 import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, checkYourAnswersURI, ukPropertyCYAURI}
 import helpers.IntegrationTestModels.{subscriptionData, testFullPropertyModel, testPropertyStartDate}
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
 import models.common.{IncomeSourceModel, PropertyModel}
-import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.http.Status.{BAD_REQUEST, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property

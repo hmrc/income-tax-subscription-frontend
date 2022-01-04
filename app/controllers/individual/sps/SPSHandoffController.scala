@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class SPSHandoffController @Inject()(
 
         implicit user =>
           if (isEnabled(SPSEnabled)) {
-            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback().url,
+            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback.url,
               returnLinkText = "I have verified",
               regime = "itsa"
             )(request)

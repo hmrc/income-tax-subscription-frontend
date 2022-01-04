@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                            val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
 
-  val backUrl: String = controllers.agent.routes.CheckYourAnswersController.show().url
+  val backUrl: String = controllers.agent.routes.CheckYourAnswersController.show.url
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -71,7 +71,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
           accountingYear => {
             Future.successful(subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear))) map { _ =>
               if (isEditMode) {
-                Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+                Redirect(controllers.agent.routes.CheckYourAnswersController.show)
               } else {
                 Redirect(controllers.agent.routes.IncomeSourceController.show())
               }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package utilities
 import java.time.LocalDate
 
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class CurrentDateProviderSpec extends UnitSpec with GuiceOneAppPerSuite{
+class CurrentDateProviderSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite{
   "getCurrentDate" should {
     "return the current date" in {
       val provider = app.injector.instanceOf[CurrentDateProvider]

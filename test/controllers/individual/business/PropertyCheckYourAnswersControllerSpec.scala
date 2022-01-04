@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package controllers.individual.business
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.{OK, SEE_OTHER}
+import play.api.http.Status.{OK, SEE_OTHER}
 import controllers.ControllerBaseSpec
 import models.{Cash, DateModel}
 import models.common.PropertyModel

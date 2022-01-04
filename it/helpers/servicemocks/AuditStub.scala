@@ -1,8 +1,6 @@
 
 package helpers.servicemocks
 
-import play.api.libs.json.{JsValue, Json}
-
 object AuditStub extends WireMockMethods {
 
   def stubAuditing(): Unit = {

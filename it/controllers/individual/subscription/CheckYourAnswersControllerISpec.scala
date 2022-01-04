@@ -41,7 +41,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
     super.beforeEach()
   }
 
-  s"GET ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" when {
+  s"GET ${controllers.individual.subscription.routes.CheckYourAnswersController.show.url}" when {
     "the release four feature switch is enabled" should {
       "show the check your answers page" in {
         Given("I set the required feature switches")

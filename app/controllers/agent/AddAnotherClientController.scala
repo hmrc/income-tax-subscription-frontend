@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,13 +41,13 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
   def addAnother(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
-        Redirect(eligibility.routes.OtherSourcesOfIncomeController.show())
+        Redirect(eligibility.routes.OtherSourcesOfIncomeController.show)
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
           .removingFromSession(ITSASessionKeys.clientData: _*)
           .removingFromSession(ITSASessionKeys.REFERENCE)
           .clearUserName
       } else {
-        Redirect(eligibility.routes.Covid19ClaimCheckController.show())
+        Redirect(eligibility.routes.Covid19ClaimCheckController.show)
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
           .removingFromSession(ITSASessionKeys.clientData: _*)
           .removingFromSession(ITSASessionKeys.REFERENCE)

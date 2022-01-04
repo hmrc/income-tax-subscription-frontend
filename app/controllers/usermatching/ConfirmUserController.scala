@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ class ConfirmUserController @Inject()(val auditingService: AuditingService,
     lockOutService.getLockoutStatus(user.userId) flatMap {
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) =>
-        Future.successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show().url))
+        Future.successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show.url))
       case Left(_) => throw new InternalServerException("[ConfirmUserController][withLockOutCheck] received failure response from lockout service")
     }
   }
@@ -94,7 +94,7 @@ class ConfirmUserController @Inject()(val auditingService: AuditingService,
           .addingToSession(FailedUserMatching -> newCount.toString))
       case Right(LockoutUpdate(_: LockedOut, None)) =>
         auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsIndividual, None, userDetails, 0, lockedOut = true))
-        successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show())
+        successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show)
           .removingFromSession(FailedUserMatching))
       case _ => failed(new InternalServerException("ConfirmUserController.lockUser"))
     }
@@ -119,7 +119,7 @@ class ConfirmUserController @Inject()(val auditingService: AuditingService,
     matchedDetails match {
       case UserMatchSuccessResponseModel(_, _, _, nino, Some(utr)) =>
         Future.successful(
-          Redirect(routes.HomeController.index())
+          Redirect(routes.HomeController.index)
             .addingToSession(
               NINO -> nino,
               UTR -> utr
@@ -127,7 +127,7 @@ class ConfirmUserController @Inject()(val auditingService: AuditingService,
         )
       case UserMatchSuccessResponseModel(_, _, _, nino, _) =>
         Future.successful(
-          Redirect(routes.HomeController.index())
+          Redirect(routes.HomeController.index)
             .addingToSession(NINO -> matchedDetails.nino)
         )
     }

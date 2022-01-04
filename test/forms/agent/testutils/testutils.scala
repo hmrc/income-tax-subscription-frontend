@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.data.validation.Invalid
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
+import play.api.data.FormBinding.Implicits.formBinding
 
 package object testutils {
 
@@ -52,7 +53,7 @@ package object testutils {
     }
 
     def isValidFor(request: FakeRequest[_]): Unit = {
-      val validated = testForm.bindFromRequest()(request)
+      val validated = testForm.bindFromRequest()(request, implicitly)
       validated.hasErrors shouldBe false
       validated.hasGlobalErrors shouldBe false
     }

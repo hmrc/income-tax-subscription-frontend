@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 package models.individual.subscription
 
 import models.common.subscription.EnrolmentKey
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utilities.individual.Constants.GovernmentGateway._
 import utilities.individual.Constants._
 import utilities.individual.TestConstants._
 
-class EnrolmentKeySpec extends UnitSpec {
+class EnrolmentKeySpec extends WordSpecLike with Matchers with OptionValues {
   "asString" should {
     "format the enrolment key correctly" in {
       val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)

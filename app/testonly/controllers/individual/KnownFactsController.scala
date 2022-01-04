@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class KnownFactsController @Inject()(val auditingService: AuditingService,
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
     addKnownFacts(
       knownFactsForm = form,
-      postAction = testonly.controllers.individual.routes.KnownFactsController.submit()
+      postAction = testonly.controllers.individual.routes.KnownFactsController.submit
     )
 
   def show: Action[AnyContent] = Action { implicit request =>

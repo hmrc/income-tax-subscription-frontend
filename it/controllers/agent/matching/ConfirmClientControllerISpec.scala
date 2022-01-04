@@ -241,7 +241,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           Then("The result should have a status of SEE_OTHER and redirect to cannot take part")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
+            redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
           )
 
           Then("The client matching request should have been audited")

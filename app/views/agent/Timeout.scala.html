@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,5 +25,5 @@
 
 @agentMainTemplate(title = messages("agent.timeout.title"), showSignOutLink = false) {
  <h1 class="govuk-heading-l">@messages("agent.timeout.title")</h1>
- <p class="govuk-body">@Html(messages("agent.timeout.returnToHome", controllers.agent.routes.HomeController.index().url))</p>
+ <p class="govuk-body">@Html(messages("agent.timeout.returnToHome", controllers.agent.routes.HomeController.index.url))</p>
 }

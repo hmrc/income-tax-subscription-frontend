@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,7 +168,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
           mockFetchProperty(testFullPropertyModel)
           val goodRequest = callShow(isEditMode = true)
           await(goodRequest)
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
 
           verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
@@ -232,7 +232,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "save and retrieve is disabled" should {
         "redirect back to final check your answers page" in new Test {
           controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
-            controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+            controllers.individual.subscription.routes.CheckYourAnswersController.show.url
         }
       }
     }

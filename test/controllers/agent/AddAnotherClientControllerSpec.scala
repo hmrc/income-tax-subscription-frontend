@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       val result: Result = await(call)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(eligibility.routes.Covid19ClaimCheckController.show().url)
+      redirectLocation(result) mustBe Some(eligibility.routes.Covid19ClaimCheckController.show.url)
 
       result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
       result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
@@ -84,7 +84,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       val result: Result = await(call)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(eligibility.routes.OtherSourcesOfIncomeController.show().url)
+      redirectLocation(result) mustBe Some(eligibility.routes.OtherSourcesOfIncomeController.show.url)
 
       result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
       result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None

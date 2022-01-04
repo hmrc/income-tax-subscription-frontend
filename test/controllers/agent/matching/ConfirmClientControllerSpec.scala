@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,7 +151,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       }
 
       "AgentQualificationService returned NoClientMatched and the agent is not locked out" should {
-        s"redirect user to ${controllers.agent.matching.routes.ClientDetailsErrorController.show().url}" in withController { controller =>
+        s"redirect user to ${controllers.agent.matching.routes.ClientDetailsErrorController.show.url}" in withController { controller =>
           mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
           setupMockNotLockedOut(arn)
           setupIncrementNotLockedOut(arn, 0)
@@ -159,33 +159,33 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           val result = await(callSubmit(controller))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsErrorController.show().url)
+          redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsErrorController.show.url)
           verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 1, lockedOut = false))
         }
       }
 
       "AgentQualificationService returned ClientAlreadySubscribed" should {
-        s"redirect user to ${controllers.agent.routes.ClientAlreadySubscribedController.show().url}" in withController { controller =>
+        s"redirect user to ${controllers.agent.routes.ClientAlreadySubscribedController.show.url}" in withController { controller =>
           mockOrchestrateAgentQualificationFailure(arn, ClientAlreadySubscribed)
           setupMockNotLockedOut(arn)
 
           val result = await(callSubmit(controller))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.ClientAlreadySubscribedController.show().url)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.ClientAlreadySubscribedController.show.url)
           verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
         }
       }
 
       "AgentQualificationService returned UnQualifiedAgent" should {
-        s"redirect user to ${controllers.agent.routes.NoClientRelationshipController.show().url}" in withController { controller =>
+        s"redirect user to ${controllers.agent.routes.NoClientRelationshipController.show.url}" in withController { controller =>
           mockOrchestrateAgentQualificationSuccess(arn, nino, utr, preExistingRelationship = false)
           setupMockNotLockedOut(arn)
 
           val result = await(callSubmit(controller))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.NoClientRelationshipController.show().url)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.NoClientRelationshipController.show.url)
           verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
         }
       }
@@ -193,7 +193,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       "AgentQualificationService returned ApprovedAgent" when {
         "the user has a utr" when {
           "the client is eligible" should {
-            s"redirect user to ${controllers.agent.routes.HomeController.index().url}" in withController { controller =>
+            s"redirect user to ${controllers.agent.routes.HomeController.index.url}" in withController { controller =>
               mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
               mockGetEligibilityStatus(utr)(Future.successful(Eligible))
               setupMockNotLockedOut(arn)
@@ -201,7 +201,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
               val result = await(callSubmit(controller))
 
               status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index().url)
+              redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
 
               val session = result.session(request)
 
@@ -213,7 +213,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             }
           }
           "the client is ineligible" should {
-            s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show().url}" in withController { controller =>
+            s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show.url}" in withController { controller =>
               mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
               mockGetEligibilityStatus(utr)(Future.successful(Ineligible))
               setupMockNotLockedOut(arn)
@@ -221,7 +221,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
               val result = await(callSubmit(controller))
 
               status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotTakePartController.show().url)
+              redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
 
               result.verifyStoredUserDetailsIs(None)(request)
 
@@ -231,14 +231,14 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         }
 
         "the user does not have a utr" should {
-          s"redirect user to ${controllers.agent.matching.routes.NoSAController.show().url}" in withController { controller =>
+          s"redirect user to ${controllers.agent.matching.routes.NoSAController.show.url}" in withController { controller =>
             mockOrchestrateAgentQualificationSuccess(arn, nino, None)
             setupMockNotLockedOut(arn)
 
             val result = await(callSubmit(controller))
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index().url)
+            redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
 
             val session = result.session(userMatchingRequest.withSession(ITSASessionKeys.UTR -> "this will be deleted"))
             session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
@@ -253,24 +253,24 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   }
 
   "An agent who is locked out" should {
-    s"be redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show().url} when calling show" in withController { controller =>
+    s"be redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url} when calling show" in withController { controller =>
       setupMockLockedOut(arn)
 
       val result = controller.show()(request)
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show().url
+      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show.url
     }
 
-    s"be redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show().url} when calling submit" in withController { controller =>
+    s"be redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url} when calling submit" in withController { controller =>
       setupMockLockedOut(arn)
 
       val result = controller.submit()(request)
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show().url
+      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show.url
     }
   }
 
@@ -288,7 +288,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         result.session(request).get(ITSASessionKeys.FailedClientMatching) mustBe Some(1.toString)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsErrorController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsErrorController.show.url)
 
         verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 1, lockedOut = false))
       }
@@ -306,7 +306,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         result.session(request).get(ITSASessionKeys.FailedClientMatching) mustBe None
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must not be Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show().url)
+        redirectLocation(result) must not be Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url)
 
         verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 1, lockedOut = false))
       }

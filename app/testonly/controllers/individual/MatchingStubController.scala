@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ class MatchingStubController @Inject()(mcc: MessagesControllerComponents,
           (implicit request: Request[_]): Html = {
      stubUser(
       clientToStubForm,
-      postAction = routes.MatchingStubController.submit())
+      postAction = routes.MatchingStubController.submit)
   }
 
   def show: Action[AnyContent] = Action { implicit request =>
@@ -58,7 +58,7 @@ class MatchingStubController @Inject()(mcc: MessagesControllerComponents,
       formWithErrors => BadRequest(view(formWithErrors)),
       userDetails =>
         matchingStubConnector.newUser(userDetails) map {
-          case true => Ok(showStubbedDetails(userDetails, routes.MatchingStubController.show() ))
+          case true => Ok(showStubbedDetails(userDetails, routes.MatchingStubController.show ))
           case _ => throw new InternalServerException("calls to matching-stub failed")
         }
     )

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingServic
     }
 
     "Should have the redirect location to the index route" in {
-      redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index().url)
+      redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
     }
   }
 
@@ -70,13 +70,13 @@ class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingServic
         await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
       }
 
-      s"if the user does not have arn redirect to ${controllers.agent.routes.NotEnrolledAgentServicesController.show().url}" in {
+      s"if the user does not have arn redirect to ${controllers.agent.routes.NotEnrolledAgentServicesController.show.url}" in {
         reset(mockAuthService)
         mockNotAgent()
 
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.agent.routes.NotEnrolledAgentServicesController.show().url
+        redirectLocation(result).get mustBe controllers.agent.routes.NotEnrolledAgentServicesController.show.url
 
         await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
       }
@@ -116,10 +116,10 @@ class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingServic
 
         def result: Future[Result] = testHomeController().index()(request)
 
-        s"redirect user to ${controllers.agent.matching.routes.NoSAController.show().url}" in {
+        s"redirect user to ${controllers.agent.matching.routes.NoSAController.show.url}" in {
           status(result) must be(Status.SEE_OTHER)
 
-          redirectLocation(result).get mustBe controllers.agent.matching.routes.NoSAController.show().url
+          redirectLocation(result).get mustBe controllers.agent.matching.routes.NoSAController.show.url
 
           await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
         }
@@ -132,10 +132,10 @@ class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingServic
 
         def result: Future[Result] = testHomeController().index()(request)
 
-        s"redirect user to ${controllers.agent.routes.ConfirmationAgentController.show().url}" in {
+        s"redirect user to ${controllers.agent.routes.ConfirmationAgentController.show.url}" in {
           status(result) must be(Status.SEE_OTHER)
 
-          redirectLocation(result).get mustBe controllers.agent.routes.ConfirmationAgentController.show().url
+          redirectLocation(result).get mustBe controllers.agent.routes.ConfirmationAgentController.show.url
         }
       }
     }

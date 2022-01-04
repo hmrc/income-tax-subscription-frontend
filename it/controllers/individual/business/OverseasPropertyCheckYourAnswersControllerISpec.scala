@@ -18,16 +18,15 @@ package controllers.individual.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import controllers.Assets.INTERNAL_SERVER_ERROR
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.taskListURI
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
 import models.Cash
-import models.common.{OverseasPropertyModel, PropertyModel}
-import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK, SEE_OTHER}
+import models.common.OverseasPropertyModel
+import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.SubscriptionDataKeys.{OverseasProperty, Property}
+import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/business/overseas-property-check-your-answers" should {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
       )
   }
 
-  def backUrl: String = controllers.individual.business.routes.TaskListController.show().url
+  def backUrl: String = controllers.individual.business.routes.TaskListController.show.url
 
   private def view(form: Form[BusinessIncomeSourceModel])(implicit request: Request[_]): Html =
     whatIncomeSourceToSignUp(

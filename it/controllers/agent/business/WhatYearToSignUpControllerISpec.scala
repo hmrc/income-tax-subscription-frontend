@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import java.time.LocalDate
-
 import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
@@ -26,7 +25,7 @@ import helpers.agent.IntegrationTestModels.subscriptionData
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.common.{AccountingYearModel, IncomeSourceModel}
-import models.{Current, Next}
+import models.{AccountingYear, Current, Next}
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
@@ -97,7 +96,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
           When("POST /client/business/what-year-to-sign-up is called")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
@@ -116,7 +115,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
@@ -159,7 +158,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
           subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent),
             incomeSource = Some(IncomeSourceModel(true, false, true))))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
@@ -185,7 +184,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
             incomeSource = Some(IncomeSourceModel(true, false, true))
           )
         )
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
     if (hasSignOutLink) {
       val signOutLink: Element = document.selectHead(".hmrc-sign-out-nav__link")
       signOutLink.text mustBe "Sign out"
-      signOutLink.attr("href") mustBe controllers.routes.SignOutController.signOut().url
+      signOutLink.attr("href") mustBe controllers.routes.SignOutController.signOut.url
     } else {
       document.selectOptionally(".hmrc-sign-out-nav__link") mustBe None
     }

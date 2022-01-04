@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package models.common
 import org.joda.time.{DateTime, DateTimeZone}
 import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import play.api.libs.json.{JsResult, Json}
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class TimestampModelSpec extends UnitSpec {
+class TimestampModelSpec extends WordSpecLike with Matchers with OptionValues {
   "TimestampModel" should {
     "deserialize the MongoDB response" in {
       val actual: JsResult[TimestampModel] = Json.fromJson[TimestampModel](Json.parse("""{"$date":0}"""))

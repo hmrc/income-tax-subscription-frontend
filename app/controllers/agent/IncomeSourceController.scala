@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.agent.routes.CheckYourAnswersController.show().url
+      controllers.agent.routes.CheckYourAnswersController.show.url
     } else {
       controllers.agent.routes.WhatYearToSignUpController.show().url
     }
@@ -109,7 +109,7 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
         case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
           Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
         case _ =>
-          Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+          Redirect(controllers.agent.routes.CheckYourAnswersController.show)
       }
     }
   }

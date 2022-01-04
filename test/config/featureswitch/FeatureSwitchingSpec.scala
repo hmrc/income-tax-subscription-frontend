@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package config.featureswitch
 
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class FeatureSwitchingSpec extends UnitSpec with FeatureSwitching {
+class FeatureSwitchingSpec extends WordSpecLike with Matchers with OptionValues with FeatureSwitching {
 
   FeatureSwitch.switches foreach { switch =>
     s"isEnabled(${switch.name})" should {

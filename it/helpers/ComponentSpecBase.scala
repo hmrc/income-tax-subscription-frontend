@@ -26,7 +26,7 @@ import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.common._
-import models.common.business.{AccountingMethodModel, BusinessNameModel}
+import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
 import models.{AccountingMethod, AccountingYear, DateModel}
 import org.jsoup.nodes.Element
@@ -38,19 +38,18 @@ import play.api.data.Form
 import play.api.http.HeaderNames
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.crypto.DefaultCookieSigner
+import play.api.libs.crypto.CookieSigner
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
-import uk.gov.hmrc.play.test.UnitSpec
 import utilities.ITSASessionKeys._
 
 import java.time.LocalDate
 import java.util.UUID
 
-trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
-  with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
+trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues with GivenWhenThen with TestSuite
+  with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience
   with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with CustomMatchers with WireMockMethods with FeatureSwitching with SessionCookieBaker {
 
@@ -64,7 +63,8 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
     }
   }
 
-  override lazy val cookieSigner: DefaultCookieSigner = app.injector.instanceOf[DefaultCookieSigner]
+  val cookieSignerCache: Application => CookieSigner = Application.instanceCache[CookieSigner]
+  override lazy val cookieSigner: CookieSigner = cookieSignerCache(app)
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -130,27 +130,26 @@ trait ComponentSpecBase extends UnitSpec with GivenWhenThen with TestSuite
   }
 
   def getWithHeaders(uri: String, headers: (String, String)*): WSResponse = {
-    await(
-      buildClient(uri)
-        .withHttpHeaders(headers: _*)
-        .get()
-    )
+    buildClient(uri)
+      .withHttpHeaders(headers: _*)
+      .get()
+      .futureValue
   }
 
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString
 
-    def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse = await(
+    def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse =
       buildClient(uri)
         .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalCookies))
         .get()
-    )
+        .futureValue
 
-    def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse = await(
+    def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse =
       buildClient(uri)
         .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
-    )
+        .futureValue
 
     def startPage(): WSResponse = get("/")
 

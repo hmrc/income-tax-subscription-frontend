@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ class UpdateEnrolmentsController @Inject()(mcc: MessagesControllerComponents,
       case Some(Credentials(credId, _)) =>
         Future.successful(Ok(updateEnrolments(
           UpdateEnrolmentsForm.updateEnrolmentsForm.fill(credId),
-          testonly.controllers.routes.UpdateEnrolmentsController.submit()
+          testonly.controllers.routes.UpdateEnrolmentsController.submit
         )))
       case _ => throw new InternalServerException("[UpdateEnrolmentsController][show] could not retrieve credentials from auth")
     }
@@ -56,7 +56,7 @@ class UpdateEnrolmentsController @Inject()(mcc: MessagesControllerComponents,
       formWithErrors =>
         Future.successful(BadRequest(updateEnrolments(
           formWithErrors,
-          testonly.controllers.routes.UpdateEnrolmentsController.submit()
+          testonly.controllers.routes.UpdateEnrolmentsController.submit
         ))),
       credentialId => for {
         _ <- enrolmentStoreStubConnector.updateEnrolments(credentialId)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
             accountingMethod =>
               subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethod) map { _ =>
                 if (isEditMode || !incomeSource.foreignProperty) {
-                  Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+                  Redirect(controllers.agent.routes.CheckYourAnswersController.show)
                 } else {
                   Redirect(routes.OverseasPropertyStartDateController.show())
                 }
@@ -87,7 +87,7 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.agent.routes.CheckYourAnswersController.show().url
+      controllers.agent.routes.CheckYourAnswersController.show.url
     } else {
       controllers.agent.business.routes.PropertyStartDateController.show().url
     }

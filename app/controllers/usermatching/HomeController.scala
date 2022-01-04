@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching with ReferenceRetrieval {
 
   def home: Action[AnyContent] = Action { implicit request =>
-    val redirect = routes.HomeController.index()
+    val redirect = routes.HomeController.index
     Redirect(redirect)
   }
 
@@ -74,15 +74,15 @@ class HomeController @Inject()(val auditingService: AuditingService,
                 }
             }
           case OptionalIdentifiers(Some(_), None) =>
-            Redirect(routes.NoSAController.show())
+            Redirect(routes.NoSAController.show)
               .removingFromSession(JourneyStateKey)
           case _ =>
             Future.successful(goToUserMatching withJourneyState UserMatching)
         }
     }
 
-  lazy val goToPreferences: Result = Redirect(controllers.individual.routes.PreferencesController.checkPreferences())
-  lazy val goToSPSHandoff: Result = Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS())
+  lazy val goToPreferences: Result = Redirect(controllers.individual.routes.PreferencesController.checkPreferences)
+  lazy val goToSPSHandoff: Result = Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
 
   lazy val goToUserMatching: Result = Redirect(controllers.usermatching.routes.UserDetailsController.show())
 
@@ -107,7 +107,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
 
   private def claimSubscription(reference: String, mtditId: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsService.saveSubscriptionId(reference, mtditId) map { _ =>
-      Redirect(controllers.individual.subscription.routes.ClaimSubscriptionController.claim())
+      Redirect(controllers.individual.subscription.routes.ClaimSubscriptionController.claim)
         .withJourneyState(SignUp)
         .addingToSession(NINO -> nino)
         .addingToSession(UTR -> utr)

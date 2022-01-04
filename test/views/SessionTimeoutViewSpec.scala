@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ class SessionTimeoutViewSpec extends ViewSpecTrait {
 
     val para = testPage.selectHead("return content body", "#main-content").selectHead("return home paragraph", "p")
 
-    para.mustHaveALink("sign in", controllers.usermatching.routes.HomeController.index().url)
+    para.mustHaveALink("sign in", controllers.usermatching.routes.HomeController.index.url)
   }
 
 }

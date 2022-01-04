@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
             mockFetchProperty(None)
             val goodRequest = callShow(isEditMode = false)
             await(goodRequest)
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+            redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
 
             verifyPropertySave(Some(PropertyModel(accountingMethod = testAccountingMethod)))
@@ -169,7 +169,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
           )
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
           await(goodRequest)
           verifyPropertySave(testFullPropertyModel.copy(accountingMethod = Some(Accruals), confirmed = false))
@@ -228,7 +228,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
           "redirect back to final check your answers page" in withController { controller =>
             setupMockSubscriptionDetailsSaveFunctions()
             await(controller.backUrl(isEditMode = true)) mustBe
-              controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+              controllers.individual.subscription.routes.CheckYourAnswersController.show.url
           }
         }
       }

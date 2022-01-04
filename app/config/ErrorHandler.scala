@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 
 package config
 
-import javax.inject.Inject
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment, Logging}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, InsufficientEnrolments}
 import uk.gov.hmrc.http.NotFoundException
@@ -28,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 import views.html.templates.ErrorTemplate
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class ErrorHandler @Inject()(val errorTemplate: ErrorTemplate,
@@ -35,7 +35,7 @@ class ErrorHandler @Inject()(val errorTemplate: ErrorTemplate,
                              val messagesApi: MessagesApi,
                              val config: Configuration,
                              val env: Environment
-                            ) extends FrontendErrorHandler with AuthRedirects {
+                            ) extends FrontendErrorHandler with AuthRedirects with Logging {
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     Future.successful(resolveError(request, exception))
@@ -47,18 +47,18 @@ class ErrorHandler @Inject()(val errorTemplate: ErrorTemplate,
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = {
     ex match {
       case _: InsufficientEnrolments =>
-        Logger.debug("[AuthenticationPredicate][async] No HMRC-MTD-IT Enrolment and/or No NINO.")
+        logger.debug("[AuthenticationPredicate][async] No HMRC-MTD-IT Enrolment and/or No NINO.")
         super.resolveError(rh, ex)
       case _: BearerTokenExpired =>
-        Logger.debug("[AuthenticationPredicate][async] Bearer Token Timed Out.")
-        Redirect(controllers.routes.SessionTimeoutController.show())
+        logger.debug("[AuthenticationPredicate][async] Bearer Token Timed Out.")
+        Redirect(controllers.routes.SessionTimeoutController.show)
       case _: AuthorisationException =>
-        Logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
+        logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
         toGGLogin(rh.path)
       case _: NotFoundException =>
         NotFound(notFoundTemplate(Request(rh, "")))
       case _ =>
-        Logger.error(s"[ErrorHandler][resolveError] Internal Server Error, (${rh.method})(${rh.uri})", ex)
+        logger.error(s"[ErrorHandler][resolveError] Internal Server Error, (${rh.method})(${rh.uri})", ex)
         super.resolveError(rh, ex)
     }
   }

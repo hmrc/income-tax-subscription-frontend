@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,11 +82,13 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
       }
 
       "return an error if authenticator returns an UNAUTHORIZED response that contains an unexpected error" in {
-        val json = Json.obj()
+        val json = Json.obj(
+          "errors" -> "Internal error: unexpected result from matching"
+        )
 
         val httpResponse = HttpResponse(
           responseStatus = UNAUTHORIZED,
-          responseJson = Some(Json.toJson(UserMatchUnexpectedError))
+          responseJson = Some(json)
         )
 
         MatchUserHttpReads.read(testMethod, testUrl, httpResponse).left.value mustBe UserMatchUnexpectedError

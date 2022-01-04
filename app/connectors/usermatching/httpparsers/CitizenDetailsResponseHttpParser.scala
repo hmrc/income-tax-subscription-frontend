@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,24 @@
 package connectors.usermatching.httpparsers
 
 import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object CitizenDetailsResponseHttpParser {
+object CitizenDetailsResponseHttpParser extends Logging {
   type GetCitizenDetailsResponse = Either[CitizenDetailsFailureResponse, Option[CitizenDetailsSuccess]]
 
   implicit object GetCitizenDetailsHttpReads extends HttpReads[GetCitizenDetailsResponse] {
     override def read(method: String, url: String, response: HttpResponse): GetCitizenDetailsResponse = {
       response.status match {
         case OK =>
-          Logger.debug(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] successful, returned $OK")
+          logger.debug(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] successful, returned $OK")
           Right(Some(response.json.as[CitizenDetailsSuccess]))
         case NOT_FOUND =>
-          Logger.debug(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] successful, returned $NOT_FOUND")
+          logger.debug(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] successful, returned $NOT_FOUND")
           Right(None)
         case status =>
-          Logger.warn(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] failure, status: $status")
+          logger.warn(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] failure, status: $status")
           Left(CitizenDetailsFailureResponse(status))
       }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 class LanguageSwitchController @Inject()(mcc: MessagesControllerComponents, appConfig: AppConfig, languageUtils: LanguageUtils)
   extends LanguageController(languageUtils, mcc){
 
-  override def fallbackURL: String = controllers.agent.routes.HomeController.home().url
+  override def fallbackURL: String = controllers.agent.routes.HomeController.home.url
 
   override protected def languageMap: Map[String, Lang] = appConfig.languageMap
 

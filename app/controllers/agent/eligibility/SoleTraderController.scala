@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,11 +47,11 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
 
   private def startDateLimit: LocalDate = LocalDate.now.minusYears(2)
 
-  def backUrl: String = routes.OtherSourcesOfIncomeController.show().url
+  def backUrl: String = routes.OtherSourcesOfIncomeController.show.url
   def view(form: Form[YesNo], startDateLimit: LocalDate)(implicit request: Request[_]): Html = {
     areYouASoleTrader(
       soleTraderForm = form,
-      postAction = routes.SoleTraderController.submit(),
+      postAction = routes.SoleTraderController.submit,
       startDateLimit = startDateLimit.toLongDate,
       backUrl = backUrl
     )
@@ -75,11 +75,11 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "soleTraderBusinessStartDate", arn))
-            Redirect(routes.CannotTakePartController.show())
+            Redirect(routes.CannotTakePartController.show)
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "soleTraderBusinessStartDate", arn))
-            Redirect(routes.PropertyTradingStartAfterController.show())
+            Redirect(routes.PropertyTradingStartAfterController.show)
         }
       )
   }

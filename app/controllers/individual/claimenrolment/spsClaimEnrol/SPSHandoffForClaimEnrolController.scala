@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class SPSHandoffForClaimEnrolController @Inject()(
       implicit request =>
         implicit user =>
           if (isEnabled(SPSEnabled) && isEnabled(ClaimEnrolment)) {
-            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback(),
+            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback,
               returnLinkText = "I have verified",
               regime = "itsa"
             )(request)

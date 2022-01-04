@@ -143,7 +143,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result should have a status of SEE_OTHER")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(routes.ConfirmClientController.show().url)
+          redirectURI(routes.ConfirmClientController.show.url)
         )
 
         res.verifyStoredUserDetailsIs(Some(clientDetails))
@@ -163,7 +163,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result should have a status of SEE_OTHER")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(routes.ConfirmClientController.show().url)
+          redirectURI(routes.ConfirmClientController.show.url)
         )
 
         res.verifyStoredUserDetailsIs(Some(clientDetails))
@@ -185,7 +185,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result should have a status of SEE_OTHER")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(routes.ConfirmClientController.show().url)
+          redirectURI(routes.ConfirmClientController.show.url)
         )
 
         res.verifyStoredUserDetailsIs(Some(submittedUserDetails))

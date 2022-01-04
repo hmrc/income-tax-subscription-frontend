@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,14 +43,14 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
         subscriptionDetailsService.fetchAll(reference) map { cacheMap =>
           Ok(signUpComplete(
             selectedTaxYear = cacheMap.getSelectedTaxYear.map(_.accountingYear),
-            postAction = routes.ConfirmationController.submit()
+            postAction = routes.ConfirmationController.submit
           ))
         }
       }
   }
 
   def submit: Action[AnyContent] = Authenticated {
-    _ => _ => Redirect(controllers.routes.SignOutController.signOut())
+    _ => _ => Redirect(controllers.routes.SignOutController.signOut)
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,29 +42,29 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
     if (isEnabled(RemoveCovidPages)) {
       appConfig.incomeTaxEligibilityFrontendUrl + "/client/terms-of-participation"
     } else {
-      routes.Covid19ClaimCheckController.show().url
+      routes.Covid19ClaimCheckController.show.url
     }
 
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(otherSourcesOfIncome(otherSourcesOfIncomeForm, routes.OtherSourcesOfIncomeController.submit(), backUrl))
+      Ok(otherSourcesOfIncome(otherSourcesOfIncomeForm, routes.OtherSourcesOfIncomeController.submit, backUrl))
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
       otherSourcesOfIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit(), backUrl)),
+        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, backUrl)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
               "otherIncomeSource", arn))
-            Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show())
+            Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "otherIncomeSource", arn))
-            Redirect(controllers.agent.eligibility.routes.SoleTraderController.show())
+            Redirect(controllers.agent.eligibility.routes.SoleTraderController.show)
         }
       )
   }

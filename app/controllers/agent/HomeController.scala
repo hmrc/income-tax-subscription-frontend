@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                mcc: MessagesControllerComponents) extends StatelessController {
 
   def home: Action[AnyContent] = Action.async { implicit request =>
-    Redirect(controllers.agent.routes.HomeController.index())
+    Redirect(controllers.agent.routes.HomeController.index)
   }
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -46,13 +46,13 @@ class HomeController @Inject()(val auditingService: AuditingService,
             case (Some(_), Some(_)) =>
               Future.successful(Redirect(controllers.agent.routes.WhatYearToSignUpController.show()).withJourneyState(AgentSignUp))
             case (Some(_), _) =>
-              Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
+              Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show).removingFromSession(ITSASessionKeys.JourneyStateKey))
             case _ =>
               Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
                 .addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching))
           }
         case None =>
-          Future.successful(Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show()))
+          Future.successful(Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show))
       }
   }
 

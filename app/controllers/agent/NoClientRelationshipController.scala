@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,15 +38,15 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Ok(noClientRelationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit())))
+      Future.successful(Ok(noClientRelationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit)))
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
-        Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show()))
+        Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show))
       } else {
-        Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show()))
+        Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show))
       }
   }
 }

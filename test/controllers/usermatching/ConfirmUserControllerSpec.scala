@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,7 +104,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
       val result = callSubmit()
 
-      redirectLocation(result) must contain(controllers.usermatching.routes.UserDetailsLockoutController.show().url)
+      redirectLocation(result) must contain(controllers.usermatching.routes.UserDetailsLockoutController.show.url)
     }
   }
 
@@ -135,7 +135,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
         val result = await(callSubmit(r))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.HomeController.index().url)
+        redirectLocation(result) mustBe Some(routes.HomeController.index.url)
 
         val session = result.session(request)
         session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
@@ -157,7 +157,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         val result = await(callSubmit(r))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.HomeController.index().url)
+        redirectLocation(result) mustBe Some(routes.HomeController.index.url)
 
         val session = result.session(request)
         session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
@@ -205,7 +205,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           val result = await(TestConfirmUserController.submit()(r))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.usermatching.routes.UserDetailsLockoutController.show().url)
+          redirectLocation(result) mustBe Some(controllers.usermatching.routes.UserDetailsLockoutController.show.url)
 
           val session = result.session
           session.get(ITSASessionKeys.FailedUserMatching) mustBe None

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,18 @@
 package connectors.individual.subscription.httpparsers
 
 import models.common.subscription.{KnownFactsFailure, KnownFactsSuccess}
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object UpsertEnrolmentResponseHttpParser {
+object UpsertEnrolmentResponseHttpParser extends Logging {
   type UpsertEnrolmentResponse = Either[KnownFactsFailure, KnownFactsSuccess.type ]
 
   implicit object UpsertEnrolmentResponseHttpReads extends HttpReads[UpsertEnrolmentResponse] {
     override def read(method: String, url: String, response: HttpResponse): UpsertEnrolmentResponse =
       response.status match {
         case NO_CONTENT => Right(KnownFactsSuccess)
-        case _ => Logger.error(s"[UpsertEnrolmentResponseHttpReads] issue upserting enrolment status: ${response.status} body: ${response.body}")
+        case _ => logger.error(s"[UpsertEnrolmentResponseHttpReads] issue upserting enrolment status: ${response.status} body: ${response.body}")
           Left(KnownFactsFailure(response.body))
       }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package utilities
 
 import models.DateModel
 import models.common.AccountingPeriodModel
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
 
-class AccountingPeriodUtilSpec extends UnitSpec {
+class AccountingPeriodUtilSpec extends WordSpecLike with Matchers with OptionValues {
 
   "AccountingPeriodUtil.getTaxEndYear" should {
     "return 2018 if the tax year ends between 6th April 2017 and 5th April 2018" in {

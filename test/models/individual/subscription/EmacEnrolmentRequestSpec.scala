@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package models.individual.subscription
 
 import models.common.subscription.EmacEnrolmentRequest
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utilities.individual.Constants.GovernmentGateway._
 import utilities.individual.TestConstants._
 
-class EmacEnrolmentRequestSpec extends UnitSpec {
+class EmacEnrolmentRequestSpec extends WordSpecLike with Matchers with OptionValues {
   "format" should {
     "format the enrolment request correctly as JSON" in {
       val userId = "1234567890"

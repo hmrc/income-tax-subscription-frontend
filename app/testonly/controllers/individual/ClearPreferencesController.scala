@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
   private def showView(form: Form[ClearPreferencesModel])(implicit request: Request[_]): Html =
     clearPreferences(
       clearPreferencesForm = form,
-      postAction = testonly.controllers.individual.routes.ClearPreferencesController.submit()
+      postAction = testonly.controllers.individual.routes.ClearPreferencesController.submit
     )
 
   val show: Action[AnyContent] = Action.async { implicit request =>

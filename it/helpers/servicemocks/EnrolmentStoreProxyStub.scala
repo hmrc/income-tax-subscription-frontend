@@ -18,7 +18,7 @@ package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.principalGroupIdKey
-import controllers.Assets.OK
+import play.api.http.Status.OK
 import helpers.IntegrationTestConstants._
 import models.common.subscription.EnrolmentKey
 import play.api.libs.json.{JsValue, Json}

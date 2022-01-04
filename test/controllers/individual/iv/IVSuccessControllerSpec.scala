@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@
 package controllers.individual.iv
 
 import agent.audit.mocks.MockAuditingService
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, IdentityVerification}
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.SEE_OTHER
 import controllers.ControllerBaseSpec
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
 import org.mockito.ArgumentMatchers.{any, eq => matches}
 import org.mockito.Mockito.{never, verify}
+import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, session, status}
 import uk.gov.hmrc.http.NotFoundException
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants.testNino
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
 import scala.concurrent.Future
 
@@ -74,7 +74,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
             val result: Future[Result] = controller.success(requestWithIVSession)
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve().url)
+            redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve.url)
             session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
             verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
           }
@@ -89,7 +89,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
           val result: Future[Result] = controller.success(requestWithIVSession)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home().url)
+          redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home.url)
           session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
           verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
         }
@@ -102,7 +102,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
           val result: Future[Result] = controller.success(requestWithoutIVSession)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home().url)
+          redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home.url)
           session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
           verify(mockAuditingService, never()).audit(any())(any(), any())
         }

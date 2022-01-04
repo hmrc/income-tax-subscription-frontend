@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.IdentityVerification
 import config.featureswitch.FeatureSwitching
 import models.audits.IVHandoffAuditing.IVHandoffAuditModel
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc.{Result, Results}
 import services.AuditingService
 import uk.gov.hmrc.auth.core.AffinityGroup._
@@ -37,7 +37,7 @@ import utilities.ITSASessionKeys.JourneyStateKey
 
 import scala.concurrent.Future
 
-trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCarrierProvider {
+trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCarrierProvider with Logging {
 
   val appConfig: AppConfig
   val auditingService: AuditingService
@@ -46,7 +46,7 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
 
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val alreadyEnrolled: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show())
+  lazy val alreadyEnrolled: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show)
 
   val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
@@ -56,13 +56,13 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
     if (user.mtdItsaRef.nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.enrolledPredicate")))
 
-  lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index())
+  lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index)
 
-  lazy val claimEnrolmentRoute: Result = Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show())
+  lazy val claimEnrolmentRoute: Result = Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show)
 
   lazy val cannotUseServiceRoute: Result = Redirect(controllers.individual.incomesource.routes.CannotUseServiceController.show())
 
-  lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show)
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
@@ -70,7 +70,7 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
     }
     else Right(AuthPredicateSuccess)
 
-  lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show())
+  lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show)
 
   val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     user.affinityGroup match {
@@ -113,7 +113,7 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
       } else {
         user.affinityGroup match {
           case Some(Individual) =>
-            Logger.info("[AuthPredicates][ivPredicate] - Redirecting individual to IV")
+            logger.info("[AuthPredicates][ivPredicate] - Redirecting individual to IV")
             auditingService.audit(IVHandoffAuditModel(
               handoffReason = "individual",
               currentConfidence = user.confidenceLevel.level,
@@ -122,7 +122,7 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
             Left(Future.successful(Redirect(appConfig.identityVerificationURL)
               .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
           case Some(Organisation) =>
-            Logger.info("[AuthPredicates][ivPredicate] - Redirecting organisation to IV")
+            logger.info("[AuthPredicates][ivPredicate] - Redirecting organisation to IV")
             auditingService.audit(IVHandoffAuditModel(
               handoffReason = "organisation",
               currentConfidence = user.confidenceLevel.level,
@@ -169,17 +169,17 @@ object AuthPredicates extends Results {
     else if (user.utr.isDefined) Left(Future.successful(homeRoute))
     else Left(Future.successful(userMatching withJourneyState UserMatching))
 
-  lazy val alreadyEnrolledRoute: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show())
+  lazy val alreadyEnrolledRoute: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show)
 
   lazy val notEnrolledPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(alreadyEnrolledRoute))
 
-  lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index())
+  lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index)
 
-  lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show)
 
-  lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show())
+  lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show)
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {

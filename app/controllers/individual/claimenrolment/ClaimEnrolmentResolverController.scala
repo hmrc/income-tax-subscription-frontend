@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,13 +47,13 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
               ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid)
             )
             if (isEnabled(SPSEnabled)) {
-              Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS())
+              Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
             } else {
               Redirect(routes.ClaimEnrolmentConfirmationController.show())
             }
 
           case Left(NotSubscribed) => Redirect(routes.NotSubscribedController.show())
-          case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show())
+          case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)
           case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
         }
       }

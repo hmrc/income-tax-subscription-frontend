@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,9 +40,9 @@ class CovidCannotSignUpController @Inject()(val covidCannotSignUp: CovidCannotSi
   val show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       if (isEnabled(RemoveCovidPages)) {
-        Redirect(routes.OtherSourcesOfIncomeController.show())
+        Redirect(routes.OtherSourcesOfIncomeController.show)
       } else {
-        Ok(covidCannotSignUp(postAction = routes.Covid19ClaimCheckController.show(), backUrl))
+        Ok(covidCannotSignUp(postAction = routes.Covid19ClaimCheckController.show, backUrl))
       }
   }
 
@@ -50,7 +50,7 @@ class CovidCannotSignUpController @Inject()(val covidCannotSignUp: CovidCannotSi
     if (isEnabled(RemoveCovidPages)) {
       throw new InternalServerException("Remove Covid Pages Feature Switch - Enabled")
   } else {
-      routes.Covid19ClaimCheckController.show().url
+      routes.Covid19ClaimCheckController.show.url
     }
   }
 

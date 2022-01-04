@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,7 +140,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
@@ -164,7 +164,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "redirect to check your answer page" in {
         mockIncomeSource()
         TestWhatYearToSignUpController.backUrl mustBe
-          controllers.agent.routes.CheckYourAnswersController.show().url
+          controllers.agent.routes.CheckYourAnswersController.show.url
       }
     }
   }

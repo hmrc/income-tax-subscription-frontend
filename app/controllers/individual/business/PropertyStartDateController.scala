@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
             subscriptionDetailsService.savePropertyStartDate(reference, startDate) flatMap { _ =>
               val redirectUrl = (isEditMode, isSaveAndRetrieve) match {
                 case (true, true) => controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode)
-                case (true, false) => controllers.individual.subscription.routes.CheckYourAnswersController.show()
+                case (true, false) => controllers.individual.subscription.routes.CheckYourAnswersController.show
                 case (false, _) => controllers.individual.business.routes.PropertyAccountingMethodController.show()
               }
               Future.successful(Redirect(redirectUrl))
@@ -115,8 +115,8 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
   def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel])(implicit hc: HeaderCarrier): String =
     (isEditMode, isSaveAndRetrieve, maybeIncomeSourceModel) match {
       case (true, true, _) => controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
-      case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
-      case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show.url
+      case (true, false, _) => controllers.individual.subscription.routes.CheckYourAnswersController.show.url
       case (false, false, Some(incomeSourceModel)) if incomeSourceModel.selfEmployment =>
         appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
       case _ =>

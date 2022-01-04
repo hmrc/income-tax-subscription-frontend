@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
 
 package controllers
 
+import java.net.URLEncoder
 import config.AppConfig
-import play.api.Logger
+
+import play.api.Logging
 import play.api.http.{Status => HttpStatus}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -37,13 +39,13 @@ class FeedbackController @Inject()(val feedback: Feedback, val feedbackThankYou:
                                    appConfig: AppConfig,
                                    ec: ExecutionContext,
                                    mcc: MessagesControllerComponents,
-                                   headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter) extends FrontendController(mcc) {
+                                   headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter) extends FrontendController(mcc) with Logging {
 
   private val TICKET_ID = "ticketId"
 
   def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
 
-  def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
+  def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit.url
 
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
     s"${appConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
@@ -71,14 +73,14 @@ class FeedbackController @Inject()(val feedback: Feedback, val feedbackThankYou:
           rds = readPartialsForm, hc = partialHeaderCarrier, implicitly[ExecutionContext]).map {
           resp =>
             resp.status match {
-              case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).addingToSession(TICKET_ID -> resp.body)
+              case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou).addingToSession(TICKET_ID -> resp.body)
               case HttpStatus.BAD_REQUEST => BadRequest(feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
-              case status => Logger.error(s"Unexpected status code from feedback form: $status")
+              case status => logger.error(s"Unexpected status code from feedback form: $status")
                 throw new InternalServerException("feedback controller, submit call failed")
             }
         }
       }.getOrElse {
-        Logger.error("Trying to submit an empty feedback form")
+        logger.error("Trying to submit an empty feedback form")
         Future.failed(new InternalServerException("feedback controller, tried to submit empty feedback form"))
       }
   }

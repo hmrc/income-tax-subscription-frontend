@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ class RoutingController @Inject()(val auditingService: AuditingService,
     implicit user =>
       withAgentReference { reference =>
         if (editMode) {
-          Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show()))
+          Future.successful(Redirect(controllers.agent.routes.CheckYourAnswersController.show))
         } else {
           subscriptionDetailsService.fetchIncomeSource(reference) map {
             case Some(IncomeSourceModel(_, true, _)) =>
@@ -48,7 +48,7 @@ class RoutingController @Inject()(val auditingService: AuditingService,
             case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
               Redirect(routes.OverseasPropertyStartDateController.show())
             case _ =>
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+              Redirect(controllers.agent.routes.CheckYourAnswersController.show)
           }
         }
       }

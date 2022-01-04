@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
               if (isEnabled(SaveAndRetrieve)) {
                 Redirect(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show())
               } else if (isEditMode) {
-                Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+                Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show)
               } else {
                 Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
               }
@@ -87,11 +87,11 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       if (isEditMode) {
         Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
       } else {
-        Some(controllers.individual.business.routes.TaskListController.show().url)
+        Some(controllers.individual.business.routes.TaskListController.show.url)
       }
     } else {
       if (isEditMode) {
-        Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+        Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
       } else {
         None
       }

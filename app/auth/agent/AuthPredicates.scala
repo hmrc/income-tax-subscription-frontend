@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,13 +29,13 @@ import scala.concurrent.Future
 
 object AuthPredicates extends Results {
 
-  lazy val noArnRoute: Result = Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show())
+  lazy val noArnRoute: Result = Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show)
 
-  lazy val confirmationRoute: Result = Redirect(controllers.agent.routes.ConfirmationAgentController.show())
+  lazy val confirmationRoute: Result = Redirect(controllers.agent.routes.ConfirmationAgentController.show)
 
-  lazy val timeoutRoute = Redirect(controllers.agent.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute = Redirect(controllers.agent.routes.SessionTimeoutController.show)
 
-  lazy val homeRoute = Redirect(controllers.agent.routes.HomeController.index())
+  lazy val homeRoute = Redirect(controllers.agent.routes.HomeController.index)
 
   val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (request.session.get(ITSASessionKeys.MTDITID).isEmpty) Right(AuthPredicateSuccess)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -112,7 +112,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -149,7 +149,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         "redirect to the Check Your Answers page" in {
           mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
           TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
-            controllers.agent.routes.CheckYourAnswersController.show().url
+            controllers.agent.routes.CheckYourAnswersController.show.url
         }
       }
     }

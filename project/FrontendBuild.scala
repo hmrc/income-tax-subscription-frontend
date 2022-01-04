@@ -12,35 +12,30 @@ object FrontendBuild {
 
 private object AppDependencies {
 
-  private val bootstrapPlayVersion = "5.3.0"
-  private val govukTemplateVersion = "5.60.0-play-26"
-  private val playUiVersion = "8.19.0-play-26"
-  private val playPartialsVersion = "8.1.0-play-26"
-  private val hmrcTestVersion = "3.10.0-play-26"
-  private val scalaTestVersion = "3.0.9"
-  private val scalaTestPlusVersion = "3.1.3"
-  private val pegdownVersion = "1.6.0"
-  private val httpCachingClientVersion = "9.2.0-play-26"
-  private val wiremockVersion = "2.27.2"
-  private val domainVersion = "5.11.0-play-26"
+  private val bootstrapPlayVersion = "5.16.0"
+  private val playPartialsVersion = "8.1.0-play-28"
+  private val playFrontendGovukVersion = "0.84.0-play-28"
+  private val playHmrcFrontendVersion = "0.65.0-play-28"
+  private val playLanguageVersion = "4.13.0-play-28"
+  private val httpCachingClientVersion = "9.3.0-play-28"
+  private val domainVersion = "6.2.0-play-28"
   private val catsVersion = "0.9.0"
-  private val playLanguageVersion = "4.13.0-play-26"
-  private val playFrontendGovukVersion = "0.57.0-play-26"
-  private val playHmrcFrontendVersion = "0.65.0-play-26"
 
+  private val scalaTestVersion = "3.0.9"
+  private val scalaTestPlusVersion = "5.0.0"
+  private val pegdownVersion = "1.6.0"
+  private val wiremockVersion = "2.27.2"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-26" % bootstrapPlayVersion,
-    "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
-    "uk.gov.hmrc" %% "play-ui" % playUiVersion,
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapPlayVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
     "uk.gov.hmrc" %% "play-frontend-govuk" % playFrontendGovukVersion,
     "uk.gov.hmrc" %% "play-frontend-hmrc" % playHmrcFrontendVersion,
+    "uk.gov.hmrc" %% "play-language" % playLanguageVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "uk.gov.hmrc" %% "domain" % domainVersion,
     "org.typelevel" %% "cats" % catsVersion,
-    "uk.gov.hmrc" %% "play-language" % playLanguageVersion,
     "uk.gov.hmrc" %% "logback-json-logger" % "4.9.0"
   )
 
@@ -52,7 +47,6 @@ private object AppDependencies {
   object Test {
     def apply(): Seq[ModuleID] = new TestDependencies {
       override lazy val test: Seq[ModuleID] = Seq(
-        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
@@ -69,7 +63,6 @@ private object AppDependencies {
       override lazy val scope: String = "it"
 
       override lazy val test: Seq[ModuleID] = Seq(
-        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,

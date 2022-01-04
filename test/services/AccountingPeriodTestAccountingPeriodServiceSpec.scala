@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 package services
 
 import org.scalatest.BeforeAndAfterEach
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utilities.MockCurrentDateProvider
 
 import java.time.LocalDate
 
-class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with BeforeAndAfterEach with MockCurrentDateProvider {
+class AccountingPeriodTestAccountingPeriodServiceSpec extends WordSpecLike with Matchers with OptionValues with BeforeAndAfterEach with MockCurrentDateProvider {
 
 
   class Setup(date: LocalDate = LocalDate.of(2019, 9, 1)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                   case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
                     Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
                   case _ =>
-                    Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+                    Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show)
                 }
               }
             }
@@ -115,7 +115,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
     (isEditMode, isSaveAndRetrieve) match {
       case (true, true) => Future.successful(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url)
       case (false, _) => Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
-      case (true, false) => Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+      case (true, false) => Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
     }
 
   }

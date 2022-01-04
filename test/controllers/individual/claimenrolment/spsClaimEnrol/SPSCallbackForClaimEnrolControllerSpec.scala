@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
 import config.featureswitch.FeatureSwitching
-import controllers.Assets.SEE_OTHER
 import controllers.ControllerBaseSpec
+import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
@@ -60,7 +60,7 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
     } else {
       ""
     }
-    FakeRequest("GET", controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback().url + entityIdParam).withSession(
+    FakeRequest("GET", controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback.url + entityIdParam).withSession(
       ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name,
       ITSASessionKeys.NINO -> TestConstants.testNino,
       ITSASessionKeys.UTR -> TestConstants.testUtr

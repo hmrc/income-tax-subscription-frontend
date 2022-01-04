@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,8 +60,8 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec with
       document.title mustBe messages.heading + serviceNameGovUk
     }
 
-    s"the post action of the page rendered should be '${controllers.agent.routes.ClientAlreadySubscribedController.submit().url}'" in {
-      document.select("form").attr("action") mustBe controllers.agent.routes.ClientAlreadySubscribedController.submit().url
+    s"the post action of the page rendered should be '${controllers.agent.routes.ClientAlreadySubscribedController.submit.url}'" in {
+      document.select("form").attr("action") mustBe controllers.agent.routes.ClientAlreadySubscribedController.submit.url
     }
 
   }

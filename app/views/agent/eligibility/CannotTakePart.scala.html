@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@
         ))
     </p>
 
-    @form(action = controllers.agent.eligibility.routes.Covid19ClaimCheckController.show()) {
+    @form(action = controllers.agent.eligibility.routes.Covid19ClaimCheckController.show) {
         <div class="govuk-form-group">
             <div>@continueButton(Some(messages("agent.base.sign_up_another_client")))</div>
             <div>@signOutLink()</div>

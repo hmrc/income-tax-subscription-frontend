@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
 
   val checkYourAnswers: CheckYourAnswers = app.injector.instanceOf[CheckYourAnswers]
 
-  lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit()
+  lazy val postAction: Call = controllers.agent.routes.CheckYourAnswersController.submit
   lazy val backUrl: String = controllers.agent.routes.IncomeSourceController.show().url
 
   def selfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(

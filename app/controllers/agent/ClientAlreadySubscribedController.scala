@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ class ClientAlreadySubscribedController @Inject()(val auditingService: AuditingS
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Future.successful(Ok(clientAlreadySubscribed(
-        postAction = controllers.agent.routes.ClientAlreadySubscribedController.submit()
+        postAction = controllers.agent.routes.ClientAlreadySubscribedController.submit
       )))
   }
 

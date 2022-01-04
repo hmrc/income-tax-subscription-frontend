@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import utilities.ITSASessionKeys
 import utilities.individual.Constants
 import utilities.individual.TestConstants.{testCredId, testNino, testUtr}
 
-class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
+class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneServerPerTest {
 
   "IncomeTaxSAUser" when {
     "Nino and UTR are retrieved from auth" should {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import forms.agent.IncomeSourceForm._
 import models.common.IncomeSourceModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
+import play.api.data.FormBinding.Implicits.formBinding
 import play.api.data.{Form, FormError}
 import play.api.mvc.Request
 import play.api.test.FakeRequest

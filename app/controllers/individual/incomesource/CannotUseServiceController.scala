@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class CannotUseServiceController @Inject()(val auditingService: AuditingService,
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
       Future.successful(Ok(cannotUseServiceView(
-        postAction = controllers.individual.incomesource.routes.CannotUseServiceController.show()
+        postAction = controllers.individual.incomesource.routes.CannotUseServiceController.show
       )))
   }
 

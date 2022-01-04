@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,12 +44,12 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
         }
         if (isEnabled(ClaimEnrolmentFeatureSwitch) && request.session.isInState(ClaimEnrolmentJourney)) {
           Future.successful(
-            Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve())
+            Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
               .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
           )
         } else {
           Future.successful(
-            Redirect(controllers.usermatching.routes.HomeController.home())
+            Redirect(controllers.usermatching.routes.HomeController.home)
               .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
           )
         }

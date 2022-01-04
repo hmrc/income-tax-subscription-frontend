@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -198,20 +198,20 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
   }
 
   "If the user is locked out" should {
-    s"calling show should redirect them to ${controllers.usermatching.routes.UserDetailsLockoutController.show().url}" in {
+    s"calling show should redirect them to ${controllers.usermatching.routes.UserDetailsLockoutController.show.url}" in {
       setupMockLockedOut(testCredId)
       mockUserDetails()
       lazy val result = TestUserDetailsController.show(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsLockoutController.show().url
+      redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsLockoutController.show.url
     }
 
-    s"calling submit should redirect them to ${controllers.usermatching.routes.UserDetailsLockoutController.show().url}" in {
+    s"calling submit should redirect them to ${controllers.usermatching.routes.UserDetailsLockoutController.show.url}" in {
       setupMockLockedOut(testCredId)
       mockUserDetails()
       lazy val result = TestUserDetailsController.submit(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsLockoutController.show().url
+      redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsLockoutController.show.url
     }
   }
 

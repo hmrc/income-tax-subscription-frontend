@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -218,8 +218,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
     val upliftUri: String = config.getString("identity-verification-frontend.uplift-uri")
     val origin: String = config.getString("identity-verification-frontend.origin")
     val confidenceLevel: Int = identityVerificationRequiredConfidenceLevel
-    val successUrl: String = baseUrl + controllers.individual.iv.routes.IVSuccessController.success().url
-    val failureUrl: String = baseUrl + controllers.individual.iv.routes.IVFailureController.failure().url
+    val successUrl: String = baseUrl + controllers.individual.iv.routes.IVSuccessController.success.url
+    val failureUrl: String = baseUrl + controllers.individual.iv.routes.IVFailureController.failure.url
 
     s"$identityVerificationFrontendBaseUrl$upliftUri?origin=$origin&confidenceLevel=$confidenceLevel&completionURL=$successUrl&failureURL=$failureUrl"
   }

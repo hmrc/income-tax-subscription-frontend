@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import views.html.agent.eligibility.Covid19ClaimCheck
 
 class Covid19ClaimCheckViewSpec extends ViewSpec {
   private val covid19ClaimCheck = app.injector.instanceOf[Covid19ClaimCheck]
-  private val action = routes.Covid19ClaimCheckController.submit()
+  private val action = routes.Covid19ClaimCheckController.submit
 
   private val testFormError = FormError(Covid19ClaimCheckForm.fieldName, "test message")
 

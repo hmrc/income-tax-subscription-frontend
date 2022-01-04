@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,7 +134,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
         await(goodRequest)
         verifySubscriptionDetailsSave(SelectedTaxYear, 1)
@@ -166,7 +166,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     "The back url" should {
       "return the user to the check your answers page" in {
         mockIncomeSource()
-        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
       }
 
       "return the user to the task list page when Save & Retrieve is enabled" in {

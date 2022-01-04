@@ -20,14 +20,13 @@ package controllers.individual.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import controllers.Assets.INTERNAL_SERVER_ERROR
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.taskListURI
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
 import models.Cash
 import models.common.PropertyModel
-import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 

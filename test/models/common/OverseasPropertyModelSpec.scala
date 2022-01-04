@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package models.common
 
-  import models.{Cash, DateModel}
-  import org.scalatest.MustMatchers.convertToAnyMustWrapper
-  import play.api.libs.json.{JsSuccess, Json}
-  import uk.gov.hmrc.play.test.UnitSpec
+import models.{Cash, DateModel}
+import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import play.api.libs.json.{JsSuccess, Json}
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class OverseasPropertyModelSpec extends UnitSpec {
+class OverseasPropertyModelSpec extends WordSpecLike with Matchers with OptionValues {
     "OverseasPropertyModel" should {
       "deserialize without confirmed field" in {
         val actual = Json.fromJson[OverseasPropertyModel](Json.parse("""{"startDate":{"day":"5","month":"11","year":"2021"}}"""))
