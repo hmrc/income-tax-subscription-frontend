@@ -59,7 +59,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   }
 
   "overseas property start date page" must {
-
     "have the correct template" when {
       "there is no error" in new TemplateViewTest(
         view = overseasPropertyStartDate(
@@ -116,15 +115,15 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a continue button when not in edit mode" in new Setup {
-      document.selectHead("button").text mustBe OverseasPropertyStartDateMessages.continue
+      document.selectHead("#continue-button").text mustBe OverseasPropertyStartDateMessages.continue
     }
 
     "have a Save and Continue button when not in edit mode and feature SaveAndRetrieve is enabled" in new Setup( isSaveAndRetrieveEnabled = true ) {
-      document.selectHead("button").text mustBe OverseasPropertyStartDateMessages.saveAndContinue
+      document.selectHead("#continue-button").text mustBe OverseasPropertyStartDateMessages.saveAndContinue
     }
 
     "have update button when in edit mode" in new Setup(true) {
-      document.selectHead("button").text mustBe OverseasPropertyStartDateMessages.update
+      document.selectHead("#continue-button").text mustBe OverseasPropertyStartDateMessages.update
     }
 
   }

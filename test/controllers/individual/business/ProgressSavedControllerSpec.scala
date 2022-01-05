@@ -21,7 +21,6 @@ import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.common.TimestampModel
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -33,6 +32,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
 import utilities.CacheExpiryDateProvider
 import views.html.individual.incometax.business.ProgressSaved
+import java.time.LocalDateTime
 
 import scala.concurrent.Future
 
@@ -45,7 +45,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   implicit lazy val config:Configuration = app.injector.instanceOf[Configuration]
 
   private val testTimestamp = TimestampModel(
-    new DateTime(1970, 1, 1, 1, 0, 0, 0)
+    LocalDateTime.of(1970, 1, 1, 1, 0, 0, 0)
   )
 
   "signInUrl" should {

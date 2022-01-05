@@ -16,7 +16,7 @@
 
 package utilities
 
-import org.joda.time.{DateTime, DateTimeZone}
+import java.time.LocalDateTime
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Cookie
@@ -29,14 +29,14 @@ class CacheExpiryDateProviderTest extends WordSpecLike with Matchers with Option
     "return the date in the correct format" in {
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
       val provider = app.injector.instanceOf[CacheExpiryDateProvider]
-      val aDate = new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC)
+      val aDate = LocalDateTime.of(1980, 1, 1, 0, 0, 0, 0)
       provider.format(aDate) should be("Tuesday, 1 January 1980")
     }
 
     "also handle Welsh language translation" in {
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")))
       val provider = app.injector.instanceOf[CacheExpiryDateProvider]
-      val aDate = new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC)
+      val aDate = LocalDateTime.of(1980, 1, 1, 0, 0, 0, 0)
       provider.format(aDate) should be("Dydd Mawrth, 1 Ionawr 1980")
     }
   }
@@ -45,7 +45,7 @@ class CacheExpiryDateProviderTest extends WordSpecLike with Matchers with Option
     "return the date 30 days in the future in the correct format" in {
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
       val provider = app.injector.instanceOf[CacheExpiryDateProvider]
-      val aDate = new DateTime(2021, 10, 8, 0, 0, 0, 0, DateTimeZone.UTC)
+      val aDate = LocalDateTime.of(2021, 10, 8, 0, 0, 0, 0)
       provider.expiryDateOf(aDate) should be("Sunday, 7 November 2021")
     }
   }

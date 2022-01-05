@@ -16,7 +16,7 @@
 
 package models.common
 
-import org.joda.time.{DateTime, DateTimeZone}
+import java.time.LocalDateTime
 import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import play.api.libs.json.{JsResult, Json}
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
@@ -26,7 +26,7 @@ class TimestampModelSpec extends WordSpecLike with Matchers with OptionValues {
     "deserialize the MongoDB response" in {
       val actual: JsResult[TimestampModel] = Json.fromJson[TimestampModel](Json.parse("""{"$date":0}"""))
       val expected = TimestampModel(
-        new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC)
+        LocalDateTime.of(1970, 1, 1, 0, 0, 0, 0)
       )
 
       actual.get mustBe expected
