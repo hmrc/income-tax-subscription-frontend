@@ -51,7 +51,7 @@
     heading = messages("business.check-your-answers.title"),
     postAction = postAction,
     isComplete = viewModel.startDate.isDefined && viewModel.accountingMethod.isDefined,
-    saveAndContinue = true
+    saveAndContinue = !viewModel.confirmed
   ) {
     @checkYourAnswersRow(
       field = "start-date",

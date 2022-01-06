@@ -37,6 +37,10 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     startDate = Some(DateModel("8", "11", "2021")),
   )
 
+  private val confirmedAccrualsProperty = completeAccrualsProperty.copy(
+    confirmed = true
+  )
+
   private val propertyWithMissingStartDate = PropertyModel(
     accountingMethod = Some(Cash)
   )
@@ -53,6 +57,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     val startDateQuestion = "UK property business trading start date"
     val accountMethodQuestion = "UK property business accounting method"
     val confirmedAndContinue = "Confirm and continue"
+    val continue = "Continue"
     val saveAndComeBack = "Save and come back later"
     val change = "Change"
     val add = "Add"
@@ -113,7 +118,18 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           buttonLink.text mustBe PropertyCheckYourAnswers.saveAndComeBack
           buttonLink.attr("href") mustBe controllers.individual.business.routes.ProgressSavedController.show().url
         }
+
+        "have a continue button if confirmed" in {
+          val buttonLink: Element = document(viewModel = confirmedAccrualsProperty).selectHead(".govuk-button")
+          buttonLink.text mustBe PropertyCheckYourAnswers.continue
+        }
+
+        "not have a save and come back later button if confirmed" in {
+          val buttonLink: Option[Element] = document(viewModel = confirmedAccrualsProperty).selectOptionally(".govuk-button--secondary")
+          buttonLink mustBe None
+        }
       }
+
 
       "the start date is incomplete" which {
         val doc = document(viewModel = propertyWithMissingStartDate)
