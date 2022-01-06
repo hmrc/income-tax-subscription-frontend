@@ -56,10 +56,10 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
     val taxYearQ2: LocalDate = LocalDate.of(taxYearEnd - 1, OCTOBER, 5)
     val taxYearQ3: LocalDate = LocalDate.of(taxYearEnd, JANUARY, 5)
     val taxYearQ4: LocalDate = LocalDate.of(taxYearEnd, APRIL, 5)
-    val updateDates = List((taxYearQ1, "agent.sign-up.complete.julyUpdate", (currentTaxYear - 1).toString),
-      (taxYearQ2, "agent.sign-up.complete.octoberUpdate", (currentTaxYear - 1).toString),
-      (taxYearQ3, "agent.sign-up.complete.januaryUpdate", currentTaxYear.toString),
-      (taxYearQ4, "agent.sign-up.complete.aprilUpdate", currentTaxYear.toString))
+    val updateDates = List((taxYearQ1, "agent.sign-up.complete.augustUpdate", (currentTaxYear - 1).toString),
+      (taxYearQ2, "agent.sign-up.complete.novemberUpdate", (currentTaxYear - 1).toString),
+      (taxYearQ3, "agent.sign-up.complete.februaryUpdate", currentTaxYear.toString),
+      (taxYearQ4, "agent.sign-up.complete.mayUpdate", currentTaxYear.toString))
   }
 
   def getAllUpdateAndDeadlineDates(selectedTaxYear: AccountingYear): List[UpdateDeadline] = {

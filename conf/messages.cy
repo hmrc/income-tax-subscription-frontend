@@ -782,10 +782,11 @@ agent.sign-up.complete.nextTax.number2.link                     = cyfrif Treth B
 agent.sign-up.complete.sendQuarterly                            = Anfonwch y diweddariadau chwarterol nesaf erbyn:
 agent.sign-up.complete.sendPreviousUpdates                      = Ychwanegwch unrhyw incwm a threuliau sydd gan eich cleient ar gyfer diweddariadau blaenorol:
 agent.sign-up.complete.submitAnnualUpdates                      = Cyflwynwch ddiweddariadau blynyddol eich cleient a datganwch ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
-agent.sign-up.complete.julyUpdate                               = 5 Gorffennaf {0}
-agent.sign-up.complete.octoberUpdate                            = 5 Hydref {0}
-agent.sign-up.complete.januaryUpdate                            = 5 Ionawr {0}
-agent.sign-up.complete.aprilUpdate                              = 5 Ebrill {0}
+agent.sign-up.complete.augustUpdate                             = 5 Awst {0}
+agent.sign-up.complete.novemberUpdate                           = 5 Tachwedd {0}
+agent.sign-up.complete.februaryUpdate                           = 5 Chwefror {0}
+agent.sign-up.complete.mayUpdate                                = 5 Mai {0}
+
 agent.sign-up-complete.whatNow.para2                            = Ar ôl i chi anfon diweddariad, bydd eich cleient yn cael amcangyfrif o’i Dreth Incwm ar gyfer y flwyddyn hyd yn hyn. Gall weld yr hyn sydd arno ar gyfer y flwyddyn dreth ar ôl i chi anfon ei ddiweddariad terfynol.
 
 ## Errors ##
