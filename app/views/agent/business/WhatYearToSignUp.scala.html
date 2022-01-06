@@ -18,38 +18,52 @@
 @import forms.agent.AccountingYearForm
 @import views.html.helpers.injected.{ContinueButton, RadioHelper}
 @import views.html.templates.AgentMainTemplate
+@import services.AccountingPeriodService
+@import utilities.ImplicitDateFormatterImpl
 
 @this(
     mainTemplate: AgentMainTemplate,
     radioHelper: RadioHelper,
     continueButton: ContinueButton,
+    accountingPeriodService: AccountingPeriodService,
+    govukTable: GovukTable,
+    implicitDateFormatter: ImplicitDateFormatterImpl,
     form : FormWithCSRF
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@question = @{messages("agent.business.what_year_to_sign_up.heading")}
+@import implicitDateFormatter.LongDate
 
-@optionCurrentContent ={
-    <p class="govuk-body"> @messages("agent.business.what_year_to_sign_up.conditional.1.line_1") </p>
-    <ul class="govuk-list">
-        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_1",  (endYearOfCurrentTaxPeriod - 1).toString)</li>
-        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_2",  (endYearOfCurrentTaxPeriod - 1).toString)</li>
-        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_3",  endYearOfCurrentTaxPeriod.toString)</li>
-        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_4",  endYearOfCurrentTaxPeriod.toString)</li>
-    </ul>
-    <p class="govuk-body"> @messages("agent.business.what_year_to_sign_up.conditional.1.line_2", (endYearOfCurrentTaxPeriod +1).toString) </p>
+@table(updateAndDeadlineDates: List[UpdateDeadline]) = {
+  @govukTable(Table(
+    rows = updateAndDeadlineDates.map { updateDeadline =>
+      Seq(
+        TableRow(content = Text(updateDeadline.update.toLongDate)),
+        TableRow(content = Text(updateDeadline.deadline.toLongDate))
+      )
+    },
+    head = Some(Seq(
+      HeadCell(
+        content = Text(messages("agent.business.what_year_to_sign_up.updates_table.update_heading"))
+      ),
+      HeadCell(
+        content = Text(messages("agent.business.what_year_to_sign_up.updates_table.deadline_heading"))
+      )
+    ))
+  ))
 }
 
-@optionNextContent ={
-    <p class="govuk-body"> @messages("agent.business.what_year_to_sign_up.conditional.2.line_1") </p>
-    <ul class="govuk-list">
-        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_1",  endYearOfCurrentTaxPeriod.toString)</li>
-        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_2",  endYearOfCurrentTaxPeriod.toString)</li>
-        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_3",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
-        <li>@messages("agent.business.what_year_to_sign_up.quarterly.date_4",  (endYearOfCurrentTaxPeriod + 1).toString)</li>
-    </ul>
-    <p class="govuk-body"> @messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString) </p>
+@optionCurrentContent = {
+  <p>@messages("agent.business.what_year_to_sign_up.conditional.1.line_1")</p>
+  @table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current))
+  <p>@messages("agent.business.what_year_to_sign_up.conditional.1.line_2", (endYearOfCurrentTaxPeriod + 1).toString)</p>
+}
+
+@optionNextContent = {
+  <p>@messages("agent.business.what_year_to_sign_up.conditional.2.line_1")</p>
+  @table(accountingPeriodService.getAllUpdateAndDeadlineDates(Next))
+  <p>@messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString)</p>
 }
 
 @backLink = @{
@@ -61,31 +75,35 @@
 }
 
 @mainTemplate(title = messages("agent.business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backLink) {
+  @form(action = postAction) {
+    <h1 class="govuk-heading-l">@messages("agent.business.what_year_to_sign_up.heading")</h1>
 
-    @form(action = postAction) {
+    <p class="govuk-body">@messages("agent.business.what_year_to_sign_up.line_1")</p>
+    <p class="govuk-body">@messages("agent.business.what_year_to_sign_up.line_2")</p>
+    <p class="govuk-body">@messages("agent.business.what_year_to_sign_up.line_3")</p>
 
-        @radioHelper(
-            hint = Some(Text(messages("agent.business.what_year_to_sign_up.line_1"))),
-            field = accountingYearForm(AccountingYearForm.accountingYear),
-            legend = question,
-            radioItems = Seq(
-                    RadioItem(
-                        content = Text(messages("agent.business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
-                        value = Some(Current.toString),
-                        conditionalHtml = Some(optionCurrentContent)
-                ),
-                RadioItem(
-                    content = Text(messages("agent.business.what_year_to_sign_up.option_2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)),
-                    value = Some(Next.toString),
-                    conditionalHtml = Some(optionNextContent)
-                )
-            )
+    @radioHelper(
+      field = accountingYearForm(AccountingYearForm.accountingYear),
+      legend = messages("agent.business.what_year_to_sign_up.heading"),
+      isPageHeading = false,
+      radioItems = Seq(
+        RadioItem(
+          content = Text(messages("agent.business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
+          value = Some(Current.toString),
+          hint = Some(Hint(content = HtmlContent(optionCurrentContent))),
+        ),
+        RadioItem(
+          content = Text(messages("agent.business.what_year_to_sign_up.option_2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)),
+          value = Some(Next.toString),
+          hint = Some(Hint(content = HtmlContent(optionNextContent))),
         )
+      )
+    )
 
-        @if(isEditMode) {
-            @continueButton(Some(Messages("base.update")))
-        } else {
-            @continueButton()
-        }
+    @if(isEditMode) {
+      @continueButton(Some(Messages("base.update")))
+    } else {
+      @continueButton()
     }
+  }
 }

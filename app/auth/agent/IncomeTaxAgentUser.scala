@@ -22,8 +22,6 @@ import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
 import utilities.agent.Constants
 
-import scala.collection.immutable.::
-
 case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel) extends IncomeTaxUser {
   lazy val arn: Option[String] = getEnrolment(Constants.agentServiceEnrolmentName)
 
