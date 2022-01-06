@@ -130,10 +130,10 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
           documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > span").text mustBe nextTaxYearNumber2
         }
         "has bullet pointed list detailing update dates" in {
-          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(1)").text() mustBe nextTaxYearJulyUpdate
-          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(2)").text() mustBe nextTaxYearOcoberUpdate
-          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(3)").text() mustBe nextTaxYearJanuaryUpdate
-          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(4)").text() mustBe nextTaxYearAprilUpdate
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(1)").text() mustBe nextTaxYearUpdate1
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(2)").text() mustBe nextTaxYearUpdate2
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(3)").text() mustBe nextTaxYearUpdate3
+          documentNextTaxYear.select("#whatNext > ol > li:nth-of-type(2) > ul > li:nth-of-type(4)").text() mustBe nextTaxYearUpdate4
         }
       }
 

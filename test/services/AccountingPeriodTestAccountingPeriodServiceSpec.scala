@@ -35,10 +35,10 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends WordSpecLike with 
   class SetupUpdateDates(date: LocalDate) {
     val currentDate: LocalDate = date
     val currentTaxYear: Int = TestAccountingPeriodService.currentTaxYear
-    val taxQuarter1: (String, String) = ("agent.sign-up.complete.julyUpdate", "2020")
-    val taxQuarter2: (String, String) = ("agent.sign-up.complete.octoberUpdate", "2020")
-    val taxQuarter3: (String, String) = ("agent.sign-up.complete.januaryUpdate", "2021")
-    val taxQuarter4: (String, String) = ("agent.sign-up.complete.aprilUpdate", "2021")
+    val taxQuarter1: (String, String) = ("agent.sign-up.complete.augustUpdate", "2020")
+    val taxQuarter2: (String, String) = ("agent.sign-up.complete.novemberUpdate", "2020")
+    val taxQuarter3: (String, String) = ("agent.sign-up.complete.februaryUpdate", "2021")
+    val taxQuarter4: (String, String) = ("agent.sign-up.complete.mayUpdate", "2021")
 
     case object TestAccountingPeriodService extends AccountingPeriodService(mockCurrentDateProvider)
 

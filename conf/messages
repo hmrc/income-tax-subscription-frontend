@@ -773,10 +773,11 @@ agent.sign-up.complete.nextTax.number2.link                     = Business Tax a
 agent.sign-up.complete.sendQuarterly                            = Send quarterly updates by:
 agent.sign-up.complete.sendPreviousUpdates                      = Add any income and expenses your client has for previous updates:
 agent.sign-up.complete.submitAnnualUpdates                      = Submit your client’s annual updates and declare for the tax year by 31 January {0}.
-agent.sign-up.complete.julyUpdate                               = 5 July {0}
-agent.sign-up.complete.octoberUpdate                            = 5 October {0}
-agent.sign-up.complete.januaryUpdate                            = 5 January {0}
-agent.sign-up.complete.aprilUpdate                              = 5 April {0}
+agent.sign-up.complete.augustUpdate                             = 5 August {0}
+agent.sign-up.complete.novemberUpdate                           = 5 November {0}
+agent.sign-up.complete.februaryUpdate                           = 5 February {0}
+agent.sign-up.complete.mayUpdate                                = 5 May {0}
+
 agent.sign-up-complete.whatNow.para2                            = After you’ve sent an update, your client will get an Income Tax year-to-date estimate. They can see what they owe for the tax year after you’ve sent their final update.
 
 ## Errors ##
