@@ -21,8 +21,6 @@ import uk.gov.hmrc.auth.core._
 import utilities.ITSASessionKeys
 import utilities.individual.Constants
 
-import scala.collection.immutable.::
-
 trait IncomeTaxUser {
   val enrolments: Enrolments
   val affinityGroup: Option[AffinityGroup]

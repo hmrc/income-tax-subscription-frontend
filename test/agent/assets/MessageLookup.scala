@@ -108,32 +108,6 @@ object MessageLookup {
       val no = "No - I am a different type of business"
     }
 
-    object WhatYearToSignUp {
-      val heading = "Which tax year do you want your client to start filing income tax updates for?"
-      val line1 = "You can sign your client up for the current tax year or the next tax year. It will not affect the amount of income tax they will need to pay."
-
-
-      def option1ConditionalExample1: String = "You or your client will need to add all business income and expenses into your software from the start of the current tax year. You or your client need to send a quarterly update for:"
-
-      def option1ConditionalExample2(year: String): String = s"You or your client will need to submit a final declaration by the 31 January $year."
-
-      def option2ConditionalExample1: String = "You or your client need to send a quarterly update for:"
-
-      def option2ConditionalExample2(year: String): String = s"You or your client will need to submit a final declaration by 31 January $year and will need to complete a Self Assessment return for the current tax year as normal."
-
-      def option1(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
-
-      def option2(fromYear: String, toYear: String): String = s"Next tax year (6 April $fromYear to 5 April $toYear)"
-
-      def conditionalDate1(year: String): String = s"5 July $year"
-
-      def conditionalDate2(year: String): String = s"5 October $year"
-
-      def conditionalDate3(year: String): String = s"5 January $year"
-
-      def conditionalDate4(year: String): String = s"5 April $year"
-    }
-
   }
 
   object AccountingPeriod {
