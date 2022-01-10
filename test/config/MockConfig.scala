@@ -119,8 +119,8 @@ trait MockConfig extends AppConfig {
 
   override val feedbackFrontendAgentRedirectUrl: String = "/feedback/ITSU-A"
 
-  override val countdownLength: String = "1234"
-  override val timeoutLength: String = "87913"
+  override val timeoutWarningInSeconds: String = "1234"
+  override val timeoutInSeconds: String = "87913"
 
   override val channelPreferencesUrl: String = "/channel-preferences"
 

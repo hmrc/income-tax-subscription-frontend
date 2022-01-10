@@ -46,8 +46,8 @@ trait AppConfig extends FeatureSwitching {
   val baseUrl: String
   val ggUrl: String
   val microServiceUrl: String
-  val countdownLength: String
-  val timeoutLength: String
+  val timeoutWarningInSeconds: String
+  val timeoutInSeconds: String
   val channelPreferencesUrl: String
 
   def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
@@ -55,7 +55,7 @@ trait AppConfig extends FeatureSwitching {
   val btaUrl: String
   val wrongCredentials: String
   val haveSaUtr: String
-  val btaBaseUrl :String
+  val btaBaseUrl: String
   val softwareUrl: String
   val agentAuthUrl: String
   val agentAccountUrl: String
@@ -328,8 +328,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   val urBannerUrl: String = config.getString("urBannerUrl.url")
 
-  override lazy val countdownLength: String = config.getString("timeout.countdown")
-  override lazy val timeoutLength: String = config.getString("timeout.length")
+  override lazy val timeoutWarningInSeconds: String = config.getString("session-timeout.warning")
+  override lazy val timeoutInSeconds: String = config.getString("session-timeout.seconds")
 
   override val incomeTaxViewChangeUrl: String = {
     s"${config.getString("income-tax-view-change-frontend.url")}/report-quarterly/income-and-expenses/view"
