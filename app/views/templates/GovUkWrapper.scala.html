@@ -72,6 +72,7 @@
     countdown = Some(appConfig.timeoutWarningInSeconds.toInt),
     signOutUrl = controllers.routes.SignOutController.signOut.url))
     } else None,
+    serviceName = Some(serviceName),
     isWelshTranslationAvailable = true,
     serviceUrl = None,
     backLinkUrl = backLink,
