@@ -90,6 +90,16 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
           .select(".govuk-table")
           .select(".govuk-table__row")
 
+      "has the filling and deadline headers" in {
+        val tableHeaders =
+          tableRows
+            .get(0)
+            .select(".govuk-table__header")
+
+        tableHeaders.get(0).text() mustBe WhatYearToSignUp.updatesHeader
+        tableHeaders.get(1).text() mustBe WhatYearToSignUp.deadlineHeader
+      }
+
       "has the filling and deadline dates 1" in {
         val tableCells =
           tableRows
@@ -156,6 +166,16 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
           .select(".govuk-hint")
           .select(".govuk-table")
           .select(".govuk-table__row")
+
+      "has the filling and deadline headers" in {
+        val tableHeaders =
+          tableRows
+            .get(0)
+            .select(".govuk-table__header")
+
+        tableHeaders.get(0).text() mustBe WhatYearToSignUp.updatesHeader
+        tableHeaders.get(1).text() mustBe WhatYearToSignUp.deadlineHeader
+      }
 
       "has the filling and deadline dates 1" in {
         val tableCells =
@@ -261,6 +281,8 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
   private object WhatYearToSignUp {
     val heading = "Which tax year do you want your client to start filing income tax updates for?"
+    val updatesHeader = "Quarterly updates"
+    val deadlineHeader = "Deadline"
     val paragraph1 = "You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount you pay."
     val paragraph2 = "There is no penalty if you start making updates mid-way through the current tax year."
     val paragraph3 = "You or your client will need to add all business income and expenses into your software from 6 April:"
