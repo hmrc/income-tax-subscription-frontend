@@ -18,6 +18,8 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingYearForm
 import models.AccountingYear
@@ -38,9 +40,13 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                            val subscriptionDetailsService: SubscriptionDetailsService,
                                            whatYearToSignUp: WhatYearToSignUp)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
+                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval with FeatureSwitching {
 
-  val backUrl: String = controllers.agent.routes.CheckYourAnswersController.show.url
+  def backUrl: String = if (isEnabled(SaveAndRetrieve)) {
+    controllers.agent.routes.TaxYearCheckYourAnswersController.show().url
+  } else {
+    controllers.agent.routes.CheckYourAnswersController.show.url
+  }
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -70,7 +76,9 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
           accountingYear => {
             Future.successful(subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear))) map { _ =>
-              if (isEditMode) {
+              if (isEnabled(SaveAndRetrieve)) {
+                Redirect(controllers.agent.routes.TaxYearCheckYourAnswersController.show())
+              } else if (isEditMode) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show)
               } else {
                 Redirect(controllers.agent.routes.IncomeSourceController.show())
