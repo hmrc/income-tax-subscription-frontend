@@ -254,6 +254,13 @@ agent.error.property.start_date.maxStartDate                    = Mae’n rhaid 
 agent.error.property.start_date.minStartDate                    = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
 agent.error.property.invalid                                    = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 
+## agent Tax Year Check Your Answers
+agent.business.check-your-answers.title                               = Gwiriwch eich atebion
+agent.business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
+agent.business.check-your-answers.content.tax-year.question.hidden    = ?
+agent.business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
+agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
+
 ## Overseas Property Start Date
 overseas.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
 overseas.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
@@ -999,13 +1006,14 @@ business.task-list.status.in-progress                           = ?
 business.task-list.status.not-started                           = ?
 business.task-list.status.cannot-start-yet                      = ?
 
-## Check Your Answers
+## Taxy Year Check Your Answers
 business.check-your-answers.title                               = Gwiriwch eich atebion
 business.check-your-answers.content.tax-year.question           = ?
 business.check-your-answers.content.tax-year.current-tax-year   = ?
 business.check-your-answers.content.tax-year.next-tax-year      = ?
 business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu arian parod
 business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu safonol
+
 ## UK property
 business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
