@@ -104,3 +104,7 @@ GET         /business/routing                                    controllers.age
 
 GET         /keep-alive                                         controllers.agent.SessionTimeoutController.keepAlive
 GET         /timeout                                            controllers.agent.SessionTimeoutController.timeout
+
+# Agent Tax Year Check Your Answers Routes
+GET         /business/tax-year-check-your-answers                controllers.agent.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/tax-year-check-your-answers                controllers.agent.TaxYearCheckYourAnswersController.submit()
