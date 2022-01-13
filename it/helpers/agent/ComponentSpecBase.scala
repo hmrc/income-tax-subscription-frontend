@@ -386,6 +386,10 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
       )
     }
 
+    def getProgressSaved(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/business/progress-saved", sessionData)
+    }
+
     def noSA(): WSResponse = get("/register-for-SA")
 
     def getRouting(editMode: Boolean = false): WSResponse = get(s"/business/routing?editMode=$editMode")

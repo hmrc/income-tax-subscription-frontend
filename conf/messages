@@ -933,6 +933,16 @@ agent.business.check-your-answers.content.tax-year.question.hidden    = Change t
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
 
+## Agent progress saved
+agent.business.progress-saved.title                                   = Your progress has been saved
+agent.business.progress-saved.content.summary                         = We will keep your information until {0}.
+agent.business.progress-saved.content.subheading                      = What happens next
+agent.business.progress-saved.content.paragraph1                      = You can:
+agent.business.progress-saved.content.paragraph2                      = If you sign out, you will need to come back to your {0} to continue. We suggest you bookmark this to make it easier to find when you return.
+agent.business.progress-saved.content.sign-up-link                    = return to sign up your client’s business for Making Tax Digital for Income Tax
+agent.business.progress-saved.content.sign-out-link                   = sign out and come back later
+agent.business.progress-saved.content.sign-in-link                    = Government Gateway login
+
 ## Service Name
 agent_service_name.title                                        = Use software to report your client’s Income Tax
 

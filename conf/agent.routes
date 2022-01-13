@@ -108,3 +108,5 @@ GET         /timeout                                            controllers.agen
 # Agent Tax Year Check Your Answers Routes
 GET         /business/tax-year-check-your-answers                controllers.agent.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
 POST        /business/tax-year-check-your-answers                controllers.agent.TaxYearCheckYourAnswersController.submit()
+
+GET         /business/progress-saved                            controllers.agent.business.ProgressSavedController.show
