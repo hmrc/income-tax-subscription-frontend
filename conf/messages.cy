@@ -261,6 +261,16 @@ agent.business.check-your-answers.content.tax-year.question.hidden    = ?
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 
+## Agent progress saved
+agent.business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi ei gadw
+agent.business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
+agent.business.progress-saved.content.subheading                      = Yr hyn sy’n digwydd nesaf
+agent.business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
+agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi ddod yn ôl at i’ch manylion {0} i barhau. Rydym yn awgrymu eich bod yn nodi’r dudalen hon i’w gwneud yn haws dod o hyd iddi pan fyddwch yn dod yn ôl.
+agent.business.progress-saved.content.sign-up-link                    = dychwelyd i gofrestru busnes eich cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.business.progress-saved.content.sign-out-link                   = allgofnodi a dod yn ôl yn nes ymlaen
+agent.business.progress-saved.content.sign-in-link                    = mewngofnodi Porth y Llywodraeth
+
 ## Overseas Property Start Date
 overseas.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
 overseas.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?

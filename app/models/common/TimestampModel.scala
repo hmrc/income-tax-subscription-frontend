@@ -25,7 +25,7 @@ case class TimestampModel(dateTime: LocalDateTime)
 object TimestampModel {
   private val reads: Reads[TimestampModel] =
     (JsPath \ "$date").read[Long]
-      .map[TimestampModel](dateTimeSeconds => TimestampModel(LocalDateTime.ofEpochSecond(dateTimeSeconds/1000, 0, ZoneOffset.UTC)))
+      .map[TimestampModel](timestamp => TimestampModel(LocalDateTime.ofEpochSecond(timestamp/1000, 0, ZoneOffset.UTC)))
 
   private val writes: Writes[TimestampModel] = new Writes[TimestampModel] {
     def writes(model: TimestampModel): JsValue = JsString(model.dateTime.toString())
