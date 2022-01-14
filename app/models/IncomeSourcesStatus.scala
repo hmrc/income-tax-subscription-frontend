@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-package models.common
+package models
 
-import play.api.libs.json.{Json, OFormat}
-
-case class BusinessIncomeSourceModel(incomeSource: BusinessIncomeSource)
-
-object BusinessIncomeSourceModel {
-  implicit val format: OFormat[BusinessIncomeSourceModel] = Json.format[BusinessIncomeSourceModel]
-}
+case class IncomeSourcesStatus(selfEmploymentAvailable: Boolean, ukPropertyAvailable: Boolean, overseasPropertyAvailable: Boolean)

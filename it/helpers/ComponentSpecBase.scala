@@ -28,7 +28,7 @@ import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.common._
 import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
-import models.{AccountingMethod, AccountingYear, DateModel}
+import models.{AccountingMethod, AccountingYear, DateModel, IncomeSourcesStatus}
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -329,12 +329,18 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues wit
       )
     }
 
-    def submitBusinessIncomeSource(request: Option[BusinessIncomeSourceModel]): WSResponse = {
+    def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],
+                                   incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
+                                     selfEmploymentAvailable = true,
+                                     ukPropertyAvailable = true,
+                                     overseasPropertyAvailable = true
+                                   )): WSResponse = {
       val uri = s"/details/income-source"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            BusinessIncomeSourceForm.businessIncomeSourceForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            BusinessIncomeSourceForm.businessIncomeSourceForm(incomeSourcesStatus)
+              .fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

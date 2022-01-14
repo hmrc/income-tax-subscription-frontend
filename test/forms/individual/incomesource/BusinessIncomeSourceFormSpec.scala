@@ -16,88 +16,124 @@
 
 package forms.individual.incomesource
 
-import forms.individual.incomesource.BusinessIncomeSourceForm.{businessIncomeSourceForm, businessIncomeSourceKey, selfEmployedKey}
-import forms.validation.testutils.DataMap.DataMap
-import forms.validation.testutils._
-import models.common.{BusinessIncomeSourceModel, SelfEmployed}
+import models.IncomeSourcesStatus
+import models.common.{BusinessIncomeSource, OverseasProperty, SelfEmployed, UkProperty}
 import org.scalatest.Matchers._
-import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import org.scalatestplus.play.PlaySpec
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
+import uk.gov.hmrc.http.InternalServerException
 
-class BusinessIncomeSourceFormSpec  extends PlaySpec with GuiceOneAppPerTest {
+class BusinessIncomeSourceFormSpec extends PlaySpec {
 
-  "The AccountingMethodForm" should {
-    "transform the request to BusinessIncomeSourceModel" in {
-      val testInput = Map(
-        businessIncomeSourceKey -> selfEmployedKey
-      )
-      val expected = BusinessIncomeSourceModel(SelfEmployed)
-      val actual = businessIncomeSourceForm().bind(testInput).value
+  class FormTest(incomeSourcesStatus: IncomeSourcesStatus, input: String, expectedResult: Either[String, BusinessIncomeSource]) {
+    val boundForm: Form[BusinessIncomeSource] = BusinessIncomeSourceForm.businessIncomeSourceForm(
+      incomeSourcesStatus = incomeSourcesStatus
+    ).bind(
+      Map(BusinessIncomeSourceForm.incomeSourceKey -> input)
+    )
 
-      actual shouldBe Some(expected)
+    expectedResult match {
+      case Left(error) =>
+        boundForm.errors mustBe Seq(FormError(BusinessIncomeSourceForm.incomeSourceKey, error))
+      case Right(value) =>
+        boundForm.value mustBe Some(value)
     }
+  }
 
-    "show an empty error when the map is empty" in {
-      val formWithErrors = businessIncomeSourceForm().bind(DataMap.EmptyMap)
-
-      formWithErrors.errors should contain(
-        FormError(businessIncomeSourceKey, "individual.error.business_income_source.invalid")
+  "businessIncomeSourceForm" should {
+    "bind successfully" when {
+      "the user selects self employment and it is available" in new FormTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true),
+        input = SelfEmployed.toString,
+        expectedResult = Right(SelfEmployed)
       )
-    }
-
-    "show an foreign property empty error when the map is empty" in {
-      val formWithErrors = businessIncomeSourceForm(overseasPropertyEnabled = true).bind(DataMap.EmptyMap)
-
-      formWithErrors.errors should contain(
-        FormError(businessIncomeSourceKey, "individual.error.business_income_source_foreignProperty.invalid")
+      "the user selects uk property and it is available" in new FormTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true),
+        input = UkProperty.toString,
+        expectedResult = Right(UkProperty)
       )
-    }
-
-    "show invalid error when the input is invalid" in {
-      val testInput = Map(
-        businessIncomeSourceKey -> "α"
-      )
-      val formWithErrors = businessIncomeSourceForm().bind(testInput)
-
-      formWithErrors.errors should contain(
-        FormError(businessIncomeSourceKey, "individual.error.business_income_source.invalid")
+      "the user selects overseas property and it is available" in new FormTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true),
+        input = OverseasProperty.toString,
+        expectedResult = Right(OverseasProperty)
       )
     }
-
-    "show foreign property invalid error when the input is invalid" in {
-      val testInput = Map(
-        businessIncomeSourceKey -> "α"
+    "produce a form error" when {
+      "self employment is selected but it is not available" in new FormTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = true, overseasPropertyAvailable = true),
+        input = SelfEmployed.toString,
+        expectedResult = Left("error.business-income-source.uk-property-overseas-property")
       )
-      val formWithErrors = businessIncomeSourceForm(overseasPropertyEnabled = true).bind(testInput)
-
-      formWithErrors.errors should contain(
-        FormError(businessIncomeSourceKey, "individual.error.business_income_source_foreignProperty.invalid")
+      "uk property is selected but it is not available" in new FormTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = false, overseasPropertyAvailable = true),
+        input = UkProperty.toString,
+        expectedResult = Left("error.business-income-source.self-employed-overseas-property")
+      )
+      "overseas property is selected but it is not available" in new FormTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = false),
+        input = OverseasProperty.toString,
+        expectedResult = Left("error.business-income-source.self-employed-uk-property")
       )
     }
-
-    "validate SelfEmployed inputs" in {
-      val testInput = Map(
-        businessIncomeSourceKey -> "selfEmployed"
-      )
-
-      businessIncomeSourceForm() isValidFor testInput
+    "produce a form error" that {
+      "either self employment, uk property or overseas property must be selected" when {
+        "there is no input and all options are available" in new FormTest(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true),
+          input = "",
+          expectedResult = Left("error.business-income-source.all-sources")
+        )
+      }
+      "either self employment or uk property must be selected" when {
+        "there is no input and overseas property is not available" in new FormTest(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = false),
+          input = "",
+          expectedResult = Left("error.business-income-source.self-employed-uk-property")
+        )
+      }
+      "either self employment or overseas property must be selected" when {
+        "there is no input and uk property is not available" in new FormTest(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = false, overseasPropertyAvailable = true),
+          input = "",
+          expectedResult = Left("error.business-income-source.self-employed-overseas-property")
+        )
+      }
+      "either uk property or overseas property must be selected" when {
+        "there is no input and self employment is not available" in new FormTest(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = true, overseasPropertyAvailable = true),
+          input = "",
+          expectedResult = Left("error.business-income-source.uk-property-overseas-property")
+        )
+      }
+      "self employment must be selected" when {
+        "there is no input and uk property and overseas property are not available" in new FormTest(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = false, overseasPropertyAvailable = false),
+          input = "",
+          expectedResult = Left("error.business-income-source.self-employed")
+        )
+      }
+      "uk property must be selected" when {
+        "there is no input and self employment and overseas property are not available" in new FormTest(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = true, overseasPropertyAvailable = false),
+          input = "",
+          expectedResult = Left("error.business-income-source.uk-property")
+        )
+      }
+      "overseas property must be selected" when {
+        "there is no input and self employment and uk property are not available" in new FormTest(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = false, overseasPropertyAvailable = true),
+          input = "",
+          expectedResult = Left("error.business-income-source.overseas-property")
+        )
+      }
     }
+    "produce an exception" when {
+      "the form is in a state where there are no options available" in {
+        def form: Form[BusinessIncomeSource] = BusinessIncomeSourceForm.businessIncomeSourceForm(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = false, overseasPropertyAvailable = false)
+        ).bind(Map.empty[String, String])
 
-    "validate UkProperty inputs" in {
-      val testInput = Map(
-        businessIncomeSourceKey -> "ukProperty"
-      )
-
-      businessIncomeSourceForm() isValidFor testInput
-    }
-
-    "validate ForeignProperty inputs" in {
-      val testInput = Map(
-        businessIncomeSourceKey -> "foreignProperty"
-      )
-
-      businessIncomeSourceForm() isValidFor testInput
+        intercept[InternalServerException](form).message mustBe "[BusinessIncomeSourceMapping][apply] - Unexpected state of income sources available"
+      }
     }
   }
 

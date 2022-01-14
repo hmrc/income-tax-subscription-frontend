@@ -17,36 +17,19 @@
 package forms.individual.incomesource
 
 import forms.submapping.BusinessIncomeSourceMapping
-import models.common.BusinessIncomeSourceModel
-import models.common.ForeignProperty.FOREIGN_PROPERTY
-import models.common.SelfEmployed.SELF_EMPLOYED
-import models.common.UkProperty.UK_PROPERTY
+import models.IncomeSourcesStatus
+import models.common.BusinessIncomeSource
 import play.api.data.Form
-import play.api.data.Forms.mapping
-import play.api.data.validation.Invalid
+import play.api.data.Forms.single
 
 object BusinessIncomeSourceForm {
 
-  val businessIncomeSourceKey = "businessIncomeSource"
+  val incomeSourceKey = "income-source"
 
-  val selfEmployedKey = SELF_EMPLOYED
-  val ukPropertyKey = UK_PROPERTY
-  val overseasPropertyKey = FOREIGN_PROPERTY
-
-  def businessIncomeSourceForm(overseasPropertyEnabled: Boolean = false): Form[BusinessIncomeSourceModel] = Form(
-    mapping(
-      businessIncomeSourceKey -> BusinessIncomeSourceMapping(
-        errInvalid = Invalid(errorKey(overseasPropertyEnabled)),
-        errEmpty = Some(Invalid(errorKey(overseasPropertyEnabled)))
-      )
-    )(BusinessIncomeSourceModel.apply)(BusinessIncomeSourceModel.unapply)
+  def businessIncomeSourceForm(incomeSourcesStatus: IncomeSourcesStatus): Form[BusinessIncomeSource] = Form(
+    single(
+      incomeSourceKey -> BusinessIncomeSourceMapping(incomeSourcesStatus)
+    )
   )
 
-  private def errorKey(overseasPropertyEnabled: Boolean): String = {
-    if (overseasPropertyEnabled) {
-      "individual.error.business_income_source_foreignProperty.invalid"
-    } else {
-      "individual.error.business_income_source.invalid"
-    }
-  }
 }

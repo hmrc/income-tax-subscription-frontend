@@ -32,28 +32,28 @@ case object UkProperty extends BusinessIncomeSource {
   override def toString: String = UK_PROPERTY
 }
 
-case object ForeignProperty extends BusinessIncomeSource {
-  val FOREIGN_PROPERTY = "foreignProperty"
+case object OverseasProperty extends BusinessIncomeSource {
+  val OVERSEAS_PROPERTY = "overseasProperty"
 
-  override def toString: String = FOREIGN_PROPERTY
+  override def toString: String = OVERSEAS_PROPERTY
 }
 
 object BusinessIncomeSource {
 
-  import models.common.ForeignProperty.FOREIGN_PROPERTY
+  import models.common.OverseasProperty.OVERSEAS_PROPERTY
   import models.common.SelfEmployed.SELF_EMPLOYED
   import models.common.UkProperty.UK_PROPERTY
 
   private val reads: Reads[BusinessIncomeSource] = (json: JsValue) => json.validate[String] map {
     case SELF_EMPLOYED => SelfEmployed
     case UK_PROPERTY => UkProperty
-    case FOREIGN_PROPERTY => ForeignProperty
+    case OVERSEAS_PROPERTY => OverseasProperty
   }
 
   private val writes: Writes[BusinessIncomeSource] = {
     case SelfEmployed => JsString(SELF_EMPLOYED)
     case UkProperty => JsString(UK_PROPERTY)
-    case ForeignProperty => JsString(FOREIGN_PROPERTY)
+    case OverseasProperty => JsString(OVERSEAS_PROPERTY)
   }
 
   implicit val format: Format[BusinessIncomeSource] = Format[BusinessIncomeSource](reads, writes)

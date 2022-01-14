@@ -17,7 +17,9 @@
 package views.individual.incometax.incomesource
 
 import forms.individual.incomesource.BusinessIncomeSourceForm
-import forms.individual.incomesource.BusinessIncomeSourceForm.{businessIncomeSourceKey, overseasPropertyKey, selfEmployedKey, ukPropertyKey}
+import forms.individual.incomesource.BusinessIncomeSourceForm.incomeSourceKey
+import models.IncomeSourcesStatus
+import models.common.{OverseasProperty, SelfEmployed, UkProperty}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.FormError
@@ -32,10 +34,10 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
   object IndividualIncomeSource {
     val title = "What source of income do you want to sign up?"
     val heading: String = title
-    val paragraph_1: String = "Your client can have any number of sole trader businesses. " +
-      "However, they can have only one UK rental property and one overseas rental property."
+    val paragraph_1: String = s"You can have up to ${appConfig.maxSelfEmployments} sole trader businesses. " +
+      s"However, you can only add one UK rental property and one Overseas rental property."
     val paragraph_2: String = "Renting out a property includes using a letting agency."
-    val business = "Sole trader businesses"
+    val business = "Sole trader business"
     val ukProperty = "UK property rental"
     val foreignProperty = "Overseas property rental"
     val errorHeading = "There is a problem"
@@ -48,25 +50,32 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   val incomeSource: WhatIncomeSourceToSignUp = app.injector.instanceOf[WhatIncomeSourceToSignUp]
 
-  val testFormError: FormError = FormError(businessIncomeSourceKey, "test message")
+  val testFormError: FormError = FormError(incomeSourceKey, "test message")
 
-  def view(overseasPropertyEnabled: Boolean = false, hasError: Boolean = false): Html = {
+  def view(incomeSourcesStatus: IncomeSourcesStatus, hasError: Boolean = false): Html = {
     incomeSource(
       if (hasError) {
-        BusinessIncomeSourceForm.businessIncomeSourceForm().withError(testFormError)
+        BusinessIncomeSourceForm.businessIncomeSourceForm(incomeSourcesStatus).withError(testFormError)
       } else {
-        BusinessIncomeSourceForm.businessIncomeSourceForm()
+        BusinessIncomeSourceForm.businessIncomeSourceForm(incomeSourcesStatus)
       },
       postAction = testCall,
-      foreignProperty = overseasPropertyEnabled,
-      backUrl = testBackUrl
+      backUrl = testBackUrl,
+      incomeSourcesStatus = incomeSourcesStatus
     )
   }
 
-  class ViewTest(overseasPropertyEnabled: Boolean = false, editMode: Boolean = false, hasError: Boolean = false) {
+  class ViewTest(
+                  incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
+                    selfEmploymentAvailable = true,
+                    ukPropertyAvailable = true,
+                    overseasPropertyAvailable = true
+                  ),
+                  hasError: Boolean = false
+                ) {
 
     val document: Document = Jsoup.parse(view(
-      overseasPropertyEnabled = overseasPropertyEnabled,
+      incomeSourcesStatus = incomeSourcesStatus,
       hasError = hasError
     ).body)
 
@@ -76,7 +85,10 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     "display the template correctly" when {
       "there is an error" in new TemplateViewTest(
-        view = view(hasError = true),
+        view = view(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true),
+          hasError = true
+        ),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
@@ -84,7 +96,9 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
         error = Some(testFormError)
       )
       "there is no error" in new TemplateViewTest(
-        view = view(),
+        view = view(
+          incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true)
+        ),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
@@ -96,12 +110,12 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
       document.selectHead("h1").text mustBe IndividualIncomeSource.heading
     }
 
-    "have paragraph 1" in new ViewTest {
-      document.selectHead("#businessIncomeSource-hint").selectNth("p", 1).text mustBe IndividualIncomeSource.paragraph_1
+    "have paragraph 1 in an inset text block" in new ViewTest {
+      document.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe IndividualIncomeSource.paragraph_1
     }
 
     "have paragraph 2" in new ViewTest {
-      document.selectHead("#businessIncomeSource-hint").selectNth("p", 2).text mustBe IndividualIncomeSource.paragraph_2
+      document.selectHead(".govuk-inset-text").selectNth("p", 2).text mustBe IndividualIncomeSource.paragraph_2
     }
 
     "have a form to submit the checkboxes" in new ViewTest {
@@ -111,14 +125,9 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a fieldset" which {
-      "is described a hint" when {
-        "there is no error" in new ViewTest {
-          document.selectHead("fieldset").attr("aria-describedby") mustBe s"$businessIncomeSourceKey-hint"
-        }
-      }
-      "is described by a hint and error" when {
+      "is described by an error" when {
         "there is an error" in new ViewTest(hasError = true) {
-          document.selectHead("fieldset").attr("aria-describedby") mustBe s"$businessIncomeSourceKey-hint $businessIncomeSourceKey-error"
+          document.selectHead("fieldset").attr("aria-describedby") mustBe s"$incomeSourceKey-error"
         }
       }
     }
@@ -140,22 +149,46 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a checkbox for self employments" in new ViewTest {
-      testRadioButton(document, index = 1, selfEmployedKey, IndividualIncomeSource.business)
+      testRadioButton(document, index = 1, SelfEmployed.toString, IndividualIncomeSource.business)
+    }
+
+    "have no checkbox for self employments" when {
+      "self employments is not available" in new ViewTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = true, overseasPropertyAvailable = true)
+      ) {
+        document.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe UkProperty.toString
+        document.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe OverseasProperty.toString
+        document.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
+      }
     }
 
     "have a checkbox for uk property" in new ViewTest {
-      testRadioButton(document, index = 2, ukPropertyKey, IndividualIncomeSource.ukProperty)
+      testRadioButton(document, index = 2, UkProperty.toString, IndividualIncomeSource.ukProperty)
+    }
+
+    "have no checkbox for uk property" when {
+      "uk property is not available" in new ViewTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = false, overseasPropertyAvailable = true)
+      ) {
+        document.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe SelfEmployed.toString
+        document.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe OverseasProperty.toString
+        document.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
+      }
     }
 
     "have a checkbox for overseas property" when {
-      "the overseas property flag is set to true" in new ViewTest(overseasPropertyEnabled = true) {
-        testRadioButton(document, index = 3, overseasPropertyKey, IndividualIncomeSource.foreignProperty)
+      "the overseas property flag is set to true" in new ViewTest {
+        testRadioButton(document, index = 3, OverseasProperty.toString, IndividualIncomeSource.foreignProperty)
       }
     }
 
     "have no checkbox for overseas property" when {
-      "the overseas property flag is set to false" in new ViewTest {
-        document.selectHead("fieldset").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
+      "overseas property is not available" in new ViewTest(
+        incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = false)
+      ) {
+        document.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe SelfEmployed.toString
+        document.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe UkProperty.toString
+        document.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
       }
     }
 
@@ -170,11 +203,15 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     val radioButtonInput: Element = radioButtonElement.selectHead("input")
     radioButtonInput.attr("type") mustBe "radio"
     radioButtonInput.attr("value") mustBe key
-    radioButtonInput.attr("name") mustBe "businessIncomeSource"
-    radioButtonInput.attr("id") mustBe s"incomeSource-$key"
+    radioButtonInput.attr("name") mustBe "income-source"
+    radioButtonInput.attr("id") mustBe s"income-source" + {
+      if (index == 1) "" else s"-$index"
+    }
 
     val radioButtonLabel: Element = radioButtonElement.selectHead("label")
-    radioButtonLabel.attr("for") mustBe s"incomeSource-$key"
+    radioButtonLabel.attr("for") mustBe s"income-source" + {
+      if (index == 1) "" else s"-$index"
+    }
     radioButtonLabel.text mustBe label
   }
 }

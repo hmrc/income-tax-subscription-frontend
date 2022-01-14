@@ -22,11 +22,21 @@ import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
 import helpers.servicemocks.AuthStub
+import models.Cash
 import models.common._
+import models.common.business.SelfEmploymentData
 import play.api.http.Status._
+import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 
 class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(SaveAndRetrieve)
+    disable(ForeignPropertyFeature)
+  }
+
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
   "GET /report-quarterly/income-and-expenses/sign-up/details/income-source" should {
@@ -36,6 +46,10 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase with Fea
         AuthStub.stubAuthSuccess()
         And("save & retrieve feature switch is enabled")
         enable(SaveAndRetrieve)
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
         When("GET /details/income-source is called")
         val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
@@ -52,8 +66,6 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase with Fea
       "the save & retrieve feature switch is disabled" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        And("save & retrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
 
         When("GET /details/income-source is called")
         val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
@@ -66,73 +78,203 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase with Fea
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/details/income-source" should {
-    "redirect to the start of the self employment journey" in {
-      Given("I setup the wiremock stubs")
-      AuthStub.stubAuthSuccess()
+  "POST /report-quarterly/income-and-expenses/sign-up/details/income-source" when {
+    "the save and retrieve feature switch is enabled" should {
+      "redirect to the start of the self employment journey" in {
+        enable(SaveAndRetrieve)
 
-      When("POST /details/income-receive is called")
-      val userInput = BusinessIncomeSourceModel(SelfEmployed)
-      val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
-
-      Then(s"Should return $SEE_OTHER with a redirect location of the start of the self employment journey")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
-      )
-    }
-
-    "redirect to the UK property start date page" in {
-      Given("I setup the wiremock stubs")
-      AuthStub.stubAuthSuccess()
-
-      When("POST /details/income-receive is called")
-      val userInput = BusinessIncomeSourceModel(UkProperty)
-      val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
-
-      Then(s"Should return $SEE_OTHER with a redirect location of property commencement date")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(propertyStartDateURI)
-      )
-    }
-
-    "redirect to the overseas property start date page" in {
-      Given("I setup the wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      And("Foreign property feature switch is enabled")
-      enable(ForeignPropertyFeature)
-
-      When("POST /details/income-receive is called")
-      val userInput = BusinessIncomeSourceModel(ForeignProperty)
-      val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
-
-      Then(s"Should return $SEE_OTHER with a redirect location of overseas property commencement date")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(overseasPropertyStartDateURI)
-      )
-    }
-
-    "return INTERNAL_SERVER_ERROR" when {
-      "the user selects overseas property and the foreign property feature switch is disabled" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
-          SubscriptionDataKeys.IncomeSource,
-          IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
-        )
-        And("Foreign property feature switch is disabled")
-        disable(ForeignPropertyFeature)
 
-        When("POST /details/income-receive is called")
-        val userInput = BusinessIncomeSourceModel(ForeignProperty)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+
+        When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
+        val userInput = SelfEmployed
         val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
 
-        Then("Should return INTERNAL_SERVER_ERROR")
+        Then(s"Should return $SEE_OTHER with a redirect location of the start of the self employment journey")
         res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
+          httpStatus(SEE_OTHER),
+          redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+        )
+      }
+
+      "redirect to the UK property start date page" in {
+        enable(SaveAndRetrieve)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+
+        When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
+        val userInput = UkProperty
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of property commencement date")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(propertyStartDateURI)
+        )
+      }
+
+      "redirect to the overseas property start date page" in {
+        enable(SaveAndRetrieve)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        And("Foreign property feature switch is enabled")
+        enable(ForeignPropertyFeature)
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+
+        When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
+        val userInput = OverseasProperty
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of overseas property commencement date")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(overseasPropertyStartDateURI)
+        )
+      }
+      "return a BAD_REQUEST (400)" when {
+        "no input is selected" in {
+          enable(SaveAndRetrieve)
+          enable(ForeignPropertyFeature)
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+
+          When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
+          val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(None)
+
+          Then(s"Should return $BAD_REQUEST with the income source page plus error")
+          res should have(
+            httpStatus(BAD_REQUEST),
+            pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          )
+        }
+        "self employment is selected but the user already has 50 self employment businesses" in {
+          enable(SaveAndRetrieve)
+          enable(ForeignPropertyFeature)
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            id = SubscriptionDataKeys.BusinessesKey,
+            responseStatus = OK,
+            responseBody = Json.toJson(Seq.fill(appConfig.maxSelfEmployments)(
+              SelfEmploymentData("testId")
+            ))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+
+          When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
+          val userInput = SelfEmployed
+          val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
+
+          Then(s"Should return $BAD_REQUEST with the income source page plus error")
+          res should have(
+            httpStatus(BAD_REQUEST),
+            pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          )
+        }
+        "uk property is selected but the user already has started uk property" in {
+          enable(SaveAndRetrieve)
+          enable(ForeignPropertyFeature)
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            id = SubscriptionDataKeys.Property,
+            responseStatus = OK,
+            responseBody = Json.toJson(PropertyModel(accountingMethod = Some(Cash)))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+
+          When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
+          val userInput = UkProperty
+          val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
+
+          Then(s"Should return $BAD_REQUEST with the income source page plus error")
+          res should have(
+            httpStatus(BAD_REQUEST),
+            pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          )
+        }
+        "overseas property is started but the user already has started overseas property" in {
+          enable(SaveAndRetrieve)
+          enable(ForeignPropertyFeature)
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            id = SubscriptionDataKeys.OverseasProperty,
+            responseStatus = OK,
+            responseBody = Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash)))
+          )
+
+          When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
+          val userInput = OverseasProperty
+          val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
+
+          Then(s"Should return $BAD_REQUEST with the income source page plus error")
+          res should have(
+            httpStatus(BAD_REQUEST),
+            pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          )
+        }
+        "overseas property but the overseas property feature switch is disabled" in {
+          enable(SaveAndRetrieve)
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+
+          When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
+          val userInput = OverseasProperty
+          val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
+
+          Then(s"Should return $BAD_REQUEST with the income source page plus error")
+          res should have(
+            httpStatus(BAD_REQUEST),
+            pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          )
+        }
+      }
+    }
+    "the save and retrieve feature switch is disabled" should {
+      "return a not found page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        When("GET /details/income-source is called")
+        val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
+
+        Then("Should return NOT FOUND")
+        res should have(
+          httpStatus(NOT_FOUND)
         )
       }
     }
