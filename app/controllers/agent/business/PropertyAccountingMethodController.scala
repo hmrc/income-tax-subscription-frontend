@@ -18,14 +18,17 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodPropertyForm
 import models.AccountingMethod
+import models.common.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.agent.business.PropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
@@ -33,18 +36,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: PropertyAccountingMethod,
-                                                    val auditingService: AuditingService,
+                                                   val auditingService: AuditingService,
                                                    val authService: AuthService,
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents,
                                                    val appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching with ReferenceRetrieval {
 
+  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
+
   def view(accountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
 
-  propertyAccountingMethod (
-    accountingMethodForm = accountingMethodForm,
+    propertyAccountingMethod(
+      accountingMethodForm = accountingMethodForm,
       postAction = controllers.agent.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode)
@@ -66,31 +71,37 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        subscriptionDetailsService.fetchIncomeSource(reference) flatMap {
-          case Some(incomeSource) => AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
-            formWithErrors => Future.successful(BadRequest(view(
-              accountingMethodForm = formWithErrors,
-              isEditMode = isEditMode
-            ))),
-            accountingMethod =>
-              subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethod) map { _ =>
-                if (isEditMode || !incomeSource.foreignProperty) {
-                  Redirect(controllers.agent.routes.CheckYourAnswersController.show)
-                } else {
-                  Redirect(routes.OverseasPropertyStartDateController.show())
+        AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
+          formWithErrors => Future.successful(BadRequest(view(
+            accountingMethodForm = formWithErrors,
+            isEditMode = isEditMode
+          ))),
+
+          accountingMethodProperty => {
+            subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) flatMap { _ =>
+              if (isSaveAndRetrieve) {
+                Future(Redirect(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
+              } else {
+                subscriptionDetailsService.fetchIncomeSource(reference) map {
+                  case Some(IncomeSourceModel(_, _, true)) =>
+                    Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
+                  case _ =>
+                    Redirect(controllers.agent.routes.CheckYourAnswersController.show)
                 }
               }
-          )
-        }
+            }
+          }
+        )
       }
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      controllers.agent.routes.CheckYourAnswersController.show.url
-    } else {
-      controllers.agent.business.routes.PropertyStartDateController.show().url
+  def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {
+    (isEditMode, isSaveAndRetrieve) match {
+      case (true, true) => controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
+      case (false, _) => controllers.agent.business.routes.PropertyStartDateController.show().url
+      case (true, false) => controllers.agent.routes.CheckYourAnswersController.show.url
     }
+
   }
 
 }

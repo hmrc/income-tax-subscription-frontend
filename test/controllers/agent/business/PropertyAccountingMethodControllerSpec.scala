@@ -17,12 +17,12 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
 import config.featureswitch._
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodPropertyForm
+import models.Cash
 import models.common.{IncomeSourceModel, PropertyModel}
-import models.{Accruals, Cash}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
@@ -38,6 +38,12 @@ import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(ReleaseFour)
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -69,11 +75,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   def cacheMap(incomeSource: Option[IncomeSourceModel] = None): CacheMap = testCacheMap(
     incomeSource = incomeSource
   )
-
-  override def beforeEach(): Unit = {
-    disable(ReleaseFour)
-    super.beforeEach()
-  }
 
   "show" when {
     "there is no previous selected answer" should {
@@ -111,9 +112,26 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       subscriptionRequest
     )
 
-    "it is not in edit mode" when {
+    "save and retrieve is enabled" should {
+      "redirect to agent uk property check your answers page" in {
+        enable(SaveAndRetrieve)
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty)))
+        mockFetchProperty(None)
+
+        val goodRequest: Future[Result] = callSubmit(isEditMode = false)
+
+        status(goodRequest) mustBe Status.SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(false).url)
+
+        await(goodRequest)
+        verifyPropertySave(PropertyModel(accountingMethod = Some(Cash)))
+      }
+    }
+
+    "save and retrieve is disabled" should {
       "the user doesn't have foreign property" should {
-        "redirect to CheckYourAnswer page" in {
+        "redirect to agent Check Your Answer page" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty)))
           mockFetchProperty(None)
@@ -128,10 +146,11 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         }
       }
       "the user has foreign property" should {
-        "redirect to the overseas property commencement date" in {
+        "redirect to the agent overseas property commencement date" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty.copy(foreignProperty = true))))
           mockFetchProperty(None)
+
 
           val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 
@@ -141,35 +160,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
           await(goodRequest)
           verifyPropertySave(PropertyModel(accountingMethod = Some(Cash)))
         }
-      }
-      "the user already has property details" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty)))
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Accruals), startDate = Some(testStartDate), confirmed = true)))
-
-        val goodRequest: Future[Result] = callSubmit(isEditMode = false)
-
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
-
-        await(goodRequest)
-        verifyPropertySave(PropertyModel(accountingMethod = Some(Cash), startDate = Some(testStartDate)))
-      }
-    }
-
-    "it is in edit mode" should {
-      "redirect to CheckYourAnswer page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty.copy(foreignProperty = true))))
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Accruals), startDate = Some(testStartDate), confirmed = true)))
-
-        val goodRequest = callSubmit(isEditMode = true)
-
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
-
-        await(goodRequest)
-        verifyPropertySave(PropertyModel(accountingMethod = Some(Cash), startDate = Some(testStartDate)))
       }
     }
 
@@ -190,18 +180,41 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
   "The back url" when {
     "in edit mode" should {
-      "redirect to the check your answers" in withController { controller =>
-        controller.backUrl(
-          isEditMode = true
-        ) mustBe controllers.agent.routes.CheckYourAnswersController.show.url
+      "save and retrieve is enabled" should {
+        "redirect to the agent uk property check your answers" in withController { controller =>
+          enable(SaveAndRetrieve)
+
+          controller.backUrl(
+            isEditMode = true
+          ) mustBe controllers.agent.business.routes.PropertyCheckYourAnswersController.show(true).url
+        }
+      }
+
+      "save and retrieve is disabled" should {
+        "redirect to the agent check your answers" in withController { controller =>
+          controller.backUrl(
+            isEditMode = true
+          ) mustBe controllers.agent.routes.CheckYourAnswersController.show.url
+        }
       }
     }
 
     "not in edit mode" should {
-      "redirect to the uk property commencement date" in withController { controller =>
-        controller.backUrl(
-          isEditMode = false
-        ) mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
+      "save and retrieve is enabled" should {
+        "redirect to the uk property commencement date" in withController { controller =>
+          enable(SaveAndRetrieve)
+          controller.backUrl(
+            isEditMode = false
+          ) mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
+        }
+      }
+
+      "save and retrieve is disabled" should {
+        "redirect to the uk property commencement date" in withController { controller =>
+          controller.backUrl(
+            isEditMode = false
+          ) mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
+        }
       }
     }
   }

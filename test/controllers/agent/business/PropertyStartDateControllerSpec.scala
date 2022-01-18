@@ -17,7 +17,7 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.PropertyStartDateForm
@@ -56,6 +56,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
+    disable(SaveAndRetrieve)
     super.beforeEach()
   }
 
@@ -70,16 +71,32 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
 
-  "show" should {
-    "display the property start date view and return OK (200)" in withController { controller =>
-      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+  "show" when {
+    "there is income source details" should {
+      "display the property start date view and return OK (200)" in withController { controller =>
+        lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-      mockFetchAllFromSubscriptionDetails(testCacheMap(
-        incomeSource = Some(incomeSourceBoth)
-      ))
-      mockFetchProperty(None)
+        mockFetchAllFromSubscriptionDetails(testCacheMap(
+          incomeSource = Some(incomeSourceBoth)
+        ))
+        mockFetchProperty(None)
 
-      status(result) must be(Status.OK)
+        status(result) must be(Status.OK)
+      }
+    }
+
+    "there is noo income source details" should {
+      "redirect to income source pagee" in withController { controller =>
+        lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+
+        mockFetchAllFromSubscriptionDetails(testCacheMap(
+          incomeSource = None
+        ))
+        mockFetchProperty(None)
+
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
+      }
     }
   }
 
@@ -103,34 +120,66 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
         subscriptionRequest
       )
 
-    "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303) to the property accounting method page" in withController { controller =>
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(None)
+    "When it is not in edit mode" when {
+      "save and retrieve is disabled" should {
+        "redirect to agent uk property accounting method page" in withController { controller =>
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(None)
+          val goodRequest = callSubmit(controller, isEditMode = false)
 
-        val goodRequest = callSubmit(controller, isEditMode = false)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          await(goodRequest)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
+          verifyPropertySave(PropertyModel(startDate = Some(testValidMaxStartDate)))
+        }
 
-        await(goodRequest)
-        verifyPropertySave(PropertyModel(startDate = Some(testValidMaxStartDate)))
       }
 
+      "save and retrieve is enabled" should {
+        "redirect to agent uk property accounting method page" in withController { controller =>
+          enable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(None)
+
+          val goodRequest = callSubmit(controller, isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          await(goodRequest)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
+
+          verifyPropertySave(PropertyModel(startDate = Some(testValidMaxStartDate)))
+
+        }
+      }
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303) to the check your answers page" in withController { controller =>
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(testFullPropertyModel)
+    "When it is in edit mode" when {
+      "save and retrieve is disabled" should {
+        "redirect to agent final check your answer page" in withController { controller =>
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(testFullPropertyModel)
+          val goodRequest = callSubmit(controller, isEditMode = true)
+          await(goodRequest)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
-        val goodRequest = callSubmit(controller, isEditMode = true)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
+          verifyPropertySave(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false))
+        }
+      }
 
-        await(goodRequest)
-        verifyPropertySave(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false))
+      "save and retrieve is enabled" should {
+        "redirect to agent uk property check your answers page" in withController { controller =>
+          enable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(testFullPropertyModel)
+          val goodRequest = callSubmit(controller, isEditMode = true)
+          await(goodRequest)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(true).url)
+
+          verifyPropertySave(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false))
+
+        }
       }
     }
 
@@ -149,25 +198,44 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     }
 
     "The back url is not in edit mode" when {
-      "the user has rental property and it is the only income source" should {
-        "redirect to income source page" in withController { controller =>
+      "save and retrieve is enabled" should {
+        //need to change to What Income Source To Sign Up page when it has been built
+        "redirect back to agent what income source page" in withController { controller =>
+          enable(SaveAndRetrieve)
           controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
             controllers.agent.routes.IncomeSourceController.show().url
         }
       }
 
-      "the user has rental property and has a business" should {
-        "redirect to Business Accounting Method page" in withController { controller =>
-          enable(ReleaseFour)
-          controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
-            appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method"
+      "save and retrieve is disabled" when {
+        "there is at least one self-employed income source" should {
+          "redirect back to agent business accounting method page" in withController { controller =>
+            controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
+              appConfig.incomeTaxSelfEmploymentsFrontendUrl + "client/details/business-accounting-method"
+          }
+        }
+
+        "there is no self-employed income source" should {
+          "redirect back to agent income source page" in withController { controller =>
+            controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+              controllers.agent.routes.IncomeSourceController.show().url
+          }
         }
       }
     }
 
+
     "The back url is in edit mode" when {
-      "the user click back url" should {
-        "redirect to check your answer page" in withController { controller =>
+      "save and retrieve is enabled" should {
+        "redirect back to agent uk property check your answers page" in withController { controller =>
+          enable(SaveAndRetrieve)
+          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
+            controllers.agent.business.routes.PropertyCheckYourAnswersController.show(true).url
+        }
+      }
+
+      "save and retrieve is disabled" should {
+        "redirect back to final check your answers page" in withController { controller =>
           controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
             controllers.agent.routes.CheckYourAnswersController.show.url
         }
