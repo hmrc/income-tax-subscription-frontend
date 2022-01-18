@@ -933,6 +933,14 @@ agent.business.check-your-answers.content.tax-year.question.hidden    = Change t
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
 
+## Agent UK property check your answers
+agent.business.check-your-answers.content.uk-property-start-date.question = UK property business trading start date
+agent.business.check-your-answers.content.uk-property-start-date.add  = Add UK property business trading start date
+agent.business.check-your-answers.content.uk-property-start-date.change = Change UK property business trading start date
+agent.business.check-your-answers.content.uk-property-accounting-method.question = UK property business accounting method
+agent.business.check-your-answers.content.uk-property-accounting-method.add = Add UK property business accounting method
+agent.business.check-your-answers.content.uk-property-accounting-method.change = Change UK property business accounting method
+
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Your progress has been saved
 agent.business.progress-saved.content.summary                         = We will keep your information until {0}.

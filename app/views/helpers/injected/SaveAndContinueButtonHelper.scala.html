@@ -14,15 +14,15 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.injected.ButtonHelper
 @import config.AppConfig
+@import views.html.helpers.injected.ButtonHelper
 
 @this(
   buttonHelper: ButtonHelper,
   appConfig: AppConfig
 )
 
-@(saveAndContinueText: Option[String] = None, hasSaveAndReturnLink: Boolean = true, disabled: Boolean = false)(implicit messages: Messages)
+@(isIndividual: Boolean, saveAndContinueText: Option[String] = None, hasSaveAndReturnLink: Boolean = true, disabled: Boolean = false)(implicit messages: Messages)
 
 @buttonHelper(
   buttonText = saveAndContinueText.getOrElse(messages("save-and-continue")),
@@ -33,6 +33,10 @@
   @buttonHelper(
     buttonText = messages("base.save-and-come-back-later"),
     classes = Some("govuk-button govuk-button--secondary"),
-    href = Some(controllers.individual.business.routes.ProgressSavedController.show.url)
+    href = if(isIndividual) {
+      Some(controllers.individual.business.routes.ProgressSavedController.show.url)
+    } else {
+      Some(controllers.agent.business.routes.ProgressSavedController.show.url)
+    }
   )
 }
