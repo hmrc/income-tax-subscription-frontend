@@ -975,6 +975,27 @@ agent.error.overseas.property.start_date.maxStartDate           = Nodwch y dyddi
 agent.error.overseas.property.start_date.minStartDate           = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
 agent.error.overseas.property.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 
+# Agent Task List
+agent.business.task-list.title                                        = Gwirio a llenwi manylion busnes eich cleient
+agent.business.task-list.heading.incomplete                           = Cais heb ei gwblhau
+agent.business.task-list.heading.complete                             = Cais wedi’i gwblhau
+agent.business.task-list.content.summary                              = Rydych wedi llenwi {0} adran allan o {1}.
+agent.business.task-list.content.section1                             = Dewiswch flwyddyn dreth i gofrestru
+agent.business.task-list.content.section1.action                      = Dewiswch y flwyddyn dreth
+agent.business.task-list.content.section1.current-tax-year            = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
+agent.business.task-list.content.section1.next-tax-year               = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
+agent.business.task-list.content.section2                             = Rhoi gwybod i ni am incwm eich cleient
+agent.business.task-list.content.section2.action                      = Ychwanegu busnes
+agent.business.task-list.content.section2.property.uk                 = Busnes eiddo yn y DU
+agent.business.task-list.content.section2.property.overseas           = Busnes eiddo tramor
+agent.business.task-list.content.section3                             = Cofrestru
+agent.business.task-list.content.action-needed                        = Mae angen i chi gwblhau’r adran ‘{0}’ cyn i chi allu cadarnhau a chofrestru.
+agent.business.task-list.status.completed                             = Wedi’i gwblhau
+agent.business.task-list.status.incomplete                            = Heb ei gwblhau
+agent.business.task-list.status.in-progress                           = Ar waith
+agent.business.task-list.status.not-started                           = Heb ddechrau
+agent.continue.button                                                 = Cyflwyno ac yn y blaen
+
 ## Service name
 agent_service_name.title                                        = Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient
 

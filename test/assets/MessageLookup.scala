@@ -325,7 +325,9 @@ object MessageLookup {
 
   object TaskList {
     val title = "Check and complete your business details - Use software to send Income Tax updates - GOV.UK"
+    val agentTitle = "Check and complete your client’s business details - Use software to report your client’s Income Tax - GOV.UK"
     val heading = "Check and complete your business details"
+    val agentHeading = "Check and complete your client’s business details"
     val subHeadingComplete = "Application complete"
     val subHeadingIncomplete = "Application incomplete"
 
@@ -333,10 +335,13 @@ object MessageLookup {
 
     val item1 = "1. Choose a tax year to sign up"
     val item2 = "2. Tell us about your income"
+    val agentItem2 = "2. Tell us about your client’s income"
     val item3 = "3. Sign up"
     val signUp = "3. Sign up"
     val signUpIncompleteText = "You need to complete the `Tell us about your income` section before you can confirm and sign up"
+    val agentSignUpIncompleteText = "You need to complete the `Tell us about your client’s income` section before you can confirm and sign up"
     val continue = "Continue"
+    val submitContinue = "Submit and continue"
     val selectTaxYear = "Select tax year"
     val complete = "Complete"
     val incomplete = "Incomplete"

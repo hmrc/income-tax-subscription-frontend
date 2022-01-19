@@ -21,7 +21,8 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import play.api.http.Status.OK
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 import utilities.UnitTestTrait
 
 import scala.concurrent.Future
@@ -42,5 +43,23 @@ trait MockAgentSPSConnector extends UnitTestTrait with MockitoSugar with BeforeA
       ArgumentMatchers.eq(utr),
       ArgumentMatchers.eq(mtditid)
     )(ArgumentMatchers.any[HeaderCarrier])
+  }
+
+  def mockAgentSpsConnectorSuccess(arn: String, utr: String, nino: String, mtditid: String): Unit = {
+    when(mockAgentSpsConnector.postSpsConfirm(ArgumentMatchers.eq(arn),
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(utr),
+      ArgumentMatchers.eq(mtditid)
+    )(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(Future.successful(HttpResponse(OK,"")))
+  }
+
+  def mockAgentSpsConnectorFailure(arn: String, utr: String, nino: String, mtditid: String): Unit = {
+    when(mockAgentSpsConnector.postSpsConfirm(ArgumentMatchers.eq(arn),
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(utr),
+      ArgumentMatchers.eq(mtditid)
+    )(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(Future.failed(new InternalServerException("Test Exception")))
   }
 }

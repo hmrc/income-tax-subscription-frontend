@@ -108,6 +108,8 @@ trait AppConfig extends FeatureSwitching {
 
   def incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String
 
+  def agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String
+
   def incomeTaxSelfEmploymentsFrontendInitialiseUrl: String
 
   def incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String
@@ -279,6 +281,10 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   override val incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-check-your-answers"
+  }
+
+  override val agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/client/details/business-check-your-answers"
   }
 
 
