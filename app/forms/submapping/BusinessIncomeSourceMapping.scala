@@ -16,26 +16,40 @@
 
 package forms.submapping
 
-import models.common.ForeignProperty.FOREIGN_PROPERTY
+import models.IncomeSourcesStatus
+import models.common.OverseasProperty.OVERSEAS_PROPERTY
 import models.common.SelfEmployed.SELF_EMPLOYED
 import models.common.UkProperty.UK_PROPERTY
-import models.common.{BusinessIncomeSource, ForeignProperty, SelfEmployed, UkProperty}
+import models.common.{BusinessIncomeSource, OverseasProperty, SelfEmployed, UkProperty}
 import play.api.data.Forms.of
 import play.api.data.format.Formatter
-import play.api.data.validation.Invalid
 import play.api.data.{FormError, Mapping}
+import uk.gov.hmrc.http.InternalServerException
 
 object BusinessIncomeSourceMapping {
-  def apply(errInvalid: Invalid, errEmpty: Option[Invalid]): Mapping[BusinessIncomeSource] = of(new Formatter[BusinessIncomeSource] {
+
+  def apply(incomeSourcesStatus: IncomeSourcesStatus): Mapping[BusinessIncomeSource] = of(new Formatter[BusinessIncomeSource] {
+
+    def errorKey: String = {
+      (incomeSourcesStatus.selfEmploymentAvailable, incomeSourcesStatus.ukPropertyAvailable, incomeSourcesStatus.overseasPropertyAvailable) match {
+        case (true, true, true) => "error.business-income-source.all-sources"
+        case (true, true, false) => "error.business-income-source.self-employed-uk-property"
+        case (true, false, true) => "error.business-income-source.self-employed-overseas-property"
+        case (false, true, true) => "error.business-income-source.uk-property-overseas-property"
+        case (true, false, false) => "error.business-income-source.self-employed"
+        case (false, true, false) => "error.business-income-source.uk-property"
+        case (false, false, true) => "error.business-income-source.overseas-property"
+        case (false, false, false) =>
+          throw new InternalServerException("[BusinessIncomeSourceMapping][apply] - Unexpected state of income sources available")
+      }
+    }
+
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BusinessIncomeSource] = {
       data.get(key) match {
-        case Some(SELF_EMPLOYED) => Right(SelfEmployed)
-        case Some(UK_PROPERTY) => Right(UkProperty)
-        case Some(FOREIGN_PROPERTY) => Right(ForeignProperty)
-        case Some(other) if other.nonEmpty => Left(errInvalid.errors.map(e => FormError(key, e.message, e.args)))
-        case _ =>
-          val err = errEmpty.getOrElse(errInvalid)
-          Left(err.errors.map(e => FormError(key, e.message, e.args)))
+        case Some(SELF_EMPLOYED) if incomeSourcesStatus.selfEmploymentAvailable => Right(SelfEmployed)
+        case Some(UK_PROPERTY) if incomeSourcesStatus.ukPropertyAvailable => Right(UkProperty)
+        case Some(OVERSEAS_PROPERTY) if incomeSourcesStatus.overseasPropertyAvailable => Right(OverseasProperty)
+        case _ => Left(Seq(FormError(key = key, message = errorKey)))
       }
     }
 
@@ -43,10 +57,12 @@ object BusinessIncomeSourceMapping {
       val stringValue = value match {
         case SelfEmployed => SELF_EMPLOYED
         case UkProperty => UK_PROPERTY
-        case ForeignProperty => FOREIGN_PROPERTY
+        case OverseasProperty => OVERSEAS_PROPERTY
       }
 
       Map(key -> stringValue)
     }
+
   })
+
 }

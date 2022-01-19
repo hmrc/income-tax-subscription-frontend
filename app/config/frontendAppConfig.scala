@@ -135,6 +135,8 @@ trait AppConfig extends FeatureSwitching {
 
   def feedbackFrontendAgentRedirectUrl: String
 
+  def maxSelfEmployments: Int
+
 }
 
 @Singleton
@@ -334,4 +336,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
   override val incomeTaxViewChangeUrl: String = {
     s"${config.getString("income-tax-view-change-frontend.url")}/report-quarterly/income-and-expenses/view"
   }
+
+  override val maxSelfEmployments: Int = config.getInt("self-employments.max-amount")
+
 }

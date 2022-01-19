@@ -20,7 +20,7 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
-import models.common.business.{AccountingMethodModel, BusinessNameModel}
+import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -30,8 +30,7 @@ import play.api.libs.json.{Json, Writes}
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys._
-import utilities.UnitTestTrait
+import utilities.{SubscriptionDataKeys, UnitTestTrait}
 
 import scala.concurrent.Future
 
@@ -64,18 +63,20 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       case Some(data) => CacheMap("", testData.data.updated(key, Json.toJson(data)))
       case _ => testData
     }
-    when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.any(), ArgumentMatchers.eq(subscriptionId))(
+    when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId))(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Some(testData)))
   }
 
   protected final def verifySubscriptionDetailsFetch[T](key: String, someCount: Option[Int]): Unit =
-    someCount map (count => verify(mockConnector, times(count)).getSubscriptionDetails[T](ArgumentMatchers.any(), ArgumentMatchers.eq(subscriptionId))(
-      ArgumentMatchers.any(), ArgumentMatchers.any()))
+    someCount map (count => verify(mockConnector, times(count))
+      .getSubscriptionDetails[T](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId))(
+        ArgumentMatchers.any(), ArgumentMatchers.any())
+      )
 
   protected final def verifySubscriptionDetailsSave[T](key: String, someCount: Option[Int]): Unit =
     someCount map (count => verify(mockConnector, times(count)).saveSubscriptionDetails[T](
       ArgumentMatchers.any(),
-      ArgumentMatchers.eq(subscriptionId),
+      ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId),
       ArgumentMatchers.any()
     )(ArgumentMatchers.any(), ArgumentMatchers.any()))
 
@@ -88,54 +89,54 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   }
 
   protected final def mockFetchIncomeSourceFromSubscriptionDetails(fetchIncomeSource: Option[IncomeSourceModel]): Unit = {
-    mockFetchFromSubscriptionDetails[IncomeSourceModel](IncomeSource, fetchIncomeSource)
+    mockFetchFromSubscriptionDetails[IncomeSourceModel](SubscriptionDataKeys.IncomeSource, fetchIncomeSource)
   }
 
   protected final def mockFetchIndividualIncomeSourceFromSubscriptionDetails(fetchIndividualIncomeSource: Option[IncomeSourceModel]): Unit = {
-    mockFetchFromSubscriptionDetails[IncomeSourceModel](IncomeSource, fetchIndividualIncomeSource)
+    mockFetchFromSubscriptionDetails[IncomeSourceModel](SubscriptionDataKeys.IncomeSource, fetchIndividualIncomeSource)
   }
 
   protected final def mockFetchBusinessNameFromSubscriptionDetails(fetchBusinessName: Option[BusinessNameModel]): Unit = {
-    mockFetchFromSubscriptionDetails[BusinessNameModel](BusinessName, fetchBusinessName)
+    mockFetchFromSubscriptionDetails[BusinessNameModel](SubscriptionDataKeys.BusinessName, fetchBusinessName)
   }
 
   protected final def mockFetchAccountingMethodFromSubscriptionDetails(fetchAccountingMethod: Option[AccountingMethodModel]): Unit = {
-    mockFetchFromSubscriptionDetails[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
+    mockFetchFromSubscriptionDetails[AccountingMethodModel](SubscriptionDataKeys.AccountingMethod, fetchAccountingMethod)
   }
 
   protected final def mockFetchSubscriptionIdFromSubscriptionDetails(fetchSubscriptionId: Option[String]): Unit = {
-    mockFetchFromSubscriptionDetails[String](MtditId, fetchSubscriptionId)
+    mockFetchFromSubscriptionDetails[String](SubscriptionDataKeys.MtditId, fetchSubscriptionId)
   }
 
   protected final def mockFetchSelectedTaxYearFromSubscriptionDetails(fetchSelectedTaxYear: Option[AccountingYearModel]): Unit = {
-    mockFetchFromSubscriptionDetails[AccountingYearModel](SelectedTaxYear, fetchSelectedTaxYear)
+    mockFetchFromSubscriptionDetails[AccountingYearModel](SubscriptionDataKeys.SelectedTaxYear, fetchSelectedTaxYear)
   }
 
   protected final def mockFetchPaperlessPreferenceToken(fetchPaperlessPreferenceToken: Option[String]): Unit = {
-    mockFetchFromSubscriptionDetails[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
+    mockFetchFromSubscriptionDetails[String](SubscriptionDataKeys.PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
   }
 
   protected final def mockFetchLastUpdatedTimestamp(fetchLastUpdatedTimestamp: Option[TimestampModel]): Unit = {
-    when(mockConnector.getSubscriptionDetails[TimestampModel](ArgumentMatchers.any(), ArgumentMatchers.eq(lastUpdatedTimestamp))(
+    when(mockConnector.getSubscriptionDetails[TimestampModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.lastUpdatedTimestamp))(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchLastUpdatedTimestamp))
   }
 
   protected final def mockFetchAllFromSubscriptionDetails(fetchAll: Option[CacheMap]): Unit = {
-    when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.any(), ArgumentMatchers.eq(subscriptionId))(
+    when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId))(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchAll))
   }
 
   protected final def mockFetchProperty(property: Option[PropertyModel]): Unit = {
-    when(mockConnector.getSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(Property))
+    when(mockConnector.getSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.Property))
       (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(property))
   }
 
   protected final def verifyPropertySave(property: Option[PropertyModel]): Unit = {
     property match {
       case Some(value) => verify(mockConnector, times(1))
-        .saveSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(Property), ArgumentMatchers.eq(value))(any(), any())
+        .saveSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.Property), ArgumentMatchers.eq(value))(any(), any())
       case None => verify(mockConnector, times(0))
-        .saveSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(Property), any())(any(), any())
+        .saveSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.Property), any())(any(), any())
     }
   }
 
@@ -149,7 +150,7 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   }
 
   protected final def mockFetchOverseasProperty(overseasProperty: Option[OverseasPropertyModel]): Unit = {
-    when(mockConnector.getSubscriptionDetails[OverseasPropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(OverseasProperty))
+    when(mockConnector.getSubscriptionDetails[OverseasPropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.OverseasProperty))
       (ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(overseasProperty))
   }
@@ -161,14 +162,19 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
         times(1)
       ).saveSubscriptionDetails[OverseasPropertyModel](
         ArgumentMatchers.any(),
-        ArgumentMatchers.eq(OverseasProperty),
+        ArgumentMatchers.eq(SubscriptionDataKeys.OverseasProperty),
         ArgumentMatchers.eq(value)
       )(any(), any())
       case None => verify(
         mockConnector,
         times(0)
-      ).saveSubscriptionDetails[OverseasPropertyModel](any(), ArgumentMatchers.eq(Property), any())(any(), any())
+      ).saveSubscriptionDetails[OverseasPropertyModel](any(), ArgumentMatchers.eq(SubscriptionDataKeys.Property), any())(any(), any())
     }
+  }
+
+  protected final def mockFetchAllSelfEmployments(selfEmployments: Option[Seq[SelfEmploymentData]] = None): Unit = {
+    when(mockConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessesKey))(any(), any()))
+      .thenReturn(Future.successful(selfEmployments))
   }
 
   protected final def verifySubscriptionDetailsDeleteAll(deleteAll: Option[Int]): Unit = {

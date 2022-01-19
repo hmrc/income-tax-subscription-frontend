@@ -114,13 +114,19 @@ income_source.checkbox.hint                                     = Select all tha
 ## Individual what income source to sign up page
 what_income_source_to_sign_up.title                             = What source of income do you want to sign up?
 what_income_source_to_sign_up.heading                           = What source of income do you want to sign up?
-what_income_source_to_sign_up.para1                             = Your client can have any number of sole trader businesses. However, they can have only one UK rental property and one overseas rental property.
+what_income_source_to_sign_up.para1                             = You can have up to {0} sole trader businesses. However, you can only add one UK rental property and one Overseas rental property.
 what_income_source_to_sign_up.para2                             = Renting out a property includes using a letting agency.
-what_income_source_to_sign_up.selfEmployed                      = Sole trader businesses
+what_income_source_to_sign_up.selfEmployed                      = Sole trader business
 what_income_source_to_sign_up.ukProperty                        = UK property rental
 what_income_source_to_sign_up.foreignProperty                   = Overseas property rental
-individual.error.business_income_source.invalid                 = Select Sole trader business, UK property rental or Overseas property rental.
-individual.error.business_income_source_foreignProperty.invalid = Select Sole trader business, UK property rental or Overseas property rental
+
+error.business-income-source.all-sources                        = Select Sole trader business, UK property rental or Overseas property rental
+error.business-income-source.self-employed-uk-property          = You need to select Sole trader business or UK property rental
+error.business-income-source.self-employed-overseas-property    = You need to select Sole trader business or Overseas property rental
+error.business-income-source.uk-property-overseas-property      = You need to select UK property rental or Overseas property rental
+error.business-income-source.self-employed                      = You need to select Sole trader business
+error.business-income-source.uk-property                        = You need to select UK property rental
+error.business-income-source.overseas-property                  = You need to select Overseas property rental
 
 ## Rent Uk Property page
 rent_uk_property.title                                          = Do you rent out a UK property?

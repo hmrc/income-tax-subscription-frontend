@@ -126,6 +126,8 @@ trait MockConfig extends AppConfig {
 
   override val incomeTaxViewChangeUrl: String = "/income-tax-view-change-frontend"
 
+  override val maxSelfEmployments: Int = 50
+
 }
 
 object MockConfig extends MockConfig

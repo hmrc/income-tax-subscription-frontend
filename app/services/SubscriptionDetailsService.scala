@@ -109,10 +109,10 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[PropertyModel](reference, Property, property)
 
   def fetchOverseasProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[OverseasPropertyModel]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](reference, OverseasProperty)
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](reference, SubscriptionDataKeys.OverseasProperty)
 
   def saveOverseasProperty(reference: String, overseasProperty: OverseasPropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[OverseasPropertyModel](reference, OverseasProperty, overseasProperty)
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[OverseasPropertyModel](reference, SubscriptionDataKeys.OverseasProperty, overseasProperty)
 
   def fetchPropertyStartDate(reference: String)(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
     fetchProperty(reference).map(_.flatMap(_.startDate))
@@ -165,6 +165,15 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     } flatMap { model =>
       saveOverseasProperty(reference, model)
     }
+  }
+
+  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[Option[Seq[SelfEmploymentData]]] = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+  }
+
+  def fetchSelfEmploymentsAccountingMethod(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+      .map(_.map(_.accountingMethod))
   }
 
 }

@@ -112,15 +112,21 @@ individual.error.income_source_foreignProperty.invalid          = Dewiswch eich 
 income_source.checkbox.hint                                     = Dewiswch bob un sy’n gymwys
 
 ## Individual what income source to sign up page
-what_income_source_to_sign_up.title                             = Pa ffynhonnell incwm ydych chi am ei gofrestru?
-what_income_source_to_sign_up.heading                           = Pa ffynhonnell incwm ydych chi am ei gofrestru?
-what_income_source_to_sign_up.para1                             = Gall eich cleient fod ag unrhyw nifer o fusnesau unig fasnachwr. Fodd bynnag, dim ond un eiddo ar osod yn y DU ac un eiddo ar osod dramor y gallai ei gael.
-what_income_source_to_sign_up.para2                             = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod.
+what_income_source_to_sign_up.title                             = Pa ffynhonnell incwm ydych chi am ei chofrestru?
+what_income_source_to_sign_up.heading                           = Pa ffynhonnell incwm ydych chi am ei chofrestru?
+what_income_source_to_sign_up.para1                             = Gallwch gael hyd at {0} o fusnesau unig fasnachwr. Fodd bynnag, dim ond un eiddo rhent yn y DU ac un eiddo rhent tramor y gallwch eu hychwanegu.
+what_income_source_to_sign_up.para2                             = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
 what_income_source_to_sign_up.selfEmployed                      = Busnes unig fasnachwr
-what_income_source_to_sign_up.ukProperty                        = Rhoi eiddo ar osod yn y DU
-what_income_source_to_sign_up.foreignProperty                   = Rhoi eiddo ar osod dramor
-individual.error.business_income_source.invalid                 = Dewiswch ‘busnes unig fasnachwr’, ‘rhoi eiddo ar osod yn y DU’ neu ‘rhoi eiddo ar osod dramor’
-individual.error.business_income_source_foreignProperty.invalid = Dewiswch ‘busnes unig fasnachwr’, ‘rhoi eiddo ar osod yn y DU’ neu ‘rhoi eiddo ar osod dramor’
+what_income_source_to_sign_up.ukProperty                        = Eiddo rhent yn y DU
+what_income_source_to_sign_up.foreignProperty                   = Eiddo rhent tramor
+
+error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
+error.business-income-source.self-employed-uk-property          = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent yn y DU
+error.business-income-source.self-employed-overseas-property    = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent tramor
+error.business-income-source.uk-property-overseas-property      = Mae angen i chi ddewis Eiddo rhent yn y DU neu Eiddo rhent tramor
+error.business-income-source.self-employed                      = Mae angen i chi ddewis Busnes unig fasnachwr
+error.business-income-source.uk-property                        = Mae angen i chi ddewis Eiddo rhent yn y DU
+error.business-income-source.overseas-property                  = Mae angen i chi ddewis Eiddo rhent tramor
 
 ## Rent Uk Property page
 rent_uk_property.title                                          = Ydych chi’n gosod eiddo yn y DU?
