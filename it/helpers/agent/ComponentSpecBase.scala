@@ -315,6 +315,14 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
       )
     }
 
+    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/business/uk-property-check-your-answers", sessionData)
+    }
+
+    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/business/uk-property-check-your-answers", sessionData)(Map.empty)
+    }
+
     def overseasPropertyStartDate(): WSResponse = get("/business/overseas-commencement-date")
 
     def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {

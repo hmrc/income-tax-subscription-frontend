@@ -14,8 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.injected.ContinueButton
-@import views.html.helpers.injected.SaveAndContinueButtonHelper
+@import views.html.helpers.injected.{ContinueButton, SaveAndContinueButtonHelper}
 
 @this(
   form: FormWithCSRF,
@@ -26,6 +25,7 @@
 @(
   heading: String,
   postAction: Call,
+  isIndividual: Boolean,
   headingHidden: Option[String] = None,
   isComplete: Boolean = false,
   isConfirmed: Boolean = false,
@@ -47,6 +47,7 @@
   <div class="form-group">
     @if(saveAndContinue) {
       @saveAndContinueButton(
+        isIndividual = isIndividual,
         saveAndContinueText = if(isConfirmed) Some(messages("base.continue")) else Some(messages("base.confirm-and-continue")),
         disabled = !isComplete
       )

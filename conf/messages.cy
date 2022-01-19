@@ -261,6 +261,14 @@ agent.business.check-your-answers.content.tax-year.question.hidden    = ?
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 
+## Agent UK property check your answers
+agent.business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo yn y DU
+
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi ei gadw
 agent.business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
@@ -1027,10 +1035,10 @@ business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu saf
 ## UK property
 business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.change = ?
+business.check-your-answers.content.uk-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-accounting-method.change = ?
+business.check-your-answers.content.uk-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo yn y DU
 ## Overseas property
 business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor

@@ -15,12 +15,11 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.injected.ContinueButton
-@import views.html.templates.AgentMainTemplate
 @import models.common.AccountingYearModel
 @import services.AccountingPeriodService
-@import views.html.templates.injected.CheckYourAnswers
-@import views.html.templates.injected.CheckYourAnswersRow
+@import views.html.helpers.injected.ContinueButton
+@import views.html.templates.AgentMainTemplate
+@import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
 
 @this(
   mainTemplate: AgentMainTemplate,
@@ -46,7 +45,7 @@
 
 @mainTemplate(title = messages("agent.business.check-your-answers.title"), backLink = Some(backUrl)) {
 
-  @checkYourAnswers(heading = messages("business.check-your-answers.title"), postAction) {
+  @checkYourAnswers(heading = messages("business.check-your-answers.title"), isIndividual = false, postAction = postAction) {
     @checkYourAnswersRow(
       field = "tax-year",
       question = messages("agent.business.check-your-answers.content.tax-year.question"),

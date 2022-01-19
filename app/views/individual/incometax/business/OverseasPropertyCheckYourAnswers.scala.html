@@ -15,9 +15,9 @@
  *@
 
 @import config.AppConfig
+@import models.common.OverseasPropertyModel
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
-@import models.common.OverseasPropertyModel
 
 @this(
   mainTemplate: PrincipalMainTemplate,
@@ -49,6 +49,7 @@
 @mainTemplate(title = messages("business.check-your-answers.title"), backLink = Some(backUrl)){
   @checkYourAnswers(
     heading = messages("business.check-your-answers.title"),
+    isIndividual = true,
     postAction = postAction,
     isComplete = viewModel.startDate.isDefined && viewModel.accountingMethod.isDefined,
     isConfirmed = viewModel.confirmed,
