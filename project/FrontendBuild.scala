@@ -1,7 +1,6 @@
 
-import sbt._
 import play.sbt.PlayImport._
-import play.core.PlayVersion
+import sbt._
 
 object FrontendBuild {
 
@@ -20,8 +19,8 @@ private object AppDependencies {
   private val domainVersion = "6.2.0-play-28"
   private val catsVersion = "0.9.0"
 
-  private val scalaTestVersion = "3.0.9"
-  private val scalaTestPlusVersion = "5.0.0"
+  private val scalaTestVersion = "3.2.10"
+  private val scalaTestPlusVersion = "5.1.0"
   private val pegdownVersion = "1.6.0"
   private val wiremockVersion = "2.27.2"
 
@@ -45,12 +44,13 @@ private object AppDependencies {
   object Test {
     def apply(): Seq[ModuleID] = new TestDependencies {
       override lazy val test: Seq[ModuleID] = Seq(
-        "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
-        "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
-        "org.pegdown" % "pegdown" % pegdownVersion % scope,
-        "org.jsoup" % "jsoup" % "1.13.1" % scope,
-        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.mockito" % "mockito-core" % "3.7.0" % scope
+        "org.mockito" % "mockito-core" % "4.1.0" % scope,
+        "org.scalatest" %% "scalatest" % "3.2.10" % scope,
+        "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % scope,
+        "org.scalatestplus" %% "mockito-3-12" % "3.2.10.0" % scope,
+        "uk.gov.hmrc" %% "bootstrap-test-play-28" % bootstrapPlayVersion % scope,
+        "org.jsoup" % "jsoup" % "1.14.3" % scope,
+        "com.vladsch.flexmark" % "flexmark-all" % "0.62.2" % scope
       )
     }.test
   }
@@ -61,13 +61,13 @@ private object AppDependencies {
       override lazy val scope: String = "it"
 
       override lazy val test: Seq[ModuleID] = Seq(
-        "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
-        "org.pegdown" % "pegdown" % pegdownVersion % scope,
-        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
-        "com.github.fge" % "json-schema-validator" % "2.2.6" % scope,
-        "org.jsoup" % "jsoup" % "1.13.1" % scope,
-        "com.github.tomakehurst" % "wiremock-jre8" % wiremockVersion % scope
+        "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.0" % scope,
+        "com.github.tomakehurst" % "wiremock-jre8" % "2.32.0" % scope,
+        "org.scalatestplus" %% "mockito-3-12" % "3.2.10.0" % scope,
+        "uk.gov.hmrc" %% "bootstrap-test-play-28" % "5.17.0" % scope,
+        "org.scalatest" %% "scalatest" % "3.2.10" % scope,
+        "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % scope,
+        "com.vladsch.flexmark" % "flexmark-all" % "0.62.2" % scope
       )
     }.test
   }

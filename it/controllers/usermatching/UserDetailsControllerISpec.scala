@@ -23,7 +23,7 @@ import helpers.servicemocks.{AuthStub, UserLockoutStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers._
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 
@@ -75,7 +75,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
       // Check that input has hint ref, which is not nested
       val input = Jsoup.parse(res.body).selectOptionally("""input[aria-describedby="userNino-hint"]""")
       input.isDefined mustBe true
-      input.get.childrenSize() mustBe (0)
+      input.get.children().size mustBe 0
       // Check that hint exists
       Jsoup.parse(res.body).selectOptionally("""div[id="userNino-hint"]""").isDefined mustBe true
     }

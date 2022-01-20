@@ -17,24 +17,25 @@
 package models.common
 
 import models.{Cash, DateModel}
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsSuccess, Json}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class OverseasPropertyModelSpec extends WordSpecLike with Matchers with OptionValues {
-    "OverseasPropertyModel" should {
-      "deserialize without confirmed field" in {
-        val actual = Json.fromJson[OverseasPropertyModel](Json.parse("""{"startDate":{"day":"5","month":"11","year":"2021"}}"""))
-        val expected = OverseasPropertyModel(startDate = Some(DateModel("5","11","2021")))
-        actual mustBe JsSuccess(expected)
-      }
-
-      "deserialize with confirmed field" in {
-        val actual = Json.fromJson[OverseasPropertyModel](
-          Json.parse("""{"accountingMethod":"Cash","startDate":{"day":"5","month":"11","year":"2021"},"confirmed":true}""")
-        )
-        val expected = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("5","11","2021")), confirmed = true)
-        actual mustBe JsSuccess(expected)
-      }
+class OverseasPropertyModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
+  "OverseasPropertyModel" should {
+    "deserialize without confirmed field" in {
+      val actual = Json.fromJson[OverseasPropertyModel](Json.parse("""{"startDate":{"day":"5","month":"11","year":"2021"}}"""))
+      val expected = OverseasPropertyModel(startDate = Some(DateModel("5", "11", "2021")))
+      actual mustBe JsSuccess(expected)
     }
+
+    "deserialize with confirmed field" in {
+      val actual = Json.fromJson[OverseasPropertyModel](
+        Json.parse("""{"accountingMethod":"Cash","startDate":{"day":"5","month":"11","year":"2021"},"confirmed":true}""")
+      )
+      val expected = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("5", "11", "2021")), confirmed = true)
+      actual mustBe JsSuccess(expected)
+    }
+  }
 }

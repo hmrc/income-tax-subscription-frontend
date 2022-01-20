@@ -18,7 +18,7 @@ package services
 
 import models.{Activated, Unset}
 import org.scalatest.EitherValues
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

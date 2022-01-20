@@ -23,7 +23,7 @@ import forms.formatters.DateModelMapping.{day, month, year}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import models.common.PropertyStartDateModel
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}

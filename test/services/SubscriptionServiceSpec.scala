@@ -23,7 +23,7 @@ import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpPa
 import models.Cash
 import models.common.subscription._
 import org.scalatest.EitherValues
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.test.Helpers._
 import services.mocks.TestSubscriptionService
 import utilities.AccountingPeriodUtil.getCurrentTaxYear

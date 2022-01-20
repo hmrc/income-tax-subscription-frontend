@@ -21,7 +21,8 @@ import models.common.business.AccountingMethodModel
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.{MustMatchers, WordSpecLike}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.functional.~
 import play.api.libs.json.Format.GenericFormat
@@ -37,7 +38,7 @@ import utilities.SubscriptionDataKeys
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RequirementsSpec extends WordSpecLike with MustMatchers with MockitoSugar {
+class RequirementsSpec extends AnyWordSpecLike with Matchers with MockitoSugar {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

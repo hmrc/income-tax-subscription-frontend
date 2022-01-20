@@ -16,16 +16,18 @@
 
 package models.common
 
-import models.{Cash, Current, DateModel}
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import models.{Cash, DateModel}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsSuccess, Json}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class PropertyModelSpec extends WordSpecLike with Matchers with OptionValues {
+class PropertyModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
+
   "PropertyModel" should {
     "deserialize without confirmed field" in {
       val actual = Json.fromJson[PropertyModel](Json.parse("""{"startDate":{"day":"5","month":"11","year":"2021"}}"""))
-      val expected = PropertyModel(startDate = Some(DateModel("5","11","2021")))
+      val expected = PropertyModel(startDate = Some(DateModel("5", "11", "2021")))
       actual mustBe JsSuccess(expected)
     }
 
@@ -33,8 +35,9 @@ class PropertyModelSpec extends WordSpecLike with Matchers with OptionValues {
       val actual = Json.fromJson[PropertyModel](
         Json.parse("""{"accountingMethod":"Cash","startDate":{"day":"5","month":"11","year":"2021"},"confirmed":true}""")
       )
-      val expected = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("5","11","2021")), confirmed = true)
+      val expected = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("5", "11", "2021")), confirmed = true)
       actual mustBe JsSuccess(expected)
     }
   }
+
 }

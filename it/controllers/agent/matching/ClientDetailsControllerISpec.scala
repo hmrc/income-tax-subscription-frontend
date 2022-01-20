@@ -23,11 +23,10 @@ import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers._
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.OK
-
 
 class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
@@ -77,7 +76,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         // Check that input has hint ref, which is not nested
         val input = Jsoup.parse(res.body).selectOptionally("""input[aria-describedby="clientNino-hint"]""")
         input.isDefined mustBe true
-        input.get.childrenSize() mustBe 0
+        input.get.children().size mustBe 0
         // Check that hint exists
         Jsoup.parse(res.body).selectOptionally("""div[id="clientNino-hint"]""").isDefined mustBe true
       }

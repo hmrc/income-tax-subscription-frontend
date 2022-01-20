@@ -16,9 +16,11 @@
 
 package config.featureswitch
 
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-class FeatureSwitchingSpec extends WordSpecLike with Matchers with OptionValues with FeatureSwitching {
+class FeatureSwitchingSpec extends AnyWordSpecLike with Matchers with OptionValues with FeatureSwitching {
 
   FeatureSwitch.switches foreach { switch =>
     s"isEnabled(${switch.name})" should {

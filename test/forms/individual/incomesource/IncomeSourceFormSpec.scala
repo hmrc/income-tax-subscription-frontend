@@ -18,7 +18,7 @@ package forms.individual.incomesource
 
 import forms.individual.incomesource.IncomeSourceForm._
 import models.common.IncomeSourceModel
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.data.FormBinding.Implicits.formBinding

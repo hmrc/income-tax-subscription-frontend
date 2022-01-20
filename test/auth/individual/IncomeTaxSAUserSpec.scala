@@ -16,17 +16,19 @@
 
 package auth.individual
 
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import utilities.ITSASessionKeys
 import utilities.individual.Constants
 import utilities.individual.TestConstants.{testCredId, testNino, testUtr}
 
-class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneServerPerTest {
+class IncomeTaxSAUserSpec extends AnyWordSpecLike with Matchers with OptionValues with GuiceOneServerPerTest {
 
   "IncomeTaxSAUser" when {
     "Nino and UTR are retrieved from auth" should {

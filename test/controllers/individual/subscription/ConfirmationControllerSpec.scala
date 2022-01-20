@@ -21,7 +21,7 @@ import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

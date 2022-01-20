@@ -17,4 +17,6 @@ addSbtPlugin("org.lyranthe.sbt" % "partial-unification" % "1.1.2")
 
 addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.13")
 
+addSbtPlugin("uk.gov.hmrc" % "sbt-accessibility-linter" % "0.17.0")
+
 resolvers += Resolver.bintrayRepo("hmrc", "releases")

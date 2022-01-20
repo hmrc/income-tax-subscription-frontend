@@ -17,12 +17,12 @@
 package utilities
 
 import models.usermatching.UserDetailsModel
-import org.scalatest.MustMatchers
-import play.api.mvc.{Cookies, Request, Result, Session}
+import org.scalatest.matchers.must.Matchers
+import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 
 trait UserMatchingTestSupport {
-  matcher: MustMatchers =>
+  matcher: Matchers =>
 
   import utilities.UserMatchingSessionUtil._
 
@@ -39,11 +39,11 @@ trait UserMatchingTestSupport {
             nino -> model.nino
           )
         case _ => request
-//          .withHeaders(play.api.http.HeaderNames.COOKIE ->
-//          Cookies.mergeCookieHeader(request.headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
-//            Seq(Session.encodeAsCookie(new Session(request.session.data - (firstName, lastName, dobD, dobM, dobY, nino))))
-//          )
-//        )
+        //          .withHeaders(play.api.http.HeaderNames.COOKIE ->
+        //          Cookies.mergeCookieHeader(request.headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
+        //            Seq(Session.encodeAsCookie(new Session(request.session.data - (firstName, lastName, dobD, dobM, dobY, nino))))
+        //          )
+        //        )
       }
     }
 

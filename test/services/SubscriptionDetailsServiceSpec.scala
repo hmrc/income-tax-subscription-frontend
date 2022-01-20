@@ -17,7 +17,7 @@
 package services
 
 import models.common.business.BusinessNameModel
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.BusinessName

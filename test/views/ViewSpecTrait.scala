@@ -22,9 +22,7 @@ import controllers.SignOutController
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import org.scalatest.{Assertion, MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html

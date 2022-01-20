@@ -19,10 +19,10 @@ package controllers.utils
 import auth.agent.IncomeTaxAgentUser
 import auth.individual.IncomeTaxSAUser
 import connectors.httpparser.RetrieveReferenceHttpParser.{InvalidJsonFailure, UnexpectedStatusFailure}
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import controllers.agent.ITSASessionKeys
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.{AnyContent, Request, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, status}
@@ -33,7 +33,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceRetrievalSpec extends PlaySpec with MustMatchers with MockSubscriptionDetailsService with Results {
+class ReferenceRetrievalSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService with Results {
 
   object TestReferenceRetrieval extends ReferenceRetrieval {
     override val subscriptionDetailsService: SubscriptionDetailsService = MockSubscriptionDetailsService

@@ -23,7 +23,7 @@ import models.common.business._
 import models.common.{IncomeSourceModel, _}
 import models.{DateModel, IndividualSummary}
 import org.jsoup.nodes.{Document, Element}
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

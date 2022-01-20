@@ -32,6 +32,8 @@ import models.{AccountingMethod, AccountingYear, DateModel, IncomeSourcesStatus}
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api._
 import play.api.data.Form
@@ -48,7 +50,7 @@ import utilities.ITSASessionKeys._
 import java.time.LocalDate
 import java.util.UUID
 
-trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues with GivenWhenThen with TestSuite
+trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience
   with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with CustomMatchers with WireMockMethods with FeatureSwitching with SessionCookieBaker {

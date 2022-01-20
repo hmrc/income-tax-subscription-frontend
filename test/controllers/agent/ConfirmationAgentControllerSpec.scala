@@ -20,7 +20,7 @@ import agent.audit.mocks.MockAuditingService
 import models.usermatching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

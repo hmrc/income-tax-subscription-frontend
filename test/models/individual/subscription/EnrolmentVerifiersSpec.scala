@@ -17,10 +17,12 @@
 package models.individual.subscription
 
 import models.common.subscription.EnrolmentVerifiers
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class EnrolmentVerifiersSpec extends WordSpecLike with Matchers with OptionValues {
+class EnrolmentVerifiersSpec extends AnyWordSpecLike with Matchers with OptionValues {
   "format" should {
     "produce a correctly formatted json object" in {
       val verifierKey = "verifierKey"

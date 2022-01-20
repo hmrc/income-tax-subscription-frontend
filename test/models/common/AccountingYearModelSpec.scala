@@ -17,11 +17,12 @@
 package models.common
 
 import models.Current
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsSuccess, Json}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class AccountingYearModelSpec extends WordSpecLike with Matchers with OptionValues {
+class AccountingYearModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   "AccountingYearModel" should {
 
@@ -33,7 +34,7 @@ class AccountingYearModelSpec extends WordSpecLike with Matchers with OptionValu
 
     "deserialize with confirmed field" in {
       val actual = Json.fromJson[AccountingYearModel](Json.parse("""{"accountingYear":"CurrentYear","confirmed":true}"""))
-      val expected = AccountingYearModel(Current, true)
+      val expected = AccountingYearModel(Current, confirmed = true)
       actual mustBe JsSuccess(expected)
     }
   }

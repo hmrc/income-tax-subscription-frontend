@@ -16,9 +16,7 @@
 
 package controllers
 
-import java.net.URLEncoder
-
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

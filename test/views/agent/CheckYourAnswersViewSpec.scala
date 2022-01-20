@@ -22,7 +22,7 @@ import models.common._
 import models.common.business._
 import models.{AgentSummary, Current, DateModel, Next}
 import org.jsoup.nodes.{Document, Element}
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
