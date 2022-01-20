@@ -19,7 +19,7 @@ package controllers.agent.business
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.taskListURI
+import helpers.agent.IntegrationTestConstants.taskListURI
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub

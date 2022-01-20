@@ -62,7 +62,7 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
         if (isEnabled(SaveAndRetrieve)) {
           withProperty(reference) { property =>
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map(_ => {
-              Redirect(controllers.individual.business.routes.TaskListController.show())
+              Redirect(controllers.agent.routes.TaskListController.show())
             })
           }
         } else {
@@ -73,7 +73,7 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.individual.business.routes.TaskListController.show().url
+      controllers.agent.routes.TaskListController.show().url
     } else {
       routes.PropertyAccountingMethodController.show().url
     }

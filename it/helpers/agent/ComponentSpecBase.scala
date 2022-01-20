@@ -420,6 +420,14 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
       )
     }
 
+    def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/business/tax-year-check-your-answers", sessionData)
+    }
+
+    def submitTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/business/tax-year-check-your-answers", sessionData)(Map.empty)
+    }
+
     def getProgressSaved(sessionData: Map[String, String] = Map.empty): WSResponse = {
       get("/business/progress-saved", sessionData)
     }

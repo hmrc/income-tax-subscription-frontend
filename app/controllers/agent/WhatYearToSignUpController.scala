@@ -42,8 +42,11 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                            val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval with FeatureSwitching {
 
-  def backUrl: String = if (isEnabled(SaveAndRetrieve)) {
-    controllers.agent.routes.TaxYearCheckYourAnswersController.show().url
+  def backUrl(isEditMode: Boolean): String = if (isEnabled(SaveAndRetrieve)) {
+    if(isEditMode)
+      controllers.agent.routes.TaxYearCheckYourAnswersController.show().url
+    else
+      controllers.agent.routes.TaskListController.show().url
   } else {
     controllers.agent.routes.CheckYourAnswersController.show.url
   }
@@ -52,7 +55,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
     whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.agent.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
-      backUrl = backUrl,
+      backUrl = backUrl(isEditMode),
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode
     )

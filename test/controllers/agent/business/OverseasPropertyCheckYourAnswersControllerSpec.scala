@@ -91,7 +91,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
         verifyOverseasPropertySave(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true))
       }
     }
@@ -118,7 +118,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   "backUrl" should {
     "go to the task list page" when {
       "in edit mode" in withController { controller =>
-        controller.backUrl(true) mustBe controllers.individual.business.routes.TaskListController.show().url
+        controller.backUrl(true) mustBe controllers.agent.routes.TaskListController.show().url
       }
     }
 
