@@ -18,6 +18,7 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.AccountingMethod
@@ -39,6 +40,8 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                           (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
+
+  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 
   def view(accountingMethodOverseasPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
@@ -69,7 +72,13 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
             Future.successful(BadRequest(view(accountingMethodOverseasPropertyForm = formWithErrors, isEditMode = isEditMode))),
           overseasPropertyAccountingMethod => {
             subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map { _ =>
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show)
+
+              if (isSaveAndRetrieve) {
+                Redirect(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+              } else {
+                Redirect(controllers.agent.routes.CheckYourAnswersController.show)
+              }
+
             }
           }
         )
@@ -77,10 +86,11 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
   }
 
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {
-    if (isEditMode) {
-      controllers.agent.routes.CheckYourAnswersController.show.url
-    } else {
-      controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
+
+    (isEditMode, isSaveAndRetrieve) match {
+      case (true, true) => controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
+      case (false, _) => controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
+      case (true, false) => controllers.agent.routes.CheckYourAnswersController.show.url
     }
   }
 }

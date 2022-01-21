@@ -16,9 +16,8 @@
 
 package controllers.agent.business
 
-import agent.audit.mocks.MockAuditingService
-import agent.audit.mocks.MockOverseasPropertyStartDate
-import config.featureswitch.FeatureSwitch.ReleaseFour
+import agent.audit.mocks.{MockAuditingService, MockOverseasPropertyStartDate}
+import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.OverseasPropertyStartDateForm
@@ -41,6 +40,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   override def beforeEach(): Unit = {
     disable(ReleaseFour)
+    disable(SaveAndRetrieve)
     super.beforeEach()
   }
 
@@ -131,7 +131,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     )
 
     "When it is not in edit mode" should {
-      "redirect to foreign property accounting method page" in {
+      "redirect to agent foreign property accounting method page" in {
 
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
@@ -147,18 +147,36 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     }
 
     "When it is in edit mode" should {
-      "redirect to checkYourAnswer page" in {
+      "save and retrieve is disabled" should {
+        "redirect to agent final check your answers page" in {
 
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
-        val goodRequest = callSubmit(isEditMode = true)
+          val goodRequest = callSubmit(isEditMode = true)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
-        await(goodRequest)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+          await(goodRequest)
+          verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+        }
+      }
+
+      "save and retrieve is enabled" should {
+        "redirect to agent overseas check your answers page" in {
+          enable(SaveAndRetrieve)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+
+          val goodRequest = callSubmit(isEditMode = true)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url)
+
+          await(goodRequest)
+          verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+        }
       }
     }
 
@@ -178,38 +196,61 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     }
 
     "The back url is not in edit mode" when {
-      "the user has a foreign property and it is the only income source" should {
+      "save and retrieve is disabled" when {
+        "the user has a foreign property and it is the only income source" should {
+          "redirect to agent income source page" in new Test {
 
-        "redirect to income source page" in new Test {
+            controller.backUrl(isEditMode = false, incomeSourceOverseasPropertyOnly) mustBe
+              controllers.agent.routes.IncomeSourceController.show().url
+          }
+        }
 
-          controller.backUrl(isEditMode = false, incomeSourceOverseasPropertyOnly) mustBe
+        "the user has a UK and a foreign property" should {
+          "redirect to agent UK business accounting method page" in new Test {
+
+            controller.backUrl(isEditMode = false, incomeSourceUkAndOverseasProperty) mustBe
+              controllers.agent.business.routes.PropertyAccountingMethodController.show().url
+          }
+        }
+
+        "the user has a self-employment a foreign property income sources" should {
+          "redirect to agent sole trader accounting method page" in new Test {
+
+            val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
+            controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
+              appConfig.incomeTaxSelfEmploymentsFrontendUrl + "client/details/business-accounting-method"
+          }
+        }
+
+      }
+
+      "save and retrieve is enabled" when {
+        //need to change to WhatIncomeSourceToSignUpController when it has been built
+        "redirect to agent income source page" in new Test {
+          enable(SaveAndRetrieve)
+          controller.backUrl(isEditMode = false, incomeSourceUkAndOverseasProperty) mustBe
             controllers.agent.routes.IncomeSourceController.show().url
         }
       }
-
-      "the user has a UK and a foreign property" should {
-        "redirect to business accounting method page" in new Test {
-
-          controller.backUrl(isEditMode = false, incomeSourceUkAndOverseasProperty) mustBe
-            controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-        }
-      }
-
-      "the user has a business, a UK and a foreign property" should {
-        "redirect to property accounting method page" in new Test {
-
-          controller.backUrl(isEditMode = false, incomeSourceAllTypes) mustBe
-            controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-        }
-      }
-
     }
 
     "The back url is in edit mode" when {
-      "the user click back url" should {
-        "redirect to check your answer page" in new Test {
-          controller.backUrl(isEditMode = true, incomeSourceOverseasPropertyOnly) mustBe
-            controllers.agent.routes.CheckYourAnswersController.show.url
+      "save and retrieve is enabled" when {
+        "the user click back url" should {
+          "redirect to agent overseas property check your answer page" in new Test {
+            enable(SaveAndRetrieve)
+            controller.backUrl(isEditMode = true, incomeSourceOverseasPropertyOnly) mustBe
+              controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
+          }
+        }
+      }
+
+      "save and retrieve is disabled" when {
+        "the user click back url" should {
+          "redirect to agent check your answer page" in new Test {
+            controller.backUrl(isEditMode = true, incomeSourceOverseasPropertyOnly) mustBe
+              controllers.agent.routes.CheckYourAnswersController.show.url
+          }
         }
       }
     }

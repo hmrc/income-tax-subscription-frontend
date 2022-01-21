@@ -17,6 +17,8 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -33,7 +35,12 @@ import views.agent.mocks.MockOverseasPropertyAccountingMethod
 import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockOverseasPropertyAccountingMethod {
+  with MockSubscriptionDetailsService with MockAuditingService with MockOverseasPropertyAccountingMethod with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "OverseasPropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -88,8 +95,8 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       subscriptionRequest
     )
 
-    "When it is not in edit mode" when {
-      "redirect to CheckYourAnswer page" in {
+    "When save and retrieve is disabled" when {
+      "redirect to agent check your answers page" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
@@ -104,15 +111,17 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       }
     }
 
-    "When it is in edit mode" should {
-      "redirect to CheckYourAnswer page" in {
+    "When save and retrieve is enabled" when {
+      "redirect to agent overseas property check your answers page" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        enable(SaveAndRetrieve)
 
-        val goodRequest = callSubmit(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(false).url)
 
         await(goodRequest)
         verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -145,11 +154,26 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
     }
 
     "The back url is in edit mode" when {
-      "the user clicks the back link" should {
-        "redirect to the Check Your Answers page" in {
-          mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
-          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
-            controllers.agent.routes.CheckYourAnswersController.show.url
+      "save and retrieve is disabled" should {
+        "the user clicks the back link" should {
+          "redirect to the agent check your answers page" in {
+
+            mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+            TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
+              controllers.agent.routes.CheckYourAnswersController.show.url
+          }
+        }
+      }
+
+      "save and retrieve is enabled" should {
+        "the user clicks the back link" should {
+          "redirect to the agent overseas property check your answers page" in {
+
+            enable(SaveAndRetrieve)
+            mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+            TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
+              controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
+          }
         }
       }
     }

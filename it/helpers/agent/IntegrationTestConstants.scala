@@ -44,6 +44,7 @@ object IntegrationTestConstants {
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val ukPropertyCheckYourAnswersURI = s"$baseURI/business/uk-property-check-your-answers"
+  val overseasPropertyCheckYourAnswersURI = s"$baseURI/business/overseas-property-check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
   val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
