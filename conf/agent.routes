@@ -112,4 +112,7 @@ POST        /business/tax-year-check-your-answers                controllers.age
 GET         /business/uk-property-check-your-answers             controllers.agent.business.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
 POST        /business/uk-property-check-your-answers             controllers.agent.business.PropertyCheckYourAnswersController.submit()
 
+GET         /business/overseas-property-check-your-answers       controllers.agent.business.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-check-your-answers       controllers.agent.business.OverseasPropertyCheckYourAnswersController.submit()
+
 GET         /business/progress-saved                            controllers.agent.business.ProgressSavedController.show

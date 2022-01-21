@@ -337,6 +337,14 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
       )
     }
 
+    def getOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/business/overseas-property-check-your-answers", sessionData)
+    }
+
+    def submitOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/business/overseas-property-check-your-answers", sessionData)(Map.empty)
+    }
+
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
         get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID))
