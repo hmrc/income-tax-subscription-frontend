@@ -12,9 +12,6 @@ import play.api.mvc.Request
 import play.api.test.FakeRequest
 import uk.gov.hmrc.scalatestaccessibilitylinter.AccessibilityMatchers
 import views.html.individual.incometax.business.PropertyCheckYourAnswers
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.scalatestaccessibilitylinter.AccessibilityMatchers
 
 class UkPropertyCheckYourAnswersA11YSpec extends AnyWordSpecLike
   with Matchers
