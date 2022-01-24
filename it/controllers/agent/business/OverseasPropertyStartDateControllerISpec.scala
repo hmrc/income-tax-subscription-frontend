@@ -16,6 +16,7 @@
 
 package controllers.agent.business
 
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestModels
 import helpers.IntegrationTestModels.{subscriptionData, testInvalidStartDate, testPropertyStartDate}
@@ -28,6 +29,11 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-start-date" when {
 
@@ -145,30 +151,63 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
 
     "in edit mode" when {
       "enter the same start date" should {
-        "redirect to the check your answers page" in {
-          val userInput = IntegrationTestModels.testValidStartDate
-          val expected = OverseasPropertyModel(startDate = Some(userInput))
+        "save and retrieve enabled" when {
+          "redirect to the agent overseas property check your answers page" in {
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            OverseasProperty,
-            OK,
-            Json.toJson(expected)
-          )
-          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+            enable(SaveAndRetrieve)
+            val userInput = IntegrationTestModels.testValidStartDate
+            val expected = OverseasPropertyModel(startDate = Some(userInput))
 
-          When("POST /overseas-property-start-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(expected)
+            )
+            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
 
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
+            When("POST /overseas-property-start-date is called")
+            val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
 
-          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+            Then("Should return a SEE_OTHER with a redirect location of check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(overseasPropertyCheckYourAnswersURI)
+            )
+
+            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+          }
         }
+
+        "save and retrieve disabled" when {
+          "redirect to the agent check your answers page" in {
+
+            val userInput = IntegrationTestModels.testValidStartDate
+            val expected = OverseasPropertyModel(startDate = Some(userInput))
+
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(expected)
+            )
+            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+
+            When("POST /overseas-property-start-date is called")
+            val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of check your answers")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(checkYourAnswersURI)
+            )
+
+            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+          }
+        }
+
       }
 
       "enter a new start date" should {
