@@ -20,38 +20,38 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
-import models.common.PropertyModel
+import models.common.OverseasPropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
-import views.html.agent.business.PropertyCheckYourAnswers
+import views.html.agent.business.OverseasPropertyCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersView: PropertyCheckYourAnswers,
-                                                   val auditingService: AuditingService,
-                                                   val authService: AuthService,
-                                                   val subscriptionDetailsService: SubscriptionDetailsService)
-                                                  (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents,
-                                                   val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
+class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyCheckYourAnswersView: OverseasPropertyCheckYourAnswers,
+                                                           val auditingService: AuditingService,
+                                                           val authService: AuthService,
+                                                           val subscriptionDetailsService: SubscriptionDetailsService)
+                                                          (implicit val ec: ExecutionContext,
+                                                           mcc: MessagesControllerComponents,
+                                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
   def show(isEditMode: Boolean): Action[AnyContent]  = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
-          withProperty(reference) { property =>
+          withOverseasProperty(reference) { property =>
             Future.successful(Ok(
-              propertyCheckYourAnswersView(
+              overseasPropertyCheckYourAnswersView(
                 viewModel = property,
-                routes.PropertyCheckYourAnswersController.submit(),
+                routes.OverseasPropertyCheckYourAnswersController.submit(),
                 backUrl(isEditMode)
               )
             ))
           }
         } else {
-          Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][show] - The save and retrieve feature switch is disabled"))
+          Future.failed(new NotFoundException("[OverseasPropertyCheckYourAnswersController][show] - The save and retrieve feature switch is disabled"))
         }
       }
   }
@@ -60,13 +60,13 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
     implicit user =>
       withAgentReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
-          withProperty(reference) { property =>
-            subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map(_ => {
+          withOverseasProperty(reference) { property =>
+            subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map(_ => {
               Redirect(controllers.individual.business.routes.TaskListController.show())
             })
           }
         } else {
-          Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
+          Future.failed(new NotFoundException("[OverseasPropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
         }
       }
   }
@@ -75,14 +75,14 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
     if (isEditMode) {
       controllers.individual.business.routes.TaskListController.show().url
     } else {
-      routes.PropertyAccountingMethodController.show().url
+      routes.OverseasPropertyAccountingMethodController.show().url
     }
   }
 
-  private def withProperty(reference: String)(f: PropertyModel => Future[Result])(implicit hc: HeaderCarrier) = {
-    subscriptionDetailsService.fetchProperty(reference).flatMap { maybeProperty =>
+  private def withOverseasProperty(reference: String)(f: OverseasPropertyModel => Future[Result])(implicit hc: HeaderCarrier) = {
+    subscriptionDetailsService.fetchOverseasProperty(reference).flatMap { maybeProperty =>
       val property = maybeProperty.getOrElse(
-        throw new InternalServerException("[PropertyCheckYourAnswersController] - Could not retrieve property details")
+        throw new InternalServerException("[OverseasPropertyCheckYourAnswersController] - Could not retrieve property details")
       )
 
       f(property)

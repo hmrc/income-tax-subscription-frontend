@@ -275,6 +275,14 @@ agent.business.check-your-answers.content.uk-property-accounting-method.question
 agent.business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
 agent.business.check-your-answers.content.uk-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo yn y DU
 
+## Agent Overseas property check your answers
+agent.business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo tramor
+
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi ei gadw
 agent.business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
@@ -1048,10 +1056,10 @@ business.check-your-answers.content.uk-property-accounting-method.change = Newid
 ## Overseas property
 business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.change = ?
+business.check-your-answers.content.overseas-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-accounting-method.change = ?
+business.check-your-answers.content.overseas-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo tramor
 
 ## Progress saved
 business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi’i gadw
