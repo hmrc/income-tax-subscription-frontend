@@ -62,7 +62,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
         if (isEnabled(SaveAndRetrieve)) {
           withOverseasProperty(reference) { property =>
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map(_ => {
-              Redirect(controllers.individual.business.routes.TaskListController.show())
+              Redirect(controllers.agent.routes.TaskListController.show())
             })
           }
         } else {
@@ -73,7 +73,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.individual.business.routes.TaskListController.show().url
+      controllers.agent.routes.TaskListController.show().url
     } else {
       routes.OverseasPropertyAccountingMethodController.show().url
     }

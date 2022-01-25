@@ -50,9 +50,8 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   private val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
   "backUrl" should {
-    //this need to be updated to task list route when the agent task list page has been built
     "go to the Task List Page when isEditMode equals to true" in withController { controller =>
-      controller.backUrl(true) mustBe controllers.agent.routes.IncomeSourceController.show().url
+      controller.backUrl(true) mustBe controllers.agent.routes.TaskListController.show().url
     }
     "go to the What Year to SignUp Page when isEditMode equals to false" in withController { controller =>
       controller.backUrl(false) mustBe
@@ -91,7 +90,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
+      redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
       verifySubscriptionDetailsSave(MtditId, 1)
       verifySubscriptionDetailsFetch(SelectedTaxYear, 2)
     }

@@ -75,7 +75,7 @@ class ProgressSavedViewSpec extends ViewSpec {
     }
 
     "have a sign up link" in {
-      document().mainContent.select("a.sign-up-link").attr("href")  mustBe controllers.individual.business.routes.TaskListController.show().url
+      document().mainContent.select("a.sign-up-link").attr("href")  mustBe controllers.agent.routes.TaskListController.show().url
     }
 
     "have a sign out link" in {

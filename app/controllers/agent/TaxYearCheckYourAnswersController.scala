@@ -63,16 +63,14 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
             throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
           )
           subscriptionDetailsService.saveSelectedTaxYear(reference, accountingYearModel.copy(confirmed = true)) map { _ =>
-            //need to change redirect route to agent task list when it has been built
-            Redirect(controllers.agent.routes.IncomeSourceController.show().url)
+            Redirect(controllers.agent.routes.TaskListController.show().url)
           }
         }
       }
   }
 
   def backUrl(isEditMode: Boolean): String = if (isEditMode) {
-    //need to change redirect route to agent task list when it has been built
-    controllers.agent.routes.IncomeSourceController.show().url
+    controllers.agent.routes.TaskListController.show().url
   } else {
     controllers.agent.routes.WhatYearToSignUpController.show(isEditMode).url
   }

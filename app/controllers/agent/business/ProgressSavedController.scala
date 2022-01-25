@@ -17,17 +17,16 @@
 package controllers.agent.business
 
 import auth.agent.AuthenticatedController
-import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.{Configuration, Environment}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import views.html.agent.business.ProgressSaved
+import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.CacheExpiryDateProvider
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import views.html.agent.business.ProgressSaved
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

@@ -1,12 +1,12 @@
 
 package helpers.agent
 
-import java.net.URLEncoder
-import java.util.UUID
-
 import models.DateModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
+
+import java.net.URLEncoder
+import java.util.UUID
 
 object IntegrationTestConstants {
   lazy val testNino: String = helpers.IntegrationTestConstants.testNino
@@ -49,6 +49,7 @@ object IntegrationTestConstants {
   val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
   val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
   val whatYearToSignUpURI = s"$baseURI/business/what-year-to-sign-up"
+  val taskListURI = s"$baseURI/business/task-list"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(

@@ -19,10 +19,10 @@ package controllers.agent.business
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave
-import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.taskListURI
-import helpers.IntegrationTestModels.subscriptionData
-import helpers.servicemocks.AuthStub
+import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.taskListURI
+import helpers.agent.IntegrationTestModels.subscriptionData
+import helpers.agent.servicemocks.AuthStub
 import models.Current
 import models.common.AccountingYearModel
 import play.api.http.Status._
@@ -50,7 +50,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(
-            s"${messages("business.check-your-answers.title")} - Use software to send Income Tax updates - GOV.UK"
+            s"${messages("business.check-your-answers.title")} - Use software to report your client’s Income Tax - GOV.UK"
           )
         )
       }

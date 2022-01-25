@@ -181,12 +181,24 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
   "The back url is in edit mode" when {
     "save and retrieve is enabled" should {
-      "redirect to check your answer page" in {
-        enable(SaveAndRetrieve)
+      "redirect to check your answer page" when {
+        "in edit mode" in {
+          enable(SaveAndRetrieve)
 
-        mockIncomeSource()
-        TestWhatYearToSignUpController.backUrl mustBe
-          controllers.agent.routes.TaxYearCheckYourAnswersController.show() .url
+          mockIncomeSource()
+          TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe
+            controllers.agent.routes.TaxYearCheckYourAnswersController.show() .url
+        }
+      }
+
+      "redirect to task list page" when {
+        "not in edit mode" in {
+          enable(SaveAndRetrieve)
+
+          mockIncomeSource()
+          TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
+            controllers.agent.routes.TaskListController.show() .url
+        }
       }
     }
 
@@ -195,7 +207,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         disable(SaveAndRetrieve)
 
         mockIncomeSource()
-        TestWhatYearToSignUpController.backUrl mustBe
+        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
           controllers.agent.routes.CheckYourAnswersController.show.url
       }
     }

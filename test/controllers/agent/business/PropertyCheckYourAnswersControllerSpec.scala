@@ -89,7 +89,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+      redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
       verifyPropertySave(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true))
     }
 
@@ -108,6 +108,20 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
+    }
+  }
+
+  "back url" should {
+    "go to the task list page" when {
+      "in edit mode" in withController { controller =>
+        controller.backUrl(isEditMode = true) mustBe controllers.agent.routes.TaskListController.show().url
+      }
+    }
+
+    "go to the property accounting method page" when {
+      "not in edit mode" in withController { controller =>
+        controller.backUrl(isEditMode = false) mustBe routes.PropertyAccountingMethodController.show().url
+      }
     }
   }
 
