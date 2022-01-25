@@ -21,13 +21,12 @@ import cats.implicits._
 import config.featureswitch.FeatureSwitch.SPSEnabled
 import config.featureswitch.FeatureSwitching
 import connectors.agent.AgentSPSConnector
-
-import javax.inject.{Inject, Singleton}
-import models.common.subscription.{CreateIncomeSourcesSuccess, SubscriptionSuccess}
+import models.common.subscription.{CreateIncomeSourcesModel, CreateIncomeSourcesSuccess, SubscriptionSuccess}
 import models.{AgentSummary, ConnectorError, SummaryModel}
 import services.SubscriptionService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -35,6 +34,41 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                  autoEnrolmentService: AutoEnrolmentService,
                                                  agentSPSConnector: AgentSPSConnector)
                                                 (implicit ec: ExecutionContext) extends FeatureSwitching {
+
+  def createSubscriptionFromTaskList(arn: String,
+                                               nino: String,
+                                               utr: String,
+                                               createIncomeSourceModel: CreateIncomeSourcesModel)
+                                              (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+
+    signUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourceModel) flatMap {
+      case right@Right(subscriptionSuccess) => {
+        autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
+          case Right(_) =>
+            if (isEnabled(SPSEnabled)) {
+              confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
+            }
+            right
+          case Left(_) =>
+            right
+        }
+      }
+      case left => Future.successful(left)
+    }
+
+  }
+
+  private[services] def signUpAndCreateIncomeSourcesFromTaskList(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
+                                                                (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+
+    val res = for {
+      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
+      mtdbsa = signUpResponse.mtdbsa
+      _ <- EitherT[Future, ConnectorError, CreateIncomeSourcesSuccess](subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel))
+    } yield SubscriptionSuccess(mtdbsa)
+
+    res.value
+  }
 
   def createSubscription(arn: String, nino: String, utr: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false)
                         (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
@@ -44,8 +78,8 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
         case right@Right(subscriptionSuccess) => {
           autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
             case Right(_) =>
-              if(isEnabled(SPSEnabled)){
-              confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
+              if (isEnabled(SPSEnabled)) {
+                confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
               }
               right
             case Left(_) =>

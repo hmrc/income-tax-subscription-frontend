@@ -16,8 +16,8 @@
 
 package services.agent.mocks
 
-import models.common.subscription.{SubscriptionFailure, SubscriptionSuccess}
-import models.AgentSummary
+import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionFailure, SubscriptionSuccess}
+import models.{AgentSummary, ConnectorError}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -52,6 +52,32 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
       ArgumentMatchers.eq(isReleaseFourEnabled),
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn result
   }
+
+  private def mockCreateSubscriptionFromTaskList(arn: String,
+                                                  nino: String,
+                                                  utr: String,
+                                                  createIncomeSourceModel: CreateIncomeSourcesModel)
+                                                (result: Future[Either[ConnectorError, SubscriptionSuccess]]) = {
+    when(mockSubscriptionOrchestrationService.createSubscriptionFromTaskList(
+      ArgumentMatchers.eq(arn),
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(utr),
+      ArgumentMatchers.eq(createIncomeSourceModel)
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn result
+
+  }
+
+  def mockCreateSubscriptionFromTaskListSuccess(arn: String,
+                                                nino: String,
+                                                utr: String,
+                                                createIncomeSourceModel: CreateIncomeSourcesModel): Unit =
+    mockCreateSubscriptionFromTaskList(arn, nino, utr, createIncomeSourceModel)(Future.successful(testSubscriptionSuccess))
+
+  def mockCreateSubscriptionFromTaskListFailure(arn: String,
+                                                nino: String,
+                                                utr: String,
+                                                createIncomeSourceModel: CreateIncomeSourcesModel): Unit =
+    mockCreateSubscriptionFromTaskList(arn, nino, utr, createIncomeSourceModel)(Future.successful(testSubscriptionFailure))
 
   def mockCreateSubscriptionSuccess(arn: String, nino: String, utr: String,
                                     agentSummary: AgentSummary,

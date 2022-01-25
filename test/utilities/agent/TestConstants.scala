@@ -18,13 +18,14 @@ package utilities.agent
 
 import java.time.LocalDate
 import java.util.UUID
-
 import models.DateModel
-import models.common.subscription.{CreateIncomeSourcesFailureResponse, KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, SignUpIncomeSourcesFailureResponse, SubscriptionFailureResponse, SubscriptionSuccess, TypeValuePair}
+import models.common.business.{Address, BusinessAddressModel, BusinessStartDate, SelfEmploymentData}
+import models.common.subscription.{CreateIncomeSourcesFailureResponse, CreateIncomeSourcesModel, KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, OverseasProperty, SignUpIncomeSourcesFailureResponse, SoleTraderBusinesses, SubscriptionFailureResponse, SubscriptionSuccess, TypeValuePair, UkProperty}
 import models.individual.subscription._
 import models.usermatching.LockedOut
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
+import utilities.TestModels.{testAccountMethod, testAccountingPeriod, testBusinessName, testBusinessTradeName, testValidStartDate}
 import utilities.agent.Constants.{agentServiceEnrolmentName, agentServiceIdentifierKey, mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import utilities.individual
 
@@ -33,6 +34,7 @@ object TestConstants {
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
   lazy val testNino: String = individual.TestConstants.testNino
+  lazy val testId: String = "testId"
   lazy val testUtr: String = individual.TestConstants.testUtr
   lazy val testMTDID: String = individual.TestConstants.testMTDID
   //Not a valid MTDID, for test purposes only
@@ -41,6 +43,11 @@ object TestConstants {
   lazy val ggServiceName: String = mtdItsaEnrolmentName
   lazy val agentServiceName: String = agentServiceEnrolmentName
   lazy val testARN: String = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
+
+  val testSoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriod, testAccountMethod, testSelfEmploymentData)
+  val testUkProperty = UkProperty(testAccountingPeriod, testValidStartDate, testAccountMethod)
+  val testOverseasProperty = OverseasProperty(testAccountingPeriod, testValidStartDate, testAccountMethod)
+  lazy val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
 
   lazy val knownFactsRequest = KnownFactsRequest(
     List(
@@ -68,6 +75,27 @@ object TestConstants {
 
   val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
 
+  val testCreateSubscriptionFromTaskListFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+
   lazy val testLockoutResponse: LockedOut = individual.TestConstants.testLockoutResponse
+
+  lazy val testCreateIncomeSources: CreateIncomeSourcesModel =
+    CreateIncomeSourcesModel(
+      testNino,
+      Some(testSoleTraderBusinesses),
+      Some(testUkProperty),
+      Some(testOverseasProperty)
+    )
+
+  lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
+    Seq(SelfEmploymentData
+    (
+      id = testId,
+      businessStartDate = Some(businessStartDate),
+      businessName = Some(testBusinessName),
+      businessTradeName = Some(testBusinessTradeName),
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
+    )
+    )
 
 }

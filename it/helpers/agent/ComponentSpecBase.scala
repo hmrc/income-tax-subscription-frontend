@@ -10,6 +10,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.agent.ITSASessionKeys
 import forms.agent._
+import helpers.IntegrationTestConstants.{testFirstName, testLastName}
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
@@ -343,6 +344,23 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
 
     def submitOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
       post("/business/overseas-property-check-your-answers", sessionData)(Map.empty)
+    }
+
+    def getTaskList(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
+      get("/business/task-list", sessionData)
+    }
+
+    def submitTaskList(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino,
+      ITSASessionKeys.UTR -> testUtr
+    )): WSResponse = {
+      post("/business/task-list", sessionData)(Map.empty)
     }
 
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =

@@ -895,6 +895,28 @@ agent.no-sa.title                                               = Your client is
 agent.no-sa.heading                                             = Your client is not registered for Self Assessment
 agent.no-sa.line_1                                              = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
+# Agent Task List
+agent.business.task-list.title                                        = Check and complete your client’s business details
+agent.business.task-list.heading.incomplete                           = Application incomplete
+agent.business.task-list.heading.complete                             = Application complete
+agent.business.task-list.content.summary                              = You have completed {0} of {1} sections.
+agent.business.task-list.content.section1                             = Choose a tax year to sign up
+agent.business.task-list.content.section1.action                      = Select tax year
+agent.business.task-list.content.section1.current-tax-year            = Current tax year (6 April {0} to 5 April {1})
+agent.business.task-list.content.section1.next-tax-year               = Next tax year (6 April {0} to 5 April {1})
+agent.business.task-list.content.section2                             = Tell us about your client’s income
+agent.business.task-list.content.section2.action                      = Add a business
+agent.business.task-list.content.section2.property.uk                 = UK property business
+agent.business.task-list.content.section2.property.overseas           = Overseas property business
+agent.business.task-list.content.section3                             = Sign up
+agent.business.task-list.content.action-needed                        = You need to complete the `{0}` section before you can confirm and sign up
+agent.business.task-list.status.completed                             = Complete
+agent.business.task-list.status.incomplete                            = Incomplete
+agent.business.task-list.status.in-progress                           = In progress
+agent.business.task-list.status.not-started                           = Not started
+agent.continue.button                                                 = Submit and continue
+
+
 # Not eligible for income tax
 not_eligible_for_income_tax.title                               = You cannot use this service yet
 not_eligible_for_income_tax.heading                             = You cannot use this service yet
