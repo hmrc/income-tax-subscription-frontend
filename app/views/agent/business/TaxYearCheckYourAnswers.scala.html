@@ -50,7 +50,7 @@
       field = "tax-year",
       question = messages("agent.business.check-your-answers.content.tax-year.question"),
       answer = taxYear(viewModel),
-      changeUrl = Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url),
+      changeUrl = Some(controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url),
       hiddenContent = Some(messages("agent.business.check-your-answers.content.tax-year.question.hidden"))
     )
   }
