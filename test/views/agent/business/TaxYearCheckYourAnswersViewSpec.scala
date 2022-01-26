@@ -67,7 +67,7 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
       document()
         .mainContent
         .selectHead(s"$sectionId-edit a")
-        .attr("href") mustBe controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url
+        .attr("href") mustBe controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
     }
 
     "display the tax year section hidden content" in {
