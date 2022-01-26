@@ -16,9 +16,10 @@
 
 package views.individual.incometax.business
 
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
-import models.common.PropertyStartDateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
@@ -28,7 +29,7 @@ import utilities.ViewSpec
 import views.html.individual.incometax.business.PropertyStartDate
 
 
-class UkPropertyStartDateViewSpec extends ViewSpec {
+class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
 
   object PropertyStartDateMessages {
     val heading: String = "When did your UK property business start trading?"
@@ -52,8 +53,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
           PropertyStartDateForm.propertyStartDateForm("testMinMessage", "testMaxMessage"),
           testCall,
           isEditMode = false,
-          testBackUrl,
-          isSaveAndRetrieve = false
+          testBackUrl
         ),
         title = PropertyStartDateMessages.heading,
         isAgent = false,
@@ -66,8 +66,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
           PropertyStartDateForm.propertyStartDateForm("testMinMessage", "testMaxMessage").withError(testError),
           testCall,
           isEditMode = false,
-          testBackUrl,
-          isSaveAndRetrieve = false
+          testBackUrl
         ),
         title = PropertyStartDateMessages.heading,
         isAgent = false,
@@ -95,14 +94,17 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a continue button when not in edit mode" in {
+      disable(SaveAndRetrieve)
       document().selectHead("#continue-button").text mustBe PropertyStartDateMessages.continue
     }
 
-    "have a save & continue button when not in edit mode and save & retrieve feature is enabled" in {
-      document(isSaveAndRetrieve = true).selectHead("#continue-button").text mustBe PropertyStartDateMessages.saveAndContinue
+    "have a save & continue button when save & retrieve feature is enabled" in {
+      enable(SaveAndRetrieve)
+      document().selectHead("#continue-button").text mustBe PropertyStartDateMessages.saveAndContinue
     }
 
     "have update button when in edit mode" in {
+      disable(SaveAndRetrieve)
       document(isEditMode = true).selectHead("#continue-button").text mustBe PropertyStartDateMessages.update
     }
 
@@ -118,21 +120,19 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
   }
 
-  private def page(isEditMode: Boolean, isSaveAndRetrieve: Boolean, propertyStartDateForm: Form[DateModel]): Html = {
+  private def page(isEditMode: Boolean, propertyStartDateForm: Form[DateModel]): Html = {
     propertyStartDate(
       propertyStartDateForm,
       testCall,
       isEditMode,
-      testBackUrl,
-      isSaveAndRetrieve
+      testBackUrl
     )(FakeRequest(), implicitly)
   }
 
   private def document(
                         isEditMode: Boolean = false,
-                        isSaveAndRetrieve: Boolean = false,
                         propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")
                       ): Document = {
-    Jsoup.parse(page(isEditMode, isSaveAndRetrieve, propertyStartDateForm).body)
+    Jsoup.parse(page(isEditMode, propertyStartDateForm).body)
   }
 }

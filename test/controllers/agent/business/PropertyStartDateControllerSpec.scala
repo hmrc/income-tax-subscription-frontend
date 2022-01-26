@@ -85,6 +85,20 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       }
     }
 
+    "the Save and Retrieve feature is enabled" should {
+      "display the property start date view and return OK (200)" in withController { controller =>
+        enable(SaveAndRetrieve)
+        lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+
+        mockFetchAllFromSubscriptionDetails(testCacheMap(
+          incomeSource = None
+        ))
+        mockFetchProperty(None)
+
+        status(result) must be(Status.OK)
+      }
+    }
+
     "there is noo income source details" should {
       "redirect to income source pagee" in withController { controller =>
         lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
@@ -184,6 +198,27 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     }
 
     "when there is an invalid submission with an error form" should {
+      "redirect back to agent what income source page when incomeSource is missing" in withController { controller =>
+        mockFetchAllFromSubscriptionDetails(testCacheMap(
+          incomeSource = None
+        ))
+
+        val badRequest = callSubmitWithErrorForm(controller, isEditMode = false)
+
+        await(badRequest)
+        redirectLocation(badRequest) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
+      }
+
+      "return bad request status (400) when save and retrieve is enabled" in withController { controller =>
+        enable(SaveAndRetrieve)
+
+        val badRequest = callSubmitWithErrorForm(controller, isEditMode = false)
+
+        status(badRequest) must be(Status.BAD_REQUEST)
+
+        await(badRequest)
+      }
+
       "return bad request status (400)" in withController { controller =>
 
         mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
