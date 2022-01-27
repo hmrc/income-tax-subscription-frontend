@@ -63,11 +63,12 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
     implicit user =>
       withAgentReference { reference =>
         subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) flatMap { overseasPropertyStartDate =>
-          subscriptionDetailsService.fetchIncomeSource(reference) map {
-            case Some(incomeSourceModel) => Ok(view(
-              overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate), isEditMode, Some(incomeSourceModel)
+          val incomeSourceModelMaybe = if (isSaveAndRetrieve) Future.successful(None) else subscriptionDetailsService.fetchIncomeSource(reference)
+          incomeSourceModelMaybe map {
+            case None if !isSaveAndRetrieve => Redirect(controllers.agent.routes.IncomeSourceController.show())
+            case incomeSourceModel => Ok(view(
+              overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate), isEditMode, incomeSourceModel
             ))
-            case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
           }
         }
       }

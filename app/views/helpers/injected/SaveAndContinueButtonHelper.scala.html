@@ -25,7 +25,7 @@
 @(isIndividual: Boolean, saveAndContinueText: Option[String] = None, hasSaveAndReturnLink: Boolean = true, disabled: Boolean = false)(implicit messages: Messages)
 
 @buttonHelper(
-  buttonText = saveAndContinueText.getOrElse(messages("save-and-continue")),
+  buttonText = saveAndContinueText.getOrElse(messages("base.save-and-continue")),
   disabled = disabled
 )
 

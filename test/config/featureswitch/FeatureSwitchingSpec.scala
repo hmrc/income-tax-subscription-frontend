@@ -16,6 +16,7 @@
 
 package config.featureswitch
 
+import auth.agent.ConfirmAgentSubscription.featureSwitch
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
 class FeatureSwitchingSpec extends WordSpecLike with Matchers with OptionValues with FeatureSwitching {
@@ -40,4 +41,15 @@ class FeatureSwitchingSpec extends WordSpecLike with Matchers with OptionValues 
     }
   }
 
+}
+
+trait FeatureSwitchingUtil extends FeatureSwitching {
+  def withFeatureSwitch(featureSwitch: FeatureSwitch)(f: => Any): Any = {
+    enable (featureSwitch)
+    try {
+      f
+    } finally {
+      disable (featureSwitch)
+    }
+  }
 }

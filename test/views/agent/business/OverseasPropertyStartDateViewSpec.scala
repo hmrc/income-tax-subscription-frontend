@@ -16,10 +16,12 @@
 
 package views.agent.business
 
+import config.featureswitch.{FeatureSwitching, FeatureSwitchingUtil}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.junit.Before
 import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -27,13 +29,19 @@ import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.html.agent.business.OverseasPropertyStartDate
 
-class OverseasPropertyStartDateViewSpec extends ViewSpec {
+class OverseasPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching with FeatureSwitchingUtil {
+
+  @Before
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+  }
 
   object OverseasPropertyStartDateMessages {
     val heading = "When did your client’s overseas property business start trading?"
     val para = "This is the date that letting or renting out any overseas property first started."
     val exampleStartDate = "For example, 1 8 2014"
     val continue = "Continue"
+    val saveAndContinue = "Save and continue"
     val backLink = "Back"
   }
 
@@ -45,8 +53,11 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val testError: FormError = FormError("startDate", "testError")
   val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  class Setup(isEditMode: Boolean = false, overseasPropertyStartDateForm: Form[DateModel] =
-  OverseasPropertyStartDateForm.overseasPropertyStartDateForm("minStartDateError", "maxStartDateError")) {
+  private val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("minStartDateError", "maxStartDateError")
+
+  private def document(
+               isEditMode: Boolean = false,
+               overseasPropertyStartDateForm: Form[DateModel] = defaultForm) = {
 
     val page: HtmlFormat.Appendable = overseasPropertyStartDate(
       overseasPropertyStartDateForm,
@@ -55,43 +66,49 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
       isEditMode
     )(FakeRequest(), implicitly, appConfig)
 
-    val document: Document = Jsoup.parse(page.body)
+    Jsoup.parse(page.body)
   }
 
   "Overseas Start Date page" must {
-    "have a title" in new Setup {
-      document.title mustBe OverseasPropertyStartDateMessages.heading + titleSuffix
+    "have a title" in {
+      document().title mustBe OverseasPropertyStartDateMessages.heading + titleSuffix
     }
 
-    "have a heading" in new Setup {
-      document.getH1Element.text mustBe OverseasPropertyStartDateMessages.heading
+    "have a heading" in {
+      document().getH1Element.text mustBe OverseasPropertyStartDateMessages.heading
     }
 
-    "have a Form" in new Setup {
-      document.getForm.attr("method") mustBe testCall.method
-      document.getForm.attr("action") mustBe testCall.url
+    "have a Form" in {
+      document().getForm.attr("method") mustBe testCall.method
+      document().getForm.attr("action") mustBe testCall.url
     }
 
-    "have a fieldset with dateInputs" in new Setup {
-      document.mustHaveGovukDateField(
+    "have a fieldset with dateInputs" in {
+      document().mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
         OverseasPropertyStartDateMessages.exampleStartDate)
     }
 
-    "have a continue button when not in edit mode" in new Setup {
-      document.getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.continue
+    "have a continue button when not in edit mode and not in save and retrieve mode" in {
+      document().getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.continue
     }
 
-    "have a backlink " in new Setup {
-      document.getGovukBackLink.text mustBe OverseasPropertyStartDateMessages.backLink
-      document.getGovukBackLink.attr("href") mustBe testBackUrl
+    "have a save and continue button when not in edit mode and in save and retrieve mode" in {
+      withFeatureSwitch(SaveAndRetrieve) {
+        document().getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
+      }
     }
 
-    "display form error on page" in new Setup(false, OverseasPropertyStartDateForm.overseasPropertyStartDateForm(
-      "minStartDateError", "maxStartDateError").withError(testError)) {
-      document.mustHaveGovukErrorSummary(testError.message)
-      document.mustHaveGovukDateField(
+    "have a backlink " in {
+      document().getGovukBackLink.text mustBe OverseasPropertyStartDateMessages.backLink
+      document().getGovukBackLink.attr("href") mustBe testBackUrl
+    }
+
+    "display form error on page" in {
+      val doc = document(overseasPropertyStartDateForm = defaultForm.withError(testError))
+      doc.mustHaveGovukErrorSummary(testError.message)
+      doc.mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
         OverseasPropertyStartDateMessages.exampleStartDate,
