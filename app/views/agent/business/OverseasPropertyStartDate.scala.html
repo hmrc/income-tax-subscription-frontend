@@ -16,14 +16,21 @@
 
 @import config.AppConfig
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.injected.{ContinueButton, DateHelper}
-
+@import views.html.helpers.injected._
 @import forms.agent.OverseasPropertyStartDateForm._
+@import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+@import config.featureswitch.FeatureSwitchingImpl
 
-@this(mainTemplate: AgentMainTemplate,
-      form: FormWithCSRF,
-      dateHelper: DateHelper,
-      continueButton: ContinueButton)
+@this(
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    dateHelper: DateHelper,
+    continueButton: ContinueButton,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    featureSwitchingImpl: FeatureSwitchingImpl
+)(
+    implicit appConfig: AppConfig
+)
 
 @(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -44,7 +51,11 @@
             isLegendVisible = false
         )
 
-        @continueButton(isEditMode = isEditMode)
+        @if(featureSwitchingImpl.isEnabled(SaveAndRetrieve)) {
+            @saveAndContinueButtonHelper(isIndividual = false, hasSaveAndReturnLink = false)
+        } else {
+            @continueButton(isEditMode = isEditMode)
+        }
     }
 
 }

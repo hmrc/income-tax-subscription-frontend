@@ -82,13 +82,28 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
 
 
-  "show" should {
+  "show, not in save and retrieve mode" should {
     "display the foreign property start date view and return OK (200)" in new Test {
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockFetchAllFromSubscriptionDetails(testCacheMap(
         incomeSource = Some(incomeSourceAllTypes)
       ))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(
+        accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+        startDate = Some(testPropertyStartDateModel.startDate)
+      )))
+
+      status(result) must be(Status.OK)
+      verifyOverseasPropertySave(None)
+    }
+  }
+
+  "show, in save and retrieve mode" should {
+    "display the foreign property start date view and return OK (200) without fetching income source" in new Test {
+      enable(SaveAndRetrieve)
+      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+
       mockFetchOverseasProperty(Some(OverseasPropertyModel(
         accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
         startDate = Some(testPropertyStartDateModel.startDate)
