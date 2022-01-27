@@ -19,7 +19,9 @@ package controllers.agent
 import auth.agent.AgentJourneyState._
 import auth.agent.{AgentSignUp, AgentUserMatching, StatelessController}
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.agent.ITSASessionKeys._
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
@@ -44,7 +46,11 @@ class HomeController @Inject()(val auditingService: AuditingService,
         case Some(arn) =>
           (user.clientNino, user.clientUtr) match {
             case (Some(_), Some(_)) =>
-              Future.successful(Redirect(controllers.agent.routes.WhatYearToSignUpController.show()).withJourneyState(AgentSignUp))
+              if(isEnabled(SaveAndRetrieve)) {
+                Future.successful(Redirect(controllers.agent.routes.TaskListController.show()).withJourneyState(AgentSignUp))
+              } else {
+                Future.successful(Redirect(controllers.agent.routes.WhatYearToSignUpController.show()).withJourneyState(AgentSignUp))
+              }
             case (Some(_), _) =>
               Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show).removingFromSession(ITSASessionKeys.JourneyStateKey))
             case _ =>

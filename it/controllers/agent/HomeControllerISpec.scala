@@ -17,12 +17,14 @@
 package controllers.agent
 
 import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 
-class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
+class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler with FeatureSwitching {
 
   "GET /" should {
     "return a redirect to the index page" in {
@@ -82,21 +84,46 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler{
       "journey state is UserMatched" when {
 
         "the matched user has a utr" should {
-          "redirect to client details" in {
-            Given("I setup the wiremock stubs")
-            AuthStub.stubAuthSuccess()
+          "redirect to client details" when {
+            "save and retrieve is enabled" should {
+              "redirect to task list page" in {
+                Given("I setup the wiremock stubs")
+                AuthStub.stubAuthSuccess()
+                enable(SaveAndRetrieve)
 
-            When("I call GET /index")
-            val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
+                When("I call GET /index")
+                val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
 
-            Then("the result should have a status of SEE_OTHER and a redirect location of /what-year-to-sign-up")
-            res should have(
-              httpStatus(SEE_OTHER),
-              redirectURI(whatYearToSignUpURI)
-            )
+                Then("the result should have a status of SEE_OTHER and a redirect location of /task-list")
+                res should have(
+                  httpStatus(SEE_OTHER),
+                  redirectURI(taskListURI)
+                )
 
-            Then("the JourneyStateKey should be changed to AgentSignUp")
-            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
+                Then("the JourneyStateKey should be changed to AgentSignUp")
+                getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
+              }
+            }
+
+            "save and retrieve is disabled" should {
+              "redirect to what tax year to sign up page" in {
+                Given("I setup the wiremock stubs")
+                AuthStub.stubAuthSuccess()
+                disable(SaveAndRetrieve)
+
+                When("I call GET /index")
+                val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
+
+                Then("the result should have a status of SEE_OTHER and a redirect location of /what-year-to-sign-up")
+                res should have(
+                  httpStatus(SEE_OTHER),
+                  redirectURI(whatYearToSignUpURI)
+                )
+
+                Then("the JourneyStateKey should be changed to AgentSignUp")
+                getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
+              }
+            }
           }
         }
 
