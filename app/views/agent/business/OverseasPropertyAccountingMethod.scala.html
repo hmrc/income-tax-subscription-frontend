@@ -15,17 +15,21 @@
  *@
 
 @import config.AppConfig
+@import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+@import config.featureswitch.FeatureSwitchingImpl
 @import forms.agent.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
 @import play.api.data.Form
-@import views.html.helpers.injected.{ContinueButton, RadioHelper}
+@import views.html.helpers.injected.{ContinueButton, RadioHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
 
 @this(
         mainTemplate: AgentMainTemplate,
         form: FormWithCSRF,
         radioHelper: RadioHelper,
-        continueButton: ContinueButton
+        continueButton: ContinueButton,
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+        featureSwitchingImpl: FeatureSwitchingImpl
 )(
         implicit appConfig: AppConfig
 )
@@ -34,20 +38,22 @@
 
 @mainTemplate(title = messages("agent.overseas.property.accounting_method.title"), optForm = Some(accountingMethodOverseasPropertyForm), backLink = Some(backUrl)) {
 
-    @form(action = postAction) {
+  @form(action = postAction) {
 
-        @radioHelper(
-            field = accountingMethodOverseasPropertyForm(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty),
-            legend = messages("agent.overseas.property.accounting_method.title"),
-            radioItems = Seq(
-                RadioItem(content = Text(messages("agent.overseas.property.accounting_method.radio.cash")), value = Some(AccountingMethodMapping.option_cash)),
-                RadioItem(content = Text(messages("agent.overseas.property.accounting_method.radio.accruals")), value = Some(AccountingMethodMapping.option_accruals))
-            ),
-            inline = true
-        )
+    @radioHelper(
+      field = accountingMethodOverseasPropertyForm(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty),
+      legend = messages("agent.overseas.property.accounting_method.title"),
+      radioItems = Seq(
+        RadioItem(content = Text(messages("agent.overseas.property.accounting_method.radio.cash")), value = Some(AccountingMethodMapping.option_cash)),
+        RadioItem(content = Text(messages("agent.overseas.property.accounting_method.radio.accruals")), value = Some(AccountingMethodMapping.option_accruals))
+      ),
+      inline = true
+    )
 
-        @continueButton(isEditMode = isEditMode)
-
+    @if(featureSwitchingImpl.isEnabled(SaveAndRetrieve)) {
+      @saveAndContinueButtonHelper(isIndividual = false)
+    } else {
+      @continueButton(isEditMode = isEditMode)
     }
-
+  }
 }
