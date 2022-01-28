@@ -14,19 +14,24 @@
  * limitations under the License.
  *@
 
-@import play.api.data.Form
+@import config.AppConfig
+@import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+@import config.featureswitch.FeatureSwitchingImpl
 @import forms.agent.AccountingMethodPropertyForm
 @import forms.submapping.AccountingMethodMapping
-@import config.AppConfig
+@import play.api.data.Form
+@import views.html.helpers.injected.{ContinueButton, RadioHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.injected.{ContinueButton, RadioHelper}
 
 @this(
-    mainTemplate: AgentMainTemplate,
-    form: FormWithCSRF,
-    radioHelper: RadioHelper,
-    continueButton: ContinueButton
+        mainTemplate: AgentMainTemplate,
+        form: FormWithCSRF,
+        radioHelper: RadioHelper,
+        continueButton: ContinueButton,
+        featureSwitch: FeatureSwitchingImpl,
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
+
 
 @(accountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -42,10 +47,9 @@
 
     @form(action = postAction) {
 
-        @heading(messages("agent.property.accounting_method.title"))
+        @heading(question)
 
         @radioHelper(
-
             field = accountingMethodForm(AccountingMethodPropertyForm.accountingMethodProperty),
             legend = question,
             isPageHeading = false,
@@ -64,8 +68,11 @@
             )
         )
 
-        @continueButton(isEditMode = isEditMode)
-
+        @if(featureSwitch.isEnabled(SaveAndRetrieve)) {
+            @saveAndContinueButtonHelper(isIndividual = false)
+        } else {
+            @continueButton(isEditMode = isEditMode)
+        }
     }
 
 }
