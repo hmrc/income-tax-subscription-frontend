@@ -38,6 +38,8 @@ object MessageLookup {
     val tryAgain = "Try again"
     val addAnother = "Sign up another client"
     val back = "Back"
+    val saveAndContinue = "Save and continue"
+    val saveAndComeBackLater = "Save and come back later"
   }
 
   object FrontPage {
