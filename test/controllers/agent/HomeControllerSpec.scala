@@ -19,6 +19,8 @@ package controllers.agent
 import agent.audit.mocks.MockAuditingService
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import config.MockConfig
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -27,7 +29,7 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
+class HomeControllerSpec extends AgentControllerBaseSpec with FeatureSwitching with MockAuditingService {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -97,18 +99,40 @@ class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingServic
     }
 
     "journey state is user matched" when {
-      "the user has a UTR" should {
-        lazy val request = userMatchedRequest
+      "the user has a UTR" when {
+        "save and retrieve is enabled" should {
 
-        def result: Future[Result] = testHomeController().index()(request)
 
-        s"redirect user to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
-          status(result) must be(Status.SEE_OTHER)
+          lazy val request = userMatchedRequest
 
-          redirectLocation(result).get mustBe controllers.agent.routes.WhatYearToSignUpController.show().url
+          def result: Future[Result] = testHomeController().index()(request)
 
-          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          s"redirect user to ${controllers.agent.routes.TaskListController.show().url}" in {
+            enable(SaveAndRetrieve)
+            status(result) must be(Status.SEE_OTHER)
+
+            redirectLocation(result).get mustBe controllers.agent.routes.TaskListController.show().url
+
+            await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
         }
+
+        "save and retrieve is disabled" should {
+
+          lazy val request = userMatchedRequest
+
+          def result: Future[Result] = testHomeController().index()(request)
+
+          s"redirect user to ${controllers.agent.routes.WhatYearToSignUpController.show().url}" in {
+            disable(SaveAndRetrieve)
+            status(result) must be(Status.SEE_OTHER)
+
+            redirectLocation(result).get mustBe controllers.agent.routes.WhatYearToSignUpController.show().url
+
+            await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+        }
+
       }
 
       "the user does not have a UTR" should {
