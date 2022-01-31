@@ -15,6 +15,8 @@
  *@
 
 @import config.AppConfig
+@import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+@import config.featureswitch.FeatureSwitchingImpl
 @import forms.individual.business.PropertyStartDateForm._
 @import views.html.helpers.injected.{ContinueButton, DateHelper}
 @import views.html.templates.PrincipalMainTemplate
@@ -23,15 +25,16 @@
         mainTemplate: PrincipalMainTemplate,
         form: FormWithCSRF,
         dateHelper: DateHelper,
-        continueButton: ContinueButton
+        continueButton: ContinueButton,
+        featureSwitches: FeatureSwitchingImpl,
 )(
         implicit appConfig: AppConfig
 )
 
-@(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean)(implicit request: Request[_], messages: Messages)
+@(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @continueButtonContent = @{
-  if(isSaveAndRetrieve) {
+  if(featureSwitches.isEnabled(SaveAndRetrieve)) {
     Some(messages("base.save-and-continue"))
   } else {
     None

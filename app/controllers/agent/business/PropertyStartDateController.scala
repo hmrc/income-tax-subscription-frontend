@@ -49,13 +49,13 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
 
   private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 
-  def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: IncomeSourceModel)
+  def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, incomeSourceModel: Option[IncomeSourceModel])
           (implicit request: Request[_]): Html = {
     propertyStartDate(
       propertyStartDateForm = propertyStartDateForm,
       postAction = controllers.agent.business.routes.PropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode, Some(incomeSourceModel))
+      backUrl = backUrl(isEditMode, incomeSourceModel)
     )
   }
 
@@ -63,13 +63,21 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
     implicit user =>
       withAgentReference { reference =>
         subscriptionDetailsService.fetchPropertyStartDate(reference) flatMap { propertyStartDate =>
-          subscriptionDetailsService.fetchIncomeSource(reference) map {
-            case Some(incomeSource) => Ok(view(
+          if (isEnabled(SaveAndRetrieve)) {
+            Future.successful(Ok(view(
               propertyStartDateForm = form.fill(propertyStartDate),
               isEditMode = isEditMode,
-              incomeSourceModel = incomeSource
-            ))
-            case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+              incomeSourceModel = None
+            )))
+          } else {
+            subscriptionDetailsService.fetchIncomeSource(reference) map {
+              case Some(incomeSource) => Ok(view(
+                propertyStartDateForm = form.fill(propertyStartDate),
+                isEditMode = isEditMode,
+                incomeSourceModel = Some(incomeSource)
+              ))
+              case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+            }
           }
         }
       }
@@ -79,13 +87,18 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
     implicit user =>
       withAgentReference { reference =>
         form.bindFromRequest.fold(
-          formWithErrors =>
+          formWithErrors => if(isEnabled(SaveAndRetrieve)) {
+            Future.successful(BadRequest(view(
+              propertyStartDateForm = formWithErrors, isEditMode = isEditMode, None
+            )))
+          } else {
             subscriptionDetailsService.fetchIncomeSource(reference) map {
               case Some(incomeSource) => BadRequest(view(
-                propertyStartDateForm = formWithErrors, isEditMode = isEditMode, incomeSource
+                propertyStartDateForm = formWithErrors, isEditMode = isEditMode, Some(incomeSource)
               ))
               case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
-            },
+            }
+          },
 
           startDate =>
             subscriptionDetailsService.savePropertyStartDate(reference, startDate) flatMap { _ =>

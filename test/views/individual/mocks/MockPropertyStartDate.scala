@@ -34,7 +34,7 @@ trait MockPropertyStartDate extends PlaySpec with MockitoSugar with BeforeAndAft
   }
 
   def mockPropertyStartDate(): Unit = {
-    when(propertyStartDate(any(), any(), any(), any(), any())(any(), any()))
+    when(propertyStartDate(any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

@@ -56,8 +56,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
       propertyStartDateForm = propertyStartDateForm,
       postAction = controllers.individual.business.routes.PropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode, incomeSourceModel),
-      isSaveAndRetrieve = isEnabled(SaveAndRetrieve)
+      backUrl = backUrl(isEditMode, incomeSourceModel)
     )
   }
 
