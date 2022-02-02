@@ -78,7 +78,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
           formWithErrors =>
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
           accountingYear => {
-            Future.successful(subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear))) map { _ =>
+            subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map { _ =>
               if (isEnabled(SaveAndRetrieve)) {
                 Redirect(controllers.agent.routes.TaxYearCheckYourAnswersController.show())
               } else if (isEditMode) {
