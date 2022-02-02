@@ -72,13 +72,11 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
             Future.successful(BadRequest(view(accountingMethodOverseasPropertyForm = formWithErrors, isEditMode = isEditMode))),
           overseasPropertyAccountingMethod => {
             subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map { _ =>
-
               if (isSaveAndRetrieve) {
                 Redirect(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
               } else {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show)
               }
-
             }
           }
         )

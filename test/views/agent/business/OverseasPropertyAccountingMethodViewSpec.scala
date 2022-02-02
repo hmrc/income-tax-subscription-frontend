@@ -16,6 +16,8 @@
 
 package views.agent.business
 
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitching
 import forms.agent.AccountingMethodOverseasPropertyForm
 import forms.submapping.AccountingMethodMapping
 import models.AccountingMethod
@@ -28,7 +30,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
 import views.html.agent.business.OverseasPropertyAccountingMethod
 
-class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
+class OverseasPropertyAccountingMethodViewSpec extends ViewSpec with FeatureSwitching {
 
   val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
   val testError: FormError = FormError(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty, "testError")
@@ -53,6 +55,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
     val cash: String = "Cash accounting"
     val accruals: String = "Standard accounting"
     val continue: String = "Continue"
+    val saveAndContinue: String = "Save and continue"
     val update: String = "Update"
   }
 
@@ -110,14 +113,33 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
   }
 
   "OverseasPropertyAccountingMethod" when {
-    "not in edit mode" should {
-      "have a continue button" in {
-        document().mainContent.selectHead("button").text mustBe OverseasPropertyAccountingMethodMessages.continue
+    "Save and Retrieve is disabled" when {
+      "not in edit mode" should {
+        "have a continue button" in {
+          disable(SaveAndRetrieve)
+          document().mainContent.selectHead("button").text mustBe OverseasPropertyAccountingMethodMessages.continue
+        }
+      }
+      "in edit mode" should {
+        "have an update button" in {
+          disable(SaveAndRetrieve)
+          document(isEditMode = true).mainContent.selectHead("button").text mustBe OverseasPropertyAccountingMethodMessages.update
+        }
       }
     }
-    "in edit mode" should {
-      "have an update button" in {
-        document(isEditMode = true).mainContent.selectHead("button").text mustBe OverseasPropertyAccountingMethodMessages.update
+
+    "Save and Retrieve is enabled" when {
+      "not in edit mode" should {
+        "have a continue button" in {
+          enable(SaveAndRetrieve)
+          document().mainContent.selectHead("button").text mustBe OverseasPropertyAccountingMethodMessages.saveAndContinue
+        }
+      }
+      "in edit mode" should {
+        "have an update button" in {
+          enable(SaveAndRetrieve)
+          document(isEditMode = true).mainContent.selectHead("button").text mustBe OverseasPropertyAccountingMethodMessages.saveAndContinue
+        }
       }
     }
   }
