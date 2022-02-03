@@ -263,7 +263,7 @@ agent.error.property.invalid                                    = Rhaid i’r dy
 ## agent Tax Year Check Your Answers
 agent.business.check-your-answers.title                               = Gwiriwch eich atebion
 agent.business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
-agent.business.check-your-answers.content.tax-year.question.hidden    = ?
+agent.business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 
@@ -979,7 +979,7 @@ agent.error.overseas.property.invalid                           = Rhaid i’r dy
 agent.business.task-list.title                                        = Gwirio a llenwi manylion busnes eich cleient
 agent.business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 agent.business.task-list.heading.complete                             = Cais wedi’i gwblhau
-agent.business.task-list.content.summary                              = Rydych wedi llenwi {0} adran allan o {1}.
+agent.business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.
 agent.business.task-list.content.section1                             = Dewiswch flwyddyn dreth i gofrestru
 agent.business.task-list.content.section1.action                      = Dewiswch y flwyddyn dreth
 agent.business.task-list.content.section1.current-tax-year            = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
@@ -1039,42 +1039,42 @@ claim-enrolment.claimAlreadySignedUp.content.link1              = Gwiriwch a yw�
 claim-enrolment.claimAlreadySignedUp.content.link2              = Adfer manylion mewngofnodi ar gyfer eich cyfrif arall
 
 ## Task List
-business.task-list.title                                        = ?
-business.task-list.heading.incomplete                           = ?
-business.task-list.heading.complete                             = ?
-business.task-list.content.summary                              = ?
-business.task-list.content.section1                             = ?
-business.task-list.content.section1.action                      = ?
+business.task-list.title                                        = Gwirio a llenwi’ch manylion busnes
+business.task-list.heading.incomplete                           = Cais heb ei gwblhau
+business.task-list.heading.complete                             = Cais wedi’i gwblhau
+business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.
+business.task-list.content.section1                             = Dewiswch flwyddyn dreth i gofrestru
+business.task-list.content.section1.action                      = Dewiswch y flwyddyn dreth
 business.task-list.content.section1.current-tax-year            = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.task-list.content.section1.next-tax-year               = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-business.task-list.content.section2                             = ?
-business.task-list.content.section2.action                      = ?
-business.task-list.content.section2.property.uk                 = ?
-business.task-list.content.section2.property.overseas           = ?
-business.task-list.content.section3                             = ?
-business.task-list.content.action-needed                        = ?
+business.task-list.content.section2                             = Rhowch wybod i ni am eich incwm
+business.task-list.content.section2.action                      = Ychwanegu busnes
+business.task-list.content.section2.property.uk                 = Busnes eiddo yn y DU
+business.task-list.content.section2.property.overseas           = Busnes eiddo tramor
+business.task-list.content.section3                             = Cofrestru
+business.task-list.content.action-needed                        = Mae’n rhaid i chi gwblhau’r adran `{0}` cyn i chi allu cadarnhau a chofrestru
 business.task-list.status.completed                             = Wedi’i gwblhau
 business.task-list.status.incomplete                            = Anghyflawn
-business.task-list.status.in-progress                           = ?
-business.task-list.status.not-started                           = ?
-business.task-list.status.cannot-start-yet                      = ?
+business.task-list.status.in-progress                           = Ar waith
+business.task-list.status.not-started                           = Heb ddechrau
 
-## Taxy Year Check Your Answers
+## Tax Year Check Your Answers
 business.check-your-answers.title                               = Gwiriwch eich atebion
-business.check-your-answers.content.tax-year.question           = ?
-business.check-your-answers.content.tax-year.current-tax-year   = ?
-business.check-your-answers.content.tax-year.next-tax-year      = ?
+business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
+business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
+business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
+business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu arian parod
 business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu safonol
 
-## UK property
+## UK property check your answers
 business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo yn y DU
-## Overseas property
+## Overseas property check your answers
 business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo tramor

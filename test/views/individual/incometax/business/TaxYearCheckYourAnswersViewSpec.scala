@@ -74,7 +74,7 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
       document()
         .mainContent
         .selectHead(s"$sectionId-row .govuk-visually-hidden")
-        .text() mustBe question
+        .text() mustBe hiddenQuestion
     }
 
     "The back url" should {
