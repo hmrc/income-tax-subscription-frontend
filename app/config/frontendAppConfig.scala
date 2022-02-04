@@ -69,6 +69,9 @@ trait AppConfig extends FeatureSwitching {
   val identityVerificationURL: String
   val identityVerificationRequiredConfidenceLevel: Int
   val contactHmrcLink: String
+  val govukGuidanceLink: String
+  val govukGuidanceITSASignUpIndivLink: String
+  val govukGuidanceITSASignUpAgentLink: String
   val citizenDetailsURL: String
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
@@ -231,6 +234,9 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
 
   override lazy val contactHmrcLink: String = config.getString("contact-hmrc.url")
+  override lazy val govukGuidanceLink: String = config.getString("govuk-guidance.url")
+  override lazy val govukGuidanceITSASignUpIndivLink: String = s"$govukGuidanceLink/sign-up-your-business-for-making-tax-digital-for-income-tax"
+  override lazy val govukGuidanceITSASignUpAgentLink: String = s"$govukGuidanceLink/sign-up-your-client-for-making-tax-digital-for-income-tax"
 
   override lazy val citizenDetailsURL: String = config.baseUrl("citizen-details")
 

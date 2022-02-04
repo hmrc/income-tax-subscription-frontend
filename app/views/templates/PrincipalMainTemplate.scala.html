@@ -33,7 +33,9 @@
 @govukWrapper(
     title = prefixedTitle,
     serviceName = messages("base.service_name"),
+    serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink,
     optForm = optForm,
     backLink = backLink,
     showSignOutLink = showSignOutLink
 )(contentBlock)
+
