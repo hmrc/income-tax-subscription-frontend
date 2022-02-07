@@ -34,7 +34,7 @@
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 
-@(title: String, serviceName: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, serviceName: String, serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
@@ -74,7 +74,7 @@
     } else None,
     serviceName = Some(serviceName),
     isWelshTranslationAvailable = true,
-    serviceUrl = None,
+    serviceUrl = Some(serviceUrl),
     backLinkUrl = backLink,
     signOutUrl = if(showSignOutLink) Some(controllers.routes.SignOutController.signOut.url) else None,
     phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),

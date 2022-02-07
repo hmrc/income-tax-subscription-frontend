@@ -27,11 +27,12 @@ class ServiceNameViewSpec extends ViewSpecTrait {
 
   val layout: GovUkWrapper = app.injector.instanceOf[GovUkWrapper]
 
-  class Setup(serviceName: String) {
+  class Setup(serviceName: String, serviceUrl: String) {
 
     val page: HtmlFormat.Appendable = layout(
       title = "title",
       serviceName = serviceName,
+      serviceUrl = serviceUrl,
       optForm = None,
       backLink = Some("backUrl"),
       showSignOutLink = false
@@ -42,14 +43,21 @@ class ServiceNameViewSpec extends ViewSpecTrait {
 
   "layout" must {
     "have a service name" when {
-      "passing in an individual service name" in new Setup("Use software to send Income Tax updates") {
+      "passing in an individual service name" in new Setup("Use software to send Income Tax updates",
+        appConfig.govukGuidanceITSASignUpIndivLink) {
         val serviceName = "Use software to send Income Tax updates"
+        val serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
         document.getElementsByClass("hmrc-header__service-name").text() mustBe serviceName
+        document.getElementsByClass("hmrc-header__service-name--linked").attr("href") mustBe serviceUrl
+
       }
 
-      "passing in an agent service name" in new Setup("Use software to report your client’s Income Tax") {
+      "passing in an agent service name" in new Setup("Use software to report your client’s Income Tax",
+        appConfig.govukGuidanceITSASignUpAgentLink) {
         val serviceName = "Use software to report your client’s Income Tax"
+        val serviceUrl = appConfig.govukGuidanceITSASignUpAgentLink
         document.getElementsByClass("hmrc-header__service-name").text() mustBe serviceName
+        document.getElementsByClass("hmrc-header__service-name--linked").attr("href") mustBe serviceUrl
       }
     }
   }
