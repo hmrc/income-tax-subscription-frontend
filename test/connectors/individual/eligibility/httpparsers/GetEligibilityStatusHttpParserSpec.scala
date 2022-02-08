@@ -32,14 +32,14 @@ class GetEligibilityStatusHttpParserSpec extends UnitTestTrait with EitherValues
   "GetEligibilityStatusHttpReads" when {
     "read" should {
       "parse a correctly formatted OK Eligible response as a Boolean" in {
-        val httpResponse = HttpResponse(OK, Json.obj(eligibleKey -> true))
+        val httpResponse = HttpResponse(OK, json = Json.obj(eligibleKey -> true), Map.empty)
 
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
         res.right.value mustBe Eligible
       }
       "parse a correctly formatted OK Ineligible response as a Boolean" in {
-        val httpResponse = HttpResponse(OK, Json.obj(eligibleKey -> false))
+        val httpResponse = HttpResponse(OK, json = Json.obj(eligibleKey -> false), Map.empty)
 
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -47,7 +47,7 @@ class GetEligibilityStatusHttpParserSpec extends UnitTestTrait with EitherValues
       }
 
       "parse an incorrectly formatted OK response as a HttpConnectorError with JsError" in {
-        val httpResponse = HttpResponse(OK, Json.obj())
+        val httpResponse = HttpResponse(OK, json = Json.obj(), Map.empty)
 
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -55,7 +55,7 @@ class GetEligibilityStatusHttpParserSpec extends UnitTestTrait with EitherValues
       }
 
       "parse any other http status as a HttpResult[HttpConnectorError]" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
 
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 

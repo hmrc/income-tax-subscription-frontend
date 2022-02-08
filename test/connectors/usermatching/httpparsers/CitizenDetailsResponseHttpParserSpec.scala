@@ -50,7 +50,7 @@ class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValu
   "GetCitizenDetailsHttpReads" when {
     "read" should {
       "parse a correctly formatted OK response as a Some(CitizenDetailsSuccess) which inludes a utr in its response" in {
-        val httpResponse = HttpResponse(OK, successResponse(hasUtr = true))
+        val httpResponse = HttpResponse(OK, json = successResponse(hasUtr = true), Map.empty)
 
         val res = GetCitizenDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -58,7 +58,7 @@ class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValu
       }
 
       "parse a correctly formatted OK response as a Some(None) which does not inlude a utr in its response" in {
-        val httpResponse = HttpResponse(OK, successResponse(hasUtr = false))
+        val httpResponse = HttpResponse(OK, json = successResponse(hasUtr = false), Map.empty)
 
         val res = GetCitizenDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -66,7 +66,7 @@ class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValu
       }
 
       "parse a 404 response as None" in {
-        val httpResponse = HttpResponse(NOT_FOUND)
+        val httpResponse = HttpResponse(NOT_FOUND, "")
 
         val res = GetCitizenDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -74,7 +74,7 @@ class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValu
       }
 
       "parse any other http status as a CitizenDetailsFailureResponse" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
 
         val res = GetCitizenDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 

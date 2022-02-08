@@ -32,7 +32,7 @@ class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherVal
   "GetSubscriptionResponseHttpReads" when {
     "read" should {
       "parse a correctly formatted OK response as a Some(SubscriptionSuccess)" in {
-        val httpResponse = HttpResponse(OK, Json.toJson(SubscriptionSuccess(testMTDID)))
+        val httpResponse = HttpResponse(OK, json = Json.toJson(SubscriptionSuccess(testMTDID)), Map.empty)
 
         val res = GetSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -40,7 +40,7 @@ class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherVal
       }
 
       "parse an empty OK response as a None" in {
-        val httpResponse = HttpResponse(OK, Json.obj())
+        val httpResponse = HttpResponse(OK, json = Json.obj(), Map.empty)
 
         val res = GetSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -48,7 +48,7 @@ class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherVal
       }
 
       "parse any other http status as a SubscriptionFailureResponse" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
 
         val res = GetSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 

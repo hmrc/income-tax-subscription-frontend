@@ -31,7 +31,7 @@ class UpsertEnrolmentResponseHttpParserSpec extends UnitTestTrait with EitherVal
   "UpsertEnrolmentResponseHttpReads" when {
     "read" should {
       "parse a NO_CONTENT response as an UpsertEnrolmentSuccess" in {
-        val httpResponse = HttpResponse(NO_CONTENT)
+        val httpResponse = HttpResponse(NO_CONTENT, "")
 
         val res = UpsertEnrolmentResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -39,7 +39,7 @@ class UpsertEnrolmentResponseHttpParserSpec extends UnitTestTrait with EitherVal
       }
 
       "parse any other  response as an UpsertEnrolmentSuccess" in {
-        val httpResponse = HttpResponse(BAD_REQUEST, Json.obj())
+        val httpResponse = HttpResponse(BAD_REQUEST, json = Json.obj(), Map.empty)
 
         val res = UpsertEnrolmentResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 

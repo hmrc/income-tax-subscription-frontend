@@ -251,7 +251,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
                                   property: Option[PropertyModel],
                                   hasProperty: Boolean,
                                   isAgent: Boolean = false,
-                                  isReleaseFourEnabled: Boolean = false): SummaryModel = {
+                                  isReleaseFourEnabled: Boolean): SummaryModel = {
       if (hasProperty) {
         if (isAgent) {
           summaryModel.asInstanceOf[AgentSummary].copy(
@@ -273,7 +273,7 @@ object SubscriptionDataUtil extends FeatureSwitching {
                                          overseasProperty: Option[OverseasPropertyModel],
                                          hasForeignProperty: Boolean,
                                          isAgent: Boolean = false,
-                                         isReleaseFourEnabled: Boolean = false): SummaryModel = {
+                                         isReleaseFourEnabled: Boolean): SummaryModel = {
       if (hasForeignProperty) {
         if (isAgent) {
           summaryModel.asInstanceOf[AgentSummary].copy(

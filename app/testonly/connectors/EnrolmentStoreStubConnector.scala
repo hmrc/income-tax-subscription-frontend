@@ -22,7 +22,8 @@ import javax.inject.Inject
 import play.api.libs.json.{JsObject, Json}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,7 +34,7 @@ class EnrolmentStoreStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   lazy val enrolmentStoreUrl: String = appConfig.enrolmentStoreStubUrl + "/enrolment-store-stub/data"
 
   def updateEnrolments(credId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    http.POST(enrolmentStoreUrl, updateEnrolmentsRequest(credId))
+    http.POST[JsObject, HttpResponse](enrolmentStoreUrl, updateEnrolmentsRequest(credId))
 
   private def updateEnrolmentsRequest(credId: String): JsObject =
     Json.obj(

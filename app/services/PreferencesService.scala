@@ -17,11 +17,11 @@
 package services
 
 import connectors.PreferenceFrontendConnector
-import javax.inject.{Inject, Singleton}
 import models.{PaperlessPreferenceError, PaperlessState}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
@@ -31,6 +31,6 @@ class PreferencesService @Inject()(preferenceFrontendConnector: PreferenceFronte
       Future[Either[PaperlessPreferenceError.type, PaperlessState]] =
       preferenceFrontendConnector.checkPaperless(token)
 
-  @inline def defaultChoosePaperlessUrl(implicit request: Request[AnyContent], messages: Messages): String = preferenceFrontendConnector.choosePaperlessUrl
+  @inline def defaultChoosePaperlessUrl(implicit messages: Messages): String = preferenceFrontendConnector.choosePaperlessUrl
 
 }

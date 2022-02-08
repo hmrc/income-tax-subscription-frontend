@@ -16,10 +16,10 @@
 
 package models.common
 
-import models.{Cash, Current, DateModel}
+import models.{Cash, DateModel}
 import org.scalatest.MustMatchers.convertToAnyMustWrapper
-import play.api.libs.json.{JsSuccess, Json}
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import play.api.libs.json.{JsSuccess, Json}
 
 class PropertyModelSpec extends WordSpecLike with Matchers with OptionValues {
   "PropertyModel" should {

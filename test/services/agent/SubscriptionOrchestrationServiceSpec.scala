@@ -18,7 +18,7 @@ package services.agent
 
 import config.featureswitch.FeatureSwitch.SPSEnabled
 import models.ConnectorError
-import models.common.subscription.{CreateIncomeSourcesSuccess, SubscriptionSuccess}
+import models.common.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentSPSConnector

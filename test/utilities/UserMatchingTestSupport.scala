@@ -18,7 +18,7 @@ package utilities
 
 import models.usermatching.UserDetailsModel
 import org.scalatest.MustMatchers
-import play.api.mvc.{Cookies, Request, Result, Session}
+import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 
 trait UserMatchingTestSupport {

@@ -16,9 +16,7 @@
 
 package controllers
 
-import java.net.URLEncoder
 import config.AppConfig
-
 import play.api.Logging
 import play.api.http.{Status => HttpStatus}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -45,16 +43,16 @@ class FeedbackController @Inject()(val feedback: Feedback, val feedbackThankYou:
 
   def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
 
-  def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit.url
+  def localSubmitUrl: String = routes.FeedbackController.submit.url
 
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
     s"${appConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
       s"&service=${urlEncode(appConfig.contactFormServiceIdentifier)}&referer=${urlEncode(contactFormReferer)}"
 
-  private def feedbackHmrcSubmitPartialUrl(implicit request: Request[AnyContent]) =
+  private def feedbackHmrcSubmitPartialUrl =
     s"${appConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form?resubmitUrl=${urlEncode(localSubmitUrl)}"
 
-  private def feedbackThankYouPartialUrl(ticketId: String)(implicit request: Request[AnyContent]) =
+  private def feedbackThankYouPartialUrl(ticketId: String) =
     s"${appConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
 
   def show: Action[AnyContent] = Action {

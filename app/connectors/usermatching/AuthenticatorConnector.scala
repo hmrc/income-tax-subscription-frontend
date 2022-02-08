@@ -21,7 +21,7 @@ import connectors.usermatching.httpparsers.MatchUserHttpParser._
 import models.usermatching.{UserDetailsModel, UserMatchRequestModel}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

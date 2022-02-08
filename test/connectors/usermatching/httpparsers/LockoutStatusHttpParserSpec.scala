@@ -46,7 +46,7 @@ class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
       val testHttpVerb = "GET"
 
       "parse a correctly formatted NOT_FOUND response for lockout status" in {
-        val httpResponse = HttpResponse(NOT_FOUND)
+        val httpResponse = HttpResponse(NOT_FOUND, "")
 
         val res = LockoutStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -54,7 +54,7 @@ class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
       }
 
       "parse a correctly formatted OK response for lockout status" in {
-        val httpResponse = HttpResponse(OK, Some(testResponsJson))
+        val httpResponse = HttpResponse(OK, json = testResponsJson, Map.empty)
 
         val res = LockoutStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -62,7 +62,7 @@ class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
       }
 
       "parse any other http status as a LockoutStatusFailureResponse" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
 
         val res = LockoutStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -74,7 +74,7 @@ class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
       val testHttpVerb = "POST"
 
       "parse a correctly formatted CREATED response for lockout status" in {
-        val httpResponse = HttpResponse(CREATED, testResponsJson)
+        val httpResponse = HttpResponse(CREATED, json = testResponsJson, Map.empty)
 
         val res = LockoutStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -82,7 +82,7 @@ class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
       }
 
       "parse any other http status as a LockoutStatusFailureResponse" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
 
         val res = LockoutStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 

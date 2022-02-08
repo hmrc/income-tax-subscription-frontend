@@ -47,7 +47,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
 
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       Ok(otherSourcesOfIncome(otherSourcesOfIncomeForm, routes.OtherSourcesOfIncomeController.submit, backUrl))
   }
 

@@ -66,13 +66,6 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait with MockHttp {
     app.injector.instanceOf[HeaderCarrierForPartialsConverter]
   )
 
-  def setupCheckPaperless(token: String)(tuple: (Int, Option[JsValue]))(implicit request: Request[AnyContent]): Unit =
-    setupMockCheckPaperless(token)(tuple._1, tuple._2)
-
-  def setupMockCheckPaperless(token: String)(status: Int, response: Option[JsValue])(implicit request: Request[AnyContent]): Unit =
-    setupMockHttpPut[String](url = TestPreferenceFrontendConnector.checkPaperlessUrl(token), "")(status, response)
-
-
   private def okResponseJson(paperless: Boolean): JsValue = Json.obj(
     "optedIn" -> paperless
   )

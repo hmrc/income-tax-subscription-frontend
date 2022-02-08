@@ -38,7 +38,7 @@ class CovidCannotSignUpController @Inject()(val covidCannotSignUp: CovidCannotSi
                                             val appConfig: AppConfig) extends StatelessController with FeatureSwitching {
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       if (isEnabled(RemoveCovidPages)) {
         Redirect(routes.OtherSourcesOfIncomeController.show)
       } else {

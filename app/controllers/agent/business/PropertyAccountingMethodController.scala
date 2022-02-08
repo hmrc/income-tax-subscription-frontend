@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.HeaderCarrier
 import views.html.agent.business.PropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
@@ -95,7 +94,7 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
       }
   }
 
-  def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {
+  def backUrl(isEditMode: Boolean): String = {
     (isEditMode, isSaveAndRetrieve) match {
       case (true, true) => controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
       case (false, _) => controllers.agent.business.routes.PropertyStartDateController.show().url

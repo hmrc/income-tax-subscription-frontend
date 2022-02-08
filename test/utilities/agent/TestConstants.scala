@@ -16,18 +16,18 @@
 
 package utilities.agent
 
-import java.time.LocalDate
-import java.util.UUID
 import models.DateModel
 import models.common.business.{Address, BusinessAddressModel, BusinessStartDate, SelfEmploymentData}
-import models.common.subscription.{CreateIncomeSourcesFailureResponse, CreateIncomeSourcesModel, KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, OverseasProperty, SignUpIncomeSourcesFailureResponse, SoleTraderBusinesses, SubscriptionFailureResponse, SubscriptionSuccess, TypeValuePair, UkProperty}
-import models.individual.subscription._
+import models.common.subscription._
 import models.usermatching.LockedOut
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
 import utilities.TestModels.{testAccountMethod, testAccountingPeriod, testBusinessName, testBusinessTradeName, testValidStartDate}
 import utilities.agent.Constants.{agentServiceEnrolmentName, agentServiceIdentifierKey, mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import utilities.individual
+
+import java.time.LocalDate
+import java.util.UUID
 
 object TestConstants {
   /*

@@ -53,7 +53,7 @@ class UserMatchingServiceSpec extends TestUserMatchingService {
       mockUserMatchException(testUserDetails)
       val result = TestUserMatchingService.matchUser(testUserDetails)
 
-      val e = intercept[Exception] {
+      intercept[Exception] {
         await(result)
       }
     }

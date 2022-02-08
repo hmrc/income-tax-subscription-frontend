@@ -203,7 +203,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
         "the user's affinity group is organisation" should {
           "redirect the user to IV" in {
             enable(IdentityVerification)
-            implicit val request: Request[AnyContent] = FakeRequest()
             val result = ivPredicate(FakeRequest())(testUser(Some(AffinityGroup.Organisation), None, ConfidenceLevel.L50, "testUserId", ninoEnrolment))
             status(result.left.value) mustBe SEE_OTHER
             redirectLocation(result.left.value) mustBe Some(injectedConfig.identityVerificationURL)

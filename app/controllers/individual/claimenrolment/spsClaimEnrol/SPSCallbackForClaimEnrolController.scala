@@ -60,6 +60,7 @@ class SPSCallbackForClaimEnrolController @Inject()(val auditingService: Auditing
           case (false, false) => "both SPS and claim enrolment feature switch are not enabled"
           case (false, true) => "SPS feature switch is not enabled"
           case (true, false) => "claim enrolment feature switch is not enabled"
+          case _ => "both SPS and claim enrolment feature switch are enabled"
         }
         throw new NotFoundException(s"[SPSCallbackForClaimEnrolController][callback] - $error")
       }

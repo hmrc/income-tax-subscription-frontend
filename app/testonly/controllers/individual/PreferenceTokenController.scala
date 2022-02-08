@@ -50,7 +50,7 @@ class PreferenceTokenController @Inject()(val auditingService: AuditingService,
 
   // n.b. this route must be marked with NOCSRF in the route core.config file
   def addToken(): Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    implicit user =>
+    _ =>
       request.body.asJson flatMap (_.asOpt[AddTokenRequest]) match {
         case Some(AddTokenRequest(nino)) =>
           storeNino(nino).map(token => Created(Json.prettyPrint(Json.toJson(AddTokenResponse(nino, token)))))

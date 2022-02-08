@@ -18,11 +18,10 @@ package services.individual
 
 import config.AppConfig
 import connectors.usermatching.CitizenDetailsConnector
-import javax.inject.{Inject, Singleton}
 import models.usermatching.CitizenDetailsSuccess
-import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -55,7 +54,7 @@ class CitizenDetailsService @Inject()(appConfig: AppConfig,
     }
 
   def resolveKnownFacts(optNino: Option[String], optUtr: Option[String])
-                       (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[OptionalIdentifiers] = {
+                       (implicit hc: HeaderCarrier): Future[OptionalIdentifiers] = {
 
     (optNino, optUtr) match {
       case (Some(nino), Some(utr)) => Future.successful(OptionalIdentifiers(Some(nino), Some(utr)))

@@ -39,7 +39,7 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = AuthPredicates.defaultPredicates
 
   def addAnother(): Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       if (isEnabled(RemoveCovidPages)) {
         Redirect(eligibility.routes.OtherSourcesOfIncomeController.show)
           .removingFromSession(ITSASessionKeys.JourneyStateKey)

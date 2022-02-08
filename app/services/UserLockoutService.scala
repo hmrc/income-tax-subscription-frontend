@@ -34,13 +34,6 @@ class UserLockoutService @Inject()(appConfig: AppConfig,
                                    userLockoutConnector: UserLockoutConnector,
                                    subscriptionDetailsService: SubscriptionDetailsService) extends Logging {
 
-  private def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
-    val encodedToken = encodeToken(token)
-
-    logger.debug(s"Creating a lock for token=$token encoded=$encodedToken")
-    userLockoutConnector.lockoutUser(encodedToken)
-  }
-
   def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)
 

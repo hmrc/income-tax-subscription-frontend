@@ -18,7 +18,6 @@ package controllers.individual.incomesource
 
 import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
@@ -50,8 +49,6 @@ class CannotUseServiceControllerSpec extends ControllerBaseSpec with MockAuditin
 
     "return ok (200)" in {
       val result = call
-      val document = Jsoup.parse(contentAsString(result))
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       status(result) must be(Status.OK)
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))

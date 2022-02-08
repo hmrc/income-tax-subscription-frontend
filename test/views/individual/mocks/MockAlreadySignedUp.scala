@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.twirl.api.HtmlFormat
-import views.html.individual.claimenrolment.{ClaimEnrolmentAlreadySignedUp, NotSubscribed}
+import views.html.individual.claimenrolment.ClaimEnrolmentAlreadySignedUp
 
 trait MockAlreadySignedUp extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 

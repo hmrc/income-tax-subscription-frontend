@@ -16,7 +16,6 @@
 
 package controllers.usermatching
 
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.individual.usermatching.NoSA
@@ -25,8 +24,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class NoSAController @Inject()(noSA: NoSA,
-                               mcc: MessagesControllerComponents)
-                              (implicit appConfig: AppConfig) extends FrontendController(mcc) {
+                               mcc: MessagesControllerComponents) extends FrontendController(mcc) {
 
   val show: Action[AnyContent] = Action {
     implicit request => Ok(noSA())

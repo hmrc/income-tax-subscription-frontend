@@ -20,11 +20,9 @@ import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -127,8 +125,6 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   "Calling the show action of the PreferencesController with an authorised user" should withController { controller =>
 
     lazy val result = controller.show()(subscriptionRequest)
-    lazy val document = Jsoup.parse(contentAsString(result))
-
 
     "return status (200)" in {
       status(result) must be(Status.OK)

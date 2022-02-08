@@ -37,12 +37,12 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
                                                val appConfig: AppConfig) extends UserMatchingController with FeatureSwitching {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       Future.successful(Ok(noClientRelationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit)))
   }
 
-  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+  val submit: Action[AnyContent] = Authenticated.async { _ =>
+    _ =>
       if (isEnabled(RemoveCovidPages)) {
         Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show))
       } else {

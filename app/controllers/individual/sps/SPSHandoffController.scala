@@ -44,14 +44,13 @@ class SPSHandoffController @Inject()(
 
   def redirectToSPS: Action[AnyContent] = {
     Authenticated {
-      implicit request =>
-
-        implicit user =>
+      _ =>
+        _ =>
           if (isEnabled(SPSEnabled)) {
             goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback.url,
               returnLinkText = "I have verified",
               regime = "itsa"
-            )(request)
+            )
           } else {
             throw new NotFoundException("[SPSHandoffController][redirectToSPS] - SPS FS is not enabled")
           }
@@ -62,8 +61,7 @@ class SPSHandoffController @Inject()(
     URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(s)).value, "UTF-8")
   }
 
-  def goToSPS(returnUrl: String, returnLinkText: String, regime: String)
-             (implicit request: Request[AnyContent]): Result = {
+  def goToSPS(returnUrl: String, returnLinkText: String, regime: String): Result = {
 
     val encryptedReturnUrl = encryptAndEncodeString(returnUrl)
     val encryptedReturnLinkText = encryptAndEncodeString(returnLinkText)

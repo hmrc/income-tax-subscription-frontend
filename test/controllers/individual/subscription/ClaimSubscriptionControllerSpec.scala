@@ -17,7 +17,7 @@
 package controllers.individual.subscription
 
 import agent.audit.mocks.MockAuditingService
-import controllers.{ControllerBaseSpec, FeedbackController}
+import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
@@ -29,7 +29,6 @@ import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants._
 import views.html.individual.incometax.subscription.enrolled.ClaimSubscription
-import views.html.{Feedback, FeedbackThankyou}
 
 class ClaimSubscriptionControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService with MockSubscriptionOrchestrationService with MockAuditingService {

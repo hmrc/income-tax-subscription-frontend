@@ -20,12 +20,10 @@ import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
-
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers._
-
 import uk.gov.hmrc.http.NotFoundException
-import views.individual.mocks.{MockAlreadySignedUp, MockNotSubscribed}
+import views.individual.mocks.MockAlreadySignedUp
 
 import scala.concurrent.Future
 

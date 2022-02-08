@@ -17,14 +17,12 @@
 package controllers.usermatching
 
 import agent.audit.mocks.MockAuditingService
-import assets.MessageLookup.{UserDetailsError => messages}
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentType, _}
 import play.twirl.api.HtmlFormat

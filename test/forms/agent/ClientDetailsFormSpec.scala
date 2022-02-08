@@ -16,17 +16,15 @@
 
 package forms.agent
 
-import java.time.LocalDate
 import forms.formatters.DateModelMapping._
-import forms.usermatching.UserDetailsForm.{userDateOfBirth, userFirstName, userLastName, userNino}
-import forms.validation.testutils.DataMap.DataMap
-import forms.validation.testutils._
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
 import utilities.agent.TestConstants
+
+import java.time.LocalDate
 
 class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 

@@ -46,8 +46,8 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
       }
   }
 
-  def submit: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+  def submit: Action[AnyContent] = Authenticated { _ =>
+    _ =>
       if (isEnabled(ClaimEnrolment)) {
         Redirect(routes.ClaimEnrolmentResolverController.resolve)
       } else {

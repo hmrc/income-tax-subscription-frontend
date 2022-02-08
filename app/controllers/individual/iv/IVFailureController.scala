@@ -41,7 +41,7 @@ class IVFailureController @Inject()(val authService: AuthService,
   def view(implicit request: Request[_]): Html = ivFailure()
 
   def failure: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    implicit user =>
+    _ =>
       if (isEnabled(IdentityVerification)) {
         if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
           request.getQueryString("journeyId").foreach(id => auditingService.audit(IVOutcomeFailureAuditModel(id)))

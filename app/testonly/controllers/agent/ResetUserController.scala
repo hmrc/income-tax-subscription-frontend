@@ -33,7 +33,7 @@ class ResetUserController @Inject()(val auditingService: AuditingService,
                                     mcc: MessagesControllerComponents) extends StatelessController {
 
   val resetUser: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       Future.successful(
         Ok("User reset successfully")
           .removingFromSession(ITSASessionKeys.MTDITID)

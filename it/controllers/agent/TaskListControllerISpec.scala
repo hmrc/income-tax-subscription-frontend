@@ -670,8 +670,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-
         When("GET /business/task-list is called")
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 

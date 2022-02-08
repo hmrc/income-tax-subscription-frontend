@@ -57,7 +57,7 @@ class RetrieveReferenceHttpParserSpec extends UnitTestTrait with EitherValues {
       }
 
       "parse any other http status as a UnexpectedStatusFailure" in {
-        val httpResponse = HttpResponse(INTERNAL_SERVER_ERROR)
+        val httpResponse = HttpResponse(INTERNAL_SERVER_ERROR, "")
 
         val res = retrieveReferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
 

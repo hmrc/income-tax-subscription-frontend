@@ -45,7 +45,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK)
   }
 
-  def verifySaveProperty[T](property: PropertyModel, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
+  def verifySaveProperty[T](property: PropertyModel, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyPost(postUri(Property), Some((Json.toJson(property): JsValue).toString()), count)
   }
 
@@ -54,7 +54,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK)
   }
 
-  def verifySaveOverseasProperty[T](property: OverseasPropertyModel, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
+  def verifySaveOverseasProperty[T](property: OverseasPropertyModel, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyPost(postUri(OverseasProperty), Some((Json.toJson(property): JsValue).toString()), count)
   }
 
@@ -75,7 +75,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK, body)
   }
 
-  def stubBusinessesData: Unit = {
+  def stubBusinessesData(): Unit = {
     val body = testSummaryDataSelfEmploymentData
 
     when(method = GET, uri = subscriptionUri(BusinessesKey))

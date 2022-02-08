@@ -34,7 +34,7 @@ class CannotUseServiceController @Inject()(val auditingService: AuditingService,
                                            mcc: MessagesControllerComponents) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    implicit user =>
+    _ =>
       Future.successful(Ok(cannotUseServiceView(
         postAction = controllers.individual.incomesource.routes.CannotUseServiceController.show
       )))

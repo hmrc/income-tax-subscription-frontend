@@ -22,7 +22,7 @@ import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
-import models.common.{IncomeSourceModel, OverseasPropertyModel, OverseasPropertyStartDateModel}
+import models.common.{IncomeSourceModel, OverseasPropertyModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -228,7 +228,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         "save and retrieve is enabled" should {
           "redirect to overseas property check your answers page" in withController { controller =>
             enable(SaveAndRetrieve)
-            val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
             controller.backUrl(isEditMode = true, maybeIncomeSourceModel = None) mustBe
               controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
           }
@@ -239,7 +238,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         "save and retrieve is disabled" when {
           "the user has uk property income" should {
             " redirect to uk property accounting method page" in withController { controller =>
-
               val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
               controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
                 controllers.individual.business.routes.PropertyAccountingMethodController.show().url
@@ -248,7 +246,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
           "the user has self employment income but no uk property income" should {
             "redirect to self employment accounting method page" in withController { controller =>
-
               val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)
               controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
                 appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
@@ -257,7 +254,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
           "the user has no self employment or uk property income" should {
             "redirect to income source page" in withController { controller =>
-
               val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
               controller.backUrl(isEditMode = false, maybeIncomeSourceModel = Some(incomeSourceModel)) mustBe
                 controllers.individual.incomesource.routes.IncomeSourceController.show().url

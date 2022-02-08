@@ -32,7 +32,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
   "PaperlessPreferenceHttpReads" when {
     "read" should {
       "parse a correctly formatted OK true response as Activated" in {
-        val httpResponse = HttpResponse(OK, Some(Json.obj("optedIn" -> true)))
+        val httpResponse = HttpResponse(OK, json = Json.obj("optedIn" -> true), Map.empty)
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
@@ -40,12 +40,13 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
       }
 
       s"parse a correctly formatted OK false response with a redirect url as Declined($testUrl)" in {
-        val httpResponse = HttpResponse(OK, Some(
-          Json.obj(
+        val httpResponse = HttpResponse(OK,
+          json = Json.obj(
             "optedIn" -> false,
             "redirectUserTo" -> testUrl
-          )
-        ))
+          ),
+          Map.empty
+        )
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
@@ -53,7 +54,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
       }
 
       "parse a correctly formatted PRECONDITION_FAILED false response as Unset" in {
-        val httpResponse = HttpResponse(PRECONDITION_FAILED, Some(Json.obj("redirectUserTo" -> testUrl)))
+        val httpResponse = HttpResponse(PRECONDITION_FAILED, json = Json.obj("redirectUserTo" -> testUrl), Map.empty)
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
@@ -63,7 +64,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
       "parse an incorrectly formatted OK response as a PaperlessPreferenceError" in {
         val json = Json.obj()
 
-        val httpResponse = HttpResponse(OK, Some(json))
+        val httpResponse = HttpResponse(OK, json = json, Map.empty)
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
@@ -74,7 +75,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
       "parse an incorrectly formatted PRECONDITION_FAILED response as a PaperlessPreferenceError" in {
         val json = Json.obj()
 
-        val httpResponse = HttpResponse(PRECONDITION_FAILED, Some(json))
+        val httpResponse = HttpResponse(PRECONDITION_FAILED, json = json, Map.empty)
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
@@ -82,7 +83,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
       }
 
       "parse any other http status as a SubscriptionFailureResponse" in {
-        val httpResponse = HttpResponse(responseStatus = BAD_REQUEST, responseString = Some(testErrorMessage))
+        val httpResponse = HttpResponse(status = BAD_REQUEST, body = testErrorMessage)
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 

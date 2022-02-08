@@ -57,7 +57,7 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
     )
   }
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       Ok(view(
         form = soleTraderForm(startDateLimit.toLongDate),
         startDateLimit = startDateLimit

@@ -21,7 +21,7 @@ import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestModels
 import helpers.IntegrationTestModels.{subscriptionData, testFullPropertyModel, testPropertyStartDate}
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{checkYourAnswersURI, propertyAccountingMethodURI, ukPropertyCheckYourAnswersURI, whatYearToSignUpURI}
+import helpers.agent.IntegrationTestConstants.{checkYourAnswersURI, propertyAccountingMethodURI, ukPropertyCheckYourAnswersURI}
 import helpers.agent.servicemocks.AuthStub
 import models.DateModel
 import models.common.{IncomeSourceModel, PropertyModel, PropertyStartDateModel}

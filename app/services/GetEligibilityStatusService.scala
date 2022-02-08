@@ -18,16 +18,16 @@ package services
 
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import connectors.individual.eligibility.httpparsers.EligibilityStatus
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.HttpResult.HttpResult
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEligibilityStatusConnector) {
 
-  def getEligibilityStatus(sautr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResult[EligibilityStatus]] =
+  def getEligibilityStatus(sautr: String)(implicit hc: HeaderCarrier): Future[HttpResult[EligibilityStatus]] =
     getEligibilityStatusConnector.getEligibilityStatus(sautr)
 
 }

@@ -56,7 +56,7 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
 
   private def mockCreateSubscription(nino: String,
                                      summaryModel: SummaryModel,
-                                     isReleaseFourEnabled: Boolean = false
+                                     isReleaseFourEnabled: Boolean
                                     )(result: Future[SubscriptionResponse]): Unit = {
     when(mockSubscriptionOrchestrationService.createSubscription(
       ArgumentMatchers.eq(nino),
