@@ -140,13 +140,6 @@ property.income.heading                                         = Faint oedd eic
 property.income.line_1                                          = Dyma’r swm a wnaethoch cyn didynnu unrhyw dreuliau caniataol.
 
 # Cannot Sign Up page
-cannot-sign-up.title                                            = Ni allwch ddefnyddio’r gwasanaeth hwn
-cannot-sign-up.heading                                          = Ni allwch ddefnyddio’r gwasanaeth hwn
-cannot-sign-up.para1                                            = Gallwch ond defnyddio meddalwedd i roi gwybod am eich Treth Incwm os ydych naill ai:
-cannot-sign-up.bullet1                                          = yn gweithio i chi’ch hun
-cannot-sign-up.bullet2                                          = yn gosod eiddo yn y DU
-cannot-sign-up.bullet3                                          = yn gweithio i chi’ch hun ac yn gosod eiddo yn y DU
-cannot-sign-up.para2                                            = Rhaid i chi <a id="signOut" href="{0}">anfon Ffurflen Dreth Hunanasesiad </a> yn lle hynny.
 
 # Cannot Use Service page
 cannot-use-service.title                                        = Ni allwch ddefnyddio’r gwasanaeth hwn
@@ -427,7 +420,6 @@ error.date.empty                                                = Rhaid i chi no
 error.date.invalid                                              = Rhaid i chi nodi dyddiad dilys
 
 error.business_accounting_period.minStartDate                   = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
-error.business_accounting_period.maxEndDate                     = Rhaid i chi nodi dyddiad dod i ben nad yw’n fwy na 24 mis ar ôl eich dyddiad dechrau
 
 error.business_name.empty                                       = Rhaid i chi nodi enw’ch busnes
 error.business_name.maxLength                                   = Ni allwch nodi mwy na 105 o gymeriadau ar gyfer enw’ch busnes
@@ -958,7 +950,6 @@ agent.covid_cannot_sign_up.heading                              = Ni all eich cl
 agent.covid_cannot_sign_up.line1                                = Ni fyddwch yn gallu cymryd rhan yn y cynllun peilot hwn ar ran eich cleient os yw erioed wedi hawlio grant coronafeirws (COVID-19) neu’n bwriadu gwneud hynny yn y dyfodol.
 agent.covid_cannot_sign_up.line2                                = Bydd angen i chi anfon {0} yn lle hynny, ac efallai y bydd modd i chi gofrestru’ch cleient yn y dyfodol.
 agent.covid_cannot_sign_up.line2.link                           = Ffurflen Dreth Hunanasesiad
-agent.covid_cannot_sign_up.button                               = Cofrestru cleient arall
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
