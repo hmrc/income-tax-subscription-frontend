@@ -31,7 +31,7 @@ class PostSubscriptionDetailsHttpParserSpec extends UnitTestTrait with EitherVal
   "PostSelfEmploymentHttpReads" when {
     "read" should {
       "parse a correctly formatted OK response as a PostSelfEmploymentsSuccessResponse" in {
-        val httpResponse = HttpResponse(OK, Some(Json.obj()))
+        val httpResponse = HttpResponse(OK, json = Json.obj(), Map.empty)
 
         val res = postSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -39,7 +39,7 @@ class PostSubscriptionDetailsHttpParserSpec extends UnitTestTrait with EitherVal
       }
 
       "parse any other http status as a UnexpectedStatusFailure" in {
-        val httpResponse = HttpResponse(INTERNAL_SERVER_ERROR)
+        val httpResponse = HttpResponse(INTERNAL_SERVER_ERROR, body = "")
 
         val res = postSubscriptionDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 

@@ -33,7 +33,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
-import play.api.mvc.Headers
+import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -140,7 +140,12 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
       "Csrf-Token" -> "nocheck"
     )
 
-    implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(Headers(headers: _*))
+
+
+    implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(
+      FakeRequest().withHeaders(Headers(headers: _*)),
+      Session()
+    )
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse =
       buildClient(uri)

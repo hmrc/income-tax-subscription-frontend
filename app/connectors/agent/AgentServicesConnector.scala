@@ -21,7 +21,7 @@ import connectors.RawResponseReads
 import javax.inject.{Inject, Singleton}
 import play.api.http.Status
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,7 +37,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url = agentClientURL(arn, nino)
 
-    http.GET(url).map {
+    http.GET[HttpResponse](url).map {
       case res if res.status == Status.OK => true
       case res if res.status == Status.NOT_FOUND => false
       case res => throw new InternalServerException(s"[AgentServicesConnector][isPreExistingRelationship] failure, status: ${res.status} body=${res.body}")

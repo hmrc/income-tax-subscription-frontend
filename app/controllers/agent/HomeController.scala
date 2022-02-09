@@ -36,7 +36,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                               (implicit val ec: ExecutionContext,
                                mcc: MessagesControllerComponents) extends StatelessController {
 
-  def home: Action[AnyContent] = Action.async { implicit request =>
+  def home: Action[AnyContent] = Action.async {
     Redirect(controllers.agent.routes.HomeController.index)
   }
 

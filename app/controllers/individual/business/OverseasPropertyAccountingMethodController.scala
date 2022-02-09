@@ -26,7 +26,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.HeaderCarrier
 import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 
 import javax.inject.Inject
@@ -82,7 +81,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
       }
   }
 
-  def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): String = {
+  def backUrl(isEditMode: Boolean): String = {
     (isEditMode, isSaveAndRetrieve) match {
       case (true, true) => controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
       case (false, _) => controllers.individual.business.routes.OverseasPropertyStartDateController.show().url

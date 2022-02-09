@@ -35,12 +35,12 @@ class UserDetailsErrorController @Inject()(val auditingService: AuditingService,
                                            mcc: MessagesControllerComponents) extends UserMatchingController {
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       Ok(userDetailsError(postAction = controllers.usermatching.routes.UserDetailsErrorController.submit()))
   }
 
-  lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+  lazy val submit: Action[AnyContent] = Authenticated.async { _ =>
+    _ =>
       Redirect(controllers.usermatching.routes.UserDetailsController.show())
   }
 

@@ -18,7 +18,7 @@ package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.{FeatureSwitching, FeatureSwitchingConfig}
+import config.featureswitch.FeatureSwitchingConfig
 import controllers.agent.AgentControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}

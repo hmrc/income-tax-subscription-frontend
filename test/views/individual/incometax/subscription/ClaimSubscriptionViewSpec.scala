@@ -18,7 +18,6 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import controllers.SignOutController
-import models.DateModel
 import org.jsoup.Jsoup
 import views.ViewSpecTrait
 import views.html.individual.incometax.subscription.enrolled.ClaimSubscription

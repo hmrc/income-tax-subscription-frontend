@@ -35,14 +35,14 @@ class ClientAlreadySubscribedController @Inject()(val auditingService: AuditingS
                                                   mcc: MessagesControllerComponents) extends UserMatchingController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       Future.successful(Ok(clientAlreadySubscribed(
         postAction = controllers.agent.routes.ClientAlreadySubscribedController.submit
       )))
   }
 
-  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+  val submit: Action[AnyContent] = Authenticated.async { _ =>
+    _ =>
       Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
   }
 

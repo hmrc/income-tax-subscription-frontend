@@ -16,23 +16,22 @@
 
 package controllers.usermatching
 
-import java.time.Duration
 import agent.audit.mocks.MockAuditingService
 import auth.individual.UserMatching
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import play.api.Play
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{ contentType, _}
+import play.api.test.Helpers.{contentType, _}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockUserLockoutService
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants._
 import views.html.individual.usermatching.UserDetailsLockout
 
+import java.time.Duration
 import scala.concurrent.Future
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
@@ -113,7 +112,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
       }
     }
     "the language is Welsh" should {
-      implicit lazy val r: Request[_] = request.withCookies(Cookie(Play.langCookieName, "cy"))
+      implicit lazy val r: Request[_] = request.withCookies(Cookie(messagesApi.langCookieName, "cy"))
       "convert time using correct singular units" in {
         val testDuration = List(Duration.ofHours(1), Duration.ofMinutes(1), Duration.ofSeconds(1)).reduce(_.plus(_))
         TestUserDetailsLockoutController.durationText(testDuration) mustBe "1 awr 1 munud 1 eiliad"

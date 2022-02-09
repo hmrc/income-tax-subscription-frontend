@@ -20,7 +20,6 @@ import connectors.usermatching.mocks.MockCitizenDetailsConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.{AnyContent, Request}
 import services.individual.{CitizenDetailsService, OptionalIdentifiers}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
@@ -60,7 +59,7 @@ trait MockCitizenDetailsService extends UnitTestTrait with MockitoSugar {
         ArgumentMatchers.eq(optNino),
         ArgumentMatchers.eq(optUtr)
       )(
-        ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[Request[AnyContent]]
+        ArgumentMatchers.any[HeaderCarrier]
       )
     ).thenReturn(Future.successful(OptionalIdentifiers(optReturnNino, optReturnUtr)))
 

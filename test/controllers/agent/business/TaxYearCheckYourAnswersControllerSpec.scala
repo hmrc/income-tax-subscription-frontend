@@ -29,7 +29,6 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.AccountingPeriodService
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.{MtditId, SelectedTaxYear}
 import views.agent.mocks.MockWhatYearToSignUp
@@ -46,8 +45,6 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
-
-  private val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
   "backUrl" should {
     "go to the Task List Page when isEditMode equals to true" in withController { controller =>

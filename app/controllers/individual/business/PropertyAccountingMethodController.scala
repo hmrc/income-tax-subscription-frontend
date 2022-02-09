@@ -44,7 +44,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.HeaderCarrier
 import views.html.individual.incometax.business.PropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
@@ -111,7 +110,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
       }
   }
 
-  def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] = {
+  def backUrl(isEditMode: Boolean): Future[String] = {
     (isEditMode, isSaveAndRetrieve) match {
       case (true, true) => Future.successful(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url)
       case (false, _) => Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)

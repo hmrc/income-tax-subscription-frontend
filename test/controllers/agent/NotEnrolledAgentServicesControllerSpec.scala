@@ -16,13 +16,11 @@
 
 package controllers.agent
 
-import agent.assets.MessageLookup.{NotEnrolledAgentServices => messages}
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers.{contentAsString, contentType, _}
+import play.api.test.Helpers.{contentType, _}
 import play.twirl.api.HtmlFormat
 import views.html.agent.NotEnrolledAgentServices
 
@@ -43,7 +41,6 @@ class NotEnrolledAgentServicesControllerSpec extends AgentControllerBaseSpec {
   "Calling the 'show' action of the NotEnrolledAgentServicesController" should {
 
     lazy val result = TestNotEnrolledAgentServicesController.show(subscriptionRequest)
-    lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
       status(result) must be(Status.OK)

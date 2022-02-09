@@ -30,8 +30,6 @@ import utilities.TestModels
 import utilities.agent.TestModels._
 import views.html.agent.SignUpComplete
 
-import scala.util.matching.Regex
-
 
 class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
@@ -64,16 +62,6 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "showConfirmation" -> TestConfirmationAgentController$.show
   )
-
-  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
-
-  private def formatNino(clientNino: String): String = {
-    clientNino match {
-      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
-        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
-      case other => other
-    }
-  }
 
   private def mockCall() =
     when(mockSignUpComplete(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
@@ -123,16 +111,12 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
         mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
         mockCall()
 
-        val clientName = userDetails.firstName + " " + userDetails.lastName
-
-        val clientNino = formatNino(userDetails.nino)
-
         val result = TestConfirmationAgentController$.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")
             .buildRequest(userDetails)
         )
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+
         status(result) shouldBe OK
       }
     }

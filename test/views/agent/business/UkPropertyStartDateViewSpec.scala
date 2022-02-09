@@ -41,7 +41,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
                         propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")
                       ) = Jsoup.parse(page(isEditMode, propertyStartDateForm).body)
 
-  private def page(isEditMode: Boolean = false, propertyStartDateForm: Form[DateModel]) =
+  private def page(isEditMode: Boolean, propertyStartDateForm: Form[DateModel]) =
     propertyStartDateView(
     propertyStartDateForm,
     testCall,

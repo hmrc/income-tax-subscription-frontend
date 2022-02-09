@@ -19,7 +19,8 @@ package testonly.connectors.individual
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,7 @@ class ResetUserLockoutConnector @Inject()(val appConfig: AppConfig,
 
   lazy val resetUrl: String = appConfig.userMatchingUrl + ResetUserLockoutConnector.resetUri
 
-  def resetLockout(implicit hc: HeaderCarrier): Future[HttpResponse] = http.GET(resetUrl)
+  def resetLockout(implicit hc: HeaderCarrier): Future[HttpResponse] = http.GET[HttpResponse](resetUrl)
 
 }
 

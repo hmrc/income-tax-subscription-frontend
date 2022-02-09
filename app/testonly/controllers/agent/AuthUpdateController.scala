@@ -20,11 +20,13 @@ package testonly.controllers.agent
 
 import auth.agent.StatelessController
 import config.AppConfig
+
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.HttpPatch
+import uk.gov.hmrc.http.{HttpPatch, HttpResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,8 +50,8 @@ class AuthUpdateController @Inject()(val auditingService: AuditingService,
   lazy val updateURL = s"${appConfig.authUrl}/auth/authority"
 
   val update: Action[AnyContent] = Authenticated.async { implicit user =>
-    implicit request =>
-      val confidencePatch = http.PATCH(updateURL, Json.obj("confidenceLevel" -> 200))
+    _ =>
+      val confidencePatch = http.PATCH[JsObject, HttpResponse](updateURL, Json.obj("confidenceLevel" -> 200))
       confidencePatch.flatMap(_ => updated)
   }
 

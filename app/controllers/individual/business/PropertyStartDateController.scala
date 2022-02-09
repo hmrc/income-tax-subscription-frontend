@@ -29,7 +29,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.individual.incometax.business.PropertyStartDate
@@ -111,7 +110,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
       }
   }
 
-  def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel])(implicit hc: HeaderCarrier): String =
+  def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel]): String =
     (isEditMode, isSaveAndRetrieve, maybeIncomeSourceModel) match {
       case (true, true, _) => controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
       case (false, true, _) => controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show.url

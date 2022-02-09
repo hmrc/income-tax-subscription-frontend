@@ -62,6 +62,9 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         "the date is not supplied to the map" in {
           form.bind(DataMap.EmptyMap).errors must contain(FormError(startDate, empty))
         }
+        "the date supplied to the map is invalid" in {
+          form.bind(DataMap.govukDate(startDate)("31", "13", "1899")).errors must contain(FormError(startDate, invalid))
+        }
         "it is within 1 years" in {
           val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)
           val maxTest = form.bind(DataMap.govukDate(startDate)(

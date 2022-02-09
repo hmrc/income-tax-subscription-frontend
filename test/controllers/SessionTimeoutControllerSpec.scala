@@ -16,7 +16,6 @@
 
 package controllers
 
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.Configuration
@@ -42,7 +41,6 @@ class SessionTimeoutControllerSpec extends ControllerBaseSpec {
   "Calling the timeout action of the SessionTimeoutController" should {
 
     lazy val result = TestSessionTimeoutController.show(subscriptionRequest)
-    lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
       status(result) must be(Status.OK)

@@ -22,10 +22,8 @@ import connectors.SPSConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
-class SPSService @Inject()(val spsConnector: SPSConnector)
-                          (implicit ec: ExecutionContext) extends FeatureSwitching {
+class SPSService @Inject()(val spsConnector: SPSConnector) extends FeatureSwitching {
 
   def confirmPreferences(itsaId: String, maybeSpsEntityId: Option[String])(implicit hc: HeaderCarrier): Unit = {
     if (isEnabled(SPSEnabled)) {

@@ -49,7 +49,7 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
     "when testing the validation" should {
       "output the appropriate error messages for the start date" when {
         val empty = "error.overseas.property.date.empty"
-        val invalid = "error.overseas.property.date.empty"
+        val invalid = "error.overseas.property.invalid"
         val afterMax = "error.overseas.property.start_date.maxStartDate"
         val beforeMin = "error.overseas.property.start_date.minStartDate"
 
@@ -61,6 +61,9 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
 
         "the date is not supplied to the map" in {
           form.bind(DataMap.EmptyMap).errors must contain(FormError(startDate, empty))
+        }
+        "the date supplied to the map is invalid" in {
+          form.bind(DataMap.govukDate(startDate)("31", "13", "1899")).errors must contain(FormError(startDate, invalid))
         }
         "it is within 1 years" in {
           val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)

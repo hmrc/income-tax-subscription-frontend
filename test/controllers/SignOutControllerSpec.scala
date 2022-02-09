@@ -16,11 +16,8 @@
 
 package controllers
 
-import java.net.URLEncoder
-
 import org.scalatest.Matchers._
-import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty}
-import play.api.test.FakeRequest
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup
 
@@ -34,7 +31,6 @@ class SignOutControllerSpec extends ControllerBaseSpec {
   val testOrigin = "/hello-world"
 
   "Authorised users" when {
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
     "with an agent affinity group" should {
       "be redirected to the gg signOut with an url end /ITSU-A" in {
         mockRetrievalSuccess(Some(AffinityGroup.Agent))
@@ -84,7 +80,6 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
   "SignOutController.signOut util function" should {
     "escape the url correctly" in {
-      val testOrigin = "/hello-world"
       SignOutController.signOut.url mustBe routes.SignOutController.signOut.url
     }
   }

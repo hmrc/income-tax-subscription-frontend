@@ -44,7 +44,7 @@ trait MockPreferencesService extends UnitTestTrait with MockitoSugar with Before
   def mockCheckPaperlessException(token: String): Unit = mockCheckPaperless(token)(Future.failed(testException))
 
   def mockChoosePaperlessUrl(url: String): Unit =
-    when(mockPreferencesService.defaultChoosePaperlessUrl(ArgumentMatchers.any[Request[AnyContent]], ArgumentMatchers.any[Messages]))
+    when(mockPreferencesService.defaultChoosePaperlessUrl(ArgumentMatchers.any[Messages]))
       .thenReturn(url)
 
 }

@@ -20,7 +20,8 @@ import config.AppConfig
 import javax.inject.Inject
 import testonly.models.FeatureSwitchSetting
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,6 +36,6 @@ class EligibilityFeatureSwitchConnector @Inject()(http: HttpClient, appConfig: A
 
   def submitEligibilityFeatureSwitches(featureSwitches: Set[FeatureSwitchSetting])
                                       (implicit hc: HeaderCarrier): Future[HttpResponse] =
-    http.POST(appConfig.eligibilityFeatureSwitchUrl, featureSwitches)
+    http.POST[Set[FeatureSwitchSetting], HttpResponse](appConfig.eligibilityFeatureSwitchUrl, featureSwitches)
 
 }

@@ -36,7 +36,7 @@ class ClaimEnrolmentAlreadySignedUpController @Inject()(val authService: AuthSer
                                                         val appConfig: AppConfig,
                                                         mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController with FeatureSwitching {
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       if (isEnabled(ClaimEnrolment)) {
         Future.successful(
           Ok(claimEnrolmentAlreadySignedUp())

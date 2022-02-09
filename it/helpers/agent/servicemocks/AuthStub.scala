@@ -10,7 +10,6 @@ import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import utilities.agent.Constants._
 
 object AuthStub extends WireMockMethods {
-  private val authIDs = "/uri/to/ids"
   private val authoriseUri = "/auth/authorise"
 
   def stubAuthSuccess(): StubMapping = {

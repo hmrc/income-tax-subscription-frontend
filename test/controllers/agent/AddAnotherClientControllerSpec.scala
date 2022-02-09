@@ -54,7 +54,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
 
     "redirect to the agent eligibility frontend terms page, clearing Subscription Details  and session values" in {
-      mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+      mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
 
       val result: Result = await(call)
 
@@ -79,7 +79,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
 
     "redirect to the agent eligibility frontend terms page, clearing Subscription Details  and session values" in {
-      mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+      mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
       enable(RemoveCovidPages)
       val result: Result = await(call)
 

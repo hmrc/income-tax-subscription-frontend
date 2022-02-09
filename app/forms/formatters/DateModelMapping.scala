@@ -82,7 +82,10 @@ object DateModelMapping {
 
     def totalYearKey(key: String): String = s"$key.$year"
 
-    def validateFieldsFilled(key: String, maybeDay: Option[String], maybeMonth: Option[String], maybeYear: Option[String]): Either[FormError, (String, String, String)] = {
+    def validateFieldsFilled(
+                              key: String, maybeDay: Option[String],
+                              maybeMonth: Option[String],
+                              maybeYear: Option[String]): Either[FormError, (String, String, String)] = {
       (maybeDay, maybeMonth, maybeYear) match {
         case (None, None, None) => Left(FormError(key, errorKey("date.empty")))
         case (Some(_), None, None) => Left(FormError(key, errorKey("month_year.empty")))
@@ -91,7 +94,7 @@ object DateModelMapping {
         case (Some(_), Some(_), None) => Left(FormError(totalYearKey(key), errorKey("year.empty")))
         case (None, Some(_), Some(_)) => Left(FormError(totalDayKey(key), errorKey("day.empty")))
         case (Some(_), None, Some(_)) => Left(FormError(totalMonthKey(key), errorKey("month.empty")))
-        case (Some(dayValue), Some(monthValue), Some(yearValue)) => Right(dayValue, monthValue, yearValue)
+        case (Some(dayValue), Some(monthValue), Some(yearValue)) => Right((dayValue, monthValue, yearValue))
       }
     }
 

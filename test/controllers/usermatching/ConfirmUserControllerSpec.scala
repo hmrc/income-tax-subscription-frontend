@@ -22,7 +22,7 @@ import controllers.ControllerBaseSpec
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.UserDetailsModel
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.scalatest.OptionValues
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -33,6 +33,7 @@ import utilities.individual.TestConstants
 import utilities.individual.TestConstants._
 import utilities.{ITSASessionKeys, TestModels}
 import views.individual.mocks.MockCheckYourUserDetails
+
 import scala.concurrent.Future
 
 class ConfirmUserControllerSpec extends ControllerBaseSpec
@@ -198,7 +199,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           mockUserMatchNotFound(userDetails)
           setupMockNotLockedOut(testCredId)
           setupIncrementLockedOut(testCredId, currentFailedMatches)
-          mockDeleteAllFromSubscriptionDetails(HttpResponse(Status.OK))
+          mockDeleteAllFromSubscriptionDetails(HttpResponse(Status.OK, ""))
 
           val r = requestWithLockout.buildRequest(userDetails)
 

@@ -22,14 +22,14 @@ import controllers.SignOutController
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import org.scalatest.{Assertion, MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import utilities.UnitTestTrait
+
+import scala.collection.JavaConverters._
 
 
 trait ViewSpecTrait extends UnitTestTrait {
@@ -51,7 +51,6 @@ trait ViewSpecTrait extends UnitTestTrait {
     }
 
     def getById(name: String, id: String): ElementTest = {
-      lazy val n = s"""${this.name}."$name""""
       ElementTest(name, () => element.getElementById(id))
     }
 
@@ -227,10 +226,9 @@ trait ViewSpecTrait extends UnitTestTrait {
                         ): Unit = {
       s"${this.name} must have a textarea field '$name'" which {
         s"is a text area" in {
-          import collection.JavaConversions._
-          val eles = element.select(s"""textarea[name=$name]""")
+          val eles = element.select(s"""textarea[name=$name]""").asScala
           if (eles.isEmpty) fail(s"$name does not have an text area with name=$name\ncurrent list of textareas:\n[${element.select("textarea")}]")
-          if (eles.size() > 1) fail(s"$name have multiple text areas with name=$name")
+          if (eles.size > 1) fail(s"$name have multiple text areas with name=$name")
           val ele = eles.head
           maxLength match {
             case Some(l) =>
@@ -260,7 +258,6 @@ trait ViewSpecTrait extends UnitTestTrait {
         val eles = element.select(s"""input[name=$name]""")
 
         s"is a text field" in {
-          import collection.JavaConversions._
           if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
           if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
           val ele = eles.head
@@ -300,7 +297,6 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveHiddenInputField(name: String): Unit =
       s"$name must have input field $name" in {
-        import collection.JavaConversions._
         val eles = element.select(s"""input[name="$name"]""")
         if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
         if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
@@ -379,8 +375,11 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveCheckbox(name: String, message: String): Unit =
       s"${this.name} must have a checkbox for '$name' with label '$message'" in {
-        import collection.JavaConversions._
-        val checkbox: Elements = new Elements(element.select("input").toSeq.filter(x => x.attr("type").equals("checkbox")))
+        val elements = element.select("input")
+          .asScala
+          .filter(x => x.attr("type").equals("checkbox"))
+          .asJava
+        val checkbox: Elements = new Elements(elements)
         if (checkbox.size() == 0) fail(s"""Unable to locate any checkboxes in "${this.name}""""")
         if (checkbox.size() > 1) fail(s"""Multiple checkboxes located in "$name", please specify an id""")
         checkbox.attr("name") mustBe name

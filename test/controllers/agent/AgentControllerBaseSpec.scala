@@ -17,7 +17,6 @@
 package controllers.agent
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import org.mockito.Mockito
 import play.api.data.Form
@@ -26,13 +25,12 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
-import utilities.{UnitTestTrait, UserMatchingSessionUtil}
 import utilities.agent.TestConstants
+import utilities.{UnitTestTrait, UserMatchingSessionUtil}
 
 trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
 
   implicit val system: ActorSystem = ActorSystem()
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   val controllerName: String
   val authorisedRoutes: Map[String, Action[AnyContent]]

@@ -34,7 +34,7 @@ class CannotTakePartController @Inject()(val auditingService: AuditingService,
                                          val ec: ExecutionContext) extends StatelessController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       Ok(cannotTakePart())
   }
 

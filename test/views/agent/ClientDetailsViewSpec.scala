@@ -89,14 +89,13 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore(): TestView = TestView(
+    TestView(
       name = "Client Details View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
       isAgent = true,
       page = page(isEditMode = false, addFormErrors = true)
     )
-
-    val testPage = documentCore()
+    ()
   }
 }

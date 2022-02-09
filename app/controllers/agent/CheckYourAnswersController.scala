@@ -61,10 +61,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       implicit user =>
         withAgentReference { reference =>
           if (user.clientNino.isDefined && user.clientUtr.isDefined) {
-            subscriptionDetailsService.fetchAll(reference).flatMap {
-              case cache => processFunc(user)(request)(cache)
-              case _ => error(noCacheMapErrMessage)
-            }
+            subscriptionDetailsService.fetchAll(reference).flatMap(processFunc(user)(request)(_))
           } else {
             Future.successful(Redirect(controllers.agent.matching.routes.ConfirmClientController.show))
           }
@@ -102,7 +99,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any Subscription Details  cached data")
 
   private def submitForAuthorisedAgent(reference: String, arn: String, nino: String, utr: String)
-                                      (implicit user: IncomeTaxAgentUser, request: Request[AnyContent],
+                                      (implicit request: Request[AnyContent],
                                        cache: CacheMap): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     for {

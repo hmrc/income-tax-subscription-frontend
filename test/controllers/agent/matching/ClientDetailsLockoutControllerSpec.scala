@@ -20,7 +20,6 @@ import agent.assets.MessageLookup.{ClientDetailsLockout => messages}
 import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import org.jsoup.Jsoup
-import play.api.Play
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Cookie, Request}
 import play.api.test.FakeRequest
@@ -120,7 +119,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
     }
 
     "the language is Welsh" should {
-      implicit lazy val r: Request[_] = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
+      implicit lazy val r: Request[_] = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "cy"))
       "convert time using correct singular units" in withController { controller =>
         val testDuration = List(Duration.ofHours(1), Duration.ofMinutes(1), Duration.ofSeconds(1)).reduce(_.plus(_))
         controller.durationText(testDuration) mustBe "1 awr 1 munud 1 eiliad"

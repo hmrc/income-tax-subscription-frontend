@@ -173,7 +173,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
 
         val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-        val SubscriptionDetailsAccountingYearNext: AccountingYearModel = IntegrationTestModels.testAccountingYearNext
         val userInput = Next
 
         Given("I setup the Wiremock stubs")
@@ -226,7 +225,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
       "Save & Retrieve is enabled" in {
         val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-        val SubscriptionDetailsAccountingYearNext: AccountingYearModel = IntegrationTestModels.testAccountingYearNext
         val userInput = Next
 
         Given("I setup the Wiremock stubs")

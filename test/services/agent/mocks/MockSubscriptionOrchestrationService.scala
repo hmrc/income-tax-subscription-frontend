@@ -42,7 +42,7 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
                                      nino: String,
                                      utr: String,
                                      agentSummary: AgentSummary,
-                                     isReleaseFourEnabled: Boolean = false
+                                     isReleaseFourEnabled: Boolean
                                     )(result: Future[Either[SubscriptionFailure, SubscriptionSuccess]]): Unit = {
     when(mockSubscriptionOrchestrationService.createSubscription(
       ArgumentMatchers.eq(arn),

@@ -41,7 +41,7 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
           saUtr = None
         )
 
-        val httpResponse = HttpResponse(responseStatus = OK, responseJson = Json.toJson(testUserDetailsMatch))
+        val httpResponse = HttpResponse(status = OK, json = Json.toJson(testUserDetailsMatch), Map.empty)
 
         MatchUserHttpReads.read(testMethod, testUrl, httpResponse).right.value mustBe Some(testUserDetailsMatch)
       }
@@ -50,8 +50,9 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
         val json = Json.obj()
 
         val httpResponse = HttpResponse(
-          responseStatus = OK,
-          responseJson = Some(json)
+          status = OK,
+          json = json,
+          headers = Map.empty
         )
 
         val expectedJsError = json.validate[UserMatchSuccessResponseModel].asInstanceOf[JsError]
@@ -61,8 +62,9 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
 
       "return none if authenticator returns an UNAUTHORIZED without an unexpected error" in {
         val httpResponse = HttpResponse(
-          responseStatus = UNAUTHORIZED,
-          responseJson = Some(Json.toJson(UserMatchFailureResponseModel(testErrorMessage)))
+          status = UNAUTHORIZED,
+          json = Json.toJson(UserMatchFailureResponseModel(testErrorMessage)),
+          headers = Map.empty
         )
 
         MatchUserHttpReads.read(testMethod, testUrl, httpResponse).right.value mustBe empty
@@ -72,8 +74,9 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
         val json = Json.obj()
 
         val httpResponse = HttpResponse(
-          responseStatus = UNAUTHORIZED,
-          responseJson = Some(json)
+          status = UNAUTHORIZED,
+          json = json,
+          headers = Map.empty
         )
 
         val expectedJsError = json.validate[UserMatchFailureResponseModel].asInstanceOf[JsError]
@@ -87,15 +90,16 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
         )
 
         val httpResponse = HttpResponse(
-          responseStatus = UNAUTHORIZED,
-          responseJson = Some(json)
+          status = UNAUTHORIZED,
+          json = json,
+          headers = Map.empty
         )
 
         MatchUserHttpReads.read(testMethod, testUrl, httpResponse).left.value mustBe UserMatchUnexpectedError
       }
 
       "return error if authenticator returns another status" in {
-        val httpResponse = HttpResponse(responseStatus = BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
 
         MatchUserHttpReads.read(testMethod, testUrl, httpResponse).left.value mustBe UserMatchFailureResponseModel(httpResponse)
       }

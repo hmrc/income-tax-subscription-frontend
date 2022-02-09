@@ -38,7 +38,7 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
                                                 val ec: ExecutionContext) extends StatelessController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       Ok(accountingPeriodCheck(accountingPeriodCheckForm, routes.AccountingPeriodCheckController.submit, backLink))
   }
 

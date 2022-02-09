@@ -49,7 +49,7 @@ class GetEligibilityStatusServiceSpec extends TestGetEligibilityStatusService {
     }
     "return InvalidJsonError" when {
       "the GetEligibilityStatusConnector returns OK and cannot parse the received json" in {
-        val httpResponse = HttpResponse(OK)
+        val httpResponse = HttpResponse(OK, "")
         mockGetEligibilityStatus(testUtr)(Future.successful(Left(HttpConnectorError(httpResponse, Some(JsError("Invalid Json"))))))
 
         val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
@@ -59,7 +59,7 @@ class GetEligibilityStatusServiceSpec extends TestGetEligibilityStatusService {
     }
     "return GetEligibilityStatusConnectorFailure" when {
       "the GetEligibilityStatusConnector returns any other HTTP status code" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
         mockGetEligibilityStatus(testUtr)(Future.successful(Left(HttpConnectorError(httpResponse))))
 
         val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))

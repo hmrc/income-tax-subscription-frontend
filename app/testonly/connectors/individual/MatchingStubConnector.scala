@@ -30,7 +30,7 @@ import play.api.libs.json.{JsValue, Json, OFormat}
 import testonly.TestOnlyAppConfig
 import testonly.models.UserToStubModel
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 

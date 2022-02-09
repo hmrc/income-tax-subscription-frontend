@@ -34,11 +34,11 @@ package views.individual.claimenrolment
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
-import views.ViewSpecTrait
-import views.html.individual.claimenrolment.ClaimEnrolmentAlreadySignedUp
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.twirl.api.Html
+import views.ViewSpecTrait
+import views.html.individual.claimenrolment.ClaimEnrolmentAlreadySignedUp
 
 class ClaimEnrolmentAlreadySignedUpViewSpec extends ViewSpecTrait {
 

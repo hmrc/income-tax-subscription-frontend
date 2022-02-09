@@ -320,7 +320,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
         setupMockNotLockedOut(arn)
         setupIncrementLockedOut(arn, prevFailedAttempts)
-        mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+        mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
         mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
 
         val result = await(controller.submit()(request.withSession(ITSASessionKeys.FailedClientMatching -> prevFailedAttempts.toString)))

@@ -17,7 +17,7 @@
 package views.individual.usermatching
 
 import assets.MessageLookup
-import assets.MessageLookup.{Base => common, ConfirmUser => messages}
+import assets.MessageLookup.{ConfirmUser => messages}
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
@@ -109,7 +109,6 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
                     expectedEditLink: Option[String],
                     rowNo: Int,
                     expectedHiddenContent: Option[String]): Unit = {
-      val accountingPeriod = document().getElementById(sectionId)
       val question = document().getElementById(questionId(sectionId))
       val answer = document().getElementById(answerId(sectionId))
       val editLink = document().getElementById(editLinkId(sectionId))

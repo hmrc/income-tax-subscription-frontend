@@ -135,7 +135,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         "there are no stored data" should {
 
           s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show.url}" in {
-            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
             setupMockNotLockedOut(testARN)
 
             lazy val r = userMatchingRequest.buildRequest(None)
@@ -153,7 +153,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         "stored user details is different to the new user details" should {
 
           s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show.url}" in {
-            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
             setupMockNotLockedOut(testARN)
 
             val newUserDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT")
@@ -173,7 +173,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         "stored user details is the same as the new user details" should {
 
           s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show.url} but do not delete Subscription Details " in {
-            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
             setupMockNotLockedOut(testARN)
 
             lazy val r = userMatchingRequest.buildRequest(testClientDetails)

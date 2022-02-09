@@ -30,7 +30,7 @@ class PaperlessPreferenceTokenHttpParserSpec extends UnitTestTrait with EitherVa
   "PaperlessPreferenceTokenHttpParser" when {
     "read" should {
       "parse a CREATED response as a success" in {
-        val httpResponse = HttpResponse(CREATED)
+        val httpResponse = HttpResponse(CREATED, "")
 
         val res = PaperlessPreferenceTokenResultHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -38,7 +38,7 @@ class PaperlessPreferenceTokenHttpParserSpec extends UnitTestTrait with EitherVa
       }
 
       "parse any other response as a failure" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
 
         val res = PaperlessPreferenceTokenResultHttpReads.read(testHttpVerb, testUri, httpResponse)
 

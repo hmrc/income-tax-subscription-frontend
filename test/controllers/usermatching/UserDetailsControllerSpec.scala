@@ -100,7 +100,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         "there are no stored data" should {
 
           s"redirect to '${controllers.usermatching.routes.ConfirmUserController.show().url}" in {
-            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
             setupMockNotLockedOut(testCredId)
             mockUserDetails()
 
@@ -120,7 +120,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         "stored user details is different to the new user details" should {
 
           s"redirect to '${controllers.usermatching.routes.ConfirmUserController.show().url} and deleted all pre-existing entries in Subscription Details " in {
-            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
             setupMockNotLockedOut(testCredId)
             mockUserDetails()
 
@@ -141,7 +141,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         "stored user details is the same as the new user details" should {
 
           s"redirect to '${controllers.usermatching.routes.ConfirmUserController.show().url} but do not delete Subscription Details " in {
-            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK))
+            mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
             setupMockNotLockedOut(testCredId)
 
             val r = request.buildRequest(testUserDetails)

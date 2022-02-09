@@ -16,19 +16,15 @@
 
 package controllers.agent.matching
 
-import agent.assets.MessageLookup.{ClientDetailsError => messages}
 import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.test.Helpers.{contentAsString, contentType, _}
+import play.api.mvc.{Action, AnyContent}
+import play.api.test.Helpers.{contentType, _}
 import play.twirl.api.HtmlFormat
 import views.html.agent.ClientDetailsError
-
-import scala.concurrent.Future
 
 class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
 

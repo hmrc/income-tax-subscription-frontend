@@ -17,10 +17,9 @@
 package controllers.agent
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
+import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.testSubscriptionID
 import helpers.agent.servicemocks.AuthStub
-import models.usermatching.UserDetailsModel
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Json
 
@@ -31,7 +30,6 @@ class ConfirmationAgentControllerISpec extends ComponentSpecBase {
       "call subscription on the back end service" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(Map("MtditId" -> Json.toJson(testSubscriptionID)))
 
@@ -50,7 +48,6 @@ class ConfirmationAgentControllerISpec extends ComponentSpecBase {
       "call subscription on the back end service" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
 
         When("I call GET /confirmation")
         val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = false, "Test", "User", "A111111AA")

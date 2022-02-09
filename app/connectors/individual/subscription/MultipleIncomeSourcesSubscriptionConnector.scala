@@ -22,7 +22,7 @@ import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesRespons
 import models.common.business.BusinessSubscriptionDetailsModel
 import models.common.subscription.CreateIncomeSourcesModel
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

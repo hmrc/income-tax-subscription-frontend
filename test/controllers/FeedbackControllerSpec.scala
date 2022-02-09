@@ -25,12 +25,9 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status.OK
-import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.http.{CoreGet, HttpResponse, InternalServerException}
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import uk.gov.hmrc.play.partials.{CachedStaticHtmlPartialRetriever, FormPartialRetriever, HeaderCarrierForPartialsConverter, HtmlPartial}
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
+import uk.gov.hmrc.play.partials.{CachedStaticHtmlPartialRetriever, FormPartialRetriever, HeaderCarrierForPartialsConverter}
 import views.html.{Feedback, FeedbackThankyou}
 
 import scala.concurrent.Future
@@ -81,7 +78,7 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
           ArgumentMatchers.any(),
           ArgumentMatchers.any(),
           ArgumentMatchers.any()
-        )).thenReturn(Future.successful(HttpResponse(OK, responseString = Some("test-ticket-id"))))
+        )).thenReturn(Future.successful(HttpResponse(OK, body = "test-ticket-id")))
 
         val result: Future[Result] = controller.submit()(request)
 
@@ -102,7 +99,7 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
           ArgumentMatchers.any(),
           ArgumentMatchers.any(),
           ArgumentMatchers.any()
-        )).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, responseString = Some("test-response"))))
+        )).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, body = "test-response")))
 
         val result: Future[Result] = controller.submit()(request)
 
@@ -123,7 +120,7 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
           ArgumentMatchers.any(),
           ArgumentMatchers.any(),
           ArgumentMatchers.any()
-        )).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
+        )).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
 
         val result: Future[Result] = controller.submit()(request)
 

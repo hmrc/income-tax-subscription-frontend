@@ -18,10 +18,9 @@ package forms.agent
 
 import org.scalatest.Matchers._
 import play.api.data.Form
-import play.api.data.validation.Invalid
-import play.api.i18n.Messages
-import play.api.test.FakeRequest
 import play.api.data.FormBinding.Implicits.formBinding
+import play.api.data.validation.Invalid
+import play.api.test.FakeRequest
 
 package object testutils {
 
@@ -61,7 +60,7 @@ package object testutils {
 
   implicit class InvalidUtil(invalid: Invalid) {
 
-    def errorTextIs(expectedText: String)(implicit messages: Messages): Unit =
+    def errorTextIs(expectedText: String): Unit =
       invalid.errors.head.message shouldBe expectedText
   }
 

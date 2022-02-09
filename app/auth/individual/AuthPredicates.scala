@@ -31,7 +31,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendHeaderCarrierProvider
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys.JourneyStateKey
 
@@ -187,13 +187,13 @@ object AuthPredicates extends Results {
     }
     else Right(AuthPredicateSuccess)
 
-  def affinityPredicate(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] = request => user =>
+  def affinityPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     user.affinityGroup match {
       case Some(Individual) | Some(Organisation) => Right(AuthPredicateSuccess)
       case _ => Left(Future.successful(wrongAffinity))
     }
 
-  def defaultPredicates(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] =
+  def defaultPredicates: AuthPredicate[IncomeTaxSAUser] =
     timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
   val journeyStatePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>

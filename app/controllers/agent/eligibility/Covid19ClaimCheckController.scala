@@ -39,7 +39,7 @@ class Covid19ClaimCheckController @Inject()(val covid19ClaimCheck: Covid19ClaimC
                                             val appConfig: AppConfig) extends StatelessController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       if (isEnabled(RemoveCovidPages)) {
         Redirect(routes.OtherSourcesOfIncomeController.show)
       } else {

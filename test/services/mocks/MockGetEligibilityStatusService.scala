@@ -37,7 +37,7 @@ trait MockGetEligibilityStatusService extends UnitTestTrait with MockitoSugar wi
   }
 
   def mockGetEligibilityStatus(sautr: String)(result: Future[HttpResult[EligibilityStatus]]): Unit =
-    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(result)
+    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any())).thenReturn(result)
 
 }
 

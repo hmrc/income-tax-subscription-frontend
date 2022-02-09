@@ -30,7 +30,7 @@ class CreateIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with Eithe
   "CreateIncomeSourcesResponseHttpReads" when {
     "read" should {
       "parse a correctly formatted OK response as a CreateIncomeSourcesSuccess" in {
-        val httpResponse = HttpResponse(NO_CONTENT)
+        val httpResponse = HttpResponse(NO_CONTENT, "")
 
         val res = PostCreateIncomeSourcesResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
@@ -38,7 +38,7 @@ class CreateIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with Eithe
       }
 
       "parse any other http status as a CreateIncomeSourcesFailureResponse" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
 
         val res = PostCreateIncomeSourcesResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 

@@ -43,6 +43,7 @@ lazy val microservice = Project(appName, file("."))
     scalaVersion := "2.12.13",
     parallelExecution in Test := true
   )
+  .settings(scalacOptions += s"-Wconf:src=${target.value}/.*:s")
   .settings(
     libraryDependencies ++= appDependencies,
     retrieveManaged := true,

@@ -83,11 +83,11 @@ class PreferencesController @Inject()(val continueRegistration: ContinueRegistra
   }
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user => Ok(view())
+    _ => Ok(view())
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user => gotoPreferences
+    _ => gotoPreferences
   }
 
   def gotoPreferences(implicit request: Request[AnyContent]): Result =

@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsString, JsValue}
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 import utilities.UnitTestTrait
 import utilities.agent.TestConstants.testErrorMessage
 
@@ -43,7 +43,7 @@ trait MockHttp extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
     lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.startsWith(x))
     lazy val bodyMatcher = body.fold(ArgumentMatchers.any[I]())(x => ArgumentMatchers.eq(x))
     when(mockHttp.POST[I, HttpResponse](urlMatcher, bodyMatcher, ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(),
-      ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, Some(response))))
+      ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, json = response, Map.empty)))
   }
 
   def setupMockHttpPostException[I, E <: Throwable](url: Option[String] = None, body: Option[I] = None)(exception: E): Unit = {
@@ -63,7 +63,7 @@ trait MockHttp extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   def setupMockHttpPostEmpty(url: Option[String] = None)(status: Int, response: JsValue): Unit = {
     lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.eq(x))
     when(mockHttp.POSTEmpty[HttpResponse](urlMatcher)(ArgumentMatchers.any(), ArgumentMatchers.any(),
-      ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, Some(response)))
+      ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, json = response, Map.empty))
     )
   }
 
@@ -75,7 +75,7 @@ trait MockHttp extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
   def setupMockHttpGet(url: Option[String] = None)(status: Int, response: Option[JsValue]): Unit = {
     lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.eq(x))
     when(mockHttp.GET[HttpResponse](urlMatcher, ArgumentMatchers.any, ArgumentMatchers.any)
-      (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, response)))
+      (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, response.fold("")(_.toString))))
   }
 
   def verifyMockHttpGet(url: Option[String] = None)(count: Int): Unit = {
@@ -88,14 +88,14 @@ trait MockHttp extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
     lazy val paramsMatcher = params.fold(ArgumentMatchers.any[Seq[(String, String)]]())(x => ArgumentMatchers.eq(x))
     when(mockHttp.GET[HttpResponse](
       urlMatcher, paramsMatcher)(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext])
-    ).thenReturn(Future.successful(HttpResponse(status, Some(response))))
+    ).thenReturn(Future.successful(HttpResponse(status, json = response, Map.empty)))
   }
 
-  def setupMockHttpPut[I](url: Option[String] = None, body: Option[I] = None)(status: Int, response: Option[JsValue]): Unit = {
+  def setupMockHttpPut[I](url: Option[String] = None, body: Option[I] = None)(status: Int, response: JsValue): Unit = {
     lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.startsWith(x))
     lazy val bodyMatcher = body.fold(ArgumentMatchers.any[I]())(x => ArgumentMatchers.eq(x))
     when(mockHttp.PUT[I, HttpResponse](urlMatcher, bodyMatcher)(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(),
-      ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, response)))
+      ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(HttpResponse(status, json = response, Map.empty)))
   }
 
 }

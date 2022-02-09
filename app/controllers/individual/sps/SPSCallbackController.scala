@@ -36,7 +36,7 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
                                       mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def callback: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       if(isEnabled(SPSEnabled)) {
         request.queryString.get("entityId").flatMap(_.headOption) match {
           case Some(entityId) => {

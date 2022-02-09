@@ -18,7 +18,7 @@ package controllers.usermatching
 
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.agent.AgentAffinityGroupError
 
 import javax.inject.{Inject, Singleton}

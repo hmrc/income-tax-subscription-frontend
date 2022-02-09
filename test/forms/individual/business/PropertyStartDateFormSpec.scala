@@ -16,17 +16,16 @@
 
 package forms.individual.business
 
-import java.time.LocalDate
-
-import forms.individual.business.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.formatters.DateModelMapping.{day, month, year}
+import forms.individual.business.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
-import models.common.PropertyStartDateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
+
+import java.time.LocalDate
 
 
 class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {

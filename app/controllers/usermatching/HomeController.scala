@@ -46,7 +46,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                val appConfig: AppConfig,
                                mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching with ReferenceRetrieval {
 
-  def home: Action[AnyContent] = Action { implicit request =>
+  def home: Action[AnyContent] = Action {
     val redirect = routes.HomeController.index
     Redirect(redirect)
   }

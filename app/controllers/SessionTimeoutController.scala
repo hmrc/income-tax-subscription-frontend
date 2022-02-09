@@ -20,7 +20,7 @@ import config.AppConfig
 import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.individual.Timeout
 
 import javax.inject.{Inject, Singleton}
@@ -38,7 +38,7 @@ class SessionTimeoutController @Inject()(val timeoutView: Timeout, mcc: Messages
     Future.successful(Ok.withSession(request.session))
   }
 
-  val timeout: Action[AnyContent] = Action.async { implicit request =>
+  val timeout: Action[AnyContent] = Action.async {
     Future.successful(toGGLogin(controllers.usermatching.routes.HomeController.home.url).withNewSession)
   }
 }

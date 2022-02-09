@@ -57,7 +57,7 @@ class PropertyTradingStartAfterController @Inject()(val auditingService: Auditin
   }
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       Ok(view(
         form = propertyTradingStartDateForm(startDateLimit.toLongDate),
         startDateLimit = startDateLimit

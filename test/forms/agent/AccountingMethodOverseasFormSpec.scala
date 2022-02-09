@@ -31,7 +31,6 @@ class AccountingMethodOverseasFormSpec extends PlaySpec with GuiceOneAppPerTest 
 
   "The AccountingMethodOverseasForm" should {
     "transform the request to the form case class" in {
-      val testAccountingMethodOverseas = Cash
       val testInput = Map(accountingMethodOverseasProperty -> AccountingMethodMapping.option_cash)
       val actual = accountingMethodOverseasPropertyForm.bind(testInput).value
 
