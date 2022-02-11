@@ -19,11 +19,9 @@ package controllers.agent.matching
 import auth.agent.AgentJourneyState._
 import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import config.AppConfig
-import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
+import connectors.individual.eligibility.httpparsers.EligibilityStatus
 import controllers.agent.ITSASessionKeys
 import controllers.agent.ITSASessionKeys.FailedClientMatching
-
-import javax.inject.{Inject, Singleton}
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
@@ -34,6 +32,7 @@ import services.agent._
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.CheckYourClientDetails
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
@@ -114,14 +113,14 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
             case Right(ApprovedAgent(nino, Some(utr))) =>
               auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
               eligibilityService.getEligibilityStatus(utr) map {
-                case Right(Eligible) =>
+                case Right(EligibilityStatus(true, _)) =>
                   Redirect(controllers.agent.routes.HomeController.index)
                     .withJourneyState(AgentUserMatched)
                     .addingToSession(ITSASessionKeys.NINO -> nino)
                     .addingToSession(ITSASessionKeys.UTR -> utr)
                     .removingFromSession(FailedClientMatching)
                     .clearUserDetailsExceptName
-                case Right(Ineligible) =>
+                case Right(EligibilityStatus(false, _)) =>
                   Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
                     .removingFromSession(FailedClientMatching)
                     .clearAllUserDetails

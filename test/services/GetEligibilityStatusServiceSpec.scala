@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
+import connectors.individual.eligibility.httpparsers.EligibilityStatus
 import play.api.libs.json.JsError
 import play.api.test.Helpers._
 import services.mocks.TestGetEligibilityStatusService
@@ -28,23 +28,25 @@ import scala.concurrent.Future
 
 class GetEligibilityStatusServiceSpec extends TestGetEligibilityStatusService {
 
+  private val eligible = EligibilityStatus(currentYear = true, nextYear = true)
+  private val ineligible = EligibilityStatus(currentYear = false, nextYear = false)
   "getEligibilityStatus" should {
-    "return Eligible" when {
+    "return eligible" when {
       "the GetEligibilityStatusConnector returns OK and true" in {
-        mockGetEligibilityStatus(testUtr)(Future.successful(Right(Eligible)))
+        mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligible)))
 
         val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
 
-        res mustBe Right(Eligible)
+        res mustBe Right(eligible)
       }
     }
-    "return Ineligible" when {
+    "return ineligible" when {
       "the GetEligibilityStatusConnector returns OK and false" in {
-        mockGetEligibilityStatus(testUtr)(Future.successful(Right(Ineligible)))
+        mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
 
         val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
 
-        res mustBe Right(Ineligible)
+        res mustBe Right(ineligible)
       }
     }
     "return InvalidJsonError" when {
