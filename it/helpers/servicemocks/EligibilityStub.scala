@@ -12,7 +12,7 @@ object EligibilityStub extends WireMockMethods {
       uri = s"/income-tax-subscription-eligibility/eligibility/$sautr"
     ) thenReturn (
       status = OK,
-      body = Json.obj("eligible" -> response)
+      body = Json.obj("eligibleCurrentYear" -> response, "eligibleNextYear" -> false)
     )
 
 }

@@ -17,48 +17,56 @@
 package connectors.individual.eligibility.httpparsers
 
 import connectors.individual.eligibility.httpparsers.GetEligibilityStatusHttpParser.GetEligibilityStatusHttpReads
-import utilities.HttpResult.HttpConnectorError
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsError, Json}
 import uk.gov.hmrc.http.HttpResponse
+import utilities.HttpResult.HttpConnectorError
 import utilities.UnitTestTrait
 
 class GetEligibilityStatusHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"
   val testUri = "/"
-  val eligibleKey = "eligible"
+  val eligibleCurrentKey = "eligibleCurrentYear"
+  val eligibleNextKey = "eligibleNextYear"
 
   "GetEligibilityStatusHttpReads" when {
     "read" should {
       "parse a correctly formatted OK Eligible response as a Boolean" in {
-        val httpResponse = HttpResponse(OK, json = Json.obj(eligibleKey -> true), Map.empty)
+        val body = Json.obj(eligibleCurrentKey -> true, eligibleNextKey -> true).toString()
+        val httpResponse = HttpResponse(OK, body)
 
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe Eligible
+        res.isRight mustBe true
+        res.right.value.currentYear mustBe true
+        res.right.value.nextYear mustBe true
       }
       "parse a correctly formatted OK Ineligible response as a Boolean" in {
-        val httpResponse = HttpResponse(OK, json = Json.obj(eligibleKey -> false), Map.empty)
+        val httpResponse = HttpResponse(OK, Json.obj(eligibleCurrentKey -> false, eligibleNextKey -> false).toString())
 
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe Ineligible
+        res.isRight mustBe true
+        res.right.value.currentYear mustBe false
+        res.right.value.nextYear mustBe false
       }
 
       "parse an incorrectly formatted OK response as a HttpConnectorError with JsError" in {
-        val httpResponse = HttpResponse(OK, json = Json.obj(), Map.empty)
+        val httpResponse = HttpResponse(OK, Json.obj().toString())
 
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
+        res.isLeft mustBe true
         res.left.value mustBe HttpConnectorError(httpResponse, _: Some[JsError])
       }
 
       "parse any other http status as a HttpResult[HttpConnectorError]" in {
-        val httpResponse = HttpResponse(BAD_REQUEST, "")
+        val httpResponse = HttpResponse(BAD_REQUEST, Json.obj().toString())
 
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
+        res.isLeft mustBe true
         res.left.value mustBe HttpConnectorError(httpResponse)
       }
     }

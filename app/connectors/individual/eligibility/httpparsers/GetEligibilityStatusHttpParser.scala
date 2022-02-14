@@ -23,27 +23,25 @@ import utilities.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
 
 object GetEligibilityStatusHttpParser {
 
-  val key = "eligible"
+  private val keyCurrent: String = "eligibleCurrentYear"
+  private val keyNext: String = "eligibleNextYear"
 
   implicit object GetEligibilityStatusHttpReads extends HttpResultParser[EligibilityStatus] {
-    override def read(method: String, url: String, response: HttpResponse): HttpResult[EligibilityStatus] = {
-
-      response.status match {
-        case OK => (response.json \ key).validate[Boolean] match {
-          case JsSuccess(isEligible, _) if isEligible => Right(Eligible)
-          case JsSuccess(_, _) => Right(Ineligible)
-          case error: JsError => Left(HttpConnectorError(response, Some(error)))
-        }
-        case _ => Left(HttpConnectorError(response))
-      }
+    override def read(method: String, url: String, response: HttpResponse): HttpResult[EligibilityStatus] = response.status match {
+      case OK => for {
+        currentYear <- parseBoolean(response, keyCurrent)
+        nextYear <- parseBoolean(response, keyNext)
+      } yield EligibilityStatus(currentYear, nextYear)
+      case _ => Left(HttpConnectorError(response))
     }
-
   }
 
+  def parseBoolean(response: HttpResponse, key: String): Either[HttpConnectorError, Boolean] = {
+    (response.json \ key).validate[Boolean] match {
+      case error: JsError => Left(HttpConnectorError(response, Some(error)))
+      case JsSuccess(result, _) => Right(result)
+    }
+  }
 }
 
-sealed trait EligibilityStatus
-
-case object Eligible extends EligibilityStatus
-
-case object Ineligible extends EligibilityStatus
+case class EligibilityStatus(currentYear: Boolean, nextYear: Boolean)

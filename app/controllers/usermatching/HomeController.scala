@@ -21,7 +21,7 @@ import auth.individual.{SignUp, StatelessController, UserMatching}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SPSEnabled
 import config.featureswitch.FeatureSwitching
-import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
+import connectors.individual.eligibility.httpparsers.EligibilityStatus
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.SubscriptionSuccess
@@ -64,11 +64,11 @@ class HomeController @Inject()(val auditingService: AuditingService,
                 }
               case None =>
                 getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
-                  case Right(Eligible) =>
+                  case Right(EligibilityStatus(true, _)) =>
                     goToSignUp(timestamp)
                       .addingToSession(UTR -> utr)
                       .addingToSession(NINO -> nino)
-                  case Right(Ineligible) =>
+                  case Right(EligibilityStatus(false, _)) =>
                     Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
                   case Left(_) => throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
                 }
