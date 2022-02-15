@@ -134,6 +134,21 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
       "when testing the DoB" should {
 
+        "error if the year provided is not the correct length" when {
+          "the year is 3 digits" in {
+            val error = s"$dateErrorContext.year.length"
+            val testInput = setupTestData(dob = dob.copy(year = "123"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$clientDateOfBirth-dateYear", error))
+          }
+          "the year is 5 digits" in {
+            val error = s"$dateErrorContext.year.length"
+            val testInput = setupTestData(dob = dob.copy(year = "12345"))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$clientDateOfBirth-dateYear", error))
+          }
+        }
+
         "error if an invalid date is supplied" which {
           "has an invalid day" in {
             val error = s"$dateErrorContext.invalid"

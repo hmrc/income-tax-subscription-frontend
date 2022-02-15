@@ -67,9 +67,13 @@ object NewDateModelMapping {
   }
 
   def isYearValid(yearText: String): Either[String, Int] = {
-    Try[Either[String, Int]] {
-      Right(yearText.toInt)
-    }.getOrElse(Left("invalid"))
+    if (yearText.length == 4) {
+      Try[Either[String, Int]] {
+        Right(yearText.toInt)
+      }.getOrElse(Left("invalid"))
+    } else {
+      Left("year.length")
+    }
   }
 
   def dateModelFormatter(isAgent: Boolean = false, errorContext: String): Formatter[DateModel] = new Formatter[DateModel] {
@@ -116,7 +120,7 @@ object NewDateModelMapping {
             }.getOrElse(Left(Seq(FormError(key, errorKey("invalid")))))
             case (Left(_), Right(_), Right(_)) => Left(Seq(FormError(totalDayKey(key), errorKey("invalid"))))
             case (Right(_), Left(_), Right(_)) => Left(Seq(FormError(totalMonthKey(key), errorKey("invalid"))))
-            case (Right(_), Right(_), Left(_)) => Left(Seq(FormError(totalYearKey(key), errorKey("invalid"))))
+            case (Right(_), Right(_), Left(error)) => Left(Seq(FormError(totalYearKey(key), errorKey(error))))
             case _ => Left(Seq(FormError(key, errorKey("invalid"))))
           }
       }

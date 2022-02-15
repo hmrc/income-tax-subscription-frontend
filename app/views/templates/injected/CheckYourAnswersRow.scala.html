@@ -19,7 +19,7 @@
 @(field: String, question: String, answer: String, changeUrl: Option[String] = None, changeText: Option[String] = None, hiddenContent: Option[String] = None)(implicit messages: Messages)
 
 @accessibleText(text: String, hiddenContent: String) = {
-  <span aria-hidden=“true”>@text</span>
+  <span aria-hidden="true">@text</span>
   <span class="govuk-visually-hidden"> @hiddenContent</span>
 }
 

@@ -219,6 +219,7 @@ error.property.month_year.empty                                 = The date must 
 error.property.start_date.maxStartDate                          = The date your UK property business started trading must be the same as or before {0}
 error.property.start_date.minStartDate                          = The date your property business started must be on or after {0}
 error.property.invalid                                          = The date must be a real date
+error.property.year.length                                      = The year must be in four digits. For example, 2020.
 
 # Agent Property Start Date Date
 agent.property.name.heading                                     = When did your client’s UK property business start trading?
@@ -236,6 +237,7 @@ agent.error.property.month_year.empty                           = The date must 
 agent.error.property.start_date.maxStartDate                    = The date the UK property business started trading must be on or before {0}
 agent.error.property.start_date.minStartDate                    = The date your client’s property business started trading must be on or after {0}
 agent.error.property.invalid                                    = The date must be a real date
+agent.error.property.year.length                                = The year must be in four digits. For example, 2020.
 
 ## Overseas Property Start Date
 overseas.property.name.title                                    = When did your overseas property business start trading?
@@ -259,6 +261,7 @@ error.overseas.property.month_year.empty                        = The date must 
 error.overseas.property.start_date.maxStartDate                 = The date your overseas property business started trading must be the same as or before {0}
 error.overseas.property.start_date.minStartDate                 = The date your property business started must be on or after {0}
 error.overseas.property.invalid                                 = The date must be a real date
+error.overseas.property.year.length                             = The year must be in four digits. For example, 2020.
 
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
@@ -412,6 +415,7 @@ error.user_details.date_of_birth.day_year.empty                 = Your date of b
 error.user_details.date_of_birth.month_year.empty               = Your date of birth must include a month and a year
 error.user_details.date_of_birth.not_in_past                    = Your date of birth must be in the past
 error.user_details.date_of_birth.invalid                        = The date must be a real date
+error.user_details.date_of_birth.year.length                    = The year must be in four digits. For example, 2020.
 
 
 error.not-eligible.empty                                        = You must select an option to continue
@@ -796,7 +800,6 @@ agent.error.back_to_preferences.empty                           = You must selec
 agent.error.dob_date.empty                                      = Enter your client’s date of birth
 agent.error.dob_date.date.empty                                 = Enter your client’s date of birth
 agent.error.dob_date.invalid_chars                              = Enter a date of birth using numbers 0 to 9
-agent.error.dob_date.invalid                                    = Enter a real date of birth
 agent.error.dob_date.day.empty                                  = Their date of birth must include a day
 agent.error.dob_date.month.empty                                = Their date of birth must include a month
 agent.error.dob_date.year.empty                                 = Their date of birth must include a year
@@ -805,6 +808,7 @@ agent.error.dob_date.day_year.empty                             = Their date of 
 agent.error.dob_date.month_year.empty                           = Their date of birth must include a month and a year
 agent.error.dob_date.not_in_past                                = Their date of birth must be in the past
 agent.error.dob_date.invalid                                    = The date must be a real date
+agent.error.dob_date.year.length                                = The year must be in four digits. For example, 2020.
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?
@@ -953,6 +957,7 @@ agent.error.overseas.property.month.empty                       = The date must 
 agent.error.overseas.property.start_date.maxStartDate           = The date the overseas property business started trading must be on or before {0}
 agent.error.overseas.property.start_date.minStartDate           = The date your client’s property business started trading must be on or after {0}
 agent.error.overseas.property.invalid                           = The date must be a real date
+agent.error.overseas.property.year.length                       = The year must be in four digits. For example, 2020.
 
 ## agent Tax Year Check Your Answers
 agent.business.check-your-answers.title                               = Check your answers

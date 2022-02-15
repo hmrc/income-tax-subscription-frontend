@@ -16,10 +16,7 @@
 
 package forms.usermatching
 
-import java.time.LocalDate
-
 import forms.formatters.DateModelMapping._
-import forms.validation.testutils._
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
@@ -27,14 +24,16 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
 import utilities.individual.TestConstants
 
+import java.time.LocalDate
+
 class UserDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   import forms.usermatching.UserDetailsForm._
 
   val testUserFirstName = "Test user first name"
   val testUserLastName = "Test user last name"
-  val testUserNino = TestConstants.testNino
-  val dob = DateModel("01", "02", "1980")
+  val testUserNino: String = TestConstants.testNino
+  val dob: DateModel = DateModel("01", "02", "1980")
 
   def setupTestData(fname: String = testUserFirstName,
                     lname: String = testUserLastName,
@@ -133,6 +132,21 @@ class UserDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       }
 
       "when testing the DoB" should {
+
+        "error if the year provided is not the correct length" when {
+          "the year is 3 digits" in {
+            val error = s"$dateErrorContext.year.length"
+            val testInput = setupTestData(dob = dob.copy(year = "123"))
+            val errors = userDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$userDateOfBirth-dateYear", error))
+          }
+          "the year is 5 digits" in {
+            val error = s"$dateErrorContext.year.length"
+            val testInput = setupTestData(dob = dob.copy(year = "12345"))
+            val errors = userDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$userDateOfBirth-dateYear", error))
+          }
+        }
 
         "error if an invalid date is supplied" which {
           "has an invalid day" in {
