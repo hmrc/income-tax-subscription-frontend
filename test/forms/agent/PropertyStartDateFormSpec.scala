@@ -22,13 +22,11 @@ import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
 
 import java.time.LocalDate
 
-
-class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
+class PropertyStartDateFormSpec extends PlaySpec {
 
   def form: Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate.toString, PropertyStartDateForm.maxStartDate.toString)
@@ -109,6 +107,16 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         "it has multiple invalid fields" in {
           val test = form.bind(DataMap.govukDate(startDate)("0", "0", "2017"))
           test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
+        }
+        "the year provided is not the correct length" when {
+          "the year is 3 digits" in {
+            val test = form.bind(DataMap.govukDate(startDate)("1", "1", "123"))
+            test.errors must contain(FormError(s"$startDate-dateYear", s"$errorContext.year.length"))
+          }
+          "the year is 5 digits" in {
+            val test = form.bind(DataMap.govukDate(startDate)("1", "1", "12345"))
+            test.errors must contain(FormError(s"$startDate-dateYear", s"$errorContext.year.length"))
+          }
         }
       }
     }

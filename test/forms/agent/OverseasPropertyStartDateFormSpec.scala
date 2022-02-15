@@ -105,6 +105,16 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
           val test = form.bind(DataMap.govukDate(startDate)("0", "0", "2017"))
           test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
         }
+        "the year provided is not the correct length" when {
+          "the year is 3 digits" in {
+            val test = form.bind(DataMap.govukDate(startDate)("1", "1", "123"))
+            test.errors must contain(FormError(s"$startDate-dateYear", s"$errorContext.year.length"))
+          }
+          "the year is 5 digits" in {
+            val test = form.bind(DataMap.govukDate(startDate)("1", "1", "12345"))
+            test.errors must contain(FormError(s"$startDate-dateYear", s"$errorContext.year.length"))
+          }
+        }
       }
     }
     "accept a valid date" when {
