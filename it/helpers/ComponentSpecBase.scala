@@ -25,10 +25,10 @@ import forms.individual.incomesource.{BusinessIncomeSourceForm, IncomeSourceForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
+import models._
 import models.common._
 import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
-import models.{AccountingMethod, AccountingYear, DateModel, IncomeSourcesStatus}
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -264,6 +264,16 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues wit
     def submitOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
       post("/business/overseas-property-check-your-answers", sessionData)(Map.empty)
     }
+
+    def getRemoveBusiness(sessionData: Map[String, String] = Map.empty, id: String = testId): WSResponse = {
+      get(s"/business/remove-sole-trader-business?id=$id", sessionData)
+    }
+
+    def submitRemoveBusiness(request: Option[YesNo]): WSResponse = post(s"/business/remove-sole-trader-business?id=$testId")(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => RemoveBusinessForm.removeBusinessForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
 
     def getProgressSaved(sessionData: Map[String, String] = Map.empty): WSResponse = {
       get("/business/progress-saved", sessionData)

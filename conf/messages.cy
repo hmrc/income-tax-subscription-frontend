@@ -24,6 +24,7 @@ base.save-and-continue                                          = Cadw ac yn eic
 base.save-and-come-back-later                                   = Cadw a dod yn ôl yn nes ymlaen
 base.incomplete                                                 = Anghyflawn
 base.confirm-and-continue                                       = Cadarnhau ac yn eich blaen
+base.agree-and-continue                                         = Cytuno ac yn eich blaen
 
 error-notification.prefix                                       = Gwall:
 
@@ -1077,6 +1078,11 @@ business.check-your-answers.content.overseas-property-start-date.change = Newid 
 business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo tramor
+
+## Remove business
+business.remove-sole-trader-business.heading      = A ydych yn siŵr eich bod am ddileu {0} {1}?
+business.remove-sole-trader-business.paragraph    = Mae angen ychwanegu pob un o’ch busnesau unig fasnachwr a’ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
+error.remove-sole-trader-business.invalid         = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 ## Progress saved
 business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi’i gadw

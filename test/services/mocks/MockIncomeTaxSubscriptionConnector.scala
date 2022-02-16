@@ -19,7 +19,8 @@ package services.mocks
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -50,4 +51,20 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
     )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
   }
 
+  def verifySelfEmploymentsSave[T](id: String, value: Option[T]): Unit = {
+    value match {
+      case Some(value) => verify(
+        mockIncomeTaxSubscriptionConnector,
+        times(1)
+      ).saveSubscriptionDetails[T](
+        ArgumentMatchers.any(),
+        ArgumentMatchers.eq(id),
+        ArgumentMatchers.eq(value)
+      )(any(), any())
+      case None => verify(
+        mockIncomeTaxSubscriptionConnector,
+        times(0)
+      ).saveSubscriptionDetails[T](any(), ArgumentMatchers.eq(id), any())(any(), any())
+    }
+  }
 }

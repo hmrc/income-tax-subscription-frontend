@@ -149,5 +149,8 @@ POST        /business/uk-property-check-your-answers             controllers.ind
 GET         /business/overseas-property-check-your-answers       controllers.individual.business.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-check-your-answers       controllers.individual.business.OverseasPropertyCheckYourAnswersController.submit()
 
+GET         /business/remove-sole-trader-business                controllers.individual.business.RemoveBusinessController.show(id: String)
+POST        /business/remove-sole-trader-business                controllers.individual.business.RemoveBusinessController.submit(id: String)
+
 # Progress saved
 GET         /business/progress-saved                             controllers.individual.business.ProgressSavedController.show()

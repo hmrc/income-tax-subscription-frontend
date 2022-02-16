@@ -24,6 +24,7 @@ base.save-and-continue                                          = Save and conti
 base.save-and-come-back-later                                   = Save and come back later
 base.incomplete                                                 = Incomplete
 base.confirm-and-continue                                       = Confirm and continue
+base.agree-and-continue                                         = Agree and continue
 
 error-notification.prefix                                       = Error:
 
@@ -1077,6 +1078,11 @@ business.check-your-answers.content.overseas-property-start-date.change = Change
 business.check-your-answers.content.overseas-property-accounting-method.question = Overseas property business accounting method
 business.check-your-answers.content.overseas-property-accounting-method.add = Add Overseas property business accounting method
 business.check-your-answers.content.overseas-property-accounting-method.change = Change Overseas property business accounting method
+
+## Remove business
+business.remove-sole-trader-business.heading      = Are you sure you want to delete {0} {1}?
+business.remove-sole-trader-business.paragraph    = All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake.
+error.remove-sole-trader-business.invalid         = Select yes if you want to remove business
 
 ## Progress saved
 business.progress-saved.title                                   = Your progress has been saved
