@@ -19,10 +19,11 @@ package connectors
 import config.AppConfig
 import connectors.httpparser.GetSubscriptionDetailsHttpParser._
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser._
 import play.api.libs.json._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,6 +47,11 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
 
   def deleteAll(reference: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.DELETE[HttpResponse](deleteURL(reference))
+  }
+
+  def deleteSubscriptionDetails(reference: String, key: String)
+                                (implicit hc: HeaderCarrier): Future[DeleteSubscriptionDetailsResponse] = {
+    http.DELETE[DeleteSubscriptionDetailsResponse](subscriptionURL(reference, key))
   }
 
   def saveSubscriptionDetails[T](reference: String, id: String, data: T)
