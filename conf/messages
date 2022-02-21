@@ -1055,6 +1055,11 @@ business.task-list.status.incomplete                            = Incomplete
 business.task-list.status.in-progress                           = In progress
 business.task-list.status.not-started                           = Not started
 
+# Remove overseas property business
+remove-overseas-property-business.heading                       = Are you sure you want to delete your overseas property business?
+remove-overseas-property-business.hint                          = All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake.
+error.remove-overseas-property-business.invalid                 = Select yes if you want to remove business
+
 ## Tax Year Check Your Answers
 business.check-your-answers.title                               = Check your answers
 business.check-your-answers.content.tax-year.question           = Tax year you are signing up for

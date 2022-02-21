@@ -62,6 +62,14 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     WiremockHelper.verifyPost(postUri(OverseasProperty), Some((Json.toJson(property): JsValue).toString()), count)
   }
 
+  def stubDeleteSubscriptionDetails(id: String): Unit = {
+    when(method = DELETE, uri = postUri(id)).thenReturn(Status.OK)
+  }
+
+  def verifyDeleteSubscriptionDetails(id: String, count: Option[Int] = None): Unit = {
+    WiremockHelper.verifyDelete(postUri(id), count)
+  }
+
   def stubFullSubscriptionGet(): Unit = stubSubscriptionData(fullSubscriptionDataAllPost)
 
   def stubFullSubscriptionBothPost(): Unit = stubSubscriptionData(fullSubscriptionDataBothPost)

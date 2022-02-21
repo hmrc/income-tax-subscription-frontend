@@ -233,6 +233,18 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues wit
       post("/check-your-answers", sessionData)(Map.empty)
     }
 
+    def getRemoveOverseasProperty(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/business/remove-overseas-property-business", sessionData)
+    }
+
+    def submitRemoveOverseasProperty(sessionData: Map[String, String] = Map.empty)(request: Option[YesNo] = None): WSResponse = {
+      post("/business/remove-overseas-property-business", sessionData)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => RemoveOverseasPropertyForm.removeOverseasPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
     def getTaskList(sessionData: Map[String, String] = Map.empty): WSResponse = {
       get("/business/task-list", sessionData)
     }
