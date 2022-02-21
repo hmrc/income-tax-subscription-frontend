@@ -25,10 +25,10 @@ import forms.individual.incomesource.{BusinessIncomeSourceForm, IncomeSourceForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models._
 import models.common._
 import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
+import models._
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -302,6 +302,10 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues wit
 
     def propertyAccountingMethod(): WSResponse = get("/business/accounting-method-property")
 
+    def getRemoveUkProperty(): WSResponse = get("/business/remove-uk-property-business")
+
+    def submitRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business")(body)
+
     def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
 
     def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(JourneyStateKey -> state.name))
@@ -483,5 +487,4 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues wit
 
   def removeHtmlMarkup(stringWithMarkup: String): String =
     stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim
-
 }

@@ -17,7 +17,7 @@
 @import views.html.helpers.injected.RadioHelper
 
 @this(
-        radioHelper: RadioHelper
+    radioHelper: RadioHelper
 )
 
 @(field: Field, legend: String, isPageHeading: Boolean = true, hint: Option[String] = None, inline: Boolean = true)(implicit messages: Messages)
@@ -30,12 +30,12 @@
     inline = inline,
     radioItems = Seq(
         RadioItem(
-            content = Text(Yes.toMessageString),
-            value = Some(Yes.toString)
+        content = Text(Yes.toMessageString),
+        value = Some(Yes.toString)
         ),
         RadioItem(
-            content = Text(No.toMessageString),
-            value = Some(No.toString)
+        content = Text(No.toMessageString),
+        value = Some(No.toString)
         )
     )
 )
