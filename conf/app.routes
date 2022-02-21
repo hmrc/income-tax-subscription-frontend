@@ -151,3 +151,8 @@ POST        /business/overseas-property-check-your-answers       controllers.ind
 
 # Progress saved
 GET         /business/progress-saved                             controllers.individual.business.ProgressSavedController.show()
+
+
+# remove UK property buisness confirmation page
+GET         /business/remove-uk-property-business                controllers.individual.business.RemoveUkPropertyController.show
+POST        /business/remove-uk-property-business                controllers.individual.business.RemoveUkPropertyController.submit

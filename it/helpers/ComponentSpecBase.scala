@@ -28,7 +28,7 @@ import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.common._
 import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
-import models.{AccountingMethod, AccountingYear, DateModel, IncomeSourcesStatus}
+import models.{AccountingMethod, AccountingYear, DateModel, IncomeSourcesStatus, YesNo}
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -279,6 +279,10 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues wit
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
     def propertyAccountingMethod(): WSResponse = get("/business/accounting-method-property")
+
+    def getRemoveUkProperty(): WSResponse = get("/business/remove-uk-property-business")
+
+    def submitRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business")(body)
 
     def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
 

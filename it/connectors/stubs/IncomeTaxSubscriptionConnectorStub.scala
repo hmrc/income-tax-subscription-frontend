@@ -3,6 +3,7 @@ package connectors.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
 import helpers.IntegrationTestConstants.testMtdId
 import helpers.IntegrationTestModels._
 import helpers.agent.IntegrationTestConstants.SessionId
@@ -13,7 +14,7 @@ import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.{BusinessesKey, OverseasProperty, Property, subscriptionId}
+import utilities.SubscriptionDataKeys.{BusinessesKey, OverseasProperty, Property, UkProperty, subscriptionId}
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
@@ -56,6 +57,14 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
   def verifySaveOverseasProperty[T](property: OverseasPropertyModel, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyPost(postUri(OverseasProperty), Some((Json.toJson(property): JsValue).toString()), count)
+  }
+
+  def stubDeleteSubscriptionDetails(): Unit = {
+    when(method = DELETE, uri = postUri(UkProperty)).thenReturn(Status.OK)
+  }
+
+  def verifyDeleteSubscriptionDetails[T](id: String, count: Option[Int] = None): Unit = {
+    WiremockHelper.verifyDelete(postUri(UkProperty), count)
   }
 
   def stubFullSubscriptionGet(): Unit = stubSubscriptionData(fullSubscriptionDataAllPost)

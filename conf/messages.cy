@@ -24,6 +24,7 @@ base.save-and-continue                                          = Cadw ac yn eic
 base.save-and-come-back-later                                   = Cadw a dod yn ôl yn nes ymlaen
 base.incomplete                                                 = Anghyflawn
 base.confirm-and-continue                                       = Cadarnhau ac yn eich blaen
+base.agree-and-continue                                         = Cytuno ac yn eich blaen
 
 error-notification.prefix                                       = Gwall:
 
@@ -1088,3 +1089,8 @@ business.progress-saved.content.paragraph2.part2                = i barhau. Rydy
 business.progress-saved.content.sign-up-link                    = dychwelyd i gofrestru’ch busnes ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 business.progress-saved.content.sign-out-link                   = allgofnodi a dod yn ôl yn nes ymlaen
 business.progress-saved.content.sign-in-link                    = manylion mewngofnodi Porth y Llywodraeth
+
+## Remove UK property business
+remove-uk-property-business.heading                            = Are you sure you want to delete your UK property business?
+remove-uk-property-business.hint                               = Mae angen ychwanegu pob un o’ch busnesau unig fasnachwr a’ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
+error.remove-uk-property-business.invalid                      = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
