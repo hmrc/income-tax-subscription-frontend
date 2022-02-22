@@ -80,7 +80,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase with FeatureSwit
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-          IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails()
+          IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(Property)
           enable(SaveAndRetrieve)
 
           When("POST /business/remove-uk-property-business is called")
@@ -92,7 +92,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase with FeatureSwit
             redirectURI(taskListURI)
           )
 
-          IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails("testId", Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(1))
         }
 
         "the user submits the 'no' answer" in {
@@ -110,7 +110,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase with FeatureSwit
             redirectURI(taskListURI)
           )
 
-          IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails("testId", Some(0))
+          IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(0))
         }
       }
       "return a BAD_REQUEST" when {
@@ -128,7 +128,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase with FeatureSwit
             httpStatus(BAD_REQUEST),
             errorDisplayed()
           )
-          IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails("testId", Some(0))
+          IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(0))
         }
       }
     }
@@ -147,7 +147,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase with FeatureSwit
           httpStatus(NOT_FOUND)
         )
 
-        IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails("testId", Some(0))
+        IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(0))
       }
     }
 

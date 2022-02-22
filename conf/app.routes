@@ -155,7 +155,6 @@ POST        /business/remove-sole-trader-business                controllers.ind
 # Progress saved
 GET         /business/progress-saved                             controllers.individual.business.ProgressSavedController.show()
 
-
 # Remove overseas property business
 GET         /business/remove-overseas-property-business          controllers.individual.business.RemoveOverseasPropertyController.show
 POST        /business/remove-overseas-property-business          controllers.individual.business.RemoveOverseasPropertyController.submit
