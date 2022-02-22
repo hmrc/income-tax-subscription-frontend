@@ -69,7 +69,6 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
   def verifyDeleteSubscriptionDetails(id: String, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyDelete(postUri(id), count)
-
   }
 
   def stubFullSubscriptionGet(): Unit = stubSubscriptionData(fullSubscriptionDataAllPost)
