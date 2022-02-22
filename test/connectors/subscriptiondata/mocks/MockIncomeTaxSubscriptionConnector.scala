@@ -17,9 +17,10 @@
 package connectors.subscriptiondata.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -47,6 +48,18 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
     when(mockIncomeTaxSubscriptionConnector.saveSubscriptionDetails[T](
       ArgumentMatchers.any(), ArgumentMatchers.eq(id), ArgumentMatchers.eq(value)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
+  }
+
+  def mockDeleteSubscriptionDetails(id: String)(response: DeleteSubscriptionDetailsResponse): Unit = {
+    when(mockIncomeTaxSubscriptionConnector.deleteSubscriptionDetails(
+      ArgumentMatchers.any(), ArgumentMatchers.eq(id)
+    )(ArgumentMatchers.any())) thenReturn Future.successful(response)
+  }
+
+  def verifyDeleteSubscriptionDetails(id: String, count: Int): Unit = {
+    verify(mockIncomeTaxSubscriptionConnector, times(count))
+      .deleteSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.eq(id))(ArgumentMatchers.any())
+
   }
 
 }

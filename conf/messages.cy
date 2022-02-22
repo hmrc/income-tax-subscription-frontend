@@ -1055,6 +1055,11 @@ business.task-list.status.incomplete                            = Anghyflawn
 business.task-list.status.in-progress                           = Ar waith
 business.task-list.status.not-started                           = Heb ddechrau
 
+# Remove overseas property business
+remove-overseas-property-business.heading                       = Ydych chi’n siŵr eich bod am ddileu’ch busnes eiddo tramor?
+remove-overseas-property-business.hint                          = Mae angen ychwanegu pob un o’ch busnesau unig fasnachwr a’ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
+error.remove-overseas-property-business.invalid                 = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
+
 ## Tax Year Check Your Answers
 business.check-your-answers.title                               = Gwiriwch eich atebion
 business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer

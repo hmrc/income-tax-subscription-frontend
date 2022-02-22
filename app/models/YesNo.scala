@@ -20,7 +20,6 @@ import play.api.i18n.Messages
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 
-
 sealed trait YesNo {
   def toMessageString(implicit messages: Messages): String
 }
@@ -30,7 +29,7 @@ object Yes extends YesNo {
 
   override def toString: String = YES
 
-  override def toMessageString(implicit messages: Messages): String = Messages("base.yes")
+  override def toMessageString(implicit messages: Messages): String = messages("base.yes")
 }
 
 object No extends YesNo {
@@ -38,7 +37,7 @@ object No extends YesNo {
 
   override def toString: String = NO
 
-  override def toMessageString(implicit messages: Messages): String = Messages("base.no")
+  override def toMessageString(implicit messages: Messages): String = messages("base.no")
 }
 
 object YesNo {

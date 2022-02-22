@@ -17,6 +17,7 @@
 package utilities
 
 import config.AppConfig
+import models.{No, Yes}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
@@ -192,6 +193,24 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
         radioLabel.attr("for") mustBe radioInput.attr("id")
         Text(radioLabel.text) mustBe radioItem.content
       } forall (_ == succeed) mustBe true
+    }
+
+    def mustHaveYesNoRadioInputs(name: String): Assertion = {
+      mustHaveRadioInput(
+        name = name,
+        radioItems = Seq(
+          RadioItem(
+            id = Some(name),
+            content = Text(Yes.toMessageString),
+            value = Some(Yes.toString)
+          ),
+          RadioItem(
+            id = Some(s"$name-2"),
+            content = Text(No.toMessageString),
+            value = Some(No.toString)
+          )
+        )
+      )
     }
 
     def mustHaveTable(tableHeads: List[String], tableRows: List[List[String]]): Assertion = {
