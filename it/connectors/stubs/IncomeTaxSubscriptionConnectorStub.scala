@@ -3,6 +3,7 @@ package connectors.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
 import helpers.IntegrationTestConstants.testMtdId
 import helpers.IntegrationTestModels._
 import helpers.agent.IntegrationTestConstants.SessionId
@@ -68,6 +69,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
   def verifyDeleteSubscriptionDetails(id: String, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyDelete(postUri(id), count)
+
   }
 
   def stubFullSubscriptionGet(): Unit = stubSubscriptionData(fullSubscriptionDataAllPost)
