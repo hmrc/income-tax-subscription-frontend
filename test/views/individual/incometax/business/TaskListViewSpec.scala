@@ -220,13 +220,13 @@ class TaskListViewSpec extends ViewSpec {
           document(completedTaskListComplete).mainContent.selectNth("p", 1).text mustBe contentSummary(4, 4)
         }
 
-        "in the select tax year section: display a link with next tax year as the selected option and it will redirect to tax year CYA page along with status complete" when {
+        "display a complete tax year with an edit link to the Tax Year CYA" when {
           "the user has selected the tax year and confirmed the answer in tax year CYA page" in {
             val selectTaxYearSection = document(completedTaskListComplete).mainContent.selectNth("ul", 1)
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
             selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
             selectTaxYearSection.selectNth("span", 2).text mustBe complete
-            selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url
+            selectTaxYearLink.attr("href") mustBe controllers.individual.business.routes.TaxYearCheckYourAnswersController.show(editMode = true).url
           }
         }
 
