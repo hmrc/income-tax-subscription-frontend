@@ -96,7 +96,7 @@
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
                     {if(viewModel.taxYearSelectedAndConfirmed) {
-                    <a href={controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url} aria-describedby="section_1_item_1_status" id="select_tax_year_check_your_answer">
+                    <a href={controllers.individual.business.routes.TaxYearCheckYourAnswersController.show(editMode = true).url} aria-describedby="section_1_item_1_status" id="select_tax_year_check_your_answer">
                         {
                         viewModel.taxYearSelection.map(_.accountingYear) match {
                             case Some(Current) => messages("business.task-list.content.section1.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
