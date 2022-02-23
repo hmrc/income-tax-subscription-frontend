@@ -109,7 +109,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.any(),
           ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
           ArgumentMatchers.any()
         )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
@@ -172,8 +171,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
             testARN,
             newTestNino,
             testUtr,
-            testSummary.getAgentSummary(property = testPropertyModel, overseasProperty = testOverseasPropertyModel, isReleaseFourEnabled = true),
-            isReleaseFourEnabled = true
+            testSummary.getAgentSummary(property = testPropertyModel, overseasProperty = testOverseasPropertyModel)
           )
 
           status(result) must be(Status.SEE_OTHER)
@@ -202,8 +200,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
             testARN,
             testNino,
             testUtr,
-            TestModels.testCacheMap.getAgentSummary(property = testPropertyModel, overseasProperty = testOverseasPropertyModel, isReleaseFourEnabled = true),
-            isReleaseFourEnabled = true
+            TestModels.testCacheMap.getAgentSummary(property = testPropertyModel, overseasProperty = testOverseasPropertyModel)
           )
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))

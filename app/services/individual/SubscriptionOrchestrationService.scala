@@ -33,14 +33,9 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                  spsService: SPSService
                                                 )(implicit ec: ExecutionContext) {
 
-  def createSubscription(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false, maybeSpsEntityId: Option[String] = None)
-                        (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
-    if (isReleaseFourEnabled) {
-      signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[IndividualSummary], maybeSpsEntityId)
-    } else {
-      createSubscriptionCore(nino, summaryModel)
-    }
-  }
+  def createSubscription(nino: String, summaryModel: SummaryModel, maybeSpsEntityId: Option[String] = None)
+                        (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
+    signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[IndividualSummary], maybeSpsEntityId)
 
   private[services] def createSubscriptionCore(nino: String, summaryModel: SummaryModel)
                                               (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {

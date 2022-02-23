@@ -87,11 +87,10 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
               overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
             } yield {
               Ok(checkYourAnswers(
-                cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
+                cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty),
                 controllers.agent.routes.CheckYourAnswersController.submit,
                 backUrl = backUrl(incomeSource),
-                implicitDateFormatter,
-                releaseFour = true
+                implicitDateFormatter
               ))
             }
           }
@@ -110,8 +109,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
         arn = arn,
         nino = nino,
         utr = utr,
-        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true),
-        isReleaseFourEnabled = true
+        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty)
       )(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }

@@ -17,7 +17,7 @@
 package controllers.agent.business
 
 import java.time.LocalDate
-import config.featureswitch.FeatureSwitch.{ForeignProperty, ReleaseFour}
+import config.featureswitch.FeatureSwitch.ForeignProperty
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.IntegrationTestConstants._
@@ -32,7 +32,6 @@ import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   override def beforeEach(): Unit = {
-    disable(ReleaseFour)
     disable(ForeignProperty)
     super.beforeEach()
   }
@@ -91,7 +90,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
       "select the Current Year radio button on the What Year To Sign Up page" in {
 
           val userInput = Current
-          enable(ReleaseFour)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()

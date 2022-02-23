@@ -16,7 +16,6 @@
 
 package controllers.individual.subscription
 
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{signOutURI, testSubscriptionId}
@@ -27,11 +26,6 @@ import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    disable(ReleaseFour)
-    super.beforeEach()
-  }
 
   "GET /confirmation" should {
     "return the confirmation page when the user is enrolled and confirm SPS preferences" in {

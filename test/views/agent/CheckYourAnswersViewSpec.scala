@@ -75,17 +75,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   )
 
 
-  def page(testSummaryModel: AgentSummary, releaseFour: Boolean = false): HtmlFormat.Appendable = checkYourAnswers(
+  def page(testSummaryModel: AgentSummary): HtmlFormat.Appendable = checkYourAnswers(
     summaryModel = testSummaryModel,
     postAction = postAction,
     backUrl = backUrl,
-    dateFormatter,
-    releaseFour
+    dateFormatter
   )(FakeRequest(), implicitly, appConfig)
 
-  def document(testSummaryModel: AgentSummary = testAgentSummaryData,
-               releaseFour: Boolean = false): Document
-  = page(testSummaryModel, releaseFour).doc
+  def document(testSummaryModel: AgentSummary = testAgentSummaryData): Document
+  = page(testSummaryModel).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -145,12 +143,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
                     expectedEditLink: Option[String],
                     rowNo: Int,
                     expectedHiddenContent: Option[String],
-                    testSummaryModel: AgentSummary = testSummary, releaseFour: Boolean = false)(
+                    testSummaryModel: AgentSummary = testSummary)(
                      setupData: AgentSummary = testAgentSummaryData): Unit = {
-      val question = document(setupData, releaseFour).getElementById(questionId(sectionId))
-      val answer = document(setupData, releaseFour).getElementById(answerId(sectionId))
-      val editLink = document(setupData, releaseFour).getElementById(editLinkId(sectionId))
-      val hiddenContent = document(setupData, releaseFour).getElementsByClass("govuk-visually-hidden").get(rowNo + 1).text()
+      val question = document(setupData).getElementById(questionId(sectionId))
+      val answer = document(setupData).getElementById(answerId(sectionId))
+      val editLink = document(setupData).getElementById(editLinkId(sectionId))
+      val hiddenContent = document(setupData).getElementsByClass("govuk-visually-hidden").get(rowNo + 1).text()
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
       if (expectedEditLink.nonEmpty) editLinkStyleCorrectness(editLink)
@@ -205,47 +203,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
       }
     }
 
-    "display the correct info for the select tax year with release four enabled" when {
-
-      "selected current tax year" in {
-        val currentTaxYear: AccountingPeriodModel = AccountingPeriodUtil.getCurrentTaxYear
-        val sectionId = SelectedTaxYearId
-        val expectedQuestion = messages.selected_tax_year_release4
-        val expectedAnswer = messages.option1_release4(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
-        val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
-        val expectedHiddenContent = "Change" + messages.selected_tax_year_release4
-        sectionTest(
-          sectionId = sectionId,
-          expectedQuestion = expectedQuestion,
-          expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
-          rowNo = 1,
-          expectedHiddenContent = expectedHiddenContent,
-          releaseFour = true
-        )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Current))))
-      }
-
-      "selected next tax year" in {
-        val nextTaxYear = AccountingPeriodUtil.getNextTaxYear
-
-        val sectionId = SelectedTaxYearId
-        val expectedQuestion = messages.selected_tax_year_release4
-        val expectedAnswer = messages.option2_release4(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
-        val expectedEditLink = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
-        val expectedHiddenContent = "Change" + messages.selected_tax_year_release4
-
-        sectionTest(
-          sectionId = sectionId,
-          expectedQuestion = expectedQuestion,
-          expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
-          rowNo = 1,
-          expectedHiddenContent = expectedHiddenContent,
-          releaseFour = true
-        )(setupData = customTestSummary(selectedTaxYear = Some(AccountingYearModel(Next))))
-      }
-    }
-
     "display the correct info for the income sources" in {
       import MessageLookup.Summary.IncomeSource
 
@@ -278,12 +235,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
         rowNo = 2,
-        expectedHiddenContent = expectedHiddenContent,
-        releaseFour = true
+        expectedHiddenContent = expectedHiddenContent
       )(setupData = customTestSummary())
     }
 
-    "display the correct info for the accounting method when release four is enabled" in {
+    "display the correct info for the accounting method" in {
       val sectionId = AccountingMethodId
       val expectedQuestion = messages.business_accountingmethod
       val expectedAnswer = messages.AccountingMethod.cash
@@ -296,8 +252,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
         rowNo = 2,
-        expectedHiddenContent = expectedHiddenContent,
-        releaseFour = true
+        expectedHiddenContent = expectedHiddenContent
       )()
     }
 
@@ -314,8 +269,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedEditLink = expectedEditLink,
         rowNo = 3,
         expectedHiddenContent = expectedHiddenContent,
-        testSummaryModel = customTestSummary(propertyStartDate = testPropertyStartDate),
-        releaseFour = true
+        testSummaryModel = customTestSummary(propertyStartDate = testPropertyStartDate)
       )()
     }
 
@@ -333,8 +287,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedEditLink = expectedEditLink,
         rowNo = 4,
         expectedHiddenContent = expectedHiddenContent,
-        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel),
-        releaseFour = true
+        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
       )()
     }
 
@@ -351,8 +304,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
         rowNo = 5,
-        expectedHiddenContent = expectedHiddenContent,
-        releaseFour = true
+        expectedHiddenContent = expectedHiddenContent
       )()
     }
 
@@ -369,8 +321,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink,
         rowNo = 6,
-        expectedHiddenContent = expectedHiddenContent,
-        releaseFour = true
+        expectedHiddenContent = expectedHiddenContent
       )()
     }
   }

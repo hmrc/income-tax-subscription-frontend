@@ -17,7 +17,7 @@
 package controllers.agent.business
 
 import agent.audit.mocks.{MockAuditingService, MockOverseasPropertyStartDate}
-import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.OverseasPropertyStartDateForm
@@ -39,7 +39,6 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with MockOverseasPropertyStartDate with FeatureSwitching {
 
   override def beforeEach(): Unit = {
-    disable(ReleaseFour)
     disable(SaveAndRetrieve)
     super.beforeEach()
   }
