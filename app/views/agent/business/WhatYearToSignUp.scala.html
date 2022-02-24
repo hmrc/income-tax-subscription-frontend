@@ -31,7 +31,7 @@
     form : FormWithCSRF
 )
 
-@(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @import implicitDateFormatter.LongDate
 
@@ -66,15 +66,7 @@
   <p>@messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString)</p>
 }
 
-@backLink = @{
-    if(isEditMode) {
-        Some(backUrl)
-    } else {
-        None
-    }
-}
-
-@mainTemplate(title = messages("agent.business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backLink) {
+@mainTemplate(title = messages("agent.business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
   @form(action = postAction) {
     <h1 class="govuk-heading-l">@messages("agent.business.what_year_to_sign_up.heading")</h1>
 

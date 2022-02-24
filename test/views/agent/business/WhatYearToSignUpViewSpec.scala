@@ -21,30 +21,42 @@ import forms.agent.AccountingYearForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import play.api.mvc.Call
+import play.api.data.FormError
 import play.twirl.api.Html
 import services.AccountingPeriodService
 import utilities.ViewSpec
-import views.ViewSpecTrait
 import views.html.agent.business.WhatYearToSignUp
 
 class WhatYearToSignUpViewSpec extends ViewSpec {
+
   private val accountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
-  val backUrl: String = ViewSpecTrait.testBackUrl
-  val action: Call = ViewSpecTrait.testCall
   val taxYearEnd: Int = accountingPeriodService.currentTaxYear
 
   private val whatYearToSignUp: WhatYearToSignUp = app.injector.instanceOf[WhatYearToSignUp]
 
+  val testFormError: FormError = FormError(AccountingYearForm.accountingYear, "test error")
+
   "what year to sign up" must {
-    "have a title" in {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      document().title mustBe WhatYearToSignUp.heading + serviceNameGovUk
+    "have the correct template details" when {
+      "the page has no back link" in new TemplateViewTest(
+        view = page(editMode = false, hasBackLink = false),
+        isAgent = true,
+        title = WhatYearToSignUp.heading,
+        hasSignOutLink = true
+      )
+      "the page has a back link + error" in new TemplateViewTest(
+        view = page(editMode = false, hasBackLink = true, hasError = true),
+        isAgent = true,
+        title = WhatYearToSignUp.heading,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true,
+        error = Some(testFormError)
+      )
     }
 
     "have a heading" in {
-      document().select("h1").text mustBe WhatYearToSignUp.heading
+      document().getH1Element.text mustBe WhatYearToSignUp.heading
     }
 
     "have a body" which {
@@ -221,8 +233,8 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     "have a form" which {
       "has correct attributes" in {
         val form: Elements = document().select("form")
-        form.attr("method") mustBe action.method
-        form.attr("action") mustBe action.url
+        form.attr("method") mustBe testCall.method
+        form.attr("action") mustBe testCall.url
       }
 
       "has a current tax year radio button" in {
@@ -252,32 +264,19 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
       }
     }
 
-    "have a back button" when {
-      "in edit mode" in {
-        val backButton: Elements = document(editMode = true).select(".govuk-back-link")
-        backButton.attr("href") mustBe backUrl
-        backButton.text mustBe MessageLookup.Base.back
-      }
-    }
-
-    "not have a back button" when {
-      "not in edit mode" in {
-        Option(document().selectFirst(".link-back")) mustBe None
-      }
-    }
   }
 
-  private def page(editMode: Boolean): Html =
+  private def page(editMode: Boolean, hasBackLink: Boolean, hasError: Boolean = false): Html =
     whatYearToSignUp(
-      AccountingYearForm.accountingYearForm,
+      if (hasError) AccountingYearForm.accountingYearForm.withError(testFormError) else AccountingYearForm.accountingYearForm,
       postAction = testCall,
-      backUrl = testBackUrl,
+      backUrl = if (hasBackLink) Some(testBackUrl) else None,
       endYearOfCurrentTaxPeriod = taxYearEnd,
       isEditMode = editMode,
     )
 
-  private def document(editMode: Boolean = false): Document =
-    Jsoup.parse(page(editMode = editMode).body)
+  private def document(editMode: Boolean = false, hasBackLink: Boolean = false, hasError: Boolean = false): Document =
+    Jsoup.parse(page(editMode = editMode, hasBackLink = hasBackLink, hasError).body)
 
   private object WhatYearToSignUp {
     val heading = "Which tax year do you want your client to start filing income tax updates for?"
@@ -289,7 +288,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
     val currentYearOptionHintParagraph1: String =
       "You or your client will need to add all business income and expenses into your software " +
-      "from the start of the current tax year. You or your client need to send a quarterly update for:"
+        "from the start of the current tax year. You or your client need to send a quarterly update for:"
 
     val currentYearOptionHintParagraph2 = s"You or your client will need to submit a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
 
@@ -297,22 +296,27 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
     val nextYearOptionHintParagraph2: String =
       s"You or your client will need to submit a final declaration by 31 January ${(taxYearEnd + 2).toString} and " +
-      "will need to complete a Self Assessment return for the current tax year as normal."
+        "will need to complete a Self Assessment return for the current tax year as normal."
 
     def currentYearOption(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
 
     def nextYearOption(fromYear: String, toYear: String): String = s"Next tax year (6 April $fromYear to 5 April $toYear)"
 
     def fillingDateOne(year: String): String = s"5 July $year"
+
     def deadlineDateOne(year: String): String = s"5 August $year"
 
     def fillingDateTwo(year: String): String = s"5 October $year"
+
     def deadlineDateTwo(year: String): String = s"5 November $year"
 
     def fillingDateThree(year: String): String = s"5 January $year"
+
     def deadlineDateThree(year: String): String = s"5 February $year"
 
     def fillingDateFour(year: String): String = s"5 April $year"
+
     def deadlineDateFour(year: String): String = s"5 May $year"
   }
+
 }

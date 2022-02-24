@@ -53,6 +53,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     whatYearToSignUp
   )
 
+  override def beforeEach(): Unit = {
+    disable(SaveAndRetrieve)
+    super.beforeEach()
+  }
+
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
       "there is a pre-saved tax year option in Subscription Details " in {
@@ -179,36 +184,31 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "The back url is in edit mode" when {
-    "save and retrieve is enabled" should {
-      "redirect to check your answer page" when {
-        "in edit mode" in {
+  "backUrl" when {
+    "the save and retrieve feature switch is enabled" when {
+      "in edit mode" must {
+        s"return ${controllers.agent.routes.TaxYearCheckYourAnswersController.show().url}" in {
           enable(SaveAndRetrieve)
-
-          mockIncomeSource()
-          TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe
-            controllers.agent.routes.TaxYearCheckYourAnswersController.show() .url
+          TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
         }
       }
-
-      "redirect to task list page" when {
-        "not in edit mode" in {
+      "not in edit mode" must {
+        s"return ${controllers.agent.routes.TaskListController.show().url}" in {
           enable(SaveAndRetrieve)
-
-          mockIncomeSource()
-          TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
-            controllers.agent.routes.TaskListController.show() .url
+          TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.TaskListController.show().url)
         }
       }
     }
-
-    "save and retrieve is disabled" should {
-      "redirect to check your answer page" in {
-        disable(SaveAndRetrieve)
-
-        mockIncomeSource()
-        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe
-          controllers.agent.routes.CheckYourAnswersController.show.url
+    "the save and retrieve feature switch is disabled" when {
+      "in edit mode" must {
+        s"return ${controllers.agent.routes.CheckYourAnswersController.show.url}" in {
+          TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
+        }
+      }
+      "not in edit mode" must {
+        s"return None" in {
+          TestWhatYearToSignUpController.backUrl(false) mustBe None
+        }
       }
     }
   }
