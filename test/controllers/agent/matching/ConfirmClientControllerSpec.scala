@@ -17,7 +17,7 @@
 package controllers.agent.matching
 
 import auth.agent.AgentUserMatched
-import connectors.individual.eligibility.httpparsers.EligibilityStatus
+import models.EligibilityStatus
 import controllers.agent.{AgentControllerBaseSpec, ITSASessionKeys}
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
@@ -46,8 +46,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockGetEligibilityStatusService {
 
-  private val eligible = EligibilityStatus(currentYear = true, nextYear = true)
-  private val ineligible = EligibilityStatus(currentYear = false, nextYear = false)
+  private val eligible = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
+  private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, None)
 
   override val controllerName: String = "ConfirmClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

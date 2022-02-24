@@ -21,12 +21,11 @@ import auth.agent.{AgentSignUp, AgentUserMatching, StatelessController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.agent.ITSASessionKeys._
-
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import utilities.Implicits._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

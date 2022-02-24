@@ -19,7 +19,7 @@ package connectors.individual.eligibility.mocks
 import auth.MockHttp
 import config.AppConfig
 import connectors.individual.eligibility.GetEligibilityStatusConnector
-import connectors.individual.eligibility.httpparsers.EligibilityStatus
+import models.EligibilityStatus
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

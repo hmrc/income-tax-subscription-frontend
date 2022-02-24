@@ -16,7 +16,7 @@
 
 package services.mocks
 
-import connectors.individual.eligibility.httpparsers.EligibilityStatus
+import models.EligibilityStatus
 import connectors.individual.eligibility.mocks.MockGetEligibilityStatusConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.individual.eligibility.httpparsers.EligibilityStatus
+import models.EligibilityStatus
 import play.api.libs.json.JsError
 import play.api.test.Helpers._
 import services.mocks.TestGetEligibilityStatusService
@@ -28,8 +28,8 @@ import scala.concurrent.Future
 
 class GetEligibilityStatusServiceSpec extends TestGetEligibilityStatusService {
 
-  private val eligible = EligibilityStatus(currentYear = true, nextYear = true)
-  private val ineligible = EligibilityStatus(currentYear = false, nextYear = false)
+  private val eligible = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
+  private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, None)
   "getEligibilityStatus" should {
     "return eligible" when {
       "the GetEligibilityStatusConnector returns OK and true" in {
