@@ -42,41 +42,10 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
     super.beforeEach()
   }
 
-  "createSubscription when release four is disabled" should {
+  "createSubscription" should {
 
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
       TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testAgentSummaryData)
-    }
-
-    "return a success" when {
-      "all services succeed" in {
-        mockCreateSubscriptionSuccess(testNino, testAgentSummaryData, testARN)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
-
-        await(res) mustBe testSubscriptionSuccess
-      }
-      "the auto enrolment service returns a failure response" in {
-        mockCreateSubscriptionSuccess(testNino, testAgentSummaryData, testARN)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
-
-        await(res) mustBe testSubscriptionSuccess
-      }
-    }
-
-    "return a failure" when {
-      "create subscription returns an error" in {
-        mockCreateSubscriptionFailure(testNino, testAgentSummaryData, testARN)
-
-        await(res) mustBe testSubscriptionFailure
-      }
-
-    }
-  }
-
-  "createSubscription when release four is enabled" should {
-
-    def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
-      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testAgentSummaryData, isReleaseFourEnabled = true)
     }
 
     "return a success" when {
@@ -95,7 +64,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
         mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
         val res = TestSubscriptionOrchestrationService.createSubscription(
-          testARN, testNino, testUtr, testAgentSummaryData, isReleaseFourEnabled = true)
+          testARN, testNino, testUtr, testAgentSummaryData)
 
         await(res) mustBe testSubscriptionSuccess
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
@@ -108,7 +77,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
         mockAgentSpsConnectorFailure(testARN, testUtr, testNino, testMTDID)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
         val res = TestSubscriptionOrchestrationService.createSubscription(
-          testARN, testNino, testUtr, testAgentSummaryData, isReleaseFourEnabled = true)
+          testARN, testNino, testUtr, testAgentSummaryData)
 
         await(res) mustBe testSubscriptionSuccess
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)

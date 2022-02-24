@@ -19,7 +19,8 @@ package services.individual.mocks
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import models.common.subscription.CreateIncomeSourcesModel
 import models.{ConnectorError, SummaryModel}
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{eq => eql}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -55,35 +56,33 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
   }
 
   private def mockCreateSubscription(nino: String,
-                                     summaryModel: SummaryModel,
-                                     isReleaseFourEnabled: Boolean
+                                     summaryModel: SummaryModel
                                     )(result: Future[SubscriptionResponse]): Unit = {
     when(mockSubscriptionOrchestrationService.createSubscription(
-      ArgumentMatchers.eq(nino),
-      ArgumentMatchers.eq(summaryModel),
-      ArgumentMatchers.eq(isReleaseFourEnabled),
-      ArgumentMatchers.any()
-    )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
+      eql(nino),
+      eql(summaryModel),
+      any()
+    )(any[HeaderCarrier])).thenReturn(result)
   }
 
   private def mockSignUpAndCreateIncomeSourcesFromTaskList(nino: String,
                                                            createIncomeSourcesModel: CreateIncomeSourcesModel
                                                           )(result: Future[SubscriptionResponse]): Unit = {
     when(mockSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(
-      ArgumentMatchers.eq(nino),
-      ArgumentMatchers.eq(createIncomeSourcesModel),
-      ArgumentMatchers.any()
-    )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
+      eql(nino),
+      eql(createIncomeSourcesModel),
+      any()
+    )(any[HeaderCarrier])).thenReturn(result)
   }
 
-  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
-    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.successful(testSubscriptionSuccess))
+  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(nino, summaryModel)(Future.successful(testSubscriptionSuccess))
 
-  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
-    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.successful(testSubscriptionFailure))
+  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(nino, summaryModel)(Future.successful(testSubscriptionFailure))
 
-  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean): Unit =
-    mockCreateSubscription(nino, summaryModel, isReleaseFourEnabled)(Future.failed(testException))
+  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(nino, summaryModel)(Future.failed(testException))
 
   def mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
     mockSignUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel)(Future.successful(testSubscriptionSuccess))
@@ -95,8 +94,8 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
   private def mockEnrolAndRefresh(mtditId: String, nino: String)(result: Future[Either[ConnectorError, String]]): Unit =
     when(
       mockSubscriptionOrchestrationService.enrolAndRefresh
-      (ArgumentMatchers.eq(mtditId), ArgumentMatchers.eq(nino))
-      (ArgumentMatchers.any[HeaderCarrier])
+      (eql(mtditId), eql(nino))
+      (any[HeaderCarrier])
     )
       .thenReturn(result)
 

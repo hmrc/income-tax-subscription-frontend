@@ -17,7 +17,7 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch._
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodPropertyForm
@@ -40,7 +40,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector with FeatureSwitching {
 
   override def beforeEach(): Unit = {
-    disable(ReleaseFour)
     disable(SaveAndRetrieve)
     super.beforeEach()
   }

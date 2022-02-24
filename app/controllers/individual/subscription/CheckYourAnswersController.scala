@@ -18,7 +18,6 @@ package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
@@ -75,8 +74,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                 summaryModel,
                 controllers.individual.subscription.routes.CheckYourAnswersController.submit,
                 backUrl = backUrl(cache.getIncomeSource.get),
-                implicitDateFormatter,
-                isEnabled(ReleaseFour)
+                implicitDateFormatter
               ))
           }
         }
@@ -90,7 +88,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
           val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
           val session = request.session
           getSummaryModel(reference, cache).flatMap { summaryModel =>
-            subscriptionService.createSubscription(nino, summaryModel, isEnabled(ReleaseFour), session.get(SPSEntityId))(headerCarrier).flatMap {
+            subscriptionService.createSubscription(nino, summaryModel, session.get(SPSEntityId))(headerCarrier).flatMap {
               case Right(SubscriptionSuccess(id)) =>
                 subscriptionDetailsService.saveSubscriptionId(reference, id).map { _ =>
                   Redirect(controllers.individual.subscription.routes.ConfirmationController.show)
@@ -109,11 +107,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
     } yield {
-      if (isEnabled(ReleaseFour)) {
-        cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true)
-      } else {
-        cacheMap.getSummary(property = property, overseasProperty = overseasProperty)
-      }
+        cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty)
     }
   }
 

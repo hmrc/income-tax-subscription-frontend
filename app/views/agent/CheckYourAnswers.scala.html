@@ -30,7 +30,7 @@
         form: FormWithCSRF
 )
 
-@(summaryModel: AgentSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter, releaseFour: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summaryModel: AgentSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, hiddenContent: Option[String] = None, enableHtml: Boolean = false) = {
     <div class="govuk-summary-list__row" id="@field-row">
@@ -76,12 +76,8 @@
 
 @selectedTaxYear(selectedTaxYear: AccountingYearModel) = @{
     val rowName = SelectedTaxYearId
-    val rowQuestion = if(releaseFour) {
-        Messages("agent.summary.selected_year.release4")
-    } else {
-        Messages("agent.summary.selected_year")
-    }
-    val rowAnswer = accountingYearText(selectedTaxYear, releaseFour)
+    val rowQuestion = Messages("agent.summary.selected_year")
+    val rowAnswer = accountingYearText(selectedTaxYear)
     val rowUrl = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
     val hiddenContent = Some(Messages("final.cya.change.taxyearstartfiling"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
@@ -136,34 +132,21 @@
 
 @agentMainTemplate(title = Messages("agent.summary.title"), backLink = backUrl) {
 
-
     <h1 class="govuk-heading-l">@Messages("agent.summary.heading") <span class="govuk-visually-hidden">@Messages("agent.summary.heading_hidden")</span>
     </h1>
 
     <div class="govuk-form-group">
 
-    @if(releaseFour) {
-        <dl class="govuk-summary-list">
-            @summaryModel.selectedTaxYear.map(selectedTaxYear)
-            @summaryModel.incomeSource.map(incomeSource)
-            @summaryModel.selfEmployments.map(selfEmployments)
-            @summaryModel.accountingMethod.map(accountingMethod)
-            @summaryModel.propertyStartDate.map(propertyStartDate)
-            @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
-            @summaryModel.overseasPropertyStartDate.map(overseasPropertyStartDate)
-            @summaryModel.overseasAccountingMethodProperty.map(overseasAccountingMethodProperty)
-        </dl>
-    } else {
-        <dl class="govuk-summary-list">
-            @summaryModel.incomeSource.map(incomeSource)
-            @summaryModel.selectedTaxYear.map(selectedTaxYear)
-            @summaryModel.accountingMethod.map(accountingMethod)
-            @summaryModel.propertyStartDate.map(propertyStartDate)
-            @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
-            @summaryModel.overseasPropertyStartDate.map(overseasPropertyStartDate)
-            @summaryModel.overseasAccountingMethodProperty.map(overseasAccountingMethodProperty)
-        </dl>
-    }
+    <dl class="govuk-summary-list">
+        @summaryModel.selectedTaxYear.map(selectedTaxYear)
+        @summaryModel.incomeSource.map(incomeSource)
+        @summaryModel.selfEmployments.map(selfEmployments)
+        @summaryModel.accountingMethod.map(accountingMethod)
+        @summaryModel.propertyStartDate.map(propertyStartDate)
+        @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
+        @summaryModel.overseasPropertyStartDate.map(overseasPropertyStartDate)
+        @summaryModel.overseasAccountingMethodProperty.map(overseasAccountingMethodProperty)
+    </dl>
 
     </div>
 

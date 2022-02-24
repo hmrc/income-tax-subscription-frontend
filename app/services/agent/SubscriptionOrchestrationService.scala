@@ -36,10 +36,10 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                 (implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def createSubscriptionFromTaskList(arn: String,
-                                               nino: String,
-                                               utr: String,
-                                               createIncomeSourceModel: CreateIncomeSourcesModel)
-                                              (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+                                     nino: String,
+                                     utr: String,
+                                     createIncomeSourceModel: CreateIncomeSourcesModel)
+                                    (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
 
     signUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourceModel) flatMap {
       case right@Right(subscriptionSuccess) => {
@@ -70,36 +70,22 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     res.value
   }
 
-  def createSubscription(arn: String, nino: String, utr: String, summaryModel: SummaryModel, isReleaseFourEnabled: Boolean = false)
-                        (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
-
-    if (isReleaseFourEnabled) {
-      signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[AgentSummary]) flatMap {
-        case right@Right(subscriptionSuccess) => {
-          autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
-            case Right(_) =>
-              if (isEnabled(SPSEnabled)) {
-                confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
-              }
-              right
-            case Left(_) =>
-              right
-          }
-        }
-        case left => Future.successful(left)
-      }
-    }
-    else {
-      subscriptionService.submitSubscription(nino, summaryModel, Some(arn)) flatMap {
-        case right@Right(subscriptionSuccess) => {
-          autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map { _ =>
+  def createSubscription(arn: String, nino: String, utr: String, summaryModel: SummaryModel)
+                        (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
+    signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[AgentSummary]) flatMap {
+      case right@Right(subscriptionSuccess) => {
+        autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
+          case Right(_) =>
+            if (isEnabled(SPSEnabled)) {
+              confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
+            }
             right
-          }
+          case Left(_) =>
+            right
         }
-        case left => Future.successful(left)
       }
+      case left => Future.successful(left)
     }
-  }
 
   private[services] def signUpAndCreateIncomeSources(nino: String, agentSummary: AgentSummary)
                                                     (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {

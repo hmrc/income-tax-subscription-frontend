@@ -17,12 +17,11 @@
 package controllers.individual.subscription
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ReleaseFour
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.{IncomeSourceModel, OverseasPropertyModel, PropertyModel}
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -51,7 +50,6 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   val mockCheckYourAnswers: CheckYourAnswers = mock[CheckYourAnswers]
 
   override def beforeEach(): Unit = {
-    disable(ReleaseFour)
     reset(mockCheckYourAnswers)
     super.beforeEach()
   }
@@ -85,7 +83,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
       mockFetchOverseasProperty(None)
-      when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+      when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
     }
@@ -99,7 +97,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
       mockFetchOverseasProperty(None)
-      when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+      when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
     }
@@ -116,7 +114,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
         startDate = testPropertyStartDateModel.startDate
       )))
-      when(mockCheckYourAnswers(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+      when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
     }
@@ -128,40 +126,17 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     def call: Future[Result] = TestCheckYourAnswersController.submit(request)
 
-    "When the submission is successful and release four is disabled" should {
+    "When the submission is successful" should {
       lazy val result = call
 
       "return a redirect status (SEE_OTHER - 303)" in {
-        disable(ReleaseFour)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchAllFromSubscriptionDetails(testCacheMap)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
-        mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockFetchProperty(testFullPropertyModel.copy(startDate = None))
-        mockFetchOverseasProperty(testFullOverseasPropertyModel)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = testFullPropertyModel.copy(startDate = None)), isReleaseFourEnabled = false)
-        status(result) must be(Status.SEE_OTHER)
-        await(result)
-        verifySubscriptionDetailsSave(MtditId, 1)
-      }
-
-      s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show.url}'" in {
-        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
-      }
-    }
-
-    "When the submission is successful and release four is enabled" should {
-      lazy val result = call
-
-      "return a redirect status (SEE_OTHER - 303)" in {
-        enable(ReleaseFour)
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(testFullPropertyModel)
         mockFetchOverseasProperty(testFullOverseasPropertyModel)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true, property = testFullPropertyModel), isReleaseFourEnabled = true)
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = testFullPropertyModel))
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -176,13 +151,12 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a internalServer error" in {
-        enable(ReleaseFour)
         mockFetchAllFromSubscriptionDetails(testCacheMap)
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(testFullPropertyModel)
         mockFetchOverseasProperty(testFullOverseasPropertyModel)
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(isReleaseFourEnabled = true, property = testFullPropertyModel), isReleaseFourEnabled = true)
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(property = testFullPropertyModel))
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifySubscriptionDetailsSave(MtditId, 0)
       }

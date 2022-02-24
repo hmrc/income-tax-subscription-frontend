@@ -39,16 +39,8 @@ object SummaryHelper {
     ).flatten.mkString("<br>")
   }
 
-  def accountingYearText(src: AccountingYearModel, release4Enabled: Boolean = false)(implicit messages: Messages): String = src.accountingYear match {
-    case Current => if(release4Enabled) {
-      messages("agent.summary.selected_year.current.release4", (getCurrentTaxEndYear - 1).toString, getCurrentTaxEndYear.toString)
-    } else {
-      messages("agent.summary.selected_year.current", (getCurrentTaxEndYear - 1).toString, getCurrentTaxEndYear.toString)
-    }
-    case Next => if(release4Enabled) {
-      messages("agent.summary.selected_year.next.release4", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
-    } else {
-      messages("agent.summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
-    }
+  def accountingYearText(src: AccountingYearModel)(implicit messages: Messages): String = src.accountingYear match {
+    case Current => messages("agent.summary.selected_year.current", (getCurrentTaxEndYear - 1).toString, getCurrentTaxEndYear.toString)
+    case Next => messages("agent.summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
   }
 }

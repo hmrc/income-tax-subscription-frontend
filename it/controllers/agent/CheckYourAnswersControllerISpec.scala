@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.{ReleaseFour, SPSEnabled}
+import config.featureswitch.FeatureSwitch.SPSEnabled
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, incomeSourceURI => _, testNino => _, testUtr => _, _}
@@ -90,9 +90,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         "The whole subscription process was successful" when {
           "only self-employments selected and no other data" in {
 
-            Given("I set the required feature switches")
-            enable(ReleaseFour)
-
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -149,9 +146,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           }
 
           "only self-employments selected and everything else answered" in {
-            Given("I set the required feature switches")
-            enable(ReleaseFour)
-
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -207,9 +201,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           }
 
           "only UK property is answered" in {
-            Given("I set the required feature switches")
-            enable(ReleaseFour)
-
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
 
@@ -265,9 +256,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           }
 
           "everything has been answered but the user has only got uk property selected" in {
-            Given("I set the required feature switches")
-            enable(ReleaseFour)
-
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
 
@@ -325,9 +313,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           }
 
           "only foreign property has been answered" in {
-            Given("I set the required feature switches")
-            enable(ReleaseFour)
-
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
 
@@ -818,9 +803,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
     "the signup of a user with next tax year property income is successful and creating of the enrolment is successful" when {
       "feature switch SPSEnabled is disabled" in {
-        Given("I set the required feature switches")
-        enable(ReleaseFour)
-
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -880,7 +862,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
       "feature switch SPSEnabled is enabled" in {
         Given("I set the required feature switches")
-        enable(ReleaseFour)
         enable(SPSEnabled)
 
         Given("I setup the wiremock stubs")

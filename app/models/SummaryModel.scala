@@ -56,22 +56,9 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     overseasPropertyStartDate.isDefined && overseasAccountingMethodProperty.isDefined
   }
 
-  def ukPropertyComplete(releaseFourEnabled: Boolean): Boolean = {
-    if (releaseFourEnabled) {
-      propertyStartDate.isDefined && accountingMethodProperty.isDefined
-    }
-    else {
-      accountingMethodProperty.isDefined
-    }
-  }
+  def ukPropertyComplete: Boolean = propertyStartDate.isDefined && accountingMethodProperty.isDefined
 
-  def selfEmploymentComplete(releaseFourEnabled: Boolean): Boolean = {
-    if (releaseFourEnabled) {
-      selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
-    } else {
-      businessName.isDefined && accountingMethod.isDefined
-    }
-  }
+  def selfEmploymentComplete: Boolean = selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
 
   def toBusinessSubscriptionDetailsModel(nino: String): BusinessSubscriptionDetailsModel = {
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
@@ -125,22 +112,9 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
     overseasPropertyStartDate.isDefined && overseasAccountingMethodProperty.isDefined
   }
 
-  def ukPropertyComplete(releaseFourEnabled: Boolean): Boolean = {
-    if (releaseFourEnabled) {
-      propertyStartDate.isDefined && accountingMethodProperty.isDefined
-    }
-    else {
-      accountingMethodProperty.isDefined
-    }
-  }
+  def ukPropertyComplete: Boolean = propertyStartDate.isDefined && accountingMethodProperty.isDefined
 
-  def selfEmploymentComplete(releaseFourEnabled: Boolean): Boolean = {
-    if (releaseFourEnabled) {
-      selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
-    } else {
-      businessName.isDefined && accountingMethod.isDefined
-      }
-    }
+  def selfEmploymentComplete: Boolean = selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
 
   def toBusinessSubscriptionDetailsModel(nino: String): BusinessSubscriptionDetailsModel = {
 

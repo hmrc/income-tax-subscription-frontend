@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.{ReleaseFour, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch._
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingYearForm
@@ -45,7 +45,6 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   )
 
   override def beforeEach(): Unit = {
-    disable(ReleaseFour)
     disable(SaveAndRetrieve)
     super.beforeEach()
   }

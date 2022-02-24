@@ -322,7 +322,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
 
 
-      "the user select self-employment and overseas property and both journeys have been completed before and ReleaseFour is enabled" should {
+      "the user select self-employment and overseas property and both journeys have been completed before" should {
         s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)

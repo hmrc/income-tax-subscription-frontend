@@ -25,7 +25,6 @@ object FeatureSwitch {
   val prefix = "feature-switch"
 
   val switches: Set[FeatureSwitch] = Set(
-    ReleaseFour,
     ForeignProperty,
     IdentityVerification,
     RemoveCovidPages,
@@ -41,11 +40,6 @@ object FeatureSwitch {
     }
 
   def get(str: String): Option[FeatureSwitch] = switches find (_.name == str)
-
-  case object ReleaseFour extends FeatureSwitch {
-    override val name = s"$prefix.enable-release-four"
-    override val displayText = "Release four"
-  }
 
   case object ForeignProperty extends FeatureSwitch {
     override val name = s"$prefix.enable-foreign-property"

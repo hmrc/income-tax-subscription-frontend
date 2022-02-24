@@ -84,17 +84,16 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit
   lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show.url
 
-  def page(testSummaryModel: IndividualSummary, releaseFour: Boolean = false): HtmlFormat.Appendable =
+  def page(testSummaryModel: IndividualSummary): HtmlFormat.Appendable =
     checkYourAnswers(
       summaryModel = testSummaryModel,
       postAction = postAction,
       backUrl = backUrl,
-      dateFormatter,
-      releaseFour = releaseFour
+      dateFormatter
     )(FakeRequest(), implicitly, appConfig)
 
-  def document(testSummaryModel: IndividualSummary = testSummary, releaseFour: Boolean = false): Document =
-    page(testSummaryModel, releaseFour).doc
+  def document(testSummaryModel: IndividualSummary = testSummary): Document =
+    page(testSummaryModel).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -154,9 +153,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
                     expectedEditLink: Option[String],
                     rowNo: Int,
                     expectedHiddenContent: Option[String],
-                    testSummaryModel: IndividualSummary = testSummary,
-                    releaseFour: Boolean = false): Unit = {
-      val doc = document(testSummaryModel, releaseFour)
+                    testSummaryModel: IndividualSummary = testSummary): Unit = {
+      val doc = document(testSummaryModel)
       val question = doc.getElementById(questionId(sectionId))
       val answer = doc.getElementById(answerId(sectionId))
       val editLink = doc.getElementById(editLinkId(sectionId))
@@ -203,7 +201,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
 
         sectionTest(
           sectionId = sectionId,
-          releaseFour = true,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
@@ -268,8 +265,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink,
           rowNo = 4,
-          expectedHiddenContent = expectedHiddenContent,
-          releaseFour = true
+          expectedHiddenContent = expectedHiddenContent
         )
       }
 

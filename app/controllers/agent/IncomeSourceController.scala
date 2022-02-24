@@ -102,9 +102,9 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
       summaryModel <- getSummaryModel(reference, cacheMap)
     } yield {
       incomeSource match {
-        case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete(releaseFourEnabled = true) =>
+        case IncomeSourceModel(true, _, _) if !summaryModel.selfEmploymentComplete =>
           Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
-        case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete(releaseFourEnabled = true) =>
+        case IncomeSourceModel(_, true, _) if !summaryModel.ukPropertyComplete =>
           Redirect(controllers.agent.business.routes.PropertyStartDateController.show())
         case IncomeSourceModel(_, _, true) if !summaryModel.foreignPropertyComplete =>
           Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
@@ -121,7 +121,7 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
     } yield {
-      cacheMap.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, isReleaseFourEnabled = true)
+      cacheMap.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty)
     }
   }
 
