@@ -20,7 +20,7 @@ import agent.audit.mocks.MockAuditingService
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.SPSEnabled
 import config.featureswitch.FeatureSwitching
-import connectors.individual.eligibility.httpparsers.EligibilityStatus
+import models.EligibilityStatus
 import controllers.ControllerBaseSpec
 import org.mockito.Mockito.reset
 import play.api.http.Status
@@ -42,8 +42,8 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with FeatureSwitching {
 
-  private val eligible = EligibilityStatus(currentYear = true, nextYear = true)
-  private val ineligible = EligibilityStatus(currentYear = false, nextYear = false)
+  private val eligible = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
+  private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, None)
 
   override val controllerName: String = "HomeControllerSpec"
 

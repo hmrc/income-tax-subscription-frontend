@@ -17,7 +17,7 @@
 package services
 
 import connectors.individual.eligibility.GetEligibilityStatusConnector
-import connectors.individual.eligibility.httpparsers.EligibilityStatus
+import models.EligibilityStatus
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.HttpResult.HttpResult
 

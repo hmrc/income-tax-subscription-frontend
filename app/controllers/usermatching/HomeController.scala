@@ -21,9 +21,9 @@ import auth.individual.{SignUp, StatelessController, UserMatching}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SPSEnabled
 import config.featureswitch.FeatureSwitching
-import connectors.individual.eligibility.httpparsers.EligibilityStatus
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
+import models.EligibilityStatus
 import models.common.subscription.SubscriptionSuccess
 import play.api.mvc._
 import services._
@@ -64,11 +64,11 @@ class HomeController @Inject()(val auditingService: AuditingService,
                 }
               case None =>
                 getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
-                  case Right(EligibilityStatus(true, _)) =>
+                  case Right(EligibilityStatus(true, _, _)) =>
                     goToSignUp(timestamp)
                       .addingToSession(UTR -> utr)
                       .addingToSession(NINO -> nino)
-                  case Right(EligibilityStatus(false, _)) =>
+                  case Right(EligibilityStatus(false, _, _)) =>
                     Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
                   case Left(_) => throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
                 }

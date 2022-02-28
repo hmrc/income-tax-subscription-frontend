@@ -39,19 +39,14 @@ object AccountingMethod {
   import Accruals.ACCRUALS
   import Cash.CASH
 
-  private val reads: Reads[AccountingMethod] = new Reads[AccountingMethod] {
-    override def reads(json: JsValue): JsResult[AccountingMethod] =
-      json.validate[String] map {
-        case CASH => Cash
-        case ACCRUALS => Accruals
-      }
+  private val reads: Reads[AccountingMethod] = (json: JsValue) => json.validate[String] map {
+    case CASH => Cash
+    case ACCRUALS => Accruals
   }
 
-  private val writes: Writes[AccountingMethod] = new Writes[AccountingMethod] {
-    override def writes(o: AccountingMethod): JsValue = o match {
-      case Cash => JsString(CASH)
-      case Accruals => JsString(ACCRUALS)
-    }
+  private val writes: Writes[AccountingMethod] = (o: AccountingMethod) => o match {
+    case Cash => JsString(CASH)
+    case Accruals => JsString(ACCRUALS)
   }
 
   implicit val format: Format[AccountingMethod] = Format[AccountingMethod](reads, writes)

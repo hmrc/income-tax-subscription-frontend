@@ -19,9 +19,9 @@ package controllers.agent.matching
 import auth.agent.AgentJourneyState._
 import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import config.AppConfig
-import connectors.individual.eligibility.httpparsers.EligibilityStatus
 import controllers.agent.ITSASessionKeys
 import controllers.agent.ITSASessionKeys.FailedClientMatching
+import models.EligibilityStatus
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
@@ -113,14 +113,14 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
             case Right(ApprovedAgent(nino, Some(utr))) =>
               auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
               eligibilityService.getEligibilityStatus(utr) map {
-                case Right(EligibilityStatus(true, _)) =>
+                case Right(EligibilityStatus(true, _, _)) =>
                   Redirect(controllers.agent.routes.HomeController.index)
                     .withJourneyState(AgentUserMatched)
                     .addingToSession(ITSASessionKeys.NINO -> nino)
                     .addingToSession(ITSASessionKeys.UTR -> utr)
                     .removingFromSession(FailedClientMatching)
                     .clearUserDetailsExceptName
-                case Right(EligibilityStatus(false, _)) =>
+                case Right(EligibilityStatus(false, _, _)) =>
                   Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
                     .removingFromSession(FailedClientMatching)
                     .clearAllUserDetails
