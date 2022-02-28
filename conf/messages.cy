@@ -25,6 +25,7 @@ base.save-and-come-back-later                                   = Cadw a dod yn 
 base.incomplete                                                 = Anghyflawn
 base.confirm-and-continue                                       = Cadarnhau ac yn eich blaen
 base.agree-and-continue                                         = Cytuno ac yn eich blaen
+base.remove                                                     = Dileu
 
 error-notification.prefix                                       = Gwall:
 

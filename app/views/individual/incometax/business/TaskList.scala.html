@@ -58,7 +58,11 @@
             <span class="app-task-list__task-completed" id={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>
              {if(se.confirmed && viewModel.selfEmploymentAccountingMethod.isDefined) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
             </span>
+            <span class="govuk-remove-business-link" id={"self_employment_remove"+viewModel.selfEmployments.indexOf(se)}>
+            <a class="govuk-link" href={controllers.individual.business.routes.RemoveBusinessController.show(se.id).url}>{messages("base.remove")}</a>
+            </span>
             </li>
+
             )}
 
         {viewModel.ukProperty.map(ukps =>
@@ -68,6 +72,9 @@
             </span>
             <span class="app-task-list__task-completed" id="uk_property_status">
             {if(viewModel.ukPropertyComplete ) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
+            </span>
+            <span class="govuk-remove-business-link" id="uk_property_remove">
+            <a class="govuk-link" href={controllers.individual.business.routes.RemoveUkPropertyController.show.url}>{messages("base.remove")}</a>
             </span>
             </li>
 
@@ -79,6 +86,9 @@
             </span>
             <span class="app-task-list__task-completed" id="overseas_property_status">
             {if(viewModel.overseasPropertyComplete) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
+            </span>
+            <span class="govuk-remove-business-link" id="overseas_property_remove">
+            <a class="govuk-link" href={controllers.individual.business.routes.RemoveOverseasPropertyController.show.url}>{messages("base.remove")}</a>
             </span>
             </li>
         ).getOrElse({})}{if(viewModel.canAddMoreBusinesses) {

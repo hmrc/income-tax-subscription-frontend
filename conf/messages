@@ -25,6 +25,7 @@ base.save-and-come-back-later                                   = Save and come 
 base.incomplete                                                 = Incomplete
 base.confirm-and-continue                                       = Confirm and continue
 base.agree-and-continue                                         = Agree and continue
+base.remove                                                     = Remove
 
 error-notification.prefix                                       = Error:
 
