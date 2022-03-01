@@ -88,7 +88,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-      verifySubscriptionDetailsSave(MtditId, 1)
+      verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       verifySubscriptionDetailsFetch(SelectedTaxYear, 2)
     }
 

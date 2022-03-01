@@ -21,15 +21,16 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, argThat}
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{Json, Writes}
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
+import utilities.SubscriptionDataKeys.subscriptionId
 import utilities.{SubscriptionDataKeys, UnitTestTrait}
 
 import scala.concurrent.Future
@@ -51,8 +52,13 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   }
 
   def mockRetrieveReferenceSuccess(utr: String)(reference: String): Unit = {
-    when(mockConnector.retrieveReference(ArgumentMatchers.eq(utr))(ArgumentMatchers.any())) thenReturn Future.successful(Right(reference))
+    when(mockConnector.retrieveReference(
+      ArgumentMatchers.eq(utr)
+    )(ArgumentMatchers.any())) thenReturn Future.successful(Right(reference))
   }
+
+  def mockRetrievePrePopFlag(result: Option[Boolean]): Unit =
+    mockFetchFromSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, result)
 
   def mockRetrieveReference(utr: String)(response: RetrieveReferenceResponse): Unit = {
     when(mockConnector.retrieveReference(ArgumentMatchers.eq(utr))(ArgumentMatchers.any())) thenReturn Future.successful(response)
@@ -73,13 +79,51 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
         ArgumentMatchers.any(), ArgumentMatchers.any())
       )
 
-  protected final def verifySubscriptionDetailsSave[T](key: String, someCount: Option[Int]): Unit =
-    someCount map (count => verify(mockConnector, times(count)).saveSubscriptionDetails[T](
-      ArgumentMatchers.any(),
-      ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId),
-      ArgumentMatchers.any()
-    )(ArgumentMatchers.any(), ArgumentMatchers.any()))
+  case class CacheMapKeyMatcher(key: String) extends ArgumentMatcher[CacheMap] {
+    def matches(cacheMap: CacheMap): Boolean = cacheMap.data.keys.toSet.contains(key)
+  }
 
+  case class SelfEmploymentListMatcher(wanted: List[SelfEmploymentData]) extends ArgumentMatcher[List[SelfEmploymentData]] {
+    def matches(offered: List[SelfEmploymentData]): Boolean = {
+      val zipped = offered.zip(wanted)
+      offered.length == wanted.length &&
+        zipped.map { case (o, w) =>
+          o.businessStartDate == w.businessStartDate && // everything equal apart from id
+            o.businessName == w.businessName &&
+            o.businessTradeName == w.businessTradeName &&
+            o.businessAddress == w.businessAddress &&
+            o.confirmed == w.confirmed
+        }.forall(b => b) // check for any not equal
+    }
+  }
+
+  protected final def verifySubscriptionDetailsSave[T](key: String, count: Int): Unit =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[CacheMap](
+      ArgumentMatchers.any(),
+      ArgumentMatchers.eq(subscriptionId),
+      argThat(CacheMapKeyMatcher(key)),
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
+  protected final def verifySubscriptionDetailsSaveWithField[T](count: Int, field: String, wanted: T): Unit =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[T](
+      ArgumentMatchers.any(),
+      ArgumentMatchers.eq(field),
+      ArgumentMatchers.eq(wanted),
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
+  protected final def verifySubscriptionDetailsSaveWithField[T](count: Int, field: String, matcher: ArgumentMatcher[T]): Unit =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[T](
+      ArgumentMatchers.any(),
+      ArgumentMatchers.eq(field),
+      argThat(matcher),
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
+  protected final def verifySubscriptionDetailsSaveWithField[T](count: Int, field: String): Unit =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[T](
+      ArgumentMatchers.any(),
+      ArgumentMatchers.eq(field),
+      ArgumentMatchers.any()
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
   protected final def setupMockSubscriptionDetailsSaveFunctions(): Unit = {
     mockFetchFromSubscriptionDetails[String]("fakeKey", None)

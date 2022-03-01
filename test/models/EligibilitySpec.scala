@@ -25,7 +25,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
 
   "the Eligibility model" should {
 
-    "handle missing prepop" in {
+    "handle missing prepopData" in {
       val valueWithoutPrepop =
         """{
           |  "eligibleCurrentYear": true,
@@ -44,29 +44,29 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
       Json.parse(valueWithoutPrepop).validate[EligibilityStatus] should be (JsSuccess(EligibilityStatus(true, true, None)))
     }
 
-    "handle empty prepop" in {
+    "handle empty prepopData" in {
       val valueWithEmptyPrepop =
         """{
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true,
-          |  "prepop": {}
+          |  "prepopData": {}
           |}""".stripMargin
       Json.parse(valueWithEmptyPrepop).validate[EligibilityStatus] should be (JsSuccess(EligibilityStatus(true, true, Some(PrePopData(None, None, None)))))
     }
 
-    "handle trivial prepop" in {
+    "handle trivial prepopData" in {
       val valueWithTrivialPrepop =
         """{
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true,
-          |  "prepop": {
+          |  "prepopData": {
           |    "selfEmployments": []
           |  }
           |}""".stripMargin
       Json.parse(valueWithTrivialPrepop).validate[EligibilityStatus] should be (JsSuccess(EligibilityStatus(true, true, Some(PrePopData(Some(List.empty), None, None)))))
     }
 
-    "handle minimal prepop" in {
+    "handle minimal prepopData" in {
       val minimalPrepop =
         """{
           |  "selfEmployments": [
@@ -85,7 +85,6 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
                 None,
                 None,
                 None,
-                None,
                 None)
             )),
             None,
@@ -95,7 +94,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
       )
     }
 
-    "handle full prepop" in {
+    "handle full PrePopData object" in {
       val fullPrepop =
         """{
           |  "selfEmployments": [
@@ -108,11 +107,6 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |        "day": "E1",
           |        "month": "E2",
           |        "year": "E3"
-          |      },
-          |      "businessCeasedDate": {
-          |        "day": "F1",
-          |        "month": "F2",
-          |        "year": "F3"
           |      },
           |      "businessAccountingPeriodStart": {
           |        "day": "G1",
@@ -128,7 +122,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |    }
           |  ],
           |  "ukProperty": {
-          |    "ukPropertyCommencementDate": {
+          |    "ukPropertyStartDate": {
           |        "day": "J1",
           |        "month": "J2",
           |        "year": "J3"
@@ -136,7 +130,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |    "ukPropertyAccountingMethod": "Cash"
           |  },
           |  "overseasProperty": {
-          |    "overseasPropertyCommencementDate": {
+          |    "overseasPropertyStartDate": {
           |        "day": "L1",
           |        "month": "L2",
           |        "year": "L3"
@@ -155,7 +149,6 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
               Some("C"),
               Some("D"),
               Some(DateModel("E1", "E2", "E3")),
-              Some(DateModel("F1", "F2", "F3")),
               Some(Cash))
           )),
           Some(PrePopUkProperty(

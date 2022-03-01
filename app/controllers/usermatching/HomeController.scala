@@ -17,21 +17,24 @@
 package controllers.usermatching
 
 import auth.individual.JourneyState._
-import auth.individual.{SignUp, StatelessController, UserMatching}
+import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserMatching}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SPSEnabled
+import config.featureswitch.FeatureSwitch.{PrePopulate, SPSEnabled}
 import config.featureswitch.FeatureSwitching
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
-import models.EligibilityStatus
+import models.common.business.{SelfEmploymentData, _}
 import models.common.subscription.SubscriptionSuccess
+import models.common.{OverseasPropertyModel, PropertyModel}
+import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import services._
 import services.individual._
-import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.ITSASessionKeys._
 import utilities.Implicits._
 
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -59,19 +62,9 @@ class HomeController @Inject()(val auditingService: AuditingService,
           case OptionalIdentifiers(Some(nino), Some(utr)) =>
             getSubscription(nino) flatMap {
               case Some(SubscriptionSuccess(mtditId)) =>
-                withReference(utr) { reference =>
-                  claimSubscription(reference, mtditId, nino, utr)
-                }
+                claimSubscription(mtditId, nino, utr)
               case None =>
-                getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
-                  case Right(EligibilityStatus(true, _, _)) =>
-                    goToSignUp(timestamp)
-                      .addingToSession(UTR -> utr)
-                      .addingToSession(NINO -> nino)
-                  case Right(EligibilityStatus(false, _, _)) =>
-                    Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
-                  case Left(_) => throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
-                }
+                handleNoSubscriptionFound(utr, timestamp, nino)
             }
           case OptionalIdentifiers(Some(_), None) =>
             Redirect(routes.NoSAController.show)
@@ -80,6 +73,33 @@ class HomeController @Inject()(val auditingService: AuditingService,
             Future.successful(goToUserMatching withJourneyState UserMatching)
         }
     }
+
+  private def handleNoSubscriptionFound(utr: String, timestamp: String, nino: String)
+                                       (implicit hc: HeaderCarrier, user: IncomeTaxSAUser, request: Request[AnyContent]) = {
+    getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
+      // Check eligibility (this is complete, and gives us the control list response including pre-pop information)
+      case Right(EligibilityStatus(true, _, Some(prepop))) if isEnabled(PrePopulate) =>
+        withReference(utr) { reference =>
+          prePopulate(reference, prepop).map { _ =>
+            goToSignUp(utr, timestamp, nino)
+          }
+        }
+      case Right(EligibilityStatus(true, _, _)) => goToSignUp(utr, timestamp, nino)
+      case Right(EligibilityStatus(false, _, _)) =>
+        Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
+      case Left(_) =>
+        throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
+    }
+  }
+
+  private def prePopulate(reference: String, prepop: PrePopData)
+                         (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Unit] = for {
+    flag <- subscriptionDetailsService.fetchPrePopFlag(reference)
+    _ <- flag match {
+      case None => populateSubscription(reference, prepop)
+      case Some(_) => Future.successful(Unit)
+    }
+  } yield Unit
 
   lazy val goToPreferences: Result = Redirect(controllers.individual.routes.PreferencesController.checkPreferences)
   lazy val goToSPSHandoff: Result = Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
@@ -92,8 +112,8 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Left(err) => throw new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err")
     }
 
-  private def goToSignUp(timestamp: String)(implicit request: Request[AnyContent]): Result = {
-    if (isEnabled(SPSEnabled)) {
+  private def goToSignUp(utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result = {
+    (if (isEnabled(SPSEnabled)) {
       goToSPSHandoff
         .addingToSession(StartTime -> timestamp)
         .withJourneyState(SignUp)
@@ -101,15 +121,67 @@ class HomeController @Inject()(val auditingService: AuditingService,
       goToPreferences
         .addingToSession(StartTime -> timestamp)
         .withJourneyState(SignUp)
-
-    }
+    })
+      .addingToSession(UTR -> utr)
+      .addingToSession(NINO -> nino)
   }
 
-  private def claimSubscription(reference: String, mtditId: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Result] =
-    subscriptionDetailsService.saveSubscriptionId(reference, mtditId) map { _ =>
-      Redirect(controllers.individual.subscription.routes.ClaimSubscriptionController.claim)
-        .withJourneyState(SignUp)
-        .addingToSession(NINO -> nino)
-        .addingToSession(UTR -> utr)
+  private def populateSubscription(reference: String, prePopData: PrePopData)(implicit request: Request[AnyContent]): Future[Unit] = {
+    // Set up allT futures so that they parallelise.
+    val futureSaveSelfEmployments = prePopData.selfEmployments match {
+      case None => Future.successful(Unit)
+      case Some(listPrepopSelfEmployment) =>
+        val listSelfEmploymentData = listPrepopSelfEmployment.map(se => SelfEmploymentData(
+          UUID.randomUUID().toString,
+          se.businessStartDate.map(date => BusinessStartDate(date)),
+          se.businessName.map(name => BusinessNameModel(name)),
+          BusinessTradeNameModel(se.businessTradeName),
+          se.businessAddressPostCode.map(pc =>
+            BusinessAddressModel(UUID.randomUUID().toString, address = Address(se.businessAddressFirstLine.toList.seq, pc)))
+        ))
+        subscriptionDetailsService.saveBusinesses(reference, listSelfEmploymentData)
+    }
+
+    val futureSaveUkPropertyInfo = prePopData.ukProperty match {
+      case None => Future.successful(Unit)
+      case Some(up) =>
+        subscriptionDetailsService.saveProperty(reference, PropertyModel(up.ukPropertyAccountingMethod, up.ukPropertyStartDate))
+    }
+
+    val futureSaveOverseasPropertyInfo = prePopData.overseasProperty match {
+      case None => Future.successful(Unit)
+      case Some(op) =>
+        subscriptionDetailsService.saveOverseasProperty(reference, OverseasPropertyModel(op.overseasPropertyAccountingMethod, op.overseasPropertyStartDate))
+    }
+
+    val maybeAccountingMethod = prePopData.selfEmployments.flatMap(_.flatMap(_.businessAccountingMethod).headOption)
+    val futureSaveSelfEmploymentsAccountingMethod = maybeAccountingMethod match {
+      case None => Future.successful(Unit)
+      case Some(accountingMethod) => subscriptionDetailsService.saveSelfEmploymentsAccountingMethod(reference, AccountingMethodModel(accountingMethod))
+    }
+
+    val futureSavePrePopFlag = subscriptionDetailsService.savePrePopFlag(reference, prepop = true)
+
+    // Wait for futures
+    for {
+      _ <- futureSaveOverseasPropertyInfo
+      _ <- futureSaveSelfEmployments
+      _ <- futureSaveUkPropertyInfo
+      _ <- futureSaveSelfEmploymentsAccountingMethod
+      _ <- futureSavePrePopFlag
+    } yield Unit
+  }
+
+  private def claimSubscription(mtditId: String, nino: String, utr: String)
+                               (implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
+    withReference(utr) {
+      reference =>
+        subscriptionDetailsService.saveSubscriptionId(reference, mtditId) map {
+          _ =>
+            Redirect(controllers.individual.subscription.routes.ClaimSubscriptionController.claim)
+              .withJourneyState(SignUp)
+              .addingToSession(NINO -> nino)
+              .addingToSession(UTR -> utr)
+        }
     }
 }

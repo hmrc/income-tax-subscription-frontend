@@ -30,7 +30,8 @@ object FeatureSwitch {
     RemoveCovidPages,
     SPSEnabled,
     ClaimEnrolment,
-    SaveAndRetrieve
+    SaveAndRetrieve,
+    PrePopulate
   )
 
   def apply(str: String): FeatureSwitch =
@@ -69,5 +70,10 @@ object FeatureSwitch {
   case object SaveAndRetrieve extends FeatureSwitch {
     override val name = s"$prefix.enable-save-and-retrieve"
     override val displayText = "Save & Retrieve"
+  }
+
+  case object PrePopulate extends FeatureSwitch {
+    override val name = s"$prefix.prepopulate"
+    override val displayText = "Prepopulate"
   }
 }

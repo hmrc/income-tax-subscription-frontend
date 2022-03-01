@@ -42,4 +42,7 @@ object SubscriptionDataKeys {
   val lastUpdatedTimestamp = "lastUpdatedTimestamp"
 
   val BusinessesKey = "Businesses"
+
+  //Boolean flag indicating if pre pop complete, even if there was no pre pop data
+  val PrePopFlag = "PrePopFlag"
 }
