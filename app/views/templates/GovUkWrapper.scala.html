@@ -64,14 +64,21 @@
 
 }
 
+@additionalHeadBlock = {
+    <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
+
+    @if(showSignOutLink) {
+        @hmrcTimeoutDialogHelper(
+            timeout = Some(appConfig.timeoutInSeconds.toInt),
+            countdown = Some(appConfig.timeoutWarningInSeconds.toInt),
+            signOutUrl = controllers.routes.SignOutController.signOut.url
+        )
+    }
+}
+
 @hmrcLayout(
     pageTitle = Some(title),
-    additionalHeadBlock = if(showSignOutLink) {
-    Some(hmrcTimeoutDialogHelper(
-    timeout = Some(appConfig.timeoutInSeconds.toInt),
-    countdown = Some(appConfig.timeoutWarningInSeconds.toInt),
-    signOutUrl = controllers.routes.SignOutController.signOut.url))
-    } else None,
+    additionalHeadBlock = Some(additionalHeadBlock),
     serviceName = Some(serviceName),
     isWelshTranslationAvailable = true,
     serviceUrl = Some(serviceUrl),
@@ -80,3 +87,4 @@
     phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
     userResearchBannerUrl = Some(appConfig.urBannerUrl),
     nonce = None)(content)
+)

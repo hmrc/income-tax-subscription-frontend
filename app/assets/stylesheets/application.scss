@@ -8,3 +8,9 @@ $hmrc-assets-path: "/report-quarterly/income-and-expenses/sign-up/assets/lib/hmr
   display: block;
   font-weight: bold;
 }
+
+.govuk-remove-business-link {
+  float: right;
+  clear: right;
+  padding-top:0.5rem;
+}
