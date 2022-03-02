@@ -105,7 +105,7 @@
         <li>
             @Html(messages(
                 key = "sign-up-complete.whatHappensNow.number1",
-                args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.number1.link")}</a>
+                args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} rel="noreferrer noopener" target="_blank">{messages("sign-up-complete.whatHappensNow.number1.link")}</a>
             ))
         </li>
         @if(selectedTaxYear.contains(Next)) {
@@ -121,7 +121,7 @@
     <p class="govuk-body">
         @Html(messages(
             "sign-up-complete.whatHappensNow.para",
-            <a class="govuk-link" id="btaLink" href={appConfig.btaUrl} target="_blank">{messages("sign-up-complete.whatHappensNow.para.link")}</a>
+            <a class="govuk-link" id="btaLink" href={appConfig.btaUrl} rel="noreferrer noopener" target="_blank">{messages("sign-up-complete.whatHappensNow.para.link")}</a>
         ))
     </p>
 

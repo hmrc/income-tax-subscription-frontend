@@ -59,7 +59,7 @@
             <li>
             @Html(messages(
                 key = "agent.sign-up-complete.whatNow.number1",
-                args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} target="_blank">{messages("agent.sign-up-complete.whatNow.number1.link")}</a>
+                args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} rel="noreferrer noopener" target="_blank">{messages("agent.sign-up-complete.whatNow.number1.link")}</a>
             ))
             </li>
             @if(summary.selectedTaxYear.exists(_.accountingYear == Next)) {
