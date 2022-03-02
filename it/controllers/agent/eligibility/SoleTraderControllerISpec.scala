@@ -132,7 +132,7 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
         val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-        pageContent.firstOf("span[class=govuk-error-message]").text shouldBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
+        pageContent.firstOf("p[class=govuk-error-message]").text shouldBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
         pageContent.firstOf(s"a[href=#${SoleTraderForm.fieldName}]").text shouldBe s"${SoleTraderPageMessages.invalidError(date)}"
       }
 

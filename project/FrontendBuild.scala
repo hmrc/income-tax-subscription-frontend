@@ -14,7 +14,7 @@ private object AppDependencies {
 
   private val bootstrapPlayVersion = "5.16.0"
   private val playPartialsVersion = "8.1.0-play-28"
-  private val playHmrcFrontendVersion = "1.31.0-play-28"
+  private val playHmrcFrontendVersion = "3.0.0-play-28"
   private val playLanguageVersion = "4.13.0-play-28"
   private val httpCachingClientVersion = "9.3.0-play-28"
   private val domainVersion = "6.2.0-play-28"
