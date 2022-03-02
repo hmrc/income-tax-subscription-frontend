@@ -158,7 +158,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
       val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-      pageContent.firstOf("span[class=govuk-error-message]").text shouldBe s"Error: ${OtherSourcesOfIncomeMessages.invalidError}"
+      pageContent.firstOf("p[class=govuk-error-message]").text shouldBe s"Error: ${OtherSourcesOfIncomeMessages.invalidError}"
       pageContent.firstOf(s"a[href=#${OtherSourcesOfIncomeForm.fieldName}]").text shouldBe OtherSourcesOfIncomeMessages.invalidError
 
       val form: Element = pageContent.getForm
