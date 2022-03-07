@@ -24,7 +24,6 @@ case class PrePopSelfEmployment(
   businessAddressFirstLine: Option[String],
   businessAddressPostCode: Option[String],
   businessStartDate: Option[DateModel],
-  businessCeasedDate: Option[DateModel],
   businessAccountingMethod: Option[AccountingMethod]
 )
 
@@ -33,7 +32,7 @@ object PrePopSelfEmployment {
 }
 
 case class PrePopUkProperty(
-  ukPropertyCommencementDate: Option[DateModel],
+  ukPropertyStartDate: Option[DateModel],
   ukPropertyAccountingMethod: Option[AccountingMethod]
 )
 
@@ -42,7 +41,7 @@ object PrePopUkProperty {
 }
 
 case class PrePopOverseasProperty(
-  overseasPropertyCommencementDate: Option[DateModel],
+  overseasPropertyStartDate: Option[DateModel],
   overseasPropertyAccountingMethod: Option[AccountingMethod]
 )
 
@@ -60,7 +59,7 @@ object PrePopData {
   implicit val format: OFormat[PrePopData] = Json.format[PrePopData]
 }
 
-case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean, prepop: Option[PrePopData])
+case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean, prepopData: Option[PrePopData])
 
 object EligibilityStatus {
   implicit val format: OFormat[EligibilityStatus] = Json.format[EligibilityStatus]

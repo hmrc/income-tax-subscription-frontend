@@ -41,6 +41,7 @@ object TestConstants {
   lazy val testId: String = "testId"
   lazy val testEmptyCacheMap = CacheMap("", Map())
   lazy val testUtr: String = UUID.randomUUID().toString
+  lazy val testReference: String = "test-reference"
   //Not an actual UTRTestAuthenticatorConnector
   lazy val testArn: String = UUID.randomUUID().toString
   lazy val testToken: String = s"${UUID.randomUUID()}"

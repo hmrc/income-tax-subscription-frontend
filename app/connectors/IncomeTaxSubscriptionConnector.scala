@@ -50,7 +50,7 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
   }
 
   def deleteSubscriptionDetails(reference: String, key: String)
-                                (implicit hc: HeaderCarrier): Future[DeleteSubscriptionDetailsResponse] = {
+                               (implicit hc: HeaderCarrier): Future[DeleteSubscriptionDetailsResponse] = {
     http.DELETE[DeleteSubscriptionDetailsResponse](subscriptionURL(reference, key))
   }
 
