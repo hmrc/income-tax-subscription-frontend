@@ -59,9 +59,10 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         val errorContext: String = "error.property"
 
         "the date is not supplied to the map" in {
-          form.bind(DataMap.EmptyMap).errors must contain(FormError(startDate, empty))
+          form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, empty))
         }
         "it is within 1 years" in {
+
           val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)
           val maxTest = form.bind(DataMap.govukDate(startDate)(
             oneYearAgo.getDayOfMonth.toString,
@@ -88,7 +89,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
         "it is missing multiple fields" in {
           val test = form.bind(DataMap.govukDate(startDate)("", "", "2017"))
-          test.errors must contain(FormError(startDate, s"$errorContext.day_month.empty"))
+          test.errors must contain(FormError(dayKeyError, s"$errorContext.day_month.empty"))
         }
         "it has an invalid day" in {
           val test = form.bind(DataMap.govukDate(startDate)("0", "1", "2017"))
@@ -96,15 +97,15 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
         "it has an invalid month" in {
           val test = form.bind(DataMap.govukDate(startDate)("1", "13", "2017"))
-          test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
+          test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
         }
         "it has an invalid year" in {
           val test = form.bind(DataMap.govukDate(startDate)("1", "1", "invalid"))
-          test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
+          test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
         }
         "it has multiple invalid fields" in {
           val test = form.bind(DataMap.govukDate(startDate)("0", "0", "2017"))
-          test.errors must contain(FormError(startDate, s"$errorContext.invalid"))
+          test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
         }
         "the year provided is not the correct length" when {
           "the year is 3 digits" in {
