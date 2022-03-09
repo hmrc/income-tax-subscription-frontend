@@ -14,3 +14,9 @@ $hmrc-assets-path: "/report-quarterly/income-and-expenses/sign-up/assets/lib/hmr
   clear: right;
   padding-top:0.5rem;
 }
+
+body:not(.js-enabled) {
+  a.govuk-back-link[href*="javascript"] {
+    display: none;
+  }
+}
