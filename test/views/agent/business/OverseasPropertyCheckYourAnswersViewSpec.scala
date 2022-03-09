@@ -71,7 +71,6 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       title = OverseasPropertyCheckYourAnswers.title,
       isAgent = true,
       backLink = Some(testBackUrl),
-      hasSignOutLink = true
     )
 
     "have a heading" in {

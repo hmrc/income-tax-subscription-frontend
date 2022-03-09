@@ -96,7 +96,6 @@ class SignUpCompleteViewSpec extends ViewSpec {
       new TemplateViewTest(
         view = page(Next),
         title = SignUpCompleteMessages.heading,
-        hasSignOutLink = true
       )
     }
 

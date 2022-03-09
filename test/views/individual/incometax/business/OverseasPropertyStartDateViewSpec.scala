@@ -69,7 +69,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         ),
         title = OverseasPropertyStartDateMessages.title,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true
       )
       "there is an error" in new TemplateViewTest(
         view = overseasPropertyStartDate(
@@ -80,7 +79,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         ),
         title = OverseasPropertyStartDateMessages.title,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testError)
       )
     }

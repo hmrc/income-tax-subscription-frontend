@@ -40,8 +40,7 @@ class NotSubscribedViewSpec extends ViewSpec {
     "display the template correctly" in new TemplateViewTest(
       view = view,
       title = Messages.heading,
-      isAgent = false,
-      hasSignOutLink = true
+      isAgent = false
     )
     "display the page heading" in {
       mainContent.getH1Element.text mustBe Messages.heading

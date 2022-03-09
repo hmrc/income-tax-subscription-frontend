@@ -43,14 +43,12 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         view = page(editMode = false, hasBackLink = false),
         isAgent = true,
         title = WhatYearToSignUp.heading,
-        hasSignOutLink = true
       )
       "the page has a back link + error" in new TemplateViewTest(
         view = page(editMode = false, hasBackLink = true, hasError = true),
         isAgent = true,
         title = WhatYearToSignUp.heading,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testFormError)
       )
     }

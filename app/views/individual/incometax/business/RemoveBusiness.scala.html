@@ -29,14 +29,20 @@
 
 @(
     removeBusinessForm: Form[YesNo],
-    businessName: String,
+    businessName: Option[String],
     businessTradeName: Option[String],
     postAction: Call,
     backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
 @heading = @{
-  messages("business.remove-sole-trader-business.heading", businessName, businessTradeName.fold("")(value => s"- $value"))
+  val tradeNameText = businessTradeName.fold("")(value => s" - $value")
+  businessName match {
+    case Some(name) =>
+      messages("business.remove-sole-trader-business.heading", name, tradeNameText)
+    case None =>
+      messages("business.remove-sole-trader-business.unnamed", tradeNameText)
+  }
 }
 
 @mainTemplate(title = heading, optForm = Some(removeBusinessForm), backLink = Some(backUrl)) {
@@ -45,7 +51,7 @@
   @form(action = postAction) {
     @radioHelper(
       field = removeBusinessForm(RemoveBusinessForm.fieldName),
-      legend = messages("business.remove-sole-trader-business.heading"),
+      legend = heading,
       isPageHeading = false,
       hint = Some(Text(messages("business.remove-sole-trader-business.paragraph"))),
       radioItems = Seq(

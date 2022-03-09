@@ -27,7 +27,10 @@ class RemoveBusinessViewSpec extends ViewSpec {
   private val removeBusinessView = app.injector.instanceOf[RemoveBusiness]
 
   private object RemoveBusiness {
-    val title = "Are you sure you want to delete BusyBusiness - Consulting?"
+    val fullTitle = "Are you sure you want to delete BusyBusiness - Consulting?"
+    val titleWithoutName = "Are you sure you want to delete this business - Consulting?"
+    val titleWithoutTradeName = "Are you sure you want to delete BusyBusiness?"
+    val titleWithoutNameOrTradeName = "Are you sure you want to delete this business?"
     val paragraph = "All your current sole trader and property businesses need to be added to Making Tax Digital " +
       "for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
     val yes = "Yes"
@@ -35,33 +38,63 @@ class RemoveBusinessViewSpec extends ViewSpec {
     val button = "Agree and continue"
   }
 
-  private val businessName = "BusyBusiness"
+  private val businessName = Some("BusyBusiness")
   private val businessTradeName = Some("Consulting")
 
   "Remove business view" must {
     "have the correct template" when {
-      "there is no error" in new TemplateViewTest(
-        view = page(),
-        title = RemoveBusiness.title,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true
-      )
+      "there is no error" when {
+        "name and business name are present" in new TemplateViewTest(
+          view = page(),
+          title = RemoveBusiness.fullTitle,
+          backLink = Some(testBackUrl),
+        )
+
+      }
 
       "there is an error" in new TemplateViewTest(
         view = page(
           form = RemoveBusinessForm.removeBusinessForm().withError(FormError("startDate", "testError"))
         ),
-        title = RemoveBusiness.title,
+        title = RemoveBusiness.fullTitle,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(FormError("startDate", "testError"))
       )
     }
 
-    "have a heading" in {
-      document()
-        .getH1Element
-        .text() mustBe RemoveBusiness.title
+    "have the correct title and heading" when {
+      "there is a business name" when {
+        "there is a trade name" in {
+          val view = page()
+          new TemplateViewTest(
+            view = view,
+            title = RemoveBusiness.fullTitle
+          ).document.getH1Element.text() mustBe RemoveBusiness.fullTitle
+        }
+        "there is no trade name" in {
+          val view = page(maybeBusinessTradeName = None)
+          new TemplateViewTest(
+            view = view,
+            title = RemoveBusiness.titleWithoutTradeName
+          ).document.getH1Element.text() mustBe RemoveBusiness.titleWithoutTradeName
+        }
+      }
+      "there is no business name" when {
+        "there is a trade name" in {
+          val view = page(maybeBusinessName = None)
+          new TemplateViewTest(
+            view = view,
+            title = RemoveBusiness.titleWithoutName
+          ).document.getH1Element.text() mustBe RemoveBusiness.titleWithoutName
+        }
+        "there is no trade name" in {
+          val view = page(maybeBusinessName = None, maybeBusinessTradeName = None)
+          new TemplateViewTest(
+            view = view,
+            title = RemoveBusiness.titleWithoutNameOrTradeName
+          ).document.getH1Element.text() mustBe RemoveBusiness.titleWithoutNameOrTradeName
+        }
+      }
     }
 
     "have a hint" in {
@@ -89,11 +122,10 @@ class RemoveBusinessViewSpec extends ViewSpec {
 
   private def page(
                     form: Form[YesNo] = RemoveBusinessForm.removeBusinessForm(),
-                    businessName: String = businessName,
-                    businessTradeName: Option[String] = businessTradeName
+                    maybeBusinessName: Option[String] = businessName,
+                    maybeBusinessTradeName: Option[String] = businessTradeName
                   ) =
-    removeBusinessView(form, businessName, businessTradeName, testCall, testBackUrl)
+    removeBusinessView(form, maybeBusinessName, maybeBusinessTradeName, testCall, testBackUrl)
 
-  private def document() =
-    Jsoup.parse(page().body)
+  private def document() = Jsoup.parse(page().body)
 }

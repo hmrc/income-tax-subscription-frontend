@@ -39,7 +39,6 @@ class NoSAViewSpec extends ViewSpec {
     "have the correct template" in new TemplateViewTest(
       view = page,
       title = NoSAMessages.heading,
-      hasSignOutLink = true
     )
 
     "have a heading" in {

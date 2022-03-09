@@ -46,8 +46,7 @@ class CovidCannotSignUpViewSpec extends ViewSpec {
         )(request, mockMessages, appConfig),
         title = CovidCannotSignUpMessages.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true
+        backLink = Some(testBackUrl)
       )
     }
   }

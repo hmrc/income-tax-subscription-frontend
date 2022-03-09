@@ -72,7 +72,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       ),
       title = PropertyCheckYourAnswers.title,
       backLink = Some(testBackUrl),
-      hasSignOutLink = true
     )
 
     "have a heading" in {

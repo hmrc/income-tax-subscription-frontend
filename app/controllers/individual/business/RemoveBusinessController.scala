@@ -49,8 +49,8 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
     implicit user => {
       withReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
-          withBusinessData(reference, businessId) { (businessNameModel, maybeBusinessTradeNameModel) =>
-            Future.successful(Ok(view(businessId, form, businessNameModel, maybeBusinessTradeNameModel)))
+          withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+            Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
           }
         } else {
           Future.failed(new NotFoundException("[RemoveBusinessController][show] - The save and retrieve feature switch is disabled"))
@@ -96,12 +96,12 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   private def withBusinessData(
                                 reference: String,
                                 businessId: String
-                              )(f: (BusinessNameModel, Option[BusinessTradeNameModel]) => Future[Result])(
+                              )(f: (Option[BusinessNameModel], Option[BusinessTradeNameModel]) => Future[Result])(
     implicit hc: HeaderCarrier
   ): Future[Result] = {
     fetchBusinessData(reference, businessId).flatMap {
-        case Some(SelfEmploymentData(_, _, Some(businessNameModel), maybeBusinessTradeNameModel, _, _)) =>
-          f(businessNameModel, maybeBusinessTradeNameModel)
+        case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
+          f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
         case _ => Future.failed(new InternalServerException("[RemoveBusinessController] - Could not retrieve business details"))
       }
   }
@@ -117,12 +117,12 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   private def view(
                     businessId: String,
                     removeBusinessForm: Form[YesNo],
-                    businessNameModel: BusinessNameModel,
+                    maybeBusinessNameModel: Option[BusinessNameModel],
                     maybeBusinessTradeNameModel: Option[BusinessTradeNameModel]
                   )(implicit request: Request[_]) =
     removeBusinessView(
       removeBusinessForm = removeBusinessForm,
-      businessName = businessNameModel.businessName,
+      businessName = maybeBusinessNameModel.map(_.businessName),
       businessTradeName = maybeBusinessTradeNameModel.map(_.businessTradeName),
       postAction = controllers.individual.business.routes.RemoveBusinessController.submit(businessId),
       backUrl = controllers.individual.business.routes.TaskListController.show().url

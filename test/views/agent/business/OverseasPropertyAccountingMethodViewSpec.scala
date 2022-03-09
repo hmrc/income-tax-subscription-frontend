@@ -65,8 +65,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec with FeatureSwit
         view = page(),
         title = OverseasPropertyAccountingMethodMessages.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true
+        backLink = Some(testBackUrl)
       )
       "there is an error" in new TemplateViewTest(
         view = page(
@@ -76,7 +75,6 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec with FeatureSwit
         title = OverseasPropertyAccountingMethodMessages.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testError)
       )
     }
