@@ -116,8 +116,7 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
   def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel]): String =
     (isEditMode, isSaveAndRetrieve, maybeIncomeSourceModel) match {
       case (true, true, _) => controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
-        //need to change to WhatIncomeSourceToSignUpController when it has been built
-      case (false, true, _) => controllers.agent.routes.IncomeSourceController.show().url
+      case (false, true, _) => controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
       case (true, false, _) => controllers.agent.routes.CheckYourAnswersController.show.url
       case (false, false, Some(incomeSourceModel)) if incomeSourceModel.selfEmployment =>
         appConfig.incomeTaxSelfEmploymentsFrontendUrl + "client/details/business-accounting-method"
@@ -128,5 +127,4 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
   def form(implicit request: Request[_]): Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate.toLongDate, PropertyStartDateForm.maxStartDate.toLongDate)
   }
-
 }

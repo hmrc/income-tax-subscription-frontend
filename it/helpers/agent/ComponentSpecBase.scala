@@ -19,7 +19,7 @@ import helpers.servicemocks.AuditStub
 import models.common._
 import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
-import models.{AccountingMethod, AccountingYear, DateModel, YesNo}
+import models._
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest._
@@ -293,6 +293,25 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
         additionalCookies = failedAttemptCounter ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
           .addUserDetails(storedUserDetails)
       )(Map.empty)
+    }
+
+    def businessIncomeSource(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/income-source", sessionData)
+    }
+
+    def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],
+                                   incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
+                                     selfEmploymentAvailable = true,
+                                     ukPropertyAvailable = true,
+                                     overseasPropertyAvailable = true
+                                   )): WSResponse = {
+      post("/income-source")(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            BusinessIncomeSourceForm.businessIncomeSourceForm(incomeSourcesStatus)
+              .fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
     }
 
     def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")

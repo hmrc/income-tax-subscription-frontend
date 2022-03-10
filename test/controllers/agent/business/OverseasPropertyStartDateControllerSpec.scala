@@ -239,11 +239,10 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
       }
 
       "save and retrieve is enabled" when {
-        //need to change to WhatIncomeSourceToSignUpController when it has been built
         "redirect to agent income source page" in new Test {
           enable(SaveAndRetrieve)
           controller.backUrl(isEditMode = false, incomeSourceUkAndOverseasProperty) mustBe
-            controllers.agent.routes.IncomeSourceController.show().url
+            controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
         }
       }
     }

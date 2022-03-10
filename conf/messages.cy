@@ -697,6 +697,15 @@ agent.income_source.foreignProperty                             = Rhoi eiddo tra
 agent.error.income_source.invalid                               = Dewiswch a yw’ch cleient yn cael incwm ohono eiddo hunangyflogedig neu eiddo’r DU
 agent.error.income_source_foreignProperty.invalid               = Dewiswch a yw’ch cleient yn cael incwm o hunangyflogaeth, eiddo yn y DU neu eiddo tramor
 
+## agent what income source to sign up page
+agent.what_income_source_to_sign_up.heading                     = Pa ffynhonnell incwm ydych chi am ei chofrestru?
+agent.what_income_source_to_sign_up.paragraph1                  = ?
+agent.what_income_source_to_sign_up.paragraph2                  = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
+agent.what_income_source_to_sign_up.selfEmployed                = Busnes unig fasnachwr
+agent.what_income_source_to_sign_up.ukProperty                  = Eiddo rhent yn y DU
+agent.what_income_source_to_sign_up.foreignProperty             = Eiddo rhent tramor
+agent.what_income_source_to_sign_up.error                       = ?
+
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?
 agent.property.income.heading                                   = Faint oedd eich incwm o eiddo y flwyddyn hon?

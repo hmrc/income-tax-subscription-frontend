@@ -130,7 +130,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document().mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectHead("a")
           businessLink.text mustBe addBusiness
-          businessLink.attr("href") mustBe controllers.agent.routes.IncomeSourceController.show().url
+          businessLink.attr("href") mustBe controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
         }
 
         "display the sign up incomplete text" in {
@@ -206,7 +206,7 @@ class AgentTaskListViewSpec extends ViewSpec {
             .selectNth("li", 5)
             .selectHead("a")
           businessLink.text mustBe addBusiness
-          businessLink.attr("href") mustBe controllers.agent.routes.IncomeSourceController.show().url
+          businessLink.attr("href") mustBe controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
         }
         "display the sign up incomplete text" in {
           val incompleteText = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectHead("span")
@@ -262,7 +262,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4).selectHead("a")
           businessLink.text mustBe addBusiness
-          businessLink.attr("href") mustBe controllers.agent.routes.IncomeSourceController.show().url
+          businessLink.attr("href") mustBe controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
         }
 
         "display the sign up button" in {

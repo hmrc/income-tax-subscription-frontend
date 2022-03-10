@@ -16,13 +16,10 @@
 
 package forms.formatters
 
-import cats.data.Validated.Valid
-import forms.individual.business.PropertyStartDateForm
 import forms.validation.utils.MappingUtil.{OTextUtil, oText}
 import models.DateModel
 import play.api.data.Forms.{mapping, of}
 import play.api.data.format.Formatter
-import play.api.data.validation.Valid
 import play.api.data.{FormError, Mapping}
 
 import java.time.LocalDate
