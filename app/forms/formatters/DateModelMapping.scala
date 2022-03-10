@@ -16,9 +16,8 @@
 
 package forms.formatters
 
-import forms.validation.utils.MappingUtil.{OTextUtil, oText}
 import models.DateModel
-import play.api.data.Forms.{mapping, of}
+import play.api.data.Forms.of
 import play.api.data.format.Formatter
 import play.api.data.{FormError, Mapping}
 
@@ -31,11 +30,6 @@ object DateModelMapping {
   val month: String = "dateMonth"
   val year: String = "dateYear"
 
-  val dateMapping: Mapping[DateModel] = mapping(
-    day -> oText.toText,
-    month -> oText.toText,
-    year -> oText.toText
-  )(DateModel.apply)(DateModel.unapply)
 
   def isDayValid(dayText: String, monthText: String, yearText: String): Either[String, Int] = {
     Try[Either[String, Int]] {

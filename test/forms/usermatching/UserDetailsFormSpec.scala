@@ -161,21 +161,21 @@ class UserDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
             val testInput = setupTestData(dob = DateModel("31", "13", "1980"))
             val errors = userDetailsForm.bind(testInput).errors
-            errors must contain(FormError(userDateOfBirth, error))
+            errors must contain(FormError(s"$userDateOfBirth-dateDay", error))
           }
           "has an invalid year" in {
             val error = s"$dateErrorContext.invalid"
 
             val testInput = setupTestData(dob = DateModel("31", "12", "invalid"))
             val errors = userDetailsForm.bind(testInput).errors
-            errors must contain(FormError(userDateOfBirth, error))
+            errors must contain(FormError(s"$userDateOfBirth-dateDay", error))
           }
           "has multiple invalid fields" in {
             val error = s"$dateErrorContext.invalid"
 
             val testInput = setupTestData(dob = DateModel("32", "13", "1980"))
             val errors = userDetailsForm.bind(testInput).errors
-            errors must contain(FormError(userDateOfBirth, error))
+            errors must contain(FormError(s"$userDateOfBirth-dateDay", error))
           }
         }
 
@@ -206,7 +206,7 @@ class UserDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
             val testInput = setupTestData(dob = DateModel("", "", "1980"))
             val errors = userDetailsForm.bind(testInput).errors
-            errors must contain(FormError(userDateOfBirth, error))
+            errors must contain(FormError(s"$userDateOfBirth-dateDay", error))
           }
         }
 

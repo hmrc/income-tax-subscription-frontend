@@ -16,10 +16,13 @@
 
 package forms.formatters
 
+import cats.data.Validated.Valid
+import forms.individual.business.PropertyStartDateForm
 import forms.validation.utils.MappingUtil.{OTextUtil, oText}
 import models.DateModel
 import play.api.data.Forms.{mapping, of}
 import play.api.data.format.Formatter
+import play.api.data.validation.Valid
 import play.api.data.{FormError, Mapping}
 
 import java.time.LocalDate
@@ -92,10 +95,10 @@ object NewDateModelMapping {
                               maybeMonth: Option[String],
                               maybeYear: Option[String]): Either[FormError, (String, String, String)] = {
       (maybeDay, maybeMonth, maybeYear) match {
-        case (None, None, None) => Left(FormError(key, errorKey("date.empty")))
-        case (Some(_), None, None) => Left(FormError(key, errorKey("month_year.empty")))
-        case (None, Some(_), None) => Left(FormError(key, errorKey("day_year.empty")))
-        case (None, None, Some(_)) => Left(FormError(key, errorKey("day_month.empty")))
+        case (None, None, None) => Left(FormError(totalDayKey(key), errorKey("date.empty")))
+        case (Some(_), None, None) => Left(FormError(totalMonthKey(key), errorKey("month_year.empty")))
+        case (None, Some(_), None) => Left(FormError(totalDayKey(key), errorKey("day_year.empty")))
+        case (None, None, Some(_)) => Left(FormError(totalDayKey(key), errorKey("day_month.empty")))
         case (Some(_), Some(_), None) => Left(FormError(totalYearKey(key), errorKey("year.empty")))
         case (None, Some(_), Some(_)) => Left(FormError(totalDayKey(key), errorKey("day.empty")))
         case (Some(_), None, Some(_)) => Left(FormError(totalMonthKey(key), errorKey("month.empty")))
@@ -117,11 +120,11 @@ object NewDateModelMapping {
             case (Right(day), Right(month), Right(year)) => Try[Either[Seq[FormError], DateModel]] {
               LocalDate.of(year, month, day)
               Right(DateModel(maybeDay.get, maybeMonth.get, maybeYear.get))
-            }.getOrElse(Left(Seq(FormError(key, errorKey("invalid")))))
+            }.getOrElse(Left(Seq(FormError(totalDayKey(key), errorKey("invalid")))))
             case (Left(_), Right(_), Right(_)) => Left(Seq(FormError(totalDayKey(key), errorKey("invalid"))))
             case (Right(_), Left(_), Right(_)) => Left(Seq(FormError(totalMonthKey(key), errorKey("invalid"))))
             case (Right(_), Right(_), Left(error)) => Left(Seq(FormError(totalYearKey(key), errorKey(error))))
-            case _ => Left(Seq(FormError(key, errorKey("invalid"))))
+            case _ => Left(Seq(FormError(totalDayKey(key), errorKey("invalid"))))
           }
       }
     }
