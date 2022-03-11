@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.individual.business
+package controllers.agent.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.taskListURI
+import helpers.agent.IntegrationTestConstants.taskListURI
 import helpers.IntegrationTestModels.testBusinesses
-import helpers.servicemocks.AuthStub
+import helpers.agent.ComponentSpecBase
+import helpers.agent.servicemocks.AuthStub
 import models.common.business.SelfEmploymentData
 import models.{No, Yes}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, SEE_OTHER}
@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.BusinessesKey
 
 class RemoveBusinessControllerISpec extends ComponentSpecBase {
-  "GET /report-quarterly/income-and-expenses/sign-up/business/remove-business" should {
+  "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-business" should {
     "return OK" when {
       "save and retrieve is enabled" in {
         Given("I setup the Wiremock stubs")
@@ -45,7 +45,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         res should have (
           httpStatus(OK),
           pageTitle(
-            s"Are you sure you want to delete test business - test trade? - Use software to send Income Tax updates - GOV.UK"
+            "Are you sure you want to delete test business - test trade? - Use software to report your client’s Income Tax - GOV.UK"
           )
         )
       }
@@ -88,7 +88,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/business/remove-business" should {
+  "POST /report-quarterly/income-and-expenses/sign-up/client/business/remove-business" should {
     "redirect to the task list page" when {
       "save and retrieve is enabled" when {
         "the user submits the 'yes' answer" in {

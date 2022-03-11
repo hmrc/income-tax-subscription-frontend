@@ -126,3 +126,7 @@ GET         /business/progress-saved                            controllers.agen
 GET         /business/task-list                                  controllers.agent.TaskListController.show()
 POST        /business/task-list                                  controllers.agent.TaskListController.submit()
 
+#Remove sole trader business routes
+GET         /business/remove-sole-trader-business                controllers.agent.business.RemoveBusinessController.show(id: String)
+POST        /business/remove-sole-trader-business                controllers.agent.business.RemoveBusinessController.submit(id: String)
+

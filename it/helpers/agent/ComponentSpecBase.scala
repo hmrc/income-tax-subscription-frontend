@@ -10,7 +10,8 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.agent.ITSASessionKeys
 import forms.agent._
-import helpers.IntegrationTestConstants.{testFirstName, testLastName}
+import forms.individual.business.RemoveBusinessForm
+import helpers.IntegrationTestConstants.{testFirstName, testId, testLastName}
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
@@ -369,6 +370,16 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
     def submitOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
       post("/business/overseas-property-check-your-answers", sessionData)(Map.empty)
     }
+
+    def getRemoveBusiness(sessionData: Map[String, String] = Map.empty, id: String = testId): WSResponse = {
+      get(s"/business/remove-sole-trader-business?id=$id", sessionData)
+    }
+
+    def submitRemoveBusiness(request: Option[YesNo]): WSResponse = post(s"/business/remove-sole-trader-business?id=$testId")(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => RemoveBusinessForm.removeBusinessForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
 
     def getTaskList(sessionData: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,

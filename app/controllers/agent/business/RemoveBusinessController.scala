@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package controllers.individual.business
+package controllers.agent.business
 
-import auth.individual.SignUpController
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import controllers.utils.ReferenceRetrieval
-import forms.individual.business.RemoveBusinessForm
-import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
+import forms.agent.RemoveBusinessForm
 import models.{No, Yes, YesNo}
+import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import play.api.data.Form
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
 import utilities.SubscriptionDataKeys.BusinessesKey
-import views.html.individual.incometax.business.RemoveBusiness
+import views.html.agent.business.RemoveBusiness
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,10 +44,10 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
                                         )(implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
                                           mcc: MessagesControllerComponents
-                                        ) extends SignUpController  with ReferenceRetrieval {
+                                        ) extends AuthenticatedController with ReferenceRetrieval {
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withReference { reference =>
+      withAgentReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
           withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
             Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
@@ -61,7 +61,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
 
   def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withReference { reference =>
+      withAgentReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
           form.bindFromRequest.fold(
             formWithErrors => {
@@ -73,8 +73,8 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
               case Yes => for {
                 businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
                 _ = deleteBusiness(reference, businessId, businesses)
-              } yield Redirect(controllers.individual.business.routes.TaskListController.show())
-              case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
+              } yield Redirect(controllers.agent.routes.TaskListController.show())
+              case No => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
             }
           )
         } else {
@@ -97,13 +97,13 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
                                 reference: String,
                                 businessId: String
                               )(f: (Option[BusinessNameModel], Option[BusinessTradeNameModel]) => Future[Result])(
-    implicit hc: HeaderCarrier
-  ): Future[Result] = {
+                                implicit hc: HeaderCarrier
+                              ): Future[Result] = {
     fetchBusinessData(reference, businessId).flatMap {
-        case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
-          f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
-        case _ => Future.failed(new InternalServerException("[RemoveBusinessController] - Could not retrieve business details"))
-      }
+      case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
+        f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
+      case _ => Future.failed(new InternalServerException("[RemoveBusinessController] - Could not retrieve business details"))
+    }
   }
 
   private def fetchBusinessData(reference: String, id: String)(implicit hc: HeaderCarrier): Future[Option[SelfEmploymentData]] = {
@@ -124,8 +124,8 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
       removeBusinessForm = removeBusinessForm,
       businessName = maybeBusinessNameModel.map(_.businessName),
       businessTradeName = maybeBusinessTradeNameModel.map(_.businessTradeName),
-      postAction = controllers.individual.business.routes.RemoveBusinessController.submit(businessId),
-      backUrl = controllers.individual.business.routes.TaskListController.show().url
+      postAction = controllers.agent.business.routes.RemoveBusinessController.submit(businessId),
+      backUrl = controllers.agent.routes.TaskListController.show().url
     )
 
   private def form: Form[YesNo] = RemoveBusinessForm.removeBusinessForm()
