@@ -20,7 +20,7 @@ import forms.formatters.NewDateModelMapping.dateModelMapping
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import play.api.data.Form
-import play.api.data.Forms.{mapping, single}
+import play.api.data.Forms.single
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate

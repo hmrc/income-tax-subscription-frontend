@@ -661,6 +661,15 @@ agent.income_source.foreignProperty                             = Rent out overs
 agent.error.income_source.invalid                               = Select if your client receives income from self employment or UK property
 agent.error.income_source_foreignProperty.invalid               = Select if your client receives income from self employment, UK property or overseas property
 
+## agent what income source to sign up page
+agent.what_income_source_to_sign_up.heading                     = What source of income do you want to sign up?
+agent.what_income_source_to_sign_up.paragraph1                  = Your client can have up to {0} sole trader businesses. However, they can have only one UK property business and one overseas property.
+agent.what_income_source_to_sign_up.paragraph2                  = Renting out a property includes using a letting agency.
+agent.what_income_source_to_sign_up.selfEmployed                = Sole trader business
+agent.what_income_source_to_sign_up.ukProperty                  = UK property rental
+agent.what_income_source_to_sign_up.foreignProperty             = Overseas property rental
+agent.what_income_source_to_sign_up.error                       = Select your client’s source of income
+
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?
 agent.property.income.heading                                   = How much was your income from property this year?

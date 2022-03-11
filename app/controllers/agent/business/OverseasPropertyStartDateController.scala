@@ -63,12 +63,17 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
     implicit user =>
       withAgentReference { reference =>
         subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) flatMap { overseasPropertyStartDate =>
-          val incomeSourceModelMaybe = if (isSaveAndRetrieve) Future.successful(None) else subscriptionDetailsService.fetchIncomeSource(reference)
-          incomeSourceModelMaybe map {
-            case None if !isSaveAndRetrieve => Redirect(controllers.agent.routes.IncomeSourceController.show())
-            case incomeSourceModel => Ok(view(
-              overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate), isEditMode, incomeSourceModel
-            ))
+          if (isSaveAndRetrieve) {
+            Future.successful(Ok(view(
+              overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate), isEditMode, None
+            )))
+          } else {
+            subscriptionDetailsService.fetchIncomeSource(reference) map {
+              case Some(incomeSource) => Ok(view(
+                overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate), isEditMode, Some(incomeSource)
+              ))
+              case None => Redirect(controllers.agent.routes.IncomeSourceController.show())
+            }
           }
         }
       }
@@ -101,11 +106,9 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   }
 
   def backUrl(isEditMode: Boolean, maybeIncomeSourceModel: Option[IncomeSourceModel]): String = {
-
     (isEditMode, isSaveAndRetrieve, maybeIncomeSourceModel) match {
       case (true, true, _) => controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
-      //need to change to WhatIncomeSourceToSignUpController when it has been built
-      case (false, true, _) => controllers.agent.routes.IncomeSourceController.show().url
+      case (false, true, _) => controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
       case (true, false, _) => controllers.agent.routes.CheckYourAnswersController.show.url
       case (false, false, Some(incomeSourceModel)) if incomeSourceModel.ukProperty =>
         controllers.agent.business.routes.PropertyAccountingMethodController.show().url
@@ -118,5 +121,4 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   def form(implicit request: Request[_]): Form[DateModel] = {
     overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate.toLongDate, OverseasPropertyStartDateForm.maxStartDate.toLongDate)
   }
-
 }

@@ -99,7 +99,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     }
 
     "there is noo income source details" should {
-      "redirect to income source pagee" in withController { controller =>
+      "redirect to income source page" in withController { controller =>
         lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
         mockFetchAllFromSubscriptionDetails(testCacheMap(
@@ -233,11 +233,10 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "The back url is not in edit mode" when {
       "save and retrieve is enabled" should {
-        //need to change to What Income Source To Sign Up page when it has been built
         "redirect back to agent what income source page" in withController { controller =>
           enable(SaveAndRetrieve)
           controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
-            controllers.agent.routes.IncomeSourceController.show().url
+            controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
         }
       }
 

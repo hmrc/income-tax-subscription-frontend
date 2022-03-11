@@ -25,6 +25,9 @@ POST        /eligibility/sole-trader-start-date     controllers.agent.eligibilit
 GET         /income                                 controllers.agent.IncomeSourceController.show(editMode: Boolean ?= false)
 POST        /income                                 controllers.agent.IncomeSourceController.submit(editMode: Boolean ?= false)
 
+GET         /income-source                          controllers.agent.WhatIncomeSourceToSignUpController.show()
+POST        /income-source                          controllers.agent.WhatIncomeSourceToSignUpController.submit()
+
 # Summary Routes
 GET         /check-your-answers                     controllers.agent.CheckYourAnswersController.show
 POST        /check-your-answers                     controllers.agent.CheckYourAnswersController.submit

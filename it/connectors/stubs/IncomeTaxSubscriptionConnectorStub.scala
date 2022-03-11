@@ -3,7 +3,6 @@ package connectors.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
-import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
 import helpers.IntegrationTestConstants.testMtdId
 import helpers.IntegrationTestModels._
 import helpers.agent.IntegrationTestConstants.SessionId
