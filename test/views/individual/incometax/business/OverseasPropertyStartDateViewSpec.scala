@@ -25,6 +25,8 @@ import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.individual.incometax.business.OverseasPropertyStartDate
 
+import java.time.LocalDate
+
 class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
   object OverseasPropertyStartDateMessages {
@@ -43,7 +45,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
 
   class Setup(isEditMode: Boolean = false,
-              form: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("testMessage", "testMessage"),
+              form: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
               isSaveAndRetrieveEnabled: Boolean = false) {
 
     val page: Html = overseasPropertyStartDate(
@@ -62,7 +64,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     "have the correct template" when {
       "there is no error" in new TemplateViewTest(
         view = overseasPropertyStartDate(
-          overseasPropertyStartDateForm = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("testMinMessage", "testMaxMessage"),
+          overseasPropertyStartDateForm = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
           postAction = testCall,
           isEditMode = false,
           backUrl = testBackUrl
@@ -73,7 +75,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
       )
       "there is an error" in new TemplateViewTest(
         view = overseasPropertyStartDate(
-          overseasPropertyStartDateForm = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("testMinMessage", "testMaxMessage").withError(testError),
+          overseasPropertyStartDateForm = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError),
           postAction = testCall,
           isEditMode = false,
           backUrl = testBackUrl
@@ -103,7 +105,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         )
       }
       "there is an error" in new Setup(
-        form = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("testMinMessage", "testMaxMessage").withError(testError)
+        form = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError)
       ) {
         document.mustHaveDateInput(
           name = "startDate",

@@ -17,7 +17,7 @@
 package forms.agent
 
 import forms.formatters.NewDateModelMapping.dateModelMapping
-import forms.validation.utils.ConstraintUtil.{ConstraintUtil, constraint}
+import forms.validation.utils.ConstraintUtil.constraint
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.single
@@ -52,11 +52,9 @@ object OverseasPropertyStartDateForm {
     }
   }
 
-  def overseasPropertyStartDateForm(minStartDate: String, maxStartDate: String): Form[DateModel] = Form(
+  def overseasPropertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
     single(
-      startDate -> dateModelMapping(isAgent = true, errorContext = errorContext).verifying(
-        startBeforeOneYear(maxStartDate) andThen earliestTaxYear(minStartDate)
-      )
+      startDate -> dateModelMapping(isAgent = true, errorContext = errorContext, Some(minStartDate), Some(maxStartDate), Some(f))
     )
   )
 

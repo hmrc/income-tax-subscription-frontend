@@ -84,7 +84,7 @@ object UserToStubForm {
       userLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       userNino -> oText.toText.verifying(emptyNino andThen validateNino),
       userSautr -> oText.verifying(validateUtr),
-      userDateOfBirth -> NewDateModelMapping.dateModelMapping(errorContext = "user_details.date_of_birth").verifying(dobEmpty andThen dobValidation)
+      userDateOfBirth -> NewDateModelMapping.dateModelMapping(isAgent = false, "user_details.date_of_birth", None, None, None).verifying(dobEmpty andThen dobValidation)
     )(UserToStubModel.apply)(UserToStubModel.unapply)
   )
 

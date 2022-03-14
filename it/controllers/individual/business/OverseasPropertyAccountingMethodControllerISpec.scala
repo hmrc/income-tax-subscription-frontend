@@ -30,7 +30,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
         When("GET /business/overseas-property-accounting-method is called")
-        val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
+        val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod
 
         val expectedText = removeHtmlMarkup(messages("summary.income_type.cash"))
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
@@ -50,7 +50,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
         When("GET /business/overseas-property-accounting-method is called")
-        val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
+        val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the foreign property accounting method page")
         res should have(

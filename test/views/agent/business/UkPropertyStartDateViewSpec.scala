@@ -27,6 +27,8 @@ import play.api.test.FakeRequest
 import utilities.ViewSpec
 import views.html.agent.business.PropertyStartDate
 
+import java.time.LocalDate
+
 
 class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
 
@@ -38,7 +40,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
 
   private def document(
                         isEditMode: Boolean = false,
-                        propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")
+                        propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
                       ) = Jsoup.parse(page(isEditMode, propertyStartDateForm).body)
 
   private def page(isEditMode: Boolean, propertyStartDateForm: Form[DateModel]) =
@@ -99,7 +101,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
     }
 
     "must display form error on page" in {
-      val formWithError = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage").withError(testError)
+      val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError)
       val doc = document(propertyStartDateForm = formWithError)
       doc.mustHaveGovukErrorSummary(testError.message)
       doc.mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.exampleStartDate, Some(testError.message))

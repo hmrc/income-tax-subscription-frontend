@@ -132,11 +132,13 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   "submit" should {
 
-    val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-    val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
+    val maxStartDate = LocalDate.now.minusYears(1)
+    val testValidMaxStartDate: DateModel = DateModel.dateConvert(maxStartDate)
+    val minStartDate = LocalDate.of(1900, 1, 1)
+    val testValidMinStartDate: DateModel = DateModel.dateConvert(minStartDate)
 
     def callSubmit(isEditMode: Boolean): Future[Result] = TestOverseasPropertyStartDateController$.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate.toString, testValidMaxStartDate.toString),
+      subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(minStartDate, maxStartDate, d => d.toString),
         testValidMaxStartDate)
     )
 

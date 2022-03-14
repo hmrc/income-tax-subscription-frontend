@@ -113,13 +113,15 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
   "submit" should {
 
-    val testValidMaxDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-    val testValidMinDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
+    val maxDate = LocalDate.now.minusYears(1)
+    val testValidMaxDate: DateModel = DateModel.dateConvert(maxDate)
+    val minDate = LocalDate.of(1900, 1, 1)
+    val testValidMinDate: DateModel = DateModel.dateConvert(minDate)
 
     val testPropertyStartDateModel: DateModel = testValidMaxDate
 
     def callShow(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(testValidMinDate.toString, testValidMaxDate.toString), testPropertyStartDateModel)
+      subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(minDate, maxDate, d => d.toString), testPropertyStartDateModel)
     )
 
     def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(

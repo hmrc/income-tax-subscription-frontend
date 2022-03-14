@@ -119,6 +119,6 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   }
 
   def form(implicit request: Request[_]): Form[DateModel] = {
-    overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate.toLongDate, OverseasPropertyStartDateForm.maxStartDate.toLongDate)
+    overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate, OverseasPropertyStartDateForm.maxStartDate, d => d.toLongDate)
   }
 }

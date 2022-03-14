@@ -67,7 +67,7 @@ object ClientDetailsForm {
       clientFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       clientNino -> default(text, "").verifying(emptyClientNino andThen validateClientNino),
-      clientDateOfBirth -> NewDateModelMapping.dateModelMapping(isAgent = true, errorContext = errorContext).verifying(dateInPast)
+      clientDateOfBirth -> NewDateModelMapping.dateModelMapping(isAgent = true, errorContext, None, None, None).verifying(dateInPast)
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 
