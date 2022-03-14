@@ -50,7 +50,7 @@ trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with 
                          title: String,
                          isAgent: Boolean = false,
                          backLink: Option[String] = None,
-                         hasSignOutLink: Boolean = false,
+                         hasSignOutLink: Boolean = true,
                          error: Option[FormError] = None) {
 
     val document: Document = Jsoup.parse(view.body)

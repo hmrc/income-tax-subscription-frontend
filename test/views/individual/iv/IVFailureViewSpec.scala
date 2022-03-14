@@ -41,7 +41,6 @@ class IVFailureViewSpec extends ViewSpec {
     "display the template correctly" in new TemplateViewTest(
       view = ivFailure(),
       title = IVFailureMessages.heading,
-      hasSignOutLink = true
     )
     "have a heading" in {
       document.mainContent.getH1Element.text mustBe IVFailureMessages.heading

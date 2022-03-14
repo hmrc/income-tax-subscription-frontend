@@ -61,13 +61,11 @@ class UserDetailsViewSpec extends ViewSpec {
         view = page(),
         title = messages.heading,
         isAgent = false,
-        hasSignOutLink = true
       )
       "the page has errors" in new TemplateViewTest(
         view = page(form = userDetailsForm.withError(userDetailsFormError)),
         title = messages.heading,
         isAgent = false,
-        hasSignOutLink = true,
         error = Some(userDetailsFormError)
       )
     }

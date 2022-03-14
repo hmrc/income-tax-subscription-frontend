@@ -70,7 +70,6 @@ class IncomeSourceViewSpec extends ViewSpec {
         title = messages.title,
         isAgent = true,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testFormError)
       )
       "there is no error" in new TemplateViewTest(
@@ -78,7 +77,6 @@ class IncomeSourceViewSpec extends ViewSpec {
         title = messages.title,
         isAgent = true,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testFormError)
       )
     }

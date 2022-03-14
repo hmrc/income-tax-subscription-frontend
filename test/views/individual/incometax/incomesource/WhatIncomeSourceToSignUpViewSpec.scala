@@ -92,7 +92,6 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testFormError)
       )
       "there is no error" in new TemplateViewTest(
@@ -102,7 +101,6 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true
       )
     }
 

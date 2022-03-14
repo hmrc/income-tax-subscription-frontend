@@ -67,7 +67,6 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
         title = RemoveOverseasPropertyMessages.heading,
         isAgent = false,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testFormError)
       )
       "there is no error" in new TemplateViewTest(
@@ -75,7 +74,6 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
         title = RemoveOverseasPropertyMessages.heading,
         isAgent = false,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true
       )
     }
 

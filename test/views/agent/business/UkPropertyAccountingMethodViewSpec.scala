@@ -70,8 +70,7 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec with FeatureSwitching 
         ),
         title = messages.title,
         isAgent = true,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true
+        backLink = Some(testBackUrl)
       )
       "there is an error" in new TemplateViewTest(
         view = propertyAccountingMethod(
@@ -83,7 +82,6 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec with FeatureSwitching 
         title = messages.title,
         isAgent = true,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testError)
       )
     }

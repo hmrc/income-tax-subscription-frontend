@@ -58,7 +58,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
         title = PropertyStartDateMessages.heading,
         isAgent = false,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true
       )
 
       "there is an error" in new TemplateViewTest(
@@ -71,7 +70,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
         title = PropertyStartDateMessages.heading,
         isAgent = false,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testError)
       )
     }

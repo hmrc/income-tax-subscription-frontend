@@ -52,7 +52,6 @@ class Covid19ClaimCheckViewSpec extends ViewSpec {
         title = Covid19ClaimCheck.title,
         isAgent = true,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
         error = Some(testFormError)
       )
 
@@ -60,8 +59,7 @@ class Covid19ClaimCheckViewSpec extends ViewSpec {
         view = page(),
         title = Covid19ClaimCheck.title,
         isAgent = true,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true
+        backLink = Some(testBackUrl)
       )
     }
 

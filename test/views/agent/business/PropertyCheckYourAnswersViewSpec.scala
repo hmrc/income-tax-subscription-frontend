@@ -71,8 +71,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       ),
       title = PropertyCheckYourAnswers.title,
       isAgent = true,
-      backLink = Some(testBackUrl),
-      hasSignOutLink = true
+      backLink = Some(testBackUrl)
     )
 
     "have a heading" in {
