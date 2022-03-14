@@ -1118,3 +1118,8 @@ business.progress-saved.content.sign-in-link                    = Government Gat
 remove-uk-property-business.heading                            = Are you sure you want to delete your UK property business?
 remove-uk-property-business.hint                               = All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake.
 error.remove-uk-property-business.invalid                      = Select yes if you want to remove business
+
+## Agent Remove UK property business
+agent.remove-uk-property-business.heading                      = Are you sure you want to delete your client’s UK property business?
+agent.remove-uk-property-business.hint                         = All your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake.
+agent.error.remove-uk-property-business.invalid                = Select yes if you want to remove business
