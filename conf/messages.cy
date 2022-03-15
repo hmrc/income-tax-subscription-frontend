@@ -280,6 +280,12 @@ agent.business.check-your-answers.content.overseas-property-accounting-method.qu
 agent.business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
 agent.business.check-your-answers.content.overseas-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo tramor
 
+## Agent remove business
+agent.business.remove-sole-trader-business.heading                  = A ydych yn siŵr eich bod am ddileu {0}{1}?
+agent.business.remove-sole-trader-business.unnamed                  = A ydych yn siŵr eich bod am ddileu’r busnes hwn{0}?
+agent.business.remove-sole-trader-business.paragraph                = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
+agent.error.remove-sole-trader-business.invalid                     = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
+
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi ei gadw
 agent.business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
