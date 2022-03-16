@@ -17,7 +17,7 @@
 package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsResponse, PostSubscriptionDetailsSuccessResponse}
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
@@ -51,14 +51,60 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     testData = CacheMap("", Map.empty)
   }
 
+  def mockFetchPrePopFlag(reference: String, result:Option[Boolean]) =
+    when(mockSubscriptionDetailsService.fetchPrePopFlag(ArgumentMatchers.eq(reference))(ArgumentMatchers.any())).thenReturn(Future.successful(result))
+
+  def mockSaveOverseasProperty(reference: String) =
+    when(mockSubscriptionDetailsService.saveOverseasProperty(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(mock[PostSubscriptionDetailsResponse]))
+
+  def mockSaveUkProperty(reference: String) =
+    when(mockSubscriptionDetailsService.saveProperty(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(mock[PostSubscriptionDetailsResponse]))
+
+  def mockSaveBusinesses(reference: String) =
+    when(mockSubscriptionDetailsService.saveBusinesses(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(mock[PostSubscriptionDetailsResponse]))
+
+  def mockSaveSelfEmploymentsAccountingMethod(reference: String) =
+    when(mockSubscriptionDetailsService.saveSelfEmploymentsAccountingMethod(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(mock[PostSubscriptionDetailsResponse]))
+
+  def mockSavePrePopFlag(reference: String) =
+    when(mockSubscriptionDetailsService.savePrePopFlag(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(mock[CacheMap]))
+
+  def verifySaveOverseasProperty(count: Int, reference: String, overseasPropertyModel: OverseasPropertyModel) =
+    verify(mockSubscriptionDetailsService, times(count))
+      .saveOverseasProperty(ArgumentMatchers.eq(reference), ArgumentMatchers.eq(overseasPropertyModel))(ArgumentMatchers.any())
+
+  def verifySaveUkProperty(count: Int, reference: String, propertyModel: PropertyModel) = {
+    verify(mockSubscriptionDetailsService, times(count))
+      .saveProperty(ArgumentMatchers.eq(reference), ArgumentMatchers.eq(propertyModel))(ArgumentMatchers.any())
+  }
+
+  // businesses get a uuid added - need to create a bespoke matcher
+  def verifySaveBusinesses(count: Int, reference: String, businesses: Seq[SelfEmploymentData]) =
+    verify(mockSubscriptionDetailsService, times(count))
+      .saveBusinesses(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any())
+
+  def verifySaveSelfEmploymentsAccountingMethod(count: Int, reference: String, accountingMethodModel: AccountingMethodModel) =
+    verify(mockSubscriptionDetailsService, times(count))
+      .saveSelfEmploymentsAccountingMethod(ArgumentMatchers.eq(reference), ArgumentMatchers.eq(accountingMethodModel))(ArgumentMatchers.any())
+
+  def verifySavePrePopFlag(count: Int, reference: String) =
+    verify(mockSubscriptionDetailsService, times(count))
+      .savePrePopFlag(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any())
+
+  def verifyFetchPrePopFlag(count: Int, reference: String) =
+    verify(mockSubscriptionDetailsService, times(count))
+      .fetchPrePopFlag(ArgumentMatchers.eq(reference))(ArgumentMatchers.any())
+
   def mockRetrieveReferenceSuccess(utr: String)(reference: String): Unit = {
     when(mockConnector.retrieveReference(
       ArgumentMatchers.eq(utr)
     )(ArgumentMatchers.any())) thenReturn Future.successful(Right(reference))
   }
-
-  def mockRetrievePrePopFlag(result: Option[Boolean]): Unit =
-    mockFetchFromSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, result)
 
   def mockRetrieveReference(utr: String)(response: RetrieveReferenceResponse): Unit = {
     when(mockConnector.retrieveReference(ArgumentMatchers.eq(utr))(ArgumentMatchers.any())) thenReturn Future.successful(response)
