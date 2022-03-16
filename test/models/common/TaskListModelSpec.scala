@@ -235,7 +235,7 @@ class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
-        summary.canAddMoreBusinesses shouldBe true
+        summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
       }
     }
 
@@ -257,7 +257,7 @@ class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
-      summary.canAddMoreBusinesses shouldBe true
+      summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
 
     }
 
@@ -280,7 +280,7 @@ class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
         overseasProperty = None
       )
 
-      summary.canAddMoreBusinesses shouldBe true
+      summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
 
     }
 
@@ -302,7 +302,7 @@ class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
-      summary.canAddMoreBusinesses shouldBe false
+      summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe false
 
     }
 
@@ -322,7 +322,7 @@ class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
 
         summary.sectionsTotal shouldBe 4
         summary.sectionsComplete shouldBe 4
-        summary.canAddMoreBusinesses shouldBe true
+        summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
         summary.taskListComplete shouldBe true
         summary.taxYearSelectedAndConfirmed shouldBe true
 
@@ -345,7 +345,7 @@ class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
 
         summary.sectionsTotal shouldBe 4
         summary.sectionsComplete shouldBe 3
-        summary.canAddMoreBusinesses shouldBe true
+        summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
         summary.taskListComplete shouldBe false
         summary.taxYearSelectedNotConfirmed shouldBe true
 
@@ -369,7 +369,7 @@ class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
 
         summary.sectionsTotal shouldBe 4
         summary.sectionsComplete shouldBe 3
-        summary.canAddMoreBusinesses shouldBe true
+        summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
         summary.taskListComplete shouldBe false
         summary.taxYearSelectedNotConfirmed shouldBe false
         summary.taxYearSelectedAndConfirmed shouldBe false
