@@ -32,7 +32,7 @@ case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
 
   val ukPropertyComplete: Boolean =  ukProperty.exists(_.confirmed)
 
-  var selfEmploymentsComplete: Boolean = selfEmployments.forall(_.confirmed) && selfEmploymentAccountingMethod.isDefined
+  val selfEmploymentsComplete: Boolean = selfEmployments.forall(_.confirmed) && selfEmploymentAccountingMethod.isDefined
 
   val overseasPropertyComplete: Boolean = overseasProperty.exists(_.confirmed)
 
@@ -43,7 +43,10 @@ case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
     (if(ukPropertyComplete) 1 else 0) +
     (if(overseasPropertyComplete)1 else 0)
 
-  var canAddMoreBusinesses: Boolean = selfEmployments.size < 50  || ukProperty.isEmpty || overseasProperty.isEmpty
+  def canAddMoreBusinesses(maxSelfEmployments: Int): Boolean =
+    selfEmployments.size < maxSelfEmployments||
+      ukProperty.isEmpty ||
+      overseasProperty.isEmpty
 
   def taskListComplete: Boolean = sectionsComplete == sectionsTotal
 
