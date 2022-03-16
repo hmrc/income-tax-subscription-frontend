@@ -130,3 +130,7 @@ POST        /business/task-list                                  controllers.age
 GET         /business/remove-sole-trader-business                controllers.agent.business.RemoveBusinessController.show(id: String)
 POST        /business/remove-sole-trader-business                controllers.agent.business.RemoveBusinessController.submit(id: String)
 
+# remove UK property buisness confirmation page
+GET         /business/remove-uk-property-business                controllers.agent.business.ClientRemoveUkPropertyController.show
+POST        /business/remove-uk-property-business                controllers.agent.business.ClientRemoveUkPropertyController.submit
+
