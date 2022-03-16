@@ -134,3 +134,7 @@ POST        /business/remove-sole-trader-business                controllers.age
 GET         /business/remove-uk-property-business                controllers.agent.business.ClientRemoveUkPropertyController.show
 POST        /business/remove-uk-property-business                controllers.agent.business.ClientRemoveUkPropertyController.submit
 
+# Remove overseas property buisness confirmation page
+GET         /business/remove-overseas-property-business          controllers.agent.business.RemoveClientOverseasPropertyController.show
+POST        /business/remove-overseas-property-business          controllers.agent.business.RemoveClientOverseasPropertyController.submit
+
