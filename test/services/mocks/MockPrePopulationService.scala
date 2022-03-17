@@ -53,6 +53,6 @@ trait MockPrePopulationService extends UnitTestTrait with MockitoSugar with Befo
 
 trait TestPrePopulationService extends MockSubscriptionDetailsService {
 
-  object TestPrePopulationService extends PrePopulationService(mockSubscriptionDetailsService)
+  object TestPrePopulationService extends PrePopulationService(MockSubscriptionDetailsService)
 
 }

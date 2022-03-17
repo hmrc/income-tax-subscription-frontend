@@ -56,7 +56,7 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockSubscriptionDetailsService)
+    reset(mockConnector)
   }
 
   "PrePopulationService" when {
@@ -72,10 +72,10 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
 
         await(TestPrePopulationService.prePopulate(testReference, data))
 
-        verifyFetchPrePopFlag(1, testReference)
+        verifyFetchPrePopFlag(testReference)
         verifySaveBusinesses(1, testReference, testSelfEmployments)
         verifySaveUkProperty(1, testReference, testUkProperty)
-        verifySaveOverseasProperty(1, testReference, testOverseasProperty)
+        verifyOverseasPropertySave(Some(testOverseasProperty), Some(testReference))
         verifySaveSelfEmploymentsAccountingMethod(1, testReference, testBusinessAccountingMethod)
         verifySavePrePopFlag(1, testReference)
       }
@@ -87,10 +87,10 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
 
         await(TestPrePopulationService.prePopulate(testReference, data))
 
-        verifyFetchPrePopFlag(1, testReference)
+        verifyFetchPrePopFlag(testReference)
         verifySaveBusinesses(0, testReference, testSelfEmployments)
         verifySaveUkProperty(0, testReference, testUkProperty)
-        verifySaveOverseasProperty(0, testReference, testOverseasProperty)
+        verifyOverseasPropertySave(None)
         verifySaveSelfEmploymentsAccountingMethod(0, testReference, testBusinessAccountingMethod)
         verifySavePrePopFlag(0, testReference)
       }
