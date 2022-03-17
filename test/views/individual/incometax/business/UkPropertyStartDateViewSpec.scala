@@ -28,6 +28,8 @@ import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.individual.incometax.business.PropertyStartDate
 
+import java.time.LocalDate
+
 
 class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
 
@@ -50,7 +52,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
     "have the correct page template" when {
       "there is no error" in new TemplateViewTest(
         view = propertyStartDate(
-          PropertyStartDateForm.propertyStartDateForm("testMinMessage", "testMaxMessage"),
+          PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
           testCall,
           isEditMode = false,
           testBackUrl
@@ -62,7 +64,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
 
       "there is an error" in new TemplateViewTest(
         view = propertyStartDate(
-          PropertyStartDateForm.propertyStartDateForm("testMinMessage", "testMaxMessage").withError(testError),
+          PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError),
           testCall,
           isEditMode = false,
           testBackUrl
@@ -107,7 +109,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
     }
 
     "must display form error on page" in {
-      val formWithError = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage").withError(testError)
+      val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError)
       document(propertyStartDateForm = formWithError).mustHaveDateInput(
         name = PropertyStartDateForm.startDate,
         label = PropertyStartDateMessages.heading,
@@ -129,7 +131,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
 
   private def document(
                         isEditMode: Boolean = false,
-                        propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm("testMessage", "testMessage")
+                        propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
                       ): Document = {
     Jsoup.parse(page(isEditMode, propertyStartDateForm).body)
   }

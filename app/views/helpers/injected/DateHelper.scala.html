@@ -31,7 +31,11 @@
 )(implicit messages: Messages)
 
 @errorMessage = @{
-    (parentForm.error(field.name) orElse parentForm.error(s"${field.name}-dateDay") orElse parentForm.error(s"${field.name}-dateMonth") orElse parentForm.error(s"${field.name}-dateYear")) map { error =>
+    (parentForm.error(field.name)
+        orElse parentForm.error(s"${field.name}-dateDay")
+        orElse parentForm.error(s"${field.name}-dateMonth")
+        orElse parentForm.error(s"${field.name}-dateYear")
+    ) map { error =>
         ErrorMessage(content = Text(messages(error.message, error.args: _*)))
     }
 }

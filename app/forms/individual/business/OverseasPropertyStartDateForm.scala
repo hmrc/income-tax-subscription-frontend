@@ -52,11 +52,9 @@ object OverseasPropertyStartDateForm {
     }
   }
 
-  def overseasPropertyStartDateForm(minStartDate: String, maxStartDate: String): Form[DateModel] = Form(
+  def overseasPropertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
     single(
-      startDate -> dateModelMapping(errorContext = errorContext).verifying(
-        startBeforeOneYear(maxStartDate) andThen earliestTaxYear(minStartDate)
-      )
+      startDate -> dateModelMapping(isAgent = false, errorContext, Some(minStartDate), Some(maxStartDate), Some(f))
     )
   )
 

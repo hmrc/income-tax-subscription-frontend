@@ -16,8 +16,8 @@
 
 package views.agent.business
 
-import config.featureswitch.{FeatureSwitching, FeatureSwitchingUtil}
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.{FeatureSwitching, FeatureSwitchingUtil}
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
@@ -28,6 +28,8 @@ import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.html.agent.business.OverseasPropertyStartDate
+
+import java.time.LocalDate
 
 class OverseasPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching with FeatureSwitchingUtil {
 
@@ -50,10 +52,10 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching w
   val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
-  val testError: FormError = FormError("startDate", "testError")
+  val testError: FormError = FormError("startDate-dateDay", "testError")
   val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  private val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm("minStartDateError", "maxStartDateError")
+  private val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
 
   private def document(
                isEditMode: Boolean = false,

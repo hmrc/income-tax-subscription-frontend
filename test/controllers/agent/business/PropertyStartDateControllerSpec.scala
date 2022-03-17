@@ -123,7 +123,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     def callSubmit(controller: PropertyStartDateController, isEditMode: Boolean): Future[Result] =
       controller.submit(isEditMode = isEditMode)(
         subscriptionRequest.post(
-          PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate.toString, testValidMaxStartDate.toString),
+          PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
           testPropertyStartDateModel
         )
       )

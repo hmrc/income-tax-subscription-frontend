@@ -306,7 +306,7 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues wit
 
     def submitRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business")(body)
 
-    def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
+    def overseasPropertyAccountingMethod: WSResponse = get("/business/overseas-property-accounting-method")
 
     def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(JourneyStateKey -> state.name))
 
@@ -417,28 +417,30 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues wit
 
     def propertyStartDate(): WSResponse = get("/business/property-commencement-date")
 
-    def getOverseasPropertyStartDate(): WSResponse = get("/business/overseas-property-start-date")
+    def getOverseasPropertyStartDate: WSResponse = get("/business/overseas-property-start-date")
 
     def submitpropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
-      val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
-      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
+      val testValidMaxStartDate = LocalDate.now.minusYears(1)
+      val testValidMinStartDate = LocalDate.of(1900, 1, 1)
       val uri = s"/business/property-commencement-date?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate, testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate, testValidMaxStartDate, d => d.toString)
+              .fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
 
     def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
-      val testValidMaxStartDate: String = DateModel.dateConvert(LocalDate.now.minusYears(1)).toString
-      val testValidMinStartDate: String = DateModel.dateConvert(LocalDate.of(1900, 1, 1)).toString
+      val testValidMaxStartDate = LocalDate.now.minusYears(1)
+      val testValidMinStartDate = LocalDate.of(1900, 1, 1)
       val uri = s"/business/overseas-property-start-date?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate, testValidMaxStartDate).fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate, testValidMaxStartDate, d => d.toString)
+              .fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

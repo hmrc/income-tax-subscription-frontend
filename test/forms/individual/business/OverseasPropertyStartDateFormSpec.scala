@@ -31,7 +31,7 @@ import java.time.LocalDate
 class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   def form: Form[DateModel] = {
-    overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate.toString, OverseasPropertyStartDateForm.maxStartDate.toString)
+    overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate, OverseasPropertyStartDateForm.maxStartDate, d => d.toString)
   }
 
   "The OverseasPropertyStartDateForm" should {
@@ -63,7 +63,7 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
           form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, empty))
         }
         "the date supplied to the map is invalid" in {
-          form.bind(DataMap.govukDate(startDate)("31", "13", "1899")).errors must contain(FormError(dayKeyError, invalid))
+          form.bind(DataMap.govukDate(startDate)("31", "13", "1899")).errors must contain(FormError(monthKeyError, invalid))
         }
         "it is within 1 years" in {
           val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)
@@ -72,11 +72,11 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
             oneYearAgo.getMonthValue.toString,
             oneYearAgo.getYear.toString
           ))
-          maxTest.errors must contain(FormError(startDate, afterMax, Seq(OverseasPropertyStartDateForm.maxStartDate.toString)))
+          maxTest.errors must contain(FormError(dayKeyError, afterMax, Seq(OverseasPropertyStartDateForm.maxStartDate.toString)))
         }
         "it is before year 1900" in {
           val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
-          minTest.errors must contain(FormError(startDate, beforeMin, Seq(OverseasPropertyStartDateForm.minStartDate.toString)))
+          minTest.errors must contain(FormError(dayKeyError, beforeMin, Seq(OverseasPropertyStartDateForm.minStartDate.toString)))
         }
         "it is missing the day" in {
           val test = form.bind(DataMap.govukDate(startDate)("", "4", "2017"))
@@ -100,11 +100,11 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
         }
         "it has an invalid month" in {
           val test = form.bind(DataMap.govukDate(startDate)("1", "13", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
+          test.errors must contain(FormError(monthKeyError, s"$errorContext.invalid"))
         }
         "it has an invalid year" in {
           val test = form.bind(DataMap.govukDate(startDate)("1", "1", "invalid"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
+          test.errors must contain(FormError(yearKeyError, s"$errorContext.invalid"))
         }
         "it has multiple invalid fields" in {
           val test = form.bind(DataMap.govukDate(startDate)("0", "0", "2017"))
@@ -113,11 +113,11 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
         "the year provided is not the correct length" when {
           "the year is 3 digits" in {
             val test = form.bind(DataMap.govukDate(startDate)("1", "1", "123"))
-            test.errors must contain(FormError(s"$startDate-dateYear", s"$errorContext.year.length"))
+            test.errors must contain(FormError(yearKeyError, s"$errorContext.year.length"))
           }
           "the year is 5 digits" in {
             val test = form.bind(DataMap.govukDate(startDate)("1", "1", "12345"))
-            test.errors must contain(FormError(s"$startDate-dateYear", s"$errorContext.year.length"))
+            test.errors must contain(FormError(yearKeyError, s"$errorContext.year.length"))
           }
         }
       }
@@ -147,4 +147,5 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
       }
     }
   }
+
 }

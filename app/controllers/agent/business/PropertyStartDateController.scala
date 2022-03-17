@@ -125,6 +125,6 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
     }
 
   def form(implicit request: Request[_]): Form[DateModel] = {
-    propertyStartDateForm(PropertyStartDateForm.minStartDate.toLongDate, PropertyStartDateForm.maxStartDate.toLongDate)
+    propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toLongDate)
   }
 }
