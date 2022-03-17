@@ -1,5 +1,6 @@
 [![Apache-2.0 license](http://img.shields.io/badge/license-Apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Build Status](https://travis-ci.org/hmrc/income-tax-subscription-frontend.svg)](https://travis-ci.org/hmrc/income-tax-subscription-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/income-tax-subscription-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/income-tax-subscription-frontend/_latestVersion)
+[![Build Status](https://travis-ci.org/hmrc/income-tax-subscription-frontend.svg)](https://travis-ci.org/hmrc/income-tax-subscription-frontend)
+[![Download](https://api.bintray.com/packages/hmrc/releases/income-tax-subscription-frontend/images/download.svg)](https://bintray.com/hmrc/releases/income-tax-subscription-frontend/_latestVersion)
 
 # Income Tax Subscription Frontend
 
@@ -11,47 +12,63 @@ This is a Scala/Play frontend web UI that provides screens for an existing SA In
   
 ...on a quarterly basis and move away from the yearly Self-Assessment Tax Return.
 
-Local development requires:
+1. [Quick start](#Quick-start)
+    - [Prerequisites](#Prerequisites)
+    - [How to start](#How-to-start)
+    - [How to use](#How-to-use)
+    - [How to test](#How-to-test)
+2. [Persistence](#Persistence)
 
-  * [sbt](http://www.scala-sbt.org/)
-  * MongoDB available on port 27017
-  * HMRC Service manager (if using the provided scripts)
-    * [Install Service-Manager](https://github.com/hmrc/service-manager/wiki/Install#install-service-manager)**
-  * The services in the ITSA_SUBSC_ALL profile (a subset can be used)
+# Quick start
 
-# How to start this service (main section)
+## Prerequisites
 
-See `scripts/start`
+* [sbt](http://www.scala-sbt.org/)
+* MongoDB (*[See Persistence](#Persistence)*)
+* HMRC Service manager (*[Install Service-Manager](https://github.com/hmrc/service-manager/wiki/Install#install-service-manager)*)
 
-The active port is 9561
+## How to start
 
-# How to use
+**Run the service with `ITSA_SUBSC_ALL`:**  
+```
+./scripts/start
+```
 
-The entry page for this service running locally is 
+**Run the service with mininal downstreams:**  
+```
+./scripts/start --minimal
+```
 
-  http://localhost:9561/report-quarterly/income-and-expenses/sign-up
-
-The entry page for this service on staging (requires HMRC VPN) is 
-
-  https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up
+## How to use
 
 There are two main flows:
 
-  * Agent sign up
-  * Individual sign up
+* Agent sign up
+* Individual sign up
 
 See Route files for more information.
 
-Feature switches can be set to change behaviour.  See:
+### Local
 
-  http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch
+* Login via: `http://localhost:9949/auth-login-stub/gg-sign-in`
+* Entry page: `http://localhost:9561/report-quarterly/income-and-expenses/sign-up`
+* Feature switches: `http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch`
+* Stub users: `http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/stub-user`
 
+### Staging
 
-# How to test
+*Requires HMRC VPN*
 
-There are two built in test sets: `test` and `it:test`. See build.sbt for details.
+* Login via: `https://www.staging.tax.service.gov.uk/auth-login-stub/gg-sign-in`
+* Entry page : `https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up`
+* Feature switches: `https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch`
 
-External performance tests are provided in the repo `income-tax-subscription-performance-tests`
+## How to test
+
+* Run unit tests: `sbt clean test`
+* Run integration tests: `sbt clean it:test`
+* Run performance tests: provided in the repo [income-tax-subscription-performance-tests](https://github.com/hmrc/income-tax-subscription-performance-tests)
+* Run acceptance tests: provided in the repo [income-tax-subscription-acceptance-tests](https://github.com/hmrc/income-tax-subscription-acceptance-tests)
 
 # Persistence
 
@@ -67,5 +84,4 @@ Various commands are available.  Start with `show dbs` to see which databases ar
 
 ### License.
  
-This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html") 
-  
+This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
