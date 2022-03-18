@@ -1,0 +1,34 @@
+#!/bin/bash
+
+cd $(dirname $0)/..
+
+function die() {
+  echo "$1"
+  exit 1
+}
+
+MONGO_PORT=27017
+which nc &>/dev/null && nc -vz localhost $MONGO_PORT 2>/dev/null || die "Can't find MongoDB on port $MONGO_PORT (using: nc -vz localhost $MONGO_PORT)"
+
+which sm &>/dev/null || die "Can't find Service Manager"
+
+if [[ -z $1 && "$1" == "--minimal" ]]; then
+   sm --start ITSA_SUBSC_DEP
+   sm --start AGENTS_TAX_ENROLMENTS
+   sm --start INCOME_TAX_SUBSCRIPTION
+   sm --start INCOME_TAX_SUBSCRIPTION_SELF_EMPLOYED_FRONTEND
+   sm --start INCOME_TAX_SUBSCRIPTION_STUBS
+   sm --start INCOME_TAX_SUBSCRIPTION_ELIGIBILITY
+   sm --start INCOME_TAX_SUBSCRIPTION_ELIGIBILITY_FRONTEND
+   sm --start TAX_ENROLMENTS
+else
+   sm --start ITSA_SUBSC_ALL
+fi
+
+sm --stop INCOME_TAX_SUBSCRIPTION_FRONTEND
+
+sbt "run 9561 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" 
+   
+
+ 
+  
