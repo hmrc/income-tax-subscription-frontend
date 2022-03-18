@@ -1123,3 +1123,8 @@ error.remove-uk-property-business.invalid                      = Dewiswch ‘Iaw
 agent.remove-uk-property-business.heading                      = A ydych yn siŵr eich bod am ddileu busnes eiddo yn y DU eich cleient?
 agent.remove-uk-property-business.hint                         = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
 agent.error.remove-uk-property-business.invalid                = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
+
+## Remove Agent Overseas Property
+agent.remove-overseas-property-business.heading                = A ydych yn siŵr eich bod am ddileu busnes eiddo tramor eich cleient?
+agent.remove-overseas-property-business.hint                   = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
+agent.error.remove-overseas-property-business.invalid          = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
