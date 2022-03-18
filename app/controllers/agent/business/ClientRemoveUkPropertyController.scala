@@ -22,6 +22,7 @@ import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
+import forms.agent.ClientRemoveUkPropertyForm
 import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -30,7 +31,6 @@ import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.NotFoundException
 import utilities.SubscriptionDataKeys
 import views.html.agent.business.ClientRemoveUkProperty
-import forms.agent.ClientRemoveUkPropertyForm
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +46,7 @@ class ClientRemoveUkPropertyController @Inject()(val auditingService: AuditingSe
   with FeatureSwitching with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
 
       if (isEnabled(SaveAndRetrieve)) {
         Future.successful(Ok(view(form)))

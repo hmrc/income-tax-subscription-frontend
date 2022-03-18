@@ -20,4 +20,4 @@ import java.time.LocalDate
 
 case class UpdateDeadlineDates(previous: List[UpdateDeadline], next: List[UpdateDeadline])
 
-case class UpdateDeadline(update: LocalDate, deadline: LocalDate)
+case class UpdateDeadline(updateStart: LocalDate, updateEnd: LocalDate, deadline: LocalDate)

@@ -15,10 +15,10 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.injected.ButtonHelper
-@import views.html.templates.PrincipalMainTemplate
 @import services.AccountingPeriodService
 @import utilities.ImplicitDateFormatterImpl
+@import views.html.helpers.injected.ButtonHelper
+@import views.html.templates.PrincipalMainTemplate
 
 @this(
         principalMainTemplate: PrincipalMainTemplate,
@@ -44,7 +44,7 @@
             @govukTable(Table(
                 rows = previous.map { updateDeadline =>
                     Seq(
-                        TableRow(content = Text(updateDeadline.update.toLongDate)),
+                        TableRow(content = Text(updateDeadline.updateEnd.toLongDate)),
                         TableRow(content = Text(updateDeadline.deadline.toLongDate))
                     )
                 },
@@ -71,7 +71,7 @@
         @govukTable(Table(
             rows = next.map { updateDeadline =>
                 Seq(
-                    TableRow(content = Text(updateDeadline.update.toLongDate)),
+                    TableRow(content = Text(updateDeadline.updateEnd.toLongDate)),
                     TableRow(content = Text(updateDeadline.deadline.toLongDate))
                 )
             },

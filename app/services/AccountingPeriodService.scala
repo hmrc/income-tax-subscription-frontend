@@ -28,6 +28,7 @@ import scala.Ordering.Implicits._
 @Singleton
 class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider) {
 
+  val SIXTH: Int = 6
   val FIFTH: Int = 5
 
   def checkEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate, hasPropertyType: Boolean): Boolean = {
@@ -69,19 +70,23 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
     }
     List(
       UpdateDeadline(
-        update = LocalDate.of(taxYear - 1, JULY, FIFTH),
+        updateStart = LocalDate.of(taxYear - 1, APRIL, SIXTH),
+        updateEnd = LocalDate.of(taxYear - 1, JULY, FIFTH),
         deadline = LocalDate.of(taxYear - 1, AUGUST, FIFTH)
       ),
       UpdateDeadline(
-        update = LocalDate.of(taxYear - 1, OCTOBER, FIFTH),
+        updateStart = LocalDate.of(taxYear - 1, JULY, SIXTH),
+        updateEnd = LocalDate.of(taxYear - 1, OCTOBER, FIFTH),
         deadline = LocalDate.of(taxYear - 1, NOVEMBER, FIFTH)
       ),
       UpdateDeadline(
-        update = LocalDate.of(taxYear, JANUARY, FIFTH),
+        updateStart = LocalDate.of(taxYear, OCTOBER, SIXTH),
+        updateEnd = LocalDate.of(taxYear, JANUARY, FIFTH),
         deadline = LocalDate.of(taxYear, FEBRUARY, FIFTH)
       ),
       UpdateDeadline(
-        update = LocalDate.of(taxYear, APRIL, FIFTH),
+        updateStart = LocalDate.of(taxYear, JANUARY, SIXTH),
+        updateEnd = LocalDate.of(taxYear, APRIL, FIFTH),
         deadline = LocalDate.of(taxYear, MAY, FIFTH)
       )
     )
@@ -90,8 +95,8 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
   def getCurrentYearUpdateDates: UpdateDeadlineDates = {
     val allUpdateAndDeadlineDates: List[UpdateDeadline] = getAllUpdateAndDeadlineDates(Current)
     UpdateDeadlineDates(
-      previous = allUpdateAndDeadlineDates.filter(_.update <= AgentUpdateDates.currentDate),
-      next = allUpdateAndDeadlineDates.filter(_.update > AgentUpdateDates.currentDate)
+      previous = allUpdateAndDeadlineDates.filter(_.updateEnd <= AgentUpdateDates.currentDate),
+      next = allUpdateAndDeadlineDates.filter(_.updateEnd > AgentUpdateDates.currentDate)
     )
   }
 

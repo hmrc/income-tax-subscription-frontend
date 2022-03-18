@@ -46,12 +46,12 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         val fromYear: String = (AccountingPeriodUtil.getTaxEndYear(LocalDate.now()) - 1).toString
         val toYear: String = AccountingPeriodUtil.getTaxEndYear(LocalDate.now()).toString
 
-        val expectedText = removeHtmlMarkup(messages("business.what_year_to_sign_up.option_1.signup", fromYear, toYear))
+        val expectedText = removeHtmlMarkup(messages("business.what_year_to_sign_up.option_1", fromYear, toYear))
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the What Year To Sign Up page")
         res should have(
           httpStatus(200),
-          pageTitle(messages("business.what_year_to_sign_up.title.signup") + serviceNameGovUk),
+          pageTitle(messages("business.what_year_to_sign_up.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = Some(expectedText)),
           radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )
@@ -70,7 +70,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         Then("Should return a OK with the What Year To Sign Up page")
         res should have(
           httpStatus(200),
-          pageTitle(messages("business.what_year_to_sign_up.title.signup") + serviceNameGovUk),
+          pageTitle(messages("business.what_year_to_sign_up.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = None),
           radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )

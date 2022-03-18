@@ -17,77 +17,59 @@
 @import config.AppConfig
 @import forms.individual.business.AccountingYearForm
 @import play.api.data.Form
+@import services.AccountingPeriodService
 @import views.html.helpers.injected.{ContinueButton, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.helpers.injected.UpdateDeadlineTable
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     radioHelper: RadioHelper,
-    continueButton: ContinueButton
+    continueButton: ContinueButton,
+    accountingPeriodService: AccountingPeriodService,
+    table: UpdateDeadlineTable
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@hintContent = {
-  <p>
-      @messages("business.what_year_to_sign_up.line_1.signup")
-      <br><br>
-      @messages("business.what_year_to_sign_up.line_2.signup")
-  </p>
-}
-
-@question = @{
-    messages("business.what_year_to_sign_up.heading.signup")
-}
-
-@pageTitle = @{
-    messages("business.what_year_to_sign_up.title.signup")
-}
-
 @optionCurrentContent = {
-        <p class="govuk-body"> @messages("business.what_year_to_sign_up.conditional.1.line_1.signup") </p>
-    <ul class="govuk-list--bullet">
-        <li>@messages("business.what_year_to_sign_up.quarterly.date_1", (endYearOfCurrentTaxPeriod - 1).toString)</li>
-        <li>@messages("business.what_year_to_sign_up.quarterly.date_2", (endYearOfCurrentTaxPeriod - 1).toString)</li>
-        <li>@messages("business.what_year_to_sign_up.quarterly.date_3", endYearOfCurrentTaxPeriod.toString)</li>
-        <li>@messages("business.what_year_to_sign_up.quarterly.date_4", endYearOfCurrentTaxPeriod.toString)</li>
-    </ul>
-    <p class="govuk-body"> @messages("business.what_year_to_sign_up.conditional.1.line_2.signup", (endYearOfCurrentTaxPeriod + 1).toString) </p>
+    <p class="govuk-body">@messages("business.what_year_to_sign_up.conditional.1.line_1")</p>
+    @table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current))
+    <p class="govuk-body">@messages("business.what_year_to_sign_up.conditional.1.line_2", (endYearOfCurrentTaxPeriod + 1).toString)</p>
 }
 
 @optionNextContent = {
-    <p class="govuk-body"> @messages("business.what_year_to_sign_up.conditional.2.line_1.signup") </p>
-    <ul class="govuk-list--bullet">
-        <li>@messages("business.what_year_to_sign_up.quarterly.date_1", endYearOfCurrentTaxPeriod.toString)</li>
-        <li>@messages("business.what_year_to_sign_up.quarterly.date_2", endYearOfCurrentTaxPeriod.toString)</li>
-        <li>@messages("business.what_year_to_sign_up.quarterly.date_3", (endYearOfCurrentTaxPeriod + 1).toString)</li>
-        <li>@messages("business.what_year_to_sign_up.quarterly.date_4", (endYearOfCurrentTaxPeriod + 1).toString)</li>
-    </ul>
-    <p class="govuk-body"> @messages("business.what_year_to_sign_up.conditional.2.line_2.signup", (endYearOfCurrentTaxPeriod + 2).toString) </p>
+    <p class="govuk-body">@messages("business.what_year_to_sign_up.conditional.2.line_1")</p>
+    @table(accountingPeriodService.getAllUpdateAndDeadlineDates(Next))
+    <p class="govuk-body">@messages("business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString)</p>
 }
 
+@mainTemplate(title = messages("business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
 
-@mainTemplate(title = pageTitle, optForm = Some(accountingYearForm), backLink = backUrl) {
+  <h1 class="govuk-heading-l">@messages("business.what_year_to_sign_up.heading")</h1>
 
-    @form(action = postAction) {
-        @radioHelper(
-            field = accountingYearForm(AccountingYearForm.accountingYear),
-            legend = question,
-            hint = Some(HtmlContent(hintContent)),
-            radioItems = Seq(
-                RadioItem(
-                    content = Text(messages("business.what_year_to_sign_up.option_1.signup", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
-                    hint = Some(Hint(content = HtmlContent(optionCurrentContent))),
-                    value = Some(Current.toString)
-                ),
-                RadioItem(
-                    content = Text(messages("business.what_year_to_sign_up.option_2.signup", (endYearOfCurrentTaxPeriod).toString, (endYearOfCurrentTaxPeriod + 1).toString)),
-                    hint = Some(Hint(content = HtmlContent(optionNextContent))),
-                    value = Some(Next.toString)
-                )
-            )
+  <p class="govuk-body">@messages("business.what_year_to_sign_up.line_1")</p>
+  <p class="govuk-body">@messages("business.what_year_to_sign_up.line_2")</p>
+
+  @form(action = postAction) {
+    @radioHelper(
+      field = accountingYearForm(AccountingYearForm.accountingYear),
+      legend = messages("business.what_year_to_sign_up.heading"),
+      isPageHeading = false,
+      radioItems = Seq(
+        RadioItem(
+          content = Text(messages("business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
+          hint = Some(Hint(content = HtmlContent(optionCurrentContent))),
+          value = Some(Current.toString)
+        ),
+        RadioItem(
+          content = Text(messages("business.what_year_to_sign_up.option_2", (endYearOfCurrentTaxPeriod).toString, (endYearOfCurrentTaxPeriod + 1).toString)),
+          hint = Some(Hint(content = HtmlContent(optionNextContent))),
+          value = Some(Next.toString)
         )
-        @continueButton(isEditMode = isEditMode)
-    }
+      )
+    )
+    @continueButton(isEditMode = isEditMode)
+  }
 }
