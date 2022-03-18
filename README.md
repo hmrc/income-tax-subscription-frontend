@@ -50,18 +50,18 @@ See Route files for more information.
 
 ### Local
 
-* Login via: `http://localhost:9949/auth-login-stub/gg-sign-in`
-* Entry page: `http://localhost:9561/report-quarterly/income-and-expenses/sign-up`
-* Feature switches: `http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch`
-* Stub users: `http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/stub-user`
+* Login via: [http://localhost:9949/auth-login-stub/gg-sign-in](http://localhost:9949/auth-login-stub/gg-sign-in)
+* Entry page: [http://localhost:9561/report-quarterly/income-and-expenses/sign-up](http://localhost:9561/report-quarterly/income-and-expenses/sign-up)
+* Feature switches: [http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch](http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch)
+* Stub users: [http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/stub-user](http://localhost:9561/report-quarterly/income-and-expenses/sign-up/test-only/stub-user)
 
 ### Staging
 
 *Requires HMRC VPN*
 
-* Login via: `https://www.staging.tax.service.gov.uk/auth-login-stub/gg-sign-in`
-* Entry page : `https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up`
-* Feature switches: `https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch`
+* Login via: [https://www.staging.tax.service.gov.uk/auth-login-stub/gg-sign-in](https://www.staging.tax.service.gov.uk/auth-login-stub/gg-sign-in)
+* Entry page : [https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up](https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up)
+* Feature switches: [https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch](https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch)
 
 ## How to test
 
