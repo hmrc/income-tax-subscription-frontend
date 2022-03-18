@@ -25,10 +25,8 @@ else
    sm --start ITSA_SUBSC_ALL
 fi
 
-sleep 5
 sm --stop INCOME_TAX_SUBSCRIPTION_FRONTEND
 
-sleep 5
 sbt "run 9561 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" 
    
 
