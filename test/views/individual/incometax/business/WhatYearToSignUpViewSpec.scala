@@ -16,108 +16,293 @@
 
 package views.individual.incometax.business
 
-import assets.MessageLookup.{Base => common, WhatYearToSignUp => messages}
+import agent.assets.MessageLookup
 import forms.individual.business.AccountingYearForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import play.api.mvc.Call
-import play.api.test.FakeRequest
-import play.twirl.api.{HtmlFormat}
-import views.ViewSpecTrait
+import play.api.data.FormError
+import play.twirl.api.Html
+import services.AccountingPeriodService
+import utilities.ViewSpec
 import views.html.individual.incometax.business.WhatYearToSignUp
 
-class WhatYearToSignUpViewSpec extends ViewSpecTrait {
+class WhatYearToSignUpViewSpec extends ViewSpec {
 
-  val backUrl: String = ViewSpecTrait.testBackUrl
-  val action: Call = ViewSpecTrait.testCall
-  val taxYearEnd: Int = 2020
+  private val accountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
+  val taxYearEnd: Int = accountingPeriodService.currentTaxYear
 
   val whatYearToSignUp: WhatYearToSignUp = app.injector.instanceOf[WhatYearToSignUp]
 
-  class Setup(isEditMode: Boolean = false) {
-
-    val page: HtmlFormat.Appendable = whatYearToSignUp(
-      AccountingYearForm.accountingYearForm,
-      postAction = action,
-      backUrl = backUrl,
-      endYearOfCurrentTaxPeriod = taxYearEnd,
-      isEditMode = isEditMode,
-    )(FakeRequest(), implicitly, appConfig)
-
-    val document: Document = Jsoup.parse(page.body)
-  }
+  val testFormError: FormError = FormError(AccountingYearForm.accountingYear, "test error")
 
   "what year to sign up" must {
-    "have a title" in new Setup {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-      document.title mustBe messages.title + serviceNameGovUk
+    "have the correct template details" when {
+      "the page has no back link" in new TemplateViewTest(
+        view = page(editMode = false, hasBackLink = false),
+        title = WhatYearToSignUp.heading,
+      )
+      "the page has a back link + error" in new TemplateViewTest(
+        view = page(editMode = false, hasBackLink = true, hasError = true),
+        title = WhatYearToSignUp.heading,
+        backLink = Some(testBackUrl),
+        error = Some(testFormError)
+      )
     }
 
-    "have a heading" in new Setup {
-      document.select("h1").text mustBe messages.heading
+    "have a heading" in {
+      document().select("h1").text mustBe WhatYearToSignUp.heading
     }
 
-    "have content" in new Setup {
-      val paragraphs: Elements = document.select(".govuk-body").select("p")
-      val conditionalListLabels: Elements = document.select(".govuk-radios").select(".govuk-list--bullet").select("li")
-      document.select(".govuk-hint").get(0).text() mustBe messages.line1_updated
-      paragraphs.get(0).text() mustBe messages.option1ConditionalExample1_updated
-      paragraphs.get(1).text() mustBe messages.option1ConditionalExample2_updated((taxYearEnd + 1).toString)
-      paragraphs.get(2).text() mustBe messages.option2ConditionalExample1_updated
-      paragraphs.get(3).text() mustBe messages.option2ConditionalExample2_updated((taxYearEnd + 2).toString)
+    "have a body" which {
+      val paragraphs: Elements = document().select(".govuk-body").select("p")
 
-      conditionalListLabels.get(0).text() mustBe messages.conditionalDate1((taxYearEnd - 1).toString)
-      conditionalListLabels.get(1).text() mustBe messages.conditionalDate2((taxYearEnd - 1).toString)
-      conditionalListLabels.get(2).text() mustBe messages.conditionalDate3(taxYearEnd.toString)
-      conditionalListLabels.get(3).text() mustBe messages.conditionalDate4(taxYearEnd.toString)
+      "has paragraph 1" in {
+        paragraphs.get(0).text() mustBe WhatYearToSignUp.paragraph1
 
-      conditionalListLabels.get(4).text() mustBe messages.conditionalDate1(taxYearEnd.toString)
-      conditionalListLabels.get(5).text() mustBe messages.conditionalDate2(taxYearEnd.toString)
-      conditionalListLabels.get(6).text() mustBe messages.conditionalDate3((taxYearEnd + 1).toString)
-      conditionalListLabels.get(7).text() mustBe messages.conditionalDate4((taxYearEnd + 1).toString)
+      }
+
+      "has paragraph 2" in {
+        paragraphs.get(1).text() mustBe WhatYearToSignUp.paragraph2
+      }
+    }
+
+    "have the current tax year hint paragraphs" which {
+      val hintParagraphs =
+        document()
+          .select(".govuk-radios__item")
+          .get(0)
+          .select(".govuk-hint")
+          .select("p")
+
+      "has the paragraph 1" in {
+        hintParagraphs.get(0).text() mustBe WhatYearToSignUp.currentYearOptionHintParagraph1
+      }
+
+      "has the paragraph 2" in {
+        hintParagraphs.get(1).text() mustBe WhatYearToSignUp.currentYearOptionHintParagraph2
+      }
+    }
+
+    "have the current tax year hint filling and deadline dates" which {
+      val tableRows =
+        document()
+          .select(".govuk-radios__item")
+          .get(0)
+          .select(".govuk-hint")
+          .select(".govuk-table")
+          .select(".govuk-table__row")
+
+      "has the filling and deadline headers" in {
+        val tableHeaders =
+          tableRows
+            .get(0)
+            .select(".govuk-table__header")
+
+        tableHeaders.get(0).text() mustBe WhatYearToSignUp.updatesHeader
+        tableHeaders.get(1).text() mustBe WhatYearToSignUp.deadlineHeader
+      }
+
+      "has the filling and deadline dates 1" in {
+        val tableCells =
+          tableRows
+            .get(1)
+            .select(".govuk-table__cell")
+
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateOne((taxYearEnd - 1).toString)
+        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateOne((taxYearEnd - 1).toString)
+      }
+
+      "has the filling and deadline dates 2" in {
+        val tableCells =
+          tableRows
+            .get(2)
+            .select(".govuk-table__cell")
+
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateTwo((taxYearEnd - 1).toString)
+        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateTwo((taxYearEnd - 1).toString)
+      }
+
+      "has the filling and deadline dates 3" in {
+        val tableCells =
+          tableRows
+            .get(3)
+            .select(".govuk-table__cell")
+
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateThree(taxYearEnd.toString)
+        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateThree(taxYearEnd.toString)
+      }
+
+      "has the filling and deadline dates 4" in {
+        val tableCells =
+          tableRows
+            .get(4)
+            .select(".govuk-table__cell")
+
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateFour(taxYearEnd.toString)
+        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateFour(taxYearEnd.toString)
+      }
+    }
+
+    "have the next tax year hint paragraphs" which {
+      val hintParagraphs =
+        document()
+          .select(".govuk-radios__item")
+          .get(1)
+          .select(".govuk-hint")
+          .select("p")
+
+      "has the paragraph 1" in {
+        hintParagraphs.get(0).text() mustBe WhatYearToSignUp.nextYearOptionHintParagraph1
+      }
+
+      "has the paragraph 2" in {
+        hintParagraphs.get(1).text() mustBe WhatYearToSignUp.nextYearOptionHintParagraph2
+      }
+    }
+
+    "have the next tax year hint filling and deadline dates" which {
+      val tableRows =
+        document()
+          .select(".govuk-radios__item")
+          .get(1)
+          .select(".govuk-hint")
+          .select(".govuk-table")
+          .select(".govuk-table__row")
+
+      "has the filling and deadline headers" in {
+        val tableHeaders =
+          tableRows
+            .get(0)
+            .select(".govuk-table__header")
+
+        tableHeaders.get(0).text() mustBe WhatYearToSignUp.updatesHeader
+        tableHeaders.get(1).text() mustBe WhatYearToSignUp.deadlineHeader
+      }
+
+      "has the filling and deadline dates 1" in {
+        val tableCells =
+          tableRows
+            .get(1)
+            .select(".govuk-table__cell")
+
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateOne(taxYearEnd.toString)
+        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateOne(taxYearEnd.toString)
+      }
+
+      "has the filling and deadline dates 2" in {
+        val tableCells =
+          tableRows
+            .get(2)
+            .select(".govuk-table__cell")
+
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateTwo(taxYearEnd.toString)
+        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateTwo(taxYearEnd.toString)
+      }
+
+      "has the filling and deadline dates 3" in {
+        val tableCells =
+          tableRows
+            .get(3)
+            .select(".govuk-table__cell")
+
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateThree((taxYearEnd + 1).toString)
+        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateThree((taxYearEnd + 1).toString)
+      }
+
+      "has the filling and deadline dates 4" in {
+        val tableCells =
+          tableRows
+            .get(4)
+            .select(".govuk-table__cell")
+
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateFour((taxYearEnd + 1).toString)
+        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateFour((taxYearEnd + 1).toString)
+      }
     }
 
     "have a form" which {
-      "has correct attributes" in new Setup {
-        val form: Elements = document.select("form")
-        form.attr("method") mustBe action.method
-        form.attr("action") mustBe action.url
+      "has correct attributes" in {
+        val form: Elements = document().select("form")
+        form.attr("method") mustBe testCall.method
+        form.attr("action") mustBe testCall.url
       }
 
-      "has a current tax year radio button" in new Setup {
-        val radio: Element = document.select(".govuk-radios__item").get(0)
+      "has a current tax year radio button" in {
+        val radio: Element = document().select(".govuk-radios__item").get(0)
         radio.select("input[id=accountingYear]").`val` mustBe "CurrentYear"
         radio.select("label[for=accountingYear]").text mustBe Seq(
-          messages.option1((taxYearEnd - 1).toString, taxYearEnd.toString)
+          WhatYearToSignUp.currentYearOption((taxYearEnd - 1).toString, taxYearEnd.toString)
         ).mkString(" ")
       }
 
-      "has a next tax year radio button" in new Setup {
-        val radio: Element = document.select(".govuk-radios__item").get(1)
+      "has a next tax year radio button" in {
+        val radio: Element = document().select(".govuk-radios__item").get(1)
         radio.select("input[id=accountingYear-2]").`val` mustBe "NextYear"
         radio.select("label[for=accountingYear-2]").text mustBe Seq(
-          messages.option2(taxYearEnd.toString, (taxYearEnd + 1).toString)
+          WhatYearToSignUp.nextYearOption(taxYearEnd.toString, (taxYearEnd + 1).toString)
         ).mkString(" ")
       }
 
       "has a continue button" that {
-        s"displays ${common.continue} when not in edit mode" in new Setup {
-          document.select("button[id=continue-button]").text mustBe common.continue
+        s"displays ${MessageLookup.Base.continue} when not in edit mode" in {
+          document().select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
         }
-        s"displays ${common.update} when in edit mode" in new Setup(isEditMode = true) {
-          document.select("button[id=continue-button]").text mustBe common.update
+
+        s"displays ${MessageLookup.Base.update} when in edit mode" in {
+          document(editMode = true).select("button[id=continue-button]").text mustBe MessageLookup.Base.update
         }
       }
     }
+  }
 
+  private def page(editMode: Boolean, hasBackLink: Boolean, hasError: Boolean = false): Html =
+    whatYearToSignUp(
+      if (hasError) AccountingYearForm.accountingYearForm.withError(testFormError) else AccountingYearForm.accountingYearForm,
+      postAction = testCall,
+      backUrl = if (hasBackLink) Some(testBackUrl) else None,
+      endYearOfCurrentTaxPeriod = taxYearEnd,
+      isEditMode = editMode,
+    )
 
-    "have a back button" when {
-      "in edit mode" in new Setup(isEditMode = true) {
-        val backLink: Element = document.selectFirst(".govuk-back-link")
-        backLink.attr("href") mustBe backUrl
-        backLink.text mustBe common.back
-      }
-    }
+  private def document(editMode: Boolean = false, hasBackLink: Boolean = false, hasError: Boolean = false): Document =
+    Jsoup.parse(page(editMode = editMode, hasBackLink = hasBackLink, hasError).body)
+
+  object WhatYearToSignUp {
+    val heading = "Which tax year do you want to start using software to file updates for?"
+    val updatesHeader = "Quarterly update"
+    val deadlineHeader = "Deadline"
+    val paragraph1 = "You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount of tax you will pay."
+    val paragraph2 = "Add all business income and expenses into your software from 6 April:"
+
+    val currentYearOptionHintParagraph1: String = "You need to send a quarterly filing update for:"
+
+    val currentYearOptionHintParagraph2 = s"Send a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
+
+    val nextYearOptionHintParagraph1: String = "You need to send a quarterly filing update for:"
+
+    val nextYearOptionHintParagraph2: String =
+      s"Send a final declaration by 31 January ${(taxYearEnd + 2).toString} and " +
+        "complete a Self Assessment return for the current tax year as normal."
+
+    def currentYearOption(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
+
+    def nextYearOption(fromYear: String, toYear: String): String = s"Next tax year (6 April $fromYear to 5 April $toYear)"
+
+    def fillingDateOne(year: String): String = s"6 April $year - 5 July $year"
+
+    def deadlineDateOne(year: String): String = s"5 August $year"
+
+    def fillingDateTwo(year: String): String = s"6 July $year - 5 October $year"
+
+    def deadlineDateTwo(year: String): String = s"5 November $year"
+
+    def fillingDateThree(year: String): String = s"6 October $year - 5 January $year"
+
+    def deadlineDateThree(year: String): String = s"5 February $year"
+
+    def fillingDateFour(year: String): String = s"6 January $year - 5 April $year"
+
+    def deadlineDateFour(year: String): String = s"5 May $year"
   }
 }

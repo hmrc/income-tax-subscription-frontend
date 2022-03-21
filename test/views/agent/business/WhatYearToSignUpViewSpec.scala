@@ -278,7 +278,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
   private object WhatYearToSignUp {
     val heading = "Which tax year do you want your client to start filing income tax updates for?"
-    val updatesHeader = "Quarterly updates"
+    val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
     val paragraph1 = "You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount you pay."
     val paragraph2 = "There is no penalty if you start making updates mid-way through the current tax year."
@@ -300,19 +300,19 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
     def nextYearOption(fromYear: String, toYear: String): String = s"Next tax year (6 April $fromYear to 5 April $toYear)"
 
-    def fillingDateOne(year: String): String = s"5 July $year"
+    def fillingDateOne(year: String): String = s"6 April $year - 5 July $year"
 
     def deadlineDateOne(year: String): String = s"5 August $year"
 
-    def fillingDateTwo(year: String): String = s"5 October $year"
+    def fillingDateTwo(year: String): String = s"6 July $year - 5 October $year"
 
     def deadlineDateTwo(year: String): String = s"5 November $year"
 
-    def fillingDateThree(year: String): String = s"5 January $year"
+    def fillingDateThree(year: String): String = s"6 October $year - 5 January $year"
 
     def deadlineDateThree(year: String): String = s"5 February $year"
 
-    def fillingDateFour(year: String): String = s"5 April $year"
+    def fillingDateFour(year: String): String = s"6 January $year - 5 April $year"
 
     def deadlineDateFour(year: String): String = s"5 May $year"
   }

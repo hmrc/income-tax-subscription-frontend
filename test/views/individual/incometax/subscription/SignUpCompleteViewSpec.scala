@@ -45,12 +45,13 @@ class SignUpCompleteViewSpec extends ViewSpec {
   }
 
   val CURRENT_TAX_YEAR: Int = 2021
+  val SIXTH: Int = 6
   val FIFTH: Int = 5
 
-  val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
 
   val signUpComplete: SignUpComplete = GuiceApplicationBuilder()
     .overrides(inject.bind[AccountingPeriodService].to(mockAccountingPeriodService))
@@ -132,10 +133,10 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point2.mustHaveTable(
           tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate),
-            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate),
-            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate),
-            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+            List(q1Update.updateEnd.toLongDate, q1Update.deadline.toLongDate),
+            List(q2Update.updateEnd.toLongDate, q2Update.deadline.toLongDate),
+            List(q3Update.updateEnd.toLongDate, q3Update.deadline.toLongDate),
+            List(q4Update.updateEnd.toLongDate, q4Update.deadline.toLongDate)
           )
         )
 
@@ -160,10 +161,10 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point2.mustHaveTable(
           tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate),
-            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate),
-            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate),
-            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+            List(q1Update.updateEnd.toLongDate, q1Update.deadline.toLongDate),
+            List(q2Update.updateEnd.toLongDate, q2Update.deadline.toLongDate),
+            List(q3Update.updateEnd.toLongDate, q3Update.deadline.toLongDate),
+            List(q4Update.updateEnd.toLongDate, q4Update.deadline.toLongDate)
           )
         )
 
@@ -189,7 +190,7 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point2.mustHaveTable(
           tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate)
+            List(q1Update.updateEnd.toLongDate, q1Update.deadline.toLongDate)
           )
         )
 
@@ -198,9 +199,9 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point3.mustHaveTable(
           tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate),
-            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate),
-            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+            List(q2Update.updateEnd.toLongDate, q2Update.deadline.toLongDate),
+            List(q3Update.updateEnd.toLongDate, q3Update.deadline.toLongDate),
+            List(q4Update.updateEnd.toLongDate, q4Update.deadline.toLongDate)
           )
         )
 
@@ -226,8 +227,8 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point2.mustHaveTable(
           tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate),
-            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate)
+            List(q1Update.updateEnd.toLongDate, q1Update.deadline.toLongDate),
+            List(q2Update.updateEnd.toLongDate, q2Update.deadline.toLongDate)
           )
         )
 
@@ -236,8 +237,8 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point3.mustHaveTable(
           tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate),
-            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+            List(q3Update.updateEnd.toLongDate, q3Update.deadline.toLongDate),
+            List(q4Update.updateEnd.toLongDate, q4Update.deadline.toLongDate)
           )
         )
 
@@ -263,9 +264,9 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point2.mustHaveTable(
           tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.update.toLongDate, q1Update.deadline.toLongDate),
-            List(q2Update.update.toLongDate, q2Update.deadline.toLongDate),
-            List(q3Update.update.toLongDate, q3Update.deadline.toLongDate)
+            List(q1Update.updateEnd.toLongDate, q1Update.deadline.toLongDate),
+            List(q2Update.updateEnd.toLongDate, q2Update.deadline.toLongDate),
+            List(q3Update.updateEnd.toLongDate, q3Update.deadline.toLongDate)
           )
         )
 
@@ -274,7 +275,7 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point3.mustHaveTable(
           tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q4Update.update.toLongDate, q4Update.deadline.toLongDate)
+            List(q4Update.updateEnd.toLongDate, q4Update.deadline.toLongDate)
           )
         )
 
