@@ -84,4 +84,24 @@ trait ReferenceRetrieval {
     }
   }
 
+  def withAgentReference(clientsUtr: String)
+                        (f: String => Future[Result])
+                        (implicit request: Request[AnyContent],
+                         hc: HeaderCarrier,
+                         user: IncomeTaxAgentUser): Future[Result] = {
+    user.clientReference match {
+      case Some(reference) =>
+        f(reference)
+      case None =>
+        subscriptionDetailsService.retrieveReference(clientsUtr).flatMap {
+          case Left(InvalidJsonFailure) =>
+            throw new InternalServerException(s"[ReferenceRetrieval][withAgentReference] - Unable to parse json returned")
+          case Left(UnexpectedStatusFailure(status)) =>
+            throw new InternalServerException(s"[ReferenceRetrieval][withAgentReference] - Unexpected status returned: $status")
+          case Right(value) =>
+            f(value).map(_.addingToSession(ITSASessionKeys.REFERENCE -> value))
+        }
+    }
+  }
+
 }

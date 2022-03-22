@@ -17,12 +17,12 @@
 package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsResponse, PostSubscriptionDetailsSuccessResponse}
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
 import org.mockito.ArgumentMatchers.{any, argThat}
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{atLeastOnce, reset, times, verify, when}
 import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,14 +30,12 @@ import play.api.libs.json.{Json, Writes}
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.subscriptionId
+import utilities.SubscriptionDataKeys._
 import utilities.{SubscriptionDataKeys, UnitTestTrait}
 
 import scala.concurrent.Future
 
 trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
-
-  val mockSubscriptionDetailsService: SubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   val returnedCacheMap: CacheMap = CacheMap("", Map())
   val mockConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
@@ -51,56 +49,61 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     testData = CacheMap("", Map.empty)
   }
 
-  def mockFetchPrePopFlag(reference: String, result:Option[Boolean]) =
-    when(mockSubscriptionDetailsService.fetchPrePopFlag(ArgumentMatchers.eq(reference))(ArgumentMatchers.any())).thenReturn(Future.successful(result))
+  def mockFetchPrePopFlag(reference: String, result: Option[Boolean]) =
+    mockFetchFromSubscriptionDetails(reference, PrePopFlag, result)
 
   def mockSaveOverseasProperty(reference: String) =
-    when(mockSubscriptionDetailsService.saveOverseasProperty(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(mock[PostSubscriptionDetailsResponse]))
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.OverseasProperty)
 
   def mockSaveUkProperty(reference: String) =
-    when(mockSubscriptionDetailsService.saveProperty(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(mock[PostSubscriptionDetailsResponse]))
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.Property)
 
   def mockSaveBusinesses(reference: String) =
-    when(mockSubscriptionDetailsService.saveBusinesses(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(mock[PostSubscriptionDetailsResponse]))
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.BusinessesKey)
 
   def mockSaveSelfEmploymentsAccountingMethod(reference: String) =
-    when(mockSubscriptionDetailsService.saveSelfEmploymentsAccountingMethod(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(mock[PostSubscriptionDetailsResponse]))
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.BusinessAccountingMethod)
 
   def mockSavePrePopFlag(reference: String) =
-    when(mockSubscriptionDetailsService.savePrePopFlag(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(mock[CacheMap]))
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.PrePopFlag)
 
   def verifySaveOverseasProperty(count: Int, reference: String, overseasPropertyModel: OverseasPropertyModel) =
-    verify(mockSubscriptionDetailsService, times(count))
-      .saveOverseasProperty(ArgumentMatchers.eq(reference), ArgumentMatchers.eq(overseasPropertyModel))(ArgumentMatchers.any())
+    verifySubscriptionDetailsSaveWithField[OverseasPropertyModel](reference, count, SubscriptionDataKeys.OverseasProperty, overseasPropertyModel)
 
-  def verifySaveUkProperty(count: Int, reference: String, propertyModel: PropertyModel) = {
-    verify(mockSubscriptionDetailsService, times(count))
-      .saveProperty(ArgumentMatchers.eq(reference), ArgumentMatchers.eq(propertyModel))(ArgumentMatchers.any())
+  def verifySaveUkProperty(count: Int, reference: String, propertyModel: PropertyModel) =
+    verifySubscriptionDetailsSaveWithField[PropertyModel](reference, count, Property, propertyModel)
+
+  // Businesses get a uuid added - need to create a bespoke matcher which ignores id.
+  // Businesses passed in need an empty string for id.
+  class BusinessSequenceMatcher(val expectedSeq: Seq[SelfEmploymentData]) extends ArgumentMatcher[Seq[SelfEmploymentData]] {
+    override def matches(providedSeq: Seq[SelfEmploymentData]): Boolean = {
+      providedSeq.forall(provided => expectedSeq.contains(provided.copy(id = "")))
+    }
   }
-
-  // businesses get a uuid added - need to create a bespoke matcher
   def verifySaveBusinesses(count: Int, reference: String, businesses: Seq[SelfEmploymentData]) =
-    verify(mockSubscriptionDetailsService, times(count))
-      .saveBusinesses(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any())
+    verify(mockConnector, times(count)).saveSubscriptionDetails[Seq[SelfEmploymentData]](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(BusinessesKey),
+      argThat(new BusinessSequenceMatcher(businesses)),
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
   def verifySaveSelfEmploymentsAccountingMethod(count: Int, reference: String, accountingMethodModel: AccountingMethodModel) =
-    verify(mockSubscriptionDetailsService, times(count))
-      .saveSelfEmploymentsAccountingMethod(ArgumentMatchers.eq(reference), ArgumentMatchers.eq(accountingMethodModel))(ArgumentMatchers.any())
+    verifySubscriptionDetailsSaveWithField[AccountingMethodModel](reference, count, BusinessAccountingMethod, accountingMethodModel)
 
   def verifySavePrePopFlag(count: Int, reference: String) =
-    verify(mockSubscriptionDetailsService, times(count))
-      .savePrePopFlag(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any())
+    verifySubscriptionDetailsSaveWithField[AccountingMethodModel](reference, count, subscriptionId)
 
-  def verifyFetchPrePopFlag(count: Int, reference: String) =
-    verify(mockSubscriptionDetailsService, times(count))
-      .fetchPrePopFlag(ArgumentMatchers.eq(reference))(ArgumentMatchers.any())
+  def verifyFetchPrePopFlag(reference: String) =
+    verify(mockConnector, atLeastOnce())
+      .getSubscriptionDetails(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
 
   def mockRetrieveReferenceSuccess(utr: String)(reference: String): Unit = {
+    when(mockConnector.retrieveReference(
+      ArgumentMatchers.eq(utr)
+    )(ArgumentMatchers.any())) thenReturn Future.successful(Right(reference))
+  }
+
+  def mockRetrieveReferenceSuccessFromSubscriptionDetails(utr: String)(reference: String): Unit = {
     when(mockConnector.retrieveReference(
       ArgumentMatchers.eq(utr)
     )(ArgumentMatchers.any())) thenReturn Future.successful(Right(reference))
@@ -116,6 +119,15 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       case _ => testData
     }
     when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId))(
+      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Some(testData)))
+  }
+
+  private final def mockFetchFromSubscriptionDetails[T](reference: String, key: String, config: Option[T])(implicit writes: Writes[T]): Unit = {
+    testData = config match {
+      case Some(data) => CacheMap("", testData.data.updated(key, Json.toJson(data)))
+      case _ => testData
+    }
+    when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.eq(reference), ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId))(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Some(testData)))
   }
 
@@ -157,11 +169,25 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       ArgumentMatchers.eq(wanted),
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
+  protected final def verifySubscriptionDetailsSaveWithField[T](reference: String, count: Int, field: String, wanted: T): Unit =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[T](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(field),
+      ArgumentMatchers.eq(wanted),
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
   protected final def verifySubscriptionDetailsSaveWithField[T](count: Int, field: String, matcher: ArgumentMatcher[T]): Unit =
     verify(mockConnector, times(count)).saveSubscriptionDetails[T](
       ArgumentMatchers.any(),
       ArgumentMatchers.eq(field),
       argThat(matcher),
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
+  protected final def verifySubscriptionDetailsSaveWithField[T](reference: String, count: Int, field: String): Unit =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[T](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(field),
+      ArgumentMatchers.any()
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
   protected final def verifySubscriptionDetailsSaveWithField[T](count: Int, field: String): Unit =
@@ -175,6 +201,11 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     mockFetchFromSubscriptionDetails[String]("fakeKey", None)
 
     when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
+  }
+
+  protected final def setupMockSubscriptionDetailsSaveFunctions(reference: String, id: String): Unit = {
+    when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.eq(reference), ArgumentMatchers.any(), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
   }
 
@@ -221,14 +252,13 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(property))
   }
 
-  protected final def verifyPropertySave(property: Option[PropertyModel]): Unit = {
-    property match {
-      case Some(value) => verify(mockConnector, times(1))
-        .saveSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.Property), ArgumentMatchers.eq(value))(any(), any())
-      case None => verify(mockConnector, times(0))
-        .saveSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.Property), any())(any(), any())
-    }
-  }
+  protected final def verifyPropertySave(maybePropertyModel: Option[PropertyModel], maybeReference: Option[String] = None): Unit =
+    verify(mockConnector, times(maybePropertyModel.size))
+      .saveSubscriptionDetails[PropertyModel](
+        maybeReference match { case None => ArgumentMatchers.any(); case Some(reference) => ArgumentMatchers.eq(reference) },
+        ArgumentMatchers.eq(SubscriptionDataKeys.Property),
+        maybePropertyModel match { case None => ArgumentMatchers.any(); case Some(propertyModel) => ArgumentMatchers.eq(propertyModel) }
+      )(any(), any())
 
   protected final def mockDeleteAllFromSubscriptionDetails(deleteAll: HttpResponse): Unit = {
     when(mockConnector.deleteAll(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(deleteAll)
@@ -245,22 +275,15 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       .thenReturn(Future.successful(overseasProperty))
   }
 
-  protected final def verifyOverseasPropertySave(property: Option[OverseasPropertyModel]): Unit = {
-    property match {
-      case Some(value) => verify(
-        mockConnector,
-        times(1)
-      ).saveSubscriptionDetails[OverseasPropertyModel](
-        ArgumentMatchers.any(),
-        ArgumentMatchers.eq(SubscriptionDataKeys.OverseasProperty),
-        ArgumentMatchers.eq(value)
-      )(any(), any())
-      case None => verify(
-        mockConnector,
-        times(0)
-      ).saveSubscriptionDetails[OverseasPropertyModel](any(), ArgumentMatchers.eq(SubscriptionDataKeys.Property), any())(any(), any())
-    }
-  }
+  protected final def verifyOverseasPropertySave(maybeOverseasPropertyModel: Option[OverseasPropertyModel], maybeReference: Option[String] = None): Unit =
+    verify(
+      mockConnector,
+      times(maybeOverseasPropertyModel.size)
+    ).saveSubscriptionDetails[OverseasPropertyModel](
+      maybeReference match { case None => ArgumentMatchers.any(); case Some(reference) => ArgumentMatchers.eq(reference) },
+      ArgumentMatchers.eq(SubscriptionDataKeys.OverseasProperty),
+      maybeOverseasPropertyModel match { case None => ArgumentMatchers.any(); case Some(overseasPropertyModel) => ArgumentMatchers.eq(overseasPropertyModel) }
+    )(any(), any())
 
   protected final def mockFetchAllSelfEmployments(selfEmployments: Option[Seq[SelfEmploymentData]] = None): Unit = {
     when(mockConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessesKey))(any(), any()))
