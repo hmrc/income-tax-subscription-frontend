@@ -129,7 +129,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
             .get(3)
             .select(".govuk-table__cell")
 
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateThree(taxYearEnd.toString)
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString)
         tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateThree(taxYearEnd.toString)
       }
 
@@ -206,7 +206,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
             .get(3)
             .select(".govuk-table__cell")
 
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateThree((taxYearEnd + 1).toString)
+        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateThree(taxYearEnd.toString, (taxYearEnd + 1).toString)
         tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateThree((taxYearEnd + 1).toString)
       }
 
@@ -297,7 +297,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
     def deadlineDateTwo(year: String): String = s"5 November $year"
 
-    def fillingDateThree(year: String): String = s"6 October $year - 5 January $year"
+    def fillingDateThree(yearFrom: String, yearTo: String): String = s"6 October $yearFrom - 5 January $yearTo"
 
     def deadlineDateThree(year: String): String = s"5 February $year"
 

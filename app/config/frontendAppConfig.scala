@@ -18,11 +18,11 @@ package config
 
 import config.featureswitch.FeatureSwitching
 import models.common.subscription.EnrolmentKey
-
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 trait AppConfig extends FeatureSwitching {
 
@@ -62,6 +62,7 @@ trait AppConfig extends FeatureSwitching {
   val shutterPage: String
   val ggURL: String
   val agentServicesUrl: String
+  val agentServicesAccountHomeUrl: String
   val agentMicroserviceUrl: String
   val authenticatorUrl: String
   val hasEnabledTestOnlyRoutes: Boolean
@@ -242,6 +243,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
 
   // Agent Services config
   override lazy val agentServicesUrl: String = config.getString("agent-services.url")
+
+  override lazy val agentServicesAccountHomeUrl: String = config.getString("agent-services-frontend.url")
 
   override lazy val agentMicroserviceUrl: String = config.baseUrl("agent-microservice")
 

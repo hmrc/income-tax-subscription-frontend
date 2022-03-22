@@ -28,7 +28,7 @@
 @govukTable(Table(
   rows = updateAndDeadlineDates.map { updateDeadline =>
     Seq(
-      TableRow(content = Text(s"${updateDeadline.updateStart.toLongDate} - ${updateDeadline.updateEnd.toLongDate}")),
+      TableRow(content = Text(s"${updateDeadline.updateFrom.toLongDate} - ${updateDeadline.updateTo.toLongDate}")),
       TableRow(content = Text(updateDeadline.deadline.toLongDate))
     )
   },

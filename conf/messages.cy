@@ -504,7 +504,7 @@ stub.user.details.field_4                                       = Self Assessmen
 stub.user.details.field_5                                       = Date of birth
 stub.user.details.formhint.1.line_1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 stub.user.details.formhint.2                                    = For example, 10 12 1990
-stub.user.details.formhint.3                                    = For example, '1234546734'
+stub.user.details.formhint.3                                    = For example, ’1234546734’
 
 ## User Details ##
 user-details.title                                              = Cadarnhau’ch manylion
@@ -813,9 +813,28 @@ agent.summary.overseas_property_start_date                      = Dyddiad dechra
 agent.summary.income_type_overseas_property                     = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
 agent.summary.self_employments                                  = Nifer y busnesau sydd wedi’u cofrestru
 
-## Sign Up Complete page ##
+## Sign Up Complete page
+
+agent.sign-up-complete.heading                                  = Cofrestrwch wedi’i gwblhau
+agent.sign-up-complete.panel-client                             = Mae {0} {1}
+agent.sign-up-complete.signed-up-for-mtd                        = bellach wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.sign-up-complete.can-use-software                         = Gallwch nawr ddefnyddio meddalwedd er mwyn anfon diweddariadau ynghylch Treth Incwm
+agent.sign-up-complete.what-now.heading                         = Yr hyn sy’n digwydd nawr
+agent.sign-up-complete.what-now.find-software                   = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEM.
+agent.sign-up-complete.what-now.find-software.link              = dewch o hyd i feddalwedd sy’n cydweddu (yn agor tab newydd)
+agent.sign-up-complete.what-now.previous-updates                = Mae’n rhaid i chi ychwanegu’r holl incwm a threuliau ar gyfer y diweddariadau blaenorol gan ddefnyddio’ch meddalwedd ar gyfer:
+agent.sign-up-complete.what-now.no-penalty                      = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol.
+agent.sign-up-complete.what-now.next-updates                    = Anfonwch eich diweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd erbyn:
+agent.sign-up-complete.what-now.submit-annual                   = Cyflwynwch ddiweddariadau blynyddol eich cleient a datganwch ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
+agent.sign-up-complete.what-now.tell-your-client                = Ni fyddwn yn rhoi gwybod i’ch cleient eich bod wedi ei gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Felly bydd angen i chi roi gwybod iddo os hoffai ddefnyddio’r gwasanaeth hwn ei hun.
+agent.sign-up-complete.what-now.after-update                    = Ar ôl i chi anfon diweddariad, bydd eich cleient yn cael amcangyfrif o’i Dreth Incwm ar gyfer y flwyddyn hyd yn hyn. Gall weld yr hyn sydd arno ar gyfer y flwyddyn dreth ar ôl i chi anfon ei ddiweddariad terfynol.
+agent.sign-up-complete.what-now.agent-services-account          = Gallai gymryd ychydig o oriau cyn i wybodaeth newydd ymddangos ar eich {0}.
+agent.sign-up-complete.what-now.agent-services-account.link     = cyfrif gwasanaethau asiant
+agent.sign-up-complete.what-now.send-quarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
+
+## Old Sign Up Complete page
 agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
-agent.sign-up-complete.heading1                                 = Cofrestrwch wedi'i gwblhau
+agent.sign-up-complete.heading1                                 = Cofrestrwch wedi’i gwblhau
 agent.sign-up-complete.heading2                                 = Mae {0} {1}
 agent.sign-up-complete.heading3                                 = bellach wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.sign-up-complete.whatNow.heading                          = Yr hyn y mae angen i chi ei wneud nesaf
@@ -840,13 +859,13 @@ agent.error.back_to_preferences.empty                           = Rhaid i chi dd
 agent.error.dob_date.empty                                      = Nodwch ddyddiad geni’ch cleient
 agent.error.dob_date.date.empty                                 = Nodwch ddyddiad geni’ch cleient
 agent.error.dob_date.invalid_chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
-agent.error.dob_date.day.empty                                  = Rhaid i'w dyddiad geni gynnwys diwrnod
-agent.error.dob_date.month.empty                                = Rhaid i'w dyddiad geni gynnwys mis
-agent.error.dob_date.year.empty                                 = Rhaid i'w dyddiad geni gynnwys blwyddyn
-agent.error.dob_date.day_month.empty                            = Rhaid i'w dyddiad geni gynnwys diwrnod a mis
-agent.error.dob_date.day_year.empty                             = Rhaid i'w dyddiad geni gynnwys diwrnod a blwyddyn
-agent.error.dob_date.month_year.empty                           = Rhaid i'w dyddiad geni gynnwys mis a blwyddyn
-agent.error.dob_date.not_in_past                                = Rhaid i'w dyddiad geni fod yn y gorffennol
+agent.error.dob_date.day.empty                                  = Rhaid i’w dyddiad geni gynnwys diwrnod
+agent.error.dob_date.month.empty                                = Rhaid i’w dyddiad geni gynnwys mis
+agent.error.dob_date.year.empty                                 = Rhaid i’w dyddiad geni gynnwys blwyddyn
+agent.error.dob_date.day_month.empty                            = Rhaid i’w dyddiad geni gynnwys diwrnod a mis
+agent.error.dob_date.day_year.empty                             = Rhaid i’w dyddiad geni gynnwys diwrnod a blwyddyn
+agent.error.dob_date.month_year.empty                           = Rhaid i’w dyddiad geni gynnwys mis a blwyddyn
+agent.error.dob_date.not_in_past                                = Rhaid i’w dyddiad geni fod yn y gorffennol
 agent.error.dob_date.invalid                                    = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.dob_date.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
@@ -1014,7 +1033,7 @@ language-selector.change-to-language                            = Change the lan
 language-selector.nav-label                                     = Cyfnewidydd iaith
 
 ## Claim Confirm
-claimConfirm.title                                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i'ch cyfrif
+claimConfirm.title                                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
 claimConfirm.heading                                            = Yr hyn sy’n digwydd nawr
 claimConfirm.content.line1                                      = Os nad ydych yn defnyddio asiant i reoli’ch materion treth, bydd angen i chi wneud y canlynol:
 claimConfirm.content.checklist.item1.link                       = Dewch o hyd i feddalwedd sy’n cydweddu
