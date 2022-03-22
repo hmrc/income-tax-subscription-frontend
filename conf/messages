@@ -461,7 +461,7 @@ stub.user.details.field_4                                       = Self Assessmen
 stub.user.details.field_5                                       = Date of birth
 stub.user.details.formhint.1.line_1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 stub.user.details.formhint.2                                    = For example, 10 12 1990
-stub.user.details.formhint.3                                    = For example, '1234546734'
+stub.user.details.formhint.3                                    = For example, ’1234546734’
 
 # User details page
 user-details-error.title                                        = User match error
@@ -773,7 +773,25 @@ agent.summary.overseas_property_start_date                      = Trading start 
 agent.summary.income_type_overseas_property                     = Accounting method for overseas property
 agent.summary.self_employments                                  = Number of businesses signed up
 
-## Sign Up Complete page ##
+## Agent Sign Up Complete page
+agent.sign-up-complete.heading                                  = Sign up complete
+agent.sign-up-complete.panel-client                             = {0} {1}
+agent.sign-up-complete.signed-up-for-mtd                        = is now signed up for Making Tax Digital for Income Tax.
+agent.sign-up-complete.can-use-software                         = You can now use software to send Income Tax updates
+agent.sign-up-complete.what-now.heading                         = What happens now
+agent.sign-up-complete.what-now.find-software                   = If you have not already done so, {0} and allow it to interact with HMRC.
+agent.sign-up-complete.what-now.find-software.link              = find software that’s compatible (opens in new tab)
+agent.sign-up-complete.what-now.previous-updates                = You need to add all income and expenses for the previous updates using your software for:
+agent.sign-up-complete.what-now.no-penalty                      = There is no penalty if you or your client start making updates mid-way through the current tax year. And, you can make as many updates as you wish, during each quarter.
+agent.sign-up-complete.what-now.next-updates                    = Send next quarterly updates using your software by:
+agent.sign-up-complete.what-now.submit-annual                   = Submit your annual updates and declare for the tax year by 31 January {0}.
+agent.sign-up-complete.what-now.tell-your-client                = We will not tell your client that you have signed them up for Making Tax Digital for Income Tax. So you will need to inform them if they would like to use this service themselves.
+agent.sign-up-complete.what-now.after-update                    = After you’ve sent an update, your client will get an Income Tax year-to-date estimate. They can see what they owe for the tax year after you’ve sent their final update.
+agent.sign-up-complete.what-now.agent-services-account          = It may take a few hours before new information is displayed in your {0}.
+agent.sign-up-complete.what-now.agent-services-account.link     = agent service account
+agent.sign-up-complete.what-now.send-quarterly                  = You will need to send quarterly updates using your software by:
+
+# old messages for agent sign up complete below, remove once done above
 agent.sign-up-complete.title                                    = You have signed up {0} {1} to use software to send Income Tax updates
 agent.sign-up-complete.heading1                                 = Sign up complete
 agent.sign-up-complete.heading2                                 = {0} {1}

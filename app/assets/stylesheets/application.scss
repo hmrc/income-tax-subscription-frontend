@@ -9,6 +9,10 @@ $hmrc-assets-path: "/report-quarterly/income-and-expenses/sign-up/assets/lib/hmr
   font-weight: bold;
 }
 
+.govuk-panel__body--secondary {
+  @include govuk-font($size: 19);
+}
+
 .govuk-remove-business-link {
   float: right;
   clear: right;

@@ -80,6 +80,8 @@ trait MockConfig extends AppConfig {
 
   override lazy val agentServicesUrl: String = "/agent-subscription"
 
+  override lazy val agentServicesAccountHomeUrl: String = "/agent-services-account"
+
   override lazy val agentAuthUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"
 
   override lazy val agentAccountUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"

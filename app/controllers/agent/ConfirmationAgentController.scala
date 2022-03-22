@@ -56,17 +56,14 @@ class ConfirmationAgentController @Inject()(val auditingService: AuditingService
 
       val postAction = controllers.agent.routes.AddAnotherClientController.addAnother()
       val signOutAction = controllers.SignOutController.signOut
-      val endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear
-      val updatesAfter = accountingPeriodService.updateDatesAfter()
-      val updatesBefore = accountingPeriodService.updateDatesBefore()
       val clientName = request.fetchClientName.getOrElse(throw new Exception("[ConfirmationController][show]-could not retrieve client name from session"))
       val clientNino = user.clientNino.getOrElse(throw new Exception("[ConfirmationController][show]-could not retrieve client nino from session"))
 
       val formattedClientNino = formatNino(clientNino)
 
       withAgentReference { reference =>
-        subscriptionDetailsService.fetchAll(reference) map { cacheMap =>
-          Ok(signUpComplete(cacheMap.getAgentSummary(), clientName, formattedClientNino, endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter, postAction, signOutAction))
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { taxYearSelection =>
+          Ok(signUpComplete(taxYearSelection.map(_.accountingYear), clientName, formattedClientNino, postAction, signOutAction))
         }
       }
   }

@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PrePopulationService @Inject()(
-                                      val subscriptionDetailsService: SubscriptionDetailsService,
+                                      val subscriptionDetailsService: SubscriptionDetailsService
                                     ) extends FeatureSwitching with Logging {
 
   def prePopulate(reference: String, prepop: PrePopData)

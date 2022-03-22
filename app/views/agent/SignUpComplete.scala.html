@@ -15,66 +15,114 @@
  *@
 
 @import config.AppConfig
-@import models.AgentSummary
 @import views.html.helpers.injected.{ButtonHelper, SignOutLink}
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.signUpCompleteNextTaxYearHelper
-@import views.html.helpers.signUpCompleteCurrentTaxYearHelper
+@import utilities.ImplicitDateFormatterImpl
+@import services.AccountingPeriodService
+@import views.html.helpers.injected.UpdateDeadlineTable
 
 @this(
         agentMainTemplate: AgentMainTemplate,
         buttonHelper: ButtonHelper,
         signOutLink: SignOutLink,
-        form: FormWithCSRF
+        form: FormWithCSRF,
+        govukPanel: GovukPanel,
+        implicitDateFormatter: ImplicitDateFormatterImpl,
+        table: UpdateDeadlineTable,
+        accountingPeriodService: AccountingPeriodService
 )
 
-@(summary: AgentSummary, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)], postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(taxYearSelection: Option[AccountingYear], clientName: String, clientNino: String, postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@import implicitDateFormatter.LongDate
 
 @dataHelper(metricId: String, optFieldValue: Option[String]) = {
-@for(value <- optFieldValue) {
-    <div data-metrics="itsa:@metricId:@value"></div>
+    @for(value <- optFieldValue) {
+        <div data-metrics="itsa:@metricId:@value"></div>
+    }
 }
+
+@headingPanelContent = {
+    <p>
+        @messages("agent.sign-up-complete.panel-client", clientName, clientNino)
+        <br>
+        @messages("agent.sign-up-complete.signed-up-for-mtd")
+    </p>
+    <p class="govuk-panel__body--secondary">
+        @messages("agent.sign-up-complete.can-use-software")
+    </p>
 }
 
-@agentMainTemplate(title = Messages("agent.sign-up-complete.title", clientName, clientNino)) {
+@headingPanel = @{
+    govukPanel(Panel(
+        title = Text(messages("agent.sign-up-complete.heading")),
+        content = HtmlContent(headingPanelContent)
+    ))
+}
 
-    @dataHelper("self-employment", summary.incomeSource.map(_.selfEmployment.toString))
-    @dataHelper("uk-property", summary.incomeSource.map(_.ukProperty.toString))
-    @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod.toString))
+@previousUpdates(previous: List[UpdateDeadline]) = {
+    @if(previous.nonEmpty) {
+        <li>
+            <p class="govuk-body">@messages("agent.sign-up-complete.what-now.previous-updates")</p>
+            @table(previous)
+            <p class="govuk-body">@messages("agent.sign-up-complete.what-now.no-penalty")</p>
+        </li>
+    }
+}
 
-    <div id="comfirmation-panel" class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-8">
-        <h1 class="govuk-panel__title">@messages("agent.sign-up-complete.heading1")</h1>
-        <div class="govuk-panel__body">
-            <div class="govuk-!-font-weight-bold">@Html(Messages("agent.sign-up-complete.heading2", clientName, clientNino))</div>
-            <div>@Html(Messages("agent.sign-up-complete.heading3"))</div>
-        </div>
-    </div>
-
-
-    <section class="govuk-form-group" id="whatNext">
-        <h2 class="govuk-heading-m">@messages("agent.sign-up-complete.whatNow.heading")</h2>
-        <p class = "govuk-body">@messages("agent.sign-up-complete.whatNow.para1") </p>
-
-        <ol id="actionList" class="govuk-list govuk-list--number govuk-!-margin-2">
-            <li>
-            @Html(messages(
-                key = "agent.sign-up-complete.whatNow.number1",
-                args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} rel="noreferrer noopener" target="_blank">{messages("agent.sign-up-complete.whatNow.number1.link")}</a>
-            ))
-            </li>
-            @if(summary.selectedTaxYear.exists(_.accountingYear == Next)) {
-                @signUpCompleteNextTaxYearHelper(endYearOfCurrentTaxPeriod)
-            } else {
-                @signUpCompleteCurrentTaxYearHelper(endYearOfCurrentTaxPeriod, updatesBefore, updatesAfter)
-            }
-
-        </ol>
-
-        <p class = "govuk-body">@messages("agent.sign-up-complete.whatNow.para2") </p>
-
-        @form(action = postAction) {
-            @buttonHelper(buttonText = messages("agent.base.sign_up_another_client"))
+@nextUpdates(next: List[UpdateDeadline], isNextYear: Boolean = false) = {
+    <li>
+        @if(isNextYear) {
+            <p class="govuk-body">@messages("agent.sign-up-complete.what-now.send-quarterly")</p>
+        } else {
+            <p class="govuk-body">@messages("agent.sign-up-complete.what-now.next-updates")</p>
         }
+        @table(next)
+    </li>
+}
+
+@whatHappensNow = {
+    <h2 class="govuk-heading-m">@messages("agent.sign-up-complete.what-now.heading")</h2>
+
+    <ol class="govuk-list govuk-list--number govuk-!-margin-2">
+        <li>
+            @Html(messages(
+                key = "agent.sign-up-complete.what-now.find-software",
+                args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} rel="noreferrer noopener" target="_blank">{messages("agent.sign-up-complete.what-now.find-software.link")}</a>
+            ))
+        </li>
+        @if(taxYearSelection.contains(Next)) {
+            @nextUpdates(accountingPeriodService.getAllUpdateAndDeadlineDates(Next), isNextYear = true)
+            <li>@messages("agent.sign-up-complete.what-now.submit-annual", (accountingPeriodService.currentTaxYear + 2).toString)</li>
+        } else {
+            @previousUpdates(accountingPeriodService.getCurrentYearUpdateDates.previous)
+            @nextUpdates(accountingPeriodService.getCurrentYearUpdateDates.next)
+            <li>@messages("agent.sign-up-complete.what-now.submit-annual", (accountingPeriodService.currentTaxYear + 1).toString)</li>
+        }
+        <li>@messages("agent.sign-up-complete.what-now.tell-your-client")</li>
+    </ol>
+}
+
+@agentMainTemplate(title = messages("agent.sign-up-complete.title", clientName, clientNino)) {
+
+    @headingPanel
+
+    @whatHappensNow
+
+    <p class="govuk-body">@messages("agent.sign-up-complete.what-now.after-update")</p>
+
+    <p class="govuk-body">
+        @Html(messages(
+            key = "agent.sign-up-complete.what-now.agent-services-account",
+            args = <a class="govuk-link" href={appConfig.agentServicesAccountHomeUrl} rel="referrer noopener" target="_blank">{messages("agent.sign-up-complete.what-now.agent-services-account.link")}</a>
+        ))
+    </p>
+
+    @form(action = postAction) {
+        @buttonHelper(buttonText = messages("agent.base.sign_up_another_client"))
+    }
+
+    <div class="govuk-form-group">
         @signOutLink()
-    </section>
+    </div>
 }
