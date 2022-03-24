@@ -19,7 +19,6 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSourceModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +33,7 @@ class RoutingController @Inject()(val auditingService: AuditingService,
                                   val appConfig: AppConfig,
                                   val subscriptionDetailsService: SubscriptionDetailsService)
                                  (implicit val ec: ExecutionContext,
-                                  mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
+                                  mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval {
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

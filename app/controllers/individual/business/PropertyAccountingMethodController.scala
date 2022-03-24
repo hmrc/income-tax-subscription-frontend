@@ -35,7 +35,6 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ForeignProperty, SaveAndRetrieve}
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingMethodPropertyForm
 import models.AccountingMethod
@@ -56,7 +55,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    val appConfig: AppConfig,
-                                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval {
 
   private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 

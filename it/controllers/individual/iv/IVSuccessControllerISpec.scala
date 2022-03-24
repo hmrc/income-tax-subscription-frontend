@@ -17,20 +17,14 @@
 package controllers.individual.iv
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, IdentityVerification}
-import config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{baseURI, claimEnrolmentResolverURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import utilities.ITSASessionKeys
 
-class IVSuccessControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    disable(IdentityVerification)
-    super.beforeEach()
-  }
+class IVSuccessControllerISpec extends ComponentSpecBase {
 
   s"GET ${controllers.individual.iv.routes.IVSuccessController.success.url}" when {
 
@@ -47,50 +41,33 @@ class IVSuccessControllerISpec extends ComponentSpecBase with FeatureSwitching {
       }
     }
 
-    "the identity verification feature switch is disabled" should {
-      "return a not found page to the user" in {
+    "the user is in a claim enrolment journey" should {
+      "redirect the user to the claim enrolment resolver" in {
+        enable(ClaimEnrolment)
+        AuthStub.stubAuthSuccess()
+
+        val res = IncomeTaxSubscriptionFrontend.ivSuccess(
+          sessionKeys = Map(
+            ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+          )
+        )
+
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(claimEnrolmentResolverURI)
+        )
+      }
+    }
+    "the user is not in a claim enrolment journey" should {
+      "redirect the user to the home page" in {
         AuthStub.stubAuthSuccess()
 
         val res = IncomeTaxSubscriptionFrontend.ivSuccess()
 
         res should have(
-          httpStatus(NOT_FOUND),
-          pageTitle("Page not found - 404")
+          httpStatus(SEE_OTHER),
+          redirectURI(baseURI)
         )
-      }
-    }
-
-    "the identity verification feature switch is enabled" when {
-      "the user is in a claim enrolment journey" should {
-        "redirect the user to the home page" in {
-          enable(IdentityVerification)
-          enable(ClaimEnrolment)
-          AuthStub.stubAuthSuccess()
-
-          val res = IncomeTaxSubscriptionFrontend.ivSuccess(
-            sessionKeys = Map(
-              ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
-            )
-          )
-
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(claimEnrolmentResolverURI)
-          )
-        }
-      }
-      "the user is not in a claim enrolment journey" should {
-        "redirect the user to the home page" in {
-          enable(IdentityVerification)
-          AuthStub.stubAuthSuccess()
-
-          val res = IncomeTaxSubscriptionFrontend.ivSuccess()
-
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(baseURI)
-          )
-        }
       }
     }
   }

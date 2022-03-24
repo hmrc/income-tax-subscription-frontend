@@ -17,14 +17,13 @@
 package controllers.agent
 
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.SEE_OTHER
 
 
-class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler with FeatureSwitching {
+class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  {
 
   override def beforeEach(): Unit = {
     disable(RemoveCovidPages)

@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import models.common.TimestampModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -39,7 +38,7 @@ import scala.concurrent.Future
 class ProgressSavedControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with FeatureSwitching {
+   {
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
   implicit lazy val config:Configuration = app.injector.instanceOf[Configuration]

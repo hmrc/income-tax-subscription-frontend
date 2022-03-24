@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.agent.ComponentSpecBase
@@ -29,7 +28,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
-class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase  {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/uk-property-check-your-answers" should {
     "return OK" when {
       "the save and retrieve feature switch is enabled" in {

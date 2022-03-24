@@ -17,7 +17,6 @@
 package controllers.usermatching
 
 import config.featureswitch.FeatureSwitch.SPSEnabled
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
@@ -25,7 +24,7 @@ import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import utilities.ITSASessionKeys
 
-class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler with FeatureSwitching {
+class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

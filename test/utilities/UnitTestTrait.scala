@@ -16,9 +16,11 @@
 
 package utilities
 
+import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.{OptionValues, WordSpecLike}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Environment
@@ -31,7 +33,13 @@ import uk.gov.hmrc.play.language.LanguageUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits with I18nSupport {
+trait UnitTestTrait extends PlaySpec
+  with GuiceOneServerPerSuite
+  with Implicits
+  with I18nSupport
+  with FeatureSwitching
+  with OptionValues
+  with WordSpecLike {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

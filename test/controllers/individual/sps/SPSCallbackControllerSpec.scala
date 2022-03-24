@@ -19,7 +19,6 @@ package controllers.individual.sps
 import agent.audit.mocks.MockAuditingService
 import auth.individual.SignUp
 import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -31,7 +30,7 @@ import utilities.individual.TestConstants
 
 import scala.concurrent.Future
 
-class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingService with FeatureSwitching {
+class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingService  {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

@@ -19,7 +19,6 @@ package controllers.agent.business
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.agent.RemoveClientOverseasPropertyForm
@@ -43,7 +42,7 @@ class RemoveClientOverseasPropertyController @Inject()(val auditingService: Audi
                                                 (implicit val ec: ExecutionContext,
                                                  val appConfig: AppConfig,
                                                  mcc: MessagesControllerComponents) extends AuthenticatedController
-  with FeatureSwitching with ReferenceRetrieval {
+   with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>

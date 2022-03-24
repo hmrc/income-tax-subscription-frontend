@@ -19,7 +19,6 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.{AuditingService, AuthService, SPSService}
@@ -36,7 +35,7 @@ class SPSCallbackForClaimEnrolController @Inject()(val auditingService: Auditing
                                                    claimEnrolmentService: ClaimEnrolmentService)
                                                   (implicit val appConfig: AppConfig,
                                                    val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController with FeatureSwitching {
+                                                   mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController  {
 
   def callback: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

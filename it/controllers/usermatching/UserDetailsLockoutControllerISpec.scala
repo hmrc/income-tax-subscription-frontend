@@ -16,13 +16,12 @@
 
 package controllers.usermatching
 
-import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, UserLockoutStub}
 import play.api.http.Status.{OK, SEE_OTHER}
 
-class UserDetailsLockoutControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class UserDetailsLockoutControllerISpec extends ComponentSpecBase  {
 
   "GET /error/lockout" when {
     "the agent is still locked out" should {

@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.subscriptionData
@@ -30,7 +29,7 @@ import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 import java.time.LocalDate
 
-class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 

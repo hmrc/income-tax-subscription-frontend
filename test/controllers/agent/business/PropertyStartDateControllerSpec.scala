@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.PropertyStartDateForm
 import models.DateModel
@@ -38,7 +37,7 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAuditingService  {
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

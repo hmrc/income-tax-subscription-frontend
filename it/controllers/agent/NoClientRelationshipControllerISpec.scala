@@ -17,7 +17,6 @@
 package controllers.agent
 
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
-import config.featureswitch.FeatureSwitching
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import org.jsoup.Jsoup
@@ -25,7 +24,7 @@ import org.jsoup.nodes.{Document, Element}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.{OK, SEE_OTHER}
 
-class NoClientRelationshipControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
 
   override def beforeEach(): Unit = {
     disable(RemoveCovidPages)

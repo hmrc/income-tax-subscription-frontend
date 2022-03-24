@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.agent.IncomeSourceForm
@@ -48,7 +47,6 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends AuthenticatedController
-  with FeatureSwitching
   with ReferenceRetrieval {
 
   def backUrl(isEditMode: Boolean): String = {

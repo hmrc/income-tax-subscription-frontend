@@ -17,11 +17,9 @@
 package controllers.individual.subscription
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -40,7 +38,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockAccountingPeriodService
   with MockUserMatchingService
   with MockAuditingService
-  with FeatureSwitching {
+   {
 
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
 
@@ -88,7 +86,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
         val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime))
 
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
 
       "submitted is not in session" should {
@@ -103,7 +101,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         mockFetchSubscriptionIdFromSubscriptionDetails("testId")
         val result = TestConfirmationController.show(subscriptionRequest)
 
-        intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
+        intercept[NotFoundException](await(result)).message mustBe "AuthPredicates.enrolledPredicate"
       }
     }
 
@@ -115,8 +113,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
       val result: Future[Result] = TestConfirmationController.submit(subscriptionRequest)
 
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.SignOutController.signOut.url)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SignOutController.signOut.url)
     }
   }
 

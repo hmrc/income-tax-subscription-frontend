@@ -16,7 +16,6 @@
 
 package utilities
 
-import config.featureswitch.FeatureSwitching
 import models.common.subscription.CreateIncomeSourcesModel
 import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.{AgentSummary, Current, IndividualSummary, Next}
@@ -29,7 +28,7 @@ import utilities.agent.TestModels.testSelfEmployments
 import utilities.individual.TestConstants._
 
 class SubscriptionDataUtilSpec extends UnitTestTrait
-  with FeatureSwitching
+  
   with BeforeAndAfterEach {
 
   "SubscriptionDataUtil" should {

@@ -21,7 +21,6 @@ import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
-import utilities.SubscriptionDataUtil._
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.SignUpComplete
 

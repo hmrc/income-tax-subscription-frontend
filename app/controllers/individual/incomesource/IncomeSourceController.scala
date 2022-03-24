@@ -19,7 +19,6 @@ package controllers.individual.incomesource
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.individual.incomesource.IncomeSourceForm
@@ -47,7 +46,7 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
                                        incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval {
+                                       mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval {
 
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     incomeSource(

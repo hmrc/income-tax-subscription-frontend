@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
@@ -40,7 +39,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockAccountingPeriodService
   with MockSubscriptionDetailsService
-  with FeatureSwitching {
+   {
   override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 

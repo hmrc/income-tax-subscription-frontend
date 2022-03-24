@@ -26,7 +26,6 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch] = Set(
     ForeignProperty,
-    IdentityVerification,
     RemoveCovidPages,
     SPSEnabled,
     ClaimEnrolment,
@@ -45,11 +44,6 @@ object FeatureSwitch {
   case object ForeignProperty extends FeatureSwitch {
     override val name = s"$prefix.enable-foreign-property"
     override val displayText = "Foreign property"
-  }
-
-  case object IdentityVerification extends FeatureSwitch {
-    override val name = s"$prefix.enable-identity-verification"
-    override val displayText: String = "Identity Verification"
   }
 
   case object RemoveCovidPages extends FeatureSwitch {

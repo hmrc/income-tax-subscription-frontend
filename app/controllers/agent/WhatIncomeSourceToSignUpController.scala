@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.agent.BusinessIncomeSourceForm
 import models.IncomeSourcesStatus
@@ -41,7 +40,7 @@ class WhatIncomeSourceToSignUpController @Inject()(val whatIncomeSourceToSignUp:
                                                   )(implicit val ec: ExecutionContext,
                                                     val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents) extends AuthenticatedController
-  with FeatureSwitching
+  
   with ReferenceRetrieval {
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

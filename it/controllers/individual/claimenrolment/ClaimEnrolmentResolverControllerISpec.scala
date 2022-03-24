@@ -17,7 +17,6 @@
 package controllers.individual.claimenrolment
 
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import play.api.http.Status.{CREATED, INTERNAL_SERVER_ERROR, NO_CONTENT, SEE_OTHER}
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.testMTDITEnrolmentKey
@@ -26,7 +25,7 @@ import helpers.servicemocks.{AuthStub, EnrolmentStoreProxyStub, SubscriptionStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.{NOT_FOUND, OK}
 
-class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with FeatureSwitching with SessionCookieCrumbler {
+class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase  with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     disable(ClaimEnrolment)

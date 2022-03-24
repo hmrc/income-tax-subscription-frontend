@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import agent.audit.mocks.{MockAuditingService, MockOverseasPropertyStartDate}
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.OverseasPropertyStartDateForm
 import models.DateModel
@@ -36,7 +35,7 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with MockOverseasPropertyStartDate with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with MockOverseasPropertyStartDate  {
 
   override def beforeEach(): Unit = {
     disable(SaveAndRetrieve)

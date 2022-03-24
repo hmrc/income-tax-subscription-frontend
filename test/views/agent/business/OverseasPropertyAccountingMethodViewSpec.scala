@@ -17,7 +17,6 @@
 package views.agent.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import forms.agent.AccountingMethodOverseasPropertyForm
 import forms.submapping.AccountingMethodMapping
 import models.AccountingMethod
@@ -30,7 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
 import views.html.agent.business.OverseasPropertyAccountingMethod
 
-class OverseasPropertyAccountingMethodViewSpec extends ViewSpec with FeatureSwitching {
+class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
 
   val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
   val testError: FormError = FormError(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty, "testError")

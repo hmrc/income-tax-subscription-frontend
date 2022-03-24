@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
@@ -47,7 +46,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
   with MockIncomeTaxSubscriptionConnector
-  with FeatureSwitching {
+   {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: TaskList = mock[TaskList]

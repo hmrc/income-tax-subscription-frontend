@@ -19,7 +19,6 @@ package controllers.agent.eligibility
 import auth.agent.StatelessController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
-import config.featureswitch.FeatureSwitching
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
@@ -35,7 +34,7 @@ class CovidCannotSignUpController @Inject()(val covidCannotSignUp: CovidCannotSi
                                             val authService: AuthService)
                                            (implicit val ec: ExecutionContext,
                                             mcc: MessagesControllerComponents,
-                                            val appConfig: AppConfig) extends StatelessController with FeatureSwitching {
+                                            val appConfig: AppConfig) extends StatelessController  {
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>

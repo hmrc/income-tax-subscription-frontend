@@ -19,7 +19,6 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.utils.IndividualAnswers._
 import controllers.utils.{ReferenceRetrieval, RequireAnswer}
 import forms.individual.business.OverseasPropertyStartDateForm
@@ -46,7 +45,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
                                                    (implicit val ec: ExecutionContext,
                                                     val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents)
-  extends SignUpController with ImplicitDateFormatter with RequireAnswer with FeatureSwitching with ReferenceRetrieval {
+  extends SignUpController with ImplicitDateFormatter with RequireAnswer  with ReferenceRetrieval {
 
   private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 

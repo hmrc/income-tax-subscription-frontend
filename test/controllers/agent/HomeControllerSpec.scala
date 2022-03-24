@@ -20,7 +20,6 @@ import agent.audit.mocks.MockAuditingService
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -29,7 +28,7 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class HomeControllerSpec extends AgentControllerBaseSpec with FeatureSwitching with MockAuditingService {
+class HomeControllerSpec extends AgentControllerBaseSpec  with MockAuditingService {
 
   override val controllerName: String = "HomeControllerSpec"
 

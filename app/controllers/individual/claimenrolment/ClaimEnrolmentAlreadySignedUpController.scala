@@ -19,7 +19,6 @@ package controllers.individual.claimenrolment
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
-import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.NotFoundException
@@ -34,7 +33,7 @@ class ClaimEnrolmentAlreadySignedUpController @Inject()(val authService: AuthSer
                                                         claimEnrolmentAlreadySignedUp: ClaimEnrolmentAlreadySignedUp)
                                                        (implicit val ec: ExecutionContext,
                                                         val appConfig: AppConfig,
-                                                        mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController with FeatureSwitching {
+                                                        mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController  {
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       if (isEnabled(ClaimEnrolment)) {

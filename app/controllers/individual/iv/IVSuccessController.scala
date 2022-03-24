@@ -18,12 +18,11 @@ package controllers.individual.iv
 
 import auth.individual.{StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{IdentityVerification, ClaimEnrolment => ClaimEnrolmentFeatureSwitch}
-import config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitch.{ClaimEnrolment => ClaimEnrolmentFeatureSwitch}
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
 
 import javax.inject.Inject
@@ -33,28 +32,24 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
                                     val authService: AuthService,
                                     val auditingService: AuditingService)
                                    (implicit val ec: ExecutionContext,
-                                    mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
+                                    mcc: MessagesControllerComponents) extends StatelessController  {
 
   def success: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
-      if (isEnabled(IdentityVerification)) {
-        if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
-          val nino: String = user.nino.getOrElse(throw new InternalServerException("[IVSuccessController][success] - Could not retrieve nino after iv success"))
-          auditingService.audit(IVOutcomeSuccessAuditModel(nino))
-        }
-        if (isEnabled(ClaimEnrolmentFeatureSwitch) && request.session.isInState(ClaimEnrolmentJourney)) {
-          Future.successful(
-            Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
-              .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
-          )
-        } else {
-          Future.successful(
-            Redirect(controllers.usermatching.routes.HomeController.home)
-              .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
-          )
-        }
+      if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
+        val nino: String = user.nino.getOrElse(throw new InternalServerException("[IVSuccessController][success] - Could not retrieve nino after iv success"))
+        auditingService.audit(IVOutcomeSuccessAuditModel(nino))
+      }
+      if (isEnabled(ClaimEnrolmentFeatureSwitch) && request.session.isInState(ClaimEnrolmentJourney)) {
+        Future.successful(
+          Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
+            .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
+        )
       } else {
-        Future.failed(new NotFoundException("[IVSuccessController][success] - identity verification disabled"))
+        Future.successful(
+          Redirect(controllers.usermatching.routes.HomeController.home)
+            .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
+        )
       }
   }
 

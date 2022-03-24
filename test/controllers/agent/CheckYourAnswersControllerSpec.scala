@@ -17,7 +17,6 @@
 package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitching
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.{IncomeSourceModel, OverseasPropertyModel, PropertyModel}
 import org.mockito.ArgumentMatchers
@@ -46,7 +45,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionOrchestrationService
   with MockIncomeTaxSubscriptionConnector
   with MockAuditingService
-  with FeatureSwitching {
+   {
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
   val mockCheckYourAnswers: CheckYourAnswers = mock[CheckYourAnswers]
 

@@ -17,7 +17,6 @@
 package controllers.individual.subscription
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.{IncomeSourceModel, OverseasPropertyModel, PropertyModel}
@@ -44,7 +43,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockSubscriptionOrchestrationService
   with MockIncomeTaxSubscriptionConnector
   with MockAuditingService
-  with FeatureSwitching {
+   {
 
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
   val mockCheckYourAnswers: CheckYourAnswers = mock[CheckYourAnswers]

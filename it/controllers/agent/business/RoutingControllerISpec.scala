@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
@@ -26,7 +25,7 @@ import helpers.agent.servicemocks.AuthStub
 import models.common.IncomeSourceModel
 import play.api.http.Status._
 
-class RoutingControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class RoutingControllerISpec extends ComponentSpecBase  {
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/routing" when {
     "not in edit mode" should {

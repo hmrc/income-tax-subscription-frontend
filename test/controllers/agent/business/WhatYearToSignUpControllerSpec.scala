@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
 import forms.agent.AccountingYearForm
 import models.Current
@@ -37,7 +36,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with MockAuditingService
-  with FeatureSwitching {
+   {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

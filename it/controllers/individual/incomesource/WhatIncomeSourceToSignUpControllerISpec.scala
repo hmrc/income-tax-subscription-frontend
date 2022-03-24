@@ -17,7 +17,6 @@
 package controllers.individual.incomesource
 
 import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
@@ -29,7 +28,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 
-class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

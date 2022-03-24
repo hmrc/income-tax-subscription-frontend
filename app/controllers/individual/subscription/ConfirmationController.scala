@@ -18,7 +18,6 @@ package controllers.individual.subscription
 
 import auth.individual.PostSubmissionController
 import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -35,7 +34,7 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        signUpComplete: SignUpComplete)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends PostSubmissionController with FeatureSwitching with ReferenceRetrieval {
+                                       mcc: MessagesControllerComponents) extends PostSubmissionController  with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

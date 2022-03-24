@@ -17,7 +17,6 @@
 package controllers.agent
 
 import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
@@ -29,7 +28,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 
-class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
   private val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
   "GET /report-quarterly/income-and-expenses/sign-up/client/income-source" should {
     "return OK" when {

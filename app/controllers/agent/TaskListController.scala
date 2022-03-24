@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -49,7 +48,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
                                    val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching with ReferenceRetrieval with Logging {
+                                   mcc: MessagesControllerComponents) extends AuthenticatedController  with ReferenceRetrieval with Logging {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 

@@ -18,17 +18,14 @@ package controllers.individual.iv
 
 import auth.individual.StatelessController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.IdentityVerification
-import config.featureswitch.FeatureSwitching
-import javax.inject.Inject
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.NotFoundException
 import utilities.ITSASessionKeys
 import views.html.individual.iv.IVFailure
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IVFailureController @Inject()(val authService: AuthService,
@@ -36,21 +33,17 @@ class IVFailureController @Inject()(val authService: AuthService,
                                     ivFailure: IVFailure)
                                    (implicit val ec: ExecutionContext,
                                     val appConfig: AppConfig,
-                                    mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
+                                    mcc: MessagesControllerComponents) extends StatelessController {
 
   def view(implicit request: Request[_]): Html = ivFailure()
 
   def failure: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     _ =>
-      if (isEnabled(IdentityVerification)) {
-        if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
-          request.getQueryString("journeyId").foreach(id => auditingService.audit(IVOutcomeFailureAuditModel(id)))
-          Future.successful(Ok(view).removingFromSession(ITSASessionKeys.IdentityVerificationFlag))
-        } else {
-          Future.successful(Ok(view))
-        }
+      if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
+        request.getQueryString("journeyId").foreach(id => auditingService.audit(IVOutcomeFailureAuditModel(id)))
+        Future.successful(Ok(view).removingFromSession(ITSASessionKeys.IdentityVerificationFlag))
       } else {
-        Future.failed(new NotFoundException("[IVFailureController][failure] - identity verification disabled"))
+        Future.successful(Ok(view))
       }
   }
 
