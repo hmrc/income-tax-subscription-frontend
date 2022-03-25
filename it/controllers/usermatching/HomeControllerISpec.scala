@@ -16,7 +16,6 @@
 
 package controllers.usermatching
 
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
@@ -24,12 +23,7 @@ import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import utilities.ITSASessionKeys
 
-class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(SPSEnabled)
-  }
+class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   "GET /report-quarterly/income-and-expenses/sign-up" should {
     "return the guidance page" in {
@@ -66,43 +60,22 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
       }
       "the user does not have a subscription" when {
         "the user is eligible" when {
-          "feature switch SPSEnabled is disabled" should {
-            "redirect to the preferences controller" in {
-              Given("I setup the Wiremock stubs")
-              AuthStub.stubAuthSuccess()
-              CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
-              SubscriptionStub.stubGetNoSubscription()
-              EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
-              When("GET /index is called")
-              val res = IncomeTaxSubscriptionFrontend.indexPage()
+          "redirect to the SPSHandoff controller" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+            SubscriptionStub.stubGetNoSubscription()
+            EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
-              Then("Should return a SEE OTHER and re-direct to the preferences controller")
-              res should have(
-                httpStatus(SEE_OTHER),
-                redirectURI(preferencesURI)
-              )
-            }
-          }
+            When("GET /index is called")
+            val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-          "feature switch SPSEnabled is enabled" should {
-            "redirect to the SPSHandoff controller" in {
-              Given("I setup the Wiremock stubs")
-              AuthStub.stubAuthSuccess()
-              CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
-              SubscriptionStub.stubGetNoSubscription()
-              EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-              enable(SPSEnabled)
-
-              When("GET /index is called")
-              val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-              Then("Should return a SEE OTHER and re-direct to the SPSHandoff controller")
-              res should have(
-                httpStatus(SEE_OTHER),
-                redirectURI(spsHandoffRouteURI)
-              )
-            }
+            Then("Should return a SEE OTHER and re-direct to the SPSHandoff controller")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(spsHandoffRouteURI)
+            )
           }
         }
         "the user is ineligible" should {
@@ -154,10 +127,10 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-            Then("Should return a SEE OTHER and re-direct to the preferences page")
+            Then("Should return a SEE OTHER and re-direct to the sps page")
             res should have(
               httpStatus(SEE_OTHER),
-              redirectURI(preferencesURI)
+              redirectURI(spsHandoffRouteURI)
             )
 
             val cookie = getSessionMap(res)

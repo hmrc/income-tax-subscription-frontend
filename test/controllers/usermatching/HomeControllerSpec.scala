@@ -18,7 +18,7 @@ package controllers.usermatching
 
 import agent.audit.mocks.MockAuditingService
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{PrePopulate, SPSEnabled}
+import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.ControllerBaseSpec
 import models._
 import org.mockito.Mockito.reset
@@ -39,8 +39,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockCitizenDetailsService
   with MockGetEligibilityStatusService
   with MockPrePopulationService
-  with MockAuditingService
-   {
+  with MockAuditingService {
 
   private val eligibleWithoutPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
@@ -55,7 +54,6 @@ class HomeControllerSpec extends ControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAuthService)
-    disable(SPSEnabled)
     disable(PrePopulate)
     mockNinoRetrieval()
   }
@@ -109,123 +107,56 @@ class HomeControllerSpec extends ControllerBaseSpec
             "the user has a UTR" should {
               "redirect to the sign up journey" when {
                 "feature switch PrePopulate is enabled but there is no PrePop" when {
-                  "feature switch SPSEnabled is enabled" should {
-                    "redirect to SPSHandoff controller" in {
-                      mockNinoAndUtrRetrieval()
-                      mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-                      setupMockGetSubscriptionNotFound(testNino)
-                      mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
+                  "redirect to SPSHandoff controller" in {
+                    mockNinoAndUtrRetrieval()
+                    mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+                    setupMockGetSubscriptionNotFound(testNino)
+                    mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
 
-                      enable(SPSEnabled)
-                      enable(PrePopulate)
+                    enable(PrePopulate)
 
-                      val result = await(testHomeController().index(fakeRequest))
-                      status(result) must be(Status.SEE_OTHER)
-                      redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+                    val result = await(testHomeController().index(fakeRequest))
+                    status(result) must be(Status.SEE_OTHER)
+                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                      verifyPrePopulationSave(0, testReference)
-                    }
-                  }
-                  "feature switch SPSEnabled is disabled" should {
-                    "redirect to preference controller" in {
-                      mockNinoAndUtrRetrieval()
-                      mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-                      setupMockGetSubscriptionNotFound(testNino)
-                      mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
-
-                      enable(PrePopulate)
-
-                      val result = await(testHomeController().index(fakeRequest))
-                      status(result) must be(Status.SEE_OTHER)
-                      redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences.url
-
-                      verifySubscriptionDetailsSaveWithField(0, OverseasProperty)
-                      verifySubscriptionDetailsSaveWithField(0, Property)
-                      verifySubscriptionDetailsSaveWithField(0, BusinessesKey)
-                      verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
-                      verifySubscriptionDetailsSaveWithField(0, subscriptionId)
-                    }
+                    verifyPrePopulationSave(0, testReference)
                   }
                 }
                 "feature switch PrePopulate is enabled and there is PrePop" when {
-                  "feature switch SPSEnabled is enabled" should {
-                    "redirect to SPSHandoff controller after saving prepop informtion" in {
-                      mockNinoAndUtrRetrieval()
-                      mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-                      setupMockGetSubscriptionNotFound(testNino)
-                      mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithPrepopData))
-                      mockRetrieveReferenceSuccess(testUtr)(testReference)
-                      setupMockSubscriptionDetailsSaveFunctions()
-                      setupMockPrePopulateSave(testReference)
+                  "redirect to SPSHandoff controller after saving prepop informtion" in {
+                    mockNinoAndUtrRetrieval()
+                    mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+                    setupMockGetSubscriptionNotFound(testNino)
+                    mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithPrepopData))
+                    mockRetrieveReferenceSuccess(testUtr)(testReference)
+                    setupMockSubscriptionDetailsSaveFunctions()
+                    setupMockPrePopulateSave(testReference)
 
-                      enable(SPSEnabled)
-                      enable(PrePopulate)
+                    enable(PrePopulate)
 
-                      val result = await(testHomeController().index(fakeRequest))
-                      status(result) must be(Status.SEE_OTHER)
-                      redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+                    val result = await(testHomeController().index(fakeRequest))
+                    status(result) must be(Status.SEE_OTHER)
+                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                      verifyPrePopulationSave(1, testReference)
-                    }
-                  }
-                  "feature switch SPSEnabled is disabled" should {
-                    "redirect to preference controller after saving prepop information" in {
-                      mockNinoAndUtrRetrieval()
-                      mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-                      setupMockGetSubscriptionNotFound(testNino)
-                      mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithPrepopData))
-                      mockRetrieveReferenceSuccess(testUtr)(testReference)
-                      setupMockSubscriptionDetailsSaveFunctions()
-                      setupMockPrePopulateSave(testReference)
-
-                      enable(PrePopulate)
-
-                      val result = await(testHomeController().index(fakeRequest))
-                      status(result) must be(Status.SEE_OTHER)
-                      redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences.url
-
-                      verifyPrePopulationSave(1, testReference)
-                    }
+                    verifyPrePopulationSave(1, testReference)
                   }
                 }
                 "feature switch PrePopulate is disabled" when {
-                  "feature switch SPSEnabled is enabled" should {
-                    "redirect to SPSHandoff controller" in {
-                      mockNinoAndUtrRetrieval()
-                      mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-                      setupMockGetSubscriptionNotFound(testNino)
-                      mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithPrepopData))
+                  "redirect to SPSHandoff controller" in {
+                    mockNinoAndUtrRetrieval()
+                    mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+                    setupMockGetSubscriptionNotFound(testNino)
+                    mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithPrepopData))
 
-                      enable(SPSEnabled)
+                    val result = await(testHomeController().index(fakeRequest))
+                    status(result) must be(Status.SEE_OTHER)
+                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                      val result = await(testHomeController().index(fakeRequest))
-                      status(result) must be(Status.SEE_OTHER)
-                      redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-
-                      verifySubscriptionDetailsSaveWithField(0, OverseasProperty)
-                      verifySubscriptionDetailsSaveWithField(0, Property)
-                      verifySubscriptionDetailsSaveWithField(0, BusinessesKey)
-                      verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
-                      verifySubscriptionDetailsSaveWithField(0, subscriptionId)
-                    }
-                  }
-                  "feature switch SPSEnabled is disabled" should {
-                    "redirect to preference controller" in {
-                      mockNinoAndUtrRetrieval()
-                      mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-                      setupMockGetSubscriptionNotFound(testNino)
-                      mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
-
-                      val result = await(testHomeController().index(fakeRequest))
-                      status(result) must be(Status.SEE_OTHER)
-                      redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences.url
-
-                      verifySubscriptionDetailsSaveWithField(0, OverseasProperty)
-                      verifySubscriptionDetailsSaveWithField(0, Property)
-                      verifySubscriptionDetailsSaveWithField(0, BusinessesKey)
-                      verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
-                      verifySubscriptionDetailsSaveWithField(0, subscriptionId)
-                    }
+                    verifySubscriptionDetailsSaveWithField(0, OverseasProperty)
+                    verifySubscriptionDetailsSaveWithField(0, Property)
+                    verifySubscriptionDetailsSaveWithField(0, BusinessesKey)
+                    verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
+                    verifySubscriptionDetailsSaveWithField(0, subscriptionId)
                   }
                 }
               }
@@ -233,43 +164,22 @@ class HomeControllerSpec extends ControllerBaseSpec
 
             "the user does not have a utr" when {
               "the user has a matching utr in CID against their NINO" when {
-                "feature switch SPSEnabled is enabled" should {
-                  "redirect to SPSHandoff controller" in {
-                    mockNinoRetrieval()
-                    mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
-                    setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
+                "redirect to SPSHandoff controller" in {
+                  mockNinoRetrieval()
+                  mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
+                  setupMockGetSubscriptionNotFound(testNino)
+                  mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
 
-                    enable(SPSEnabled)
+                  val result = await(testHomeController().index(fakeRequest))
 
-                    val result = await(testHomeController().index(fakeRequest))
+                  status(result) mustBe SEE_OTHER
+                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                    status(result) mustBe SEE_OTHER
-                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-
-                    session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
-                  }
-                }
-
-                "feature switch SPSEnabled is disabled" should {
-                  "redirect to preference controller" in {
-                    mockNinoRetrieval()
-                    mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
-                    setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
-
-                    val result = await(testHomeController().index(fakeRequest))
-
-                    status(result) mustBe SEE_OTHER
-                    redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences.url
-
-                    session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
-                  }
+                  session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
                 }
               }
 
               "the user does not have a matching utr in CID" should {
-
                 "redirect to the no SA page" in {
                   mockNinoRetrieval()
                   mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
@@ -331,37 +241,16 @@ class HomeControllerSpec extends ControllerBaseSpec
         "the user is eligible" when {
           "the user does not have a current unauthorised subscription journey" when {
             "redirect to the sign up journey" when {
-              "feature switch SPSEnabled is enabled" should {
-                "redirect to SPSHandoff controller" in {
+              "redirect to SPSHandoff controller" in {
+                mockUtrRetrieval()
+                mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
+                setupMockGetSubscriptionNotFound(testNino)
+                mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
 
-
-                  mockUtrRetrieval()
-                  mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
-                  setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
-                  enable(SPSEnabled)
-
-                  val result = await(testHomeController().index(fakeRequest))
-                  status(result) must be(Status.SEE_OTHER)
-                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-                  session(result).get(ITSASessionKeys.NINO) must contain(testNino)
-                }
-              }
-
-              "feature switch SPSEnabled is disabled" should {
-                "redirect to Preference controller" in {
-
-
-                  mockUtrRetrieval()
-                  mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
-                  setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
-
-                  val result = await(testHomeController().index(fakeRequest))
-                  status(result) must be(Status.SEE_OTHER)
-                  redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences.url
-                  session(result).get(ITSASessionKeys.NINO) must contain(testNino)
-                }
+                val result = await(testHomeController().index(fakeRequest))
+                status(result) must be(Status.SEE_OTHER)
+                redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+                session(result).get(ITSASessionKeys.NINO) must contain(testNino)
               }
             }
           }

@@ -16,19 +16,12 @@
 
 package controllers.individual.sps
 
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.{SEE_OTHER, _}
+import play.api.http.Status.SEE_OTHER
 
-class SPSHandoffControllerISpec extends ComponentSpecBase  {
-
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(SPSEnabled)
-  }
+class SPSHandoffControllerISpec extends ComponentSpecBase {
 
   s"GET ${controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url}" when {
 
@@ -45,9 +38,8 @@ class SPSHandoffControllerISpec extends ComponentSpecBase  {
       }
     }
 
-    "the feature switch SPSEnabled set to true" in {
+    "the user is authorised" in {
       Given("I setup the Wiremock stubs")
-      enable(SPSEnabled)
       AuthStub.stubAuthSuccess()
 
       When("GET /sps-handoff is called")
@@ -59,21 +51,6 @@ class SPSHandoffControllerISpec extends ComponentSpecBase  {
         redirectURI(spsHandoffURI)
       )
     }
-
-    "the feature switch SPSEnabled set to false" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-
-      When("GET /sps-handoff is called")
-      val res = IncomeTaxSubscriptionFrontend.spsHandoff()
-
-      Then("Should return a not found page to the user")
-      res should have(
-        httpStatus(NOT_FOUND),
-        pageTitle("Page not found - 404")
-      )
-    }
-
 
   }
 

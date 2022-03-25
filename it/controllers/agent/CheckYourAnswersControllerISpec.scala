@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, incomeSourceURI => _, testNino => _, testUtr => _, _}
@@ -38,11 +37,6 @@ import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, OverseasProperty, Property}
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
-
-  override def beforeEach(): Unit = {
-    disable(SPSEnabled)
-    super.beforeEach()
-  }
 
   "GET /check-your-answers" when {
     "the user has not answered the income sources question" should {
@@ -801,127 +795,64 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       }
     }
 
-    "the signup of a user with next tax year property income is successful and creating of the enrolment is successful" when {
-      "feature switch SPSEnabled is disabled" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
+    "the signup of a user with next tax year property income is successful and creating of the enrolment is successful" in {
+      Given("I setup the wiremock stubs")
+      AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-          incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
-          selectedTaxYear = Some(AccountingYearModel(Next)),
-          businessName = None,
-          accountingMethod = None
-        ))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+        incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
+        selectedTaxYear = Some(AccountingYearModel(Next)),
+        businessName = None,
+        accountingMethod = None
+      ))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+      IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
-        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
-          mtdbsa = testMtdId,
-          request = BusinessSubscriptionDetailsModel(
-            nino = testNino,
-            accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-            selfEmploymentsData = None,
-            accountingMethod = None,
-            incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true),
-            propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),
-            propertyAccountingMethod = testFullPropertyModel.accountingMethod.map(AccountingMethodPropertyModel.apply),
-            overseasPropertyStartDate = testFullOverseasPropertyModel.startDate.map(OverseasPropertyStartDateModel.apply),
-            overseasAccountingMethodProperty = testFullOverseasPropertyModel.accountingMethod.map(OverseasAccountingMethodPropertyModel.apply),
-          )
-        )(NO_CONTENT)
-
-
-        And("The wiremock stubs for auto enrolment")
-        EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
-        EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-        UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-        EnrolmentStoreProxyStub.stubUpsertEnrolment(testSubscriptionID, testNino)(NO_CONTENT)
-        EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testSubscriptionID, testGroupId, testCredentialId)(CREATED)
-        EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId)(CREATED)
-        EnrolmentStoreProxyStub.stubAssignEnrolment(testSubscriptionID, testCredentialId2)(CREATED)
-
-        When("I call POST /check-your-answers")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-        Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(confirmationURI)
+      MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+      MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+        mtdbsa = testMtdId,
+        request = BusinessSubscriptionDetailsModel(
+          nino = testNino,
+          accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+          selfEmploymentsData = None,
+          accountingMethod = None,
+          incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true),
+          propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),
+          propertyAccountingMethod = testFullPropertyModel.accountingMethod.map(AccountingMethodPropertyModel.apply),
+          overseasPropertyStartDate = testFullOverseasPropertyModel.startDate.map(OverseasPropertyStartDateModel.apply),
+          overseasAccountingMethodProperty = testFullOverseasPropertyModel.accountingMethod.map(OverseasAccountingMethodPropertyModel.apply),
         )
-
-        val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtr, testMtdId)
-        verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(0))
-
-        val cookieMap = getSessionMap(res)
-        cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
-      }
-
-      "feature switch SPSEnabled is enabled" in {
-        Given("I set the required feature switches")
-        enable(SPSEnabled)
-
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-          incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true)),
-          selectedTaxYear = Some(AccountingYearModel(Next)),
-          businessName = None,
-          accountingMethod = None
-        ))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
-
-        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
-          mtdbsa = testMtdId,
-          request = BusinessSubscriptionDetailsModel(
-            nino = testNino,
-            accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-            selfEmploymentsData = None,
-            accountingMethod = None,
-            incomeSource = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true),
-            propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),
-            propertyAccountingMethod = testFullPropertyModel.accountingMethod.map(AccountingMethodPropertyModel.apply),
-            overseasPropertyStartDate = testFullOverseasPropertyModel.startDate.map(OverseasPropertyStartDateModel.apply),
-            overseasAccountingMethodProperty = testFullOverseasPropertyModel.accountingMethod.map(OverseasAccountingMethodPropertyModel.apply),
-          )
-        )(NO_CONTENT)
+      )(NO_CONTENT)
 
 
-        And("The wiremock stubs for auto enrolment")
-        EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
-        EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-        UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-        EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
-        EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
-        EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
-        EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
+      And("The wiremock stubs for auto enrolment")
+      EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
+      EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+      UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+      EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
+      EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+      EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
+      EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
 
-        ChannelPreferencesStub.stubAgentChannelPreferencesConfirm()
+      ChannelPreferencesStub.stubAgentChannelPreferencesConfirm()
 
-        When("I call POST /check-your-answers")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+      When("I call POST /check-your-answers")
+      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-        Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(confirmationURI)
-        )
+      Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(confirmationURI)
+      )
 
-        val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtr, testMtdId)
-        verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+      val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtr, testMtdId)
+      verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
-        val cookieMap = getSessionMap(res)
-        cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
-      }
+      val cookieMap = getSessionMap(res)
+      cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
     }
   }
 }

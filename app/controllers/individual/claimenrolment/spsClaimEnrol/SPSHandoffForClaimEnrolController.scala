@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import play.api.mvc._
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
@@ -35,24 +35,23 @@ class SPSHandoffForClaimEnrolController @Inject()(
                                                    val crypto: ApplicationCrypto)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController  {
+                                                  mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
 
 
   def redirectToSPS: Action[AnyContent] = {
     Authenticated {
       _ =>
         _ =>
-          if (isEnabled(SPSEnabled) && isEnabled(ClaimEnrolment)) {
+          if (isEnabled(ClaimEnrolment)) {
             goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback,
               returnLinkText = "I have verified",
               regime = "itsa"
             )
           } else {
-            val error = (isEnabled(SPSEnabled), isEnabled(ClaimEnrolment)) match {
-              case (false, false) => "both SPS and claim enrolment feature switch are not enabled"
-              case (false, true) => "SPS feature switch is not enabled"
-              case (true, false) =>"claim enrolment feature switch is not enabled"
-              case _ => "both SPS and claim enrolment feature switch are enabled"
+            val error = if ((isEnabled(ClaimEnrolment))) {
+              "claim enrolment feature switch is enabled"
+            } else {
+              "claim enrolment feature switch is not enabled"
             }
             throw new NotFoundException(s"[SPSHandoffForClaimEnrolController][redirectToSPS] - $error")
           }

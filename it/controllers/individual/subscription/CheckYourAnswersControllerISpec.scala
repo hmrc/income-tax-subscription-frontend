@@ -16,7 +16,6 @@
 
 package controllers.individual.subscription
 
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
@@ -34,11 +33,6 @@ import utilities.ITSASessionKeys.SPSEntityId
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, OverseasProperty, Property}
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
-
-  override def beforeEach(): Unit = {
-    disable(SPSEnabled)
-    super.beforeEach()
-  }
 
   s"GET ${controllers.individual.subscription.routes.CheckYourAnswersController.show.url}" when {
     "show the check your answers page" in {
@@ -64,59 +58,54 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
   "POST /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
 
     "call the enrolment store successfully" should {
-      "call sps with the users details" when {
-        "the SPSEnabled feature switch is enabled" in {
-          Given("I set the required feature switches")
-          enable(SPSEnabled)
+      "call sps with the users details" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-          And("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+          selectedTaxYear = Some(AccountingYearModel(Next)),
+          businessName = None,
+          accountingMethod = None
+        ))
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Next)),
-            businessName = None,
-            accountingMethod = None
-          ))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
-            mtdbsa = testMtdId,
-            request = BusinessSubscriptionDetailsModel(
-              nino = testNino,
-              accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-              selfEmploymentsData = Some(testBusinesses),
-              accountingMethod = Some(testAccountingMethod.accountingMethod),
-              incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
-              propertyStartDate = None,
-              propertyAccountingMethod = None,
-              overseasPropertyStartDate = None,
-              overseasAccountingMethodProperty = None
-            )
-          )(NO_CONTENT)
-
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
-
-          When("POST /check-your-answers is called")
-          val testEntityId: String = "testEntityId"
-          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(Map(SPSEntityId -> testEntityId))
-
-          Then("Should return a SEE_OTHER with a redirect location of confirmation")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
+        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
+          mtdbsa = testMtdId,
+          request = BusinessSubscriptionDetailsModel(
+            nino = testNino,
+            accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
+            selfEmploymentsData = Some(testBusinesses),
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
+            propertyStartDate = None,
+            propertyAccountingMethod = None,
+            overseasPropertyStartDate = None,
+            overseasAccountingMethodProperty = None
           )
+        )(NO_CONTENT)
 
-          val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
-          verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
-        }
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+
+        When("POST /check-your-answers is called")
+        val testEntityId: String = "testEntityId"
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+        Then("Should return a SEE_OTHER with a redirect location of confirmation")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(confirmationURI)
+        )
+
+        val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+        verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
       }
       "successfully send the correct details to the backend for a user with business income" when {
         "only the self employment has been answered" in {
@@ -473,10 +462,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
     "Known Facts call fails" should {
       "show the check your answers page" in {
-        Given("I set the required feature switches")
-        enable(SPSEnabled)
-
-        And("I setup the Wiremock stubs")
+        Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -524,10 +510,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
     "enrolment failure occurs where not on whitelist" should {
       "show the check your answers page" in {
-        Given("I set the required feature switches")
-        enable(SPSEnabled)
-
-        And("I setup the Wiremock stubs")
+        Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -575,10 +558,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
     "enrolment failure occurs where missing details" should {
       "show the check your answers page" in {
-        Given("I set the required feature switches")
-        enable(SPSEnabled)
-
-        And("I setup the Wiremock stubs")
+        Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -626,10 +606,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
     "enrolment failure occurs where auth success but access error with gateway token" should {
       "show the check your answers page" in {
-        Given("I set the required feature switches")
-        enable(SPSEnabled)
-
-        And("I setup the Wiremock stubs")
+        Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -676,10 +653,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
     }
 
     "return an INTERNAL_SERVER_ERROR when a failure occurs when signing the user up" in {
-      Given("I set the required feature switches")
-      enable(SPSEnabled)
-
-      And("I setup the Wiremock stubs")
+      Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
 
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -709,10 +683,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
     }
 
     "return an INTERNAL_SERVER_ERROR when a failure occurs when creating income sources for the user" in {
-      Given("I set the required feature switches")
-      enable(SPSEnabled)
-
-      And("I setup the Wiremock stubs")
+      Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
         incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),

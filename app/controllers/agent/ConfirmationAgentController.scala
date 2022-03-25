@@ -20,7 +20,7 @@ import auth.agent.PostSubmissionController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.SignUpComplete
 
@@ -31,7 +31,6 @@ import scala.util.matching.Regex
 @Singleton
 class ConfirmationAgentController @Inject()(val auditingService: AuditingService,
                                             val authService: AuthService,
-                                            accountingPeriodService: AccountingPeriodService,
                                             signUpComplete: SignUpComplete,
                                             val subscriptionDetailsService: SubscriptionDetailsService)
                                            (implicit val ec: ExecutionContext,
@@ -69,9 +68,9 @@ class ConfirmationAgentController @Inject()(val auditingService: AuditingService
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-     withAgentReference { reference =>
-       subscriptionDetailsService.deleteAll(reference).map(_ => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
-     }
+      withAgentReference { reference =>
+        subscriptionDetailsService.deleteAll(reference).map(_ => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
+      }
   }
 
 }

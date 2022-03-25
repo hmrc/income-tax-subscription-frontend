@@ -19,7 +19,7 @@ package controllers.usermatching
 import auth.individual.JourneyState._
 import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserMatching}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{PrePopulate, SPSEnabled}
+import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
@@ -44,7 +44,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                subscriptionService: SubscriptionService)
                               (implicit val ec: ExecutionContext,
                                val appConfig: AppConfig,
-                               mcc: MessagesControllerComponents) extends StatelessController  with ReferenceRetrieval {
+                               mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
 
   def home: Action[AnyContent] = Action {
     val redirect = routes.HomeController.index
@@ -100,19 +100,12 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Left(err) => throw new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err")
     }
 
-  private def goToSignUp(utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result = {
-    (if (isEnabled(SPSEnabled)) {
-      goToSPSHandoff
-        .addingToSession(StartTime -> timestamp)
-        .withJourneyState(SignUp)
-    } else {
-      goToPreferences
-        .addingToSession(StartTime -> timestamp)
-        .withJourneyState(SignUp)
-    })
+  private def goToSignUp(utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result =
+    goToSPSHandoff
+      .addingToSession(StartTime -> timestamp)
+      .withJourneyState(SignUp)
       .addingToSession(UTR -> utr)
       .addingToSession(NINO -> nino)
-  }
 
   private def claimSubscription(mtditId: String, nino: String, utr: String)
                                (implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =

@@ -16,7 +16,6 @@
 
 package services
 
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import config.featureswitch.FeatureSwitching
 import connectors.SPSConnector
 import uk.gov.hmrc.http.HeaderCarrier
@@ -25,12 +24,9 @@ import javax.inject.Inject
 
 class SPSService @Inject()(val spsConnector: SPSConnector) extends FeatureSwitching {
 
-  def confirmPreferences(itsaId: String, maybeSpsEntityId: Option[String])(implicit hc: HeaderCarrier): Unit = {
-    if (isEnabled(SPSEnabled)) {
-      maybeSpsEntityId map { entityId =>
-        spsConnector.postSpsConfirm(entityId, s"HMRC-MTD-IT~MTDITID~$itsaId")
-      }
+  def confirmPreferences(itsaId: String, maybeSpsEntityId: Option[String])(implicit hc: HeaderCarrier): Unit =
+    maybeSpsEntityId map { entityId =>
+      spsConnector.postSpsConfirm(entityId, s"HMRC-MTD-IT~MTDITID~$itsaId")
     }
-  }
 
 }

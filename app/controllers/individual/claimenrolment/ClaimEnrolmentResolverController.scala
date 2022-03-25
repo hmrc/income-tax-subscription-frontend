@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc._
 import services.individual.claimenrolment.ClaimEnrolmentService
@@ -46,11 +46,7 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
             auditingService.audit(
               ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid)
             )
-            if (isEnabled(SPSEnabled)) {
-              Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
-            } else {
-              Redirect(routes.ClaimEnrolmentConfirmationController.show())
-            }
+            Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
 
           case Left(NotSubscribed) => Redirect(routes.NotSubscribedController.show())
           case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)

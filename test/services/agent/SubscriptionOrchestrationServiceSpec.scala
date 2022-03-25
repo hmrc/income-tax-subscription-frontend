@@ -16,7 +16,6 @@
 
 package services.agent
 
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import models.ConnectorError
 import models.common.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures.whenReady
@@ -36,11 +35,6 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
     mockAgentSpsConnector
   )
 
-  override def beforeEach(): Unit = {
-    disable(SPSEnabled)
-    super.beforeEach()
-  }
-
   "createSubscription" should {
 
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
@@ -49,15 +43,6 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
     "return a success" when {
       "all services succeed" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
-
-        await(res) mustBe testSubscriptionSuccess
-      }
-
-      "SpsIsEnabled and all services succeed" in {
-        enable(SPSEnabled)
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
         mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
@@ -69,8 +54,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
       }
 
-      "SpsIsEnabled and all services except the SPSconnector succeed" in {
-        enable(SPSEnabled)
+      "all services except the SPSconnector succeed" in {
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
         mockAgentSpsConnectorFailure(testARN, testUtr, testNino, testMTDID)
@@ -98,7 +82,6 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
       }
 
       "the auto enrolment service returns a failure response" in {
-        enable(SPSEnabled)
 
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
@@ -121,15 +104,6 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
     "return a success" when {
       "all services succeed" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
-
-        await(res) mustBe testSubscriptionSuccess
-      }
-
-      "SpsIsEnabled and all services succeed" in {
-        enable(SPSEnabled)
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
