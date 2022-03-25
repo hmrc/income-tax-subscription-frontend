@@ -18,7 +18,6 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
@@ -31,7 +30,7 @@ import scala.concurrent.Future
 
 class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
   with MockAuditingService
-  with FeatureSwitching
+  
   with MockApplicationCrypto {
 
   override def beforeEach(): Unit = {

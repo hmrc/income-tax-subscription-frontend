@@ -17,7 +17,6 @@
 package views.individual.incometax.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
@@ -31,7 +30,7 @@ import views.html.individual.incometax.business.PropertyStartDate
 import java.time.LocalDate
 
 
-class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
+class UkPropertyStartDateViewSpec extends ViewSpec  {
 
   object PropertyStartDateMessages {
     val heading: String = "When did your UK property business start trading?"

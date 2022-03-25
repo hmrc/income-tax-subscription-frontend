@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
@@ -42,7 +41,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
-  with FeatureSwitching {
+   {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

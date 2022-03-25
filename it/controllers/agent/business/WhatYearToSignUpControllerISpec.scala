@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import java.time.LocalDate
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.subscriptionData
@@ -29,7 +28,7 @@ import models.{AccountingYear, Current, Next}
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
-class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
 
   override def beforeEach(): Unit = {
     disable(ForeignProperty)

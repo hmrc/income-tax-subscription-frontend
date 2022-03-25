@@ -19,7 +19,6 @@ package controllers.individual.sps
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
-import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
@@ -33,7 +32,7 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
                                       val authService: AuthService)
                                      (implicit val appConfig: AppConfig,
                                       val ec: ExecutionContext,
-                                      mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
+                                      mcc: MessagesControllerComponents) extends SignUpController  {
 
   def callback: Action[AnyContent] = Authenticated { implicit request =>
     _ =>

@@ -17,7 +17,6 @@
 package controllers.individual.claimenrolment.spsClaimEnrol
 
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
@@ -25,7 +24,7 @@ import play.api.http.Status.{SEE_OTHER, _}
 import utilities.ITSASessionKeys
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
-class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase  {
 
 
   override def beforeEach(): Unit = {

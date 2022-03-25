@@ -17,13 +17,12 @@
 package controllers.individual.sps
 
 import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
-import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{accountingYearURI, basGatewaySignIn, taskListURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
-class SPSCallbackControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class SPSCallbackControllerISpec extends ComponentSpecBase  {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

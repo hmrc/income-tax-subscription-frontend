@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.ControllerBaseSpec
 import forms.individual.business.RemoveBusinessForm
@@ -42,7 +41,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
 with MockAuditingService
 with MockSubscriptionDetailsService
 with MockIncomeTaxSubscriptionConnector
-with FeatureSwitching {
+ {
   override val controllerName: String = "RemoveBusinessController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 

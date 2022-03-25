@@ -18,7 +18,6 @@ package controllers.agent.matching
 
 import auth.agent.AgentUserMatched
 import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import controllers.agent.{AgentControllerBaseSpec, ITSASessionKeys}
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
@@ -49,7 +48,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockPrePopulationService
   with MockSubscriptionDetailsService
   with MockGetEligibilityStatusService
-  with FeatureSwitching {
+   {
 
   private val eligibleWithoutPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))

@@ -16,12 +16,11 @@
 
 package controllers.usermatching
 
-import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.OK
 
-class UserDetailsErrorControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class UserDetailsErrorControllerISpec extends ComponentSpecBase  {
 
   "GET /error/user-details" should {
     "show the no matching user page" in {

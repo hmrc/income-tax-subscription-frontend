@@ -16,18 +16,11 @@
 
 package controllers.individual.iv
 
-import config.featureswitch.FeatureSwitch.IdentityVerification
-import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
-class IVFailureControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    disable(IdentityVerification)
-    super.beforeEach()
-  }
+class IVFailureControllerISpec extends ComponentSpecBase {
 
   s"GET ${controllers.individual.iv.routes.IVFailureController.failure.url}" when {
 
@@ -44,22 +37,8 @@ class IVFailureControllerISpec extends ComponentSpecBase with FeatureSwitching {
       }
     }
 
-    "the identity verification feature switch is disabled" should {
-      "return a not found page to the user" in {
-        AuthStub.stubAuthSuccess()
-
-        val res = IncomeTaxSubscriptionFrontend.ivFailure()
-
-        res should have(
-          httpStatus(NOT_FOUND),
-          pageTitle("Page not found - 404")
-        )
-      }
-    }
-
-    "the identity verification feature switch is enabled" should {
-      "redirect the user to the home page" in {
-        enable(IdentityVerification)
+    "the user is authorised but their identity fails verification" should {
+      "Show the iv-failure heading message" in {
         AuthStub.stubAuthSuccess()
 
         val res = IncomeTaxSubscriptionFrontend.ivFailure()

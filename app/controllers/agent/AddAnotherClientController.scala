@@ -20,7 +20,6 @@ import auth.agent.{AuthPredicates, IncomeTaxAgentUser, StatelessController}
 import auth.individual.AuthPredicate.AuthPredicate
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
-import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
@@ -33,7 +32,7 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
                                            val authService: AuthService,
                                            val appConfig: AppConfig)
                                           (implicit val ec: ExecutionContext,
-                                           mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
+                                           mcc: MessagesControllerComponents) extends StatelessController {
 
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = AuthPredicates.defaultPredicates

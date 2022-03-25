@@ -17,7 +17,6 @@
 package controllers
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -27,7 +26,7 @@ import play.api.libs.json.JsString
 import utilities.ITSASessionKeys
 import utilities.SubscriptionDataKeys._
 
-class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class PreferencesControllerISpec extends ComponentSpecBase  {
 
   "GET /preferences" when {
     "save and retrieve is enabled" should {

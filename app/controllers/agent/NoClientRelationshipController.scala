@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.UserMatchingController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
-import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import views.html.agent.NoClientRelationship
@@ -34,7 +33,7 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
                                               )
                                               (implicit val ec: ExecutionContext,
                                                mcc: MessagesControllerComponents,
-                                               val appConfig: AppConfig) extends UserMatchingController with FeatureSwitching {
+                                               val appConfig: AppConfig) extends UserMatchingController  {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>

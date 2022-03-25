@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
@@ -39,7 +38,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
   with MockPropertyStartDate
-  with FeatureSwitching {
+   {
 
   override def beforeEach(): Unit = {
     disable(SaveAndRetrieve)

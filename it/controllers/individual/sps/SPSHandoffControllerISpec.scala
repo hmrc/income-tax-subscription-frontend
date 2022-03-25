@@ -17,13 +17,12 @@
 package controllers.individual.sps
 
 import config.featureswitch.FeatureSwitch.SPSEnabled
-import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{SEE_OTHER, _}
 
-class SPSHandoffControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class SPSHandoffControllerISpec extends ComponentSpecBase  {
 
 
   override def beforeEach(): Unit = {

@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -35,7 +34,7 @@ import views.agent.mocks.MockOverseasPropertyAccountingMethod
 import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockOverseasPropertyAccountingMethod with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAuditingService with MockOverseasPropertyAccountingMethod  {
 
   override def beforeEach(): Unit = {
     disable(SaveAndRetrieve)

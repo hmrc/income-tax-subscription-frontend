@@ -18,7 +18,6 @@ package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.IndividualSummary
@@ -50,7 +49,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                            checkYourAnswers: CheckYourAnswers)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval with Logging {
+                                           mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval with Logging {
 
   def backUrl(incomeSource: IncomeSourceModel): String = {
     incomeSource match {

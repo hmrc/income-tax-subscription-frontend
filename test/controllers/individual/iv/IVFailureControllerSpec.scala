@@ -17,8 +17,6 @@
 package controllers.individual.iv
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.IdentityVerification
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import org.mockito.ArgumentMatchers.{any, eq => matches}
@@ -26,25 +24,19 @@ import org.mockito.Mockito.{never, verify, when}
 import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, contentType, defaultAwaitTimeout, session, status}
+import play.api.test.Helpers.{contentType, defaultAwaitTimeout, session, status}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.http.NotFoundException
 import utilities.ITSASessionKeys
 import views.html.individual.iv.IVFailure
 
 import scala.concurrent.Future
 
-class IVFailureControllerSpec extends ControllerBaseSpec with MockAuditingService with FeatureSwitching {
+class IVFailureControllerSpec extends ControllerBaseSpec with MockAuditingService  {
 
   val controllerName: String = "IVFailureController"
   val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "failure" -> new IVFailureController(mockAuthService, mockAuditingService, mock[IVFailure]).failure()
   )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(IdentityVerification)
-  }
 
   trait Setup {
     val ivFailure: IVFailure = mock[IVFailure]
@@ -54,43 +46,31 @@ class IVFailureControllerSpec extends ControllerBaseSpec with MockAuditingServic
   authorisationTests()
 
   "failure" when {
-    "the identity verification feature switch is disabled" must {
-      "return a not found exception" in new Setup {
-        val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true")
+    "the user has an iv flag in session" must {
+      "return the failure page to the user and remove the flag from session" in new Setup {
+        when(ivFailure()(any(), any(), any())) thenReturn HtmlFormat.empty
+
+        val requestWithIVSession: Request[AnyContent] = FakeRequest("GET", "/test-url?journeyId=testJourneyId")
+          .withSession(ITSASessionKeys.IdentityVerificationFlag -> "true")
         val result: Future[Result] = controller.failure(requestWithIVSession)
 
-        intercept[NotFoundException](await(result)).message mustBe "[IVFailureController][failure] - identity verification disabled"
+        status(result) mustBe OK
+        contentType(result) mustBe Some("text/html")
+        session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
+        verify(mockAuditingService).audit(matches(IVOutcomeFailureAuditModel("testJourneyId")))(any(), any())
       }
     }
-    "the identity verification feature switch is enabled" when {
-      "the user has an iv flag in session" must {
-        "return the failure page to the user and remove the flag from session" in new Setup {
-          enable(IdentityVerification)
-          when(ivFailure()(any(), any(), any())) thenReturn HtmlFormat.empty
+    "the user does not have an iv flag in session" must {
+      "return the failure page to the user" in new Setup {
+        when(ivFailure()(any(), any(), any())) thenReturn HtmlFormat.empty
 
-          val requestWithIVSession: Request[AnyContent] = FakeRequest("GET", "/test-url?journeyId=testJourneyId")
-            .withSession(ITSASessionKeys.IdentityVerificationFlag -> "true")
-          val result: Future[Result] = controller.failure(requestWithIVSession)
+        val requestWithoutIVSession: Request[AnyContent] = FakeRequest()
+        val result: Future[Result] = controller.failure(requestWithoutIVSession)
 
-          status(result) mustBe OK
-          contentType(result) mustBe Some("text/html")
-          session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-          verify(mockAuditingService).audit(matches(IVOutcomeFailureAuditModel("testJourneyId")))(any(), any())
-        }
-      }
-      "the user does not have an iv flag in session" must {
-        "return the failure page to the user" in new Setup {
-          enable(IdentityVerification)
-          when(ivFailure()(any(), any(), any())) thenReturn HtmlFormat.empty
-
-          val requestWithoutIVSession: Request[AnyContent] = FakeRequest()
-          val result: Future[Result] = controller.failure(requestWithoutIVSession)
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some("text/html")
-          session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-          verify(mockAuditingService, never()).audit(any())(any(), any())
-        }
+        status(result) mustBe OK
+        contentType(result) mustBe Some("text/html")
+        session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
+        verify(mockAuditingService, never()).audit(any())(any(), any())
       }
     }
   }

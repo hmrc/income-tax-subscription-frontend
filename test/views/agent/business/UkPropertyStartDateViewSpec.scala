@@ -17,7 +17,6 @@
 package views.agent.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import forms.agent.PropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
@@ -30,7 +29,7 @@ import views.html.agent.business.PropertyStartDate
 import java.time.LocalDate
 
 
-class UkPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching {
+class UkPropertyStartDateViewSpec extends ViewSpec  {
 
   val backUrl: String = testBackUrl
   val action: Call = testCall

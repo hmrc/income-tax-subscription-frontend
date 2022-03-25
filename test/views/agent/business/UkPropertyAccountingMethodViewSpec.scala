@@ -18,7 +18,6 @@ package views.agent.business
 
 import agent.assets.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import forms.agent.AccountingMethodPropertyForm
 import models.AccountingMethod
 import org.jsoup.Jsoup
@@ -28,7 +27,7 @@ import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.agent.business.PropertyAccountingMethod
 
-class UkPropertyAccountingMethodViewSpec extends ViewSpec with FeatureSwitching {
+class UkPropertyAccountingMethodViewSpec extends ViewSpec {
 
   val testError: FormError = FormError("startDate", "testError")
 

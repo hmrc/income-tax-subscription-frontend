@@ -18,7 +18,6 @@ package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
-import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService}
@@ -28,7 +27,7 @@ import scala.concurrent.Future
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with FeatureSwitching with MockUserLockoutService with MockAuditingService {
+  with MockSubscriptionDetailsService  with MockUserLockoutService with MockAuditingService {
 
   override def beforeEach(): Unit = {
     disable(RemoveCovidPages)

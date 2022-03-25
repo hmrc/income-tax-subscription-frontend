@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.agent.{AgentControllerBaseSpec, TaxYearCheckYourAnswersController}
 import models.Current
 import models.common.AccountingYearModel
@@ -41,7 +40,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockAccountingPeriodService
   with MockSubscriptionDetailsService
-  with FeatureSwitching {
+   {
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()

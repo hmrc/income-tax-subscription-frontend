@@ -17,6 +17,7 @@
 package utilities
 
 import config.AppConfig
+import config.featureswitch.FeatureSwitching
 import models.{No, Yes}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -33,7 +34,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 import scala.collection.JavaConverters._
 
-trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with BeforeAndAfterEach {
+trait ViewSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with BeforeAndAfterEach with FeatureSwitching {
 
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

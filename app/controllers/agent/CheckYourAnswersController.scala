@@ -18,7 +18,6 @@ package controllers.agent
 
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.AgentAnswers._
 import controllers.utils.{ReferenceRetrieval, RequireAnswer}
@@ -50,7 +49,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends AuthenticatedController
-  with FeatureSwitching
+  
   with RequireAnswer
   with ReferenceRetrieval
   with Logging {

@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import play.api.http.Status.{OK, SEE_OTHER}
 import controllers.ControllerBaseSpec
 import models.{Cash, DateModel}
@@ -40,7 +39,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockAccountingPeriodService
   with MockSubscriptionDetailsService
-  with FeatureSwitching {
+   {
   override val controllerName: String = "PropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 

@@ -19,7 +19,6 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveUkPropertyForm
@@ -43,7 +42,7 @@ class RemoveUkPropertyController @Inject()(val auditingService: AuditingService,
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends SignUpController
-  with FeatureSwitching with ReferenceRetrieval {
+   with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>

@@ -21,8 +21,6 @@ import auth.individual.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import auth.individual.JourneyState._
 import cats.implicits._
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.IdentityVerification
-import config.featureswitch.FeatureSwitching
 import models.audits.IVHandoffAuditing.IVHandoffAuditModel
 import play.api.Logging
 import play.api.mvc.{Result, Results}
@@ -37,7 +35,7 @@ import utilities.ITSASessionKeys.JourneyStateKey
 
 import scala.concurrent.Future
 
-trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCarrierProvider with Logging {
+trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Logging {
 
   val appConfig: AppConfig
   val auditingService: AuditingService
@@ -107,34 +105,30 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
     else Left(Future.successful(homeRoute))
 
   val ivPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user => {
-    if (isEnabled(IdentityVerification)) {
-      if (user.confidenceLevel >= ConfidenceLevel.L200) {
-        Right(AuthPredicateSuccess)
-      } else {
-        user.affinityGroup match {
-          case Some(Individual) =>
-            logger.info("[AuthPredicates][ivPredicate] - Redirecting individual to IV")
-            auditingService.audit(IVHandoffAuditModel(
-              handoffReason = "individual",
-              currentConfidence = user.confidenceLevel.level,
-              minConfidence = appConfig.identityVerificationRequiredConfidenceLevel
-            ))
-            Left(Future.successful(Redirect(appConfig.identityVerificationURL)
-              .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
-          case Some(Organisation) =>
-            logger.info("[AuthPredicates][ivPredicate] - Redirecting organisation to IV")
-            auditingService.audit(IVHandoffAuditModel(
-              handoffReason = "organisation",
-              currentConfidence = user.confidenceLevel.level,
-              minConfidence = appConfig.identityVerificationRequiredConfidenceLevel
-            ))
-            Left(Future.successful(Redirect(appConfig.identityVerificationURL)
-              .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
-          case _ => Right(AuthPredicateSuccess)
-        }
-      }
-    } else {
+    if (user.confidenceLevel >= ConfidenceLevel.L200) {
       Right(AuthPredicateSuccess)
+    } else {
+      user.affinityGroup match {
+        case Some(Individual) =>
+          logger.info("[AuthPredicates][ivPredicate] - Redirecting individual to IV")
+          auditingService.audit(IVHandoffAuditModel(
+            handoffReason = "individual",
+            currentConfidence = user.confidenceLevel.level,
+            minConfidence = appConfig.identityVerificationRequiredConfidenceLevel
+          ))
+          Left(Future.successful(Redirect(appConfig.identityVerificationURL)
+            .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
+        case Some(Organisation) =>
+          logger.info("[AuthPredicates][ivPredicate] - Redirecting organisation to IV")
+          auditingService.audit(IVHandoffAuditModel(
+            handoffReason = "organisation",
+            currentConfidence = user.confidenceLevel.level,
+            minConfidence = appConfig.identityVerificationRequiredConfidenceLevel
+          ))
+          Left(Future.successful(Redirect(appConfig.identityVerificationURL)
+            .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
+        case _ => Right(AuthPredicateSuccess)
+      }
     }
   }
 
@@ -149,7 +143,7 @@ trait AuthPredicates extends Results with FeatureSwitching with FrontendHeaderCa
     defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
 
   val claimEnrolmentPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| affinityPredicate |+|
-   ivPredicate |+| claimEnrolmentJourneyPredicate
+    ivPredicate |+| claimEnrolmentJourneyPredicate
 
   val enrolledPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate |+| ivPredicate
 

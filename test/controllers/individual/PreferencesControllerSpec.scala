@@ -18,7 +18,6 @@ package controllers.individual
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -39,7 +38,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockPaperlessPreferenceTokenService
   with MockAuditingService
-  with FeatureSwitching {
+   {
 
   override val controllerName: String = "PreferencesController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

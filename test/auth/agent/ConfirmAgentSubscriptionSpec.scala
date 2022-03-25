@@ -20,7 +20,6 @@ import auth.individual.AuthPredicate.AuthPredicateSuccess
 import auth.individual.AuthPredicates._
 import auth.individual.IncomeTaxSAUser
 import config.MockConfig
-import config.featureswitch.FeatureSwitching
 import org.scalatest.EitherValues
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -30,7 +29,7 @@ import utilities.individual.{Constants, TestConstants}
 import utilities.{ITSASessionKeys, UnitTestTrait}
 
 
-class ConfirmAgentSubscriptionSpec extends UnitTestTrait with FeatureSwitching with MockConfig with EitherValues {
+class ConfirmAgentSubscriptionSpec extends UnitTestTrait  with MockConfig with EitherValues {
 
   implicit val config = MockConfig
 

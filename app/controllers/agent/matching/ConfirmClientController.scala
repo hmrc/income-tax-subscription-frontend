@@ -118,13 +118,13 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   }
 
   private def handleUnapproved(arn: String, currentCount: Int, clientDetails: UserDetailsModel)
-                              (implicit rc: RequestHeader, request:Request[AnyContent]) = {
+                              (implicit request:Request[AnyContent]) = {
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     successful(Redirect(controllers.agent.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching))
   }
 
   private def handleApprovedWithoutReference(arn: String, currentCount: Int, clientDetails: UserDetailsModel, nino: String)
-                                            (implicit rc: RequestHeader, request:Request[AnyContent]) = {
+                                            (implicit request:Request[AnyContent]) = {
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     Future.successful(Redirect(controllers.agent.routes.HomeController.index)
       .withJourneyState(AgentUserMatched)
@@ -134,7 +134,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   }
 
   private def handleApprovedWithReference(arn: String, nino:String, currentCount: Int, clientDetails: UserDetailsModel, utr: String)
-                                         (implicit rc: RequestHeader, request:Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+                                         (implicit request:Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
       case Right(EligibilityStatus(true, _, Some(prepop))) if isEnabled(PrePopulate) => handlePrePopulation(nino, utr, prepop)
@@ -146,12 +146,12 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     }
   }
 
-  private def goToCannotTakePart(implicit rc: RequestHeader, request:Request[AnyContent], user: IncomeTaxAgentUser): Result =
+  private def goToCannotTakePart(implicit request:Request[AnyContent]): Result =
     Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
       .removingFromSession(FailedClientMatching)
       .clearAllUserDetails
 
-  private def goToHome(nino: String, utr: String)(implicit rc: RequestHeader, request:Request[AnyContent]) = {
+  private def goToHome(nino: String, utr: String)(implicit request:Request[AnyContent]) = {
     Redirect(controllers.agent.routes.HomeController.index)
       .withJourneyState(AgentUserMatched)
       .addingToSession(ITSASessionKeys.NINO -> nino)
@@ -161,7 +161,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   }
 
   private def handlePrePopulation(nino:String, utr:String, prepop: PrePopData)
-                                 (implicit rc: RequestHeader, request:Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+                                 (implicit request:Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
     withAgentReference(utr) { reference =>
       prePopulationService.prePopulate(reference, prepop).map { _ =>
         goToHome(nino, utr)
@@ -170,13 +170,13 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   }
 
   private def handleFailure(arn: String, currentCount: Int, clientDetails: UserDetailsModel)
-                           (implicit rc: RequestHeader, request:Request[AnyContent]): Future[Result]= {
+                           (implicit request:Request[AnyContent]): Future[Result]= {
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     throw new InternalServerException("[ConfirmClientController][submit] orchestrate agent qualification failed with an unexpected failure")
   }
 
   private def handleAlreadySubscribed(arn: String, currentCount: Int, clientDetails: UserDetailsModel)
-                                     (implicit rc: RequestHeader, request:Request[AnyContent]): Future[Result]= {
+                                     (implicit request:Request[AnyContent]): Future[Result]= {
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching))
   }

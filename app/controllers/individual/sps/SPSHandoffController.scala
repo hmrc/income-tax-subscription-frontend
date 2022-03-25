@@ -20,7 +20,6 @@ import auth.individual.AuthPredicate.AuthPredicate
 import auth.individual.{IncomeTaxSAUser, StatelessController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SPSEnabled
-import config.featureswitch.FeatureSwitching
 import play.api.mvc._
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
@@ -37,7 +36,7 @@ class SPSHandoffController @Inject()(
                                       val crypto: ApplicationCrypto)
                                     (implicit val ec: ExecutionContext,
                                      val appConfig: AppConfig,
-                                     mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching {
+                                     mcc: MessagesControllerComponents) extends StatelessController  {
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxSAUser] = preferencesPredicate
 

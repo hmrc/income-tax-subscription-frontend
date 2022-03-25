@@ -19,7 +19,6 @@ package controllers.agent.eligibility
 import auth.agent.StatelessController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.RemoveCovidPages
-import config.featureswitch.FeatureSwitching
 import forms.agent.OtherSourcesOfIncomeForm.otherSourcesOfIncomeForm
 import javax.inject.{Inject, Singleton}
 import models.audits.EligibilityAnswerAuditing
@@ -37,7 +36,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
                                                val authService: AuthService)
                                               (implicit val appConfig: AppConfig,
                                                mcc: MessagesControllerComponents,
-                                               val ec: ExecutionContext) extends StatelessController with FeatureSwitching {
+                                               val ec: ExecutionContext) extends StatelessController  {
   def backUrl: String =
     if (isEnabled(RemoveCovidPages)) {
       appConfig.incomeTaxEligibilityFrontendUrl + "/client/terms-of-participation"

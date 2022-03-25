@@ -17,7 +17,7 @@
 package views.agent.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.{FeatureSwitching, FeatureSwitchingUtil}
+import config.featureswitch.FeatureSwitchingUtil
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
@@ -31,7 +31,7 @@ import views.html.agent.business.OverseasPropertyStartDate
 
 import java.time.LocalDate
 
-class OverseasPropertyStartDateViewSpec extends ViewSpec with FeatureSwitching with FeatureSwitchingUtil {
+class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingUtil {
 
   @Before
   override def beforeEach(): Unit = {

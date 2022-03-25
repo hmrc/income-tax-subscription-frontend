@@ -19,7 +19,6 @@ package controllers.agent.business
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSourceModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +33,7 @@ class RoutingController @Inject()(val auditingService: AuditingService,
                                   val subscriptionDetailsService: SubscriptionDetailsService)
                                  (implicit val ec: ExecutionContext,
                                   val appConfig: AppConfig,
-                                  mcc: MessagesControllerComponents) extends AuthenticatedController with FeatureSwitching with ReferenceRetrieval {
+                                  mcc: MessagesControllerComponents) extends AuthenticatedController  with ReferenceRetrieval {
 
   def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

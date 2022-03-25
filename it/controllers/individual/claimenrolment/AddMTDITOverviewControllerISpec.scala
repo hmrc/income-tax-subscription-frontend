@@ -18,14 +18,13 @@ package controllers.individual.claimenrolment
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
-import config.featureswitch.FeatureSwitching
 import helpers.IntegrationTestConstants.claimEnrolmentResolverURI
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.{NOT_FOUND, OK, SEE_OTHER}
 import utilities.ITSASessionKeys
 
-class AddMTDITOverviewControllerISpec extends ComponentSpecBase with FeatureSwitching with SessionCookieCrumbler {
+class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     disable(ClaimEnrolment)

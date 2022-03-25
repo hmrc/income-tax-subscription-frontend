@@ -23,7 +23,6 @@ import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentSPSConnector
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
-import utilities.SubscriptionDataUtil.{disable, enable}
 import utilities.TestModels.testAgentSummaryData
 import utilities.agent.TestConstants._
 

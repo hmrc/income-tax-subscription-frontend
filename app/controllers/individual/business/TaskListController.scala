@@ -19,7 +19,6 @@ package controllers.individual.business
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -49,7 +48,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching with ReferenceRetrieval with Logging {
+                                   mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval with Logging {
 
   val show: Action[AnyContent] = Authenticated.async { implicit user =>
     implicit request => {

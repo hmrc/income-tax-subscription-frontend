@@ -16,7 +16,6 @@
 
 package controllers.usermatching
 
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestConstants._
@@ -25,7 +24,7 @@ import play.api.http.Status._
 import utilities.ITSASessionKeys
 
 
-class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCrumbler with FeatureSwitching {
+class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  {
 
   "POST /confirm-user" when {
 

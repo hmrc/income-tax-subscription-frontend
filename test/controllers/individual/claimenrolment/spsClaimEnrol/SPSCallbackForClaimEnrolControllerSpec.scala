@@ -19,7 +19,6 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -34,7 +33,7 @@ import utilities.individual.TestConstants
 import scala.concurrent.Future
 
 class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with MockAuditingService with MockSpsService
-  with MockClaimEnrolmentService with FeatureSwitching {
+  with MockClaimEnrolmentService  {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

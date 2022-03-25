@@ -19,7 +19,6 @@ package controllers.usermatching
 import auth.individual.JourneyState.ResultFunctions
 import auth.individual.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
@@ -43,7 +42,7 @@ class ConfirmUserController @Inject()(val auditingService: AuditingService,
                                       checkYourUserDetails: CheckYourUserDetails)
                                      (implicit val ec: ExecutionContext,
                                       val appConfig: AppConfig,
-                                      mcc: MessagesControllerComponents) extends UserMatchingController with FeatureSwitching {
+                                      mcc: MessagesControllerComponents) extends UserMatchingController  {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     checkYourUserDetails(

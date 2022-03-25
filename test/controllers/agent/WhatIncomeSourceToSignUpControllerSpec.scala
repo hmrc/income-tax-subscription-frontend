@@ -19,7 +19,6 @@ package controllers.agent
 import agent.audit.mocks.MockAuditingService
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
-import config.featureswitch.FeatureSwitching
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import forms.agent.BusinessIncomeSourceForm
 import models.common._
@@ -45,8 +44,7 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
   with MockConfig
-  with MockAuditingService
-  with FeatureSwitching {
+  with MockAuditingService {
   override val controllerName: String = "IncomeSourceController"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()

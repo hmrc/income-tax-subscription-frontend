@@ -18,7 +18,6 @@ package views.individual.incometax.business
 
 import assets.MessageLookup.PropertyAccountingMethod.{radioAccrualsDetail, radioCash, radioCashDetail}
 import assets.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
-import config.featureswitch.FeatureSwitching
 import forms.individual.business.AccountingMethodPropertyForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -29,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 import views.html.individual.incometax.business.PropertyAccountingMethod
 
-class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait with FeatureSwitching {
+class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait  {
 
   val backUrl: String = ViewSpecTrait.testBackUrl
   val action: Call = ViewSpecTrait.testCall

@@ -19,7 +19,6 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import play.api.mvc._
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
@@ -36,7 +35,7 @@ class SPSHandoffForClaimEnrolController @Inject()(
                                                    val crypto: ApplicationCrypto)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController with FeatureSwitching {
+                                                  mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController  {
 
 
   def redirectToSPS: Action[AnyContent] = {

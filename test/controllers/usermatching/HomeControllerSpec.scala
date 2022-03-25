@@ -19,7 +19,6 @@ package controllers.usermatching
 import agent.audit.mocks.MockAuditingService
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{PrePopulate, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models._
 import org.mockito.Mockito.reset
@@ -41,7 +40,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockGetEligibilityStatusService
   with MockPrePopulationService
   with MockAuditingService
-  with FeatureSwitching {
+   {
 
   private val eligibleWithoutPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))

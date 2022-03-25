@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingYearForm
 import models.AccountingYear
@@ -40,7 +39,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                            val subscriptionDetailsService: SubscriptionDetailsService,
                                            whatYearToSignUp: WhatYearToSignUp)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval with FeatureSwitching {
+                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval  {
 
   def backUrl(isEditMode: Boolean): Option[String] = if (isEnabled(SaveAndRetrieve)) {
     if(isEditMode)

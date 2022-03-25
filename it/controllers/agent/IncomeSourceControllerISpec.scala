@@ -17,7 +17,6 @@
 package controllers.agent
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestModels.{testFullOverseasPropertyModel, testFullPropertyModel}
 import helpers.agent.ComponentSpecBase
@@ -31,7 +30,7 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys._
 
-class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class IncomeSourceControllerISpec extends ComponentSpecBase  {
 
   override def beforeEach(): Unit = {
     disable(ForeignProperty)

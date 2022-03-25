@@ -20,7 +20,6 @@ import auth.individual.JourneyState._
 import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserMatching}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{PrePopulate, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
@@ -45,7 +44,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                subscriptionService: SubscriptionService)
                               (implicit val ec: ExecutionContext,
                                val appConfig: AppConfig,
-                               mcc: MessagesControllerComponents) extends StatelessController with FeatureSwitching with ReferenceRetrieval {
+                               mcc: MessagesControllerComponents) extends StatelessController  with ReferenceRetrieval {
 
   def home: Action[AnyContent] = Action {
     val redirect = routes.HomeController.index

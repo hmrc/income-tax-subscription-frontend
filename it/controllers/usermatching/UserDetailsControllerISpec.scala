@@ -16,7 +16,6 @@
 
 package controllers.usermatching
 
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, UserLockoutStub}
@@ -27,7 +26,7 @@ import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 
-class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching with UserMatchingIntegrationResultSupport {
+class UserDetailsControllerISpec extends ComponentSpecBase  with UserMatchingIntegrationResultSupport {
 
   "GET /user-details" when {
     def fixture(agentLocked: Boolean): WSResponse = {

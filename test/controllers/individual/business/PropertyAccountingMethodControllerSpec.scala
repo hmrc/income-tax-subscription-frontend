@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.{ForeignProperty, SaveAndRetrieve}
-import config.featureswitch._
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodPropertyForm
 import models.common.PropertyModel
@@ -37,7 +36,7 @@ import views.html.individual.incometax.business.PropertyAccountingMethod
 import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAuditingService  {
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()

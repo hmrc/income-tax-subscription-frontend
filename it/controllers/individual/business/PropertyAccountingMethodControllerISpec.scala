@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -28,7 +27,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
-class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
 
   override def beforeEach(): Unit = {
     disable(SaveAndRetrieve)

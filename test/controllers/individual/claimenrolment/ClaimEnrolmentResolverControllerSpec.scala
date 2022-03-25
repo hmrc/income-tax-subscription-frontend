@@ -18,7 +18,6 @@ package controllers.individual.claimenrolment
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
@@ -31,7 +30,7 @@ import utilities.agent.TestConstants
 import scala.concurrent.Future
 
 class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
-  with FeatureSwitching
+  
   with MockClaimEnrolmentService
   with MockAuditingService {
 

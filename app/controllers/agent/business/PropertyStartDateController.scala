@@ -19,7 +19,6 @@ package controllers.agent.business
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.agent.PropertyStartDateForm
 import forms.agent.PropertyStartDateForm.propertyStartDateForm
@@ -44,7 +43,7 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends AuthenticatedController
-  with ImplicitDateFormatter with FeatureSwitching with ReferenceRetrieval {
+  with ImplicitDateFormatter  with ReferenceRetrieval {
 
   private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 

@@ -18,13 +18,12 @@ package controllers.agent
 
 import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 
-class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler with FeatureSwitching {
+class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  {
 
   "GET /" should {
     "return a redirect to the index page" in {

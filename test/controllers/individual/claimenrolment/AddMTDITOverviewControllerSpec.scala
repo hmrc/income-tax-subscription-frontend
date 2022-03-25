@@ -19,7 +19,6 @@ package controllers.individual.claimenrolment
 import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.FakeRequest
@@ -32,7 +31,7 @@ import views.individual.mocks.MockAddMTDITOverview
 import scala.concurrent.Future
 
 class AddMTDITOverviewControllerSpec extends ControllerBaseSpec
-  with FeatureSwitching
+  
   with MockClaimEnrolmentService
   with MockAuditingService
   with MockAddMTDITOverview {

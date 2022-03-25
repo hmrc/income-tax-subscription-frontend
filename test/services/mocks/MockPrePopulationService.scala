@@ -21,7 +21,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.PrePopulationService
-import utilities.{SubscriptionDataKeys, UnitTestTrait}
+import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 

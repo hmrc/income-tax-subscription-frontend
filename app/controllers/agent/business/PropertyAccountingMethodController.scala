@@ -19,7 +19,6 @@ package controllers.agent.business
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodPropertyForm
 import models.AccountingMethod
@@ -40,7 +39,7 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents,
-                                                   val appConfig: AppConfig) extends AuthenticatedController with FeatureSwitching with ReferenceRetrieval {
+                                                   val appConfig: AppConfig) extends AuthenticatedController  with ReferenceRetrieval {
 
   private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
 

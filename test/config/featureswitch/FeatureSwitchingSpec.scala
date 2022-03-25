@@ -16,26 +16,26 @@
 
 package config.featureswitch
 
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import utilities.UnitTestTrait
 
-class FeatureSwitchingSpec extends WordSpecLike with Matchers with OptionValues with FeatureSwitching {
+class FeatureSwitchingSpec extends UnitTestTrait {
 
   FeatureSwitch.switches foreach { switch =>
     s"isEnabled(${switch.name})" should {
       "return true when a feature switch is set" in {
         enable(switch)
-        isEnabled(switch) shouldBe true
+        isEnabled(switch) mustBe true
       }
 
       "return false when a feature switch is set to false" in {
         disable(switch)
-        isEnabled(switch) shouldBe false
+        isEnabled(switch) mustBe false
       }
 
       "return false when a feature switch has not been set" in {
         sys.props -= switch.name
-        sys.props.get(switch.name) shouldBe empty
-        isEnabled(switch) shouldBe false
+        sys.props.get(switch.name) mustBe empty
+        isEnabled(switch) mustBe false
       }
     }
   }

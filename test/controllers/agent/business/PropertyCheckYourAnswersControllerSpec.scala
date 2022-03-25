@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import models.common.PropertyModel
 import models.{Cash, DateModel}
@@ -35,7 +34,7 @@ import views.html.agent.business.PropertyCheckYourAnswers
 import scala.concurrent.Future
 
 class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector with FeatureSwitching {
+  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector  {
 
   override val controllerName: String = "PropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

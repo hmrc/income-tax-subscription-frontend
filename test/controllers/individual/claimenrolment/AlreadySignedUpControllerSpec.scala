@@ -18,7 +18,6 @@ package controllers.individual.claimenrolment
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ClaimEnrolment
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers._
@@ -29,7 +28,7 @@ import scala.concurrent.Future
 
 class AlreadySignedUpControllerSpec extends ControllerBaseSpec
   with MockAuditingService
-  with FeatureSwitching
+  
   with MockAlreadySignedUp {
 
   override val controllerName: String = "ClaimEnrolmentAlreadySignedUpController"
