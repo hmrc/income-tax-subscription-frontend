@@ -17,11 +17,13 @@
 package models.common
 
 import models.{Cash, DateModel}
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsSuccess, Json}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class OverseasPropertyModelSpec extends WordSpecLike with Matchers with OptionValues {
+class OverseasPropertyModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
     "OverseasPropertyModel" should {
       "deserialize without confirmed field" in {
         val actual = Json.fromJson[OverseasPropertyModel](Json.parse("""{"startDate":{"day":"5","month":"11","year":"2021"}}"""))

@@ -64,7 +64,7 @@ class ConfirmAgentSubscriptionSpec extends UnitTestTrait  with MockConfig with E
   "authPredicates" should {
     s"return $AuthPredicateSuccess when the session contains the correct state" in {
       val res = journeyState.authPredicates.apply(request)(testUser)
-      res.right.value mustBe AuthPredicateSuccess
+      res.value mustBe AuthPredicateSuccess
     }
 
     s"return $homeRoute when the session is not in the correct state" in {

@@ -18,7 +18,7 @@ package services
 
 import models.{Activated, Unset}
 import org.scalatest.EitherValues
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -46,13 +46,13 @@ class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService w
     "return Activated if checkPaperless returns Activated" in {
       mockCheckPaperlessActivated(testToken)
 
-      await(TestPreferencesService.checkPaperless(testToken)).right.value shouldBe Activated
+      await(TestPreferencesService.checkPaperless(testToken)).value shouldBe Activated
     }
 
     "return Unset if checkPaperless returns Unset" in {
       mockCheckPaperlessUnset(testToken)
 
-      await(TestPreferencesService.checkPaperless(testToken)).right.value shouldBe Unset(testUrl)
+      await(TestPreferencesService.checkPaperless(testToken)).value shouldBe Unset(testUrl)
     }
 
     "return a failed future in checkPaperless returns a failed future" in {

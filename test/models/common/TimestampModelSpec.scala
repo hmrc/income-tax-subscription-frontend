@@ -16,13 +16,15 @@
 
 package models.common
 
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsResult, Json}
 
 import java.time.LocalDateTime
 
-class TimestampModelSpec extends WordSpecLike with Matchers with OptionValues {
+class TimestampModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
   "TimestampModel" should {
     "deserialize the MongoDB response" in {
       val actual: JsResult[TimestampModel] = Json.fromJson[TimestampModel](Json.parse("""{"$date":1642075200000}"""))

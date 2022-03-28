@@ -17,12 +17,12 @@
 package services
 
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import utilities.individual.TestConstants._
 import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.scalatest.EitherValues
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.test.Helpers._
 import services.mocks.TestUserLockoutService
+import utilities.individual.TestConstants._
 
 class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
@@ -32,12 +32,12 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
     "return the not locked out status" in {
       setupMockNotLockedOut(escapedUserId)
-      call.right.value shouldBe NotLockedOut
+      call.value shouldBe NotLockedOut
     }
 
     "return the locked out status" in {
       setupMockLockedOut(escapedUserId)
-      call.right.value shouldBe testLockoutResponse
+      call.value shouldBe testLockoutResponse
     }
 
     "return the error if lock status fails on bad request" in {
@@ -57,12 +57,12 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
     "when counter is under the limit should return not locked out and updated new counter, should not clear Subscription Details " in {
       setupMockLockCreated(escapedUserId)
-      call(appConfig.matchingAttempts - 2).right.value shouldBe LockoutUpdate(NotLockedOut, appConfig.matchingAttempts - 1)
+      call(appConfig.matchingAttempts - 2).value shouldBe LockoutUpdate(NotLockedOut, appConfig.matchingAttempts - 1)
     }
 
     "when counter exceeds max should return locked out, Subscription Details  should be cleared" in {
       setupMockLockCreated(escapedUserId)
-      call(appConfig.matchingAttempts - 1).right.value shouldBe LockoutUpdate(testLockoutResponse, None)
+      call(appConfig.matchingAttempts - 1).value shouldBe LockoutUpdate(testLockoutResponse, None)
     }
 
     "return the error if create lock fails on bad request, should not clear Subscription Details " in {

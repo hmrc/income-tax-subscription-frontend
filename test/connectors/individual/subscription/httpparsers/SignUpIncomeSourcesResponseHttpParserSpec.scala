@@ -36,7 +36,7 @@ class SignUpIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with Eithe
 
         val res = PostMultipleIncomeSourcesSignUpResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe SignUpIncomeSourcesSuccess(testMTDID)
+        res.value mustBe SignUpIncomeSourcesSuccess(testMTDID)
       }
 
       "parse an incorrectly formatted OK response as a BadlyFormattedSignUpIncomeSourcesResponse" in {

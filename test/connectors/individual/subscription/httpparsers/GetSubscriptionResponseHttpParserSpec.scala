@@ -18,12 +18,12 @@ package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponseHttpReads
 import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
-import utilities.individual.TestConstants._
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"
@@ -36,7 +36,7 @@ class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherVal
 
         val res = GetSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe Some(SubscriptionSuccess(testMTDID))
+        res.value mustBe Some(SubscriptionSuccess(testMTDID))
       }
 
       "parse an empty OK response as a None" in {
@@ -44,7 +44,7 @@ class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherVal
 
         val res = GetSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe empty
+        res.value mustBe empty
       }
 
       "parse any other http status as a SubscriptionFailureResponse" in {

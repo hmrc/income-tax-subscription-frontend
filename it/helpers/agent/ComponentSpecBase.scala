@@ -17,14 +17,16 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
+import models._
 import models.common._
 import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
-import models._
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api._
 import play.api.data.Form
@@ -44,7 +46,7 @@ import java.time.LocalDate
 import java.util.UUID
 import scala.collection.JavaConverters._
 
-trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
+trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience
   with BeforeAndAfterEach with BeforeAndAfterAll with Eventually

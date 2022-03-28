@@ -18,11 +18,13 @@ package models.common
 
 import models._
 import models.common.business._
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import utilities.AccountingPeriodUtil._
 import utilities.individual.TestConstants.testNino
 
-class SummaryModelSpec extends WordSpecLike with Matchers with OptionValues {
+class SummaryModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   val date: DateModel = DateModel("1", "2", "1980")
   val completeSeModel: SelfEmploymentData = SelfEmploymentData(

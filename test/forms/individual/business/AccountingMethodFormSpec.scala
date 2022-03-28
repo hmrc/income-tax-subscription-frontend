@@ -21,9 +21,9 @@ import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Cash
 import models.common.business.AccountingMethodModel
-import org.scalatest.Matchers._
-import org.scalatestplus.play.guice.GuiceOneAppPerTest
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.data.FormError
 
 class AccountingMethodFormSpec extends PlaySpec with GuiceOneAppPerTest {

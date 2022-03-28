@@ -20,7 +20,7 @@ import forms.agent.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
 

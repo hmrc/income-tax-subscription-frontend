@@ -16,12 +16,14 @@
 
 package auth.agent
 
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import utilities.agent.{Constants, TestConstants}
 
-class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneServerPerTest {
+class IncomeTaxSAUserSpec extends AnyWordSpecLike with Matchers with OptionValues with GuiceOneServerPerTest {
 
   "IncomeTaxSAUser" should {
     val confidenceLevel = ConfidenceLevel.L50

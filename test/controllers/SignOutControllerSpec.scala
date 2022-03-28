@@ -16,7 +16,7 @@
 
 package controllers
 
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup

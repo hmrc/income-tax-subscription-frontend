@@ -17,11 +17,11 @@
 package connectors.individual
 
 import connectors.individual.mocks.TestPreferenceFrontendConnector
-import utilities.individual.TestConstants._
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 class PreferenceFrontendConnectorSpec extends UnitTestTrait
   with TestPreferenceFrontendConnector {

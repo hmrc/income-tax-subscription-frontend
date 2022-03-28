@@ -35,7 +35,7 @@ class UpsertEnrolmentResponseHttpParserSpec extends UnitTestTrait with EitherVal
 
         val res = UpsertEnrolmentResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe KnownFactsSuccess
+        res.value mustBe KnownFactsSuccess
       }
 
       "parse any other  response as an UpsertEnrolmentSuccess" in {

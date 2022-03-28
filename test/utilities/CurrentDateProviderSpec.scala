@@ -16,12 +16,14 @@
 
 package utilities
 
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+
 import java.time.LocalDate
 
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-
-class CurrentDateProviderSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite{
+class CurrentDateProviderSpec extends AnyWordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite{
   "getCurrentDate" should {
     "return the current date" in {
       val provider = app.injector.instanceOf[CurrentDateProvider]

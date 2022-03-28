@@ -6,14 +6,13 @@ import connectors.stubs.SubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
 import models.common.AccountingPeriodModel
-import models.common.subscription.{BadlyFormattedSubscriptionResponse, BusinessIncomeModel, PropertyIncomeModel, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
+import models.common.subscription._
 import models.{Cash, DateModel}
-import org.scalatest.Matchers
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
-class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
+class SubscriptionConnectorISpec extends ComponentSpecBase {
 
   implicit val hc = HeaderCarrier()
 

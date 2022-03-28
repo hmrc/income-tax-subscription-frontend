@@ -16,13 +16,14 @@
 
 package services
 
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import utilities.MockCurrentDateProvider
 
 import java.time.LocalDate
 
-class AccountingPeriodTestAccountingPeriodServiceSpec extends WordSpecLike with Matchers with OptionValues with BeforeAndAfterEach with MockCurrentDateProvider {
+class AccountingPeriodTestAccountingPeriodServiceSpec extends AnyWordSpecLike with Matchers with OptionValues with BeforeAndAfterEach with MockCurrentDateProvider {
 
 
   class Setup(date: LocalDate = LocalDate.of(2019, 9, 1)) {

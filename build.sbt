@@ -40,7 +40,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     Keys.fork in Test := true,
     javaOptions in Test += "-Dlogger.resource=logback-test.xml",
-    scalaVersion := "2.12.13",
+    scalaVersion := "2.12.15",
     parallelExecution in Test := true
   )
   .settings(scalacOptions += s"-Wconf:src=${target.value}/.*:s")

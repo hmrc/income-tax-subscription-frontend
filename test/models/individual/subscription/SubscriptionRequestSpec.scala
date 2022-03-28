@@ -18,11 +18,13 @@ package models.individual.subscription
 
 import models.common.IncomeSourceModel
 import models.common.subscription.SubscriptionRequest
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsValue, Json}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utilities.individual.TestConstants
 
-class SubscriptionRequestSpec extends WordSpecLike with Matchers with OptionValues {
+class SubscriptionRequestSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   "FERequest" should {
     "Provide the correct reader for FERequest" in {

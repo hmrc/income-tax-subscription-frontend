@@ -17,14 +17,14 @@
 package connectors.individual
 
 import connectors.PaperlessPreferenceHttpParser.PaperlessPreferenceHttpReads
-import utilities.HttpResult.HttpConnectorError
-import utilities.individual.TestConstants._
 import models.{Activated, Unset}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
+import utilities.HttpResult.HttpConnectorError
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"
@@ -36,7 +36,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
-        res.right.value mustBe Activated
+        res.value mustBe Activated
       }
 
       s"parse a correctly formatted OK false response with a redirect url as Declined($testUrl)" in {
@@ -50,7 +50,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
-        res.right.value mustBe Unset(testUrl)
+        res.value mustBe Unset(testUrl)
       }
 
       "parse a correctly formatted PRECONDITION_FAILED false response as Unset" in {
@@ -58,7 +58,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
-        res.right.value mustBe Unset(testUrl)
+        res.value mustBe Unset(testUrl)
       }
 
       "parse an incorrectly formatted OK response as a PaperlessPreferenceError" in {

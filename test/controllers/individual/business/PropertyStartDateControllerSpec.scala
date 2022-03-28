@@ -115,7 +115,6 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
     val maxDate = LocalDate.now.minusYears(1)
     val testValidMaxDate: DateModel = DateModel.dateConvert(maxDate)
     val minDate = LocalDate.of(1900, 1, 1)
-    val testValidMinDate: DateModel = DateModel.dateConvert(minDate)
 
     val testPropertyStartDateModel: DateModel = testValidMaxDate
 

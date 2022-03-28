@@ -16,16 +16,16 @@
 
 package connectors.usermatching.httpparsers
 
-import java.time.OffsetDateTime
-
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusHttpReads
-import utilities.individual.TestConstants._
 import models.usermatching.{LockedOut, LockoutStatusFailureResponse, NotLockedOut}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
+
+import java.time.OffsetDateTime
 
 class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
   val testUri = "/"
@@ -50,7 +50,7 @@ class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
 
         val res = LockoutStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe NotLockedOut
+        res.value mustBe NotLockedOut
       }
 
       "parse a correctly formatted OK response for lockout status" in {
@@ -58,7 +58,7 @@ class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
 
         val res = LockoutStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe LockedOut(testNino, testTime)
+        res.value mustBe LockedOut(testNino, testTime)
       }
 
       "parse any other http status as a LockoutStatusFailureResponse" in {
@@ -78,7 +78,7 @@ class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
 
         val res = LockoutStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe LockedOut(testNino, testTime)
+        res.value mustBe LockedOut(testNino, testTime)
       }
 
       "parse any other http status as a LockoutStatusFailureResponse" in {

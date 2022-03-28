@@ -7,14 +7,13 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
 import models.common._
 import models.common.business._
-import models.common.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
+import models.common.subscription._
 import models.{Accruals, Cash, DateModel}
-import org.scalatest.Matchers
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
-class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
+class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

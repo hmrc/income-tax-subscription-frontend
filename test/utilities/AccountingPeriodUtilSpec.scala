@@ -18,10 +18,12 @@ package utilities
 
 import models.DateModel
 import models.common.AccountingPeriodModel
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 
-class AccountingPeriodUtilSpec extends WordSpecLike with Matchers with OptionValues {
+class AccountingPeriodUtilSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   "AccountingPeriodUtil.getTaxEndYear" should {
     "return 2018 if the tax year ends between 6th April 2017 and 5th April 2018" in {

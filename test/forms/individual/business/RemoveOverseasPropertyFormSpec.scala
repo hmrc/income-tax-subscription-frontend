@@ -19,11 +19,11 @@ package forms.individual.business
 import forms.individual.business.RemoveOverseasPropertyForm.{removeOverseasPropertyForm, yesNo}
 import forms.submapping.YesNoMapping
 import models.{No, Yes, YesNo}
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
 
-class RemoveOverseasPropertyFormSpec extends PlaySpec with MustMatchers {
+class RemoveOverseasPropertyFormSpec extends PlaySpec with Matchers {
 
   "removeOverseasPropertyForm" must {
     "return Yes" when {

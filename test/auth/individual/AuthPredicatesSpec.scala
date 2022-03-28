@@ -100,7 +100,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
     "return an AuthPredicateSuccess where a nino enrolment exists" in {
-      AuthPredicates.ninoPredicate(FakeRequest())(userWithNinoEnrolment).right.value mustBe AuthPredicateSuccess
+      AuthPredicates.ninoPredicate(FakeRequest())(userWithNinoEnrolment).value mustBe AuthPredicateSuccess
     }
 
     "redirect to user matching if nino enrolment does not exist" in {
@@ -116,7 +116,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "mtdidPredicate" should {
     "return an AuthPredicateSuccess where an mtdid enrolment does not already exist" in {
-      mtdidPredicate(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
+      mtdidPredicate(FakeRequest())(blankUser).value mustBe AuthPredicateSuccess
     }
 
     "return the already-enrolled page where an mtdid enrolment already exists" in {
@@ -126,7 +126,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "enrolledPredicate" should {
     "return an AuthPredicateSuccess where an mtdid enrolment already exists" in {
-      enrolledPredicate(FakeRequest())(userWithMtditIdEnrolment).right.value mustBe AuthPredicateSuccess
+      enrolledPredicate(FakeRequest())(userWithMtditIdEnrolment).value mustBe AuthPredicateSuccess
     }
 
     "return a NotFoundException where an mtdid enrolment does not already exist" in {
@@ -136,11 +136,11 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "timeoutPredicate" should {
     "return an AuthPredicateSuccess where the lastRequestTimestamp is not set" in {
-      timeoutPredicate(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
+      timeoutPredicate(FakeRequest())(blankUser).value mustBe AuthPredicateSuccess
     }
 
     "return an AuthPredicateSuccess where the authToken is set and hte lastRequestTimestamp is set" in {
-      timeoutPredicate(authorisedRequest)(blankUser).right.value mustBe AuthPredicateSuccess
+      timeoutPredicate(authorisedRequest)(blankUser).value mustBe AuthPredicateSuccess
     }
 
     "return the timeout page where the lastRequestTimestamp is set but the auth token is not" in {
@@ -151,7 +151,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "affinityPredicate" should {
     "return an AuthPredicateSuccess where the affinity group is individual" in {
-      affinityPredicate(FakeRequest())(userWithIndividualAffinity).right.value mustBe AuthPredicateSuccess
+      affinityPredicate(FakeRequest())(userWithIndividualAffinity).value mustBe AuthPredicateSuccess
     }
     "return the wrong-affinity page where the affinity group is agent" in {
       await(affinityPredicate(FakeRequest())(userWithAgentAffinity).left.value) mustBe wrongAffinity
@@ -161,13 +161,13 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return an AuthPredicateSuccess where the affinity group is organisation" in {
-      affinityPredicate(FakeRequest())(userWithOrganisationAffinity).right.value mustBe AuthPredicateSuccess
+      affinityPredicate(FakeRequest())(userWithOrganisationAffinity).value mustBe AuthPredicateSuccess
     }
   }
 
   "defaultPredicates" should {
     "return an AuthPredicateSuccess where there is a nino, an individual affinity, and an auth token" in {
-      defaultPredicates(authorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+      defaultPredicates(authorisedRequest)(defaultPredicateUser).value mustBe AuthPredicateSuccess
     }
 
     "return the wrong-affinity page where there is no affinity group" in {
@@ -175,7 +175,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return the no-nino error page where a nino enrolment does not exist" in {
-      affinityPredicate(authorisedRequest)(userWithIndividualAffinity).right.value mustBe AuthPredicateSuccess
+      affinityPredicate(authorisedRequest)(userWithIndividualAffinity).value mustBe AuthPredicateSuccess
     }
 
     "return the timeout page where the lastRequestTimestamp is set but the auth token is not" in {
@@ -196,7 +196,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "subscriptionPredicates" should {
     "return an AuthPredicateSuccess where there is a nino, no mtditId, an individual affinity, the home session flag and an auth token" in {
-      subscriptionPredicates(authorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+      subscriptionPredicates(authorisedRequest)(defaultPredicateUser).value mustBe AuthPredicateSuccess
     }
 
     "return the home page where the request session does not contain the GoHomeFlag" in {
@@ -215,7 +215,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "claimEnrolmentPredicates" should {
     "return an AuthPredicateSuccess where there is a nino, no mtditId, an individual affinity, the home session flag and an auth token" in {
-      claimEnrolmentPredicates(claimEnrolmentRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+      claimEnrolmentPredicates(claimEnrolmentRequest)(defaultPredicateUser).value mustBe AuthPredicateSuccess
     }
     "return the claim enrolment overview page where the request session does not contain the ClaimEnrolment state" in {
       await(claimEnrolmentPredicates(homelessAuthorisedRequest)(defaultPredicateUser).left.value) mustBe claimEnrolmentRoute
@@ -229,7 +229,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "enrolledPredicates" should {
     "return an AuthPredicateSuccess where there is an mtditId, the home session flag and an auth token" in {
-      enrolledPredicates(authorisedRequest)(testUser(affinityGroup = None, mtdidEnrolment)).right.value mustBe AuthPredicateSuccess
+      enrolledPredicates(authorisedRequest)(testUser(affinityGroup = None, mtdidEnrolment)).value mustBe AuthPredicateSuccess
     }
 
     "throw a NotFoundException where the user is not enrolled" in {
@@ -239,7 +239,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "homePredicates" should {
     "return an AuthPredicateSuccess where there is a nino, no mtditId, an individual affinity and an auth token" in {
-      homePredicates(homelessAuthorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+      homePredicates(homelessAuthorisedRequest)(defaultPredicateUser).value mustBe AuthPredicateSuccess
     }
 
     "return the already-enrolled page where an mtdid enrolment already exists" in {
@@ -247,7 +247,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return to HomeController if there is no nino, but we have a utr" in {
-      homePredicates(homelessAuthorisedRequest)(userWithUtrButNoNino).right.value mustBe AuthPredicateSuccess
+      homePredicates(homelessAuthorisedRequest)(userWithUtrButNoNino).value mustBe AuthPredicateSuccess
     }
     "redirect to iv when the user doesn't have high enough confidence level" in {
       val result = await(homePredicates(homelessAuthorisedRequest)(defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
@@ -258,7 +258,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "userMatchingPredicates" should {
     "return an AuthPredicateSuccess where the user has no nino and has the JourneyState flag set to UserMatching" in {
-      userMatchingPredicates(userMatchingRequest)(userWithIndividualAffinity).right.value mustBe AuthPredicateSuccess
+      userMatchingPredicates(userMatchingRequest)(userWithIndividualAffinity).value mustBe AuthPredicateSuccess
     }
 
     "return user to index if the user does not have the JourneyState flag set to UserMatching" in {
@@ -274,7 +274,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "signUpJourneyPredicate" should {
     "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
-      signUpJourneyPredicate(signUpRequest)(blankUser).right.value mustBe AuthPredicateSuccess
+      signUpJourneyPredicate(signUpRequest)(blankUser).value mustBe AuthPredicateSuccess
     }
 
     "return the index page for any other state" in {
@@ -284,7 +284,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "userMatchingJourneyPredicate" should {
     "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
-      userMatchingJourneyPredicate(userMatchingRequest)(blankUser).right.value mustBe AuthPredicateSuccess
+      userMatchingJourneyPredicate(userMatchingRequest)(blankUser).value mustBe AuthPredicateSuccess
     }
 
     "return the index page for any other state" in {

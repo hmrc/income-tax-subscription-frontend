@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.data.validation.Invalid

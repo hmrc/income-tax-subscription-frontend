@@ -39,8 +39,8 @@ class GetEligibilityStatusHttpParserSpec extends UnitTestTrait with EitherValues
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
         res.isRight mustBe true
-        res.right.value.eligibleCurrentYear mustBe true
-        res.right.value.eligibleNextYear mustBe true
+        res.value.eligibleCurrentYear mustBe true
+        res.value.eligibleNextYear mustBe true
       }
       "parse a correctly formatted OK Ineligible response as a Boolean" in {
         val httpResponse = HttpResponse(OK, Json.obj(eligibleCurrentKey -> false, eligibleNextKey -> false).toString())
@@ -48,8 +48,8 @@ class GetEligibilityStatusHttpParserSpec extends UnitTestTrait with EitherValues
         val res = GetEligibilityStatusHttpReads.read(testHttpVerb, testUri, httpResponse)
 
         res.isRight mustBe true
-        res.right.value.eligibleCurrentYear mustBe false
-        res.right.value.eligibleNextYear mustBe false
+        res.value.eligibleCurrentYear mustBe false
+        res.value.eligibleNextYear mustBe false
       }
 
       "parse an incorrectly formatted OK response as a HttpConnectorError with JsError" in {
