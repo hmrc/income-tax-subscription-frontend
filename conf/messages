@@ -774,7 +774,8 @@ agent.summary.income_type_overseas_property                     = Accounting met
 agent.summary.self_employments                                  = Number of businesses signed up
 
 ## Agent Sign Up Complete page
-agent.sign-up-complete.heading                                  = Sign up complete
+agent.sign-up-complete.title                                    = You have signed up {0} {1} to use software to send Income Tax updates
+agent.sign-up-complete.heading                                  = Client sign up complete
 agent.sign-up-complete.panel-client                             = {0} {1}
 agent.sign-up-complete.signed-up-for-mtd                        = is now signed up for Making Tax Digital for Income Tax.
 agent.sign-up-complete.can-use-software                         = You can now use software to send Income Tax updates
@@ -790,25 +791,6 @@ agent.sign-up-complete.what-now.after-update                    = After you’ve
 agent.sign-up-complete.what-now.agent-services-account          = It may take a few hours before new information is displayed in your {0}.
 agent.sign-up-complete.what-now.agent-services-account.link     = agent service account
 agent.sign-up-complete.what-now.send-quarterly                  = You will need to send quarterly updates using your software by:
-
-# old messages for agent sign up complete below, remove once done above
-agent.sign-up-complete.title                                    = You have signed up {0} {1} to use software to send Income Tax updates
-agent.sign-up-complete.heading1                                 = Sign up complete
-agent.sign-up-complete.heading2                                 = {0} {1}
-agent.sign-up-complete.heading3                                 = is now signed up for Making Tax Digital for Income Tax
-agent.sign-up-complete.whatNow.heading                          = What you need to do next
-agent.sign-up-complete.whatNow.para1                            = Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other.
-agent.sign-up-complete.whatNow.number1                          = If you have not already, {0} and allow it interact with HMRC.
-agent.sign-up-complete.whatNow.number1.link                     = find software that’s compatible with Making Tax Digital for Income Tax (opens in new tab)
-agent.sign-up.complete.nextTax.number2                          = Log in to your {0} to find out when your first update is due.
-agent.sign-up.complete.nextTax.number2.link                     = Business Tax account
-agent.sign-up.complete.sendQuarterly                            = Send quarterly updates by:
-agent.sign-up.complete.sendPreviousUpdates                      = Add any income and expenses your client has for previous updates:
-agent.sign-up.complete.submitAnnualUpdates                      = Submit your client’s annual updates and declare for the tax year by 31 January {0}.
-agent.sign-up.complete.augustUpdate                             = 5 August {0}
-agent.sign-up.complete.novemberUpdate                           = 5 November {0}
-agent.sign-up.complete.februaryUpdate                           = 5 February {0}
-agent.sign-up.complete.mayUpdate                                = 5 May {0}
 
 agent.sign-up-complete.whatNow.para2                            = After you’ve sent an update, your client will get an Income Tax year-to-date estimate. They can see what they owe for the tax year after you’ve sent their final update.
 
