@@ -18,11 +18,10 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.{AuditingService, AuthService, SPSService}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
 
 import javax.inject.{Inject, Singleton}
@@ -39,29 +38,19 @@ class SPSCallbackForClaimEnrolController @Inject()(val auditingService: Auditing
 
   def callback: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(ClaimEnrolment)) {
-        request.queryString.get("entityId").flatMap(_.headOption) match {
-          case Some(entityId) =>
-            claimEnrolmentService.getMtditidFromSubscription map {
-              case Right(mtdItId) =>
-                spsService.confirmPreferences(mtdItId, Some(entityId))
-                Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()).addingToSession(
-                  ITSASessionKeys.SPSEntityId -> entityId
-                )
-              case Left(_) => throw new InternalServerException(
-                "[SPSCallbackForClaimEnrolController][callback] - failed to retrieve mtditid from claimEnrolmentService")
+      request.queryString.get("entityId").flatMap(_.headOption) match {
+        case Some(entityId) =>
+          claimEnrolmentService.getMtditidFromSubscription map {
+            case Right(mtdItId) =>
+              spsService.confirmPreferences(mtdItId, Some(entityId))
+              Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()).addingToSession(
+                ITSASessionKeys.SPSEntityId -> entityId
+              )
+            case Left(_) => throw new InternalServerException(
+              "[SPSCallbackForClaimEnrolController][callback] - failed to retrieve mtditid from claimEnrolmentService")
 
-            }
-          case None => Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()))
-        }
-      } else {
-        val error = if (isEnabled(ClaimEnrolment)) {
-          "claim enrolment feature switch is enabled"
-        } else {
-          "claim enrolment feature switch is not enabled"
-        }
-        throw new NotFoundException(s"[SPSCallbackForClaimEnrolController][callback] - $error")
+          }
+        case None => Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()))
       }
   }
-
 }

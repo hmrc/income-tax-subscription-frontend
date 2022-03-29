@@ -16,22 +16,15 @@
 
 package controllers.individual.claimenrolment
 
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
 class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
 
-  override def beforeEach(): Unit = {
-    disable(ClaimEnrolment)
-    super.beforeEach()
-  }
 
   "GET /claim-enrolment/confirmation" should {
-    "return the confirmation page when the user is enrolled and enrolment claimed" when {
-      "the claim enrolment feature switch is enabled" in {
-        enable(ClaimEnrolment)
+    "return the confirmation page when the user is enrolled and enrolment claimed" in {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -46,25 +39,9 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         )
       }
     }
-    "return a not found page" when {
-      "the claim enrolment feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /claim-enrolment/confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolmentConfirmation()
-
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
-    }
-  }
 
   "POST /claim-enrolment/confirmation" should {
-    "redirect to bta" when {
-      "the claim enrolment feature switch is enabled" in {
-        enable(ClaimEnrolment)
+    "redirect to bta" in {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -77,19 +54,5 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         )
       }
     }
-    "return a not found page" when {
-      "the claim enrolment feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /claim-enrolment/confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
-
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
-    }
-  }
 
 }

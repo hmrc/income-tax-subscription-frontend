@@ -17,7 +17,6 @@
 package controllers.individual.iv
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{baseURI, claimEnrolmentResolverURI}
 import helpers.servicemocks.AuthStub
@@ -43,7 +42,6 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
 
     "the user is in a claim enrolment journey" should {
       "redirect the user to the claim enrolment resolver" in {
-        enable(ClaimEnrolment)
         AuthStub.stubAuthSuccess()
 
         val res = IncomeTaxSubscriptionFrontend.ivSuccess(

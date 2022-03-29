@@ -18,7 +18,6 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import controllers.ControllerBaseSpec
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -26,7 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import services.individual.claimenrolment.ClaimEnrolmentService.ClaimEnrolmentError
 import services.mocks.{MockClaimEnrolmentService, MockSpsService}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants
 
@@ -35,10 +34,6 @@ import scala.concurrent.Future
 class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with MockAuditingService with MockSpsService
   with MockClaimEnrolmentService {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(ClaimEnrolment)
-  }
 
   object TestSPSCallbackForClaimEnrolController extends SPSCallbackForClaimEnrolController(
     mockAuditingService,
@@ -65,20 +60,10 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
     )
   }
 
-  "callback" when {
-    "the claim enrolment feature switch set to false" should {
-      "return a not found exception" in {
-        val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
 
-        intercept[NotFoundException](await(result)).message mustBe "[SPSCallbackForClaimEnrolController][callback] - claim enrolment feature switch is not enabled"
-      }
-    }
-
-    "the claim enrolment feature switch is enabled" when {
       "an entityId is passed through to the url" when {
         "mtditid successfully retrieves from claimEnrolmentService" should {
           "link preference with mtditid to sps, save the entityId in session and redirect to the claim enrolment confirmation page" in {
-            enable(ClaimEnrolment)
             mockGetMtditidFromSubscription("mtditid")
 
             val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
@@ -90,7 +75,6 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
         }
         "mtditid failed to retrieve from claimEnrolmentService" should {
           "throw an InternalServerException" in {
-            enable(ClaimEnrolment)
             mockGetMtditidFromSubscription(ClaimEnrolmentError(msg = "failed to retrieve mtditid from claimEnrolmentService"))
 
             val result = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
@@ -102,7 +86,6 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
       }
       "no entityId is present in the url" should {
         "redirect the user to the claim enrolment confirmation page " in {
-          enable(ClaimEnrolment)
 
           val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = false)).run()
 
@@ -110,8 +93,6 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
           redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show().url)
         }
       }
-    }
-  }
 
   authorisationTests()
 

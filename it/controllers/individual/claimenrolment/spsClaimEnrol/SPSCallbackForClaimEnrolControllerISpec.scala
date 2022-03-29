@@ -17,7 +17,6 @@
 package controllers.individual.claimenrolment.spsClaimEnrol
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{basGatewaySignIn, claimEnrolmentConfirmationURI}
 import helpers.WiremockHelper.verifyPost
@@ -27,10 +26,6 @@ import utilities.ITSASessionKeys
 
 class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(ClaimEnrolment)
-  }
 
   s"GET ${controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback.url}" when {
 
@@ -47,83 +42,59 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "the claim enrolment feature switch set to false" should {
-      "return a not found page to the user" in {
-        AuthStub.stubAuthSuccess()
-
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
-          sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
-          )
-        )
-
-        res must have(
-          httpStatus(NOT_FOUND),
-          pageTitle("Page not found - 404")
-        )
-      }
-    }
-
-    "the claim enrolment feature switch is enabled" when {
-      "there is an entityId" when {
-        "mtditid retrieves successfully" should {
-          "link user's enrolment id to SPS and redirect the user to the Claim Enrolment Confirmation page" in {
-            enable(ClaimEnrolment)
-            AuthStub.stubAuthSuccess()
-            SubscriptionStub.stubGetSubscriptionFound()
-
-
-            val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
-              sessionKeys = Map(
-                ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
-              )
-            )
-
-            verifyPost("/channel-preferences/confirm", count = Some(1))
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(claimEnrolmentConfirmationURI)
-            )
-          }
-        }
-
-        "mtditid retrieves failed" should {
-          "throw InternalServerException" in {
-            enable(ClaimEnrolment)
-            AuthStub.stubAuthSuccess()
-            SubscriptionStub.stubGetNoSubscription()
-
-            val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
-              sessionKeys = Map(
-                ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
-              )
-            )
-
-            res must have(
-              httpStatus(INTERNAL_SERVER_ERROR)
-            )
-          }
-        }
-
-      }
-      "there is no entityId" should {
-        "redirect the user to the Claim Enrolment Confirmation page" in {
-          enable(ClaimEnrolment)
+    "there is an entityId" when {
+      "mtditid retrieves successfully" should {
+        "link user's enrolment id to SPS and redirect the user to the Claim Enrolment Confirmation page" in {
           AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetSubscriptionFound()
 
-          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = false,
+
+          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
             sessionKeys = Map(
               ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
             )
           )
+          verifyPost("/channel-preferences/confirm", count = Some(1))
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(claimEnrolmentConfirmationURI)
           )
         }
       }
+
+      "mtditid retrieves failed" should {
+        "throw InternalServerException" in {
+
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetNoSubscription()
+
+          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
+            sessionKeys = Map(
+              ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+            )
+          )
+
+          res must have(
+            httpStatus(INTERNAL_SERVER_ERROR)
+          )
+        }
+      }
     }
+    "there is no entityId" should {
+      "redirect the user to the Claim Enrolment Confirmation page" in {
+        AuthStub.stubAuthSuccess()
 
+        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = false,
+          sessionKeys = Map(
+            ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+          )
+        )
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(claimEnrolmentConfirmationURI)
+        )
+      }
+    }
   }
+ }
 
-}

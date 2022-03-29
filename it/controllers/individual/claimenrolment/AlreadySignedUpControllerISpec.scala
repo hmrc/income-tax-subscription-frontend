@@ -16,47 +16,26 @@
 
 package controllers.individual.claimenrolment
 
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
 class AlreadySignedUpControllerISpec extends ComponentSpecBase {
 
-  override def beforeEach(): Unit = {
-    disable(ClaimEnrolment)
-    super.beforeEach()
-  }
 
   "GET /claim-enrolment/already-signed-up " should {
-    "return the already signed up page" when {
-      "the claim enrolment feature switch is enabled" in {
-        enable(ClaimEnrolment)
+    "return the already signed up page" in {
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        When("GET /claim-enrolment/already-signed-up  is called")
-        val res = IncomeTaxSubscriptionFrontend.alreadySignedUp()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-        Then("Should return a OK with the already Signed Up page")
-        res must have(
-          httpStatus(OK),
-          pageTitle(messages("claim-enrolment.claimAlreadySignedUp.title") + serviceNameGovUk)
-        )
-      }
-    }
-    "return a not found page" when {
-      "the claim enrolment feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /claim-enrolment/already-signed-up is called")
-        val res = IncomeTaxSubscriptionFrontend.notSubscribed()
-
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      When("GET /claim-enrolment/already-signed-up  is called")
+      val res = IncomeTaxSubscriptionFrontend.alreadySignedUp()
+      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      Then("Should return a OK with the already Signed Up page")
+      res must have(
+        httpStatus(OK),
+        pageTitle(messages("claim-enrolment.claimAlreadySignedUp.title") + serviceNameGovUk)
+      )
     }
   }
 

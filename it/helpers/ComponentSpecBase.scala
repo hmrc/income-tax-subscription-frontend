@@ -18,7 +18,6 @@ package helpers
 
 import auth.individual.{JourneyState, SignUp, UserMatching, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
 import forms.individual.incomesource.{BusinessIncomeSourceForm, IncomeSourceForm}
@@ -160,8 +159,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def paperlessError(): WSResponse = get("/paperless-error")
 
     def callback(): WSResponse = get("/callback")
-
-    def claimEnrolSpsCallback(): WSResponse = get("/claim-enrolment/sps-callback", Map(JourneyStateKey -> ClaimEnrolment.name))
 
     def indexPage(): WSResponse = get("/index")
 

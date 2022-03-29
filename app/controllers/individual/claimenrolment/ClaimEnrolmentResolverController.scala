@@ -18,13 +18,12 @@ package controllers.individual.claimenrolment
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc._
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, NotSubscribed}
 import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -40,7 +39,6 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
 
   def resolve: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(ClaimEnrolment)) {
         claimEnrolmentService.claimEnrolment map {
           case Right(claimEnrolSuccess) =>
             auditingService.audit(
@@ -52,10 +50,6 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
           case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)
           case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
         }
-      }
-      else {
-        throw new NotFoundException("[ClaimEnrolmentResolverController][submit] - The claim enrolment feature switch is disabled")
-      }
   }
 
 }

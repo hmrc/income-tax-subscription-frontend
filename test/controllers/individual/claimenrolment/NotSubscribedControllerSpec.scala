@@ -17,11 +17,9 @@
 package controllers.individual.claimenrolment
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import controllers.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.NotFoundException
 import views.individual.mocks.MockNotSubscribed
 
 import scala.concurrent.Future
@@ -36,11 +34,6 @@ class NotSubscribedControllerSpec extends ControllerBaseSpec
     "show" -> TestNotSubscribedController.show
   )
 
-  override def beforeEach(): Unit = {
-    disable(ClaimEnrolment)
-    super.beforeEach()
-  }
-
   object TestNotSubscribedController extends NotSubscribedController(
     mockAuditingService,
     mockAuthService,
@@ -48,9 +41,7 @@ class NotSubscribedControllerSpec extends ControllerBaseSpec
   )
 
   "show" should {
-    "return an OK status with the not subscribed page" when {
-      "the claim enrolment feature switch is enabled" in {
-        enable(ClaimEnrolment)
+    "return an OK status with the not subscribed page" in {
         mockNotSubscribed()
 
         val result: Future[Result] = TestNotSubscribedController.show()(claimEnrolmentRequest)
@@ -60,13 +51,5 @@ class NotSubscribedControllerSpec extends ControllerBaseSpec
         charset(result) mustBe Some(Codec.utf_8.charset)
       }
     }
-
-    "return a NotFoundException" when {
-      "the claim enrolment feature switch is disabled" in {
-        intercept[NotFoundException](await(TestNotSubscribedController.show()(claimEnrolmentRequest)))
-          .message mustBe "[NotSubscribedController][show] - The claim enrolment feature switch is disabled"
-      }
-    }
-  }
 
 }

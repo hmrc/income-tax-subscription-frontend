@@ -18,10 +18,8 @@ package controllers.individual.claimenrolment
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.NotFoundException
 import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
 
 import javax.inject.{Inject, Singleton}
@@ -37,23 +35,14 @@ class ClaimEnrolmentConfirmationController @Inject()(val authService: AuthServic
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      if (isEnabled(ClaimEnrolment)) {
         Ok(claimEnrolmentConfirmation(
           postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit()
         ))
-      } else {
-        throw new NotFoundException("[ClaimEnrolmentController][show] - The claim enrolment feature switch is disabled")
       }
-  }
 
   def submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      if (isEnabled(ClaimEnrolment)) {
-        Redirect(appConfig.btaUrl)
-      } else {
-        throw new NotFoundException("[ClaimEnrolmentController][submit] - The claim enrolment feature switch is disabled")
-      }
-
+      Redirect(appConfig.btaUrl)
   }
 
 }

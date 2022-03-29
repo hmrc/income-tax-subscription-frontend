@@ -16,22 +16,15 @@
 
 package controllers.individual.claimenrolment
 
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
 class NotSubscribedControllerISpec extends ComponentSpecBase {
 
-  override def beforeEach(): Unit = {
-    disable(ClaimEnrolment)
-    super.beforeEach()
-  }
 
   "GET /claim-enrolment/not-subscribed" should {
-    "return the not subscribed page" when {
-      "the claim enrolment feature switch is enabled" in {
-        enable(ClaimEnrolment)
+    "return the not subscribed page" in {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -46,19 +39,5 @@ class NotSubscribedControllerISpec extends ComponentSpecBase {
         )
       }
     }
-    "return a not found page" when {
-      "the claim enrolment feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /claim-enrolment/confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.notSubscribed()
-
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
-    }
-  }
 
 }

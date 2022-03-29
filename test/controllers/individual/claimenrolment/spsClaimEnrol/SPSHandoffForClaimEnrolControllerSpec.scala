@@ -17,14 +17,12 @@
 package controllers.individual.claimenrolment.spsClaimEnrol
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.individual.mocks.MockApplicationCrypto
-import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
 
@@ -32,11 +30,6 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
   with MockAuditingService
 
   with MockApplicationCrypto {
-
-  override def beforeEach(): Unit = {
-    disable(ClaimEnrolment)
-    super.beforeEach()
-  }
 
   object TestSPSHandoffForClaimEnrolController extends SPSHandoffForClaimEnrolController(
     mockAuditingService,
@@ -57,24 +50,11 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
     "claim enrolment feature switch is set to true" should {
 
       "Redirect to SPS" in {
-
-        enable(ClaimEnrolment)
         mockEncrypt()
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result).get must be(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=encryptedValue&returnLinkText=encryptedValue&regime=encryptedValue")
       }
     }
-
-    "feature switch claim enrolment set to false" should {
-
-      "throw a NotFoundException" in {
-        mockEncrypt()
-        val ex = intercept[NotFoundException](await(result))
-        ex.getMessage mustBe ("[SPSHandoffForClaimEnrolController][redirectToSPS] - claim enrolment feature switch is not enabled")
-
-      }
-    }
-
   }
 
   authorisationTests()

@@ -18,10 +18,8 @@ package controllers.individual.claimenrolment
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.NotFoundException
 import views.html.individual.claimenrolment.NotSubscribed
 
 import javax.inject.{Inject, Singleton}
@@ -37,11 +35,7 @@ class NotSubscribedController @Inject()(val auditingService: AuditingService,
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      if (isEnabled(ClaimEnrolment)) {
         Ok(notSubscribed())
-      } else {
-        throw new NotFoundException("[NotSubscribedController][show] - The claim enrolment feature switch is disabled")
-      }
   }
 
 }

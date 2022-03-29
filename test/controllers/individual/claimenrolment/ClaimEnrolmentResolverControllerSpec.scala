@@ -17,14 +17,13 @@
 package controllers.individual.claimenrolment
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import controllers.ControllerBaseSpec
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, ClaimEnrolmentSuccess, NotSubscribed}
 import services.mocks.MockClaimEnrolmentService
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.agent.TestConstants
 
 import scala.concurrent.Future
@@ -39,28 +38,15 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
     "resolve" -> TestClaimEnrolmentResolverController.resolve
   )
 
-  override def beforeEach(): Unit = {
-    disable(ClaimEnrolment)
-    super.beforeEach()
-  }
-
   object TestClaimEnrolmentResolverController extends ClaimEnrolmentResolverController(
     claimEnrolmentService,
     mockAuditingService,
     mockAuthService
   )
 
-  "resolve" when {
-    "the claim enrolment feature switch is disabled" should {
-      "throw a NotFoundException with details that the feature switch is disabled" in {
-        intercept[NotFoundException](await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)))
-          .message mustBe "[ClaimEnrolmentResolverController][submit] - The claim enrolment feature switch is disabled"
-      }
-    }
-    "the claim enrolment feature switch is enabled" when {
-      "the claim enrolment service returned a claim enrolment success and an auditing has been sent" when {
+
+      "the claim enrolment service returned a claim enrolment success and an auditing has been sent" should {
         "redirect the user to the SPS preference capture journey" in {
-          enable(ClaimEnrolment)
           mockClaimEnrolment(response = ClaimEnrolmentSuccess(TestConstants.testNino, "mtditid"))
 
           val result = await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest))
@@ -68,12 +54,12 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
           verifyAudit(ClaimEnrolAddToIndivCredAuditingModel(TestConstants.testNino, "mtditid"))
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS.url)
-
+          }
         }
-      }
+
       "the claim enrolment service returns a not subscribed response" should {
         "redirect the user to the not subscribed page" in {
-          enable(ClaimEnrolment)
+
           mockClaimEnrolment(response = NotSubscribed)
 
           val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
@@ -84,7 +70,6 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
       }
       "the claim enrolment service returns a already signed up response" should {
         "redirect the user to the already signed up page" in {
-          enable(ClaimEnrolment)
           mockClaimEnrolment(response = AlreadySignedUp)
 
           val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
@@ -95,14 +80,12 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
       }
       "the claim enrolment service returns a claim enrolment error" should {
         "throw an InternalServerException with details" in {
-          enable(ClaimEnrolment)
+
           mockClaimEnrolment(response = ClaimEnrolmentError(msg = "claim enrolment service error"))
 
           intercept[InternalServerException](await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)))
             .message mustBe "claim enrolment service error"
         }
       }
-    }
-  }
 
 }

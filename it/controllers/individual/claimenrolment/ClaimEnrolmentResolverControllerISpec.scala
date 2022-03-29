@@ -16,7 +16,6 @@
 
 package controllers.individual.claimenrolment
 
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.testMTDITEnrolmentKey
 import helpers.servicemocks.AuditStub.verifyAudit
@@ -26,30 +25,10 @@ import play.api.http.Status._
 
 class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  override def beforeEach(): Unit = {
-    disable(ClaimEnrolment)
-    super.beforeEach()
-  }
+
 
   "GET /claim-enrolment/resolve" when {
-    "the claim enrolment feature switch is disabled" should {
-      "return a NotFound status" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /claim-enrolment/resolve is called")
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
-        Then("Should return a OK with the AddMTDITOverview page")
-        res must have(
-          httpStatus(NOT_FOUND),
-          pageTitle("Page not found - 404")
-        )
-      }
-    }
-    "the claim enrolment feature switch is enabled" when {
-      "all calls are successful and an auditing has been sent" when {
-        "redirect the user to SPS" in {
-          enable(ClaimEnrolment)
+      "all calls are successful and an auditing has been sent" in {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -60,18 +39,17 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
 
           When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
-
-          verifyAudit()
-          Then("Should return a SEE_OTHER with a redirect location of the SPS beginning page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(claimEnrolSpsHandoffRouteURI)
-          )
+            verifyAudit()
+            Then("Should return a SEE_OTHER with a redirect location of the SPS beginning page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(claimEnrolSpsHandoffRouteURI)
+            )
+          }
         }
-      }
+
       "redirect the user to the claim enrolment not subscribed" when {
         "the user is not signed up to mtd income tax" in {
-          enable(ClaimEnrolment)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -89,7 +67,6 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       }
       "redirect the user to the claim enrolment already signed up" when {
         "the enrolment is already allocated" in {
-          enable(ClaimEnrolment)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -108,7 +85,6 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       }
       "return an InternalServerError" when {
         "nino could not be retrieved from the user's cred" in {
-          enable(ClaimEnrolment)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthNoNino()
@@ -122,7 +98,6 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           )
         }
         "an unexpected status is returned when making a call to check the user has a subscription" in {
-          enable(ClaimEnrolment)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -137,7 +112,6 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           )
         }
         "the response payload could not be parsed when checking the allocation status of the enrolment" in {
-          enable(ClaimEnrolment)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -153,7 +127,6 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           )
         }
         "an unexpected status is returned when making a call to check the allocation status of the enrolment" in {
-          enable(ClaimEnrolment)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -169,7 +142,6 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           )
         }
         "an unexpected status is returned when making a call to upsert the known facts" in {
-          enable(ClaimEnrolment)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -186,7 +158,6 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           )
         }
         "an unexpected status is returned when making a call to allocate the enrolment" in {
-          enable(ClaimEnrolment)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -204,7 +175,6 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           )
         }
       }
-    }
-  }
+
 
 }
