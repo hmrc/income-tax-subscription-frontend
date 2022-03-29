@@ -44,7 +44,7 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
           )
         )
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(basGatewaySignIn("/claim-enrolment/sps-handoff"))
         )
@@ -66,7 +66,7 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
 
 
       Then("Should return a SEE_OTHER and redirect to SPS")
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(claimEnrolSpsHandoffURI)
       )
@@ -84,7 +84,7 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
       )
 
       Then("Should return a not found page to the user")
-      res should have(
+      res must have(
         httpStatus(NOT_FOUND),
         pageTitle("Page not found - 404")
       )

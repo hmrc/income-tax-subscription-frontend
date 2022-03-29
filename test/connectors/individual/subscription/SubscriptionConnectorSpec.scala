@@ -17,22 +17,22 @@
 package connectors.individual.subscription
 
 import connectors.individual.subscription.mocks.TestSubscriptionConnector
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues}
 import utilities.individual.TestConstants._
 
-class SubscriptionConnectorSpec extends TestSubscriptionConnector with EitherValues with OptionValues {
+class SubscriptionConnectorSpec extends TestSubscriptionConnector with EitherValues with OptionValues with Matchers {
   "SubscriptionConnector.subscribe" should {
 
     "Post to the correct url" in {
-      TestSubscriptionConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/$testNino")
+      TestSubscriptionConnector.subscriptionUrl(testNino) must endWith(s"/income-tax-subscription/subscription/$testNino")
     }
   }
 
   "SubscriptionConnector.getSubscription" should {
 
     "GET to the correct url" in {
-      TestSubscriptionConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/$testNino")
+      TestSubscriptionConnector.subscriptionUrl(testNino) must endWith(s"/income-tax-subscription/subscription/$testNino")
     }
   }
 

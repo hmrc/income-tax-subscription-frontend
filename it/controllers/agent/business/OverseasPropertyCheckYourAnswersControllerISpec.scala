@@ -18,9 +18,9 @@ package controllers.agent.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.agent.IntegrationTestConstants.taskListURI
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.taskListURI
 import helpers.agent.servicemocks.AuthStub
 import models.Cash
 import models.common.OverseasPropertyModel
@@ -43,7 +43,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers()
 
         Then("Should return OK with the property CYA page")
-        res should have (
+        res must have (
           httpStatus(OK),
           pageTitle(
             s"${messages("business.check-your-answers.title")} - Use software to report your client’s Income Tax - GOV.UK"
@@ -65,7 +65,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers()
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -85,7 +85,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
 
         Then("Should return a SEE_OTHER with a redirect location of task list page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
         )
@@ -107,7 +107,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
 
         Then("Should return a INTERNAL_SERVER_ERROR")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
@@ -124,7 +124,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }

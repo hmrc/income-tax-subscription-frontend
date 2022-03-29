@@ -46,7 +46,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.getUserIds(testUtr)
 
-        await(res) shouldBe Right(UsersFound(Set(testCredentialId, testCredentialId2, testCredentialId3)))
+        await(res) mustBe Right(UsersFound(Set(testCredentialId, testCredentialId2, testCredentialId3)))
       }
     }
 
@@ -56,7 +56,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.getUserIds(testUtr)
 
-        await(res) shouldBe Left(InvalidJson)
+        await(res) mustBe Left(InvalidJson)
       }
     }
 
@@ -66,7 +66,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.getUserIds(testUtr)
 
-        await(res) shouldBe Right(NoUsersFound)
+        await(res) mustBe Right(NoUsersFound)
       }
     }
 
@@ -76,7 +76,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.getUserIds(testUtr)
 
-        await(res) shouldBe Left(EnrolmentStoreProxyConnectionFailure(BAD_REQUEST))
+        await(res) mustBe Left(EnrolmentStoreProxyConnectionFailure(BAD_REQUEST))
       }
     }
   }
@@ -88,7 +88,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.getAllocatedEnrolments(EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr))
 
-        await(res) shouldBe Right(EnrolmentAlreadyAllocated(testGroupId))
+        await(res) mustBe Right(EnrolmentAlreadyAllocated(testGroupId))
       }
     }
 
@@ -98,7 +98,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.getAllocatedEnrolments(EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr))
 
-        await(res) shouldBe Right(EnrolmentNotAllocated)
+        await(res) mustBe Right(EnrolmentNotAllocated)
       }
     }
 
@@ -108,7 +108,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.getAllocatedEnrolments(EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr))
 
-        await(res) shouldBe Left(EnrolmentStoreProxyFailure(BAD_REQUEST))
+        await(res) mustBe Left(EnrolmentStoreProxyFailure(BAD_REQUEST))
       }
     }
   }
@@ -121,7 +121,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.allocateEnrolmentWithoutKnownFacts(testGroupId, testCredentialId, testMtdId)
 
-        await(res) shouldBe Right(EnrolSuccess)
+        await(res) mustBe Right(EnrolSuccess)
       }
     }
 
@@ -131,7 +131,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.allocateEnrolmentWithoutKnownFacts(testGroupId, testCredentialId, testMtdId)
 
-        await(res) shouldBe Left(EnrolFailure(""))
+        await(res) mustBe Left(EnrolFailure(""))
       }
     }
   }
@@ -143,7 +143,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.assignEnrolment(testCredentialId, testMtdId)
 
-        await(res) shouldBe Right(EnrolmentAssigned)
+        await(res) mustBe Right(EnrolmentAssigned)
       }
     }
 
@@ -153,7 +153,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.assignEnrolment(testCredentialId, testMtdId)
 
-        await(res) shouldBe Left(EnrolmentAssignmentFailure(BAD_REQUEST, ""))
+        await(res) mustBe Left(EnrolmentAssignmentFailure(BAD_REQUEST, ""))
       }
     }
   }
@@ -166,7 +166,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.upsertEnrolment(testMtdId, testNino)
 
-        await(res) shouldBe Right(UpsertEnrolmentSuccess)
+        await(res) mustBe Right(UpsertEnrolmentSuccess)
       }
     }
 
@@ -176,7 +176,7 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
 
         val res = connector.upsertEnrolment(testMtdId, testNino)
 
-        await(res) shouldBe Left(UpsertEnrolmentFailure(BAD_REQUEST, ""))
+        await(res) mustBe Left(UpsertEnrolmentFailure(BAD_REQUEST, ""))
       }
     }
   }

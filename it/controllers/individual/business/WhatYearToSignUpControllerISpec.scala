@@ -48,7 +48,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val expectedText = removeHtmlMarkup(messages("business.what_year_to_sign_up.option_1", fromYear, toYear))
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the What Year To Sign Up page")
-        res should have(
+        res must have(
           httpStatus(200),
           pageTitle(messages("business.what_year_to_sign_up.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = Some(expectedText)),
@@ -67,7 +67,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the What Year To Sign Up page")
-        res should have(
+        res must have(
           httpStatus(200),
           pageTitle(messages("business.what_year_to_sign_up.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = None),
@@ -97,7 +97,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(incomeReceivedURI)
         )
@@ -118,7 +118,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(incomeReceivedURI)
         )
@@ -140,7 +140,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of Task List page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taxYearCyaURI)
         )
@@ -160,7 +160,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
       val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, None)
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-      res should have(
+      res must have(
         httpStatus(BAD_REQUEST),
         errorDisplayed()
       )
@@ -188,7 +188,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of CYA")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
         )
@@ -216,7 +216,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
         )
@@ -240,7 +240,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of Task List page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taxYearCyaURI)
         )

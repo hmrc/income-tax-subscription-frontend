@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import java.time.LocalDate
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.IntegrationTestConstants._
@@ -27,6 +26,8 @@ import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.{AccountingYear, Current, Next}
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
+
+import java.time.LocalDate
 
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
 
@@ -52,7 +53,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val expectedText = removeHtmlMarkup(messages("agent.business.what_year_to_sign_up.option_1", fromYear, toYear))
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the What Year To Sign Up page")
-        res should have(
+        res must have(
           httpStatus(200),
           pageTitle(messages("agent.business.what_year_to_sign_up.heading") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = Some(expectedText)),
@@ -71,7 +72,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the What Year To Sign Up page")
-        res should have(
+        res must have(
           httpStatus(200),
           pageTitle(messages("agent.business.what_year_to_sign_up.heading") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = None),
@@ -99,7 +100,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of Income Source page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(incomeSourceURI)
           )
@@ -118,7 +119,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of Income Source page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(incomeSourceURI)
         )
@@ -136,7 +137,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
       val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, None)
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-      res should have(
+      res must have(
         httpStatus(BAD_REQUEST),
         errorDisplayed()
       )
@@ -161,7 +162,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of CYA")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
         )
@@ -187,7 +188,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
         )

@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.must.Matchers._
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.data.validation.Invalid
@@ -41,27 +41,27 @@ package object testutils {
 
     def isValidFor(data: T): Unit = {
       val validated = testForm.fillAndValidate(data)
-      validated.hasErrors shouldBe false
-      validated.hasGlobalErrors shouldBe false
+      validated.hasErrors mustBe false
+      validated.hasGlobalErrors mustBe false
     }
 
     def isValidFor(data: Map[String, String]): Unit = {
       val validated = testForm.bind(data)
-      validated.hasErrors shouldBe false
-      validated.hasGlobalErrors shouldBe false
+      validated.hasErrors mustBe false
+      validated.hasGlobalErrors mustBe false
     }
 
     def isValidFor(request: FakeRequest[_]): Unit = {
       val validated = testForm.bindFromRequest()(request, implicitly)
-      validated.hasErrors shouldBe false
-      validated.hasGlobalErrors shouldBe false
+      validated.hasErrors mustBe false
+      validated.hasGlobalErrors mustBe false
     }
   }
 
   implicit class InvalidUtil(invalid: Invalid) {
 
     def errorTextIs(expectedText: String): Unit =
-      invalid.errors.head.message shouldBe expectedText
+      invalid.errors.head.message mustBe expectedText
   }
 
 }

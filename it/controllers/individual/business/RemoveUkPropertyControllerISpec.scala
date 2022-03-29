@@ -46,7 +46,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
             val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty()
             val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
             Then("Should return a OK with the remove Uk property confirmation page")
-            res should have(
+            res must have(
               httpStatus(OK),
               pageTitle(messages("remove-uk-property-business.heading") + serviceNameGovUk)
             )
@@ -63,7 +63,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
             val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty()
 
             Then("Should return NOT_FOUND")
-            res should have(
+            res must have(
               httpStatus(NOT_FOUND)
             )
           }
@@ -86,7 +86,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("Yes")))
 
           Then("Should return a SEE_OTHER with a redirect location of task list page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
@@ -104,7 +104,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("No")))
 
           Then("Should return a SEE_OTHER with a redirect location of task list page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
@@ -123,7 +123,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("")))
 
           Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             errorDisplayed()
           )
@@ -142,7 +142,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("Yes")))
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
 

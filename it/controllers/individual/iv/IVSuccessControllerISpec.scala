@@ -34,7 +34,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.ivSuccess()
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI("http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fiv-success&origin=income-tax-subscription-frontend")
         )
@@ -52,7 +52,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
           )
         )
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(claimEnrolmentResolverURI)
         )
@@ -64,7 +64,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.ivSuccess()
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(baseURI)
         )

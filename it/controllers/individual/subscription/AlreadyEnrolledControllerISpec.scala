@@ -33,7 +33,7 @@ class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.alreadyEnrolled()
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the already enrolled page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("already-enrolled.title") + serviceNameGovUk)
         )

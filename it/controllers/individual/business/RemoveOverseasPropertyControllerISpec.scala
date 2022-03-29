@@ -31,7 +31,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getRemoveOverseasProperty()
 
         Then("Should return a OK with the remove overseas property business page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("remove-overseas-property-business.heading") + serviceNameGovUk)
         )
@@ -46,7 +46,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getRemoveOverseasProperty()
 
         Then("Should return a NOT_FOUND page")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -67,7 +67,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(Some(Yes))
 
           Then("Should return a NOT_FOUND page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
@@ -84,7 +84,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(Some(No))
 
           Then("Should return a NOT_FOUND page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
@@ -103,7 +103,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(None)
 
           Then("Should return a NOT_FOUND page")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             pageTitle("Error: " + messages("remove-overseas-property-business.heading") + serviceNameGovUk)
           )
@@ -119,7 +119,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(None)
 
         Then("Should return a NOT_FOUND page")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }

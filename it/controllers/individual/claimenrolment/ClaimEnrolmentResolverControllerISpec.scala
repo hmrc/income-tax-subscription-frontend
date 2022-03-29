@@ -40,7 +40,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
         When("GET /claim-enrolment/resolve is called")
         val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
         Then("Should return a OK with the AddMTDITOverview page")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND),
           pageTitle("Page not found - 404")
         )
@@ -63,7 +63,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
 
           verifyAudit()
           Then("Should return a SEE_OTHER with a redirect location of the SPS beginning page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(claimEnrolSpsHandoffRouteURI)
           )
@@ -81,7 +81,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return a SEE_OTHER with a redirect location of the claim enrolment not subscribed page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(notSubscribedURI)
           )
@@ -100,7 +100,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return a SEE_OTHER with a redirect location of the claim enrolment already signed up page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(claimEnrolmentAlreadySignedUpURI)
           )
@@ -117,7 +117,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
         }
@@ -132,7 +132,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
         }
@@ -148,7 +148,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
         }
@@ -164,7 +164,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
         }
@@ -181,7 +181,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
         }
@@ -199,7 +199,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
         }

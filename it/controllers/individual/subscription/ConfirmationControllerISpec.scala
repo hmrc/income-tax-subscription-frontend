@@ -40,7 +40,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.confirmation()
       val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       Then("Should return a OK with the confirmation page")
-      res should have(
+      res must have(
         httpStatus(OK),
         pageTitle(messages("sign-up-complete.heading") + serviceNameGovUk)
       )
@@ -54,7 +54,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.confirmation()
 
       Then("Should return a NOT_FOUND status")
-      res should have(
+      res must have(
         httpStatus(NOT_FOUND))
     }
   }
@@ -68,7 +68,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
 
       Then("Should redirect to sign out")
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(signOutURI)
       )
@@ -81,7 +81,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
 
       Then("Should return a NOT_FOUND status")
-      res should have(
+      res must have(
         httpStatus(NOT_FOUND)
       )
 

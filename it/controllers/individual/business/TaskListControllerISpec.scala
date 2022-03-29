@@ -60,7 +60,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return OK with the task list page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("business.task-list.title") + serviceNameGovUk)
         )
@@ -86,7 +86,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return OK with the task list page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("business.task-list.title") + serviceNameGovUk)
         )
@@ -112,7 +112,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return OK with the task list page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("business.task-list.title") + serviceNameGovUk)
         )
@@ -128,7 +128,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return NOT FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -178,7 +178,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
 
             Then("Should return a SEE_OTHER with a redirect location of confirmation")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
@@ -238,7 +238,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
 
             Then("Should return a SEE_OTHER with a redirect location of confirmation")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
@@ -296,7 +296,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
 
             Then("Should return a SEE_OTHER with a redirect location of confirmation")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
@@ -363,7 +363,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
 
             Then("Should return a SEE_OTHER with a redirect location of confirmation")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
@@ -408,7 +408,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
           Then("Should return a INTERNAL SERVER ERROR status")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
 
@@ -438,7 +438,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
           Then("Should return a Not Found Exception status")
-          res should have(
+          res must have(
             httpStatus(NOT_FOUND)
           )
 

@@ -17,7 +17,7 @@
 package helpers
 
 import models.usermatching.UserDetailsModel
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.must.Matchers
 import play.api.libs.ws.WSResponse
 import utilities.UserMatchingSessionUtil._
 
@@ -30,19 +30,19 @@ trait UserMatchingIntegrationResultSupport extends SessionCookieCrumbler {
 
       userDetails match {
         case Some(detail) =>
-          session.get(firstName) shouldBe Some(detail.firstName)
-          session.get(lastName) shouldBe Some(detail.lastName)
-          session.get(dobD) shouldBe Some(detail.dateOfBirth.day)
-          session.get(dobM) shouldBe Some(detail.dateOfBirth.month)
-          session.get(dobY) shouldBe Some(detail.dateOfBirth.year)
-          session.get(nino) shouldBe Some(detail.nino)
+          session.get(firstName) mustBe Some(detail.firstName)
+          session.get(lastName) mustBe Some(detail.lastName)
+          session.get(dobD) mustBe Some(detail.dateOfBirth.day)
+          session.get(dobM) mustBe Some(detail.dateOfBirth.month)
+          session.get(dobY) mustBe Some(detail.dateOfBirth.year)
+          session.get(nino) mustBe Some(detail.nino)
         case _ =>
-          session.get(firstName) shouldBe None
-          session.get(lastName) shouldBe None
-          session.get(dobD) shouldBe None
-          session.get(dobM) shouldBe None
-          session.get(dobY) shouldBe None
-          session.get(nino) shouldBe None
+          session.get(firstName) mustBe None
+          session.get(lastName) mustBe None
+          session.get(dobD) mustBe None
+          session.get(dobM) mustBe None
+          session.get(dobY) mustBe None
+          session.get(nino) mustBe None
       }
     }
   }

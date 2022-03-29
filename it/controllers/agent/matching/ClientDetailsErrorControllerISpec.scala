@@ -31,7 +31,7 @@ class ClientDetailsErrorControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.showClientDetailsError()
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       Then("Should return a OK with the no matching client page")
-      res should have(
+      res must have(
         httpStatus(OK),
         pageTitle(messages("agent.client-details-error.title") + serviceNameGovUk)
       )

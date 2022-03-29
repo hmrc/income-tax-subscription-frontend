@@ -33,7 +33,7 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
       val res = IncomeTaxSubscriptionFrontend.sessionTimeout()
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       Then("Should return a OK with the session timeout page")
-      res should have(
+      res must have(
         httpStatus(OK),
         pageTitle(messages("agent.timeout.title") + serviceNameGovUk)
       )
@@ -50,8 +50,8 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
           ITSASessionKeys.UTR -> testUtr)
         val res = IncomeTaxSubscriptionFrontend.keepAlive(sessionMap)
         val session = getSessionMap(res)
-        session.get(ITSASessionKeys.ArnKey) shouldBe Some(testARN)
-        res should have(
+        session.get(ITSASessionKeys.ArnKey) mustBe Some(testARN)
+        res must have(
           httpStatus(OK)
         )
       }
@@ -69,12 +69,12 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
 
         val res = IncomeTaxSubscriptionFrontend.timeout(sessionMap)
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI( "http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fclient&origin=income-tax-subscription-frontend")
         )
         val session = getSessionMap(res)
-        session.keys shouldNot contain(testARN)
+        session.keys mustNot contain(testARN)
       }
     }
   }

@@ -16,7 +16,6 @@
 
 package models
 
-import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
@@ -31,32 +30,32 @@ class DateModelSpec extends PlaySpec with GuiceOneServerPerSuite{
     val date = DateModel("01", "02", "2017")
 
     "convert correctly to java.time.LocalDate" in {
-      date.toLocalDate shouldBe LocalDate.parse("01/02/2017", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+      date.toLocalDate mustBe LocalDate.parse("01/02/2017", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     }
 
     "correctly format a date output to a view into d MMMMM uuuu" in {
-      date.toOutputDateFormat shouldBe "1 February 2017"
+      date.toOutputDateFormat mustBe "1 February 2017"
     }
 
     "correctly format a date for check your answers into dd/MM/uuuu" in {
-      date.toOutputDateFormat shouldBe "1 February 2017"
+      date.toOutputDateFormat mustBe "1 February 2017"
     }
 
     "plusDays should return the correct date" in {
       val testDate = DateModel("28", "02", "2018")
       val increment = 1
       val expectedDate = DateModel("1", "3", "2018")
-      testDate.plusDays(increment) shouldBe expectedDate
+      testDate.plusDays(increment) mustBe expectedDate
     }
     "should display the date in the user's chosen language" when {
      lazy val messagesApi = app.injector.instanceOf[MessagesApi]
      lazy val messagesEnglish = MessagesImpl(Lang("en"), messagesApi)
      lazy val messagesWelsh = MessagesImpl(Lang("cy"), messagesApi)
       "locale is in English" in {
-        date.toCheckYourAnswersDateFormat(messagesEnglish) shouldBe "1 February 2017"
+        date.toCheckYourAnswersDateFormat(messagesEnglish) mustBe "1 February 2017"
       }
       "locale is in Welsh" in {
-        date.toCheckYourAnswersDateFormat(messagesWelsh) shouldBe "1 Chwefror 2017"
+        date.toCheckYourAnswersDateFormat(messagesWelsh) mustBe "1 Chwefror 2017"
       }
     }
   }

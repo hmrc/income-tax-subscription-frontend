@@ -32,7 +32,7 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.clientAlreadySubscribed()
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       Then("Should return a OK with the client already subscribed page")
-      res should have(
+      res must have(
         httpStatus(OK),
         pageTitle(messages("agent.client-already-subscribed.title") + serviceNameGovUk)
       )
@@ -48,7 +48,7 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.submitClientAlreadySubscribed()
 
       Then("Should return a redirect to client matching")
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(clientDetailsURI)
       )

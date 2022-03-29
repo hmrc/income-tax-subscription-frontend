@@ -50,42 +50,42 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
 
   "GET /error/no-client-relationship" should {
     "return OK" in new Setup {
-      result should have(
+      result must have(
         httpStatus(OK)
       )
     }
 
     "have a view with the correct title" in new Setup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      doc.title shouldBe NoClientRelationshipMessages.title + serviceNameGovUk
+      doc.title mustBe NoClientRelationshipMessages.title + serviceNameGovUk
     }
 
     "have a view with the correct heading" in new Setup {
-      doc.body().getH1Element.text shouldBe NoClientRelationshipMessages.heading
+      doc.body().getH1Element.text mustBe NoClientRelationshipMessages.heading
     }
 
     "have a paragraph explaining why they are not authorised" in new Setup {
       val content = doc.body().getElementById("main-content")
-      content.getNthParagraph(1).text shouldBe NoClientRelationshipMessages.para1
+      content.getNthParagraph(1).text mustBe NoClientRelationshipMessages.para1
     }
 
     "have a Sign up another client button" in new Setup {
       val content = doc.body().getElementById("main-content")
       val submitButton: Element = content.getForm.getGovUkSubmitButton
-      submitButton.text shouldBe NoClientRelationshipMessages.button
+      submitButton.text mustBe NoClientRelationshipMessages.button
     }
 
     "have a Sign Out link" in new Setup {
       val content = doc.body().getElementById("main-content")
       val signOutLink: Element = content.getLink("sign-out-button")
-      signOutLink.attr("href") shouldBe controllers.SignOutController.signOut.url
-      signOutLink.text shouldBe NoClientRelationshipMessages.signOut
+      signOutLink.attr("href") mustBe controllers.SignOutController.signOut.url
+      signOutLink.text mustBe NoClientRelationshipMessages.signOut
     }
 
     "have a view with a link" in new Setup {
       val link: Element = doc.getLink("get-agent-authorisation")
-      link.attr("href") shouldBe "https://www.gov.uk/guidance/client-authorisation-an-overview"
-      link.text shouldBe NoClientRelationshipMessages.link
+      link.attr("href") mustBe "https://www.gov.uk/guidance/client-authorisation-an-overview"
+      link.text mustBe NoClientRelationshipMessages.link
     }
 
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup {
@@ -93,7 +93,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
       val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
       val expectedRedirect: String = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/covid-19"
 
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(expectedRedirect)
       )
@@ -106,7 +106,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
       val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
       val expectedRedirect: String = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/income-sources"
 
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(expectedRedirect)
       )

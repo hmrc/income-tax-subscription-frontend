@@ -25,21 +25,21 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
       val res = TestMisSubscriptionConnector.signUp(testNino)
 
-      await(res) shouldBe Right(SignUpIncomeSourcesSuccess(testMtdId))
+      await(res) mustBe Right(SignUpIncomeSourcesSuccess(testMtdId))
     }
     "return BadlyFormattedSignUpIncomeSourcesResponse when the response is malformed" in {
       stubPostSignUp(testNino)(OK, Json.obj("not" -> "correct"))
 
       val res = TestMisSubscriptionConnector.signUp(testNino)
 
-      await(res) shouldBe Left(BadlyFormattedSignUpIncomeSourcesResponse)
+      await(res) mustBe Left(BadlyFormattedSignUpIncomeSourcesResponse)
     }
     "return SignUpIncomeSourcesFailureResponse if the request fails" in {
       stubPostSignUp(testNino)(INTERNAL_SERVER_ERROR)
 
       val res = TestMisSubscriptionConnector.signUp(testNino)
 
-      await(res) shouldBe Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+      await(res) mustBe Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
     }
   }
 
@@ -68,7 +68,7 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
       val res = TestMisSubscriptionConnector.createIncomeSources(testMtdId, businessDetailsModel)
 
-      await(res) shouldBe Right(CreateIncomeSourcesSuccess())
+      await(res) mustBe Right(CreateIncomeSourcesSuccess())
     }
 
     "return CreateIncomeSourcesFailureResponse if the request fails" in {
@@ -76,7 +76,7 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
       val res = TestMisSubscriptionConnector.createIncomeSources(testMtdId, businessDetailsModel)
 
-      await(res) shouldBe Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+      await(res) mustBe Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
     }
   }
 }

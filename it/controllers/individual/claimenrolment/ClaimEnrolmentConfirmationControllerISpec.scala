@@ -40,7 +40,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.claimEnrolmentConfirmation()
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the confirmation page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("claimConfirm.title") + serviceNameGovUk)
         )
@@ -54,7 +54,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         When("GET /claim-enrolment/confirmation is called")
         val res = IncomeTaxSubscriptionFrontend.claimEnrolmentConfirmation()
 
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -72,7 +72,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         When("POST /claim-enrolment/confirmation is called")
         val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
         Then("Should return a SEE_OTHER going to bta")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER), redirectURI("https://www.tax.service.gov.uk/business-account")
         )
       }
@@ -85,7 +85,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         When("GET /claim-enrolment/confirmation is called")
         val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
 
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }

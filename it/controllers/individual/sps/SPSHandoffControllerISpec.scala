@@ -31,7 +31,7 @@ class SPSHandoffControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.spsHandoff
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(basGatewaySignIn("/sps-handoff"))
         )
@@ -46,7 +46,7 @@ class SPSHandoffControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.spsHandoff()
 
       Then("Should return a SEE_OTHER and redirect to SPS")
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(spsHandoffURI)
       )

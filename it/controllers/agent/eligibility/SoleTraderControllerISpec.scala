@@ -1,19 +1,20 @@
 
 package controllers.agent.eligibility
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import forms.agent.{PropertyTradingStartDateForm, SoleTraderForm}
+import forms.submapping.YesNoMapping
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
-import forms.submapping.YesNoMapping
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class SoleTraderControllerISpec extends ComponentSpecBase {
 
@@ -43,36 +44,36 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
   "GET /eligibility/sole-trader-start-date" should {
     "return OK" in new GetSetup {
-      result should have(
+      result must have(
         httpStatus(OK)
       )
     }
 
     "have a view with the correct title" in new GetSetup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-       doc.title shouldBe s"${SoleTraderPageMessages.heading(date)}" + serviceNameGovUk
+       doc.title mustBe s"${SoleTraderPageMessages.heading(date)}" + serviceNameGovUk
     }
 
     "have a view with a back link" in new GetSetup {
       val backLink: Element = doc.getGovukBackLink
-      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url
-      backLink.text shouldBe SoleTraderPageMessages.back
+      backLink.attr("href") mustBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url
+      backLink.text mustBe SoleTraderPageMessages.back
     }
 
     "have a view with the correct heading" in new GetSetup {
-      pageContent.getH1Element.text shouldBe s"${SoleTraderPageMessages.heading(date)}"
+      pageContent.getH1Element.text mustBe s"${SoleTraderPageMessages.heading(date)}"
     }
 
     "have a form" in new GetSetup {
       val form: Element = pageContent.getForm
-      form.attr("method") shouldBe "POST"
-      form.attr("action") shouldBe controllers.agent.eligibility.routes.SoleTraderController.submit.url
+      form.attr("method") mustBe "POST"
+      form.attr("action") mustBe controllers.agent.eligibility.routes.SoleTraderController.submit.url
     }
 
     "have a button to submit" in new GetSetup {
 
       val submitButton: Elements = pageContent.getForm.select("button[class=govuk-button]")
-      submitButton.text shouldBe SoleTraderPageMessages.continue
+      submitButton.text mustBe SoleTraderPageMessages.continue
     }
 
     "have a fieldset containing a yes and no radiobutton" in new GetSetup {
@@ -84,21 +85,21 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
       val noRadio: Element = form.selectNth(".govuk-radios__item", 2).firstOf("input")
       val noLabel: Element = form.selectNth(".govuk-radios__item", 2).firstOf("label")
 
-      yesRadio.attr("type") shouldBe "radio"
-      yesRadio.attr("value") shouldBe YesNoMapping.option_yes
-      yesRadio.attr("name") shouldBe PropertyTradingStartDateForm.fieldName
-      yesRadio.attr("id") shouldBe PropertyTradingStartDateForm.fieldName
+      yesRadio.attr("type") mustBe "radio"
+      yesRadio.attr("value") mustBe YesNoMapping.option_yes
+      yesRadio.attr("name") mustBe PropertyTradingStartDateForm.fieldName
+      yesRadio.attr("id") mustBe PropertyTradingStartDateForm.fieldName
 
-      yesLabel.text shouldBe SoleTraderPageMessages.yes
-      yesLabel.attr("for") shouldBe PropertyTradingStartDateForm.fieldName
+      yesLabel.text mustBe SoleTraderPageMessages.yes
+      yesLabel.attr("for") mustBe PropertyTradingStartDateForm.fieldName
 
-      noRadio.attr("type") shouldBe "radio"
-      noRadio.attr("value") shouldBe YesNoMapping.option_no
-      noRadio.attr("name") shouldBe PropertyTradingStartDateForm.fieldName
-      noRadio.attr("id") shouldBe s"${PropertyTradingStartDateForm.fieldName}-2"
+      noRadio.attr("type") mustBe "radio"
+      noRadio.attr("value") mustBe YesNoMapping.option_no
+      noRadio.attr("name") mustBe PropertyTradingStartDateForm.fieldName
+      noRadio.attr("id") mustBe s"${PropertyTradingStartDateForm.fieldName}-2"
 
-      noLabel.text shouldBe SoleTraderPageMessages.no
-      noLabel.attr("for") shouldBe s"${PropertyTradingStartDateForm.fieldName}-2"
+      noLabel.text mustBe SoleTraderPageMessages.no
+      noLabel.attr("for") mustBe s"${PropertyTradingStartDateForm.fieldName}-2"
     }
 
     class PostSetup(answer: Option[YesNo]) {
@@ -111,7 +112,7 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
       "return SEE_OTHER when selecting yes and an audit has been sent" in new PostSetup(Some(Yes)) {
         verifyAudit()
-        response should have(
+        response must have(
           httpStatus(SEE_OTHER),
           redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
         )
@@ -119,21 +120,21 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
       "return SEE_OTHER when selecting No and an audit has been sent" in new PostSetup(Some(No)) {
         verifyAudit()
-        response should have(
+        response must have(
           httpStatus(SEE_OTHER),
           redirectURI(controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show.url)
         )
       }
 
       "return BADREQUEST when no Answer is given" in new PostSetup(None) {
-        response should have(
+        response must have(
           httpStatus(BAD_REQUEST)
         )
 
         val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-        pageContent.firstOf("p[class=govuk-error-message]").text shouldBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
-        pageContent.firstOf(s"a[href=#${SoleTraderForm.fieldName}]").text shouldBe s"${SoleTraderPageMessages.invalidError(date)}"
+        pageContent.firstOf("p[class=govuk-error-message]").text mustBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
+        pageContent.firstOf(s"a[href=#${SoleTraderForm.fieldName}]").text mustBe s"${SoleTraderPageMessages.invalidError(date)}"
       }
 
     }

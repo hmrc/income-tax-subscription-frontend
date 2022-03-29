@@ -17,7 +17,7 @@
 package config
 
 import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 
 import scala.io.Source
 
@@ -29,13 +29,13 @@ class MessagesSpec extends AnyFunSuite {
   test("Messages present in Welsh (conf/messages.cy) should also have an English translation (conf/messages)") {
     val keysInWelshNotEnglish = messageKeysWelsh -- messageKeysEnglish
     keysInWelshNotEnglish foreach println
-    keysInWelshNotEnglish.size shouldBe 0
+    keysInWelshNotEnglish.size mustBe 0
   }
 
   test("Messages present in English (conf/messages) should also have a Welsh translation (conf/messages.cy)") {
     val keysInEnglishNotWelsh = messageKeysEnglish -- messageKeysWelsh
     keysInEnglishNotWelsh foreach println
-    keysInEnglishNotWelsh.size shouldBe 0
+    keysInEnglishNotWelsh.size mustBe 0
   }
 
   private def getMessageKeys(fileName: String) = {

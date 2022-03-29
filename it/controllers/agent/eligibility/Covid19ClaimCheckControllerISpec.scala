@@ -41,57 +41,57 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
   "GET /client/eligibility/covid-19" should {
 
     "return OK" in new GetSetup {
-      result should have(
+      result must have(
         httpStatus(OK)
       )
     }
 
     "have a view with the correct title" in new GetSetup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      doc.title shouldBe Covid19ClaimCheckMessages.title + serviceNameGovUk
+      doc.title mustBe Covid19ClaimCheckMessages.title + serviceNameGovUk
     }
 
     "have a view with the correct heading" in new GetSetup {
-      pageContent.getH1Element.text shouldBe Covid19ClaimCheckMessages.heading
+      pageContent.getH1Element.text mustBe Covid19ClaimCheckMessages.heading
     }
 
     "have a paragaph stating how to join the pilot" in new GetSetup {
-      pageContent.getNthParagraph(1).text shouldBe Covid19ClaimCheckMessages.join_pilot
+      pageContent.getNthParagraph(1).text mustBe Covid19ClaimCheckMessages.join_pilot
     }
 
     "have a bullet point list of reasons unable to join the pilot" in new GetSetup {
-      pageContent.getNthUnorderedList(1).getNthListItem(1).text shouldBe Covid19ClaimCheckMessages.join_pilot_point_1
-      pageContent.getNthUnorderedList(1).getNthListItem(2).text shouldBe Covid19ClaimCheckMessages.join_pilot_point_2
+      pageContent.getNthUnorderedList(1).getNthListItem(1).text mustBe Covid19ClaimCheckMessages.join_pilot_point_1
+      pageContent.getNthUnorderedList(1).getNthListItem(2).text mustBe Covid19ClaimCheckMessages.join_pilot_point_2
     }
 
     "have a paragraph stating about additional conditions for signing up your client" in new GetSetup {
-      pageContent.getNthParagraph(2).text shouldBe Covid19ClaimCheckMessages.still_sign_up_your_client
+      pageContent.getNthParagraph(2).text mustBe Covid19ClaimCheckMessages.still_sign_up_your_client
     }
 
     "have a bullet point list of additional conditions for signing up your client " in new GetSetup {
-      pageContent.getNthUnorderedList(2).getNthListItem(1).text shouldBe Covid19ClaimCheckMessages.claim_sick_pay
-      pageContent.getNthUnorderedList(2).getNthListItem(2).text shouldBe Covid19ClaimCheckMessages.test_and_support_pay_scheme
-      pageContent.getNthUnorderedList(2).getNthListItem(3).text shouldBe Covid19ClaimCheckMessages.local_authority_grants
+      pageContent.getNthUnorderedList(2).getNthListItem(1).text mustBe Covid19ClaimCheckMessages.claim_sick_pay
+      pageContent.getNthUnorderedList(2).getNthListItem(2).text mustBe Covid19ClaimCheckMessages.test_and_support_pay_scheme
+      pageContent.getNthUnorderedList(2).getNthListItem(3).text mustBe Covid19ClaimCheckMessages.local_authority_grants
     }
 
     "have a form" in new GetSetup {
       val form: Element = pageContent.getForm
-      form.attr("method") shouldBe "POST"
-      form.attr("action") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.submit.url
+      form.attr("method") mustBe "POST"
+      form.attr("action") mustBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.submit.url
     }
 
     "have a button to submit" in new GetSetup {
       val submitButton: Element = pageContent.getForm.firstOf("#continue-button")
-      submitButton.text shouldBe Covid19ClaimCheckMessages.continue
-      submitButton.attr("class") shouldBe "govuk-button"
+      submitButton.text mustBe Covid19ClaimCheckMessages.continue
+      submitButton.attr("class") mustBe "govuk-button"
     }
 
     "have a fieldset containing a yes and no radiobutton" in new GetSetup {
       val fieldset: Element = pageContent.getFieldset
 
-      fieldset.attr("class") shouldBe "govuk-fieldset"
+      fieldset.attr("class") mustBe "govuk-fieldset"
 
-      fieldset.selectFirst("legend").text shouldBe Covid19ClaimCheckMessages.heading
+      fieldset.selectFirst("legend").text mustBe Covid19ClaimCheckMessages.heading
 
       val firstRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(1)")
       val firstRadioLabel: Element = firstRadioWithLabel.selectFirst("label")
@@ -101,15 +101,15 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
       val secondRadioLabel: Element = secondRadioWithLabel.selectFirst("label")
       val secondRadioButton: Element = secondRadioWithLabel.selectFirst("input")
 
-      firstRadioLabel.attr("for") shouldBe Covid19ClaimCheckForm.fieldName
-      firstRadioButton.attr("id") shouldBe Covid19ClaimCheckForm.fieldName
-      firstRadioButton.attr("name") shouldBe Covid19ClaimCheckForm.fieldName
-      firstRadioButton.attr("value") shouldBe Covid19ClaimCheckMessages.yes
+      firstRadioLabel.attr("for") mustBe Covid19ClaimCheckForm.fieldName
+      firstRadioButton.attr("id") mustBe Covid19ClaimCheckForm.fieldName
+      firstRadioButton.attr("name") mustBe Covid19ClaimCheckForm.fieldName
+      firstRadioButton.attr("value") mustBe Covid19ClaimCheckMessages.yes
 
-      secondRadioLabel.attr("for") shouldBe Covid19ClaimCheckForm.fieldName + "-2"
-      secondRadioButton.attr("id") shouldBe Covid19ClaimCheckForm.fieldName + "-2"
-      secondRadioButton.attr("name") shouldBe Covid19ClaimCheckForm.fieldName
-      secondRadioButton.attr("value") shouldBe Covid19ClaimCheckMessages.no
+      secondRadioLabel.attr("for") mustBe Covid19ClaimCheckForm.fieldName + "-2"
+      secondRadioButton.attr("id") mustBe Covid19ClaimCheckForm.fieldName + "-2"
+      secondRadioButton.attr("name") mustBe Covid19ClaimCheckForm.fieldName
+      secondRadioButton.attr("value") mustBe Covid19ClaimCheckMessages.no
     }
 
   }
@@ -123,7 +123,7 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
   "POST /eligibility/covid-19" should {
     "return SEE_OTHER when selecting Yes and an audit has been sent" in new PostSetup(Some(Yes)) {
       verifyAudit()
-      response should have(
+      response must have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.eligibility.routes.CovidCannotSignUpController.show.url)
       )
@@ -131,21 +131,21 @@ class Covid19ClaimCheckControllerISpec extends ComponentSpecBase {
 
     "return SEE_OTHER when selecting No and an audit has been sent" in new PostSetup(Some(No)) {
       verifyAudit()
-      response should have(
+      response must have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
       )
     }
 
     "return a BAD_REQUEST when no answer is selected" in new PostSetup(None) {
-      response should have(
+      response must have(
         httpStatus(BAD_REQUEST)
       )
 
       val pageContent: Element = Jsoup.parse(response.body)
 
-      pageContent.select("#yes-no-error").text shouldBe s"Error: ${Covid19ClaimCheckMessages.error}"
-      pageContent.select(s"a[href=#${Covid19ClaimCheckForm.fieldName}]").text shouldBe Covid19ClaimCheckMessages.error
+      pageContent.select("#yes-no-error").text mustBe s"Error: ${Covid19ClaimCheckMessages.error}"
+      pageContent.select(s"a[href=#${Covid19ClaimCheckForm.fieldName}]").text mustBe Covid19ClaimCheckMessages.error
     }
   }
 

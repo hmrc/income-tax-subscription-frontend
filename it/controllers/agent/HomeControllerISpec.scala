@@ -32,8 +32,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
       When("I call GET /")
       val res = IncomeTaxSubscriptionFrontend.startPage()
 
-      Then("the result should have a status of SEE_OTHER and the front page title")
-      res should have(
+      Then("the result must have a status of SEE_OTHER and the front page title")
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.routes.HomeController.index.url)
       )
@@ -50,14 +50,14 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
           When("I call GET /index")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-          Then("the result should have a status of SEE_OTHER and a redirect location of /client-details")
-          res should have(
+          Then("the result must have a status of SEE_OTHER and a redirect location of /client-details")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(clientDetailsURI)
           )
 
           Then("the JourneyStateKey should be added as UserMatching")
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
         }
       }
 
@@ -69,14 +69,14 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
           When("I call GET /index")
           val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatching))
 
-          Then("the result should have a status of SEE_OTHER and a redirect location of /client-details")
-          res should have(
+          Then("the result must have a status of SEE_OTHER and a redirect location of /client-details")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(clientDetailsURI)
           )
 
           Then("the JourneyStateKey should remain as UserMatching")
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
         }
       }
 
@@ -93,14 +93,14 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
                 When("I call GET /index")
                 val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
 
-                Then("the result should have a status of SEE_OTHER and a redirect location of /task-list")
-                res should have(
+                Then("the result must have a status of SEE_OTHER and a redirect location of /task-list")
+                res must have(
                   httpStatus(SEE_OTHER),
                   redirectURI(taskListURI)
                 )
 
                 Then("the JourneyStateKey should be changed to AgentSignUp")
-                getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
+                getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
               }
             }
 
@@ -113,14 +113,14 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
                 When("I call GET /index")
                 val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
 
-                Then("the result should have a status of SEE_OTHER and a redirect location of /what-year-to-sign-up")
-                res should have(
+                Then("the result must have a status of SEE_OTHER and a redirect location of /what-year-to-sign-up")
+                res must have(
                   httpStatus(SEE_OTHER),
                   redirectURI(whatYearToSignUpURI)
                 )
 
                 Then("the JourneyStateKey should be changed to AgentSignUp")
-                getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
+                getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
               }
             }
           }
@@ -134,14 +134,14 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
             When("I call GET /index")
             val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino))
 
-            Then("the result should have a status of SEE_OTHER and a redirect location of /register-for-SA")
-            res should have(
+            Then("the result must have a status of SEE_OTHER and a redirect location of /register-for-SA")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(registerForSAURI)
             )
 
             Then("the JourneyStateKey should be removed")
-            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe None
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe None
           }
         }
 

@@ -53,7 +53,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
 
         Then("Should return a OK with the Overseas property Start page with populated start date")
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.overseas.property.name.heading") + serviceNameGovUk),
           govukDateField("startDate", testPropertyStartDate.startDate)
@@ -74,7 +74,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyStartDate()
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the Overseas property Start date page with no start date")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.overseas.property.name.heading") + serviceNameGovUk)
         )
@@ -99,7 +99,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of Overseas property accounting method page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(overseasPropertyAccountingMethod)
           )
@@ -120,7 +120,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, None)
 
           Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             errorDisplayed()
           )
@@ -141,7 +141,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             errorDisplayed()
           )
@@ -171,7 +171,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
             val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(overseasPropertyCheckYourAnswersURI)
             )
@@ -199,7 +199,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
             val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(checkYourAnswersURI)
             )
@@ -228,7 +228,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )

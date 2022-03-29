@@ -51,7 +51,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDate()
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the property commencement page with populated commencement date")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.property.name.heading") + serviceNameGovUk),
           govukDateField("startDate", testPropertyStartDate.startDate)
@@ -72,7 +72,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDate()
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the property commencement date page with no commencement date")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.property.name.heading") + serviceNameGovUk),
           govukDateField("startDate", DateModel("", "", ""))
@@ -99,7 +99,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
             val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(propertyAccountingMethodURI)
             )
@@ -122,7 +122,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
             val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(propertyAccountingMethodURI)
             )
@@ -141,7 +141,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, None)
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
+        res must have(
           httpStatus(BAD_REQUEST),
           errorDisplayed()
         )
@@ -161,7 +161,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
-        res should have(
+        res must have(
           httpStatus(BAD_REQUEST),
           errorDisplayed()
         )
@@ -184,7 +184,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = true, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of agent uk property check your answers")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(ukPropertyCheckYourAnswersURI)
           )
@@ -204,7 +204,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = true, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of agent check your answers")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -230,7 +230,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
         )

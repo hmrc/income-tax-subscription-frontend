@@ -54,7 +54,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
 
         Then("Should return a OK with the overseas property start page with populated commencement date")
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("overseas.property.name.title") + serviceNameGovUk),
           govukDateField("startDate", testPropertyStartDate.startDate)
@@ -75,7 +75,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyStartDate
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the overseas property start date page with no commencement date")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("overseas.property.name.title") + serviceNameGovUk)
         )
@@ -100,7 +100,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
             val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of overseas property accounting method page")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(accountingMethodOverseasPropertyURI)
             )
@@ -124,7 +124,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
             val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of overseas property accounting method page")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(accountingMethodOverseasPropertyURI)
             )
@@ -146,7 +146,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, None)
 
           Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             errorDisplayed()
           )
@@ -167,7 +167,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             errorDisplayed()
           )
@@ -195,7 +195,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
             val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of overseas property check your answers")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(overseasPropertyCYAURI)
             )
@@ -224,7 +224,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
             val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(checkYourAnswersURI)
             )
@@ -253,7 +253,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )

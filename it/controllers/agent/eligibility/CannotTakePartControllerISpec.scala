@@ -58,95 +58,95 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
   "GET /client/other-sources-of-income-error" should {
 
     "return a status of OK" in new Setup {
-      result.status shouldBe OK
+      result.status mustBe OK
     }
 
     "return a page" which {
 
       "has the correct title" in new Setup {
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-        doc.title shouldBe CannotTakePartMessages.title + serviceNameGovUk
+        doc.title mustBe CannotTakePartMessages.title + serviceNameGovUk
       }
 
       "has a back button" in new Setup {
         val link: Element = doc.getGovukBackLink
-        link.attr("href") shouldBe "javascript:history.back()"
-        link.text shouldBe CannotTakePartMessages.back
+        link.attr("href") mustBe "javascript:history.back()"
+        link.text mustBe CannotTakePartMessages.back
       }
 
       "has the correct heading" in new Setup {
-        pageContent.getH1Element.text() shouldBe CannotTakePartMessages.heading
+        pageContent.getH1Element.text() mustBe CannotTakePartMessages.heading
       }
 
       "has a correct paragraph for income sources" in new Setup {
-        pageContent.getNthParagraph(1).text shouldBe CannotTakePartMessages.income
+        pageContent.getNthParagraph(1).text mustBe CannotTakePartMessages.income
       }
 
       "has a bullet point list about incomes" which {
 
         "has the correct first point" in new Setup {
-          pageContent.getNthUnorderedList(1).getNthListItem(1).text shouldBe CannotTakePartMessages.incomePoint1
+          pageContent.getNthUnorderedList(1).getNthListItem(1).text mustBe CannotTakePartMessages.incomePoint1
         }
 
         "has the correct second point" in new Setup {
-          pageContent.getNthUnorderedList(1).getNthListItem(2).text shouldBe CannotTakePartMessages.incomePoint2
+          pageContent.getNthUnorderedList(1).getNthListItem(2).text mustBe CannotTakePartMessages.incomePoint2
         }
 
         "has the correct third point" in new Setup {
-          pageContent.getNthUnorderedList(1).getNthListItem(3).text shouldBe CannotTakePartMessages.incomePoint3
+          pageContent.getNthUnorderedList(1).getNthListItem(3).text mustBe CannotTakePartMessages.incomePoint3
         }
 
         "has the correct forth point" in new Setup {
-          pageContent.getNthUnorderedList(1).getNthListItem(4).text shouldBe CannotTakePartMessages.incomePoint4
+          pageContent.getNthUnorderedList(1).getNthListItem(4).text mustBe CannotTakePartMessages.incomePoint4
         }
 
         "has the correct fifth point" in new Setup {
-          pageContent.getNthUnorderedList(1).getNthListItem(5).text shouldBe CannotTakePartMessages.incomePoint5
+          pageContent.getNthUnorderedList(1).getNthListItem(5).text mustBe CannotTakePartMessages.incomePoint5
         }
 
       }
 
       "has a correct paragraph about other reasons" in new Setup {
-        pageContent.getNthParagraph(2).text shouldBe CannotTakePartMessages.other
+        pageContent.getNthParagraph(2).text mustBe CannotTakePartMessages.other
       }
 
       "has a bullet point list about other reasons" which {
 
         "has the correct first point" in new Setup {
-          pageContent.getNthUnorderedList(2).getNthListItem(1).text shouldBe CannotTakePartMessages.otherPoint1
+          pageContent.getNthUnorderedList(2).getNthListItem(1).text mustBe CannotTakePartMessages.otherPoint1
         }
 
         "has the correct second point" in new Setup {
-          pageContent.getNthUnorderedList(2).getNthListItem(2).text shouldBe CannotTakePartMessages.otherPoint2
+          pageContent.getNthUnorderedList(2).getNthListItem(2).text mustBe CannotTakePartMessages.otherPoint2
         }
 
         "has the correct third point" in new Setup {
-          pageContent.getNthUnorderedList(2).getNthListItem(3).text shouldBe CannotTakePartMessages.otherPoint3
+          pageContent.getNthUnorderedList(2).getNthListItem(3).text mustBe CannotTakePartMessages.otherPoint3
         }
 
         "has the correct forth point" in new Setup {
-          pageContent.getNthUnorderedList(2).getNthListItem(4).text shouldBe CannotTakePartMessages.otherPoint4
+          pageContent.getNthUnorderedList(2).getNthListItem(4).text mustBe CannotTakePartMessages.otherPoint4
         }
 
       }
 
       "has a correct final paragraph" in new Setup {
-        pageContent.getNthParagraph(3).text shouldBe CannotTakePartMessages.alternative
+        pageContent.getNthParagraph(3).text mustBe CannotTakePartMessages.alternative
       }
 
       "has the correct form with button" in new Setup {
         val form: Element = pageContent.getForm
-        form.attr("method") shouldBe "GET"
-        form.attr("action") shouldBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show.url
+        form.attr("method") mustBe "GET"
+        form.attr("action") mustBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show.url
 
-        form.firstOf("button").text shouldBe CannotTakePartMessages.signUpAnother
+        form.firstOf("button").text mustBe CannotTakePartMessages.signUpAnother
       }
 
       "has a link to sign out" in new Setup {
         val link: Element = pageContent.getLink("sign-out-button")
 
-        link.attr("href") shouldBe controllers.SignOutController.signOut.url
-        link.text shouldBe CannotTakePartMessages.signOut
+        link.attr("href") mustBe controllers.SignOutController.signOut.url
+        link.text mustBe CannotTakePartMessages.signOut
       }
 
     }

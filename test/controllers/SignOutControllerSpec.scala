@@ -16,7 +16,6 @@
 
 package controllers
 
-import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup
@@ -36,8 +35,8 @@ class SignOutControllerSpec extends ControllerBaseSpec {
         mockRetrievalSuccess(Some(AffinityGroup.Agent))
 
         val result = TestSignOutController.signOut(subscriptionRequest)
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe (
           appConfig.ggSignOutUrl(appConfig.feedbackFrontendAgentRedirectUrl)
         )
       }
@@ -47,8 +46,8 @@ class SignOutControllerSpec extends ControllerBaseSpec {
         mockRetrievalSuccess(Some(AffinityGroup.Individual))
 
         val result = TestSignOutController.signOut(subscriptionRequest)
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe (
           appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
         )
       }
@@ -58,8 +57,8 @@ class SignOutControllerSpec extends ControllerBaseSpec {
         mockRetrievalSuccess(Some(AffinityGroup.Organisation))
 
         val result = TestSignOutController.signOut(subscriptionRequest)
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe (
           appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
         )
       }
@@ -70,8 +69,8 @@ class SignOutControllerSpec extends ControllerBaseSpec {
         mockRetrievalSuccess(None)
 
         val result = TestSignOutController.signOut(subscriptionRequest)
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe (
           appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
         )
       }

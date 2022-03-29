@@ -33,7 +33,7 @@ class NoSAControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.noSA()
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the error main income page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.no-sa.title") + serviceNameGovUk)
         )

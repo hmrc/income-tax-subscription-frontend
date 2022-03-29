@@ -21,7 +21,6 @@ import assets.MessageLookup.{ConfirmUser => messages}
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
-import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -61,23 +60,23 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
   val editLinkId: String => String = (sectionId: String) => s"$sectionId-edit"
 
   def questionStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "govuk-summary-list__key"
+    section.attr("class") mustBe "govuk-summary-list__key"
   }
 
   def answerStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "govuk-summary-list__value"
+    section.attr("class") mustBe "govuk-summary-list__value"
   }
 
   def editLinkStyleCorrectness(section: Element): Unit = {
-    section.attr("class") shouldBe "govuk-summary-list__actions"
+    section.attr("class") mustBe "govuk-summary-list__actions"
   }
 
   "Confirm User page view" should {
 
     s"have a back button pointed to $backUrl" in {
       val backLink = document().select(".govuk-back-link")
-      backLink.isEmpty shouldBe false
-      backLink.attr("href") shouldBe backUrl
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
     }
     s"have the title '${messages.title}'" in {
       val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
@@ -93,7 +92,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       "has a submit button" in {
         val submit = document().getElementsByClass("govuk-button")
         submit.isEmpty mustBe false
-        submit.text shouldBe MessageLookup.Base.continue
+        submit.text mustBe MessageLookup.Base.continue
       }
 
       s"has a post action to '${postAction.url}'" in {
@@ -118,13 +117,13 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       answerStyleCorrectness(answer)
       if (expectedEditLink.nonEmpty) editLinkStyleCorrectness(editLink)
 
-      question.text() shouldBe expectedQuestion
-      answer.text() shouldBe expectedAnswer
+      question.text() mustBe expectedQuestion
+      answer.text() mustBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
         val link = editLink.select("a")
-        link.attr("href") should include(expectedEditLink.get)
-        link.text() should include(MessageLookup.Base.change)
-        link.select(".govuk-visually-hidden").get(0).text() shouldBe hiddenContent
+        link.attr("href") must include(expectedEditLink.get)
+        link.text() must include(MessageLookup.Base.change)
+        link.select(".govuk-visually-hidden").get(0).text() mustBe hiddenContent
       }
     }
 

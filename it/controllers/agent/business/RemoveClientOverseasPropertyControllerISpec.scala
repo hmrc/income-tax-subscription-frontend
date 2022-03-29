@@ -30,7 +30,7 @@ class ClientRemoveOverseasPropertyControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the client remove Overseas property confirmation page displaying")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.remove-overseas-property-business.heading") + serviceNameGovUk)
         )
@@ -47,7 +47,7 @@ class ClientRemoveOverseasPropertyControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -70,7 +70,7 @@ class ClientRemoveOverseasPropertyControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("Yes")))
 
           Then("Should return a SEE_OTHER with a redirect location of client task list page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
@@ -88,7 +88,7 @@ class ClientRemoveOverseasPropertyControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("No")))
 
           Then("Should return a SEE_OTHER with a redirect location of client task list page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
@@ -107,7 +107,7 @@ class ClientRemoveOverseasPropertyControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("")))
 
           Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             errorDisplayed()
           )
@@ -126,7 +126,7 @@ class ClientRemoveOverseasPropertyControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("Yes")))
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
 

@@ -20,7 +20,6 @@ import agent.audit.mocks.MockAuditingService
 import models.usermatching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -84,7 +83,7 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
 
         mockCall()
         val result = TestConfirmationAgentController$.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any").buildRequest(userDetails))
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
     }
 
@@ -98,7 +97,7 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
 
 
         val exception = intercept[Exception](await(TestConfirmationAgentController$.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))))
-        exception.getMessage shouldBe "[ConfirmationController][show]-could not retrieve client name from session"
+        exception.getMessage mustBe "[ConfirmationController][show]-could not retrieve client name from session"
       }
     }
 
@@ -116,7 +115,7 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
             .buildRequest(userDetails)
         )
 
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
     }
 
