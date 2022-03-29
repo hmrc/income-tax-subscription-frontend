@@ -813,9 +813,9 @@ agent.summary.overseas_property_start_date                      = Dyddiad dechra
 agent.summary.income_type_overseas_property                     = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
 agent.summary.self_employments                                  = Nifer y busnesau sydd wedi’u cofrestru
 
-## Sign Up Complete page
-
-agent.sign-up-complete.heading                                  = Cofrestrwch wedi’i gwblhau
+## Agent Sign Up Complete page
+agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
+agent.sign-up-complete.heading                                  = Cleient wedi’i gofrestru’n llwyddiannus
 agent.sign-up-complete.panel-client                             = Mae {0} {1}
 agent.sign-up-complete.signed-up-for-mtd                        = bellach wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.sign-up-complete.can-use-software                         = Gallwch nawr ddefnyddio meddalwedd er mwyn anfon diweddariadau ynghylch Treth Incwm
@@ -831,25 +831,6 @@ agent.sign-up-complete.what-now.after-update                    = Ar ôl i chi a
 agent.sign-up-complete.what-now.agent-services-account          = Gallai gymryd ychydig o oriau cyn i wybodaeth newydd ymddangos ar eich {0}.
 agent.sign-up-complete.what-now.agent-services-account.link     = cyfrif gwasanaethau asiant
 agent.sign-up-complete.what-now.send-quarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
-
-## Old Sign Up Complete page
-agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
-agent.sign-up-complete.heading1                                 = Cofrestrwch wedi’i gwblhau
-agent.sign-up-complete.heading2                                 = Mae {0} {1}
-agent.sign-up-complete.heading3                                 = bellach wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.sign-up-complete.whatNow.heading                          = Yr hyn y mae angen i chi ei wneud nesaf
-agent.sign-up-complete.whatNow.para1                            = Rhaid i chi neu’ch cleient gwblhau’r camau isod. Os yw’r ddau ohonoch yn defnyddio’r feddalwedd, mae’n bwysig dewis pecynnau sydd yn gallu rhyngweithio a’i gilydd.
-agent.sign-up-complete.whatNow.number1                          = Os nad ydych eisoes wedi’i wneud, {0} a chaniatáu iddi ryngweithio â CThEM.
-agent.sign-up-complete.whatNow.number1.link                     = ewch ati i ddod o hyd i feddalwedd sy’n cydweddu â Throi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor tab newydd)
-agent.sign-up.complete.nextTax.number2                          = Mewngofnodwch i’ch {0} er mwyn cael gwybod pryd y bydd disgwyl i chi gyflwyno’ch diweddariad cyntaf.
-agent.sign-up.complete.nextTax.number2.link                     = cyfrif Treth Busnes
-agent.sign-up.complete.sendQuarterly                            = Anfonwch y diweddariadau chwarterol nesaf erbyn:
-agent.sign-up.complete.sendPreviousUpdates                      = Ychwanegwch unrhyw incwm a threuliau sydd gan eich cleient ar gyfer diweddariadau blaenorol:
-agent.sign-up.complete.submitAnnualUpdates                      = Cyflwynwch ddiweddariadau blynyddol eich cleient a datganwch ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
-agent.sign-up.complete.augustUpdate                             = 5 Awst {0}
-agent.sign-up.complete.novemberUpdate                           = 5 Tachwedd {0}
-agent.sign-up.complete.februaryUpdate                           = 5 Chwefror {0}
-agent.sign-up.complete.mayUpdate                                = 5 Mai {0}
 
 agent.sign-up-complete.whatNow.para2                            = Ar ôl i chi anfon diweddariad, bydd eich cleient yn cael amcangyfrif o’i Dreth Incwm ar gyfer y flwyddyn hyd yn hyn. Gall weld yr hyn sydd arno ar gyfer y flwyddyn dreth ar ôl i chi anfon ei ddiweddariad terfynol.
 

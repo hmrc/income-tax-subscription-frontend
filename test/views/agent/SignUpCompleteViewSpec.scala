@@ -317,7 +317,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
     val title = "You have signed up Test User 1234567890 to use software to send Income Tax updates"
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
-    val heading = "Sign up complete"
+    val heading = "Client sign up complete"
     val panelParagraph1 = "Test User 1234567890 is now signed up for Making Tax Digital for Income Tax."
     val panelParagraph2 = "You can now use software to send Income Tax updates"
 
