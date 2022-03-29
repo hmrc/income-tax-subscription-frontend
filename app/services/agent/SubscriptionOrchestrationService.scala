@@ -18,7 +18,6 @@ package services.agent
 
 import cats.data.EitherT
 import cats.implicits._
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import config.featureswitch.FeatureSwitching
 import connectors.agent.AgentSPSConnector
 import models.common.subscription.{CreateIncomeSourcesModel, CreateIncomeSourcesSuccess, SubscriptionSuccess}
@@ -45,9 +44,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       case right@Right(subscriptionSuccess) => {
         autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
           case Right(_) =>
-            if (isEnabled(SPSEnabled)) {
-              confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
-            }
+            confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
             right
           case Left(_) =>
             right
@@ -76,9 +73,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       case right@Right(subscriptionSuccess) => {
         autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
           case Right(_) =>
-            if (isEnabled(SPSEnabled)) {
-              confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
-            }
+            confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
             right
           case Left(_) =>
             right

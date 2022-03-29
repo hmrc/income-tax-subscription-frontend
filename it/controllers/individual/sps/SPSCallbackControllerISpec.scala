@@ -16,18 +16,13 @@
 
 package controllers.individual.sps
 
-import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{accountingYearURI, basGatewaySignIn, taskListURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
-class SPSCallbackControllerISpec extends ComponentSpecBase  {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(SPSEnabled)
-  }
+class SPSCallbackControllerISpec extends ComponentSpecBase {
 
   s"GET ${controllers.individual.sps.routes.SPSCallbackController.callback.url}" when {
 
@@ -45,59 +40,40 @@ class SPSCallbackControllerISpec extends ComponentSpecBase  {
     }
 
     "the save and retrieve feature switch is enabled" should {
-      "the sps verification feature switch is enabled" should {
-        "redirect the user to the tax year selection page when entity id is present" in {
-          enable(SaveAndRetrieve)
-          enable(SPSEnabled)
-          AuthStub.stubAuthSuccess()
+      "redirect the user to the tax year selection page when entity id is present" in {
+        enable(SaveAndRetrieve)
+        AuthStub.stubAuthSuccess()
 
-          val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
+        val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
 
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(taskListURI)
-          )
-        }
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
       }
     }
 
     "the save and retrieve feature switch is disabled" when {
-      "the sps feature switch is disabled" should {
-        "return a not found page to the user" in {
-          AuthStub.stubAuthSuccess()
 
-          val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
+      "redirect the user to the tax year selection page when entity id is present" in {
+        disable(SaveAndRetrieve)
+        AuthStub.stubAuthSuccess()
 
-          res should have(
-            httpStatus(NOT_FOUND),
-            pageTitle("Page not found - 404")
-          )
-        }
+        val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
+
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingYearURI)
+        )
       }
 
-      "the sps verification feature switch is enabled" should {
-        "redirect the user to the tax year selection page when entity id is present" in {
-          disable(SaveAndRetrieve)
-          enable(SPSEnabled)
-          AuthStub.stubAuthSuccess()
+      "return an internal server error when entity id is not present" in {
+        AuthStub.stubAuthSuccess()
 
-          val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
-
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(accountingYearURI)
-          )
-        }
-
-        "return an internal server error when entity id is not present" in {
-          enable(SPSEnabled)
-          AuthStub.stubAuthSuccess()
-
-          val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = false)
-          res should have(
-            httpStatus(INTERNAL_SERVER_ERROR)
-          )
-        }
+        val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = false)
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
       }
     }
 

@@ -16,20 +16,18 @@
 
 package controllers.individual.claimenrolment
 
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
-import play.api.http.Status.{CREATED, INTERNAL_SERVER_ERROR, NO_CONTENT, SEE_OTHER}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.testMTDITEnrolmentKey
 import helpers.servicemocks.AuditStub.verifyAudit
 import helpers.servicemocks.{AuthStub, EnrolmentStoreProxyStub, SubscriptionStub, TaxEnrolmentsStub}
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.http.Status._
 
-class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase  with SessionCookieCrumbler {
+class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     disable(ClaimEnrolment)
-    disable(SPSEnabled)
     super.beforeEach()
   }
 
@@ -50,51 +48,25 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase  with Sess
     }
     "the claim enrolment feature switch is enabled" when {
       "all calls are successful and an auditing has been sent" when {
-        "the SPS feature switch is enabled" should {
-          "redirect the user to SPS" in {
-            enable(ClaimEnrolment)
-            enable(SPSEnabled)
+        "redirect the user to SPS" in {
+          enable(ClaimEnrolment)
 
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            SubscriptionStub.stubGetSubscriptionFound()
-            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetSubscriptionFound()
+          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
 
-            When("GET /claim-enrolment/resolve is called")
-            val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
+          When("GET /claim-enrolment/resolve is called")
+          val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
-            verifyAudit()
-            Then("Should return a SEE_OTHER with a redirect location of the SPS beginning page")
-            res should have(
-              httpStatus(SEE_OTHER),
-              redirectURI(claimEnrolSpsHandoffRouteURI)
-            )
-          }
-        }
-
-        "the SPS feature switch is disabled" should {
-          "redirect the user to the claim enrolment confirmation" in {
-            enable(ClaimEnrolment)
-
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            SubscriptionStub.stubGetSubscriptionFound()
-            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
-
-            When("GET /claim-enrolment/resolve is called")
-            val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
-
-            verifyAudit()
-            Then("Should return a SEE_OTHER with a redirect location of the claim enrolment confirmation page")
-            res should have(
-              httpStatus(SEE_OTHER),
-              redirectURI(claimEnrolmentConfirmationURI)
-            )
-          }
+          verifyAudit()
+          Then("Should return a SEE_OTHER with a redirect location of the SPS beginning page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(claimEnrolSpsHandoffRouteURI)
+          )
         }
       }
       "redirect the user to the claim enrolment not subscribed" when {

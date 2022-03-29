@@ -44,7 +44,6 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
   object TestConfirmationAgentController$ extends ConfirmationAgentController(
     mockAuditingService,
     mockAuthService,
-    mockAccountingPeriodService,
     mockSignUpComplete,
     MockSubscriptionDetailsService
   )(executionContext, appConfig, mockMessagesControllerComponents)

@@ -17,26 +17,19 @@
 package controllers.individual.sps
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.individual.mocks.MockApplicationCrypto
-import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
 
 class SPSHandoffControllerSpec extends ControllerBaseSpec
   with MockAuditingService
-  
-  with MockApplicationCrypto {
 
-  override def beforeEach(): Unit = {
-    disable(SPSEnabled)
-    super.beforeEach()
-  }
+  with MockApplicationCrypto {
 
   object TestSPSHandoffController extends SPSHandoffController(
     mockAuditingService,
@@ -54,26 +47,12 @@ class SPSHandoffControllerSpec extends ControllerBaseSpec
 
     def result: Future[Result] = TestSPSHandoffController.redirectToSPS(request)
 
-    "feature switch SPSEnabled set to true" should {
 
-      "Redirect to SPS" in {
+    "Redirect to SPS" in {
 
-        enable(SPSEnabled)
-        mockEncrypt()
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=encryptedValue&returnLinkText=encryptedValue&regime=encryptedValue")
-      }
-    }
-
-    "feature switch SPSEnabled set to false" should {
-
-      "throw a NotFoundException" in {
-
-        mockEncrypt()
-        val ex = intercept[NotFoundException](await(result))
-        ex.getMessage mustBe ("[SPSHandoffController][redirectToSPS] - SPS FS is not enabled")
-
-      }
+      mockEncrypt()
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result).get must be(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=encryptedValue&returnLinkText=encryptedValue&regime=encryptedValue")
     }
 
   }

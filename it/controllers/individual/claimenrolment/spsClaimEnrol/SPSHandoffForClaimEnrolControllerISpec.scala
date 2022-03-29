@@ -16,20 +16,19 @@
 
 package controllers.individual.claimenrolment.spsClaimEnrol
 
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.{SEE_OTHER, _}
+import play.api.http.Status._
 import utilities.ITSASessionKeys
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 
-class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase  {
+class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(SPSEnabled)
     disable(ClaimEnrolment)
   }
 
@@ -54,7 +53,6 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase  {
 
     "the feature switch SPSEnabled and claim enrolment both set to true" in {
       Given("I setup the Wiremock stubs")
-      enable(SPSEnabled)
       enable(ClaimEnrolment)
       AuthStub.stubAuthSuccess()
 
@@ -74,47 +72,9 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase  {
       )
     }
 
-    "the SPSEnabled and claim enrolment feature switch are both set to false" in {
+    "the claim enrolment feature switch set to false" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-
-      When("GET /claim-enrolment/sps-handoff is called")
-      val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff(
-        sessionKeys = Map(
-          ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
-        )
-      )
-
-      Then("Should return a not found page to the user")
-      res should have(
-        httpStatus(NOT_FOUND),
-        pageTitle("Page not found - 404")
-      )
-    }
-
-    "the feature switch SPSEnabled set to false and claim enrolment feature switch set to true" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      enable(ClaimEnrolment)
-
-      When("GET /claim-enrolment/sps-handoff is called")
-      val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff(
-        sessionKeys = Map(
-          ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
-        )
-      )
-
-      Then("Should return a not found page to the user")
-      res should have(
-        httpStatus(NOT_FOUND),
-        pageTitle("Page not found - 404")
-      )
-    }
-
-    "the feature switch SPSEnabled set to true and claim enrolment feature switch set to false" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      enable(SPSEnabled)
 
       When("GET /claim-enrolment/sps-handoff is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff(

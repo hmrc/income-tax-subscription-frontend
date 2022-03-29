@@ -16,7 +16,7 @@
 
 package controllers.individual.business
 
-import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{testBusinessName => _, _}
@@ -142,7 +142,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
             Given("I set the required feature switches")
             enable(SaveAndRetrieve)
-            enable(SPSEnabled)
 
             And("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
@@ -194,7 +193,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             Given("I set the required feature switches")
             enable(SaveAndRetrieve)
-            enable(SPSEnabled)
 
             And("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
@@ -254,7 +252,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
             Given("I set the required feature switches")
             enable(SaveAndRetrieve)
-            enable(SPSEnabled)
 
             And("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
@@ -314,7 +311,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             Given("I set the required feature switches")
             enable(SaveAndRetrieve)
-            enable(SPSEnabled)
 
             And("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
@@ -383,7 +379,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           And("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -424,10 +419,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
       "save and retrieve feature switch is disabled" should {
         "throw NotFoundException and will not call sps" in {
 
-          Given("I set the required feature switches")
-          enable(SPSEnabled)
-
-          And("I setup the Wiremock stubs")
+          Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(

@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import controllers.ControllerBaseSpec
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -33,11 +33,10 @@ import utilities.individual.TestConstants
 import scala.concurrent.Future
 
 class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with MockAuditingService with MockSpsService
-  with MockClaimEnrolmentService  {
+  with MockClaimEnrolmentService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(SPSEnabled)
     disable(ClaimEnrolment)
   }
 
@@ -67,35 +66,18 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
   }
 
   "callback" when {
-    "the SPS and claim enrolment feature switch are both disabled" should {
+    "the claim enrolment feature switch set to false" should {
       "return a not found exception" in {
-        val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
-
-        intercept[NotFoundException](await(result)).message mustBe "[SPSCallbackForClaimEnrolController][callback] - both SPS and claim enrolment feature switch are not enabled"
-      }
-    }
-    "the SPS feature switch set to false and claim enrolment feature switch set to true" should {
-      "return a not found exception" in {
-        enable(ClaimEnrolment)
-        val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
-
-        intercept[NotFoundException](await(result)).message mustBe "[SPSCallbackForClaimEnrolController][callback] - SPS feature switch is not enabled"
-      }
-    }
-    "the SPS feature switch set to true and claim enrolment feature switch set to false" should {
-      "return a not found exception" in {
-        enable(SPSEnabled)
         val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
 
         intercept[NotFoundException](await(result)).message mustBe "[SPSCallbackForClaimEnrolController][callback] - claim enrolment feature switch is not enabled"
       }
     }
 
-    "the SPS and claim enrolment feature switch are both enabled" when {
+    "the claim enrolment feature switch is enabled" when {
       "an entityId is passed through to the url" when {
         "mtditid successfully retrieves from claimEnrolmentService" should {
           "link preference with mtditid to sps, save the entityId in session and redirect to the claim enrolment confirmation page" in {
-            enable(SPSEnabled)
             enable(ClaimEnrolment)
             mockGetMtditidFromSubscription("mtditid")
 
@@ -108,7 +90,6 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
         }
         "mtditid failed to retrieve from claimEnrolmentService" should {
           "throw an InternalServerException" in {
-            enable(SPSEnabled)
             enable(ClaimEnrolment)
             mockGetMtditidFromSubscription(ClaimEnrolmentError(msg = "failed to retrieve mtditid from claimEnrolmentService"))
 
@@ -121,7 +102,6 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
       }
       "no entityId is present in the url" should {
         "redirect the user to the claim enrolment confirmation page " in {
-          enable(SPSEnabled)
           enable(ClaimEnrolment)
 
           val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = false)).run()

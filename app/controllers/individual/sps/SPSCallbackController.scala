@@ -18,10 +18,10 @@ package controllers.individual.sps
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
 
 import javax.inject.{Inject, Singleton}
@@ -32,26 +32,22 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
                                       val authService: AuthService)
                                      (implicit val appConfig: AppConfig,
                                       val ec: ExecutionContext,
-                                      mcc: MessagesControllerComponents) extends SignUpController  {
+                                      mcc: MessagesControllerComponents) extends SignUpController {
 
   def callback: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      if(isEnabled(SPSEnabled)) {
-        request.queryString.get("entityId").flatMap(_.headOption) match {
-          case Some(entityId) => {
-            val result = if(isEnabled(SaveAndRetrieve))
-              Redirect(controllers.individual.business.routes.TaskListController.show())
-            else
-              Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
+      request.queryString.get("entityId").flatMap(_.headOption) match {
+        case Some(entityId) => {
+          val result = if (isEnabled(SaveAndRetrieve))
+            Redirect(controllers.individual.business.routes.TaskListController.show())
+          else
+            Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
 
-            result.addingToSession(
-              ITSASessionKeys.SPSEntityId -> entityId
-            )
-          }
-          case None => throw new InternalServerException("[SPSCallbackController][callback] - Entity Id was not found")
+          result.addingToSession(
+            ITSASessionKeys.SPSEntityId -> entityId
+          )
         }
-      } else {
-        throw new NotFoundException("[SPSCallbackController][callback] - SPS Enabled feature switch not enabled")
+        case None => throw new InternalServerException("[SPSCallbackController][callback] - Entity Id was not found")
       }
   }
 

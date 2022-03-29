@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.{SPSEnabled, SaveAndRetrieve}
+import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs._
 import helpers.IntegrationTestConstants.{confirmationURI => _, _}
@@ -143,7 +143,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "they only have self employment income" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -195,7 +194,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "they only have uk property income" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -254,7 +252,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "they only have overseas property income" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -313,7 +310,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "they have both self employment and uk property income" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -374,7 +370,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "they have both self employment and overseas property income" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -434,7 +429,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "they have both uk property and overseas property income" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -501,7 +495,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "they have self employment, uk property and overseas property income" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -569,7 +562,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "the user has not selected their tax year" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -614,7 +606,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         "the user has not got any business income sources" in {
           Given("I set the required feature switches")
           enable(SaveAndRetrieve)
-          enable(SPSEnabled)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()

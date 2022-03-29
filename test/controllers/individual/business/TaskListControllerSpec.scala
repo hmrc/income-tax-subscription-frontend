@@ -127,7 +127,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   }
 
   "submit" when {
-    "save and retrieve and Sps feature switch is enabled" when {
+    "save and retrieve feature switch is enabled" when {
       "sign up income source is successful" should {
         "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
           enable(SaveAndRetrieve)

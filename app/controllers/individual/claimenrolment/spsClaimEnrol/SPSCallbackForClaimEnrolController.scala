@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.{AuditingService, AuthService, SPSService}
@@ -35,11 +35,11 @@ class SPSCallbackForClaimEnrolController @Inject()(val auditingService: Auditing
                                                    claimEnrolmentService: ClaimEnrolmentService)
                                                   (implicit val appConfig: AppConfig,
                                                    val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController  {
+                                                   mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
 
   def callback: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SPSEnabled) && isEnabled(ClaimEnrolment)) {
+      if (isEnabled(ClaimEnrolment)) {
         request.queryString.get("entityId").flatMap(_.headOption) match {
           case Some(entityId) =>
             claimEnrolmentService.getMtditidFromSubscription map {
@@ -55,11 +55,10 @@ class SPSCallbackForClaimEnrolController @Inject()(val auditingService: Auditing
           case None => Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()))
         }
       } else {
-        val error = (isEnabled(SPSEnabled), isEnabled(ClaimEnrolment)) match {
-          case (false, false) => "both SPS and claim enrolment feature switch are not enabled"
-          case (false, true) => "SPS feature switch is not enabled"
-          case (true, false) => "claim enrolment feature switch is not enabled"
-          case _ => "both SPS and claim enrolment feature switch are enabled"
+        val error = if (isEnabled(ClaimEnrolment)) {
+          "claim enrolment feature switch is enabled"
+        } else {
+          "claim enrolment feature switch is not enabled"
         }
         throw new NotFoundException(s"[SPSCallbackForClaimEnrolController][callback] - $error")
       }

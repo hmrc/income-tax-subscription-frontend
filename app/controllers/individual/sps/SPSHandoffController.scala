@@ -19,11 +19,9 @@ package controllers.individual.sps
 import auth.individual.AuthPredicate.AuthPredicate
 import auth.individual.{IncomeTaxSAUser, StatelessController}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SPSEnabled
 import play.api.mvc._
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.http.NotFoundException
 
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
@@ -36,7 +34,7 @@ class SPSHandoffController @Inject()(
                                       val crypto: ApplicationCrypto)
                                     (implicit val ec: ExecutionContext,
                                      val appConfig: AppConfig,
-                                     mcc: MessagesControllerComponents) extends StatelessController  {
+                                     mcc: MessagesControllerComponents) extends StatelessController {
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxSAUser] = preferencesPredicate
 
@@ -45,14 +43,10 @@ class SPSHandoffController @Inject()(
     Authenticated {
       _ =>
         _ =>
-          if (isEnabled(SPSEnabled)) {
-            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback.url,
-              returnLinkText = "I have verified",
-              regime = "itsa"
-            )
-          } else {
-            throw new NotFoundException("[SPSHandoffController][redirectToSPS] - SPS FS is not enabled")
-          }
+          goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback.url,
+            returnLinkText = "I have verified",
+            regime = "itsa"
+          )
     }
   }
 

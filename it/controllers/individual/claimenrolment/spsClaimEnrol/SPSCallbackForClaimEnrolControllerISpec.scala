@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment.spsClaimEnrol
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{basGatewaySignIn, claimEnrolmentConfirmationURI}
 import helpers.WiremockHelper.verifyPost
@@ -25,11 +25,10 @@ import helpers.servicemocks.{AuthStub, SubscriptionStub}
 import play.api.http.Status._
 import utilities.ITSASessionKeys
 
-class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase  {
+class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(SPSEnabled)
     disable(ClaimEnrolment)
   }
 
@@ -48,7 +47,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase  {
       }
     }
 
-    "the feature switch sps and claim enrolment are both disabled" should {
+    "the claim enrolment feature switch set to false" should {
       "return a not found page to the user" in {
         AuthStub.stubAuthSuccess()
 
@@ -65,47 +64,10 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase  {
       }
     }
 
-    "the feature switch sps set to false and claim enrolment set to true" should {
-      "return a not found page to the user" in {
-        AuthStub.stubAuthSuccess()
-        enable(ClaimEnrolment)
-
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
-          sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
-          )
-        )
-
-        res should have(
-          httpStatus(NOT_FOUND),
-          pageTitle("Page not found - 404")
-        )
-      }
-    }
-
-    "the feature switch sps set to true and claim enrolment set to false" should {
-      "return a not found page to the user" in {
-        AuthStub.stubAuthSuccess()
-        enable(SPSEnabled)
-
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
-          sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
-          )
-        )
-
-        res should have(
-          httpStatus(NOT_FOUND),
-          pageTitle("Page not found - 404")
-        )
-      }
-    }
-
-    "the sps and claim enrolment feature switch are both enabled" when {
+    "the claim enrolment feature switch is enabled" when {
       "there is an entityId" when {
         "mtditid retrieves successfully" should {
           "link user's enrolment id to SPS and redirect the user to the Claim Enrolment Confirmation page" in {
-            enable(SPSEnabled)
             enable(ClaimEnrolment)
             AuthStub.stubAuthSuccess()
             SubscriptionStub.stubGetSubscriptionFound()
@@ -127,7 +89,6 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase  {
 
         "mtditid retrieves failed" should {
           "throw InternalServerException" in {
-            enable(SPSEnabled)
             enable(ClaimEnrolment)
             AuthStub.stubAuthSuccess()
             SubscriptionStub.stubGetNoSubscription()
@@ -147,7 +108,6 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase  {
       }
       "there is no entityId" should {
         "redirect the user to the Claim Enrolment Confirmation page" in {
-          enable(SPSEnabled)
           enable(ClaimEnrolment)
           AuthStub.stubAuthSuccess()
 

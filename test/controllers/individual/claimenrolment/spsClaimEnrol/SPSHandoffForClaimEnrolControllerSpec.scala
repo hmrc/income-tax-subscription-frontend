@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment.spsClaimEnrol
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.{ClaimEnrolment, SPSEnabled}
+import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
@@ -30,11 +30,10 @@ import scala.concurrent.Future
 
 class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
   with MockAuditingService
-  
+
   with MockApplicationCrypto {
 
   override def beforeEach(): Unit = {
-    disable(SPSEnabled)
     disable(ClaimEnrolment)
     super.beforeEach()
   }
@@ -55,11 +54,10 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
 
     def result: Future[Result] = TestSPSHandoffForClaimEnrolController.redirectToSPS(request)
 
-    "feature switch SPSEnabled and claim enrolment both set to true" should {
+    "claim enrolment feature switch is set to true" should {
 
       "Redirect to SPS" in {
 
-        enable(SPSEnabled)
         enable(ClaimEnrolment)
         mockEncrypt()
         status(result) must be(Status.SEE_OTHER)
@@ -67,32 +65,9 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "feature switch SPSEnabled and claim enrolment both set to false" should {
+    "feature switch claim enrolment set to false" should {
 
       "throw a NotFoundException" in {
-
-        mockEncrypt()
-        val ex = intercept[NotFoundException](await(result))
-        ex.getMessage mustBe ("[SPSHandoffForClaimEnrolController][redirectToSPS] - both SPS and claim enrolment feature switch are not enabled")
-
-      }
-    }
-
-    "feature switch SPSEnabled set to false and claim enrolment set to true" should {
-
-      "throw a NotFoundException" in {
-        enable(ClaimEnrolment)
-        mockEncrypt()
-        val ex = intercept[NotFoundException](await(result))
-        ex.getMessage mustBe ("[SPSHandoffForClaimEnrolController][redirectToSPS] - SPS feature switch is not enabled")
-
-      }
-    }
-
-    "feature switch SPSEnabled set to true and claim enrolment set to false" should {
-
-      "throw a NotFoundException" in {
-        enable(SPSEnabled)
         mockEncrypt()
         val ex = intercept[NotFoundException](await(result))
         ex.getMessage mustBe ("[SPSHandoffForClaimEnrolController][redirectToSPS] - claim enrolment feature switch is not enabled")
