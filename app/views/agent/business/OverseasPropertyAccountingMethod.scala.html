@@ -46,8 +46,7 @@
       radioItems = Seq(
         RadioItem(content = Text(messages("agent.overseas.property.accounting_method.radio.cash")), value = Some(AccountingMethodMapping.option_cash)),
         RadioItem(content = Text(messages("agent.overseas.property.accounting_method.radio.accruals")), value = Some(AccountingMethodMapping.option_accruals))
-      ),
-      inline = true
+      )
     )
 
     @if(featureSwitchingImpl.isEnabled(SaveAndRetrieve)) {
