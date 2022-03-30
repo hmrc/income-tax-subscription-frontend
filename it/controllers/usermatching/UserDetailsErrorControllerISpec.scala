@@ -31,7 +31,7 @@ class UserDetailsErrorControllerISpec extends ComponentSpecBase  {
       val res = IncomeTaxSubscriptionFrontend.showUserDetailsError()
       val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       Then("Should return a OK with the no matching user page")
-      res should have(
+      res must have(
         httpStatus(OK),
         pageTitle(messages("user-details-error.title") + serviceNameGovUk)
       )

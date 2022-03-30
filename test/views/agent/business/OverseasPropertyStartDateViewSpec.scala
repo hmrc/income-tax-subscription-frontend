@@ -52,7 +52,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
   val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
-  val testError: FormError = FormError("startDate-dateDay", "testError")
+  val testError: FormError = FormError("startDate", "testError")
   val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
 
   private val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
@@ -72,6 +72,33 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
   }
 
   "Overseas Start Date page" must {
+    "have the correct page template" when {
+      "there is no error" in new TemplateViewTest(
+        view = overseasPropertyStartDate(
+          defaultForm,
+          testCall,
+          testBackUrl,
+          isEditMode = false
+        ),
+        title = OverseasPropertyStartDateMessages.heading,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+      )
+
+      "there is an error" in new TemplateViewTest(
+        view = overseasPropertyStartDate(
+          defaultForm.withError(testError),
+          testCall,
+          testBackUrl,
+          isEditMode = false
+        ),
+        title = OverseasPropertyStartDateMessages.heading,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        error = Some(testError)
+      )
+    }
+
     "have a title" in {
       document().title mustBe OverseasPropertyStartDateMessages.heading + titleSuffix
     }
@@ -109,7 +136,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
 
     "display form error on page" in {
       val doc = document(overseasPropertyStartDateForm = defaultForm.withError(testError))
-      doc.mustHaveGovukErrorSummary(testError.message)
       doc.mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,

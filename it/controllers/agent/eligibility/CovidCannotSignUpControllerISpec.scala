@@ -32,42 +32,42 @@ class CovidCannotSignUpControllerISpec extends ComponentSpecBase {
 
   "GET /error/covid-cannot-sign-up" should {
     "return OK" in new Setup {
-      result should have(
+      result must have(
         httpStatus(OK)
       )
     }
 
     "have a view with the correct title" in new Setup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      doc.title shouldBe CovidCannotSignUpMessages.title + serviceNameGovUk
+      doc.title mustBe CovidCannotSignUpMessages.title + serviceNameGovUk
     }
 
     "have a view with the correct heading" in new Setup {
-      pageContent.getH1Element.text shouldBe CovidCannotSignUpMessages.heading
+      pageContent.getH1Element.text mustBe CovidCannotSignUpMessages.heading
     }
 
     "have a paragraph explaining why they cannot sign up" in new Setup {
-      pageContent.getNthParagraph(1).text shouldBe CovidCannotSignUpMessages.para1
+      pageContent.getNthParagraph(1).text mustBe CovidCannotSignUpMessages.para1
     }
 
     "have a paragraph about sending a Self Assessment" in new Setup {
-      pageContent.getNthParagraph(2).text shouldBe CovidCannotSignUpMessages.para2
+      pageContent.getNthParagraph(2).text mustBe CovidCannotSignUpMessages.para2
     }
 
     "have a back link" in new Setup {
-      doc.select(".govuk-back-link").text shouldBe CovidCannotSignUpMessages.backLink
+      doc.select(".govuk-back-link").text mustBe CovidCannotSignUpMessages.backLink
     }
 
     "have a Sign up another client button" in new Setup {
       val submitButton: Element = pageContent.getForm.getGovUkSubmitButton
-      submitButton.text shouldBe CovidCannotSignUpMessages.button
-      submitButton.attr("class") shouldBe "govuk-button"
+      submitButton.text mustBe CovidCannotSignUpMessages.button
+      submitButton.attr("class") mustBe "govuk-button"
     }
 
     "have a Sign Out link" in new Setup {
       val signOutLink: Element = pageContent.getLink("sign-out-button")
-      signOutLink.attr("href") shouldBe controllers.SignOutController.signOut.url
-      signOutLink.text shouldBe CovidCannotSignUpMessages.signOut
+      signOutLink.attr("href") mustBe controllers.SignOutController.signOut.url
+      signOutLink.text mustBe CovidCannotSignUpMessages.signOut
     }
   }
 }

@@ -19,7 +19,6 @@ package forms.agent
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.common.business.BusinessNameModel
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
@@ -34,7 +33,7 @@ class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       val testInput = Map(businessName -> testBusinessName)
       val expected = BusinessNameModel(testBusinessName)
       val actual = businessNameForm.bind(testInput).value
-      actual shouldBe Some(expected)
+      actual mustBe Some(expected)
     }
 
     "validate business name correctly" should {

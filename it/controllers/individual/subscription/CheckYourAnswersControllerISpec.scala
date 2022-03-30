@@ -48,7 +48,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
 
       Then("The check your answers page is displayed with an OK status")
-      res should have(
+      res must have(
         httpStatus(OK),
         pageTitle(messages("summary.title") + " - Use software to send Income Tax updates - GOV.UK")
       )
@@ -99,7 +99,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(Map(SPSEntityId -> testEntityId))
 
         Then("Should return a SEE_OTHER with a redirect location of confirmation")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(confirmationURI)
         )
@@ -148,7 +148,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
           Then("Should return a SEE_OTHER with a redirect location of confirmation")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -195,7 +195,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
           Then("Should return a SEE_OTHER with a redirect location of confirmation")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -245,7 +245,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
           Then("Should return a SEE_OTHER with a redirect location of confirmation")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -292,7 +292,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
           Then("Should return a SEE_OTHER with a redirect location of confirmation")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -346,7 +346,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
           Then("Should return a SEE_OTHER with a redirect location of confirmation")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -398,7 +398,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
           Then("Should return a SEE_OTHER with a redirect location of confirmation")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -451,7 +451,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
         Then("Should return a SEE_OTHER with a redirect location of confirmation")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(confirmationURI)
         )
@@ -500,7 +500,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
         Then("Should return an INTERNAL_SERVER_ERROR")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
 
@@ -548,7 +548,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
         Then("Should return a INTERNAL SERVER ERROR status")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
 
@@ -596,7 +596,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
         Then("Should return a INTERNAL SERVER ERROR status")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
 
@@ -644,7 +644,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
         Then("Should return a INTERNAL SERVER ERROR status")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
 
@@ -675,7 +675,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
       Then("Should return an INTERNAL_SERVER_ERROR")
-      res should have(
+      res must have(
         httpStatus(INTERNAL_SERVER_ERROR)
       )
 
@@ -716,7 +716,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
       Then("Should return an INTERNAL_SERVER_ERROR")
-      res should have(
+      res must have(
         httpStatus(INTERNAL_SERVER_ERROR)
       )
 

@@ -43,12 +43,12 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCoo
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview()
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the AddMTDITOverview page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("mtdit-overview.heading") + serviceNameGovUk)
         )
 
-        getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) should be(Some(ClaimEnrolmentJourney.name))
+        getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) must be(Some(ClaimEnrolmentJourney.name))
       }
     }
     "return a not found page" when {
@@ -59,7 +59,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCoo
         When("GET /claim-enrolment/overview is called")
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview()
         Then("Should return a OK with the AddMTDITOverview page")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND),
           pageTitle("Page not found - 404")
         )
@@ -76,7 +76,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCoo
         When("GET /claim-enrolment/overview is called")
         val res = IncomeTaxSubscriptionFrontend.submitAddMTDITOverview()
         Then("Should return a OK with the AddMTDITOverview page")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND),
           pageTitle("Page not found - 404")
         )
@@ -94,7 +94,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCoo
           val res = IncomeTaxSubscriptionFrontend.submitAddMTDITOverview()
 
           Then("Should return a SEE_OTHER with a redirect location of the claim enrolment confirmation page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(claimEnrolmentResolverURI)
           )

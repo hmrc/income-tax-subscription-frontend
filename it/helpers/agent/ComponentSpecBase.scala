@@ -17,14 +17,16 @@ import helpers.agent.IntegrationTestConstants._
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
+import models._
 import models.common._
 import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
-import models._
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api._
 import play.api.data.Form
@@ -44,7 +46,7 @@ import java.time.LocalDate
 import java.util.UUID
 import scala.collection.JavaConverters._
 
-trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
+trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience
   with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
@@ -591,42 +593,42 @@ trait ComponentSpecBase extends WordSpecLike with Matchers with OptionValues
       if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
       if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
       val ele = eles.asScala.head
-      ele.attr("type") shouldBe "text"
-      element.select(s"label[for=$name]").text() shouldBe label
+      ele.attr("type") mustBe "text"
+      element.select(s"label[for=$name]").text() mustBe label
     }
 
     def listErrorMessages(errors: List[String]): Assertion = {
       errors.zipWithIndex.map {
-        case (error, index) => element.select(s"span.error-notification:nth-child(${index + 1})").text shouldBe error
-      } forall (_ == succeed) shouldBe true
+        case (error, index) => element.select(s"span.error-notification:nth-child(${index + 1})").text mustBe error
+      } forall (_ == succeed) mustBe true
     }
 
     def mustHaveDateField(id: String, legend: String, exampleDate: String, error: Option[String] = None): Assertion = {
       val ele = element.getElementById(id)
-      ele.select("span.form-label-bold").text() shouldBe legend
-      ele.select("span.form-hint").text() shouldBe exampleDate
-      ele.tag().toString shouldBe "fieldset"
+      ele.select("span.form-label-bold").text() mustBe legend
+      ele.select("span.form-hint").text() mustBe exampleDate
+      ele.tag().toString mustBe "fieldset"
       mustHaveTextField(s"$id.dateDay", "Day")
       mustHaveTextField(s"$id.dateMonth", "Month")
       mustHaveTextField(s"$id.dateYear", "Year")
       error.map { message =>
-        ele.select("legend").select(".error-notification").attr("role") shouldBe "tooltip"
-        ele.select("legend").select(".error-notification").text shouldBe message
+        ele.select("legend").select(".error-notification").attr("role") mustBe "tooltip"
+        ele.select("legend").select(".error-notification").text mustBe message
       }.getOrElse(succeed)
     }
 
     def mustHavePara(paragraph: String): Assertion = {
-      element.getElementsByTag("p").text() should include(paragraph)
+      element.getElementsByTag("p").text() must include(paragraph)
     }
 
     def mustHaveErrorSummary(errors: List[String]): Assertion = {
-      element.getErrorSummary.attr("class") shouldBe "flash error-summary error-summary--show"
-      element.getErrorSummary.attr("role") shouldBe "alert"
-      element.getErrorSummary.attr("aria-labelledby") shouldBe "error-summary-heading"
-      element.getErrorSummary.attr("tabindex") shouldBe "-1"
-      element.getErrorSummary.select("h2").attr("id") shouldBe "error-summary-heading"
-      element.getErrorSummary.select("h2").text shouldBe "There is a problem"
-      element.getErrorSummary.select("ul > li").text shouldBe errors.mkString(" ")
+      element.getErrorSummary.attr("class") mustBe "flash error-summary error-summary--show"
+      element.getErrorSummary.attr("role") mustBe "alert"
+      element.getErrorSummary.attr("aria-labelledby") mustBe "error-summary-heading"
+      element.getErrorSummary.attr("tabindex") mustBe "-1"
+      element.getErrorSummary.select("h2").attr("id") mustBe "error-summary-heading"
+      element.getErrorSummary.select("h2").text mustBe "There is a problem"
+      element.getErrorSummary.select("ul > li").text mustBe errors.mkString(" ")
     }
 
 

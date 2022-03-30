@@ -34,7 +34,7 @@ class SignOutControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.signOut
 
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(ggSignOutURI)
         )
@@ -49,7 +49,7 @@ class SignOutControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.signOut
 
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(basGatewaySignIn("/logout"))
         )

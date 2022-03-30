@@ -39,7 +39,7 @@ class AlreadySignedUpControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.alreadySignedUp()
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the already Signed Up page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("claim-enrolment.claimAlreadySignedUp.title") + serviceNameGovUk)
         )
@@ -53,7 +53,7 @@ class AlreadySignedUpControllerISpec extends ComponentSpecBase {
         When("GET /claim-enrolment/already-signed-up is called")
         val res = IncomeTaxSubscriptionFrontend.notSubscribed()
 
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }

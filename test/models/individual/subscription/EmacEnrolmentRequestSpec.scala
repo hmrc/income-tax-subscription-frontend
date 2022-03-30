@@ -17,12 +17,14 @@
 package models.individual.subscription
 
 import models.common.subscription.EmacEnrolmentRequest
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utilities.individual.Constants.GovernmentGateway._
 import utilities.individual.TestConstants._
 
-class EmacEnrolmentRequestSpec extends WordSpecLike with Matchers with OptionValues {
+class EmacEnrolmentRequestSpec extends AnyWordSpecLike with Matchers with OptionValues {
   "format" should {
     "format the enrolment request correctly as JSON" in {
       val userId = "1234567890"

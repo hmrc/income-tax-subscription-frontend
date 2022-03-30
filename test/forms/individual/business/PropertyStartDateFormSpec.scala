@@ -20,7 +20,6 @@ import forms.formatters.DateModelMapping.{day, month, year}
 import forms.individual.business.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
@@ -44,7 +43,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       )
       val expected = DateModel(testDateDay, testDateMonth, testDateYear)
       val actual = form.bind(testInput).value
-      actual shouldBe Some(expected)
+      actual mustBe Some(expected)
     }
     "when testing the validation" should {
       "output the appropriate error messages for the start date" when {
@@ -128,8 +127,8 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           year = oneYearAgo.getYear.toString
         )
         val validated = form.bind(testData)
-        validated.hasErrors shouldBe false
-        validated.hasGlobalErrors shouldBe false
+        validated.hasErrors mustBe false
+        validated.hasGlobalErrors mustBe false
       }
       "the date is the first of january 1900" in {
         val earliestAllowedDate: LocalDate = LocalDate.of(1900, 1, 1)
@@ -139,8 +138,8 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           year = earliestAllowedDate.getYear.toString
         )
         val validated = form.bind(testData)
-        validated.hasErrors shouldBe false
-        validated.hasGlobalErrors shouldBe false
+        validated.hasErrors mustBe false
+        validated.hasGlobalErrors mustBe false
       }
     }
   }

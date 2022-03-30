@@ -16,14 +16,17 @@
 
 package utilities
 
-import java.time.LocalDateTime
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Cookie
 import play.api.test.FakeRequest
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class CacheExpiryDateProviderTest extends WordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite {
+import java.time.LocalDateTime
+
+class CacheExpiryDateProviderTest extends AnyWordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite {
 
   "format date" should {
     "return the date in the correct format" in {

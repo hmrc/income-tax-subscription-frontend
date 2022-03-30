@@ -16,7 +16,6 @@
 
 package models
 
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.libs.json.{JsSuccess, Json}
@@ -31,7 +30,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true
           |}""".stripMargin
-      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] should be (JsSuccess(EligibilityStatus(true, true, None)))
+      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe (JsSuccess(EligibilityStatus(true, true, None)))
     }
 
     "handle old value of 'eligible'" in {
@@ -41,7 +40,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true
           |}""".stripMargin
-      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] should be (JsSuccess(EligibilityStatus(true, true, None)))
+      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe (JsSuccess(EligibilityStatus(true, true, None)))
     }
 
     "handle empty prepopData" in {
@@ -51,7 +50,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleNextYear": true,
           |  "prepopData": {}
           |}""".stripMargin
-      Json.parse(valueWithEmptyPrepop).validate[EligibilityStatus] should be (JsSuccess(EligibilityStatus(true, true, Some(PrePopData(None, None, None)))))
+      Json.parse(valueWithEmptyPrepop).validate[EligibilityStatus] mustBe (JsSuccess(EligibilityStatus(true, true, Some(PrePopData(None, None, None)))))
     }
 
     "handle trivial prepopData" in {
@@ -63,7 +62,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |    "selfEmployments": []
           |  }
           |}""".stripMargin
-      Json.parse(valueWithTrivialPrepop).validate[EligibilityStatus] should be (JsSuccess(EligibilityStatus(true, true, Some(PrePopData(Some(List.empty), None, None)))))
+      Json.parse(valueWithTrivialPrepop).validate[EligibilityStatus] mustBe (JsSuccess(EligibilityStatus(true, true, Some(PrePopData(Some(List.empty), None, None)))))
     }
 
     "handle minimal prepopData" in {
@@ -75,7 +74,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |    }
           |  ]
           |}""".stripMargin
-      Json.parse(minimalPrepop).validate[PrePopData] should be (
+      Json.parse(minimalPrepop).validate[PrePopData] mustBe (
         JsSuccess(
           PrePopData(
             Some(List(
@@ -140,7 +139,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |}""".stripMargin
       val parseResult = Json.parse(fullPrepop).validate[PrePopData]
       parseResult.isSuccess mustBe true
-      parseResult.get should be (
+      parseResult.get mustBe (
         PrePopData(
           Some(List(
             PrePopSelfEmployment(

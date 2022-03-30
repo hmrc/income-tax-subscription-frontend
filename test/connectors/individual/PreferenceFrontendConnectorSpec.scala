@@ -17,11 +17,10 @@
 package connectors.individual
 
 import connectors.individual.mocks.TestPreferenceFrontendConnector
-import utilities.individual.TestConstants._
-import org.scalatest.Matchers._
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 class PreferenceFrontendConnectorSpec extends UnitTestTrait
   with TestPreferenceFrontendConnector {
@@ -33,12 +32,12 @@ class PreferenceFrontendConnectorSpec extends UnitTestTrait
     "Provide the correct checkPaperless URL" in {
       val urlPattern = """^.*\/paperless\/activate-from-token\/mtdfbit\/(.*)\?returnUrl=(.*)&returnLinkText=(.*)$"""
 
-      TestPreferenceFrontendConnector.checkPaperlessUrl(testToken) should include regex urlPattern
+      TestPreferenceFrontendConnector.checkPaperlessUrl(testToken) must include regex urlPattern
 
     }
 
     "Provide the correct choosePaperlessUrl URL" in {
-      TestPreferenceFrontendConnector.choosePaperlessUrl should include regex """^.*\/paperless\/choose\?returnUrl=(.*)&returnLinkText=(.*)$"""
+      TestPreferenceFrontendConnector.choosePaperlessUrl must include regex """^.*\/paperless\/choose\?returnUrl=(.*)&returnLinkText=(.*)$"""
     }
 
   }

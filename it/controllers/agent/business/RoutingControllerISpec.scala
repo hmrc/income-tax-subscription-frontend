@@ -43,7 +43,7 @@ class RoutingControllerISpec extends ComponentSpecBase  {
 
 
           Then("Should return a SEE_OTHER with the property start date page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(propertyStartDateURI)
           )
@@ -62,7 +62,7 @@ class RoutingControllerISpec extends ComponentSpecBase  {
 
 
           Then("Should return a SEE_OTHER with the overseas property start date page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(overseasPropertyStartDateURI)
           )
@@ -80,7 +80,7 @@ class RoutingControllerISpec extends ComponentSpecBase  {
 
 
           Then("Should return a SEE_OTHER with the check your answers page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -94,7 +94,7 @@ class RoutingControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.getRouting(true)
 
         Then("Should return a SEE_OTHER with the check your answers page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
         )

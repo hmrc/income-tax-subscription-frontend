@@ -17,14 +17,14 @@
 package connectors.individual.eligibility
 
 import connectors.individual.eligibility.mocks.TestGetEligibilityStatusConnector
-import utilities.individual.TestConstants._
-import org.scalatest.Matchers._
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues}
+import utilities.individual.TestConstants._
 
-class GetEligibilityStatusConnectorSpec extends TestGetEligibilityStatusConnector with EitherValues with OptionValues {
+class GetEligibilityStatusConnectorSpec extends TestGetEligibilityStatusConnector with EitherValues with OptionValues with Matchers {
   "GetEligibilityStatusConnector.getEligibilityStatus" should {
     "GET to the correct url" in {
-      TestGetEligibilityStatusConnector.eligibilityUrl(testUtr) should endWith(s"/income-tax-subscription-eligibility/eligibility/$testUtr")
+      TestGetEligibilityStatusConnector.eligibilityUrl(testUtr) must endWith(s"/income-tax-subscription-eligibility/eligibility/$testUtr")
     }
   }
 

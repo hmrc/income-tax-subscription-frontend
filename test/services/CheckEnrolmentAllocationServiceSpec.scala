@@ -16,20 +16,21 @@
 
 package services
 
-import java.util.UUID
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser
 import connectors.agent.mocks.MockEnrolmentStoreProxyConnector
 import models.common.subscription.EnrolmentKey
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.Helpers._
 import services.agent.CheckEnrolmentAllocationService
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.individual.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CheckEnrolmentAllocationServiceSpec extends WordSpec with Matchers
+class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
   with MockEnrolmentStoreProxyConnector {
 
   object TestCheckEnrolmentAllocationService extends CheckEnrolmentAllocationService(

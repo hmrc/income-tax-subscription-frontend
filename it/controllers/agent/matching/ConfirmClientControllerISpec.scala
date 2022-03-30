@@ -44,8 +44,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-        Then("The result should have a status of INTERNAL_SERVER_ERROR")
-        res should have(
+        Then("The result must have a status of INTERNAL_SERVER_ERROR")
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR),
           pageTitle("Sorry, we are experiencing technical difficulties - 500")
         )
@@ -63,8 +63,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient(storedUserDetails = None)
 
-        Then("The result should have a status of SEE_OTHER and redirect to client details page")
-        res should have(
+        Then("The result must have a status of SEE_OTHER and redirect to client details page")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(clientDetailsURI)
         )
@@ -83,14 +83,14 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-          Then("The result should have a status of SEE_OTHER and redirect to client details error page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to client details error page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(clientDetailsErrorURI)
           )
 
           val cookie = getSessionMap(res)
-          cookie.keys should contain(ITSASessionKeys.FailedClientMatching)
+          cookie.keys must contain(ITSASessionKeys.FailedClientMatching)
         }
       }
 
@@ -106,14 +106,14 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient(previouslyFailedAttempts = 2)
 
-          Then("The result should have a status of SEE_OTHER and redirect to agent locked out page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to agent locked out page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(agentLockedOutURI)
           )
 
           val cookie = getSessionMap(res)
-          cookie.keys should not contain ITSASessionKeys.FailedClientMatching
+          cookie.keys must not contain ITSASessionKeys.FailedClientMatching
         }
       }
     }
@@ -132,8 +132,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-        Then("The result should have a status of SEE_OTHER and redirect to already subscribed page")
-        res should have(
+        Then("The result must have a status of SEE_OTHER and redirect to already subscribed page")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(alreadySubscribedURI)
         )
@@ -153,13 +153,13 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-        Then("The result should have a status of SEE_OTHER and redirect to check client relationship")
-        res should have(
+        Then("The result must have a status of SEE_OTHER and redirect to check client relationship")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(noClientRelationshipURI)
         )
 
-        Then("The client matching request should have been audited")
+        Then("The client matching request must have been audited")
         AuditStub.verifyAudit()
       }
     }
@@ -178,18 +178,18 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-        Then("The result should have a status of SEE_OTHER and redirect to index")
-        res should have(
+        Then("The result must have a status of SEE_OTHER and redirect to index")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(indexURI)
         )
 
         val session = getSessionMap(res)
-        session.get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
-        session.get(ITSASessionKeys.NINO) shouldBe Some(testNino)
-        session.get(ITSASessionKeys.UTR) shouldBe None
+        session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+        session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
+        session.get(ITSASessionKeys.UTR) mustBe None
 
-        Then("The client matching request should have been audited")
+        Then("The client matching request must have been audited")
         AuditStub.verifyAudit()
       }
     }
@@ -209,18 +209,18 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-          Then("The result should have a status of SEE_OTHER and redirect to index")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to index")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(indexURI)
           )
 
           val session = getSessionMap(res)
-          session.get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
-          session.get(ITSASessionKeys.NINO) shouldBe Some(testNino)
-          session.get(ITSASessionKeys.UTR) shouldBe Some(testUtr)
+          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
+          session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
 
-          Then("The client matching request should have been audited")
+          Then("The client matching request must have been audited")
           AuditStub.verifyAudit()
         }
       }
@@ -238,13 +238,13 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-          Then("The result should have a status of SEE_OTHER and redirect to cannot take part")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to cannot take part")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
           )
 
-          Then("The client matching request should have been audited")
+          Then("The client matching request must have been audited")
           AuditStub.verifyAudit()
         }
       }

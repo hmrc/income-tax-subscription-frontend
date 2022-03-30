@@ -40,7 +40,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true)
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(basGatewaySignIn("/claim-enrolment/sps-callback"))
         )
@@ -57,7 +57,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
           )
         )
 
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND),
           pageTitle("Page not found - 404")
         )
@@ -80,7 +80,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
             )
 
             verifyPost("/channel-preferences/confirm", count = Some(1))
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(claimEnrolmentConfirmationURI)
             )
@@ -99,7 +99,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
               )
             )
 
-            res should have(
+            res must have(
               httpStatus(INTERNAL_SERVER_ERROR)
             )
           }
@@ -116,7 +116,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
               ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
             )
           )
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(claimEnrolmentConfirmationURI)
           )

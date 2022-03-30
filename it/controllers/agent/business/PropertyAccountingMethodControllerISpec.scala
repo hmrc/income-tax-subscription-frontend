@@ -53,7 +53,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
         Then("Should return a OK with the property accounting method page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.property.accounting_method.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingMethodProperty", selectedRadioButton = Some(expectedText))
@@ -74,7 +74,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the property accounting method page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.property.accounting_method.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingMethodProperty", selectedRadioButton = None)
@@ -102,7 +102,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
               val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
               Then("Should return a SEE_OTHER with a redirect location of agent Uk Property Check Your Answers")
-              res should have(
+              res must have(
                 httpStatus(SEE_OTHER),
                 redirectURI(ukPropertyCheckYourAnswersURI)
               )
@@ -129,7 +129,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
               val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
               Then("Should return a SEE_OTHER with a redirect location of agent Check Your Answers")
-              res should have(
+              res must have(
                 httpStatus(SEE_OTHER),
                 redirectURI(checkYourAnswersURI)
               )
@@ -154,7 +154,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
               val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
               Then("Should return a SEE_OTHER with a redirect location of agent property start date")
-              res should have(
+              res must have(
                 httpStatus(SEE_OTHER),
                 redirectURI(overseasPropertyStartDateURI)
               )
@@ -175,7 +175,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, None)
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
+        res must have(
           httpStatus(BAD_REQUEST),
           errorDisplayed()
         )

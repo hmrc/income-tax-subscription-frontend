@@ -37,6 +37,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
   val testError: FormError = FormError("startDate", "testError")
   private val propertyStartDateView = app.injector.instanceOf[PropertyStartDate]
 
+  private val defaultForm = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
+
   private def document(
                         isEditMode: Boolean = false,
                         propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
@@ -61,6 +63,33 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
   }
 
   "agent UK property business start" must {
+    "have the correct page template" when {
+      "there is no error" in new TemplateViewTest(
+        view = propertyStartDateView(
+          defaultForm,
+          testCall,
+          isEditMode = false,
+          testBackUrl
+        ),
+        title = PropertyStartDateMessages.heading,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+      )
+
+      "there is an error" in new TemplateViewTest(
+        view = propertyStartDateView(
+          defaultForm.withError(testError),
+          testCall,
+          isEditMode = false,
+          testBackUrl
+        ),
+        title = PropertyStartDateMessages.heading,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        error = Some(testError)
+      )
+    }
+
     "have a title" in {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       document().title mustBe PropertyStartDateMessages.title + serviceNameGovUk
@@ -102,7 +131,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     "must display form error on page" in {
       val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError)
       val doc = document(propertyStartDateForm = formWithError)
-      doc.mustHaveGovukErrorSummary(testError.message)
       doc.mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.exampleStartDate, Some(testError.message))
     }
   }

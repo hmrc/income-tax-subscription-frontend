@@ -40,7 +40,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getProgressSaved()
 
         Then("Should return OK with progress saved page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(
             s"${messages("business.progress-saved.title")} - Use software to report your client’s Income Tax - GOV.UK"
@@ -61,7 +61,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getProgressSaved()
 
         Then("Should return NOT FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }

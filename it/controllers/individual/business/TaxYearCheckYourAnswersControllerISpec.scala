@@ -47,7 +47,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
 
         Then("Should return OK with tax year CYA page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(
             s"${messages("business.check-your-answers.title")} - Use software to send Income Tax updates - GOV.UK"
@@ -67,7 +67,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
 
         Then("Should return NOT FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -89,7 +89,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
 
         Then("Should return a SEE_OTHER with a redirect location of confirmation")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
         )
@@ -117,7 +117,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
 
         Then("Should return a SEE_OTHER with a redirect location of confirmation")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }

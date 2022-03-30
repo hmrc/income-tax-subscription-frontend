@@ -17,11 +17,12 @@
 package forms.formatters
 
 import models.DateModel
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
-class DateModelFormatterSpec extends WordSpec with MustMatchers {
+class DateModelFormatterSpec extends AnyWordSpecLike with Matchers {
 
   def dateModelFormatter(isAgent: Boolean = false): Formatter[DateModel] = DateModelMapping.dateModelFormatter(isAgent = isAgent, errorContext = "test")
 

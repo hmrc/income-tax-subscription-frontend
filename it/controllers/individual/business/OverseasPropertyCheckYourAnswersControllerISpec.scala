@@ -43,7 +43,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers()
 
         Then("Should return OK with the overseas property CYA page")
-        res should have (
+        res must have (
           httpStatus(OK),
           pageTitle(
             s"${messages("business.check-your-answers.title")} - Use software to send Income Tax updates - GOV.UK"
@@ -65,7 +65,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers()
 
         Then("Should return INTERNAL_SERVER_ERROR")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
@@ -82,7 +82,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers()
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -104,7 +104,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
 
         Then("Should return a SEE_OTHER with a redirect location of task list page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
         )
@@ -126,7 +126,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
 
         Then("Should return a INTERNAL_SERVER_ERROR")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
@@ -143,7 +143,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }

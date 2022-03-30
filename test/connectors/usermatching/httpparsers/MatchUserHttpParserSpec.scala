@@ -17,14 +17,14 @@
 package connectors.usermatching.httpparsers
 
 import connectors.usermatching.httpparsers.MatchUserHttpParser.MatchUserHttpReads
-import utilities.individual.TestConstants._
-import utilities.TestModels._
 import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel, UserMatchUnexpectedError}
 import org.scalatest.EitherValues
 import play.api.libs.json.{JsError, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
+import utilities.TestModels._
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
   "MatchUserHttpReads" when {
@@ -43,7 +43,7 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
 
         val httpResponse = HttpResponse(status = OK, json = Json.toJson(testUserDetailsMatch), Map.empty)
 
-        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).right.value mustBe Some(testUserDetailsMatch)
+        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).value mustBe Some(testUserDetailsMatch)
       }
 
       "return error if authenticator returns an invalid json" in {
@@ -67,7 +67,7 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
           headers = Map.empty
         )
 
-        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).right.value mustBe empty
+        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).value mustBe empty
       }
 
       "return an error if authenticator returns an UNAUTHORIZED response that cannot be parsed" in {

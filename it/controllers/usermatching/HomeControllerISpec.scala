@@ -31,7 +31,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       val res = IncomeTaxSubscriptionFrontend.startPage()
 
       Then("Return the guidance page")
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(indexURI)
       )
@@ -52,7 +52,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 
           Then("Should return a SEE OTHER with the claim subscription page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(claimSubscriptionURI)
           )
@@ -72,7 +72,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             val res = IncomeTaxSubscriptionFrontend.indexPage()
 
             Then("Should return a SEE OTHER and re-direct to the SPSHandoff controller")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(spsHandoffRouteURI)
             )
@@ -90,7 +90,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             val res = IncomeTaxSubscriptionFrontend.indexPage()
 
             Then("Should return a SEE OTHER and re-direct to the not eligible page")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(notEligibleURI)
             )
@@ -108,7 +108,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
         }
@@ -128,14 +128,14 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             val res = IncomeTaxSubscriptionFrontend.indexPage()
 
             Then("Should return a SEE OTHER and re-direct to the sps page")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(spsHandoffRouteURI)
             )
 
             val cookie = getSessionMap(res)
-            cookie.keys should contain(ITSASessionKeys.UTR)
-            cookie(ITSASessionKeys.UTR) shouldBe testUtr
+            cookie.keys must contain(ITSASessionKeys.UTR)
+            cookie(ITSASessionKeys.UTR) mustBe testUtr
           }
         }
       }
@@ -151,13 +151,13 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 
           Then("Should return a SEE OTHER and re-direct to the no nino page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(noSaURI)
           )
 
           val cookie = getSessionMap(res)
-          cookie.keys should not contain ITSASessionKeys.UTR
+          cookie.keys must not contain ITSASessionKeys.UTR
         }
       }
       "CID could not find the user" should {
@@ -171,13 +171,13 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 
           Then("Should return an INTERNAL_SERVER_ERROR")
-          res should have(
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR),
             pageTitle("Sorry, we are experiencing technical difficulties - 500")
           )
 
           val cookie = getSessionMap(res)
-          cookie.keys should not contain ITSASessionKeys.UTR
+          cookie.keys must not contain ITSASessionKeys.UTR
         }
       }
     }

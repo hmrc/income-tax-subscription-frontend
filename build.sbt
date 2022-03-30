@@ -38,25 +38,25 @@ lazy val microservice = Project(appName, file("."))
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(
-    Keys.fork in Test := true,
-    javaOptions in Test += "-Dlogger.resource=logback-test.xml",
-    scalaVersion := "2.12.13",
-    parallelExecution in Test := true
+    Test / Keys.fork := true,
+    Test / javaOptions += "-Dlogger.resource=logback-test.xml",
+    scalaVersion := "2.12.15",
+    Test / parallelExecution := true
   )
   .settings(scalacOptions += s"-Wconf:src=${target.value}/.*:s")
   .settings(
     libraryDependencies ++= appDependencies,
     retrieveManaged := true,
-    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
-    Keys.fork in IntegrationTest := true,
-    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value,
+    IntegrationTest / Keys.fork := true,
+    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    javaOptions in IntegrationTest += "-Dlogger.resource=logback-test.xml",
-    parallelExecution in IntegrationTest := false)
+    IntegrationTest / javaOptions += "-Dlogger.resource=logback-test.xml",
+    IntegrationTest / parallelExecution := false)
   .settings( majorVersion := 1 )
   .settings(resolvers ++= Seq(
     Resolver.bintrayRepo("hmrc", "releases"),

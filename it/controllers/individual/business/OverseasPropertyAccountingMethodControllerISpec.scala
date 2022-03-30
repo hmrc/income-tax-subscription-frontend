@@ -35,7 +35,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         val expectedText = removeHtmlMarkup(messages("summary.income_type.cash"))
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the foreign property accounting method page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("overseas.property.accounting_method.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingMethodOverseasProperty", selectedRadioButton = Some(expectedText))
@@ -53,7 +53,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the foreign property accounting method page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("overseas.property.accounting_method.title") + serviceNameGovUk),
           radioButtonSet(id = "foreignPropertyAccountingMethod", selectedRadioButton = None)
@@ -80,7 +80,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
             val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of overseas check your answers")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(overseasPropertyCYAURI)
             )
@@ -102,7 +102,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
             val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(checkYourAnswersURI)
             )
@@ -127,7 +127,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
             val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = true, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of overseas check your answers")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(overseasPropertyCYAURI)
             )
@@ -149,7 +149,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
             val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = true, Some(userInput))
 
             Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(checkYourAnswersURI)
             )
@@ -175,7 +175,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
       val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
       Then("Should return a SEE_OTHER with a redirect location of check your answers")
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(checkYourAnswersURI)
       )
@@ -191,7 +191,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
       val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, None)
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-      res should have(
+      res must have(
         httpStatus(BAD_REQUEST),
         errorDisplayed()
       )

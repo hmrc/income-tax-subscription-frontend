@@ -20,7 +20,7 @@ import models.common.subscription.CreateIncomeSourcesModel
 import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.{AgentSummary, Current, IndividualSummary, Next}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataUtil._
 import utilities.TestModels._

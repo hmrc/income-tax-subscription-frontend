@@ -41,15 +41,15 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = true)
       val expectedRedirect: String = eligibility.routes.OtherSourcesOfIncomeController.show.url
 
-      Then(s"The result should have a status of SEE_OTHER and redirect to '$expectedRedirect'")
-      res should have(
+      Then(s"The result must have a status of SEE_OTHER and redirect to '$expectedRedirect'")
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(expectedRedirect)
       )
 
       val cookie = getSessionMap(res)
-      cookie.keys should not contain ITSASessionKeys.MTDITID
-      cookie.keys should not contain ITSASessionKeys.JourneyStateKey
+      cookie.keys must not contain ITSASessionKeys.MTDITID
+      cookie.keys must not contain ITSASessionKeys.JourneyStateKey
     }
   }
 
@@ -63,15 +63,15 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = true)
       val expectedRedirect: String = eligibility.routes.Covid19ClaimCheckController.show.url
 
-      Then(s"The result should have a status of SEE_OTHER and redirect to '$expectedRedirect'")
-      res should have(
+      Then(s"The result must have a status of SEE_OTHER and redirect to '$expectedRedirect'")
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(expectedRedirect)
       )
 
       val cookie = getSessionMap(res)
-      cookie.keys should not contain ITSASessionKeys.MTDITID
-      cookie.keys should not contain ITSASessionKeys.JourneyStateKey
+      cookie.keys must not contain ITSASessionKeys.MTDITID
+      cookie.keys must not contain ITSASessionKeys.JourneyStateKey
     }
   }
 

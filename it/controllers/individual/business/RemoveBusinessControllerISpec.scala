@@ -24,7 +24,7 @@ import helpers.IntegrationTestModels.testBusinesses
 import helpers.servicemocks.AuthStub
 import models.common.business.SelfEmploymentData
 import models.{No, Yes}
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.BusinessesKey
 
@@ -42,7 +42,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness()
 
         Then("Should return OK with the remove business page")
-        res should have (
+        res must have (
           httpStatus(OK),
           pageTitle(
             s"Are you sure you want to delete test business - test trade? - Use software to send Income Tax updates - GOV.UK"
@@ -63,7 +63,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness(id = "unknown")
 
         Then("Should return INTERNAL_SERVER_ERROR")
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
@@ -81,7 +81,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness()
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -103,7 +103,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(Yes))
 
           Then("Should return a SEE_OTHER with a redirect location of task list page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
@@ -122,7 +122,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(No))
 
           Then("Should return a SEE_OTHER with a redirect location of task list page")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
@@ -144,7 +144,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(No))
 
         Then("Should return NOT_FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
 
@@ -164,7 +164,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(request = None)
 
         Then("Should return BAD_REQUEST")
-        res should have(
+        res must have(
           httpStatus(BAD_REQUEST)
         )
 

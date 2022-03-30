@@ -20,7 +20,8 @@ import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.{OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Environment
@@ -39,7 +40,7 @@ trait UnitTestTrait extends PlaySpec
   with I18nSupport
   with FeatureSwitching
   with OptionValues
-  with WordSpecLike {
+  with AnyWordSpecLike {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

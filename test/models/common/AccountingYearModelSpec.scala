@@ -17,11 +17,13 @@
 package models.common
 
 import models.Current
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsSuccess, Json}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class AccountingYearModelSpec extends WordSpecLike with Matchers with OptionValues {
+class AccountingYearModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   "AccountingYearModel" should {
 

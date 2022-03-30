@@ -16,11 +16,11 @@
 
 package services
 
-import java.util.UUID
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, GetUsersForGroupHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
 import connectors.agent.mocks.{MockEnrolmentStoreProxyConnector, MockUsersGroupsSearchConnector}
 import models.common.subscription.EnrolmentKey
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.Helpers._
 import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
 import services.agent.{AssignEnrolmentToUserService, AutoEnrolmentService, CheckEnrolmentAllocationService}
@@ -29,11 +29,12 @@ import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.individual.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AutoEnrolmentServiceSpec extends WordSpec
-  with MustMatchers
+class AutoEnrolmentServiceSpec extends AnyWordSpec
+  with Matchers
   with MockEnrolmentStoreProxyConnector
   with MockUsersGroupsSearchConnector
   with MockCheckEnrolmentAllocationService

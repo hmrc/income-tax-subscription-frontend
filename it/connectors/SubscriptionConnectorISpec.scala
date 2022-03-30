@@ -6,14 +6,13 @@ import connectors.stubs.SubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
 import models.common.AccountingPeriodModel
-import models.common.subscription.{BadlyFormattedSubscriptionResponse, BusinessIncomeModel, PropertyIncomeModel, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
+import models.common.subscription._
 import models.{Cash, DateModel}
-import org.scalatest.Matchers
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
-class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
+class SubscriptionConnectorISpec extends ComponentSpecBase {
 
   implicit val hc = HeaderCarrier()
 
@@ -46,7 +45,7 @@ class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
         val res = TestSubscriptionConnector.subscribe(testSubscriptionRequest)
 
-        await(res) shouldBe Right(SubscriptionSuccess(testMtdId))
+        await(res) mustBe Right(SubscriptionSuccess(testMtdId))
       }
       "business income is defined but property income isn't defined" in {
         val testSubscriptionWithBusiness = testSubscriptionRequest.copy(businessIncome = Some(testBusinessIncome))
@@ -54,7 +53,7 @@ class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
         val res = TestSubscriptionConnector.subscribe(testSubscriptionWithBusiness)
 
-        await(res) shouldBe Right(SubscriptionSuccess(testMtdId))
+        await(res) mustBe Right(SubscriptionSuccess(testMtdId))
       }
       "property income is defined but business income isn't defined" in {
         val testSubscriptionWithProperty = testSubscriptionRequest.copy(propertyIncome = Some(testPropertyIncome))
@@ -62,7 +61,7 @@ class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
         val res = TestSubscriptionConnector.subscribe(testSubscriptionWithProperty)
 
-        await(res) shouldBe Right(SubscriptionSuccess(testMtdId))
+        await(res) mustBe Right(SubscriptionSuccess(testMtdId))
       }
     }
     "return BadlyFormattedSubscriptionResponse when the request is malformed" in {
@@ -70,14 +69,14 @@ class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
       val res = TestSubscriptionConnector.subscribe(testSubscriptionRequest)
 
-      await(res) shouldBe Left(BadlyFormattedSubscriptionResponse)
+      await(res) mustBe Left(BadlyFormattedSubscriptionResponse)
     }
     "return SubscriptionFailureResponse if the request fails" in {
       stubPostSubscription(testSubscriptionRequest)(INTERNAL_SERVER_ERROR)
 
       val res = TestSubscriptionConnector.subscribe(testSubscriptionRequest)
 
-      await(res) shouldBe Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
+      await(res) mustBe Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
     }
   }
 

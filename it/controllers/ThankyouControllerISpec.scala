@@ -27,7 +27,7 @@ class ThankyouControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.thankYou()
       val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
       Then("Should return a OK with the thankyou page")
-      res should have(
+      res must have(
         httpStatus(OK),
         pageTitle(messages("feedback.thankyou.title") + serviceNameGovUk)
       )

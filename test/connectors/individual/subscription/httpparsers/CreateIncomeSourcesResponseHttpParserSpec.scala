@@ -34,7 +34,7 @@ class CreateIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with Eithe
 
         val res = PostCreateIncomeSourcesResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe CreateIncomeSourcesSuccess()
+        res.value mustBe CreateIncomeSourcesSuccess()
       }
 
       "parse any other http status as a CreateIncomeSourcesFailureResponse" in {

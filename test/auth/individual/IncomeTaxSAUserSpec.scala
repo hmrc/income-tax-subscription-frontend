@@ -16,17 +16,17 @@
 
 package auth.individual
 
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import utilities.ITSASessionKeys
 import utilities.individual.Constants
 import utilities.individual.TestConstants.{testCredId, testNino, testUtr}
 
-class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneServerPerTest {
+class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
 
   "IncomeTaxSAUser" when {
     "Nino and UTR are retrieved from auth" should {
@@ -54,15 +54,15 @@ class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues w
       )
 
       s"have the expected NINO $testNino" in {
-        user.nino shouldBe Some(testNino)
+        user.nino mustBe Some(testNino)
       }
 
       s"have the expected UTR $testUtr" in {
-        user.utr shouldBe Some(testUtr)
+        user.utr mustBe Some(testUtr)
       }
 
       s"have the confidence level of $confidenceLevel" in {
-        user.confidenceLevel shouldBe confidenceLevel
+        user.confidenceLevel mustBe confidenceLevel
       }
     }
 
@@ -83,15 +83,15 @@ class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues w
       )
 
       s"have the expected NINO $testNino" in {
-        user.nino shouldBe Some(testNino)
+        user.nino mustBe Some(testNino)
       }
 
       s"have the expected UTR $testUtr" in {
-        user.utr shouldBe Some(testUtr)
+        user.utr mustBe Some(testUtr)
       }
 
       "have the default confidence level of 50" in {
-        user.confidenceLevel shouldBe ConfidenceLevel.L50
+        user.confidenceLevel mustBe ConfidenceLevel.L50
       }
     }
 
@@ -107,18 +107,18 @@ class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues w
 
     "role is Admin" should {
       "return false for isAssistant" in {
-        user(Some(User)).isAssistant shouldBe false
+        user(Some(User)).isAssistant mustBe false
       }
     }
 
     "role is User" should {
       "return false for isAssistant" in {
-        user(Some(User)).isAssistant shouldBe false
+        user(Some(User)).isAssistant mustBe false
       }
     }
     "role is Assistant" should {
       "return true for isAssistant" in {
-        user(Some(Assistant)).isAssistant shouldBe true
+        user(Some(Assistant)).isAssistant mustBe true
       }
     }
     "role is None" should {

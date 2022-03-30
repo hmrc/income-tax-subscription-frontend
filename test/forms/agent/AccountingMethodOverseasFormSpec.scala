@@ -20,7 +20,6 @@ import forms.submapping.AccountingMethodMapping
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Cash
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.data.FormError
@@ -34,7 +33,7 @@ class AccountingMethodOverseasFormSpec extends PlaySpec with GuiceOneAppPerTest 
       val testInput = Map(accountingMethodOverseasProperty -> AccountingMethodMapping.option_cash)
       val actual = accountingMethodOverseasPropertyForm.bind(testInput).value
 
-      actual shouldBe Some(Cash)
+      actual mustBe Some(Cash)
     }
 
     "validate income type correctly" should {
@@ -44,19 +43,19 @@ class AccountingMethodOverseasFormSpec extends PlaySpec with GuiceOneAppPerTest 
       "show an empty error when the map is empty" in {
         val emptyInput0 = DataMap.EmptyMap
         val emptyTest0 = accountingMethodOverseasPropertyForm.bind(emptyInput0)
-        emptyTest0.errors should contain(FormError(accountingMethodOverseasProperty, empty))
+        emptyTest0.errors must contain(FormError(accountingMethodOverseasProperty, empty))
       }
 
       "show an empty error when the input is empty" in {
         val emptyInput = DataMap.overseasPropertyAccountingMethod("")
         val emptyTest = accountingMethodOverseasPropertyForm.bind(emptyInput)
-        emptyTest.errors should contain(FormError(accountingMethodOverseasProperty, empty))
+        emptyTest.errors must contain(FormError(accountingMethodOverseasProperty, empty))
       }
 
       "show invalid when the input is invalid" in {
         val invalidInput = DataMap.overseasPropertyAccountingMethod("α")
         val invalidTest = accountingMethodOverseasPropertyForm.bind(invalidInput)
-        invalidTest.errors should contain(FormError(accountingMethodOverseasProperty, invalid))
+        invalidTest.errors must contain(FormError(accountingMethodOverseasProperty, invalid))
       }
 
       "The following submission should be valid" in {

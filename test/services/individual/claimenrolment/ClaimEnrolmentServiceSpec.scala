@@ -17,9 +17,9 @@
 package services.individual.claimenrolment
 
 import auth.individual.IncomeTaxSAUser
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -35,7 +35,7 @@ import utilities.individual.TestConstants.{testEnrolmentKey, testGroupId, testMT
 import scala.concurrent.Future
 
 class ClaimEnrolmentServiceSpec extends PlaySpec
-  with MustMatchers
+  with Matchers
   with MockSubscriptionService
   with MockCheckEnrolmentAllocationService
   with MockKnownFactsService

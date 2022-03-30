@@ -16,7 +16,6 @@
 
 package forms.validation.utils
 
-import org.scalatest.Matchers._
 import utilities.UnitTestTrait
 
 class PatternsSpec extends UnitTestTrait {
@@ -33,7 +32,7 @@ class PatternsSpec extends UnitTestTrait {
         254.toChar.toString,
         255.toChar.toString
       )
-      testData.foreach(data => Patterns.validText(data) shouldBe true)
+      testData.foreach(data => Patterns.validText(data) mustBe true)
     }
 
     "invalid for" in {
@@ -43,7 +42,7 @@ class PatternsSpec extends UnitTestTrait {
         159.toChar.toString,
         256.toChar.toString
       )
-      testData.foreach(data => Patterns.validText(data) shouldBe false)
+      testData.foreach(data => Patterns.validText(data) mustBe false)
     }
   }
 
@@ -54,7 +53,7 @@ class PatternsSpec extends UnitTestTrait {
         "a@a.a.a",
         "aa.a@a.a.a"
       )
-      testData.foreach(data => Patterns.validEmail(data) shouldBe true)
+      testData.foreach(data => Patterns.validEmail(data) mustBe true)
     }
 
     "invalid for" in {
@@ -63,7 +62,7 @@ class PatternsSpec extends UnitTestTrait {
         "a@a",
         "a.a@a"
       )
-      testData.foreach(data => Patterns.validEmail(data) shouldBe false)
+      testData.foreach(data => Patterns.validEmail(data) mustBe false)
     }
   }
 }

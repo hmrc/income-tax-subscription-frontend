@@ -17,9 +17,10 @@
 package forms.formatters
 
 import models.DateModel
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class NewDateModelMappingTest extends WordSpec with MustMatchers {
+class NewDateModelMappingTest extends AnyWordSpec with Matchers {
 
   "NewDateModelMapping max day for month" when {
     "month is february, in a leap year" should {

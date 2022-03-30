@@ -33,8 +33,8 @@ class UserDetailsLockoutControllerISpec extends ComponentSpecBase  {
         When("I call GET /error/lockout")
         val res = IncomeTaxSubscriptionFrontend.showUserDetailsLockout()
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-        Then("The result should have a status of OK")
-        res should have(
+        Then("The result must have a status of OK")
+        res must have(
           httpStatus(OK),
           pageTitle(messages("user-details-lockout.title") + serviceNameGovUk)
         )
@@ -50,8 +50,8 @@ class UserDetailsLockoutControllerISpec extends ComponentSpecBase  {
         When("I call GET /error/lockout")
         val res = IncomeTaxSubscriptionFrontend.showUserDetailsLockout()
 
-        Then("The result should have a status of SEE_OTHER")
-        res should have(
+        Then("The result must have a status of SEE_OTHER")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(userDetailsURI)
         )

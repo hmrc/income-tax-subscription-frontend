@@ -18,12 +18,12 @@ package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponseHttpReads
 import models.common.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
-import utilities.individual.TestConstants._
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
+import utilities.individual.TestConstants._
 
 class SubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"
@@ -36,7 +36,7 @@ class SubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues
 
         val res = SubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe SubscriptionSuccess(testMTDID)
+        res.value mustBe SubscriptionSuccess(testMTDID)
       }
 
       "parse an incorrectly formatted OK response as a BadlyFormattedSubscriptionResponse" in {

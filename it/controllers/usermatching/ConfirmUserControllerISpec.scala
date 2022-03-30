@@ -17,9 +17,9 @@
 package controllers.usermatching
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
+import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import utilities.ITSASessionKeys
 
@@ -40,8 +40,8 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         When("I call POST /confirm-user")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmUser()
 
-        Then("The result should have a status of INTERNAL_SERVER_ERROR")
-        res should have(
+        Then("The result must have a status of INTERNAL_SERVER_ERROR")
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR),
           pageTitle("Sorry, we are experiencing technical difficulties - 500")
         )
@@ -58,8 +58,8 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         When("I call POST /confirm-user")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmUser(storedUserDetails = None)
 
-        Then("The result should have a status of SEE_OTHER and redirect to user details page")
-        res should have(
+        Then("The result must have a status of SEE_OTHER and redirect to user details page")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(userDetailsURI)
         )
@@ -78,14 +78,14 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
           When("I call POST /confirm-user")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmUser()
 
-          Then("The result should have a status of SEE_OTHER and redirect to user details error page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to user details error page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(userDetailsErrorURI)
           )
 
           val cookie = getSessionMap(res)
-          cookie.keys should contain(ITSASessionKeys.FailedUserMatching)
+          cookie.keys must contain(ITSASessionKeys.FailedUserMatching)
         }
       }
 
@@ -102,14 +102,14 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
           When("I call POST /confirm-user")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmUser(previouslyFailedAttempts = 2)
 
-          Then("The result should have a status of SEE_OTHER and redirect to agent locked out page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to agent locked out page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(userLockedOutURI)
           )
 
           val cookie = getSessionMap(res)
-          cookie.keys should not contain ITSASessionKeys.FailedUserMatching
+          cookie.keys must not contain ITSASessionKeys.FailedUserMatching
         }
       }
     }
@@ -126,8 +126,8 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with SessionCookieCru
         When("I call POST /confirm-user")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmUser()
 
-        Then("The result should have a status of SEE_OTHER and redirect to income source")
-        res should have(
+        Then("The result must have a status of SEE_OTHER and redirect to income source")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(indexURI)
         )

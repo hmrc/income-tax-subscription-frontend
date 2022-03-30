@@ -52,7 +52,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.income()
           val serviceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
           Then("Should return a OK with the income source page")
-          res should have(
+          res must have(
             httpStatus(OK),
             pageTitle(messages("agent.income_source.heading") + serviceNameGovUK),
             checkboxSet(id = "IncomeSource", selectedCheckbox = Some(messages("agent.income_source.selfEmployed"))),
@@ -73,7 +73,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.income()
           val serviceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
           Then("Should return a OK with the income source page")
-          res should have(
+          res must have(
             httpStatus(OK),
             pageTitle(messages("agent.income_source.heading") + serviceNameGovUK),
             checkboxSet(id = "IncomeSource", selectedCheckbox = None),
@@ -95,7 +95,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.income()
           val serviceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
           Then("Should return a OK with the income source page")
-          res should have(
+          res must have(
             httpStatus(OK),
             pageTitle(messages("agent.income_source.heading") + serviceNameGovUK),
             checkboxSet(id = "IncomeSource", selectedCheckbox = Some(messages("agent.income_source.selfEmployed"))),
@@ -103,10 +103,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           )
 
           val checkboxes = Jsoup.parse(res.body).select(".govuk-checkboxes__item")
-          checkboxes.size() shouldBe 2
+          checkboxes.size() mustBe 2
 
           val checkboxTextForeignProperty = Jsoup.parse(res.body).select(s"label[for=IncomeSource-3]").text()
-          checkboxTextForeignProperty shouldBe empty
+          checkboxTextForeignProperty mustBe empty
 
         }
       }
@@ -139,7 +139,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
             Then(s"Should return $SEE_OTHER with a redirect location of self-employment frontend initialise")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
             )
@@ -167,7 +167,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
             val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
             Then(s"Should return $SEE_OTHER with a redirect location of self-employment Frontend Initialise")
-            res should have(
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
             )
@@ -197,7 +197,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of property start date")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(propertyStartDateURI)
           )
@@ -225,7 +225,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of overseas property start date")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(overseasPropertyStartDateURI)
           )
@@ -255,7 +255,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of check your answer")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -283,7 +283,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of check your answer")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -311,7 +311,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of check your answer")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -339,7 +339,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of check your answer")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -368,7 +368,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of check your answer")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -396,7 +396,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of check your answer")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -424,7 +424,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of check your answer")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -455,7 +455,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = true, Some(userInput))
 
           Then(s"Should return $SEE_OTHER with a redirect location of check your answer")
-          res should have(
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
           )
@@ -480,7 +480,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of Business Name page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(businessNameSEURI)
         )
@@ -499,7 +499,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of self-employment client initialise page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
         )
@@ -518,7 +518,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of UK property start date page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(propertyStartDateURI)
         )
@@ -543,7 +543,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of Business Name page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(businessNameSEURI)
         )
@@ -563,7 +563,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of self-employment client initialise page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
         )
@@ -583,7 +583,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of self-employment client initialise page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
         )
@@ -603,7 +603,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of self-employment client initialise page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
         )
@@ -623,7 +623,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of UK property start date page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(propertyStartDateURI)
         )
@@ -643,7 +643,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of UK property start date page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(propertyStartDateURI)
         )
@@ -663,7 +663,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitIncomeSource(inEditMode = false, Some(userInput))
 
         Then(s"Should return $INTERNAL_SERVER_ERROR with an internal server error")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(overseasPropertyStartDateURI)
         )

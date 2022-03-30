@@ -49,7 +49,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         val expectedText = removeHtmlMarkup(messages("summary.income_type.cash"))
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the property accounting method page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("property.accounting_method.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingMethodProperty", selectedRadioButton = Some(expectedText))
@@ -68,7 +68,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the property accounting method page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("property.accounting_method.title") + serviceNameGovUk),
           radioButtonSet(id = "propertyAccountingMethod", selectedRadioButton = None)
@@ -93,7 +93,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
       val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
       Then("Should return a SEE_OTHER with a redirect location of check your answers")
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(checkYourAnswersURI)
       )
@@ -112,7 +112,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
       val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
       Then("Should return a SEE_OTHER with a redirect location of check your answers")
-      res should have(
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(checkYourAnswersURI)
       )
@@ -129,7 +129,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
       val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, None)
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-      res should have(
+      res must have(
         httpStatus(BAD_REQUEST),
         errorDisplayed()
       )
@@ -153,7 +153,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
               val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))
 
               Then("Should return a SEE_OTHER with a redirect location of check your answers")
-              res should have(
+              res must have(
                 httpStatus(SEE_OTHER),
                 redirectURI(ukPropertyCYAURI)
               )
@@ -178,7 +178,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
               val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))
 
               Then("Should return a SEE_OTHER with a redirect location of check your answers")
-              res should have(
+              res must have(
                 httpStatus(SEE_OTHER),
                 redirectURI(checkYourAnswersURI)
               )
@@ -207,7 +207,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
               val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
               Then("Should return a SEE_OTHER with a redirect location of check your answers")
-              res should have(
+              res must have(
                 httpStatus(SEE_OTHER),
                 redirectURI(ukPropertyCYAURI)
               )
@@ -232,7 +232,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
               val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
               Then("Should return a SEE_OTHER with a redirect location of check your answers")
-              res should have(
+              res must have(
                 httpStatus(SEE_OTHER),
                 redirectURI(checkYourAnswersURI)
               )

@@ -37,7 +37,7 @@ class ClaimSubscriptionControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.claimSubscription()
 
       Then("Should return an OK status")
-      res should have(
+      res must have(
         httpStatus(OK)
       )
     }

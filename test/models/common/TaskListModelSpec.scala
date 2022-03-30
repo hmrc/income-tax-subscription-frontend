@@ -18,9 +18,11 @@ package models.common
 
 import models.common.business._
 import models.{Cash, DateModel, Next}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-class TaskListModelSpec extends WordSpecLike with Matchers with OptionValues {
+class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   val date: DateModel = DateModel("1", "2", "1980")
 

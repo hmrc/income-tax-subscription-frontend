@@ -18,7 +18,6 @@ package forms.agent
 
 import forms.agent.IncomeSourceForm._
 import models.common.IncomeSourceModel
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.data.{Form, FormError}
@@ -57,7 +56,7 @@ class IncomeSourceFormSpec extends PlaySpec {
         resultError mustBe Some(FormError("IncomeSource", "agent.error.income_source.invalid"))
       }
     } else {
-      resultValue shouldBe Some(expectedResult)
+      resultValue mustBe Some(expectedResult)
     }
 
   }

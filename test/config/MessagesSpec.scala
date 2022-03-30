@@ -16,12 +16,12 @@
 
 package config
 
-import org.scalatest.FunSuite
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 
 import scala.io.Source
 
-class MessagesSpec extends FunSuite {
+class MessagesSpec extends AnyFunSuite {
 
   lazy val messageKeysEnglish = getMessageKeys("messages")
   lazy val messageKeysWelsh = getMessageKeys("messages.cy")
@@ -29,13 +29,13 @@ class MessagesSpec extends FunSuite {
   test("Messages present in Welsh (conf/messages.cy) should also have an English translation (conf/messages)") {
     val keysInWelshNotEnglish = messageKeysWelsh -- messageKeysEnglish
     keysInWelshNotEnglish foreach println
-    keysInWelshNotEnglish.size shouldBe 0
+    keysInWelshNotEnglish.size mustBe 0
   }
 
   test("Messages present in English (conf/messages) should also have a Welsh translation (conf/messages.cy)") {
     val keysInEnglishNotWelsh = messageKeysEnglish -- messageKeysWelsh
     keysInEnglishNotWelsh foreach println
-    keysInEnglishNotWelsh.size shouldBe 0
+    keysInEnglishNotWelsh.size mustBe 0
   }
 
   private def getMessageKeys(fileName: String) = {

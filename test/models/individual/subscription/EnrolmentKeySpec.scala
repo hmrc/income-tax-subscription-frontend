@@ -17,12 +17,14 @@
 package models.individual.subscription
 
 import models.common.subscription.EnrolmentKey
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import utilities.individual.Constants.GovernmentGateway._
 import utilities.individual.Constants._
 import utilities.individual.TestConstants._
 
-class EnrolmentKeySpec extends WordSpecLike with Matchers with OptionValues {
+class EnrolmentKeySpec extends AnyWordSpecLike with Matchers with OptionValues {
   "asString" should {
     "format the enrolment key correctly" in {
       val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)

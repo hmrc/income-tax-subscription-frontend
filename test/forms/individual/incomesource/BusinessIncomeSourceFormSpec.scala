@@ -18,7 +18,6 @@ package forms.individual.incomesource
 
 import models.IncomeSourcesStatus
 import models.common.{BusinessIncomeSource, OverseasProperty, SelfEmployed, UkProperty}
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.http.InternalServerException

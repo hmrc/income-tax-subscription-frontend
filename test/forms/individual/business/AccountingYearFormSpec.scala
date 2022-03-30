@@ -21,7 +21,6 @@ import forms.submapping.AccountingYearMapping
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Current
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.data.FormError
@@ -34,7 +33,7 @@ class AccountingYearFormSpec extends PlaySpec with GuiceOneAppPerTest {
       val expected = Current
       val actual = accountingYearForm.bind(testInput).value
 
-      actual shouldBe Some(expected)
+      actual mustBe Some(expected)
     }
 
     "validate accounting year correctly" when {

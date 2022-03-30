@@ -23,7 +23,7 @@ import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpPa
 import models.Cash
 import models.common.subscription._
 import org.scalatest.EitherValues
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import play.api.test.Helpers._
 import services.mocks.TestSubscriptionService
 import utilities.AccountingPeriodUtil.getCurrentTaxYear
@@ -159,7 +159,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "return the safeId when the subscription is successful" in {
       setupMockSubscribeSuccess(testSubmissionRequest)
-      call.right.value shouldBe SubscriptionSuccess(testMTDID)
+      call.value shouldBe SubscriptionSuccess(testMTDID)
     }
 
     "return the error if subscription fails on bad request" in {
@@ -184,12 +184,12 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "return the safeId when the subscription is returned" in {
       setupMockGetSubscriptionFound(testNino)
-      call.right.value shouldBe Some(SubscriptionSuccess(testMTDID))
+      call.value shouldBe Some(SubscriptionSuccess(testMTDID))
     }
 
     "return the None when the subscription is returned as None" in {
       setupMockGetSubscriptionNotFound(testNino)
-      call.right.value shouldBe None
+      call.value shouldBe None
     }
 
     "return the error if subscription fails on bad request" in {
@@ -209,7 +209,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "return the mtdbsa id when the signUp is successful" in {
       setupMockSignUpIncomeSourcesSuccess(testNino)
-      call.right.value shouldBe SignUpIncomeSourcesSuccess(testMTDID)
+      call.value shouldBe SignUpIncomeSourcesSuccess(testMTDID)
     }
 
     "return the error if sign up fails on bad request" in {
@@ -237,7 +237,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
     "return the list of income source ids when the create is successful" in {
       setupMockCreateIncomeSourcesSuccess(testMTDID,
         testIndividualSummary.toBusinessSubscriptionDetailsModel(testNino).copy(accountingPeriod = getCurrentTaxYear))
-      call.right.value shouldBe CreateIncomeSourcesSuccess()
+      call.value shouldBe CreateIncomeSourcesSuccess()
     }
 
     "return the error if create fails on bad request" in {
@@ -268,7 +268,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
     "return the list of income source ids when the create is successful" in {
       setupMockCreateIncomeSourcesFromTaskListSuccess(testMTDID,
         testCreateIncomeSources)
-      await(call).right.value shouldBe CreateIncomeSourcesSuccess()
+      await(call).value shouldBe CreateIncomeSourcesSuccess()
     }
 
     "return the error if create fails on bad request" in {

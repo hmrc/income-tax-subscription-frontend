@@ -36,67 +36,67 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
   "GET /client/eligibility/accounting-period-check" should {
 
     "return OK" in new GetSetup {
-      response should have(
+      response must have(
         httpStatus(OK)
       )
     }
 
     "have a view with the correct title" in new GetSetup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      doc.title shouldBe AccountingPeriodCheckMessages.title + serviceNameGovUk
+      doc.title mustBe AccountingPeriodCheckMessages.title + serviceNameGovUk
     }
 
     "have a view with a back link" in new GetSetup {
       val backLink: Element = doc.getGovukBackLink
-      backLink.attr("href") shouldBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show.url
-      backLink.text shouldBe AccountingPeriodCheckMessages.back
+      backLink.attr("href") mustBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show.url
+      backLink.text mustBe AccountingPeriodCheckMessages.back
     }
 
     "have a view with the correct heading" in new GetSetup {
-      pageMainContent.getH1Element.text shouldBe AccountingPeriodCheckMessages.heading
+      pageMainContent.getH1Element.text mustBe AccountingPeriodCheckMessages.heading
     }
 
     "have a form" which {
       "has the correct attributes" in new GetSetup {
         val form: Element = pageMainContent.getForm
-        form.attr("method") shouldBe "POST"
-        form.attr("action") shouldBe controllers.agent.eligibility.routes.AccountingPeriodCheckController.submit.url
+        form.attr("method") mustBe "POST"
+        form.attr("action") mustBe controllers.agent.eligibility.routes.AccountingPeriodCheckController.submit.url
       }
 
       "has a fieldset containing a yes and no radiobutton" in new GetSetup {
         val fieldset: Element = pageMainContent.getForm.getFieldset
 
-        fieldset.attr("class") shouldBe "govuk-fieldset"
+        fieldset.attr("class") mustBe "govuk-fieldset"
 
-        fieldset.selectFirst("legend").text shouldBe AccountingPeriodCheckMessages.heading
+        fieldset.selectFirst("legend").text mustBe AccountingPeriodCheckMessages.heading
 
         val firstRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(1)")
-        firstRadioWithLabel shouldNot be (null)
+        firstRadioWithLabel mustNot be (null)
         val firstRadioLabel: Element = firstRadioWithLabel.selectFirst("label")
         val firstRadioButton: Element = firstRadioWithLabel.selectFirst("input")
 
         val secondRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(2)")
-        secondRadioWithLabel shouldNot be (null)
+        secondRadioWithLabel mustNot be (null)
         val secondRadioLabel: Element = secondRadioWithLabel.selectFirst("label")
         val secondRadioButton: Element = secondRadioWithLabel.selectFirst("input")
 
-        firstRadioLabel.attr("for") shouldBe AccountingPeriodCheckForm.accountingPeriodCheck
-        firstRadioLabel.text shouldBe AccountingPeriodCheckMessages.yes
-        firstRadioButton.attr("id") shouldBe AccountingPeriodCheckForm.accountingPeriodCheck
-        firstRadioButton.attr("name") shouldBe AccountingPeriodCheckForm.accountingPeriodCheck
-        firstRadioButton.attr("value") shouldBe "Yes"
+        firstRadioLabel.attr("for") mustBe AccountingPeriodCheckForm.accountingPeriodCheck
+        firstRadioLabel.text mustBe AccountingPeriodCheckMessages.yes
+        firstRadioButton.attr("id") mustBe AccountingPeriodCheckForm.accountingPeriodCheck
+        firstRadioButton.attr("name") mustBe AccountingPeriodCheckForm.accountingPeriodCheck
+        firstRadioButton.attr("value") mustBe "Yes"
 
-        secondRadioLabel.attr("for") shouldBe AccountingPeriodCheckForm.accountingPeriodCheck + "-2"
-        secondRadioLabel.text shouldBe AccountingPeriodCheckMessages.no
-        secondRadioButton.attr("id") shouldBe AccountingPeriodCheckForm.accountingPeriodCheck + "-2"
-        secondRadioButton.attr("name") shouldBe AccountingPeriodCheckForm.accountingPeriodCheck
-        secondRadioButton.attr("value") shouldBe "No"
+        secondRadioLabel.attr("for") mustBe AccountingPeriodCheckForm.accountingPeriodCheck + "-2"
+        secondRadioLabel.text mustBe AccountingPeriodCheckMessages.no
+        secondRadioButton.attr("id") mustBe AccountingPeriodCheckForm.accountingPeriodCheck + "-2"
+        secondRadioButton.attr("name") mustBe AccountingPeriodCheckForm.accountingPeriodCheck
+        secondRadioButton.attr("value") mustBe "No"
       }
 
       "has a button to submit" in new GetSetup {
         val submitButton: Element = pageMainContent.getForm.getGovUkSubmitButton
-        submitButton.text shouldBe AccountingPeriodCheckMessages.continue
-        submitButton.attr("class") shouldBe "govuk-button"
+        submitButton.text mustBe AccountingPeriodCheckMessages.continue
+        submitButton.attr("class") mustBe "govuk-button"
       }
     }
   }
@@ -111,7 +111,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     "return SEE_OTHER when selecting yes and an audit has been sent" in new PostSetup(Some(Yes)) {
       verifyAudit()
-      response should have(
+      response must have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
       )
@@ -119,20 +119,20 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     "return SEE_OTHER when selecting No and an audit has been sent" in new PostSetup(Some(No)) {
       verifyAudit()
-      response should have(
+      response must have(
         httpStatus(SEE_OTHER),
         redirectURI(routes.CannotTakePartController.show.url)
       )
     }
 
     "return BADREQUEST when no Answer is given" in new PostSetup(None) {
-      response should have(
+      response must have(
         httpStatus(BAD_REQUEST)
       )
 
       val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-      pageContent.select(".govuk-error-message").text shouldBe s"Error: ${AccountingPeriodCheckMessages.invalidError}"
+      pageContent.select(".govuk-error-message").text mustBe s"Error: ${AccountingPeriodCheckMessages.invalidError}"
     }
 
   }

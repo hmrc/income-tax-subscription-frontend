@@ -17,12 +17,12 @@
 package utilities
 
 import models.usermatching.UserDetailsModel
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 
 trait UserMatchingTestSupport {
-  matcher: MustMatchers =>
+  matcher: Matchers =>
 
   import utilities.UserMatchingSessionUtil._
 

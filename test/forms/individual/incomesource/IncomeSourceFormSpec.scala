@@ -18,7 +18,6 @@ package forms.individual.incomesource
 
 import forms.individual.incomesource.IncomeSourceForm._
 import models.common.IncomeSourceModel
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.data.FormBinding.Implicits.formBinding
@@ -59,7 +58,7 @@ class IncomeSourceFormSpec extends PlaySpec with GuiceOneAppPerTest {
         resultError mustBe Some(FormError("IncomeSource", "individual.error.income_source.invalid"))
       }
     } else {
-      resultValue shouldBe Some(expectedResult)
+      resultValue mustBe Some(expectedResult)
     }
 
   }

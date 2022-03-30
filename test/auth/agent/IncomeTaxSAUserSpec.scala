@@ -16,14 +16,14 @@
 
 package auth.agent
 
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import utilities.agent.{Constants, TestConstants}
 
-class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneServerPerTest {
+class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
 
-  "IncomeTaxSAUser" should {
+  "IncomeTaxSAUser" must {
     val confidenceLevel = ConfidenceLevel.L50
 
     lazy val user = IncomeTaxAgentUser(
@@ -38,7 +38,7 @@ class IncomeTaxSAUserSpec extends WordSpecLike with Matchers with OptionValues w
     )
 
     s"have the expected ARN '${TestConstants.testARN}'" in {
-      user.arn shouldBe Some(TestConstants.testARN)
+      user.arn mustBe Some(TestConstants.testARN)
     }
 
   }

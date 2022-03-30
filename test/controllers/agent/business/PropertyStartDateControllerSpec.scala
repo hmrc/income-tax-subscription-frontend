@@ -115,7 +115,6 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   "submit" should {
 
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-    val testValidMinStartDate: DateModel = DateModel.dateConvert(LocalDate.of(1900, 1, 1))
 
     val testPropertyStartDateModel: DateModel = testValidMaxStartDate
 

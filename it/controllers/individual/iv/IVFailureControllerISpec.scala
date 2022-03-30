@@ -30,7 +30,7 @@ class IVFailureControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.ivFailure()
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI("http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fiv-failure&origin=income-tax-subscription-frontend")
         )
@@ -43,7 +43,7 @@ class IVFailureControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.ivFailure()
 
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("titlePattern.serviceName.govUk", messages("iv-failure.heading")))
         )

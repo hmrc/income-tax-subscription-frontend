@@ -22,7 +22,6 @@ import helpers.servicemocks.{AuthStub, UserLockoutStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 
@@ -45,8 +44,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase  with UserMatchingInt
       "show the user details page" in {
         val res = fixture(agentLocked = true)
 
-        Then("The result should have a status of SEE_OTHER")
-        res should have(
+        Then("The result must have a status of SEE_OTHER")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(userLockedOutURI)
         )
@@ -57,8 +56,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase  with UserMatchingInt
       "show the user details page" in {
         val res = fixture(agentLocked = false)
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-        Then("The result should have a status of OK")
-        res should have(
+        Then("The result must have a status of OK")
+        res must have(
           httpStatus(OK),
           pageTitle(messages("user-details.title") + serviceNameGovUk)
         )
@@ -90,8 +89,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase  with UserMatchingInt
 
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
 
-        Then("The result should have a status of SEE_OTHER")
-        res should have(
+        Then("The result must have a status of SEE_OTHER")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(userLockedOutURI)
         )
@@ -108,8 +107,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase  with UserMatchingInt
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-        Then("The result should have a status of BadRequest")
-        res should have(
+        Then("The result must have a status of BadRequest")
+        res must have(
           httpStatus(BAD_REQUEST),
           pageTitle("Error: " + messages("user-details.title") + serviceNameGovUk)
         )
@@ -128,8 +127,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase  with UserMatchingInt
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = Some(userDetails), storedSubmission = Some(userDetails))
 
-        Then("The result should have a status of SEE_OTHER")
-        res should have(
+        Then("The result must have a status of SEE_OTHER")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmUserController.show().url)
         )
@@ -148,8 +147,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase  with UserMatchingInt
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = Some(userDetails), storedSubmission = Some(userDetails))
 
-        Then("The result should have a status of SEE_OTHER")
-        res should have(
+        Then("The result must have a status of SEE_OTHER")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmUserController.show().url)
         )
@@ -170,8 +169,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase  with UserMatchingInt
         val submittedUserDetails = userDetails.copy(firstName = "NotMatching")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = Some(submittedUserDetails), storedSubmission = Some(userDetails))
 
-        Then("The result should have a status of SEE_OTHER")
-        res should have(
+        Then("The result must have a status of SEE_OTHER")
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmUserController.show().url)
         )

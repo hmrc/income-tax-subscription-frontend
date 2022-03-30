@@ -19,11 +19,11 @@ package forms.individual.business
 import forms.individual.business.RemoveBusinessForm.{fieldName, removeBusinessForm}
 import forms.submapping.YesNoMapping
 import models.{No, Yes, YesNo}
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
 
-class RemoveBusinessFormSpec extends PlaySpec with MustMatchers {
+class RemoveBusinessFormSpec extends PlaySpec with Matchers {
   "RemoveBusinessForm" must {
     "return Yes" when {
       "bound with a yes value" in {

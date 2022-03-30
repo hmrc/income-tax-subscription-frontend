@@ -21,7 +21,6 @@ import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
 import models.Cash
 import models.common.business.AccountingMethodModel
-import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.data.FormError
@@ -37,7 +36,7 @@ class AccountingMethodFormSpec extends PlaySpec with GuiceOneAppPerTest {
       val expected = AccountingMethodModel(testAccountingMethod)
       val actual = accountingMethodForm.bind(testInput).value
 
-      actual shouldBe Some(expected)
+      actual mustBe Some(expected)
     }
 
     "validate income type correctly" should {
@@ -47,19 +46,19 @@ class AccountingMethodFormSpec extends PlaySpec with GuiceOneAppPerTest {
       "show an empty error when the map is empty" in {
         val emptyInput0 = DataMap.EmptyMap
         val emptyTest0 = accountingMethodForm.bind(emptyInput0)
-        emptyTest0.errors should contain(FormError(accountingMethod, empty))
+        emptyTest0.errors must contain(FormError(accountingMethod, empty))
       }
 
       "show an empty error when the input is empty" in {
         val emptyInput = DataMap.accountingMethod("")
         val emptyTest = accountingMethodForm.bind(emptyInput)
-        emptyTest.errors should contain(FormError(accountingMethod, empty))
+        emptyTest.errors must contain(FormError(accountingMethod, empty))
       }
 
       "show invalid when the input is invalid" in {
         val invalidInput = DataMap.accountingMethod("α")
         val invalidTest = accountingMethodForm.bind(invalidInput)
-        invalidTest.errors should contain(FormError(accountingMethod, invalid))
+        invalidTest.errors must contain(FormError(accountingMethod, invalid))
       }
 
       "The following submission should be valid" in {

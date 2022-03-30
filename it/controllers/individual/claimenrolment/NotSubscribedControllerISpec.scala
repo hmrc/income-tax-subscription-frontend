@@ -40,7 +40,7 @@ class NotSubscribedControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.notSubscribed()
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         Then("Should return a OK with the not subscribed page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("claim-enrolment.not-subscribed.heading") + serviceNameGovUk)
         )
@@ -54,7 +54,7 @@ class NotSubscribedControllerISpec extends ComponentSpecBase {
         When("GET /claim-enrolment/confirmation is called")
         val res = IncomeTaxSubscriptionFrontend.notSubscribed()
 
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }

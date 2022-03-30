@@ -32,7 +32,7 @@ class SPSCallbackControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(basGatewaySignIn("/sps-callback"))
         )
@@ -46,7 +46,7 @@ class SPSCallbackControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
         )
@@ -61,7 +61,7 @@ class SPSCallbackControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
 
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(accountingYearURI)
         )
@@ -71,7 +71,7 @@ class SPSCallbackControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
 
         val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = false)
-        res should have(
+        res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }

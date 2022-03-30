@@ -48,7 +48,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
         Then("Should return a OK with the check your answers page")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(incomeSourceURI)
         )
@@ -69,7 +69,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the check your answers page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.summary.title") + serviceNameGovUk)
         )
@@ -128,14 +128,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
           }
 
@@ -183,14 +183,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
           }
 
@@ -238,14 +238,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
           }
 
@@ -295,14 +295,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
           }
 
@@ -361,14 +361,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
           }
 
@@ -418,14 +418,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
           }
 
@@ -475,14 +475,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
           }
         }
@@ -526,14 +526,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
           }
 
           "getting the users assigned to the enrolment was not successful" in {
@@ -575,14 +575,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
           }
 
           "getting the admin in a group was not successful" in {
@@ -625,14 +625,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
           }
 
           "upserting the known facts was not successful" in {
@@ -676,14 +676,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
           }
 
           "allocating the enrolment to a group was not successful" in {
@@ -728,14 +728,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
           }
 
           "assigning all the users to the enrolment was not successful" in {
@@ -782,14 +782,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             When("I call POST /check-your-answers")
             val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-            Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-            res should have(
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
               httpStatus(SEE_OTHER),
               redirectURI(confirmationURI)
             )
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
           }
         }
       }
@@ -842,8 +842,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       When("I call POST /check-your-answers")
       val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-      Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-      res should have(
+      Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+      res must have(
         httpStatus(SEE_OTHER),
         redirectURI(confirmationURI)
       )
@@ -852,7 +852,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
       val cookieMap = getSessionMap(res)
-      cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+      cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
     }
   }
 }

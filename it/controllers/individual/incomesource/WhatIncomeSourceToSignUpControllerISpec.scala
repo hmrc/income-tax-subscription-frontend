@@ -54,7 +54,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
 
         Then("Should return a OK with the income source page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("what_income_source_to_sign_up.title") + serviceNameGovUk)
         )
@@ -70,7 +70,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
 
         Then("Should return NOT FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -94,7 +94,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of the start of the self employment journey")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
         )
@@ -115,7 +115,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of property commencement date")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(propertyStartDateURI)
         )
@@ -138,7 +138,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
 
         Then(s"Should return $SEE_OTHER with a redirect location of overseas property commencement date")
-        res should have(
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(overseasPropertyStartDateURI)
         )
@@ -159,7 +159,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(None)
 
           Then(s"Should return $BAD_REQUEST with the income source page plus error")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
           )
@@ -186,7 +186,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
 
           Then(s"Should return $BAD_REQUEST with the income source page plus error")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
           )
@@ -211,7 +211,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
 
           Then(s"Should return $BAD_REQUEST with the income source page plus error")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
           )
@@ -236,7 +236,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
 
           Then(s"Should return $BAD_REQUEST with the income source page plus error")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
           )
@@ -256,7 +256,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
           val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
 
           Then(s"Should return $BAD_REQUEST with the income source page plus error")
-          res should have(
+          res must have(
             httpStatus(BAD_REQUEST),
             pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
           )
@@ -272,7 +272,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
 
         Then("Should return NOT FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }

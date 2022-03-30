@@ -62,7 +62,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return OK with the task list page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.business.task-list.title") + serviceNameGovUk)
         )
@@ -88,7 +88,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return OK with the task list page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.business.task-list.title") + serviceNameGovUk)
         )
@@ -114,7 +114,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return OK with the task list page")
-        res should have(
+        res must have(
           httpStatus(OK),
           pageTitle(messages("agent.business.task-list.title") + serviceNameGovUk)
         )
@@ -130,7 +130,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return NOT FOUND")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
@@ -178,8 +178,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -188,7 +188,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
         }
         "they only have uk property income" in {
@@ -236,8 +236,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -246,7 +246,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
         }
         "they only have overseas property income" in {
@@ -293,8 +293,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -303,7 +303,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
 
         }
@@ -353,8 +353,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -363,7 +363,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
 
         }
@@ -412,8 +412,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -422,7 +422,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
 
         }
@@ -477,8 +477,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -487,7 +487,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
 
         }
@@ -544,8 +544,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+          res must have(
             httpStatus(SEE_OTHER),
             redirectURI(confirmationURI)
           )
@@ -554,7 +554,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
         }
       }
@@ -597,8 +597,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of INTERNAL_SERVER_ERROR and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of INTERNAL_SERVER_ERROR and redirect to the confirmation page")
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
 
@@ -641,8 +641,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result should have a status of INTERNAL_SERVER_ERROR and redirect to the confirmation page")
-          res should have(
+          Then("The result must have a status of INTERNAL_SERVER_ERROR and redirect to the confirmation page")
+          res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
 
@@ -665,7 +665,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         val res = IncomeTaxSubscriptionFrontend.getTaskList()
 
         Then("Should return NOT_FOUND with the task list page")
-        res should have(
+        res must have(
           httpStatus(NOT_FOUND)
         )
       }
