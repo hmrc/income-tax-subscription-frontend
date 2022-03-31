@@ -22,8 +22,8 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val scoverageSettings = {
   import scoverage.ScoverageKeys
   Seq(
-    // Semicolon-separated list of regexs matching classes to exclude
-    ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;uk.gov.hmrc.BuildInfo;app.*;prod.*;core.config.*;com.*;views.html.templates.*;testonly.*;business.*;testOnlyDoNotUseInAppConf.*;.*LanguageSwitchController;",
+    ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;testonly.*;",
+    ScoverageKeys.coverageExcludedFiles := ".*Routes.*;.*RoutesPrefix.*;.*template.*;",
     ScoverageKeys.coverageMinimumStmtTotal := 90,
     ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true
@@ -57,13 +57,13 @@ lazy val microservice = Project(appName, file("."))
     addTestReportOption(IntegrationTest, "int-test-reports"),
     IntegrationTest / javaOptions += "-Dlogger.resource=logback-test.xml",
     IntegrationTest / parallelExecution := false)
-  .settings( majorVersion := 1 )
+  .settings(majorVersion := 1)
   .settings(resolvers ++= Seq(
     Resolver.bintrayRepo("hmrc", "releases"),
     Resolver.jcenterRepo
   ))
 
-    TwirlKeys.templateImports ++= Seq(
+TwirlKeys.templateImports ++= Seq(
   "uk.gov.hmrc.govukfrontend.views.html.components._",
   "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
   "uk.gov.hmrc.hmrcfrontend.views.html.components._",
