@@ -63,6 +63,12 @@ See Route files for more information.
 * Entry page : [https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up](https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up)
 * Feature switches: [https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch](https://www.staging.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/test-only/feature-switch)
 
+### Notes on behaviour
+
+In Local and Staging, a stubbing system is used for recording user data.  This prevents the display of the success page at `report-quarterly/income-and-expenses/sign-up/client/confirmation` as the stubs service will not persist, then provide an mtd itsa ref enrolment.
+
+To work around this, visit the `report-quarterly/income-and-expenses/sign-up/test-only/update-enrolments` page, submit, then return to the confirmation page.
+
 ## How to test
 
 * Run unit tests: `sbt clean test`
