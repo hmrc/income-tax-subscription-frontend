@@ -18,11 +18,9 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import play.api.mvc._
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.http.NotFoundException
 
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
@@ -42,19 +40,10 @@ class SPSHandoffForClaimEnrolController @Inject()(
     Authenticated {
       _ =>
         _ =>
-          if (isEnabled(ClaimEnrolment)) {
-            goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback,
-              returnLinkText = "I have verified",
-              regime = "itsa"
-            )
-          } else {
-            val error = if ((isEnabled(ClaimEnrolment))) {
-              "claim enrolment feature switch is enabled"
-            } else {
-              "claim enrolment feature switch is not enabled"
-            }
-            throw new NotFoundException(s"[SPSHandoffForClaimEnrolController][redirectToSPS] - $error")
-          }
+          goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSCallbackForClaimEnrolController.callback,
+            returnLinkText = "I have verified",
+            regime = "itsa"
+          )
     }
   }
 

@@ -18,7 +18,6 @@ package controllers.individual.iv
 
 import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import controllers.ControllerBaseSpec
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
 import org.mockito.ArgumentMatchers.{any, eq => matches}
@@ -39,10 +38,6 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
     "success" -> new IVSuccessController(appConfig, mockAuthService, mockAuditingService).success()
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(ClaimEnrolment)
-  }
 
   trait Setup {
     val controller = new IVSuccessController(appConfig, mockAuthService, mockAuditingService)
@@ -52,46 +47,44 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
 
   "success" when {
 
-    "the user has an iv flag in session" when {
-      "the claim enrolment feature switch is enabled and the user is in claimEnrollment journey state" must {
-        "redirect the user to the claim enrolment overview page and remove the iv flag from session" in new Setup {
-          enable(ClaimEnrolment)
+          "the user has an iv flag in session" when {
+            "the is in claimEnrollment journey state" must {
+              "redirect the user to the claim enrolment overview page and remove the iv flag from session" in new Setup {
 
-          val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true", ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name)
-          val result: Future[Result] = controller.success(requestWithIVSession)
+                val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true", ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name)
+                val result: Future[Result] = controller.success(requestWithIVSession)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve.url)
-          session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-          verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve.url)
+                session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
+                verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
+              }
+            }
+          }
+        }
+
+        "the user has an iv flag in session" must {
+          "redirect the user to the home route and remove the iv flag from session" in new Setup {
+
+            val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true")
+            val result: Future[Result] = controller.success(requestWithIVSession)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home.url)
+            session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
+            verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
+          }
+        }
+        "the user doesn't not have an iv flag in session" must {
+          "redirect the user to the home route" in new Setup {
+
+            val requestWithoutIVSession: Request[AnyContent] = FakeRequest()
+            val result: Future[Result] = controller.success(requestWithoutIVSession)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home.url)
+            session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
+            verify(mockAuditingService, never()).audit(any())(any(), any())
+          }
         }
       }
-    }
-
-    "the user has an iv flag in session" must {
-      "redirect the user to the home route and remove the iv flag from session" in new Setup {
-
-        val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true")
-        val result: Future[Result] = controller.success(requestWithIVSession)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home.url)
-        session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-        verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
-      }
-    }
-    "the user doesn't not have an iv flag in session" must {
-      "redirect the user to the home route" in new Setup {
-
-        val requestWithoutIVSession: Request[AnyContent] = FakeRequest()
-        val result: Future[Result] = controller.success(requestWithoutIVSession)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home.url)
-        session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-        verify(mockAuditingService, never()).audit(any())(any(), any())
-      }
-    }
-  }
-
-}

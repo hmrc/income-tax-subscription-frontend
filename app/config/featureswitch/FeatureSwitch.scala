@@ -27,7 +27,6 @@ object FeatureSwitch {
   val switches: Set[FeatureSwitch] = Set(
     ForeignProperty,
     RemoveCovidPages,
-    ClaimEnrolment,
     SaveAndRetrieve,
     PrePopulate
   )
@@ -48,11 +47,6 @@ object FeatureSwitch {
   case object RemoveCovidPages extends FeatureSwitch {
     override val name = s"$prefix.remove-covid-eligibility-and-kickout-page"
     override val displayText = "Remove Covid Eligibility And Kickout Page"
-  }
-
-  case object ClaimEnrolment extends FeatureSwitch {
-    override val name = s"$prefix.claimEnrolment-enabled"
-    override val displayText = "Enable claim enrolment journey"
   }
 
   case object SaveAndRetrieve extends FeatureSwitch {

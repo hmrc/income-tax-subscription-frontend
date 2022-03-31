@@ -17,11 +17,9 @@
 package controllers.individual.claimenrolment
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.ClaimEnrolment
 import controllers.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.NotFoundException
 import views.individual.mocks.MockAlreadySignedUp
 
 import scala.concurrent.Future
@@ -36,11 +34,6 @@ class AlreadySignedUpControllerSpec extends ControllerBaseSpec
     "show" -> TestAlreadySignedUpController.show
   )
 
-  override def beforeEach(): Unit = {
-    disable(ClaimEnrolment)
-    super.beforeEach()
-  }
-
   object TestAlreadySignedUpController extends ClaimEnrolmentAlreadySignedUpController(
     mockAuthService,
     mockAuditingService,
@@ -48,9 +41,7 @@ class AlreadySignedUpControllerSpec extends ControllerBaseSpec
   )
 
   "show" should {
-    "return an OK status with the already signed up page" when {
-      "the claim enrolment feature switch is enabled" in {
-        enable(ClaimEnrolment)
+    "return an OK status with the already signed up page" in {
         mockAlreadySignedUp()
         val result: Future[Result] = TestAlreadySignedUpController.show()(claimEnrolmentRequest)
         status(result) mustBe OK
@@ -58,13 +49,4 @@ class AlreadySignedUpControllerSpec extends ControllerBaseSpec
         charset(result) mustBe Some(Codec.utf_8.charset)
       }
     }
-
-    "return a NotFoundException" when {
-      "the claim enrolment feature switch is disabled" in {
-        intercept[NotFoundException](await(TestAlreadySignedUpController.show()(claimEnrolmentRequest)))
-          .message mustBe "[ClaimEnrolmentAlreadySignedUpController][show] - The claim enrolment feature switch is disabled"
-      }
-    }
-  }
-
 }
