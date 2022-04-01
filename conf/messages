@@ -1120,3 +1120,11 @@ agent.error.remove-uk-property-business.invalid                = Select yes if y
 agent.remove-overseas-property-business.heading                = Are you sure you want to delete your client’s overseas property business?
 agent.remove-overseas-property-business.hint                   = All your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake.
 agent.error.remove-overseas-property-business.invalid          = Select yes if you want to remove business
+
+# Throttling
+throttle.title                                                 = We are currently experiencing high levels of demand for this service
+throttle.heading                                               = We are currently experiencing high levels of demand for this service
+throttle.line_1                                                = You can not sign up to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again later.
+agent.throttle.title                                           = We are currently experiencing high levels of demand for this service
+agent.throttle.heading                                         = We are currently experiencing high levels of demand for this service
+agent.throttle.line_1                                          = You can not sign up to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again later.

@@ -1120,3 +1120,11 @@ agent.error.remove-uk-property-business.invalid                = Dewiswch ‘Iaw
 agent.remove-overseas-property-business.heading                = A ydych yn siŵr eich bod am ddileu busnes eiddo tramor eich cleient?
 agent.remove-overseas-property-business.hint                   = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
 agent.error.remove-overseas-property-business.invalid          = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
+
+# Throttling
+throttle.title                                                 = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
+throttle.heading                                               = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
+throttle.line_1                                                = Ni allwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar hyn o bryd. Os hoffech gael mynediad at y gwasanaeth hwn o hyd, rhowch gynnig arall arni yn nes ymlaen.
+agent.throttle.title                                           = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
+agent.throttle.heading                                         = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
+agent.throttle.line_1                                          = Ni allwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar hyn o bryd. Os hoffech gael mynediad at y gwasanaeth hwn o hyd, rhowch gynnig arall arni yn nes ymlaen.

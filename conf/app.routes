@@ -162,3 +162,6 @@ POST        /business/remove-overseas-property-business          controllers.ind
 # remove UK property buisness confirmation page
 GET         /business/remove-uk-property-business                controllers.individual.business.RemoveUkPropertyController.show
 POST        /business/remove-uk-property-business                controllers.individual.business.RemoveUkPropertyController.submit
+
+# Throttle
+GET         /throttle                                            controllers.individual.ThrottlingController.show
