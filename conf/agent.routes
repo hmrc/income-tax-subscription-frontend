@@ -138,3 +138,5 @@ POST        /business/remove-uk-property-business                controllers.age
 GET         /business/remove-overseas-property-business          controllers.agent.business.RemoveClientOverseasPropertyController.show
 POST        /business/remove-overseas-property-business          controllers.agent.business.RemoveClientOverseasPropertyController.submit
 
+# Throttle
+GET         /throttle                                            controllers.agent.ThrottlingController.show
