@@ -36,7 +36,7 @@ class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperle
     }
 
     "do not store the token when it is already present in Subscription Details " in {
-      mockFetchPaperlessPreferenceToken(testToken)
+      mockFetchPaperlessPreferenceToken(Some(testToken))
 
       val res = TestPaperlessPreferenceTokenService.storeNino(testNino, "test-reference")
 

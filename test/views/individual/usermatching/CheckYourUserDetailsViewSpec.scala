@@ -28,6 +28,7 @@ import utilities.individual.TestConstants
 import utilities.{TestModels, UnitTestTrait}
 import views.html.individual.usermatching.CheckYourUserDetails
 import views.individual.helpers.ConfirmUserIdConstants._
+import models.usermatching.UserDetailsModel._
 
 class CheckYourUserDetailsViewSpec extends UnitTestTrait {
 
@@ -138,9 +139,9 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 1,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
 
       )
     }
@@ -154,9 +155,9 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 2,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
 
@@ -170,9 +171,9 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 3,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
 
@@ -186,9 +187,9 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 4,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
 

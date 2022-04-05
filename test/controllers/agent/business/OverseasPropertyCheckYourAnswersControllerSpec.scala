@@ -53,7 +53,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   "show" should {
     "return an OK status with the property CYA page" in withFeatureSwitch(SaveAndRetrieve) {
       withController { controller =>
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Cash)))
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
         val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
@@ -92,7 +92,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-        verifyOverseasPropertySave(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true))
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
       }
     }
 

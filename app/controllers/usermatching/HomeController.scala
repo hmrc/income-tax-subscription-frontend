@@ -29,7 +29,6 @@ import services._
 import services.individual._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.ITSASessionKeys._
-import utilities.Implicits._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -64,8 +63,8 @@ class HomeController @Inject()(val auditingService: AuditingService,
                 handleNoSubscriptionFound(utr, timestamp, nino)
             }
           case OptionalIdentifiers(Some(_), None) =>
-            Redirect(routes.NoSAController.show)
-              .removingFromSession(JourneyStateKey)
+            Future.successful(Redirect(routes.NoSAController.show)
+              .removingFromSession(JourneyStateKey))
           case _ =>
             Future.successful(goToUserMatching withJourneyState UserMatching)
         }
@@ -81,9 +80,9 @@ class HomeController @Inject()(val auditingService: AuditingService,
             goToSignUp(utr, timestamp, nino)
           }
         }
-      case Right(EligibilityStatus(true, _, _)) => goToSignUp(utr, timestamp, nino)
+      case Right(EligibilityStatus(true, _, _)) => Future.successful(goToSignUp(utr, timestamp, nino))
       case Right(EligibilityStatus(false, _, _)) =>
-        Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
+        Future.successful(Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show()))
       case Left(_) =>
         throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
     }

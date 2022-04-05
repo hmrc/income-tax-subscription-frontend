@@ -46,8 +46,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  val propertyAccountingMethodView = mock[PropertyAccountingMethod]
-
   private def withController(testCode: PropertyAccountingMethodController => Any): Unit = {
     val propertyAccountingMethodView = mock[PropertyAccountingMethod]
 
@@ -79,7 +77,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "display the property accounting method view and return OK (200)" in withController { controller =>
         lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty)))
+        mockFetchAllFromSubscriptionDetails(Some(cacheMap(incomeSource = Some(testIncomeSourceProperty))))
         mockFetchProperty(None)
 
         status(result) must be(Status.OK)
@@ -90,10 +88,10 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "display the property accounting method view with the previous selected answer CASH and return OK (200)" in withController { controller =>
         lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchAllFromSubscriptionDetails(cacheMap(
+        mockFetchAllFromSubscriptionDetails(Some(cacheMap(
           incomeSource = Some(testIncomeSourceProperty)
-        ))
-        mockFetchProperty(PropertyModel(Cash))
+        )))
+        mockFetchProperty(Some(PropertyModel(Some(Cash))))
 
         status(result) must be(Status.OK)
       }
@@ -114,7 +112,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "redirect to agent uk property check your answers page" in {
         enable(SaveAndRetrieve)
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty)))
+        mockFetchAllFromSubscriptionDetails(Some(cacheMap(incomeSource = Some(testIncomeSourceProperty))))
         mockFetchProperty(None)
 
         val goodRequest: Future[Result] = callSubmit(isEditMode = false)
@@ -123,7 +121,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(false).url)
 
         await(goodRequest)
-        verifyPropertySave(PropertyModel(accountingMethod = Some(Cash)))
+        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash))))
       }
     }
 
@@ -131,7 +129,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "the user doesn't have foreign property" should {
         "redirect to agent Check Your Answer page" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty)))
+          mockFetchAllFromSubscriptionDetails(Some(cacheMap(incomeSource = Some(testIncomeSourceProperty))))
           mockFetchProperty(None)
 
           val goodRequest: Future[Result] = callSubmit(isEditMode = false)
@@ -140,13 +138,13 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
           await(goodRequest)
-          verifyPropertySave(PropertyModel(accountingMethod = Some(Cash)))
+          verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash))))
         }
       }
       "the user has foreign property" should {
         "redirect to the agent overseas property commencement date" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty.copy(foreignProperty = true))))
+          mockFetchAllFromSubscriptionDetails(Some(cacheMap(incomeSource = Some(testIncomeSourceProperty.copy(foreignProperty = true)))))
           mockFetchProperty(None)
 
 
@@ -156,14 +154,14 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyStartDateController.show().url)
 
           await(goodRequest)
-          verifyPropertySave(PropertyModel(accountingMethod = Some(Cash)))
+          verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash))))
         }
       }
     }
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
-        mockFetchAllFromSubscriptionDetails(cacheMap(incomeSource = Some(testIncomeSourceProperty.copy(foreignProperty = true))))
+        mockFetchAllFromSubscriptionDetails(Some(cacheMap(incomeSource = Some(testIncomeSourceProperty.copy(foreignProperty = true)))))
 
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 

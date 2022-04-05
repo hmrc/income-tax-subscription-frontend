@@ -71,9 +71,9 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
   val incomeSourceForeignPropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
 
-  def overseasPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceOverseasProperty)
+  def overseasPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceOverseasProperty))
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceBoth))
 
   "show" should {
     "display the foreign property accounting method view and return OK (200)" in withController { controller =>
@@ -81,11 +81,11 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
 
       mockFetchOverseasProperty(None)
-      mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
+      mockFetchAllFromSubscriptionDetails(Some(overseasPropertyIncomeSourceType))
 
       status(result) must be(Status.OK)
       verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 0)
-      verifySubscriptionDetailsFetchAll(1)
+      verifySubscriptionDetailsFetchAll(Some(1))
     }
   }
   "submit" should withController { controller =>
@@ -166,7 +166,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
 
-        mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
+        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyIncomeSourceType))
 
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
@@ -174,7 +174,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         await(badRequest)
         verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 0)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(Some(0))
       }
     }
 
@@ -182,14 +182,14 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       "save and retrieve is enabled" should {
         "redirect to overseas property start date page" in withController { controller =>
           enable(SaveAndRetrieve)
-          mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
+          mockFetchAllFromSubscriptionDetails(Some(overseasPropertyIncomeSourceType))
           controller.backUrl(isEditMode = false) mustBe
             controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
         }
       }
       "save and retrieve is disabled" should {
         "redirect to overseas property start date page" in withController { controller =>
-          mockFetchAllFromSubscriptionDetails(overseasPropertyIncomeSourceType)
+          mockFetchAllFromSubscriptionDetails(Some(overseasPropertyIncomeSourceType))
           controller.backUrl(isEditMode = false) mustBe
             controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
         }

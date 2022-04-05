@@ -23,7 +23,6 @@ import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.agent.ITSASessionKeys._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import utilities.Implicits._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +35,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                mcc: MessagesControllerComponents) extends StatelessController {
 
   def home: Action[AnyContent] = Action.async {
-    Redirect(controllers.agent.routes.HomeController.index)
+    Future.successful(Redirect(controllers.agent.routes.HomeController.index))
   }
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>

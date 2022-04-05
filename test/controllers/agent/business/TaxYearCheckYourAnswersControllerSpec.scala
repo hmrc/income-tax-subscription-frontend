@@ -65,7 +65,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
 
-      verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
+      verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
     }
 
     "throw an exception if feature not enabled" in withController { controller =>
@@ -88,7 +88,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
       verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-      verifySubscriptionDetailsFetch(SelectedTaxYear, 2)
+      verifySubscriptionDetailsFetch(SelectedTaxYear, Some(2))
     }
 
     "throw an exception if cannot retrieve accounting year" in withController { controller =>

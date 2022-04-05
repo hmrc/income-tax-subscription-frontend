@@ -24,10 +24,9 @@ import models.{AccountingMethod => _, _}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.Implicits
 import utilities.SubscriptionDataKeys._
 
-object TestModels extends Implicits {
+object TestModels {
 
   /*
    * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
@@ -55,23 +54,23 @@ object TestModels extends Implicits {
 
   val testCacheMap: CacheMap =
     testCacheMap(
-      incomeSource = testIncomeSourceBusinessAndUkProperty,
-      selectedTaxYear = testSelectedTaxYearNext,
-      businessName = testBusinessName,
-      accountingMethod = testAccountingMethod)
+      incomeSource = Some(testIncomeSourceBusinessAndUkProperty),
+      selectedTaxYear = Some(testSelectedTaxYearNext),
+      businessName = Some(testBusinessName),
+      accountingMethod = Some(testAccountingMethod))
 
   val testCurrentCacheMap: CacheMap =
     testCacheMap(
-      incomeSource = testIncomeSourceBusinessAndUkProperty,
-      selectedTaxYear = testSelectedTaxYearCurrent,
-      businessName = testBusinessName,
-      accountingMethod = testAccountingMethod)
+      incomeSource = Some(testIncomeSourceBusinessAndUkProperty),
+      selectedTaxYear = Some(testSelectedTaxYearCurrent),
+      businessName = Some(testBusinessName),
+      accountingMethod = Some(testAccountingMethod))
 
   def testCacheMapCustom(
-                          incomeSource: Option[IncomeSourceModel] = testIncomeSourceBusinessAndUkProperty,
-                          selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
-                          businessName: Option[BusinessNameModel] = testBusinessName,
-                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod): CacheMap =
+                          incomeSource: Option[IncomeSourceModel] = Some(testIncomeSourceBusinessAndUkProperty),
+                          selectedTaxYear: Option[AccountingYearModel] = Some(testSelectedTaxYearNext),
+                          businessName: Option[BusinessNameModel] = Some(testBusinessName),
+                          accountingMethod: Option[AccountingMethodModel] = Some(testAccountingMethod)): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
       selectedTaxYear = selectedTaxYear,

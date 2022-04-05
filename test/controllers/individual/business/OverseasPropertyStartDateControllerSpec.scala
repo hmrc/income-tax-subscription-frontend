@@ -65,9 +65,9 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   val incomeSourceOverseasPropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
 
-  def foreignPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceOverseasProperty)
+  def foreignPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceOverseasProperty))
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceBoth))
 
 
   "show" should {
@@ -76,15 +76,15 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       mockOverseasPropertyStartDateView()
       mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
       mockIndividualWithNoEnrolments()
-      mockFetchAllFromSubscriptionDetails(testCacheMap(
+      mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
         incomeSource = Some(incomeSourceAllTypes)
-      ))
+      )))
 
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       status(result) must be(Status.OK)
       verifyOverseasPropertySave(None)
-      verifySubscriptionDetailsFetchAll(2)
+      verifySubscriptionDetailsFetchAll(Some(2))
     }
 
     "display the foreign property start date view and return OK (200) when Save & Retrieve feature is enabled" in withController { controller =>
@@ -95,11 +95,11 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       mockIndividualWithNoEnrolments()
-      mockFetchAllFromSubscriptionDetails(testCacheMap())
+      mockFetchAllFromSubscriptionDetails(Some(testCacheMap()))
 
       status(result) must be(Status.OK)
       verifyOverseasPropertySave(None)
-      verifySubscriptionDetailsFetchAll(1)
+      verifySubscriptionDetailsFetchAll(Some(1))
     }
   }
 
@@ -207,7 +207,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
         await(badRequest)
         verifySubscriptionDetailsSave(OverseasPropertyStartDate, 0)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(Some(0))
       }
     }
 

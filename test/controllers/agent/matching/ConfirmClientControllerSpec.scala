@@ -47,8 +47,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockUserLockoutService
   with MockPrePopulationService
   with MockSubscriptionDetailsService
-  with MockGetEligibilityStatusService
-   {
+  with MockGetEligibilityStatusService {
 
   private val eligibleWithoutPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
@@ -62,7 +61,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
   lazy val mockAgentQualificationService: AgentQualificationService = mock[AgentQualificationService]
 
-  lazy val TestConfirmClientController = createTestConfirmClientController(mock[CheckYourClientDetails])
+  private lazy val TestConfirmClientController = createTestConfirmClientController(mock[CheckYourClientDetails])
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -92,7 +91,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   lazy val utr: String = TestConstants.testUtr
   lazy val nino: String = TestConstants.testNino
 
-  lazy val request = userMatchingRequest.buildRequest(TestModels.testClientDetails)
+  private lazy val request = userMatchingRequest.buildRequest(Some(TestModels.testClientDetails))
 
   "Calling the show action of the ConfirmClientController with an authorised user" should {
 
@@ -112,19 +111,19 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     "if there is are client details return ok (200)" in withController { controller =>
       setupMockNotLockedOut(arn)
 
-      val r = request.buildRequest(TestModels.testClientDetails)
+      val r = request.buildRequest(Some(TestModels.testClientDetails))
 
       val result = call(controller, r)
 
       status(result) must be(Status.OK)
 
-      await(result).verifyStoredUserDetailsIs(TestModels.testClientDetails)(r)
+      await(result).verifyStoredUserDetailsIs(Some(TestModels.testClientDetails))(r)
     }
 
     "if there is a failure response from the lockout service" in withController { controller =>
       setupMockLockStatusFailureResponse(arn)
 
-      val r = request.buildRequest(TestModels.testClientDetails)
+      val r = request.buildRequest(Some(TestModels.testClientDetails))
 
       val result = call(controller, r)
 
@@ -188,7 +187,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
       "AgentQualificationService returned UnQualifiedAgent" should {
         s"redirect user to ${controllers.agent.routes.NoClientRelationshipController.show.url}" in withController { controller =>
-          mockOrchestrateAgentQualificationSuccess(arn, nino, utr, preExistingRelationship = false)
+          mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr), preExistingRelationship = false)
           setupMockNotLockedOut(arn)
 
           val result = await(callSubmit(controller))
@@ -203,8 +202,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         "the user has a utr" when {
           "the client is eligible and has no prepop and prepop is turned on" should {
             s"redirect user to ${controllers.agent.routes.HomeController.index.url}" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
-              mockGetEligibilityStatus(utr)(Future.successful(eligibleWithoutPrePop))
+              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+              mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
               setupMockNotLockedOut(arn)
 
               enable(PrePopulate)
@@ -226,8 +225,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           }
           "the client is eligible and has prepop and the feature switch is on" should {
             s"redirect user to ${controllers.agent.routes.HomeController.index.url} after saving prepop data" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
-              mockGetEligibilityStatus(utr)(Future.successful(eligibleWithPrePop))
+              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+              mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
               mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
               setupMockPrePopulateSave(testReference)
               setupMockNotLockedOut(arn)
@@ -251,8 +250,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           }
           "the client is eligible and has prepop and the feature switch is off" should {
             s"redirect user to ${controllers.agent.routes.HomeController.index.url} after saving prepop data" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
-              mockGetEligibilityStatus(utr)(Future.successful(eligibleWithPrePop))
+              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+              mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
               mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
               setupMockPrePopulateSave(testReference)
               setupMockNotLockedOut(arn)
@@ -274,8 +273,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           }
           "the client is ineligible" should {
             s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show.url}" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
-              mockGetEligibilityStatus(utr)(Future.successful(ineligible))
+              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+              mockGetEligibilityStatus(utr)(Future.successful(Right(ineligible)))
               setupMockNotLockedOut(arn)
 
               val result = await(callSubmit(controller))
@@ -357,8 +356,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
     "they matched a client after failing previously" should {
       s"have the ${ITSASessionKeys.FailedClientMatching} removed from session" in withController { controller =>
-        mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
-        mockGetEligibilityStatus(utr)(Future.successful(eligibleWithoutPrePop))
+        mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+        mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
         setupMockNotLockedOut(arn)
 
         val result = await(controller.submit()(request.withSession(ITSASessionKeys.FailedClientMatching -> 1.toString)))

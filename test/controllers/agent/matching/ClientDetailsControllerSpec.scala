@@ -145,7 +145,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             status(goodResult) must be(Status.SEE_OTHER)
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show.url)
 
-            await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
+            await(goodResult).verifyStoredUserDetailsIs(Some(testClientDetails))(r)
           }
 
         }
@@ -158,14 +158,14 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
             val newUserDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT")
 
-            lazy val r = userMatchingRequest.buildRequest(newUserDetails)
+            lazy val r = userMatchingRequest.buildRequest(Some(newUserDetails))
 
             val goodResult = callSubmit(r)(isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show.url)
 
-            await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
+            await(goodResult).verifyStoredUserDetailsIs(Some(testClientDetails))(r)
           }
 
         }
@@ -176,14 +176,14 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
             setupMockNotLockedOut(testARN)
 
-            lazy val r = userMatchingRequest.buildRequest(testClientDetails)
+            lazy val r = userMatchingRequest.buildRequest(Some(testClientDetails))
 
             val goodResult = callSubmit(r)(isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
             redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show.url)
 
-            await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
+            await(goodResult).verifyStoredUserDetailsIs(Some(testClientDetails))(r)
           }
 
         }

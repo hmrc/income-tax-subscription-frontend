@@ -16,15 +16,14 @@
 
 package services.agent
 
-import javax.inject.{Inject, Singleton}
 import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import models.common.subscription.SubscriptionSuccess
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request}
 import services.{AuditingService, SubscriptionService, UserMatchingService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.Implicits._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait UnqualifiedAgent
@@ -64,7 +63,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
         case Right(None) =>
           auditingService.audit(ClientMatchingAuditModel(agentReferenceNumber, clientDetails, isSuccess = false))
           Left(NoClientMatched)
-      }.recoverWith { case _ => Left(UnexpectedFailure) }
+      }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
   }
 
   private[services]
@@ -76,7 +75,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
           case Right(Some(SubscriptionSuccess(_))) => Left(ClientAlreadySubscribed)
         }
     } yield agentClientResponse
-  }.recoverWith { case _ => Left(UnexpectedFailure) }
+  }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
 
   private[services]
   def checkClientRelationship(agentReferenceNumber: String,
@@ -87,13 +86,13 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
     } yield
       if (isPreExistingRelationship) Right(matchedClient)
       else Right(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
-  }.recoverWith { case _ => Left(UnexpectedFailure) }
+  }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
 
   private implicit class Util[A, B](first: Future[Either[A, B]]) {
     def flatMapRight(next: B => Future[Either[A, B]]): Future[Either[A, B]] =
       first.flatMap {
         case Right(v) => next(v)
-        case left => left
+        case left => Future.successful(left)
       }
   }
 

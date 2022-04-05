@@ -85,7 +85,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         status(result) must be(Status.OK)
 
         await(result)
-        verifySubscriptionDetailsFetch(IncomeSource, 1)
+        verifySubscriptionDetailsFetch(IncomeSource, Some(1))
         verifySubscriptionDetailsSave(IncomeSource, 0)
       }
     }
@@ -112,7 +112,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -126,7 +126,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get must be(controllers.agent.business.routes.PropertyStartDateController.show().url)
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
 
@@ -140,7 +140,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodRequest).get must be(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, Some(1))
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
@@ -153,7 +153,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             status(badRequest) must be(Status.BAD_REQUEST)
 
             await(badRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 0)
+            verifySubscriptionDetailsFetch(IncomeSource, Some(0))
             verifySubscriptionDetailsSave(IncomeSource, 0)
           }
         }
@@ -181,7 +181,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
 
             await(goodRequest)
-            verifySubscriptionDetailsFetch(IncomeSource, 1)
+            verifySubscriptionDetailsFetch(IncomeSource, Some(1))
             verifySubscriptionDetailsSave(IncomeSource, 1)
           }
         }
@@ -206,7 +206,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -221,7 +221,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-            selectedTaxYear = testSelectedTaxYearCurrent
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
           )))
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = true)
@@ -230,7 +230,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -239,13 +239,13 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       "the user select self-employment and self-employment journey ( include tax year to sign up) has completed before" should {
         s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show.url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
-          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
+          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSummaryDataSelfEmploymentData))
+          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(None)
           mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = testSelectedTaxYearCurrent
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
           )))
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
@@ -254,7 +254,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -262,11 +262,11 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       "the user select self-employment and UK property and both journeys have been completed before" should {
         s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
-          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
+          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSummaryDataSelfEmploymentData))
+          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(Some(PropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
@@ -279,7 +279,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -290,8 +290,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
@@ -304,7 +304,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -313,12 +313,12 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       "the user select self-employment and overseas property and both journeys have been completed before" should {
         s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
-          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
+          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSummaryDataSelfEmploymentData))
+          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(None)
           mockFetchOverseasProperty(Some(OverseasPropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)),
@@ -331,7 +331,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -339,15 +339,15 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       "the user select self-employment, UK property and overseas property and all three journeys have been completed before" should {
         s"return an SEE OTHER (303)" + s" ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSummaryDataSelfEmploymentData)
-          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
+          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSummaryDataSelfEmploymentData))
+          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(Some(PropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchOverseasProperty(Some(OverseasPropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
@@ -360,7 +360,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -371,8 +371,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchOverseasProperty(None)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
@@ -385,7 +385,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -397,8 +397,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(None)
           mockFetchOverseasProperty(Some(OverseasPropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true))
@@ -410,7 +410,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -421,12 +421,12 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchOverseasProperty(Some(OverseasPropertyModel(
-            accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-            startDate = testPropertyStartDateModel.startDate
+            accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+            startDate = Some(testPropertyStartDateModel.startDate)
           )))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true))
@@ -438,7 +438,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -446,8 +446,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       "the user selects self-employment and no UK property or overseas property and self-employment journey has been completed before" should {
         s"redirect to ${controllers.agent.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(testSelfEmploymentData)
-          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(testAccountingMethod)
+          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSelfEmploymentData))
+          mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
             selectedTaxYear = Some(testSelectedTaxYearCurrent)
@@ -461,7 +461,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           redirectLocation(goodRequest).get mustBe controllers.agent.routes.CheckYourAnswersController.show.url
 
           await(goodRequest)
-          verifySubscriptionDetailsFetch(IncomeSource, 1)
+          verifySubscriptionDetailsFetch(IncomeSource, Some(1))
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
@@ -475,7 +475,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifySubscriptionDetailsFetch(IncomeSource, 0)
+        verifySubscriptionDetailsFetch(IncomeSource, Some(0))
         verifySubscriptionDetailsSave(IncomeSource, 0)
       }
     }

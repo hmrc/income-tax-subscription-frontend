@@ -31,6 +31,6 @@
     <h1 class="govuk-heading-l">@messages("user-details-error.heading")</h1>
     <p class="govuk-body">@messages("user-details-error.line_1")</p>
     @form(action = postAction) {
-        @continueButton(messages("base.go_back"))
+        @continueButton(Some(messages("base.go_back")))
     }
 }

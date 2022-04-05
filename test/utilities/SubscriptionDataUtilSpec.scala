@@ -53,13 +53,13 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "the data returns both completed self employments data and self employments accounting Method" should {
           "successfully populate the CreateIncomeSourcesModel with self employment income" in {
 
-            def result: CreateIncomeSourcesModel = testCacheMap(testIncomeSourceBusiness, testBusinessName, testSelectedTaxYearCurrent,
-              testAccountingMethod).createIncomeSources(testNino, testSelfEmploymentData, testAccountingMethod)
+            def result: CreateIncomeSourcesModel = testCacheMap(Some(testIncomeSourceBusiness), Some(testBusinessName), Some(testSelectedTaxYearCurrent),
+              Some(testAccountingMethod)).createIncomeSources(testNino, Some(testSelfEmploymentData), Some(testAccountingMethod))
 
             result shouldBe
               CreateIncomeSourcesModel(
                 testNino,
-                testSoleTraderBusinesses
+                Some(testSoleTraderBusinesses)
               )
           }
         }
@@ -67,8 +67,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "incomplete selected tax year returned" should {
           "throw InternalServerException" in {
 
-            def result: CreateIncomeSourcesModel = testCacheMap(testIncomeSourceBusiness, businessName = None, testSelectedTaxYearCurrent,
-              testAccountingMethod).createIncomeSources(testNino, testUncompletedSelfEmploymentData, testAccountingMethod)
+            def result: CreateIncomeSourcesModel = testCacheMap(Some(testIncomeSourceBusiness), businessName = None, Some(testSelectedTaxYearCurrent),
+              Some(testAccountingMethod)).createIncomeSources(testNino, Some(testUncompletedSelfEmploymentData), Some(testAccountingMethod))
 
             intercept[InternalServerException](result).message mustBe
               "[SubscriptionDataUtil][createIncomeSource] - not all self employment businesses are complete"
@@ -79,8 +79,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "incomplete self employment data and self employment accounting method are returned" should {
           "throw InternalServerException" in {
 
-            def result: CreateIncomeSourcesModel = testCacheMap(testIncomeSourceBusiness, businessName = None, AccountingYearModel(Current),
-              testAccountingMethod).createIncomeSources(testNino, testUncompletedSelfEmploymentData, testAccountingMethod)
+            def result: CreateIncomeSourcesModel = testCacheMap(Some(testIncomeSourceBusiness), businessName = None, Some(AccountingYearModel(Current)),
+              Some(testAccountingMethod)).createIncomeSources(testNino, Some(testUncompletedSelfEmploymentData), Some(testAccountingMethod))
 
             intercept[InternalServerException](result).message mustBe
               "[SubscriptionDataUtil][createIncomeSources] - Could not create the create income sources model as the user has not confirmed their selected tax year"
@@ -91,8 +91,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "some self employments data are returned but not self employments accounting method data" should {
           "throw InternalServerException" in {
 
-            def result: CreateIncomeSourcesModel = testCacheMap(testIncomeSourceBusiness, testBusinessName, testSelectedTaxYearCurrent,
-              accountingMethod = None).createIncomeSources(testNino, testSelfEmploymentData)
+            def result: CreateIncomeSourcesModel = testCacheMap(Some(testIncomeSourceBusiness), Some(testBusinessName), Some(testSelectedTaxYearCurrent),
+              accountingMethod = None).createIncomeSources(testNino, Some(testSelfEmploymentData))
 
             intercept[InternalServerException](result).message mustBe
               "[SubscriptionDataUtil][createIncomeSource] - self employment businesses found without any accounting method"
@@ -104,8 +104,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "some self employments accounting method data are returned but not self employments data" should {
           "throw InternalServerException" in {
 
-            def result: CreateIncomeSourcesModel = testCacheMap(testIncomeSourceBusiness, businessName = None, testSelectedTaxYearCurrent,
-              testAccountingMethod).createIncomeSources(testNino, selfEmployments = None, testAccountingMethod)
+            def result: CreateIncomeSourcesModel = testCacheMap(Some(testIncomeSourceBusiness), businessName = None, Some(testSelectedTaxYearCurrent),
+              Some(testAccountingMethod)).createIncomeSources(testNino, selfEmployments = None, Some(testAccountingMethod))
 
             intercept[InternalServerException](result).message mustBe
               "[SubscriptionDataUtil][createIncomeSource] - self employment accounting method found without any self employments"
@@ -116,7 +116,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "both self employments data and self employments accounting method data are not returned" should {
           "throw IllegalArgumentException due to no any income source has been added into the model" in {
 
-            def result: CreateIncomeSourcesModel = testCacheMap(testIncomeSourceBusiness, businessName = None, testSelectedTaxYearCurrent,
+            def result: CreateIncomeSourcesModel = testCacheMap(Some(testIncomeSourceBusiness), businessName = None, Some(testSelectedTaxYearCurrent),
               accountingMethod = None).createIncomeSources(testNino)
 
             intercept[IllegalArgumentException] {
@@ -132,9 +132,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "successfully populate the CreateIncomeSourcesModel with uk property income" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            incomeSource = testIncomeSourceProperty,
-            selectedTaxYear = testSelectedTaxYearCurrent
-          ).createIncomeSources(testNino, property = testFullPropertyModel)
+            incomeSource = Some(testIncomeSourceProperty),
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
+          ).createIncomeSources(testNino, property = Some(testFullPropertyModel))
 
           result shouldBe
             CreateIncomeSourcesModel(
@@ -151,9 +151,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "throw InternalServerException" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            incomeSource = testIncomeSourceProperty,
-            selectedTaxYear = testSelectedTaxYearCurrent
-          ).createIncomeSources(testNino, property = testFullPropertyModel.copy(accountingMethod = None))
+            incomeSource = Some(testIncomeSourceProperty),
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
+          ).createIncomeSources(testNino, property = Some(testFullPropertyModel.copy(accountingMethod = None)))
 
           intercept[InternalServerException](result).message mustBe
             "[SubscriptionDataUtil][createIncomeSource] - uk property accounting method missing"
@@ -165,9 +165,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "throw InternalServerException" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            incomeSource = testIncomeSourceProperty,
-            selectedTaxYear = testSelectedTaxYearCurrent
-          ).createIncomeSources(testNino, property = testFullPropertyModel.copy(startDate = None))
+            incomeSource = Some(testIncomeSourceProperty),
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
+          ).createIncomeSources(testNino, property = Some(testFullPropertyModel.copy(startDate = None)))
 
           intercept[InternalServerException](result).message mustBe
             "[SubscriptionDataUtil][createIncomeSource] - uk property start date missing"
@@ -179,9 +179,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "throw IllegalArgumentException due to no any income source has been added into the model" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            incomeSource = testIncomeSourceProperty,
-            selectedTaxYear = testSelectedTaxYearCurrent
-          ).createIncomeSources(testNino, property = testFullPropertyModel.copy(accountingMethod = None, startDate = None))
+            incomeSource = Some(testIncomeSourceProperty),
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
+          ).createIncomeSources(testNino, property = Some(testFullPropertyModel.copy(accountingMethod = None, startDate = None)))
 
           intercept[IllegalArgumentException] {
             result
@@ -196,9 +196,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "successfully populate the CreateIncomeSourcesModel with overseas property income" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            incomeSource = testIncomeSourceOverseasProperty,
-            selectedTaxYear = testSelectedTaxYearCurrent,
-          ).createIncomeSources(testNino, overseasProperty = testFullOverseasPropertyModel)
+            incomeSource = Some(testIncomeSourceOverseasProperty),
+            selectedTaxYear = Some(testSelectedTaxYearCurrent),
+          ).createIncomeSources(testNino, overseasProperty = Some(testFullOverseasPropertyModel))
 
           result shouldBe
             CreateIncomeSourcesModel(
@@ -215,9 +215,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "throw InternalServerException" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            incomeSource = testIncomeSourceOverseasProperty,
-            selectedTaxYear = testSelectedTaxYearCurrent,
-          ).createIncomeSources(testNino, overseasProperty = testFullOverseasPropertyModel.copy(accountingMethod = None))
+            incomeSource = Some(testIncomeSourceOverseasProperty),
+            selectedTaxYear = Some(testSelectedTaxYearCurrent),
+          ).createIncomeSources(testNino, overseasProperty = Some(testFullOverseasPropertyModel.copy(accountingMethod = None)))
 
 
           intercept[InternalServerException](result).message mustBe
@@ -230,9 +230,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "throw InternalServerException" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            incomeSource = testIncomeSourceOverseasProperty,
-            selectedTaxYear = testSelectedTaxYearCurrent
-          ).createIncomeSources(testNino, overseasProperty = testFullOverseasPropertyModel.copy(startDate = None))
+            incomeSource = Some(testIncomeSourceOverseasProperty),
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
+          ).createIncomeSources(testNino, overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None)))
 
           intercept[InternalServerException](result).message mustBe
             "[SubscriptionDataUtil][createIncomeSource] - oversea property start date missing"
@@ -244,9 +244,9 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "throw IllegalArgumentException due to no any income source has been added into the model" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            incomeSource = testIncomeSourceProperty,
-            selectedTaxYear = testSelectedTaxYearCurrent
-          ).createIncomeSources(testNino, overseasProperty = testFullOverseasPropertyModel.copy(accountingMethod = None, startDate = None))
+            incomeSource = Some(testIncomeSourceProperty),
+            selectedTaxYear = Some(testSelectedTaxYearCurrent)
+          ).createIncomeSources(testNino, overseasProperty = Some(testFullOverseasPropertyModel.copy(accountingMethod = None, startDate = None)))
 
           intercept[IllegalArgumentException] {
             result
@@ -262,16 +262,16 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         "successfully populate the CreateIncomeSourcesModel with all three types of income" in {
 
           def result: CreateIncomeSourcesModel = testCacheMap(
-            testIncomeSourceBusiness,
-            testBusinessName,
-            testSelectedTaxYearCurrent,
-            testAccountingMethod
-          ).createIncomeSources(testNino, testSelfEmploymentData, testAccountingMethod, testFullPropertyModel, testFullOverseasPropertyModel)
+            Some(testIncomeSourceBusiness),
+            Some(testBusinessName),
+            Some(testSelectedTaxYearCurrent),
+            Some(testAccountingMethod)
+          ).createIncomeSources(testNino, Some(testSelfEmploymentData), Some(testAccountingMethod), Some(testFullPropertyModel), Some(testFullOverseasPropertyModel))
 
           result shouldBe
             CreateIncomeSourcesModel(
               testNino,
-              testSoleTraderBusinesses,
+              Some(testSoleTraderBusinesses),
               Some(testUkProperty),
               Some(testOverseasProperty)
             )
@@ -283,52 +283,52 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
 
   "The getSummary should populate the Summary model correctly" when {
     "income source is just uk property" in {
-      testCacheMapCustom(incomeSource = testIncomeSourceProperty).getSummary(property = testFullPropertyModel.copy(startDate = None)) shouldBe
+      testCacheMapCustom(incomeSource = Some(testIncomeSourceProperty)).getSummary(property = Some(testFullPropertyModel.copy(startDate = None))) shouldBe
         IndividualSummary(
-          incomeSource = testIncomeSourceProperty,
-          accountingMethodProperty = testAccountingMethodProperty,
-          selectedTaxYear = testSelectedTaxYearNext
+          incomeSource = Some(testIncomeSourceProperty),
+          accountingMethodProperty = Some(testAccountingMethodProperty),
+          selectedTaxYear = Some(testSelectedTaxYearNext)
         )
     }
     
     "income source is just business" in {
-      testCacheMapCustom(incomeSource = testIncomeSourceBusiness).getSummary() shouldBe
+      testCacheMapCustom(incomeSource = Some(testIncomeSourceBusiness)).getSummary() shouldBe
         IndividualSummary(
-          incomeSource = testIncomeSourceBusiness,
-          businessName = testBusinessName,
-          selectedTaxYear = testSelectedTaxYearNext,
-          accountingMethod = testAccountingMethod
+          incomeSource = Some(testIncomeSourceBusiness),
+          businessName = Some(testBusinessName),
+          selectedTaxYear = Some(testSelectedTaxYearNext),
+          accountingMethod = Some(testAccountingMethod)
         )
     }
 
     "income source is only foreign property" in {
       testCacheMapCustom(
-        incomeSource = testIncomeSourceOverseasProperty
-      ).getSummary(overseasProperty = testFullOverseasPropertyModel.copy(startDate = None)) shouldBe
+        incomeSource = Some(testIncomeSourceOverseasProperty)
+      ).getSummary(overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None))) shouldBe
         IndividualSummary(
-          incomeSource = testIncomeSourceOverseasProperty,
-          selectedTaxYear = testSelectedTaxYearNext,
-          overseasAccountingMethodProperty = testOverseasAccountingMethodProperty
+          incomeSource = Some(testIncomeSourceOverseasProperty),
+          selectedTaxYear = Some(testSelectedTaxYearNext),
+          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
         )
     }
 
     "income source is all property and business" in {
-      testCacheMapCustom(incomeSource = testIncomeSourceAll).getSummary(
+      testCacheMapCustom(incomeSource = Some(testIncomeSourceAll)).getSummary(
         selfEmployments = Some(testSelfEmploymentData),
         selfEmploymentsAccountingMethod = Some(testAccountingMethod),
         property = Some(testFullPropertyModel),
         overseasProperty = Some(testFullOverseasPropertyModel)
       ) shouldBe
         IndividualSummary(
-          incomeSource = testIncomeSourceAll,
-          businessName = testBusinessName,
-          accountingMethod = testAccountingMethod,
-          accountingMethodProperty = testAccountingMethodProperty,
-          propertyStartDate = testPropertyStartDateModel,
-          overseasAccountingMethodProperty = testOverseasAccountingMethodProperty,
-          overseasPropertyStartDate = testOverseasPropertyStartDateModel,
-          selectedTaxYear = testSelectedTaxYearNext,
-          selfEmployments = testSelfEmploymentData
+          incomeSource = Some(testIncomeSourceAll),
+          businessName = Some(testBusinessName),
+          accountingMethod = Some(testAccountingMethod),
+          accountingMethodProperty = Some(testAccountingMethodProperty),
+          propertyStartDate = Some(testPropertyStartDateModel),
+          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty),
+          overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel),
+          selectedTaxYear = Some(testSelectedTaxYearNext),
+          selfEmployments = Some(testSelfEmploymentData)
         )
     }
     "income source is neither property or business" in {
@@ -342,8 +342,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         incomeSource = Some(testAgentIncomeSourceProperty)
       ).getAgentSummary(
         selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
-        property = testFullPropertyModel
+        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
+        property = Some(testFullPropertyModel)
       ) shouldBe AgentSummary(
         incomeSource = Some(testAgentIncomeSourceProperty),
         selectedTaxYear = Some(AccountingYearModel(Next)),
@@ -358,7 +358,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       testCacheMapCustom(
         incomeSource = Some(testAgentIncomeSourceBusiness)
       ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = testAccountingMethodAccrual
+        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual)
       ) shouldBe AgentSummary(
         incomeSource = Some(testAgentIncomeSourceBusiness),
         selectedTaxYear = Some(testSelectedTaxYearNext),
@@ -373,7 +373,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       testCacheMapCustom(
         incomeSource = Some(testAgentIncomeSourceForeignProperty),
       ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
         overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None)),
       ) shouldBe AgentSummary(
         incomeSource = Some(testAgentIncomeSourceForeignProperty),
@@ -389,15 +389,15 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       testCacheMapCustom(
         incomeSource = Some(testAgentIncomeSourceBusinessProperty)
       ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
-        property = testFullPropertyModel,
+        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
+        property = Some(testFullPropertyModel),
       ) shouldBe
         AgentSummary(
-          incomeSource = testAgentIncomeSourceBusinessProperty,
+          incomeSource = Some(testAgentIncomeSourceBusinessProperty),
           selectedTaxYear = Some(testSelectedTaxYearNext),
-          businessName = testBusinessName,
-          accountingMethod = testAccountingMethodAccrual,
-          accountingMethodProperty = testAccountingMethodProperty,
+          businessName = Some(testBusinessName),
+          accountingMethod = Some(testAccountingMethodAccrual),
+          accountingMethodProperty = Some(testAccountingMethodProperty),
           propertyStartDate = Some(testPropertyStartDateModel),
           selfEmployments = testSelfEmployments
         )
@@ -407,14 +407,14 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       testCacheMapCustom(
         incomeSource = Some(testAgentIncomeSourceBusinessOverseasProperty)
       ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
+        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
         overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None)),
       ) shouldBe
         AgentSummary(
-          incomeSource = testAgentIncomeSourceBusinessOverseasProperty,
-          businessName = testBusinessName,
+          incomeSource = Some(testAgentIncomeSourceBusinessOverseasProperty),
+          businessName = Some(testBusinessName),
           selectedTaxYear = Some(testSelectedTaxYearNext),
-          accountingMethod = testAccountingMethodAccrual,
+          accountingMethod = Some(testAccountingMethodAccrual),
           overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty),
           selfEmployments = testSelfEmployments
         )
@@ -424,8 +424,8 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       testCacheMapCustom(
         incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)
       ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = testAccountingMethodAccrual,
-        property = testFullPropertyModel,
+        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
+        property = Some(testFullPropertyModel),
         overseasProperty = Some(testFullOverseasPropertyModel),
       ) shouldBe AgentSummary(
         incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),

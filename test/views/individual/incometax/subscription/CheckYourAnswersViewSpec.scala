@@ -58,15 +58,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   val dateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   def customTestSummary(
-                         incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
-                         businessName: Option[BusinessNameModel] = testBusinessName,
+                         incomeSource: Option[IncomeSourceModel] = Some(testIncomeSourceBoth),
+                         businessName: Option[BusinessNameModel] = Some(testBusinessName),
                          selfEmployments: Option[Seq[SelfEmploymentData]] = Some(testSelfEmployments),
-                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
-                         accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
-                         propertyStartDate: Option[PropertyStartDateModel] = testPropertyStart,
+                         selectedTaxYear: Option[AccountingYearModel] = Some(testSelectedTaxYear),
+                         accountingMethod: Option[AccountingMethodModel] = Some(testAccountingMethod),
+                         propertyStartDate: Option[PropertyStartDateModel] = Some(testPropertyStart),
                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                         overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = testOverseasPropertyStart,
-                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = testOverseasAccountingPropertyModel
+                         overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = Some(testOverseasPropertyStart),
+                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = Some(testOverseasAccountingPropertyModel)
                        ): IndividualSummary = IndividualSummary(
     incomeSource = incomeSource,
     businessName = businessName,
@@ -133,9 +133,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     "has a form" which {
 
       "has a submit button" in {
-        val submit = document().select("button").last()
+        val submit = Option(document().select("button").last())
         submit.isEmpty mustBe false
-        submit.text mustBe MessageLookup.Summary.confirm_and_sign_up
+        submit.get.text mustBe MessageLookup.Summary.confirm_and_sign_up
       }
 
       s"has a post action to '${postAction.url}'" in {
@@ -183,9 +183,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 2,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
 
@@ -201,9 +201,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
+          expectedEditLink = Some(expectedEditLink),
           rowNo = 3,
-          expectedHiddenContent = expectedHiddenContent
+          expectedHiddenContent = Some(expectedHiddenContent)
         )
       }
 
@@ -220,12 +220,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
             sectionId = sectionId,
             expectedQuestion = expectedQuestion,
             expectedAnswer = expectedAnswer,
-            expectedEditLink = expectedEditLink,
+            expectedEditLink = Some(expectedEditLink),
             rowNo = 1,
-            expectedHiddenContent = expectedHiddenContent,
+            expectedHiddenContent = Some(expectedHiddenContent),
             testSummaryModel = customTestSummary(
-              incomeSource = TestModels.testIncomeSourceBusiness,
-              selectedTaxYear = TestModels.testSelectedTaxYearCurrent
+              incomeSource = Some(TestModels.testIncomeSourceBusiness),
+              selectedTaxYear = Some(TestModels.testSelectedTaxYearCurrent)
             )
           )
         }
@@ -239,12 +239,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
             sectionId = sectionId,
             expectedQuestion = expectedQuestion,
             expectedAnswer = expectedAnswer,
-            expectedEditLink = expectedEditLink,
+            expectedEditLink = Some(expectedEditLink),
             rowNo = 1,
-            expectedHiddenContent = expectedHiddenContent,
+            expectedHiddenContent = Some(expectedHiddenContent),
             testSummaryModel = customTestSummary(
-              incomeSource = TestModels.testIncomeSourceBusiness,
-              selectedTaxYear = TestModels.testSelectedTaxYearNext
+              incomeSource = Some(TestModels.testIncomeSourceBusiness),
+              selectedTaxYear = Some(TestModels.testSelectedTaxYearNext)
             )
           )
         }
@@ -261,9 +261,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
+          expectedEditLink = Some(expectedEditLink),
           rowNo = 4,
-          expectedHiddenContent = expectedHiddenContent
+          expectedHiddenContent = Some(expectedHiddenContent)
         )
       }
 
@@ -278,10 +278,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
+          expectedEditLink = Some(expectedEditLink),
           rowNo = 6,
-          expectedHiddenContent = expectedHiddenContent,
-          testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
+          expectedHiddenContent = Some(expectedHiddenContent),
+          testSummaryModel = customTestSummary(accountingMethodProperty = Some(testAccountingPropertyModel))
         )
       }
 
@@ -297,10 +297,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
+          expectedEditLink = Some(expectedEditLink),
           rowNo = 5,
-          expectedHiddenContent = expectedHiddenContent,
-          testSummaryModel = customTestSummary(propertyStartDate = testPropertyStart)
+          expectedHiddenContent = Some(expectedHiddenContent),
+          testSummaryModel = customTestSummary(propertyStartDate = Some(testPropertyStart))
         )
       }
 
@@ -315,10 +315,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
+          expectedEditLink = Some(expectedEditLink),
           rowNo = 6,
-          expectedHiddenContent = expectedHiddenContent,
-          testSummaryModel = customTestSummary(propertyStartDate = testPropertyStart)
+          expectedHiddenContent = Some(expectedHiddenContent),
+          testSummaryModel = customTestSummary(propertyStartDate = Some(testPropertyStart))
         )
       }
 
@@ -333,10 +333,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
           sectionId = sectionId,
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
-          expectedEditLink = expectedEditLink,
-          expectedHiddenContent = expectedHiddenContent,
+          expectedEditLink = Some(expectedEditLink),
+          expectedHiddenContent = Some(expectedHiddenContent),
           rowNo = 8,
-          testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
+          testSummaryModel = customTestSummary(accountingMethodProperty = Some(testAccountingPropertyModel))
         )
       }
     }

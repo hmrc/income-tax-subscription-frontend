@@ -39,7 +39,7 @@ class ClientDetailsLockoutViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1(testTime))
 
-    testPage.mustHaveSignOutButton(commonMessages.signOut, request.path)
+    testPage.mustHaveSignOutButton(commonMessages.signOut, Some(request.path))
 
   }
 }

@@ -111,7 +111,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     mockNinoAndUtrRetrieval()
                     mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
                     setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
+                    mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
 
                     enable(PrePopulate)
 
@@ -127,7 +127,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     mockNinoAndUtrRetrieval()
                     mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
                     setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithPrepopData))
+                    mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
                     mockRetrieveReferenceSuccess(testUtr)(testReference)
                     setupMockSubscriptionDetailsSaveFunctions()
                     setupMockPrePopulateSave(testReference)
@@ -146,7 +146,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     mockNinoAndUtrRetrieval()
                     mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
                     setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithPrepopData))
+                    mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
 
                     val result = await(testHomeController().index(fakeRequest))
                     status(result) must be(Status.SEE_OTHER)
@@ -168,7 +168,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockNinoRetrieval()
                   mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
                   setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
+                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
 
                   val result = await(testHomeController().index(fakeRequest))
 
@@ -184,7 +184,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockNinoRetrieval()
                   mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
                   setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
+                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
 
                   val result = testHomeController().index()(userMatchingRequest)
 
@@ -202,7 +202,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             mockNinoAndUtrRetrieval()
             mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
             setupMockGetSubscriptionNotFound(testNino)
-            mockGetEligibilityStatus(testUtr)(Future.successful(ineligible))
+            mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
 
             val result = await(testHomeController().index(fakeRequest))
             status(result) mustBe SEE_OTHER
@@ -245,7 +245,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockUtrRetrieval()
                 mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
                 setupMockGetSubscriptionNotFound(testNino)
-                mockGetEligibilityStatus(testUtr)(Future.successful(eligibleWithoutPrepopData))
+                mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
 
                 val result = await(testHomeController().index(fakeRequest))
                 status(result) must be(Status.SEE_OTHER)
@@ -260,7 +260,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             mockUtrRetrieval()
             mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
             setupMockGetSubscriptionNotFound(testNino)
-            mockGetEligibilityStatus(testUtr)(Future.successful(ineligible))
+            mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
 
             val result = await(testHomeController().index(fakeRequest))
             status(result) mustBe SEE_OTHER

@@ -28,7 +28,7 @@ import utilities.individual.TestConstants.{testFirstName, testLastName, testNino
 
 import java.time.LocalDate
 
-object TestModels extends Implicits {
+object TestModels {
 
   import SubscriptionDataKeys._
 
@@ -83,34 +83,44 @@ object TestModels extends Implicits {
 
   lazy val testCacheMap: CacheMap =
     testCacheMap(
-      incomeSource = testAgentIncomeSourceBusinessProperty,
-      businessName = testBusinessName,
-      selectedTaxYear = testSelectedTaxYearNext,
-      accountingMethod = testAccountingMethod
+      incomeSource = Some(testAgentIncomeSourceBusinessProperty),
+      businessName = Some(testBusinessName),
+      selectedTaxYear = Some(testSelectedTaxYearNext),
+      accountingMethod = Some(testAccountingMethod)
     )
 
   lazy val testCacheMapIndiv: CacheMap =
     testCacheMap(
-      incomeSource = testIncomeSourceBoth,
-      businessName = testBusinessName,
-      selectedTaxYear = testSelectedTaxYearCurrent,
-      accountingMethod = testAccountingMethod
+      incomeSource = Some(testIncomeSourceBoth),
+      businessName = Some(testBusinessName),
+      selectedTaxYear = Some(testSelectedTaxYearCurrent),
+      accountingMethod = Some(testAccountingMethod)
     )
 
-  def testCacheMapCustom(incomeSource: Option[IncomeSourceModel] = testAgentIncomeSourceBusinessProperty,
-                         businessName: Option[BusinessNameModel] = testBusinessName,
-                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
-                         accountingMethod: Option[AccountingMethodModel] = testAccountingMethod): CacheMap =
+  def testCacheMapCustom(incomeSource: Option[IncomeSourceModel] = Some(testAgentIncomeSourceBusinessProperty),
+                         businessName: Option[BusinessNameModel] = Some(testBusinessName),
+                         selectedTaxYear: Option[AccountingYearModel] = Some(testSelectedTaxYearNext),
+                         accountingMethod: Option[AccountingMethodModel] = Some(testAccountingMethod)): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
       businessName = businessName,
       selectedTaxYear = selectedTaxYear,
       accountingMethod = accountingMethod)
 
-  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
-                   businessName: Option[BusinessNameModel] = None,
-                   selectedTaxYear: Option[AccountingYearModel] = None,
-                   accountingMethod: Option[AccountingMethodModel] = None): CacheMap = {
+    def testCacheMap(incomeSource: IncomeSourceModel,
+                     businessName: BusinessNameModel,
+                     selectedTaxYear: AccountingYearModel,
+                     accountingMethod: AccountingMethodModel): CacheMap = testCacheMap(
+      Some(incomeSource),
+      Some(businessName),
+      Some(selectedTaxYear),
+      Some(accountingMethod)
+    )
+
+    def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
+                     businessName: Option[BusinessNameModel] = None,
+                     selectedTaxYear: Option[AccountingYearModel] = None,
+                     accountingMethod: Option[AccountingMethodModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
@@ -144,39 +154,39 @@ object TestModels extends Implicits {
   lazy val testMatchNoUtrModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
 
   lazy val testSummaryDataProperty = IndividualSummary(
-    incomeSource = testIncomeSourceProperty,
-    accountingMethodProperty = testAccountingMethodProperty
+    incomeSource = Some(testIncomeSourceProperty),
+    accountingMethodProperty = Some(testAccountingMethodProperty)
   )
 
   lazy val testSummaryDataBusinessNextTaxYear = IndividualSummary(
-    incomeSource = testIncomeSourceBusiness,
-    businessName = testBusinessName,
-    selectedTaxYear = testSelectedTaxYearNext,
-    accountingMethod = testAccountingMethod
+    incomeSource = Some(testIncomeSourceBusiness),
+    businessName = Some(testBusinessName),
+    selectedTaxYear = Some(testSelectedTaxYearNext),
+    accountingMethod = Some(testAccountingMethod)
   )
 
   lazy val testSummaryDataBusiness = IndividualSummary(
-    incomeSource = testIncomeSourceBusiness,
-    businessName = testBusinessName,
+    incomeSource = Some(testIncomeSourceBusiness),
+    businessName = Some(testBusinessName),
     selectedTaxYear = None,
-    accountingMethod = testAccountingMethod
+    accountingMethod = Some(testAccountingMethod)
   )
 
   lazy val testSummaryDataSelfEmploymentData =
     Seq(SelfEmploymentData
     (
       id = testId,
-      businessStartDate = testBusinessStartDate,
-      businessName = testBusinessName,
+      businessStartDate = Some(testBusinessStartDate),
+      businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
       businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
     )
     )
 
   lazy val testSummaryData = IndividualSummary(
-    testIncomeSourceBoth,
-    businessName = testBusinessName,
-    accountingMethod = testAccountingMethod,
+    Some(testIncomeSourceBoth),
+    businessName = Some(testBusinessName),
+    accountingMethod = Some(testAccountingMethod),
     accountingMethodProperty = Some(testAccountingMethodProperty)
   )
 

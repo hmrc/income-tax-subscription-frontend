@@ -53,7 +53,7 @@ trait MockUserMatchingService extends UnitTestTrait with MockitoSugar with UserM
   }
 
   def mockUserMatchNotFound(userDetails: UserDetailsModel): Unit = {
-    mockUserMatch(userDetails)(Future.successful(None))
+    mockUserMatch(userDetails)(Future.successful(Right(None)))
   }
 
   def mockUserMatchNoUtr(userDetails: UserDetailsModel): Unit = {

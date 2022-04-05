@@ -66,7 +66,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
+        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
 
       }
     }
@@ -80,7 +80,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
+        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
 
       }
     }

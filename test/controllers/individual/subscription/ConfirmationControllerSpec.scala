@@ -79,9 +79,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "the user is in confirmation journey state" should {
       "get the ID from Subscription Details  if the user is enrolled" in {
         mockAuthEnrolled()
-        mockFetchAllFromSubscriptionDetails(testCacheMap)
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
 
-        when(mockSignUpComplete(ArgumentMatchers.eq(testSelectedTaxYearNext.accountingYear), ArgumentMatchers.any())
+        when(mockSignUpComplete(ArgumentMatchers.eq(Some(testSelectedTaxYearNext.accountingYear)), ArgumentMatchers.any())
         (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime))
@@ -98,7 +98,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       }
 
       "return not found if the user is not enrolled" in {
-        mockFetchSubscriptionIdFromSubscriptionDetails("testId")
+        mockFetchSubscriptionIdFromSubscriptionDetails(Some("testId"))
         val result = TestConfirmationController.show(subscriptionRequest)
 
         intercept[NotFoundException](await(result)).message mustBe "AuthPredicates.enrolledPredicate"

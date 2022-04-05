@@ -16,7 +16,6 @@
 
 package services.mocks
 
-import connectors.SPSConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -27,7 +26,6 @@ import utilities.UnitTestTrait
 trait MockSpsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockSpsService: SPSService = mock[SPSService]
-  val mockSpsConnector = mock[SPSConnector]
   val testEntityId = "testEntityId"
   val testMtditid = "testMtditid"
 
@@ -37,7 +35,9 @@ trait MockSpsService extends UnitTestTrait with MockitoSugar with BeforeAndAfter
   }
 
   def verifyConfirmPreferencesPostSpsConfirm(testEntityId: String, testMtditid: String, someCount: Option[Int]): Unit =
-    someCount map (count => verify(mockSpsService, times(count)).confirmPreferences(ArgumentMatchers.eq(testEntityId), ArgumentMatchers.eq(testMtditid))(
+    someCount foreach (count =>
+      verify(mockSpsService, times(count))
+        .confirmPreferences(ArgumentMatchers.eq(testEntityId), ArgumentMatchers.eq(Some(testMtditid)))(
       ArgumentMatchers.any()))
 
 }

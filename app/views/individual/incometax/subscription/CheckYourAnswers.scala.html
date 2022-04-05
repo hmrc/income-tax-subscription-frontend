@@ -62,7 +62,7 @@
     val rowName = IncomeSourceId
     val rowQuestion = messages("summary.income_source")
     val rowAnswer = incomeSourceText(incomeSourceModel)
-    val rowUrl = controllers.individual.incomesource.routes.IncomeSourceController.show(editMode = true).url
+    val rowUrl = Some(controllers.individual.incomesource.routes.IncomeSourceController.show(editMode = true).url)
     val hiddenContent = Some(messages("final.cya.change.incomereceived"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
 }
@@ -71,7 +71,7 @@
     val rowName = SelfEmploymentsId
     val rowQuestion = messages("summary.self_employments")
     val rowAnswer = businesses.count(_.isComplete).toString
-    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list"
+    val rowUrl = Some(appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list")
     val hiddenContent = Some(messages("final.cya.change.signupbusinessnumber"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -89,7 +89,7 @@
     val rowName = AccountingMethodId
     val rowQuestion = messages("summary.income_type")
     val rowAnswer = accountingMethodText(accountingModel.accountingMethod)
-    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl+"?isEditMode=true"
+    val rowUrl = Some(appConfig.incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl+"?isEditMode=true")
     val hiddenContent = Some(messages("final.cya.change.soletraderaccountingmethod"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -99,7 +99,7 @@
     val rowName = PropertyStartId
     val rowQuestion = messages("summary.property_start_date")
     val rowAnswer = propertyStartDateModel.startDate.toLocalDate.toLongDate
-    val rowUrl = controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url
+    val rowUrl = Some(controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url)
     val hiddenContent = Some(messages("final.cya.change.ukpropertystradestartdate"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -108,7 +108,7 @@
     val rowName = AccountingMethodPropertyId
     val rowQuestion = messages("summary.accounting_method_property")
     val rowAnswer = accountingMethodText(propertyModel.propertyAccountingMethod)
-    val rowUrl = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+    val rowUrl = Some(controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url)
     val hiddenContent = Some(messages("final.cya.change.ukpropertyaccountingmethod"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -118,7 +118,7 @@
     val rowName = OverseasPropertyStartId
     val rowQuestion = messages("summary.overseas_property_start_date")
     val rowAnswer = overseasPropertyStartDateModel.startDate.toLocalDate.toLongDate
-    val rowUrl = controllers.individual.business.routes.OverseasPropertyStartDateController.show(editMode = true).url
+    val rowUrl = Some(controllers.individual.business.routes.OverseasPropertyStartDateController.show(editMode = true).url)
     val hiddenContent = Some(messages("final.cya.change.overseaspropertytradestartdate"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -127,12 +127,12 @@
     val rowName = AccountingMethodForeignPropertyId
     val rowQuestion = messages("summary.accounting_method_foreign_property")
     val rowAnswer = accountingMethodText(overseasPropertyModel.overseasPropertyAccountingMethod)
-    val rowUrl = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
+    val rowUrl = Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url)
     val hiddenContent = Some(messages("final.cya.change.overseaspropertyaccountingmethod"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
-@principalMainTemplate(title = messages("summary.title"), backLink = backUrl) {
+@principalMainTemplate(title = messages("summary.title"), backLink = Some(backUrl)) {
 
 
 <h1 class="govuk-heading-l">@messages("summary.heading") <span

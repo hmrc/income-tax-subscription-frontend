@@ -61,7 +61,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       "display the overseas property accounting method view and return OK (200)" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
         mockFetchOverseasProperty(None)
-        mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
         mockOverseasPropertyAccountingMethod()
 
         status(result) must be(Status.OK)
@@ -75,7 +75,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         mockFetchOverseasProperty(Some(OverseasPropertyModel(
           accountingMethod = Some(Cash)
         )))
-        mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
         mockOverseasPropertyAccountingMethod()
 
         status(result) must be(Status.OK)
@@ -129,7 +129,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
-        mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
         mockOverseasPropertyAccountingMethod()
 
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
@@ -138,14 +138,14 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
         await(badRequest)
         verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 0)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(Some(0))
       }
     }
 
     "The back url is not in edit mode" when {
       "the user clicks the back link" should {
         "redirect to the Overseas Property Start Date page" in {
-          mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+          mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
           TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
             controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
         }
@@ -157,7 +157,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         "the user clicks the back link" should {
           "redirect to the agent check your answers page" in {
 
-            mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+            mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
             TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
               controllers.agent.routes.CheckYourAnswersController.show.url
           }
@@ -169,7 +169,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
           "redirect to the agent overseas property check your answers page" in {
 
             enable(SaveAndRetrieve)
-            mockFetchAllFromSubscriptionDetails(overseasPropertyOnlyIncomeSourceType)
+            mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
             TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
               controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
           }

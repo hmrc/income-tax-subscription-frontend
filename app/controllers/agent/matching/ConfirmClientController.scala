@@ -23,10 +23,10 @@ import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.agent.ITSASessionKeys
 import controllers.agent.ITSASessionKeys.FailedClientMatching
 import controllers.utils.ReferenceRetrieval
-import models.{EligibilityStatus, PrePopData}
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
+import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import play.twirl.api.Html
 import services._
@@ -39,7 +39,6 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
-import utilities.Implicits._
 
 @Singleton
 class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourClientDetails,
@@ -138,8 +137,8 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
       case Right(EligibilityStatus(true, _, Some(prepop))) if isEnabled(PrePopulate) => handlePrePopulation(nino, utr, prepop)
-      case Right(EligibilityStatus(true, _, _)) => goToHome(nino, utr)
-      case Right(EligibilityStatus(false, _, _)) => goToCannotTakePart
+      case Right(EligibilityStatus(true, _, _)) => Future.successful(goToHome(nino, utr))
+      case Right(EligibilityStatus(false, _, _)) => Future.successful(goToCannotTakePart)
 
       case Left(error: HttpConnectorError) =>
         throw new InternalServerException(s"Call to eligibility service failed with ${error.httpResponse}")

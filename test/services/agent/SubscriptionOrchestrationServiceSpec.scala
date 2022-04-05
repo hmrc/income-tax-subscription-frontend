@@ -46,7 +46,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
         mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
         val res = TestSubscriptionOrchestrationService.createSubscription(
           testARN, testNino, testUtr, testAgentSummaryData)
 
@@ -58,7 +58,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
         mockAgentSpsConnectorFailure(testARN, testUtr, testNino, testMTDID)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
         val res = TestSubscriptionOrchestrationService.createSubscription(
           testARN, testNino, testUtr, testAgentSummaryData)
 
@@ -85,7 +85,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.NoUsersFound)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Left(AutoEnrolmentService.NoUsersFound))
 
         await(res) mustBe Right(SubscriptionSuccess(testMTDID))
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 0)
@@ -106,7 +106,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
       "all services succeed" in {
         mockSignUpIncomeSourcesSuccess(testNino)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(AutoEnrolmentService.EnrolmentAssigned)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
         val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSources)
 
         await(res) mustBe testSubscriptionSuccess

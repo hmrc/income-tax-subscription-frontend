@@ -86,7 +86,7 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
       "the user selects to remove the business" in {
         enable(SaveAndRetrieve)
 
-        mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(DeleteSubscriptionDetailsSuccessResponse)
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
         val result: Result = TestRemoveUkPropertyController.submit(
           subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)

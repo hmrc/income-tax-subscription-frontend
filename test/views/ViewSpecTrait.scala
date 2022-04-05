@@ -43,11 +43,13 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     val element: Element
 
+
     // n.b. should not be made public since it is not a test nor does it return an ElementTest
     protected def getById(id: String): Element = {
-      val ele = element.getElementById(id)
-      if (ele.isEmpty) fail(s"unable to locate: $id")
-      ele
+      Option(element.getElementById(id)) match {
+        case None => fail(s"unable to locate: $id")
+        case Some(ele) => ele
+      }
     }
 
     def getById(name: String, id: String): ElementTest = {
@@ -86,11 +88,13 @@ trait ViewSpecTrait extends UnitTestTrait {
     // n.b. href must be call-by-name otherwise it may not be evaluated with the correct context-root
     def mustHaveALink(id: String, text: String, href: => String): Unit =
       s"$name have a link with text '$text' pointed to '$href'" in {
-        val link = element.getElementById(id)
-        if (link.isEmpty) fail(s"Unable to locate $id")
-        if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
-        link.attr("href") mustBe href
-        link.text() mustBe text
+        Option(element.getElementById(id)) match {
+          case None => fail(s"Unable to locate $id")
+          case Some(link) if !link.tagName().equals("a") => fail(s"The element with id=$id is not a link")
+          case Some(link) =>
+            link.attr("href") mustBe href
+            link.text() mustBe text
+        }
       }
 
     def mustHavePara(paragraph: String): Unit =
@@ -329,10 +333,12 @@ trait ViewSpecTrait extends UnitTestTrait {
         case Some(origin) => mustHaveALink(id, text, SignOutController.signOut.url)
         case _ =>
           s"$name have a link with text '$text' pointed to 'Sign Out'" in {
-            val link = element.getElementById(id)
-            if (link.isEmpty) fail(s"Unable to locate $id")
-            if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
-            link.text() mustBe text
+            Option(element.getElementById(id)) match {
+              case None => fail(s"Unable to locate $id")
+              case Some(link) =>
+                if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
+                link.text() mustBe text
+            }
           }
       }
     }
@@ -343,10 +349,11 @@ trait ViewSpecTrait extends UnitTestTrait {
         case Some(origin) => mustHaveALink(id, text, SignOutController.signOut.url)
         case _ =>
           s"$name have a link with text '$text' pointed to 'Sign Out'" in {
-            val link = element.getElementById(id)
-            if (link.isEmpty) fail(s"Unable to locate $id")
-            if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
-            link.text() mustBe text
+        Option(element.getElementById(id)) match {
+          case None => fail(s"Unable to locate $id")
+          case Some(link) if (!link.tagName().equals("a")) => fail(s"The element with id=$id is not a link")
+          case Some(link) => link.text() mustBe text
+        }
           }
       }
     }
@@ -408,8 +415,8 @@ trait ViewSpecTrait extends UnitTestTrait {
         fieldset.first().tag().toString mustBe "fieldset"
       }
       val date = selectHead(id, selector)
-      val numericPattern = "[0-9]*"
-      val inputMode = "numeric"
+      val numericPattern = Some("[0-9]*")
+      val inputMode = Some("numeric")
       date.mustHaveTextField(s"$id-dateDay", common.day, pattern = numericPattern, inputMode = inputMode)
       date.mustHaveTextField(s"$id-dateMonth", common.month, pattern = numericPattern, inputMode = inputMode)
       date.mustHaveTextField(s"$id-dateYear", common.year, pattern = numericPattern, inputMode = inputMode)
@@ -430,15 +437,14 @@ trait ViewSpecTrait extends UnitTestTrait {
     // n.b. element must be null-ary function to prevent evaluation at instantiation
     def apply(name: String, element: () => Element): ElementTest = {
       val n = name
-      val ele = element
-      if (ele.isEmpty) {
-        throw new IllegalArgumentException("creation of name failed: element is Empty")
+      Option(element) match {
+        case None => throw new IllegalArgumentException("creation of name failed: element is Empty")
+        case Some(ele) =>
+          new ElementTest {
+            override lazy val name: String = n
+            override lazy val element: Element = ele()
+          }
       }
-      new ElementTest {
-        override lazy val name: String = n
-        override lazy val element: Element = ele()
-      }
-
     }
 
   }
