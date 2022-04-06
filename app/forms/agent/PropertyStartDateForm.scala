@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import forms.formatters.NewDateModelMapping.dateModelMapping
+import forms.formatters.DateModelMapping.dateModelMapping
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import play.api.data.Form

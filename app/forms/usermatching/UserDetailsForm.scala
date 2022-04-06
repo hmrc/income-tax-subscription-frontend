@@ -16,7 +16,7 @@
 
 package forms.usermatching
 
-import forms.formatters.NewDateModelMapping
+import forms.formatters.DateModelMapping
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.Constraints._
 import forms.validation.utils.ConstraintUtil._
@@ -59,7 +59,7 @@ object UserDetailsForm {
       userFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       userLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       userNino -> default(text, "").verifying(emptyNino andThen validateNino),
-      userDateOfBirth -> NewDateModelMapping.dateModelMapping(isAgent = false, errorContext = "user_details.date_of_birth", None, None, None).verifying(dateInPast)
+      userDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = false, errorContext = "user_details.date_of_birth", None, None, None).verifying(dateInPast)
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 
