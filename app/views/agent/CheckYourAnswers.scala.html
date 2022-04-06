@@ -60,7 +60,7 @@
     val rowName = IncomeSourceId
     val rowQuestion = Messages("agent.summary.income_source")
     val rowAnswer = incomeSourceText(source)
-    val rowUrl = controllers.agent.routes.IncomeSourceController.show(editMode = true).url
+    val rowUrl = Some(controllers.agent.routes.IncomeSourceController.show(editMode = true).url)
     val hiddenContent = Some(Messages("final.cya.change.incomereceived"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
 }
@@ -69,7 +69,7 @@
     val rowName = SelfEmploymentsId
     val rowQuestion = Messages("agent.summary.self_employments")
     val rowAnswer = businesses.count(_.isComplete).toString
-    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-list"
+    val rowUrl = Some(appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-list")
     val hiddenContent = Some(Messages("final.cya.change.signupbusinessnumber"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -78,7 +78,7 @@
     val rowName = SelectedTaxYearId
     val rowQuestion = Messages("agent.summary.selected_year")
     val rowAnswer = accountingYearText(selectedTaxYear)
-    val rowUrl = controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url
+    val rowUrl = Some(controllers.agent.routes.WhatYearToSignUpController.show(editMode = true).url)
     val hiddenContent = Some(Messages("final.cya.change.taxyearstartfiling"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
 }
@@ -87,7 +87,7 @@
     val rowName = AccountingMethodId
     val rowQuestion = Messages("agent.summary.income_type")
     val rowAnswer = accountingMethodText(accountingModel.accountingMethod)
-    val rowUrl = appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method?isEditMode=true"
+    val rowUrl = Some(appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-accounting-method?isEditMode=true")
     val hiddenContent = Some(Messages("agent.final.cya.change.soletraderaccountingmethod"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -97,7 +97,7 @@
     val rowName = PropertyStartDateId
     val rowQuestion = messages("agent.summary.property_start_date")
     val rowAnswer = propertyStartDateModel.startDate.toLocalDate.toLongDate
-    val rowUrl = controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url
+    val rowUrl = Some(controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url)
     val hiddenContent = Some(Messages("agent.final.cya.change.ukpropertystradestartdate"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -106,7 +106,7 @@
     val rowName = AccountingMethodPropertyId
     val rowQuestion = messages("agent.summary.income_type_property")
     val rowAnswer = accountingMethodText(propertyModel.propertyAccountingMethod)
-    val rowUrl = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+    val rowUrl = Some(controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url)
     val hiddenContent = Some(Messages("agent.final.cya.change.ukpropertyaccountingmethod"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -116,7 +116,7 @@
     val rowName = OverseasPropertyStartDateId
     val rowQuestion = messages("agent.summary.overseas_property_start_date")
     val rowAnswer = overseasPropertyStartDateModel.startDate.toLocalDate.toLongDate
-    val rowUrl = controllers.agent.business.routes.OverseasPropertyStartDateController.show(editMode = true).url
+    val rowUrl = Some(controllers.agent.business.routes.OverseasPropertyStartDateController.show(editMode = true).url)
     val hiddenContent = Some(Messages("agent.final.cya.change.overseaspropertytradestartdate"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
@@ -125,12 +125,12 @@
     val rowName = OverseasAccountingMethodPropertyId
     val rowQuestion = messages("agent.summary.income_type_overseas_property")
     val rowAnswer = accountingMethodText(overseasPropertyModel.overseasPropertyAccountingMethod)
-    val rowUrl = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
+    val rowUrl = Some(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url)
     val hiddenContent = Some(Messages("agent.final.cya.change.overseaspropertyaccountingmethod"))
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
-@agentMainTemplate(title = Messages("agent.summary.title"), backLink = backUrl) {
+@agentMainTemplate(title = Messages("agent.summary.title"), backLink = Some(backUrl)) {
 
     <h1 class="govuk-heading-l">@Messages("agent.summary.heading") <span class="govuk-visually-hidden">@Messages("agent.summary.heading_hidden")</span>
     </h1>

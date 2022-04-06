@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait UnitTestTrait extends PlaySpec
   with GuiceOneServerPerSuite
-  with Implicits
   with I18nSupport
   with FeatureSwitching
   with OptionValues
@@ -52,7 +51,7 @@ trait UnitTestTrait extends PlaySpec
 
   implicit def futureWrapperUtil[T](err: Throwable): Future[T] = Future.failed(err)
 
-  implicit def futureOptionWrapperUtil[T](value: T): Future[Option[T]] = Future.successful(value)
+  implicit def futureOptionWrapperUtil[T](value: T): Future[Option[T]] = Future.successful(Option(value))
 
   implicit class HtmlFormatUtil(html: Html) {
     def doc: Document = Jsoup.parse(html.body)

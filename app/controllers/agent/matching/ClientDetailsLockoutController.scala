@@ -23,7 +23,6 @@ import play.api.i18n.Messages
 import play.api.mvc._
 import services.{AuditingService, AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.Implicits._
 import views.html.agent.ClientDetailsLockout
 
 import java.time.{Duration, LocalTime}
@@ -70,7 +69,7 @@ class ClientDetailsLockoutController @Inject()(val auditingService: AuditingServ
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(appConfig.matchingLockOutSeconds)
-        Ok(clientDetailsLockOut(durationText(duration)))
+        Future.successful(Ok(clientDetailsLockOut(durationText(duration))))
       }
   }
 

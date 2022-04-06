@@ -39,7 +39,7 @@ class NotEligibleForIncomeTaxSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.para1)
 
-    testPage.mustHaveSignOutButton(common.signOut, request.path)
+    testPage.mustHaveSignOutButton(common.signOut, Some(request.path))
 
   }
 

@@ -18,20 +18,18 @@
 
 package testonly.connectors.individual
 
-import java.time.LocalDate
-import java.time.format.{DateTimeFormatter, ResolverStyle}
-
 import connectors.RawResponseReads
-import javax.inject.{Inject, Singleton}
 import models.DateModel
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json, OFormat}
 import testonly.TestOnlyAppConfig
 import testonly.models.UserToStubModel
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import java.time.LocalDate
+import java.time.format.{DateTimeFormatter, ResolverStyle}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -97,8 +95,6 @@ object Request {
   implicit val format: OFormat[Request] = Json.format[Request]
 }
 
-import utilities.Implicits._
-
 @Singleton
 class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
                                       http: HttpClient)
@@ -118,7 +114,7 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
         response.status match {
           case CREATED =>
             logger.info("MatchingStubConnector.newUser successful")
-            true
+            Future.successful(true)
           case status =>
             logger.warn(
               s"""MatchingStubConnector.newUser failure:
@@ -127,7 +123,7 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
                  |   json: ${UserData.format.writes(userData): JsValue}
                  | }
                  | Response: status=$status, body=${response.body}""".stripMargin)
-            false
+            Future.successful(false)
         }
     }
   }

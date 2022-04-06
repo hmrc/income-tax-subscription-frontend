@@ -70,9 +70,9 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait with MockHttp {
     "optedIn" -> paperless
   )
 
-  val paperlessActivated: (Int, Option[JsValue]) = (OK, okResponseJson(true))
+  val paperlessActivated: (Int, Option[JsValue]) = (OK, Some(okResponseJson(true)))
 
-  val paperlessDeclined: (Int, Option[JsValue]) = (OK, okResponseJson(false))
+  val paperlessDeclined: (Int, Option[JsValue]) = (OK, Some(okResponseJson(false)))
 
   val paperlessPreconditionFailed: (Int, Option[JsValue]) = (PRECONDITION_FAILED, None)
 

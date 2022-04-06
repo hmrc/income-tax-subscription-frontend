@@ -62,7 +62,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   val token: String = TestConstants.testToken
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
-    ITSASessionKeys.JourneyStateKey -> UserMatching.name).buildRequest(userDetails)
+    ITSASessionKeys.JourneyStateKey -> UserMatching.name).buildRequest(Some(userDetails))
 
   "Calling the show action of the ConfirmUserController with an authorised user" should {
 
@@ -87,13 +87,13 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
       mockCheckYourUserDetails()
 
-      val r = request.buildRequest(userDetails)
+      val r = request.buildRequest(Some(userDetails))
 
       val result = call(r)
 
       status(result) must be(Status.OK)
 
-      await(result).verifyStoredUserDetailsIs(userDetails)(r)
+      await(result).verifyStoredUserDetailsIs(Some(userDetails))(r)
     }
   }
 
@@ -132,7 +132,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         mockUserMatchSuccess(userDetails)
         setupMockNotLockedOut(testCredId)
 
-        val r = request.buildRequest(userDetails)
+        val r = request.buildRequest(Some(userDetails))
 
         val result = await(callSubmit(r))
         status(result) mustBe SEE_OTHER
@@ -153,7 +153,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         mockUserMatchSuccessNoUtr(userDetails)
         setupMockNotLockedOut(testCredId)
 
-        val r = request.buildRequest(userDetails)
+        val r = request.buildRequest(Some(userDetails))
 
         val result = await(callSubmit(r))
 
@@ -175,7 +175,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           setupMockNotLockedOut(testCredId)
           setupIncrementNotLockedOut(testCredId, 0)
 
-          val r = request.buildRequest(userDetails)
+          val r = request.buildRequest(Some(userDetails))
 
           val result = await(callSubmit(r))
 
@@ -201,7 +201,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           setupIncrementLockedOut(testCredId, currentFailedMatches)
           mockDeleteAllFromSubscriptionDetails(HttpResponse(Status.OK, ""))
 
-          val r = requestWithLockout.buildRequest(userDetails)
+          val r = requestWithLockout.buildRequest(Some(userDetails))
 
           val result = await(TestConfirmUserController.submit()(r))
 

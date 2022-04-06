@@ -93,7 +93,7 @@ with MockIncomeTaxSubscriptionConnector
       "the user selects 'yes'" in withController { controller =>
         enable(SaveAndRetrieve)
         mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(testBusinesses))
-        mockSaveSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey, Seq())(PostSubscriptionDetailsSuccessResponse)
+        mockSaveSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey, Seq())(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), Yes)

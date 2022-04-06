@@ -84,7 +84,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
       "the user selects to remove the business" in withController { controller =>
         enable(SaveAndRetrieve)
 
-        mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(DeleteSubscriptionDetailsSuccessResponse)
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
         val result: Result = controller.submit(
           subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)

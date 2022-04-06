@@ -64,9 +64,9 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
     foreignProperty = false)
 
-  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceProperty)
+  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceProperty))
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceBoth))
 
 
   "show" when {
@@ -74,9 +74,9 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "display the property start date view and return OK (200)" in withController { controller =>
         lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchAllFromSubscriptionDetails(testCacheMap(
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
           incomeSource = Some(incomeSourceBoth)
-        ))
+        )))
         mockFetchProperty(None)
 
         status(result) must be(Status.OK)
@@ -88,9 +88,9 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
         enable(SaveAndRetrieve)
         lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchAllFromSubscriptionDetails(testCacheMap(
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
           incomeSource = None
-        ))
+        )))
         mockFetchProperty(None)
 
         status(result) must be(Status.OK)
@@ -101,9 +101,9 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "redirect to income source page" in withController { controller =>
         lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchAllFromSubscriptionDetails(testCacheMap(
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
           incomeSource = None
-        ))
+        )))
         mockFetchProperty(None)
 
         status(result) must be(Status.SEE_OTHER)
@@ -142,7 +142,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
           await(goodRequest)
           redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
 
-          verifyPropertySave(PropertyModel(startDate = Some(testValidMaxStartDate)))
+          verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxStartDate))))
         }
 
       }
@@ -159,7 +159,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
           await(goodRequest)
           redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
 
-          verifyPropertySave(PropertyModel(startDate = Some(testValidMaxStartDate)))
+          verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxStartDate))))
 
         }
       }
@@ -169,13 +169,13 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "save and retrieve is disabled" should {
         "redirect to agent final check your answer page" in withController { controller =>
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchProperty(testFullPropertyModel)
+          mockFetchProperty(Some(testFullPropertyModel))
           val goodRequest = callSubmit(controller, isEditMode = true)
           await(goodRequest)
           redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
 
 
-          verifyPropertySave(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false))
+          verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false)))
         }
       }
 
@@ -183,12 +183,12 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
         "redirect to agent uk property check your answers page" in withController { controller =>
           enable(SaveAndRetrieve)
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchProperty(testFullPropertyModel)
+          mockFetchProperty(Some(testFullPropertyModel))
           val goodRequest = callSubmit(controller, isEditMode = true)
           await(goodRequest)
           redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(true).url)
 
-          verifyPropertySave(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false))
+          verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false)))
 
         }
       }
@@ -196,9 +196,9 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "when there is an invalid submission with an error form" should {
       "redirect back to agent what income source page when incomeSource is missing" in withController { controller =>
-        mockFetchAllFromSubscriptionDetails(testCacheMap(
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
           incomeSource = None
-        ))
+        )))
 
         val badRequest = callSubmitWithErrorForm(controller, isEditMode = false)
 
@@ -218,14 +218,14 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
       "return bad request status (400)" in withController { controller =>
 
-        mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
+        mockFetchAllFromSubscriptionDetails(Some(propertyOnlyIncomeSourceType))
 
         val badRequest = callSubmitWithErrorForm(controller, isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsFetchAll(Some(1))
       }
     }
 
@@ -233,7 +233,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "save and retrieve is enabled" should {
         "redirect back to agent what income source page" in withController { controller =>
           enable(SaveAndRetrieve)
-          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+          controller.backUrl(isEditMode = false, Some(incomeSourcePropertyOnly)) mustBe
             controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
         }
       }
@@ -241,14 +241,14 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "save and retrieve is disabled" when {
         "there is at least one self-employed income source" should {
           "redirect back to agent business accounting method page" in withController { controller =>
-            controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
+            controller.backUrl(isEditMode = false, Some(incomeSourceBoth)) mustBe
               appConfig.incomeTaxSelfEmploymentsFrontendUrl + "client/details/business-accounting-method"
           }
         }
 
         "there is no self-employed income source" should {
           "redirect back to agent income source page" in withController { controller =>
-            controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+            controller.backUrl(isEditMode = false, Some(incomeSourcePropertyOnly)) mustBe
               controllers.agent.routes.IncomeSourceController.show().url
           }
         }
@@ -260,14 +260,14 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "save and retrieve is enabled" should {
         "redirect back to agent uk property check your answers page" in withController { controller =>
           enable(SaveAndRetrieve)
-          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
+          controller.backUrl(isEditMode = true, Some(incomeSourcePropertyOnly)) mustBe
             controllers.agent.business.routes.PropertyCheckYourAnswersController.show(true).url
         }
       }
 
       "save and retrieve is disabled" should {
         "redirect back to final check your answers page" in withController { controller =>
-          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
+          controller.backUrl(isEditMode = true, Some(incomeSourcePropertyOnly)) mustBe
             controllers.agent.routes.CheckYourAnswersController.show.url
         }
       }

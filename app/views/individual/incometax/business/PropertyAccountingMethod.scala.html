@@ -63,7 +63,7 @@
     </div>
 }
 
-@mainTemplate(title = messages("property.accounting_method.title"), optForm = accountingMethodForm, backLink = backUrl) {
+@mainTemplate(title = messages("property.accounting_method.title"), optForm = Some(accountingMethodForm), backLink = Some(backUrl)) {
 
     @form(action = postAction) {
         @heading(messages("property.accounting_method.heading"))

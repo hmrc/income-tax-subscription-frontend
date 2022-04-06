@@ -64,7 +64,7 @@
   </div>
 }
 
-@mainTemplate(title = messages("overseas.property.accounting_method.title"), optForm = overseasPropertyAccountingMethodForm, backLink = Some(backUrl))  {
+@mainTemplate(title = messages("overseas.property.accounting_method.title"), optForm = Some(overseasPropertyAccountingMethodForm), backLink = Some(backUrl))  {
     @form(action = postAction) {
         @heading(messages("overseas.property.accounting_method.heading"))
 

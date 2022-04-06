@@ -75,18 +75,18 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   val incomeSourceOverseasPropertyOnly: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
 
 
-  def foreignPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceOverseasProperty)
+  def foreignPropertyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceOverseasProperty))
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceBoth))
 
 
   "show, not in save and retrieve mode" should {
     "display the foreign property start date view and return OK (200)" in new Test {
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-      mockFetchAllFromSubscriptionDetails(testCacheMap(
+      mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
         incomeSource = Some(incomeSourceAllTypes)
-      ))
+      )))
       mockFetchOverseasProperty(Some(OverseasPropertyModel(
         accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
         startDate = Some(testPropertyStartDateModel.startDate)
@@ -116,9 +116,9 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     "the user hasn't selected income sources" in new Test {
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-      mockFetchAllFromSubscriptionDetails(testCacheMap(
+      mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
         incomeSource = None
-      ))
+      )))
       mockFetchOverseasProperty(Some(OverseasPropertyModel(
         accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
         startDate = Some(testPropertyStartDateModel.startDate)
@@ -205,7 +205,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
         await(badRequest)
         verifySubscriptionDetailsSave(OverseasPropertyStartDate, 0)
-        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsFetchAll(Some(1))
       }
     }
 
@@ -214,7 +214,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
         "the user has a foreign property and it is the only income source" should {
           "redirect to agent income source page" in new Test {
 
-            controller.backUrl(isEditMode = false, incomeSourceOverseasPropertyOnly) mustBe
+            controller.backUrl(isEditMode = false, Some(incomeSourceOverseasPropertyOnly)) mustBe
               controllers.agent.routes.IncomeSourceController.show().url
           }
         }
@@ -222,7 +222,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
         "the user has a UK and a foreign property" should {
           "redirect to agent UK business accounting method page" in new Test {
 
-            controller.backUrl(isEditMode = false, incomeSourceUkAndOverseasProperty) mustBe
+            controller.backUrl(isEditMode = false, Some(incomeSourceUkAndOverseasProperty)) mustBe
               controllers.agent.business.routes.PropertyAccountingMethodController.show().url
           }
         }
@@ -241,7 +241,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "save and retrieve is enabled" when {
         "redirect to agent income source page" in new Test {
           enable(SaveAndRetrieve)
-          controller.backUrl(isEditMode = false, incomeSourceUkAndOverseasProperty) mustBe
+          controller.backUrl(isEditMode = false, Some(incomeSourceUkAndOverseasProperty)) mustBe
             controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
         }
       }
@@ -252,7 +252,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
         "the user click back url" should {
           "redirect to agent overseas property check your answer page" in new Test {
             enable(SaveAndRetrieve)
-            controller.backUrl(isEditMode = true, incomeSourceOverseasPropertyOnly) mustBe
+            controller.backUrl(isEditMode = true, Some(incomeSourceOverseasPropertyOnly)) mustBe
               controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
           }
         }
@@ -261,7 +261,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "save and retrieve is disabled" when {
         "the user click back url" should {
           "redirect to agent check your answer page" in new Test {
-            controller.backUrl(isEditMode = true, incomeSourceOverseasPropertyOnly) mustBe
+            controller.backUrl(isEditMode = true, Some(incomeSourceOverseasPropertyOnly)) mustBe
               controllers.agent.routes.CheckYourAnswersController.show.url
           }
         }

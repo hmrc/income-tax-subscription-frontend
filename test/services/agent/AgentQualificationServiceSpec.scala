@@ -38,8 +38,8 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
   def verifyClientMatchingFailureAudit(): Unit =
     verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = false))
 
-  val matchedClient = ApprovedAgent(testNino, testUtr)
-  val unapprovedMatchedClient = UnApprovedAgent(testNino, testUtr)
+  private val matchedClient = ApprovedAgent(testNino, Some(testUtr))
+  private val unapprovedMatchedClient = UnApprovedAgent(testNino, Some(testUtr))
 
   def request(clientDetails: Option[UserDetailsModel] = None): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().buildRequest(clientDetails)
@@ -52,7 +52,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return NoClientMatched if the client matching was unsuccessful" in {
       mockUserMatchNotFound(testClientDetails)
 
-      val result = call(testClientDetails, request(testClientDetails))
+      val result = call(testClientDetails, request(Some(testClientDetails)))
 
       await(result) mustBe Left(NoClientMatched)
 
@@ -62,9 +62,9 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return ApprovedAgent if the client matching was successful" in {
       mockUserMatchSuccess(testClientDetails)
 
-      val result = call(testClientDetails, request(testClientDetails))
+      val result = call(testClientDetails, request(Some(testClientDetails)))
 
-      await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
+      await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, Some(testUtr)))
 
       verifyClientMatchingSuccessAudit()
     }
@@ -135,7 +135,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return UnexpectedFailure if something went awry" in {
       setupOrchestrateAgentQualificationFailure(UnexpectedFailure)
 
-      val response = await(call(testClientDetails, request(testClientDetails)))
+      val response = await(call(testClientDetails, request(Some(testClientDetails))))
 
       response mustBe Left(UnexpectedFailure)
     }
@@ -143,7 +143,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return NoClientMatched if the client matching was unsuccessful" in {
       setupOrchestrateAgentQualificationFailure(NoClientMatched)
 
-      val result = call(testClientDetails, request(testClientDetails))
+      val result = call(testClientDetails, request(Some(testClientDetails)))
 
       await(result) mustBe Left(NoClientMatched)
 
@@ -153,7 +153,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return ClientAlreadySubscribed if the client already has subscription" in {
       setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed)
 
-      val result = call(testClientDetails, request(testClientDetails))
+      val result = call(testClientDetails, request(Some(testClientDetails)))
 
       await(result) mustBe Left(ClientAlreadySubscribed)
 
@@ -164,9 +164,9 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       setupOrchestrateAgentQualificationSuccess(isPreExistingRelationship = false)
 
-      val result = call(testClientDetails, request(testClientDetails))
+      val result = call(testClientDetails, request(Some(testClientDetails)))
 
-      await(result) mustBe Right(UnApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
+      await(result) mustBe Right(UnApprovedAgent(testClientDetails.ninoInBackendFormat, Some(testUtr)))
 
       verifyClientMatchingSuccessAudit()
     }
@@ -174,9 +174,9 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return ApprovedAgent if the client matching was successful" in {
       setupOrchestrateAgentQualificationSuccess(isPreExistingRelationship = true)
 
-      val result = call(testClientDetails, request(testClientDetails))
+      val result = call(testClientDetails, request(Some(testClientDetails)))
 
-      await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
+      await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, Some(testUtr)))
 
       verifyClientMatchingSuccessAudit()
     }

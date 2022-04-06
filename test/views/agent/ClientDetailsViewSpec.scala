@@ -68,7 +68,7 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
     form.mustHaveTextField(
       name = ClientDetailsForm.clientNino,
       label = messages.field3,
-      hint = messages.formhint1_line1
+      hint = Some(messages.formhint1_line1)
     )
 
     form.mustHaveDateField(

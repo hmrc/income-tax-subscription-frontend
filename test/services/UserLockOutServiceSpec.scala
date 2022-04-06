@@ -57,7 +57,7 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
     "when counter is under the limit should return not locked out and updated new counter, should not clear Subscription Details " in {
       setupMockLockCreated(escapedUserId)
-      call(appConfig.matchingAttempts - 2).value shouldBe LockoutUpdate(NotLockedOut, appConfig.matchingAttempts - 1)
+      call(appConfig.matchingAttempts - 2).value shouldBe LockoutUpdate(NotLockedOut, Some(appConfig.matchingAttempts - 1))
     }
 
     "when counter exceeds max should return locked out, Subscription Details  should be cleared" in {

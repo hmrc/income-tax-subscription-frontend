@@ -95,7 +95,7 @@ trait TestSubscriptionConnector extends MockHttp {
 
   def setupMockGetSubscription(nino: String)(status: Int, response: JsValue): Unit =
     setupMockHttpGet(
-      url = TestSubscriptionConnector.subscriptionUrl(nino)
+      url = Some(TestSubscriptionConnector.subscriptionUrl(nino))
     )(status, response)
 
   def setupMockGetSubscriptionSuccess(nino: String): Unit = setupMockGetSubscription(nino)(OK, Json.toJson(SubscriptionSuccess(testMTDID)))

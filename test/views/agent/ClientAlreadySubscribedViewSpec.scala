@@ -45,7 +45,7 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
 
     form.mustHaveSubmitButton(common.goBack)
 
-    testPage.mustHaveSignOutLinkGovUk(common.signOut, request.path)
+    testPage.mustHaveSignOutLinkGovUk(common.signOut, Some(request.path))
 
   }
 }

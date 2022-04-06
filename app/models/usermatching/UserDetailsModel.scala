@@ -17,8 +17,8 @@
 package models.usermatching
 
 import models.DateModel
+import models.usermatching.UserDetailsModel.StringNinoUtil
 import play.api.libs.json.{Json, OFormat}
-import utilities.Implicits.StringNinoUtil
 
 
 case class UserDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
@@ -31,4 +31,10 @@ case class UserDetailsModel(firstName: String, lastName: String, nino: String, d
 
 object UserDetailsModel {
   implicit val format: OFormat[UserDetailsModel] = Json.format[UserDetailsModel]
+  implicit class StringNinoUtil(string: String) {
+    @inline def stripSpaces: String = string.toUpperCase().replace(" ", "")
+
+    def toNinoDisplayFormat: String = string.stripSpaces.split("(?<=\\G.{2})").reduce(_ + " " + _)
+  }
+
 }

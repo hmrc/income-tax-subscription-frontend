@@ -45,47 +45,47 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
   )
 
 
-      "the claim enrolment service returned a claim enrolment success and an auditing has been sent" should {
-        "redirect the user to the SPS preference capture journey" in {
-          mockClaimEnrolment(response = ClaimEnrolmentSuccess(TestConstants.testNino, "mtditid"))
+  "the claim enrolment service returned a claim enrolment success and an auditing has been sent" should {
+    "redirect the user to the SPS preference capture journey" in {
+      mockClaimEnrolment(response = Right(ClaimEnrolmentSuccess(TestConstants.testNino, "mtditid")))
 
-          val result = await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest))
+      val result = await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest))
 
-          verifyAudit(ClaimEnrolAddToIndivCredAuditingModel(TestConstants.testNino, "mtditid"))
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS.url)
-          }
-        }
+      verifyAudit(ClaimEnrolAddToIndivCredAuditingModel(TestConstants.testNino, "mtditid"))
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS.url)
+    }
+  }
 
-      "the claim enrolment service returns a not subscribed response" should {
-        "redirect the user to the not subscribed page" in {
+  "the claim enrolment service returns a not subscribed response" should {
+    "redirect the user to the not subscribed page" in {
 
-          mockClaimEnrolment(response = NotSubscribed)
+      mockClaimEnrolment(response = Left(NotSubscribed))
 
-          val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
+      val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.NotSubscribedController.show().url)
-        }
-      }
-      "the claim enrolment service returns a already signed up response" should {
-        "redirect the user to the already signed up page" in {
-          mockClaimEnrolment(response = AlreadySignedUp)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.NotSubscribedController.show().url)
+    }
+  }
+  "the claim enrolment service returns a already signed up response" should {
+    "redirect the user to the already signed up page" in {
+      mockClaimEnrolment(response = Left(AlreadySignedUp))
 
-          val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
+      val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ClaimEnrolmentAlreadySignedUpController.show.url)
-        }
-      }
-      "the claim enrolment service returns a claim enrolment error" should {
-        "throw an InternalServerException with details" in {
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.ClaimEnrolmentAlreadySignedUpController.show.url)
+    }
+  }
+  "the claim enrolment service returns a claim enrolment error" should {
+    "throw an InternalServerException with details" in {
 
-          mockClaimEnrolment(response = ClaimEnrolmentError(msg = "claim enrolment service error"))
+      mockClaimEnrolment(response = Left(ClaimEnrolmentError(msg = "claim enrolment service error")))
 
-          intercept[InternalServerException](await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)))
-            .message mustBe "claim enrolment service error"
-        }
-      }
+      intercept[InternalServerException](await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)))
+        .message mustBe "claim enrolment service error"
+    }
+  }
 
 }

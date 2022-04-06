@@ -75,9 +75,9 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   val incomeSourceBoth: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
     foreignProperty = false)
 
-  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceProperty)
+  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceProperty))
 
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = testIncomeSourceBoth)
+  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceBoth))
 
 
   "show" should {
@@ -87,9 +87,9 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-      mockFetchAllFromSubscriptionDetails(testCacheMap(
+      mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
         incomeSource = Some(incomeSourceBoth)
-      ))
+      )))
       mockFetchProperty(None)
 
       status(result) must be(Status.OK)
@@ -102,7 +102,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-      mockFetchAllFromSubscriptionDetails(testCacheMap())
+      mockFetchAllFromSubscriptionDetails(Some(testCacheMap()))
       mockFetchProperty(None)
 
       status(result) must be(Status.OK)
@@ -137,7 +137,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
           await(goodRequest)
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
-          verifyPropertySave(Some(PropertyModel(startDate = testValidMaxDate)))
+          verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
         }
 
       }
@@ -154,7 +154,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
           await(goodRequest)
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
-          verifyPropertySave(Some(PropertyModel(startDate = testValidMaxDate)))
+          verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
 
         }
       }
@@ -165,13 +165,13 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "save and retrieve is disabled" should {
         "redirect to final check your answer page" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchProperty(testFullPropertyModel)
+          mockFetchProperty(Some(testFullPropertyModel))
           val goodRequest = callShow(isEditMode = true)
           await(goodRequest)
           redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
 
 
-          verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
+          verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxDate), confirmed = false)))
         }
       }
 
@@ -179,12 +179,12 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         "redirect to uk property check your answers page" in {
           enable(SaveAndRetrieve)
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchProperty(testFullPropertyModel)
+          mockFetchProperty(Some(testFullPropertyModel))
           val goodRequest = callShow(isEditMode = true)
           await(goodRequest)
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url)
 
-          verifyPropertySave(Some(testFullPropertyModel.copy(startDate = testValidMaxDate, confirmed = false)))
+          verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxDate), confirmed = false)))
 
         }
       }
@@ -195,7 +195,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         disable(SaveAndRetrieve)
         mockPropertyStartDate()
 
-        mockFetchAllFromSubscriptionDetails(propertyOnlyIncomeSourceType)
+        mockFetchAllFromSubscriptionDetails(Some(propertyOnlyIncomeSourceType))
 
         val badRequest = callShowWithErrorForm(isEditMode = false)
 
@@ -203,7 +203,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
         await(badRequest)
         verifyPropertySave(None)
-        verifySubscriptionDetailsFetchAll(1)
+        verifySubscriptionDetailsFetchAll(Some(1))
       }
 
       "return bad request status (400) when Save & Retrieve feature is enabled" in {
@@ -216,7 +216,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
         await(badRequest)
         verifyPropertySave(None)
-        verifySubscriptionDetailsFetchAll(0)
+        verifySubscriptionDetailsFetchAll(Some(0))
       }
     }
 
@@ -224,14 +224,14 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "save and retrieve is enabled" should {
         "redirect back to uk property check your answers page" in new Test {
           enable(SaveAndRetrieve)
-          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
+          controller.backUrl(isEditMode = true, Some(incomeSourcePropertyOnly)) mustBe
             controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url
         }
       }
 
       "save and retrieve is disabled" should {
         "redirect back to final check your answers page" in new Test {
-          controller.backUrl(isEditMode = true, incomeSourcePropertyOnly) mustBe
+          controller.backUrl(isEditMode = true, Some(incomeSourcePropertyOnly)) mustBe
             controllers.individual.subscription.routes.CheckYourAnswersController.show.url
         }
       }
@@ -241,7 +241,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "save and retrieve is enabled" should {
         "redirect back to what income source page" in new Test {
           enable(SaveAndRetrieve)
-          controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+          controller.backUrl(isEditMode = false, Some(incomeSourcePropertyOnly)) mustBe
             controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
       }
@@ -249,14 +249,14 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "save and retrieve is disabled" when {
         "there is at least one self-employed income source" should {
           "redirect back to business accounting method page" in new Test {
-            controller.backUrl(isEditMode = false, incomeSourceBoth) mustBe
+            controller.backUrl(isEditMode = false, Some(incomeSourceBoth)) mustBe
               appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-accounting-method"
           }
         }
 
         "there is no self-employed income source" should {
           "redirect back to income source page" in new Test {
-            controller.backUrl(isEditMode = false, incomeSourcePropertyOnly) mustBe
+            controller.backUrl(isEditMode = false, Some(incomeSourcePropertyOnly)) mustBe
               controllers.individual.incomesource.routes.IncomeSourceController.show().url
           }
         }

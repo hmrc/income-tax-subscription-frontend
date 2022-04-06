@@ -97,7 +97,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
         "the enrolment is already allocated" should {
           "return a AlreadySignedUp" in {
             setupMockGetSubscriptionFound(testNino)
-            mockGetGroupIdForEnrolment(testEnrolmentKey)(EnrolmentAlreadyAllocated(testGroupId))
+            mockGetGroupIdForEnrolment(testEnrolmentKey)(Left(EnrolmentAlreadyAllocated(testGroupId)))
 
             val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment
 
@@ -107,7 +107,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
         "the response was invalid when checking if the enrolment is already allocated" should {
           "return a ClaimEnrolmentError" in {
             setupMockGetSubscriptionFound(testNino)
-            mockGetGroupIdForEnrolment(testEnrolmentKey)(EnrolmentStoreProxyInvalidJsonResponse)
+            mockGetGroupIdForEnrolment(testEnrolmentKey)(Left(EnrolmentStoreProxyInvalidJsonResponse))
 
             val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment
 
@@ -117,7 +117,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
         "there was an unexpected response when checking if the enrolment is already allocated" should {
           "return a ClaimEnrolmentError" in {
             setupMockGetSubscriptionFound(testNino)
-            mockGetGroupIdForEnrolment(testEnrolmentKey)(UnexpectedEnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR))
+            mockGetGroupIdForEnrolment(testEnrolmentKey)(Left(UnexpectedEnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR)))
 
             val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment
 
@@ -130,7 +130,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
           "there was a problem adding known facts for the enrolment" should {
             "return a ClaimEnrolmentError" in {
               setupMockGetSubscriptionFound(testNino)
-              mockGetGroupIdForEnrolment(testEnrolmentKey)(EnrolmentNotAllocated)
+              mockGetGroupIdForEnrolment(testEnrolmentKey)(Right(EnrolmentNotAllocated))
               mockAddKnownFactsFailure(mtditid = testMTDID, nino = testNino)
 
               val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment
@@ -144,7 +144,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
             "there was a problem allocating the enrolment" should {
               "return a ClaimEnrolmentError" in {
                 setupMockGetSubscriptionFound(testNino)
-                mockGetGroupIdForEnrolment(testEnrolmentKey)(EnrolmentNotAllocated)
+                mockGetGroupIdForEnrolment(testEnrolmentKey)(Right(EnrolmentNotAllocated))
                 mockAddKnownFactsSuccess(mtditid = testMTDID, nino = testNino)
                 mockEnrolFailure(mtditid = testMTDID, nino = testNino)
 
@@ -158,13 +158,13 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
             "allocating the enrolment was successful" should {
               "return a ClaimEnrolmentSuccess" in {
                 setupMockGetSubscriptionFound(testNino)
-                mockGetGroupIdForEnrolment(testEnrolmentKey)(EnrolmentNotAllocated)
+                mockGetGroupIdForEnrolment(testEnrolmentKey)(Right(EnrolmentNotAllocated))
                 mockAddKnownFactsSuccess(mtditid = testMTDID, nino = testNino)
                 mockEnrolSuccess(mtditid = testMTDID, nino = testNino)
 
                 val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment
 
-                await(result) mustBe Right(ClaimEnrolmentSuccess(testNino,testMTDID))
+                await(result) mustBe Right(ClaimEnrolmentSuccess(testNino, testMTDID))
               }
             }
           }

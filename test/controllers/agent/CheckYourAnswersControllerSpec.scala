@@ -71,13 +71,13 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   )
 
   val testPropertyModel: PropertyModel = PropertyModel(
-    accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-    startDate = startDate
+    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+    startDate = Some(startDate)
   )
 
   val testOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
-    accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-    startDate = startDate
+    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+    startDate = Some(startDate)
   )
 
   "Show with an authorised user" when {
@@ -97,8 +97,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "there are both a matched nino and terms in Subscription Details " should {
       "return ok (200)" in {
-        mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
-        mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
+        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
+        mockFetchAllFromSubscriptionDetails(Some(TestModels.testCacheMap))
         mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
         mockFetchProperty(None)
@@ -118,7 +118,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "There are no a matched nino in session" should {
       "redirect the user to the confirm client page" in {
-        mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
+        mockFetchAllFromSubscriptionDetails(Some(TestModels.testCacheMap))
 
         val result = call(subscriptionRequest.removeFromSession(ITSASessionKeys.NINO))
 
@@ -137,7 +137,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       s"return redirect ${controllers.agent.matching.routes.ConfirmClientController.show.url}" in {
         val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN).removeFromSession(ITSASessionKeys.NINO)
 
-        mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
+        mockFetchAllFromSubscriptionDetails(Some(TestModels.testCacheMap))
         val result = call(request)
 
         status(result) must be(Status.SEE_OTHER)
@@ -160,17 +160,17 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         "return a redirect status (SEE_OTHER - 303)" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(testSummary)
+          mockFetchAllFromSubscriptionDetails(Some(testSummary))
           mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
-          mockFetchProperty(testPropertyModel)
-          mockFetchOverseasProperty(testOverseasPropertyModel)
+          mockFetchProperty(Some(testPropertyModel))
+          mockFetchOverseasProperty(Some(testOverseasPropertyModel))
 
           mockCreateSubscriptionSuccess(
             testARN,
             newTestNino,
             testUtr,
-            testSummary.getAgentSummary(property = testPropertyModel, overseasProperty = testOverseasPropertyModel)
+            testSummary.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel))
           )
 
           status(result) must be(Status.SEE_OTHER)
@@ -190,16 +190,16 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         )
 
         "return a failure if subscription fails" in {
-          mockFetchAllFromSubscriptionDetails(TestModels.testCacheMap)
+          mockFetchAllFromSubscriptionDetails(Some(TestModels.testCacheMap))
           mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
-          mockFetchProperty(testPropertyModel)
-          mockFetchOverseasProperty(testOverseasPropertyModel)
+          mockFetchProperty(Some(testPropertyModel))
+          mockFetchOverseasProperty(Some(testOverseasPropertyModel))
           mockCreateSubscriptionFailure(
             testARN,
             testNino,
             testUtr,
-            TestModels.testCacheMap.getAgentSummary(property = testPropertyModel, overseasProperty = testOverseasPropertyModel)
+            TestModels.testCacheMap.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel))
           )
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))

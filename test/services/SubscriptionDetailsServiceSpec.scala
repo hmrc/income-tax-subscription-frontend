@@ -34,7 +34,7 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
     "configure and verify fetch and save business name as specified" in {
       val testBusinessName = BusinessNameModel("my business name")
       setupMockSubscriptionDetailsSaveFunctions()
-      mockFetchBusinessNameFromSubscriptionDetails(testBusinessName)
+      mockFetchBusinessNameFromSubscriptionDetails(Some(testBusinessName))
 
       val businessName = await(
         for {
@@ -45,18 +45,18 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
 
       businessName shouldBe Some(testBusinessName)
 
-      verifySubscriptionDetailsFetch(BusinessName, 2)
+      verifySubscriptionDetailsFetch(BusinessName, Some(2))
       verifySubscriptionDetailsSave(BusinessName, 1)
     }
 
     "configure and verify fetch all as specified" in {
       val testFetchAll = TestModels.emptyCacheMap
-      mockFetchAllFromSubscriptionDetails(testFetchAll)
+      mockFetchAllFromSubscriptionDetails(Some(testFetchAll))
 
       val fetched = await(TestSubscriptionDetails.subscriptionDetailsService.fetchAll("test-reference"))
       fetched shouldBe testFetchAll
 
-      verifySubscriptionDetailsFetchAll(1)
+      verifySubscriptionDetailsFetchAll(Some(1))
     }
 
 

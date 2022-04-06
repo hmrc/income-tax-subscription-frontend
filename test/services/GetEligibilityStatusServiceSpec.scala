@@ -56,7 +56,7 @@ class GetEligibilityStatusServiceSpec extends TestGetEligibilityStatusService {
 
         val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
 
-        res mustBe Left(HttpConnectorError(httpResponse, JsError("Invalid Json")))
+        res mustBe Left(HttpConnectorError(httpResponse, Some(JsError("Invalid Json"))))
       }
     }
     "return GetEligibilityStatusConnectorFailure" when {

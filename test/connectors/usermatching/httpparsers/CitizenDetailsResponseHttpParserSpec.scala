@@ -54,7 +54,7 @@ class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValu
 
         val res = GetCitizenDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.value mustBe Some(CitizenDetailsSuccess(testUtr, testNino))
+        res.value mustBe Some(CitizenDetailsSuccess(Some(testUtr), testNino))
       }
 
       "parse a correctly formatted OK response as a Some(None) which does not inlude a utr in its response" in {

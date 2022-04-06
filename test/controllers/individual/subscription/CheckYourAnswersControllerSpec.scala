@@ -75,9 +75,9 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "return ok (200) for business journey" in {
       val testBusinessCacheMap = testCacheMapCustom(
-        incomeSource = testIncomeSourceBusiness
+        incomeSource = Some(testIncomeSourceBusiness)
       )
-      mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
+      mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
@@ -89,9 +89,9 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "return ok (200) for property only journey)" in {
       val testPropertyCacheMap = testCacheMap(
-        incomeSource = testIncomeSourceProperty
+        incomeSource = Some(testIncomeSourceProperty)
       )
-      mockFetchAllFromSubscriptionDetails(testPropertyCacheMap)
+      mockFetchAllFromSubscriptionDetails(Some(testPropertyCacheMap))
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
@@ -102,16 +102,16 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
 
     "return ok (200) for both journey" in {
-      mockFetchAllFromSubscriptionDetails(testCacheMap)
+      mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
       mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-      mockFetchProperty(PropertyModel(
-        accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-        startDate = testPropertyStartDateModel.startDate
-      ))
+      mockFetchProperty(Some(PropertyModel(
+        accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+        startDate = Some(testPropertyStartDateModel.startDate)
+      )))
       mockFetchOverseasProperty(Some(OverseasPropertyModel(
-        accountingMethod = testAccountingMethodProperty.propertyAccountingMethod,
-        startDate = testPropertyStartDateModel.startDate
+        accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+        startDate = Some(testPropertyStartDateModel.startDate)
       )))
       when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
@@ -130,12 +130,12 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchAllFromSubscriptionDetails(testCacheMap)
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockFetchProperty(testFullPropertyModel)
-        mockFetchOverseasProperty(testFullOverseasPropertyModel)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = testFullPropertyModel))
+        mockFetchProperty(Some(testFullPropertyModel))
+        mockFetchOverseasProperty(Some(testFullOverseasPropertyModel))
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel)))
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -150,12 +150,12 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a internalServer error" in {
-        mockFetchAllFromSubscriptionDetails(testCacheMap)
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
         mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
-        mockFetchProperty(testFullPropertyModel)
-        mockFetchOverseasProperty(testFullOverseasPropertyModel)
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(property = testFullPropertyModel))
+        mockFetchProperty(Some(testFullPropertyModel))
+        mockFetchOverseasProperty(Some(testFullOverseasPropertyModel))
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel)))
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifySubscriptionDetailsSave(MtditId, 0)
       }

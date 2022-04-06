@@ -112,7 +112,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
             redirectLocation(goodResult) mustBe Some(controllers.usermatching.routes.ConfirmUserController.show().url)
 
             // the submitted details is now stored in session
-            await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
+            await(goodResult).verifyStoredUserDetailsIs(Some(testUserDetails))(r)
           }
 
         }
@@ -126,14 +126,14 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
             val previousUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT")
 
-            val r = request.buildRequest(previousUserDetails)
+            val r = request.buildRequest(Some(previousUserDetails))
 
             val goodResult = callSubmit(r, isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
             redirectLocation(goodResult) mustBe Some(controllers.usermatching.routes.ConfirmUserController.show().url)
 
-            await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
+            await(goodResult).verifyStoredUserDetailsIs(Some(testUserDetails))(r)
           }
 
         }
@@ -144,14 +144,14 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
             mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
             setupMockNotLockedOut(testCredId)
 
-            val r = request.buildRequest(testUserDetails)
+            val r = request.buildRequest(Some(testUserDetails))
 
             val goodResult = callSubmit(r, isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
             redirectLocation(goodResult) mustBe Some(controllers.usermatching.routes.ConfirmUserController.show().url)
 
-            await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
+            await(goodResult).verifyStoredUserDetailsIs(Some(testUserDetails))(r)
           }
 
         }

@@ -92,7 +92,7 @@ class ClientRemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
         "remove the UK property business and redirect to agent task list page" in withController { controller =>
           enable(SaveAndRetrieve)
 
-          mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(DeleteSubscriptionDetailsSuccessResponse)
+          mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
           val result: Result = controller.submit(
             subscriptionRequest.withFormUrlEncodedBody(ClientRemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)

@@ -42,7 +42,7 @@ class AgentServicesConnectorSpec extends TestAgentServicesConnector {
 
     "return a failure on a non OK status" in {
       val invalidBody = Json.toJson("invalid")
-      mockIsPreExistingRelationship(testARN, testNino)(INTERNAL_SERVER_ERROR, invalidBody)
+      mockIsPreExistingRelationship(testARN, testNino)(INTERNAL_SERVER_ERROR, Some(invalidBody))
 
       val res = TestAgentServicesConnector.isPreExistingRelationship(testARN, testNino)
 

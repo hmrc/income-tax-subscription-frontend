@@ -18,13 +18,12 @@ package controllers.agent.matching
 
 import auth.agent.UserMatchingController
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import utilities.Implicits._
 import views.html.agent.ClientDetailsError
 
-import scala.concurrent.ExecutionContext
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClientDetailsErrorController @Inject()(val auditingService: AuditingService,
@@ -36,14 +35,14 @@ class ClientDetailsErrorController @Inject()(val auditingService: AuditingServic
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      Ok(clientDetailsError(
+      Future.successful(Ok(clientDetailsError(
         postAction = controllers.agent.matching.routes.ClientDetailsErrorController.submit
-      ))
+      )))
   }
 
   lazy val submit: Action[AnyContent] = Authenticated.async { _ =>
     _ =>
-      Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+      Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
   }
 
 }

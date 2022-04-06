@@ -43,6 +43,6 @@ class NoSAViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveALink(id = "sa-signup", messages.Agent.linkText, appConfig.signUpToSaLink)
 
-    testPage.mustHaveSignOutButton(common.signOut, request.path)
+    testPage.mustHaveSignOutButton(common.signOut, Some(request.path))
   }
 }

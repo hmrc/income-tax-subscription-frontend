@@ -27,9 +27,9 @@ import testonly.models.UserToStubModel
 import testonly.views.html.individual.{ShowStubbedDetails, StubUser}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utilities.Implicits._
+
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
@@ -38,13 +38,13 @@ import scala.concurrent.ExecutionContext
 class MatchingStubController @Inject()(mcc: MessagesControllerComponents,
                                        matchingStubConnector: MatchingStubConnector,
                                        stubUser: StubUser,
-                                       val showStubbedDetails:ShowStubbedDetails)
+                                       val showStubbedDetails: ShowStubbedDetails)
                                       (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
 
   def view(clientToStubForm: Form[UserToStubModel])
           (implicit request: Request[_]): Html = {
-     stubUser(
+    stubUser(
       clientToStubForm,
       postAction = routes.MatchingStubController.submit)
   }
@@ -55,10 +55,10 @@ class MatchingStubController @Inject()(mcc: MessagesControllerComponents,
 
   def submit: Action[AnyContent] = Action.async { implicit request =>
     UserToStubForm.userToStubForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(view(formWithErrors)),
+      formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
       userDetails =>
         matchingStubConnector.newUser(userDetails) map {
-          case true => Ok(showStubbedDetails(userDetails, routes.MatchingStubController.show ))
+          case true => Ok(showStubbedDetails(userDetails, routes.MatchingStubController.show))
           case _ => throw new InternalServerException("calls to matching-stub failed")
         }
     )

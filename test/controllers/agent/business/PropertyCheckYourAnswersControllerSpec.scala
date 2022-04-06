@@ -52,7 +52,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   "show" should {
     "return an OK status with the property CYA page" in withController { controller =>
       enable(SaveAndRetrieve)
-      mockFetchProperty(Some(PropertyModel(accountingMethod = Cash)))
+      mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
@@ -89,7 +89,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-      verifyPropertySave(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true))
+      verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
     }
 
     "throw an exception if cannot retrieve property details" in withController { controller =>

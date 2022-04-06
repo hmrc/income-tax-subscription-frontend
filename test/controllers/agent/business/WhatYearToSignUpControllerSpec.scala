@@ -68,7 +68,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
+        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
       }
     }
 
@@ -81,7 +81,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, 1)
+        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
       }
     }
   }
@@ -104,7 +104,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
           mockIncomeSource()
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
+          mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
           val goodRequest = callShow(isEditMode = false)
 
           redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
@@ -122,7 +122,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
           mockIncomeSource()
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
+          mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
           val goodRequest = callShow(isEditMode = true)
 
           redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
@@ -142,7 +142,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
           mockIncomeSource()
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchIncomeSourceFromSubscriptionDetails(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false))
+          mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
           val goodRequest = callShow(isEditMode = false)
 
           redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)

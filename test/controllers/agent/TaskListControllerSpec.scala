@@ -85,7 +85,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       val testBusinessCacheMap = testCacheMap(
         selectedTaxYear = Some(AccountingYearModel(Next))
       )
-      mockFetchAllFromSubscriptionDetails(testBusinessCacheMap)
+      mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
       mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(Seq(
         SelfEmploymentData(
           id = "id",
@@ -131,7 +131,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
           enable(SaveAndRetrieve)
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(testCacheMapIndiv)
+          mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
           mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
@@ -159,7 +159,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       "sign up income source fails" should {
         "return an internalServer error" in {
           enable(SaveAndRetrieve)
-          mockFetchAllFromSubscriptionDetails(testCacheMapIndiv)
+          mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
           mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
@@ -185,7 +185,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
 
     "save and retrieve feature switch is disabled" should {
       "throw NotFoundException" in {
-        mockFetchAllFromSubscriptionDetails(testCacheMapIndiv)
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
         mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
 

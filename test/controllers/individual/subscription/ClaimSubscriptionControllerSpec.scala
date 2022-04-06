@@ -48,7 +48,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec
 
   "Calling the claim action of the ClaimSubscriptionController with a subscribed Authenticated User" should {
     "return a a redirect to the confirmation page" in withController { controller =>
-      mockFetchSubscriptionIdFromSubscriptionDetails(testMTDID)
+      mockFetchSubscriptionIdFromSubscriptionDetails(Some(testMTDID))
       mockEnrolAndRefreshSuccess(testMTDID, testNino)
 
       lazy val result = controller.claim(subscriptionRequest)
@@ -57,7 +57,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec
     }
 
     "return an error where enrolment fails" in withController { controller =>
-      mockFetchSubscriptionIdFromSubscriptionDetails(testMTDID)
+      mockFetchSubscriptionIdFromSubscriptionDetails(Some(testMTDID))
       mockEnrolFailure(testMTDID, testNino)
 
       lazy val result = controller.claim(subscriptionRequest)
@@ -66,7 +66,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec
     }
 
     "return an error where refresh profile fails" in withController { controller =>
-      mockFetchSubscriptionIdFromSubscriptionDetails(testMTDID)
+      mockFetchSubscriptionIdFromSubscriptionDetails(Some(testMTDID))
       mockRefreshFailure(testMTDID, testNino)
 
       lazy val result = controller.claim(subscriptionRequest)

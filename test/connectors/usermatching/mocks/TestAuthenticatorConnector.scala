@@ -37,7 +37,7 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
   object TestAuthenticatorConnector extends AuthenticatorConnector(appConfig, mockHttp)
 
   def setupMockMatchUser(userDetailsModel: Option[UserDetailsModel])(status: Int, response: JsValue): Unit =
-    setupMockHttpPost(TestAuthenticatorConnector.matchingEndpoint,
+    setupMockHttpPost(Some(TestAuthenticatorConnector.matchingEndpoint),
       userDetailsModel map UserMatchRequestModel.apply)(status, response)
 
   // use this function if we want to match on the UserDetailsModel used in the parameter
@@ -80,7 +80,7 @@ trait MockAuthenticatiorConnector extends UnitTestTrait with MockitoSugar {
   }
 
   def mockUserMatchNotFound(userDetails: UserDetailsModel): Unit = {
-    mockUserMatch(userDetails)(Future.successful(None))
+    mockUserMatch(userDetails)(Future.successful(Right(None)))
   }
 
   def mockUserMatchFailure(userDetails: UserDetailsModel): Unit = {

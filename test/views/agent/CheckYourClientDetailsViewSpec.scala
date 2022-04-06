@@ -20,6 +20,7 @@ import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Base => common, ConfirmClient => messages}
 import models.DateModel
 import models.usermatching.UserDetailsModel
+import models.usermatching.UserDetailsModel._
 import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -94,9 +95,9 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
     "has a form" which {
 
       "has a submit button" in {
-        val submit = document().getElementById("continue-button")
+        val submit = Option(document().getElementById("continue-button"))
         submit.isEmpty mustBe false
-        submit.text mustBe common.continue
+        submit.get.text mustBe common.continue
       }
 
       s"has a post action to '${postAction.url}'" in {
@@ -142,9 +143,9 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 2,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
 
@@ -158,9 +159,9 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 3,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
 
@@ -174,9 +175,9 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 4,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
 
@@ -190,9 +191,9 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
+        expectedEditLink = Some(expectedEditLink),
         rowNo = 5,
-        expectedHiddenContent = expectedHiddenContent
+        expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
 

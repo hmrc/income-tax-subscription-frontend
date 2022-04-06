@@ -45,7 +45,7 @@ class ClientDetailsErrorViewSpec extends ViewSpecTrait {
 
     form.mustHaveContinueButtonWithText(commonMessages.tryAgain)
 
-    testPage.mustHaveSignOutLinkGovUk(commonMessages.signOut, request.path)
+    testPage.mustHaveSignOutLinkGovUk(commonMessages.signOut, Some(request.path))
 
   }
 }
