@@ -14,11 +14,12 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.injected.{ContinueButton, SaveAndContinueButtonHelper}
+@import views.html.helpers.injected.{ContinueButton, SaveAndContinueButtonHelper, AccessibleTextHelper}
 
 @this(
   form: FormWithCSRF,
   continueButton: ContinueButton,
+  accessibleTextHelper: AccessibleTextHelper,
   saveAndContinueButton: SaveAndContinueButtonHelper
 )
 
@@ -32,12 +33,7 @@
   saveAndContinue: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-<h1 class="govuk-heading-l">
-  @heading
-  @headingHidden.map { hiddenContent =>
-    <span class="govuk-visually-hidden">@hiddenContent</span>
-  }
-</h1>
+<h1 class="govuk-heading-l">@accessibleTextHelper(heading, headingHidden)</h1>
 
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
   @contentBlock

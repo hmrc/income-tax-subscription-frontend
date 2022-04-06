@@ -21,12 +21,13 @@
 @import views.agent.helpers.SummaryHelper._
 @import views.agent.helpers.SummaryIdConstants._
 @import views.agent.helpers._
-@import views.html.helpers.injected.ButtonHelper
+@import views.html.helpers.injected.{ButtonHelper, AccessibleTextHelper}
 @import views.html.templates.AgentMainTemplate
 
 @this(
         agentMainTemplate: AgentMainTemplate,
         buttonHelper: ButtonHelper,
+        accessibleTextHelper: AccessibleTextHelper,
         form: FormWithCSRF
 )
 
@@ -48,8 +49,7 @@
             data-journey-click="itsa:changeLink:@field"
             href="@url"
             >
-                <span aria-hidden="true">@messages("agent.base.change")</span>
-                <span class="govuk-visually-hidden">@hiddenContent</span>
+                @accessibleTextHelper(messages("agent.base.change"), hiddenContent)
             </a>
         }
         </dd>
@@ -132,7 +132,10 @@
 
 @agentMainTemplate(title = Messages("agent.summary.title"), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@Messages("agent.summary.heading") <span class="govuk-visually-hidden">@Messages("agent.summary.heading_hidden")</span>
+
+    <h1 class="govuk-heading-l">@accessibleTextHelper(
+        Messages("agent.summary.heading"),
+        Some(Messages("agent.summary.heading_hidden")))
     </h1>
 
     <div class="govuk-form-group">

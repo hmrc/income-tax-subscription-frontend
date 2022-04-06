@@ -791,7 +791,7 @@ agent.cannot-report-yet.para2                                   = Mae dal yn rha
 ## Summary page ##
 agent.summary.title                                             = Gwiriwch eich atebion
 agent.summary.heading                                           = Gwiriwch eich atebion
-agent.summary.heading_hidden                                    = cyn cofrestru
+agent.summary.heading_hidden                                    = Gwiriwch eich atebion cyn cofrestru
 agent.summary.confirm_and_sign_up                               = Cadarnhau a chofrestru
 agent.summary.line_1                                            = Gallwch olygu’ch atebion, os oes angen.<br>Pan fyddwch chi’n barod, cyflwynwch eich atebion er mwyn cofrestru i anfon diweddariadau digidol i CThEM ynglŷn ag incwm a gwariant.
 agent.summary.income_source                                     = Incwm a gafwyd o

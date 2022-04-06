@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import models.usermatching.UserDetailsModel
-@import views.html.helpers.injected.ContinueButton
+@import views.html.helpers.injected.{ContinueButton, AccessibleTextHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import views.individual.helpers.ConfirmUserIdConstants._
 @import views.individual.helpers._
@@ -25,6 +25,7 @@
 @this(
   principalMainTemplate: PrincipalMainTemplate,
   continueButton: ContinueButton,
+  accessibleTextHelper: AccessibleTextHelper,
   form: FormWithCSRF
 )
 
@@ -42,8 +43,7 @@
       data-journey-click="itsa:changeLink:@field"
       href="@url"
       >
-        <span aria-hidden="true">@messages("base.change")</span>
-        <span class="govuk-visually-hidden">@hiddenContent</span>
+          @accessibleTextHelper(messages("base.change"), hiddenContent)
       </a>
     }
     </dd>

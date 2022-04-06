@@ -751,7 +751,7 @@ agent.cannot-report-yet.para2                                   = Your client st
 ## Agent Summary page ##
 agent.summary.title                                             = Check your answers
 agent.summary.heading                                           = Check your answers
-agent.summary.heading_hidden                                    = before signing up
+agent.summary.heading_hidden                                    = Check your answers before signing up
 agent.summary.confirm_and_sign_up                               = Confirm and sign up
 agent.summary.line_1                                            = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
 agent.summary.income_source                                     = Income received from

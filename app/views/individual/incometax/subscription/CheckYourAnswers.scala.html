@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.injected.ButtonHelper
+@import views.html.helpers.injected.{ButtonHelper, AccessibleTextHelper}
 @import models.common.business._
 @import models.common._
 @import models.IndividualSummary
@@ -30,6 +30,7 @@
 @this(
         principalMainTemplate: PrincipalMainTemplate,
         buttonHelper: ButtonHelper,
+        accessibleTextHelper: AccessibleTextHelper,
         form: FormWithCSRF
 )
 
@@ -46,11 +47,10 @@
     <dd class="govuk-summary-list__actions" id="@field-edit">
         @changeUrl.map { url =>
         <a class="govuk-link"
-                data-journey-click="itsa:changeLink:@field"
-                href="@url"
-                >
-                <span aria-hidden="true">@messages("base.change")</span>
-                <span class="govuk-visually-hidden">@hiddenContent</span>
+            data-journey-click="itsa:changeLink:@field"
+            href="@url"
+            >
+            @accessibleTextHelper(messages("base.change"), hiddenContent)
         </a>
         }
     </dd>
@@ -135,8 +135,9 @@
 @principalMainTemplate(title = messages("summary.title"), backLink = Some(backUrl)) {
 
 
-<h1 class="govuk-heading-l">@messages("summary.heading") <span
-        class="govuk-visually-hidden">@messages("summary.heading_hidden")</span></h1>
+<h1 class="govuk-heading-l">
+    @accessibleTextHelper(messages("summary.heading"), Some(messages("summary.heading_hidden")))
+</h1>
 
 <br>
 
