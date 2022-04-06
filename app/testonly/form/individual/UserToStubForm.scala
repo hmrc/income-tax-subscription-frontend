@@ -16,7 +16,7 @@
 
 package testonly.form.individual
 
-import forms.formatters.NewDateModelMapping
+import forms.formatters.DateModelMapping
 import forms.prevalidation.CaseOption._
 import forms.prevalidation.TrimOption._
 import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
@@ -84,7 +84,7 @@ object UserToStubForm {
       userLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       userNino -> oText.toText.verifying(emptyNino andThen validateNino),
       userSautr -> oText.verifying(validateUtr),
-      userDateOfBirth -> NewDateModelMapping.dateModelMapping(isAgent = false, "user_details.date_of_birth", None, None, None).verifying(dobEmpty andThen dobValidation)
+      userDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = false, "user_details.date_of_birth", None, None, None).verifying(dobEmpty andThen dobValidation)
     )(UserToStubModel.apply)(UserToStubModel.unapply)
   )
 
