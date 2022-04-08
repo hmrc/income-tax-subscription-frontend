@@ -58,7 +58,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
       firstName = "Abc",
       lastName = "Abc",
       nino = testNino,
-      dateOfBirth = DateModel("01", "01", "1980")
+      dateOfBirth = DateModel("1", "1", "1980")
     )
 
   lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(

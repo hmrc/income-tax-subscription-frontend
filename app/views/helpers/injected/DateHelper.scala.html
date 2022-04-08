@@ -19,7 +19,6 @@
 
 @this(govukDateInput : GovukDateInput)
 
-
 @(
         field: Field,
         legendContent: String,
@@ -30,19 +29,28 @@
         isDateOfBirth: Boolean = false
 )(implicit messages: Messages)
 
+@error = @{
+  (parentForm.error(field.name)
+          orElse parentForm.error(s"${field.name}-dateDay")
+          orElse parentForm.error(s"${field.name}-dateMonth")
+          orElse parentForm.error(s"${field.name}-dateYear"))
+}
+
 @errorMessage = @{
-    (parentForm.error(field.name)
-        orElse parentForm.error(s"${field.name}-dateDay")
-        orElse parentForm.error(s"${field.name}-dateMonth")
-        orElse parentForm.error(s"${field.name}-dateYear")
-    ) map { error =>
-        ErrorMessage(content = Text(messages(error.message, error.args: _*)))
-    }
+  error map { error =>
+      ErrorMessage(content = Text(messages(error.message, error.args: _*)))
+  }
+}
+
+@errorKey = @{
+  error map { error =>
+    error.message
+  }
 }
 
 @inputClass(key: String, size: Int) = @{
-    s"govuk-input--width-$size" +
-            {if (parentForm.error(field.name).isDefined || parentForm(s"${field.name}-$key").error.isDefined) s" govuk-input--error" else ""}
+  s"govuk-input--width-$size" +
+          {errorKey.fold("")(messageKey => if(messageKey.contains(key)) s" govuk-input--error" else "")}
 }
 
 @fieldsetLegendClass = @{
@@ -52,40 +60,38 @@
 }
 
 @govukDateInput(DateInput(
-    id = field.id,
-    namePrefix = Some(field.name),
-    items = Seq(
-        InputItem(
-            name = "dateDay",
-            autocomplete = if(isDateOfBirth) Some("bday-day") else None ,
-            classes = inputClass(DateModelMapping.day, 2),
-            label =  Some(messages("base.day")),
-            value = parentForm(s"${field.name}-dateDay").value
-        ),
-        InputItem(
-            name = "dateMonth",
-            autocomplete = if(isDateOfBirth) Some("bday-month") else None ,
-            classes = inputClass(DateModelMapping.month, 2),
-            label =  Some(messages("base.month")),
-            value = parentForm(s"${field.name}-dateMonth").value
-        ),
-        InputItem(
-            name = "dateYear",
-            autocomplete = if(isDateOfBirth) Some("bday-year") else None ,
-            classes = inputClass(DateModelMapping.year, 4),
-            label =  Some(messages("base.year")),
-            value = parentForm(s"${field.name}-dateYear").value
-        )
+  id = field.id,
+  namePrefix = Some(field.name),
+  items = Seq(
+    InputItem(
+      name = "dateDay",
+      autocomplete = if(isDateOfBirth) Some("bday-day") else None ,
+      classes = inputClass("day", 2),
+      label =  Some(messages("base.day")),
+      value = parentForm(s"${field.name}-dateDay").value
     ),
-    hint = hintText.map(t => Hint(content = Text(t))),
-    errorMessage = errorMessage,
-    fieldset = Some(Fieldset(
-        legend = Some(Legend(
-            content = Text(legendContent),
-            classes = fieldsetLegendClass,
-            isPageHeading = isPageHeading
-        )),
-    ))
-)
-
-)
+    InputItem(
+      name = "dateMonth",
+      autocomplete = if(isDateOfBirth) Some("bday-month") else None ,
+      classes = inputClass("month", 2),
+      label =  Some(messages("base.month")),
+      value = parentForm(s"${field.name}-dateMonth").value
+    ),
+    InputItem(
+      name = "dateYear",
+      autocomplete = if(isDateOfBirth) Some("bday-year") else None ,
+      classes = inputClass("year", 4),
+      label =  Some(messages("base.year")),
+      value = parentForm(s"${field.name}-dateYear").value
+    )
+  ),
+  hint = hintText.map(t => Hint(content = Text(t))),
+  errorMessage = errorMessage,
+  fieldset = Some(Fieldset(
+    legend = Some(Legend(
+        content = Text(legendContent),
+        classes = fieldsetLegendClass,
+        isPageHeading = isPageHeading
+    )),
+  ))
+))

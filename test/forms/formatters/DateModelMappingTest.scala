@@ -35,7 +35,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
     }
     "month is thermidor" should {
       "give maxint" in {
-        DateModelMapping.maxDayForMonth(13, 2001) must be(Integer.MAX_VALUE)
+        DateModelMapping.maxDayForMonth(13, 2001) must be(31)
       }
     }
     "crazy corner case of 1900 not being a leap year" should {
