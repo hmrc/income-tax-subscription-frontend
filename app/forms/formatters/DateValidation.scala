@@ -19,6 +19,7 @@ package forms.formatters
 import cats.data.Validated.Invalid
 import cats.data.{NonEmptyList, Validated, ValidatedNel}
 import cats.implicits._
+import forms.formatters.DateErrorMapping._
 import forms.formatters.DateModelMapping._
 import models.DateModel
 
@@ -26,31 +27,40 @@ import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 
 object DateValidation {
-  type DateFormValidation[A] = ValidatedNel[String, A]
+  implicit def ordering[A <: DateField]: Ordering[A] = Ordering.by(_.toString)
+
+  type DateFormValidation[A] = ValidatedNel[FieldValidationError, A]
 
   final case class Day(value: Int)
   final case class Month(value: Int)
   final case class Year(value: Int)
 
+  abstract class DateField(name: String) {
+    override def toString: String = s"$name"
+  }
+  final case object DayField extends DateField(name = "day")
+  final case object MonthField extends DateField(name = "month")
+  final case object YearField extends DateField(name = "year")
+
   final case class ValidDate(day: Day, month: Month, year: Year)
 
   def validateDay(data: Map[String, String], ids: HtmlIds): DateFormValidation[Day] = {
-    getValue(data, ids.totalDayKey, "day")
-      .andThen(day => validNumber(day, "day"))
+    getValue(data, ids.totalDayKey, DayField)
+      .andThen(day => validNumber(day, DayField))
       .andThen(day => isValidDay(day))
       .map(day => Day(day))
   }
 
   def validateMonth(data: Map[String, String], ids: HtmlIds): DateFormValidation[Month]  = {
-    getValue(data, ids.totalMonthKey, "month")
-      .andThen(month => validNumber(month, "month"))
+    getValue(data, ids.totalMonthKey, MonthField)
+      .andThen(month => validNumber(month, MonthField))
       .andThen(month => isValidMonth(month))
       .map(month => Month(month))
   }
 
   def validateYear(data: Map[String, String], ids: HtmlIds): DateFormValidation[Year] = {
-    getValue(data, ids.totalYearKey, "year")
-      .andThen(year => validNumber(year, "year"))
+    getValue(data, ids.totalYearKey, YearField)
+      .andThen(year => validNumber(year, YearField))
       .andThen(year => isValidYear(year))
       .map(year => Year(year))
   }
@@ -59,19 +69,19 @@ object DateValidation {
     isValidDayOfMonth(date).andThen(date => isValidDate(date, minDate, maxDate))
   }
 
-  private def getValue(data: Map[String, String], key: String, fieldName: String): DateFormValidation[String] = {
-    Validated.fromOption(getNonEmptyValueOption(data, key), NonEmptyList.of(s"$fieldName.empty"))
+  private def getValue(data: Map[String, String], key: String, field: DateField): DateFormValidation[String] = {
+    Validated.fromOption(getNonEmptyValueOption(data, key), NonEmptyList.of(emptyFieldError(field)))
   }
 
-  private def validNumber(value: String, fieldName: String): DateFormValidation[Int] = {
-    Validated.fromOption(parse(value), NonEmptyList.of(s"$fieldName.invalid"))
+  private def validNumber(value: String, field: DateField): DateFormValidation[Int] = {
+    Validated.fromOption(parse(value), NonEmptyList.of(invalidFieldError(field)))
   }
 
   private def isValidDay(value: Int): DateFormValidation[Int] = {
     if (value >= 1 && value <= 31) {
       value.valid
     } else {
-      Invalid(NonEmptyList.of("day.invalid"))
+      Invalid(NonEmptyList.of(InvalidDay))
     }
   }
 
@@ -79,7 +89,7 @@ object DateValidation {
     if (value >= 1 && value <= 12) {
       value.valid
     } else {
-      Invalid(NonEmptyList.of("month.invalid"))
+      Invalid(NonEmptyList.of(InvalidMonth))
     }
   }
 
@@ -87,13 +97,13 @@ object DateValidation {
     if (value >= 1000 && value <= 9999) {
       value.valid
     } else {
-      Invalid(NonEmptyList.of("year.length"))
+      Invalid(NonEmptyList.of(InvalidYearLength))
     }
   }
 
   private def isValidDayOfMonth(date: ValidDate): DateFormValidation[ValidDate] = {
     if (date.day.value > maxDayForMonth(date.month.value, date.year.value)) {
-      Invalid(NonEmptyList.of("day.invalid"))
+      Invalid(NonEmptyList.of(InvalidDay))
     } else {
       date.valid
     }
@@ -109,12 +119,12 @@ object DateValidation {
     Try {
       LocalDate.of(yearValue, monthValue, dayValue)
     } match {
-      case Failure(_) => Invalid(NonEmptyList.of("date.invalid"))
+      case Failure(_) => Invalid(NonEmptyList.of(InvalidDate))
       case Success(localDate) => (localDate, minDate, maxDate) match {
         case (d, Some(min), _) if d.isBefore(min) =>
-          Invalid(NonEmptyList.of("date.minDate"))
+          Invalid(NonEmptyList.of(TooEarly))
         case (d, _, Some(max)) if d.isAfter(max) =>
-          Invalid(NonEmptyList.of("date.maxDate"))
+          Invalid(NonEmptyList.of(TooLate))
         case _ => DateModel(dayValue.toString, monthValue.toString, yearValue.toString).valid
       }
     }
@@ -133,5 +143,17 @@ object DateValidation {
       case 4 | 6 | 9 | 11 => 30
       case _ => 31 // For 1 | 3 | 5 | 7 | 8 | 10 | 12
     }
+  }
+
+  private def emptyFieldError(field: DateField): FieldValidationError = field match {
+    case DayField => EmptyDay
+    case MonthField => EmptyMonth
+    case YearField => EmptyYear
+  }
+
+  private def invalidFieldError(field: DateField): FieldValidationError = field match {
+    case DayField => InvalidDay
+    case MonthField => InvalidMonth
+    case YearField => InvalidYear
   }
 }
