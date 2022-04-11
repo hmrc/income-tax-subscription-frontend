@@ -61,9 +61,9 @@ object DateErrorMapping {
                       minDate: Option[LocalDate] = None,
                       maxDate: Option[LocalDate] = None,
                       dateFormatter: Option[LocalDate => String]): DateModelValidation = {
-    (mapToInvalidError(errors), mapToEmptyError(errors), mapToLengthError(errors)) match {
+    (collectInvalidErrors(errors), collectEmptyErrors(errors), collectLengthErrors(errors)) match {
       case (Nil, Nil, Nil) =>
-        mapToDateError(errors, ids, isAgent, errorContext, minDate, maxDate, dateFormatter)
+        collectDateErrors(errors, ids, isAgent, errorContext, minDate, maxDate, dateFormatter)
       case (Nil, Nil, fields) =>
         error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.length")
       case (Nil, fields, Nil) =>
@@ -87,19 +87,19 @@ object DateErrorMapping {
     }
   }
 
-  private def mapToInvalidError(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, InvalidDay, InvalidMonth, InvalidYear)
+  private def collectInvalidErrors(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, InvalidDay, InvalidMonth, InvalidYear)
 
-  private def mapToEmptyError(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, EmptyDay, EmptyMonth, EmptyYear)
+  private def collectEmptyErrors(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, EmptyDay, EmptyMonth, EmptyYear)
 
-  private def mapToLengthError(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, InvalidYearLength)
+  private def collectLengthErrors(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, InvalidYearLength)
 
-  private def mapToDateError(errors: List[FieldValidationError],
-                             ids: HtmlIds,
-                             isAgent: Boolean = false,
-                             errorContext: String,
-                             minDate: Option[LocalDate] = None,
-                             maxDate: Option[LocalDate] = None,
-                             dateFormatter: Option[LocalDate => String]): DateModelValidation = {
+  private def collectDateErrors(errors: List[FieldValidationError],
+                                ids: HtmlIds,
+                                isAgent: Boolean = false,
+                                errorContext: String,
+                                minDate: Option[LocalDate] = None,
+                                maxDate: Option[LocalDate] = None,
+                                dateFormatter: Option[LocalDate => String]): DateModelValidation = {
     val formatter: LocalDate => String = dateFormatter.getOrElse(defaultDateFormatter)
 
     if (errors.contains(TooEarly)) {
