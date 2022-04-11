@@ -170,19 +170,19 @@ class DateModelFormatterSpec extends AnyWordSpecLike with Matchers {
           "the date contains multiple issues" when {
             "the day field is empty and the year is too small" in {
               val result = dateModelFormatter(isAgent).bind(bindingKey, inputMap(day = Some(""), month = Some("10"), year = Some("999")))
-              result mustBe Left(Seq(FormError(s"$bindingKey-${DateModelMapping.day}", errorKey(isAgent)("error.test.day_year.invalid"))))
+              result mustBe Left(Seq(FormError(s"$bindingKey-${DateModelMapping.day}", errorKey(isAgent)("error.test.date.invalid"))))
             }
             "the day field is invalid and the year is too small" in {
               val result = dateModelFormatter(isAgent).bind(bindingKey, inputMap(day = Some("invalid"), month = Some("10"), year = Some("10000")))
-              result mustBe Left(Seq(FormError(s"$bindingKey-${DateModelMapping.day}", errorKey(isAgent)("error.test.day_year.invalid"))))
+              result mustBe Left(Seq(FormError(s"$bindingKey-${DateModelMapping.day}", errorKey(isAgent)("error.test.date.invalid"))))
             }
             "the day field is invalid and the month field is empty" in {
               val result = dateModelFormatter(isAgent).bind(bindingKey, inputMap(day = Some("invalid"), month = Some(""), year = Some("2022")))
-              result mustBe Left(Seq(FormError(s"$bindingKey-${DateModelMapping.day}", errorKey(isAgent)("error.test.day_month.invalid"))))
+              result mustBe Left(Seq(FormError(s"$bindingKey-${DateModelMapping.day}", errorKey(isAgent)("error.test.date.invalid"))))
             }
             "the day field is invalid, the month field is empty and the year is too big" in {
               val result = dateModelFormatter(isAgent).bind(bindingKey, inputMap(day = Some("invalid"), month = Some(""), year = Some("10000")))
-              result mustBe Left(Seq(FormError(s"$bindingKey-${DateModelMapping.day}", errorKey(isAgent)("error.test.day_month_year.invalid"))))
+              result mustBe Left(Seq(FormError(s"$bindingKey-${DateModelMapping.day}", errorKey(isAgent)("error.test.date.invalid"))))
             }
           }
         }
