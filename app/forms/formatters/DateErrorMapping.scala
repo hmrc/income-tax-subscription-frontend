@@ -60,21 +60,19 @@ object DateErrorMapping {
                       errorContext: String,
                       minDate: Option[LocalDate] = None,
                       maxDate: Option[LocalDate] = None,
-                      dateFormatter: Option[LocalDate => String]): DateModelValidation = {
+                      dateFormatter: Option[LocalDate => String]): DateModelValidation =
     (collectInvalidErrors(errors), collectEmptyErrors(errors), collectLengthErrors(errors)) match {
       case (Nil, Nil, Nil) =>
         collectDateErrors(errors, ids, isAgent, errorContext, minDate, maxDate, dateFormatter)
-      case (Nil, Nil, fields) =>
-        error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.length")
-      case (Nil, fields, Nil) =>
-        error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.empty")
       case (fields, Nil, Nil) =>
         error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.invalid")
+      case (Nil, fields, Nil) =>
+        error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.empty")
+      case (Nil, Nil, fields) =>
+        error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.length")
       case (a, b, c) =>
-        val fields = a ++ b ++ c
-        error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"date.invalid")
+        error(isAgent, errorContext, fieldsToFormKey(a ++ b ++ c, ids), s"date.invalid")
     }
-  }
 
   private def fieldsToMessageKey(fields: List[DateField]): String = fields.toSet.toList.sorted.mkString("_")
 
