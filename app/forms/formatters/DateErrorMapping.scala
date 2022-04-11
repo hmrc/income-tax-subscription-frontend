@@ -23,11 +23,6 @@ import play.api.data.FormError
 import java.time.LocalDate
 
 object DateErrorMapping {
-  final case class InvalidFields(fields: List[DateField])
-
-  final case class EmptyFields(fields: List[DateField])
-
-  final case class WrongLengthFields(fields: List[DateField])
 
   sealed trait FieldValidationError {
     def field: Option[DateField]
@@ -67,15 +62,15 @@ object DateErrorMapping {
                       maxDate: Option[LocalDate] = None,
                       dateFormatter: Option[LocalDate => String]): DateModelValidation = {
     (mapToInvalidError(errors), mapToEmptyError(errors), mapToLengthError(errors)) match {
-      case (InvalidFields(Nil), EmptyFields(Nil), WrongLengthFields(Nil)) =>
+      case (Nil, Nil, Nil) =>
         mapToDateError(errors, ids, isAgent, errorContext, minDate, maxDate, dateFormatter)
-      case (InvalidFields(Nil), EmptyFields(Nil), WrongLengthFields(fields)) =>
+      case (Nil, Nil, fields) =>
         error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.length")
-      case (InvalidFields(Nil), EmptyFields(fields), WrongLengthFields(Nil)) =>
+      case (Nil, fields, Nil) =>
         error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.empty")
-      case (InvalidFields(fields), EmptyFields(Nil), WrongLengthFields(Nil)) =>
+      case (fields, Nil, Nil) =>
         error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"${fieldsToMessageKey(fields)}.invalid")
-      case (InvalidFields(a), EmptyFields(b), WrongLengthFields(c)) =>
+      case (a, b, c) =>
         val fields = a ++ b ++ c
         error(isAgent, errorContext, fieldsToFormKey(fields, ids), s"date.invalid")
     }
@@ -92,11 +87,11 @@ object DateErrorMapping {
     }
   }
 
-  private def mapToInvalidError(errors: List[FieldValidationError]): InvalidFields = InvalidFields(collectFields(errors, InvalidDay, InvalidMonth, InvalidYear))
+  private def mapToInvalidError(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, InvalidDay, InvalidMonth, InvalidYear)
 
-  private def mapToEmptyError(errors: List[FieldValidationError]): EmptyFields = EmptyFields(collectFields(errors, EmptyDay, EmptyMonth, EmptyYear))
+  private def mapToEmptyError(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, EmptyDay, EmptyMonth, EmptyYear)
 
-  private def mapToLengthError(errors: List[FieldValidationError]): WrongLengthFields = WrongLengthFields(collectFields(errors, InvalidYearLength))
+  private def mapToLengthError(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, InvalidYearLength)
 
   private def mapToDateError(errors: List[FieldValidationError],
                              ids: HtmlIds,
@@ -133,10 +128,11 @@ object DateErrorMapping {
     }
   }
 
-  private def collectFields(errors: List[FieldValidationError], errorsToFind: FieldValidationError*): List[DateField] =
+  private def collectFields(errors: List[FieldValidationError], errorsToFind: FieldValidationError*): List[DateField] = {
     errorsToFind.foldLeft[List[DateField]](Nil)(
       (acc, errorToFind) => if (errors.contains(errorToFind)) acc ++ errorToFind.field else acc
     )
+  }
 
   private def errorKey(isAgent: Boolean = false,
                        errorContext: String,
