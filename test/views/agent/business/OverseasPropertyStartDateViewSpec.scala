@@ -45,6 +45,8 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
+    val maxDate = "The date the overseas property business started trading must be on or before 11 April 2021"
+    val minDate = "The date your client’s property business started trading must be on or after 11 April 2021"
   }
 
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
@@ -134,13 +136,25 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
       document().getGovukBackLink.attr("href") mustBe testBackUrl
     }
 
-    "display form error on page" in {
-      val doc = document(overseasPropertyStartDateForm = defaultForm.withError(testError))
+    "display max date error on page" in {
+      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day_month_year.max_date", List("11 April 2021"))
+      val doc = document(overseasPropertyStartDateForm = defaultForm.withError(dateValidationError))
       doc.mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
         OverseasPropertyStartDateMessages.exampleStartDate,
-        Some(testError.message)
+        Some(OverseasPropertyStartDateMessages.maxDate)
+      )
+    }
+
+    "display min date error on page" in {
+      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day_month_year.min_date", List("11 April 2021"))
+      val doc = document(overseasPropertyStartDateForm = defaultForm.withError(dateValidationError))
+      doc.mustHaveGovukDateField(
+        "startDate",
+        OverseasPropertyStartDateMessages.heading,
+        OverseasPropertyStartDateMessages.exampleStartDate,
+        Some(OverseasPropertyStartDateMessages.minDate)
       )
     }
   }

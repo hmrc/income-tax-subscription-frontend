@@ -17,11 +17,9 @@
 package forms.individual.business
 
 import forms.formatters.DateModelMapping.dateModelMapping
-import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.single
-import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
 
@@ -34,23 +32,6 @@ object PropertyStartDateForm {
   def minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
 
   val errorContext: String = "property"
-
-  def earliestTaxYear(date: String): Constraint[DateModel] = constraint[DateModel] { dateModel =>
-    val earliestAllowedYear: Int = minStartDate.getYear
-    if (dateModel.year.toInt < earliestAllowedYear) {
-      Invalid(s"error.$errorContext.start_date.minStartDate", date)
-    } else {
-      Valid
-    }
-  }
-
-  def startBeforeOneYear(date: String): Constraint[DateModel] = constraint[DateModel] { dateModel =>
-    if (DateModel.dateConvert(dateModel).isAfter(maxStartDate)) {
-      Invalid(s"error.$errorContext.start_date.maxStartDate", date)
-    } else {
-      Valid
-    }
-  }
 
   def propertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
     single(

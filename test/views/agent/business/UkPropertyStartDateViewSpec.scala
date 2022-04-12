@@ -60,6 +60,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
     val update = "Update"
+    val maxDate = "The date the UK property business started trading must be on or before 11 April 2021"
+    val minDate = "The date your client’s property business started trading must be on or after 11 April 2021"
   }
 
   "agent UK property business start" must {
@@ -128,10 +130,36 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       document().getGovukBackLink.attr("href") mustBe testBackUrl
     }
 
-    "must display form error on page" in {
-      val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError)
+    "must display max date error form error on page" in {
+      val dateValidationError = FormError("startDate", "agent.error.property.day_month_year.max_date", List("11 April 2021"))
+      val formWithError = PropertyStartDateForm
+        .propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
+        .withError(dateValidationError)
+
       val doc = document(propertyStartDateForm = formWithError)
-      doc.mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.exampleStartDate, Some(testError.message))
+
+      doc.mustHaveGovukDateField(
+        "startDate",
+        PropertyStartDateMessages.heading,
+        PropertyStartDateMessages.exampleStartDate,
+        Some(PropertyStartDateMessages.maxDate)
+      )
+    }
+
+    "must display min date error form error on page" in {
+      val dateValidationError = FormError("startDate", "agent.error.property.day_month_year.min_date", List("11 April 2021"))
+      val formWithError = PropertyStartDateForm
+        .propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
+        .withError(dateValidationError)
+
+      val doc = document(propertyStartDateForm = formWithError)
+
+      doc.mustHaveGovukDateField(
+        "startDate",
+        PropertyStartDateMessages.heading,
+        PropertyStartDateMessages.exampleStartDate,
+        Some(PropertyStartDateMessages.minDate)
+      )
     }
   }
 }

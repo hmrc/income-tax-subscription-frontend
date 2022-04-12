@@ -33,7 +33,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
   private val testClientFirstName = "Test client first name"
   private val testClientLastName = "Test client last name"
   private val testClientNino: String = TestConstants.testNino
-  private val dob = DateModel("01", "02", "1980")
+  private val dob = DateModel("1", "2", "1980")
 
   def setupTestData(fname: String = testClientFirstName,
                     lname: String = testClientLastName,
@@ -151,28 +151,28 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
         "error if an invalid date is supplied" which {
           "has an invalid day" in {
-            val error = s"$dateErrorContext.invalid"
+            val error = s"$dateErrorContext.day.invalid"
 
             val testInput = setupTestData(dob = DateModel("32", "12", "1980"))
             val errors = clientDetailsForm.bind(testInput).errors
             errors must contain(FormError(s"$clientDateOfBirth-dateDay", error))
           }
           "has an invalid month" in {
-            val error = s"$dateErrorContext.invalid"
+            val error = s"$dateErrorContext.month.invalid"
 
             val testInput = setupTestData(dob = DateModel("31", "13", "1980"))
             val errors = clientDetailsForm.bind(testInput).errors
             errors must contain(FormError(s"$clientDateOfBirth-dateMonth", error))
           }
           "has an invalid year" in {
-            val error = s"$dateErrorContext.invalid"
+            val error = s"$dateErrorContext.year.invalid"
 
             val testInput = setupTestData(dob = DateModel("31", "12", "invalid"))
             val errors = clientDetailsForm.bind(testInput).errors
             errors must contain(FormError(s"$clientDateOfBirth-dateYear", error))
           }
           "has multiple invalid fields" in {
-            val error = s"$dateErrorContext.invalid"
+            val error = s"$dateErrorContext.day_month.invalid"
 
             val testInput = setupTestData(dob = DateModel("32", "13", "1980"))
             val errors = clientDetailsForm.bind(testInput).errors
@@ -212,7 +212,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if a date not in the past is supplied" in {
-          val errors = "agent.error.dob_date.not_in_past"
+          val errors = "agent.error.dob_date.day_month_year.not_in_past"
           val futureDate: LocalDate = LocalDate.now
 
           val testInput = setupTestData(dob = DateModel.dateConvert(futureDate))

@@ -37,10 +37,16 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
     val update = "Update"
+    val maxDate = "The date your overseas property business started trading must be the same as or before 11 April 2021"
+    val minDate = "The date your property business started must be on or after 11 April 2021"
   }
 
   val taxYearEnd: Int = 2020
   val testError: FormError = FormError("startDate", "testError")
+
+  private val maxDateValidationError = FormError("startDate", "error.overseas.property.day_month_year.max_date", List("11 April 2021"))
+
+  private val minDateValidationError = FormError("startDate", "error.overseas.property.day_month_year.min_date", List("11 April 2021"))
 
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
 
@@ -102,14 +108,24 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
           hint = Some(OverseasPropertyStartDateMessages.exampleStartDate)
         )
       }
-      "there is an error" in new Setup(
-        form = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError)
+      "there is max date error" in new Setup(
+        form = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(maxDateValidationError)
       ) {
-        document.mustHaveDateInput(
-          name = "startDate",
-          label = OverseasPropertyStartDateMessages.heading,
-          hint = Some(OverseasPropertyStartDateMessages.exampleStartDate),
-          error = Some(testError)
+        document.mustHaveGovukDateField(
+          "startDate",
+          OverseasPropertyStartDateMessages.heading,
+          OverseasPropertyStartDateMessages.exampleStartDate,
+          Some(OverseasPropertyStartDateMessages.maxDate)
+        )
+      }
+      "there is min date error" in new Setup(
+        form = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(minDateValidationError)
+      ) {
+        document.mustHaveGovukDateField(
+          "startDate",
+          OverseasPropertyStartDateMessages.heading,
+          OverseasPropertyStartDateMessages.exampleStartDate,
+          Some(OverseasPropertyStartDateMessages.minDate)
         )
       }
     }

@@ -22,29 +22,6 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class DateModelMappingTest extends AnyWordSpec with Matchers {
 
-  "DateModelMapping max day for month" when {
-    "month is february, in a leap year" should {
-      "give 29" in {
-        DateModelMapping.maxDayForMonth(2, 2000) must be(29)
-      }
-    }
-    "month is february, not in a leap year" should {
-      "give 29" in {
-        DateModelMapping.maxDayForMonth(2, 2001) must be(28)
-      }
-    }
-    "month is thermidor" should {
-      "give maxint" in {
-        DateModelMapping.maxDayForMonth(13, 2001) must be(Integer.MAX_VALUE)
-      }
-    }
-    "crazy corner case of 1900 not being a leap year" should {
-      "give 28" in {
-        DateModelMapping.maxDayForMonth(2, 1900) must be(28)
-      }
-    }
-  }
-
   "DateModelMapping dateModelFormatter" when {
     val formatter = DateModelMapping.DateModelFormatter(isAgent = true, "context", None, None, None)
     "date is all fine" should {

@@ -51,6 +51,7 @@ class UserDetailsViewSpec extends ViewSpec {
     val dateOfBirthLabel = "Date of birth"
     val ninoHint = "It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’."
     val dateOfBirthHint = "For example, 10 12 1990"
+    val notInPast = "Your date of birth must be in the past"
   }
 
   val userDetailsFormError: FormError = FormError(UserDetailsForm.userFirstName, "first name error")
@@ -149,13 +150,9 @@ class UserDetailsViewSpec extends ViewSpec {
           )
         }
         "there is an error field" in {
-          val error: FormError = FormError(UserDetailsForm.userDateOfBirth, "date of birth error")
-          document(form = userDetailsForm.withError(error)).mainContent.getForm.selectNth("div", 4).mustHaveDateInput(
-            name = UserDetailsForm.userDateOfBirth,
-            label = UserDetailsMessages.dateOfBirthLabel,
-            hint = Some(UserDetailsMessages.dateOfBirthHint),
-            isDateOfBirth = true
-          )
+          val error: FormError = FormError(UserDetailsForm.userDateOfBirth, "error.user_details.date_of_birth.day_month_year.not_in_past")
+          document(form = userDetailsForm.withError(error))
+            .mainContent.selectHead(".govuk-error-summary__list li").text() mustBe UserDetailsMessages.notInPast
         }
       }
       "has a button to submit the form" which {

@@ -36,7 +36,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
   "The PropertyStartDateForm" should {
     "transform a valid request to the date form case class" in {
       val testDateDay = "31"
-      val testDateMonth = "05"
+      val testDateMonth = "5"
       val testDateYear = "2017"
       val testInput = Map(
         s"$startDate-$day" -> testDateDay, s"$startDate-$month" -> testDateMonth, s"$startDate-$year" -> testDateYear
@@ -47,10 +47,6 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
     }
     "when testing the validation" should {
       "output the appropriate error messages for the start date" when {
-        val empty = "error.property.date.empty"
-        val afterMax = "error.property.start_date.maxStartDate"
-        val beforeMin = "error.property.start_date.minStartDate"
-
         val dayKeyError: String = s"$startDate-$day"
         val monthKeyError: String = s"$startDate-$month"
         val yearKeyError: String = s"$startDate-$year"
@@ -58,7 +54,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         val errorContext: String = "error.property"
 
         "the date is not supplied to the map" in {
-          form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, empty))
+          form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, s"$errorContext.day_month_year.empty"))
         }
         "it is within 1 years" in {
 
@@ -68,11 +64,11 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
             oneYearAgo.getMonthValue.toString,
             oneYearAgo.getYear.toString
           ))
-          maxTest.errors must contain(FormError(dayKeyError, afterMax, List(PropertyStartDateForm.maxStartDate.toString)))
+          maxTest.errors must contain(FormError(dayKeyError, s"$errorContext.day_month_year.max_date", List(PropertyStartDateForm.maxStartDate.toString)))
         }
         "it is before year 1900" in {
           val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
-          minTest.errors must contain(FormError(dayKeyError, beforeMin, List(PropertyStartDateForm.minStartDate.toString)))
+          minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day_month_year.min_date", List(PropertyStartDateForm.minStartDate.toString)))
         }
         "it is missing the day" in {
           val test = form.bind(DataMap.govukDate(startDate)("", "4", "2017"))
@@ -92,19 +88,19 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
         "it has an invalid day" in {
           val test = form.bind(DataMap.govukDate(startDate)("0", "1", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
+          test.errors must contain(FormError(dayKeyError, s"$errorContext.day.invalid"))
         }
         "it has an invalid month" in {
           val test = form.bind(DataMap.govukDate(startDate)("1", "13", "2017"))
-          test.errors must contain(FormError(monthKeyError, s"$errorContext.invalid"))
+          test.errors must contain(FormError(monthKeyError, s"$errorContext.month.invalid"))
         }
         "it has an invalid year" in {
           val test = form.bind(DataMap.govukDate(startDate)("1", "1", "invalid"))
-          test.errors must contain(FormError(yearKeyError, s"$errorContext.invalid"))
+          test.errors must contain(FormError(yearKeyError, s"$errorContext.year.invalid"))
         }
         "it has multiple invalid fields" in {
           val test = form.bind(DataMap.govukDate(startDate)("0", "0", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.invalid"))
+          test.errors must contain(FormError(dayKeyError, s"$errorContext.day_month.invalid"))
         }
         "the year provided is not the correct length" when {
           "the year is 3 digits" in {

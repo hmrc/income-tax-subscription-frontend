@@ -50,7 +50,7 @@ object UserDetailsForm {
     if (dateModel.toLocalDate.isBefore(LocalDate.now)) {
       Valid
     } else {
-      Invalid("error.user_details.date_of_birth.not_in_past")
+      Invalid("error.user_details.date_of_birth.day_month_year.not_in_past")
     }
   }
 
