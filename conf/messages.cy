@@ -22,10 +22,10 @@ base.userResearch.title                                         = Helpu i wella 
 base.userResearch.link                                          = Atebwch ychydig o gwestiynau am eich hunan er mwyn ymuno â’r panel ymchwil
 base.save-and-continue                                          = Cadw ac yn eich blaen
 base.save-and-come-back-later                                   = Cadw a dod yn ôl yn nes ymlaen
-base.incomplete                                                 = Anghyflawn
 base.confirm-and-continue                                       = Cadarnhau ac yn eich blaen
 base.agree-and-continue                                         = Cytuno ac yn eich blaen
 base.remove                                                     = Dileu
+base.add                                                        = Ychwanegu
 base.update_heading                                             = Diweddariadau chwarterol
 base.deadline_heading                                           = Dyddiad cau
 

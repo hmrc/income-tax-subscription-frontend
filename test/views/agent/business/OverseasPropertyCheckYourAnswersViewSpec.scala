@@ -233,6 +233,10 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
         doc.selectNth(".govuk-summary-list__row", index)
           .selectHead(".govuk-summary-list__actions a")
           .attr("href") mustBe changeLink
+
+        doc.selectNth(".govuk-summary-list__row", index)
+          .selectHead(".govuk-summary-list__actions a span[aria-hidden=\"true\"]")
+          .text() mustBe answer.fold(OverseasPropertyCheckYourAnswers.add)(_ => OverseasPropertyCheckYourAnswers.change)
       }
 
       s"display the section hidden content" in {

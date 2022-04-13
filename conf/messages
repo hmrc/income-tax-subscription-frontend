@@ -22,10 +22,10 @@ base.userResearch.title                                         = Help to improv
 base.userResearch.link                                          = Answer some questions about yourself to join the research panel
 base.save-and-continue                                          = Save and continue
 base.save-and-come-back-later                                   = Save and come back later
-base.incomplete                                                 = Incomplete
 base.confirm-and-continue                                       = Confirm and continue
 base.agree-and-continue                                         = Agree and continue
 base.remove                                                     = Remove
+base.add                                                        = Add
 base.update_heading                                             = Quarterly update
 base.deadline_heading                                           = Deadline
 
