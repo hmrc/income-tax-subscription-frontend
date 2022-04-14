@@ -58,7 +58,7 @@
     field = "start-date",
     question = messages("agent.business.check-your-answers.content.uk-property-start-date.question"),
     answer = startDate(viewModel.startDate),
-    changeText = if (viewModel.startDate.isDefined) None else Some(messages("base.incomplete")),
+    changeText = if (viewModel.startDate.isDefined) None else Some(messages("base.add")),
     changeUrl = Some(controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url),
     hiddenContent =
      if (viewModel.startDate.isDefined)
@@ -70,7 +70,7 @@
     field = "accounting-method",
     question = messages("agent.business.check-your-answers.content.uk-property-accounting-method.question"),
     answer = accountingMethod(viewModel.accountingMethod),
-    changeText = if (viewModel.accountingMethod.isDefined) None else Some(messages("base.incomplete")),
+    changeText = if (viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
     changeUrl = Some(controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url),
     hiddenContent =
      if (viewModel.accountingMethod.isDefined)
