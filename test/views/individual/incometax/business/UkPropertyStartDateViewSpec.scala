@@ -29,7 +29,6 @@ import views.html.individual.incometax.business.PropertyStartDate
 
 import java.time.LocalDate
 
-
 class UkPropertyStartDateViewSpec extends ViewSpec  {
 
   object PropertyStartDateMessages {
@@ -39,6 +38,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
     val update = "Update"
+    val maxDate = "The date your UK property business started trading must be the same as or before 11 April 2021"
+    val minDate = "The date your property business started must be on or after 11 April 2021"
   }
 
   val taxYearEnd: Int = 2020
@@ -107,16 +108,27 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       document(isEditMode = true).selectHead("#continue-button").text mustBe PropertyStartDateMessages.update
     }
 
-    "must display form error on page" in {
-      val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError)
-      document(propertyStartDateForm = formWithError).mustHaveDateInput(
-        name = PropertyStartDateForm.startDate,
-        label = PropertyStartDateMessages.heading,
-        hint = Some(PropertyStartDateMessages.exampleStartDate),
-        error = Some(testError)
+    "must display max date error on page" in {
+      val dateValidationError = FormError("startDate", "error.property.day_month_year.max_date", List("11 April 2021"))
+      val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(dateValidationError)
+      document(propertyStartDateForm = formWithError).mustHaveGovukDateField(
+        "startDate",
+        PropertyStartDateMessages.heading,
+        PropertyStartDateMessages.exampleStartDate,
+        Some(PropertyStartDateMessages.maxDate)
       )
     }
 
+    "must display min date error on page" in {
+      val dateValidationError = FormError("startDate", "error.property.day_month_year.min_date", List("11 April 2021"))
+      val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(dateValidationError)
+      document(propertyStartDateForm = formWithError).mustHaveGovukDateField(
+        "startDate",
+        PropertyStartDateMessages.heading,
+        PropertyStartDateMessages.exampleStartDate,
+        Some(PropertyStartDateMessages.minDate)
+      )
+    }
   }
 
   private def page(isEditMode: Boolean, propertyStartDateForm: Form[DateModel]): Html = {

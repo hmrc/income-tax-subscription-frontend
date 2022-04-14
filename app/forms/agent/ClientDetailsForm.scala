@@ -58,7 +58,7 @@ object ClientDetailsForm {
     if (dateModel.toLocalDate.isBefore(LocalDate.now)) {
       Valid
     } else {
-      Invalid(s"agent.error.$errorContext.not_in_past")
+      Invalid(s"agent.error.$errorContext.day_month_year.not_in_past")
     }
   }
 

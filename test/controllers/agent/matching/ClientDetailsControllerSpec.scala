@@ -124,7 +124,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             firstName = "Abc",
             lastName = "Abc",
             nino = testNino,
-            dateOfBirth = DateModel("01", "01", "1980")
+            dateOfBirth = DateModel("1", "1", "1980")
           )
 
         def callSubmit(request: FakeRequest[AnyContentAsEmpty.type])(isEditMode: Boolean): Future[Result] =
