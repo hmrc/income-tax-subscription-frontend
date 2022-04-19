@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import models.common.TaskListModel
+@import models.common.business.{BusinessNameModel, BusinessTradeNameModel}
 @import services.AccountingPeriodService
 @import views.html.helpers.injected.ContinueButton
 @import views.html.templates.PrincipalMainTemplate
@@ -26,79 +27,114 @@
     continueButton: ContinueButton
 )
 
-
 @(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @signUpSectionContent = @{
-    if(viewModel.taskListComplete ) {
-        continueButton()
-    } else {
-            <span class="app-task-list__task-name">
-                {messages("business.task-list.content.action-needed", messages("business.task-list.content.section2"))}
-            </span>
-    }
+  if(viewModel.taskListComplete ) {
+    continueButton()
+  } else {
+    <span class="app-task-list__task-name">
+      {messages("business.task-list.content.action-needed", messages("business.task-list.content.section2"))}
+    </span>
+  }
 }
 
 @applicationStatus = @{
-    if(viewModel.taskListComplete) {
-        messages("business.task-list.heading.complete")
-    }else{
-        messages("business.task-list.heading.incomplete")
-    }
+  if(viewModel.taskListComplete) {
+    messages("business.task-list.heading.complete")
+  }else{
+    messages("business.task-list.heading.incomplete")
+  }
+}
+
+@businessName(index: Int, businessName: Option[BusinessNameModel], businessTradeName: Option[BusinessTradeNameModel]) = @{
+  (businessName, businessTradeName) match {
+    case (None, None) => messages("business.task-list.content.section2.business", index + 1)
+    case (None, Some(businessTradeNameModel)) => businessTradeNameModel.businessTradeName
+    case (Some(businessNameModel), None) => businessNameModel.businessName
+    case (Some(businessNameModel), Some(businessTradeNameModel)) => s"${businessNameModel.businessName} ${businessTradeNameModel.businessTradeName}"
+  }
 }
 
 @businesses = @{
+  <ul class="app-task-list__items">
+  {viewModel.selfEmployments.map(se =>
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href={s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${se.id}&isEditMode=true"} aria-describedby={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>
+        {businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName)}
+        </a>
+      </span>
+      <span class="app-task-list__task-completed" id={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>
+      {if(se.confirmed && viewModel.selfEmploymentAccountingMethod.isDefined) {
+        messages("business.task-list.status.completed")
+      } else {
+        messages("business.task-list.status.incomplete")
+      }}
+      </span>
+      <span class="govuk-remove-business-link" id={"self_employment_remove"+viewModel.selfEmployments.indexOf(se)}>
+        <a class="govuk-link" href={controllers.individual.business.routes.RemoveBusinessController.show(se.id).url}>
+          <span aria-hidden="true">{messages("base.remove")}</span>
+          <span class="govuk-visually-hidden">
+          {messages("business.task-list.content.section2.remove-sole-trader-business", businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName))}
+          </span>
+        </a>
+      </span>
+    </li>
+  )}
 
-        <ul class="app-task-list__items">
-        {viewModel.selfEmployments.map(se =>
-            <li class="app-task-list__item">
-            <span class="app-task-list__task-name">
-            <a href={s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${se.id}&isEditMode=true"} aria-describedby={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>{se.businessName.map(bn => bn.businessName).getOrElse("")} {se.businessTradeName.map(btn => btn.businessTradeName).getOrElse("")}</a>
-            </span>
-            <span class="app-task-list__task-completed" id={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>
-             {if(se.confirmed && viewModel.selfEmploymentAccountingMethod.isDefined) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
-            </span>
-            <span class="govuk-remove-business-link" id={"self_employment_remove"+viewModel.selfEmployments.indexOf(se)}>
-            <a class="govuk-link" href={controllers.individual.business.routes.RemoveBusinessController.show(se.id).url}>{messages("base.remove")}</a>
-            </span>
-            </li>
+  {viewModel.ukProperty.map(ukps =>
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href={controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url} aria-describedby="uk_property_status" id="uk_property_business">{messages("business.task-list.content.section2.property.uk")}</a>
+      </span>
+      <span class="app-task-list__task-completed" id="uk_property_status">
+      {if(viewModel.ukPropertyComplete ) {
+        messages("business.task-list.status.completed")
+      } else {
+        messages("business.task-list.status.incomplete")
+      }}
+      </span>
+      <span class="govuk-remove-business-link" id="uk_property_remove">
+        <a class="govuk-link" href={controllers.individual.business.routes.RemoveUkPropertyController.show.url}>
+          <span aria-hidden="true">{messages("base.remove")}</span>
+          <span class="govuk-visually-hidden">{messages("business.task-list.content.section2.remove-uk-property")}</span>
+        </a>
+      </span>
+    </li>
+  ).getOrElse({})}
 
-            )}
+  {viewModel.overseasProperty.map(_ =>
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href={controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url} aria-describedby="overseas_property_status" id="overseas_property_business">{messages("business.task-list.content.section2.property.overseas")}</a>
+      </span>
+      <span class="app-task-list__task-completed" id="overseas_property_status">
+      {if(viewModel.overseasPropertyComplete) {
+        messages("business.task-list.status.completed")}
+      else {
+        messages("business.task-list.status.incomplete")
+      }}
+      </span>
+      <span class="govuk-remove-business-link" id="overseas_property_remove">
+        <a class="govuk-link" href={controllers.individual.business.routes.RemoveOverseasPropertyController.show.url}>
+          <span aria-hidden="true">{messages("base.remove")}</span>
+          <span class="govuk-visually-hidden">{messages("business.task-list.content.section2.remove-overseas-property")}</span>
+        </a>
+      </span>
+    </li>
+  ).getOrElse({})}
 
-        {viewModel.ukProperty.map(ukps =>
-            <li class="app-task-list__item">
-            <span class="app-task-list__task-name">
-            <a href={controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url} aria-describedby="uk_property_status" id="uk_property_business">{messages("business.task-list.content.section2.property.uk")}</a>
-            </span>
-            <span class="app-task-list__task-completed" id="uk_property_status">
-            {if(viewModel.ukPropertyComplete ) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
-            </span>
-            <span class="govuk-remove-business-link" id="uk_property_remove">
-            <a class="govuk-link" href={controllers.individual.business.routes.RemoveUkPropertyController.show.url}>{messages("base.remove")}</a>
-            </span>
-            </li>
-
-            ).getOrElse({})}
-        {viewModel.overseasProperty.map(_ =>
-            <li class="app-task-list__item">
-            <span class="app-task-list__task-name">
-            <a href={controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url} aria-describedby="overseas_property_status" id="overseas_property_business">{messages("business.task-list.content.section2.property.overseas")}</a>
-            </span>
-            <span class="app-task-list__task-completed" id="overseas_property_status">
-            {if(viewModel.overseasPropertyComplete) {messages("business.task-list.status.completed")} else {messages("business.task-list.status.incomplete")}}
-            </span>
-            <span class="govuk-remove-business-link" id="overseas_property_remove">
-            <a class="govuk-link" href={controllers.individual.business.routes.RemoveOverseasPropertyController.show.url}>{messages("base.remove")}</a>
-            </span>
-            </li>
-        ).getOrElse({})}{if(viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) {
-                <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                <a href={controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show.url} aria-describedby="section_2_action" id="add_business">{messages("business.task-list.content.section2.action")}</a>
-                </span>
-                </li>
-        }}
-        </ul>
+  {if(viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) {
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href={controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show.url} aria-describedby="section_2_action" id="add_business">
+        {messages("business.task-list.content.section2.add")}
+        </a>
+      </span>
+    </li>
+  }}
+  </ul>
 }
 
 @selectTaxYear = @{
@@ -152,39 +188,31 @@
         @form(action = postAction) {
             <ol class="app-task-list">
                 <li>
-                    <h2 class="app-task-list__section govuk-heading-m">
-                        <span class="app-task-list__section-number">
-                            1.</span> @messages("business.task-list.content.section1")
-                    </h2>
-
-                    @selectTaxYear
-
+                  <h2 class="app-task-list__section govuk-heading-m">
+                    <span class="app-task-list__section-number">1.</span>
+                    @messages("business.task-list.content.section1")
+                  </h2>
+                  @selectTaxYear
                 </li>
                 <li>
-                    <h2 class="app-task-list__section">
-                        <span class="app-task-list__section-number govuk-heading-m">2.</span>
-                        @messages("business.task-list.content.section2")
-                    </h2>
-
-                    @businesses
-
-
+                  <h2 class="app-task-list__section">
+                    <span class="app-task-list__section-number govuk-heading-m">2.</span>
+                    @messages("business.task-list.content.section2")
+                  </h2>
+                  @businesses
                 </li>
                 <li>
-                    <h2 class="app-task-list__section govuk-heading-m">
-                        <span class="app-task-list__section-number">3.</span>
-                        @messages("business.task-list.content.section3")
-                    </h2>
-                    <ul class="app-task-list__items">
-                        <li class="border-none">
-                            @signUpSectionContent
-                        </li>
-                    </ul>
-
+                  <h2 class="app-task-list__section govuk-heading-m">
+                    <span class="app-task-list__section-number">3.</span>
+                    @messages("business.task-list.content.section3")
+                  </h2>
+                  <ul class="app-task-list__items">
+                    <li class="border-none">
+                      @signUpSectionContent
+                    </li>
+                  </ul>
                 </li>
             </ol>
-
         }
-
     </div>
 }

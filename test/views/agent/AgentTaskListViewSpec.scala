@@ -153,7 +153,6 @@ class AgentTaskListViewSpec extends ViewSpec {
             contentSummary(numberComplete = 0, numberTotal = 5)
         }
 
-
         "in the select tax year section: display the select tax year link with status in progress" when {
           "the user has selected the tax year but not confirmed the answer in tax year CYA page" in {
             val selectTaxYearSection = document(partialTaskListComplete).mainContent.selectNth("ul", 1)
@@ -170,35 +169,66 @@ class AgentTaskListViewSpec extends ViewSpec {
           selfEmploymentLink.text mustBe "Name1"
           selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id1&isEditMode=true"""
           selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
-
         }
 
-        "display an incomplete self employment with a business name and trade" in {
+        "display an incomplete self employment" which {
           val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
-          val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
-          selfEmploymentLink.text mustBe "Name2 TradeName"
-          selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id2&isEditMode=true"""
-          selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
 
+          "contains a change link with a business name and a trade name" in {
+            val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
+            selfEmploymentLink.text mustBe "Name2 TradeName"
+            selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id2&isEditMode=true"""
+            selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
+          }
+
+          "contains a remove link" in {
+            val selfEmploymentRemoveLink = selfEmploymentSection.selectNth("span", 3).selectHead("a")
+            selfEmploymentRemoveLink.selectHead("span[aria-hidden='true']").text mustBe "Remove"
+            selfEmploymentRemoveLink.selectHead("span.govuk-visually-hidden").text mustBe "Remove Name2 TradeName"
+            selfEmploymentRemoveLink.attr("href") mustBe controllers.agent.business.routes.RemoveBusinessController.show("id2").url
+          }
         }
 
-        "display an incomplete uk property income" in {
+        "display an incomplete UK property business" which {
           val ukPropertyIncomeSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
-          val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
-          ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
-          ukPropertyIncomeLink.attr("href") mustBe controllers.agent.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
-          ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
+
+          "contains a change link" in {
+            val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
+            ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
+            ukPropertyIncomeLink.attr("href") mustBe controllers.agent.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+            ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
+          }
+
+          "contains a remove link" in {
+            val ukPropertyRemoveLink = ukPropertyIncomeSection.selectNth("span", 3).selectHead("a")
+            ukPropertyRemoveLink.selectHead("span[aria-hidden='true']").text mustBe "Remove"
+            ukPropertyRemoveLink.selectHead("span.govuk-visually-hidden").text mustBe "Remove UK property business"
+            ukPropertyRemoveLink.attr("href") mustBe controllers.agent.business.routes.ClientRemoveUkPropertyController.show.url
+          }
         }
-        "display an incomplete overseas property income" in {
-          val overseasPropertySection = document(partialTaskListComplete)
-            .mainContent.
-            selectHead("ol > li:nth-of-type(2) > ul").
-            selectNth("li", 4)
-          val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
-          overseasPropertyLink.text mustBe overseasPropertyBusiness
-          overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
-          overseasPropertySection.selectNth("span", 2).text mustBe incomplete
+
+        "display an incomplete overseas property business" which {
+          val overseasPropertySection =
+            document(partialTaskListComplete)
+              .mainContent
+              .selectHead("ol > li:nth-of-type(2) > ul")
+              .selectNth("li", 4)
+
+          "contains a change link" in {
+            val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
+            overseasPropertyLink.text mustBe overseasPropertyBusiness
+            overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
+            overseasPropertySection.selectNth("span", 2).text mustBe incomplete
+          }
+
+          "contains a remove link" in {
+            val overseasPropertyRemoveLink = overseasPropertySection.selectNth("span", 3).selectHead("a")
+            overseasPropertyRemoveLink.selectHead("span[aria-hidden='true']").text mustBe "Remove"
+            overseasPropertyRemoveLink.selectHead("span.govuk-visually-hidden").text mustBe "Remove overseas property business"
+            overseasPropertyRemoveLink.attr("href") mustBe controllers.agent.business.routes.RemoveClientOverseasPropertyController.show.url
+          }
         }
+
         "display the add a business link" in {
           val businessLink = document(partialTaskListComplete)
             .mainContent
@@ -208,51 +238,14 @@ class AgentTaskListViewSpec extends ViewSpec {
           businessLink.text mustBe addBusiness
           businessLink.attr("href") mustBe controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
         }
+
         "display the sign up incomplete text" in {
           val incompleteText = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectHead("span")
           incompleteText.text mustBe agentSignUpIncompleteText
         }
+
         "do not display the sign up button" in {
           document(partialTaskListComplete).mainContent.selectOptionally("button") mustBe None
-        }
-
-        "display an incomplete self employment with a business name and trade with remove-link" in {
-          val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
-          val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
-          selfEmploymentLink.text mustBe "Name2 TradeName"
-          selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id2&isEditMode=true"""
-          selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
-
-          val selfEmploymentRemoveLink = selfEmploymentSection.selectNth("span", 3).selectHead("a")
-          selfEmploymentRemoveLink.text mustBe "Remove"
-          selfEmploymentRemoveLink.attr("href") mustBe controllers.agent.business.routes.RemoveBusinessController.show("id2").url
-
-        }
-
-        "display an incomplete uk property income with remove-link" in {
-          val ukPropertyIncomeSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
-          val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
-          ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
-          ukPropertyIncomeLink.attr("href") mustBe controllers.agent.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
-          ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
-
-          val ukPropertyRemoveLink = ukPropertyIncomeSection.selectNth("span", 3).selectHead("a")
-          ukPropertyRemoveLink.text mustBe "Remove"
-          ukPropertyRemoveLink.attr("href") mustBe controllers.agent.business.routes.ClientRemoveUkPropertyController.show.url
-        }
-        "display an incomplete overseas property income with remove-link" in {
-          val overseasPropertySection = document(partialTaskListComplete)
-            .mainContent.
-            selectHead("ol > li:nth-of-type(2) > ul").
-            selectNth("li", 4)
-          val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
-          overseasPropertyLink.text mustBe overseasPropertyBusiness
-          overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
-          overseasPropertySection.selectNth("span", 2).text mustBe incomplete
-
-          val overseasPropertyRemoveLink = overseasPropertySection.selectNth("span", 3).selectHead("a")
-          overseasPropertyRemoveLink.text mustBe "Remove"
-          overseasPropertyRemoveLink.attr("href") mustBe controllers.agent.business.routes.RemoveClientOverseasPropertyController.show.url
         }
       }
 
@@ -260,6 +253,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         "display the application is complete" in {
           document(completedTaskListComplete).selectNth("h2", 1).text mustBe subHeadingComplete
         }
+
         "display the number of sections complete out of the total" in {
           document(completedTaskListComplete).mainContent.selectNth("p", 2).text mustBe contentSummary(4, 4)
         }
