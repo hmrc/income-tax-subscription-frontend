@@ -137,7 +137,7 @@
     ).getOrElse({})}{if(viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) {
     <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                <a href={controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url} aria-describedby="section_2_action" id="add_business">{messages("agent.business.task-list.content.section2.action")}</a>
+                <a href={controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url} id="add_business">{messages("agent.business.task-list.content.section2.action")}</a>
                 </span>
     </li>
     }}
