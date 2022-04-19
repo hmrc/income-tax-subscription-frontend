@@ -43,6 +43,9 @@ class DateValidationSpec extends AnyWordSpec with Matchers {
       "given an empty string" in {
         DateValidation.validateDay(Map(s"$testKey-dateDay" -> ""), testKeys) mustBe Invalid(NonEmptyList.of(EmptyDay))
       }
+      "given white spaces" in {
+        DateValidation.validateDay(Map(s"$testKey-dateDay" -> " "), testKeys) mustBe Invalid(NonEmptyList.of(EmptyDay))
+      }
       "given an invalid string" in {
         DateValidation.validateDay(Map(s"$testKey-dateDay" -> "invalid"), testKeys) mustBe Invalid(NonEmptyList.of(InvalidDay))
       }
@@ -58,6 +61,10 @@ class DateValidationSpec extends AnyWordSpec with Matchers {
       "given a valid day" in {
         DateValidation.validateDay(Map(s"$testKey-dateDay" -> "1"), testKeys) mustBe Valid(Day(1))
       }
+
+      "given a valid day with whites spaces" in {
+        DateValidation.validateDay(Map(s"$testKey-dateDay" -> " 1  "), testKeys) mustBe Valid(Day(1))
+      }
     }
   }
 
@@ -68,6 +75,9 @@ class DateValidationSpec extends AnyWordSpec with Matchers {
       }
       "given an empty string" in {
         DateValidation.validateMonth(Map(s"$testKey-dateMonth" -> ""), testKeys) mustBe Invalid(NonEmptyList.of(EmptyMonth))
+      }
+      "given white spaces" in {
+        DateValidation.validateMonth(Map(s"$testKey-dateMonth" -> "  "), testKeys) mustBe Invalid(NonEmptyList.of(EmptyMonth))
       }
       "given an invalid string" in {
         DateValidation.validateMonth(Map(s"$testKey-dateMonth" -> "invalid"), testKeys) mustBe Invalid(NonEmptyList.of(InvalidMonth))
@@ -84,6 +94,10 @@ class DateValidationSpec extends AnyWordSpec with Matchers {
       "given a valid month" in {
         DateValidation.validateMonth(Map(s"$testKey-dateMonth" -> "1"), testKeys) mustBe Valid(Month(1))
       }
+
+      "given a valid month with white spaces" in {
+        DateValidation.validateMonth(Map(s"$testKey-dateMonth" -> " 1"), testKeys) mustBe Valid(Month(1))
+      }
     }
   }
 
@@ -94,6 +108,9 @@ class DateValidationSpec extends AnyWordSpec with Matchers {
       }
       "given an empty string" in {
         DateValidation.validateYear(Map(s"$testKey-dateYear" -> ""), testKeys) mustBe Invalid(NonEmptyList.of(EmptyYear))
+      }
+      "given white spaces" in {
+        DateValidation.validateYear(Map(s"$testKey-dateYear" -> "   "), testKeys) mustBe Invalid(NonEmptyList.of(EmptyYear))
       }
       "given an invalid string" in {
         DateValidation.validateYear(Map(s"$testKey-dateYear" -> "invalid"), testKeys) mustBe Invalid(NonEmptyList.of(InvalidYear))
@@ -109,6 +126,10 @@ class DateValidationSpec extends AnyWordSpec with Matchers {
     "return an valid result" when {
       "given a valid year" in {
         DateValidation.validateYear(Map(s"$testKey-dateYear" -> "2022"), testKeys) mustBe Valid(Year(2022))
+      }
+
+      "given a valid year with white spaces" in {
+        DateValidation.validateYear(Map(s"$testKey-dateYear" -> "2022  "), testKeys) mustBe Valid(Year(2022))
       }
     }
   }

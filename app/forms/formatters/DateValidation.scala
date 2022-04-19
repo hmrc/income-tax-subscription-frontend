@@ -142,7 +142,11 @@ object DateValidation {
     }
   }
 
-  private def getNonEmptyValueOption(data: Map[String, String], id: String) = data.get(id).filter(_.nonEmpty)
+  private def getNonEmptyValueOption(data: Map[String, String], id: String) =
+    data
+      .get(id)
+      .map(_.trim())
+      .filter(_.nonEmpty)
 
   private def parse(s: String): Option[Int] = Try {
     s.toInt
