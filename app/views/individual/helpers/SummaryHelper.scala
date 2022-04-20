@@ -40,6 +40,6 @@ object SummaryHelper {
     Seq(messageOrNone(Messages("summary.income_source.business"), src.selfEmployment),
       messageOrNone(Messages("summary.income_source.property"), src.ukProperty),
       messageOrNone(Messages("summary.income_source.foreign_property"), src.foreignProperty)
-    ).flatten.mkString("<br>")
+    ).flatten.map(s => s"<p>$s</p>").mkString
   }
 }

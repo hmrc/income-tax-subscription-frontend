@@ -30,13 +30,14 @@
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainTemplate(title = messages("preferences_callback.title")) {
-  <h1 class="govuk-heading-l">@messages("preferences_callback.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("preferences_callback.heading")</h1>
 
-  <p class="govuk-body">@messages("preferences_callback.line_1")</p>
+    <p class="govuk-body">@messages("preferences_callback.line_1")</p>
 
-  @form(action = postAction) {
-    @continueButton(Some(messages("preferences_callback.button")))
-  }
-  <br>
-  @signOutLink()
+    @form(action = postAction) {
+        @continueButton(Some(messages("preferences_callback.button")))
+    }
+    <div class="govuk-!-margin-bottom-6">
+        @signOutLink()
+    </div>
 }

@@ -62,10 +62,8 @@
                     </a>))
             </p>
 
-            <p class = "govuk-body">@messages("sign-up-complete.whatHappensNow.para2")</p>
-            <br>
-            @buttonHelper(messages("claimConfirm.continueButton"))
-            <br>
+            <p class="govuk-body govuk-!-margin-bottom-6">@messages("sign-up-complete.whatHappensNow.para2")</p>
+            @buttonHelper(messages("claimConfirm.continueButton"), classes = Some("govuk-!-display-block"))
             @signOutLink()
         </section>
     }
