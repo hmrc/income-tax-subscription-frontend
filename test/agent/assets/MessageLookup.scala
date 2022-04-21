@@ -158,7 +158,7 @@ object MessageLookup {
 
   object Summary {
     val title = "Check your answers"
-    val heading: String = title
+    val heading: String = "Check your answers"
     val heading_hidden = "before signing up"
     val income_source = "Income received from"
 
@@ -435,7 +435,7 @@ object MessageLookup {
   }
 
   object ConfirmClient {
-    val title = "Confirm your client"
+    val title = "Confirm your client’s details"
     val heading = "Check your answers"
     val heading_hidden = "before looking up your client"
     val firstName = "First name"

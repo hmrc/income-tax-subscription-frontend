@@ -140,7 +140,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = Some(expectedEditLink),
-        rowNo = 1,
+        rowNo = 2,
         expectedHiddenContent = Some(expectedHiddenContent)
 
       )
@@ -156,7 +156,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = Some(expectedEditLink),
-        rowNo = 2,
+        rowNo = 3,
         expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
@@ -172,7 +172,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = Some(expectedEditLink),
-        rowNo = 3,
+        rowNo = 4,
         expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
@@ -188,7 +188,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = Some(expectedEditLink),
-        rowNo = 4,
+        rowNo = 5,
         expectedHiddenContent = Some(expectedHiddenContent)
       )
     }

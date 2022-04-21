@@ -205,7 +205,7 @@ object MessageLookup {
 
   object Summary {
     val title = "Check your answers"
-    val heading: String = title
+    val heading: String = "Check your answers"
     val heading_hidden = "before signing up"
     val income_source = "Income received from"
     val selfEmployment = "Self-employment"
@@ -298,7 +298,7 @@ object MessageLookup {
   }
 
   object ConfirmUser {
-    val title = "Check your answers"
+    val title = "Check your user details"
     val heading = "Check your answers"
     val firstName = "First name"
     val lastName = "Last name"
@@ -354,8 +354,8 @@ object MessageLookup {
   }
 
   object TaxYearCheckYourAnswers {
-    val title = "Check your answers - Use software to send Income Tax updates - GOV.UK"
-    val agentTitle = "Check your answers - Use software to report your client’s Income Tax - GOV.UK"
+    val title = "Check your tax year answers - Use software to send Income Tax updates - GOV.UK"
+    val agentTitle = "Check your tax year answers - Use software to report your client’s Income Tax - GOV.UK"
     val heading = "Check your answers"
     val question = "Tax year you are signing up for"
     val hiddenQuestion = "Change tax year you are signing up for"

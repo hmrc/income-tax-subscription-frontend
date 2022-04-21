@@ -52,7 +52,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
   private val incompleteProperty = PropertyModel()
 
   object PropertyCheckYourAnswers {
-    val title = "Check your answers"
+    val title = "Check your UK property answers"
     val heading = "Check your answers"
     val startDateQuestion = "UK property business trading start date"
     val accountMethodQuestion = "UK property business accounting method"

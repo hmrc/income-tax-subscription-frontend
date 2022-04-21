@@ -29,6 +29,7 @@ base.add                                                        = Ychwanegu
 base.update_heading                                             = Diweddariadau chwarterol
 base.deadline_heading                                           = Dyddiad cau
 base.to                                                         = i
+base.caption                                                    = Mae'r adran hon yn
 
 error-notification.prefix                                       = Gwall:
 
@@ -273,10 +274,13 @@ agent.error.property.year.length                                = Mae’n rhaid 
 
 ## agent Tax Year Check Your Answers
 agent.business.check-your-answers.title                               = Gwiriwch eich atebion
+agent.business.check-your-answers.content.tax-year.title              = Flwyddyn dreth gwiriwch eich atebion
 agent.business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 agent.business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
+agent.business.check-your-answers.content.tax-year.content.caption    = Y flwyddyn dreth rydych yn cofrestru’ch cleient ar ei chyfer
+
 
 ## Agent UK property check your answers
 agent.business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
@@ -285,6 +289,8 @@ agent.business.check-your-answers.content.uk-property-start-date.change = Newid 
 agent.business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
 agent.business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
 agent.business.check-your-answers.content.uk-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property.caption = Manylion y busnes eiddo yn y DU a nodwyd gennych
+agent.business.check-your-answers.content.uk-property.title = Busnes eiddo yn y DU gwiriwch eich atebion
 
 ## Agent Overseas property check your answers
 agent.business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
@@ -293,6 +299,8 @@ agent.business.check-your-answers.content.overseas-property-start-date.change = 
 agent.business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
 agent.business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
 agent.business.check-your-answers.content.overseas-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property.caption = Manylion y busnes eiddo tramor a nodwyd gennych
+agent.business.check-your-answers.overseas-property.title = Busnes eiddo tramor gwiriwch eich atebion
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.heading                  = A ydych yn siŵr eich bod am ddileu {0}{1}?
@@ -558,6 +566,7 @@ user-details-lockout.line_1                                     = I gofrestru ar
 
 # Check your details page
 user-details.summary.title                                      = Gwiriwch eich atebion
+user-details.summary.caption                                    = Y manylion rydych yn eu defnyddio i gofrestru
 user-details.summary.heading                                    = Gwiriwch eich atebion
 user-details.summary.first_name                                 = Enw cyntaf
 user-details.summary.last_name                                  = Enw olaf
@@ -713,6 +722,7 @@ agent.client-details-lockout.line_1                             = I gofrestru’
 
 # Check your client’s details page
 agent.client-details.summary.title                              = Cadarnhau’ch cleient
+agent.client-details.summary.caption                            = Y manylion rydych yn eu defnyddio i gofrestru’ch cleient
 agent.client-details.summary.heading                            = Gwiriwch eich atebion
 agent.client-details.summary.heading_hidden                     = cyn edrych am eich cleient
 agent.client-details.summary.first_name                         = Enw cyntaf
@@ -1117,12 +1127,15 @@ error.remove-overseas-property-business.invalid                 = Dewiswch ‘Ia
 
 ## Tax Year Check Your Answers
 business.check-your-answers.title                               = Gwiriwch eich atebion
+business.check-your-answers.content.tax-year.title              = Flwyddyn dreth gwiriwch eich atebion
 business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu arian parod
 business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu safonol
+business.check-your-answers.content.tax-year.caption            = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
+
 
 ## UK property check your answers
 business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
@@ -1131,6 +1144,9 @@ business.check-your-answers.content.uk-property-start-date.change = Newid dyddia
 business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property.caption = Manylion y busnes eiddo yn y DU a nodwyd gennych
+business.check-your-answers.content.uk-property.title = Busnes eiddo yn y DU gwiriwch eich atebion
+
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
@@ -1138,6 +1154,8 @@ business.check-your-answers.content.overseas-property-start-date.change = Newid 
 business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property.caption = Manylion y busnes eiddo tramor a nodwyd gennych
+business.check-your-answers.content.overseas-property.title = Busnes eiddo tramor gwiriwch eich atebion
 
 ## Remove business
 business.remove-sole-trader-business.heading      = A ydych yn siŵr eich bod am ddileu {0}{1}?

@@ -33,7 +33,7 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @agentMainTemplate(title = messages("agent.client-details.summary.title"), backLink = Some(backUrl)) {
-  @checkYourAnswers(heading = messages("agent.client-details.summary.heading"), isIndividual = false, postAction = postAction, headingHidden = Some(messages("agent.client-details.summary.heading_hidden"))) {
+@checkYourAnswers(heading = messages("agent.client-details.summary.heading"), caption = messages("agent.client-details.summary.caption"), isIndividual = false, postAction = postAction, headingHidden = Some(messages("agent.client-details.summary.heading_hidden"))) {
     @checkYourAnswersRow(
       field = FirstNameId,
       question = messages("agent.client-details.summary.first_name"),
