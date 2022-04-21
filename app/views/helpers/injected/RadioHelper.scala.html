@@ -24,6 +24,7 @@
         field: Field,
         legend: String,
         isPageHeading: Boolean = true,
+        headingClasses: String = "govuk-visually-hidden",
         hint: Option[Content] = None,
         radioItems: Seq[RadioItem] = Seq.empty[RadioItem],
         inline: Boolean = false
@@ -34,7 +35,7 @@
         fieldset = Some(Fieldset(
             legend = Some(Legend(
                 content = Text(legend),
-                classes = if(isPageHeading) "govuk-fieldset__legend--l" else "govuk-visually-hidden",
+                classes = headingClasses,
                 isPageHeading = isPageHeading
             ))
         )),

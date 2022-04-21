@@ -127,7 +127,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
           documentNextTaxYear.select("ol.govuk-list > li:nth-of-type(2) > p:nth-of-type(1)").text mustBe SignUpComplete.NextYear.whatNowNumber2Para1
         }
 
-        "have filling and deadline dates" in {
+        "have filing and deadline dates" in {
           val tableRows =
             documentNextTaxYear
               .select("ol.govuk-list > li:nth-of-type(2)")
@@ -135,10 +135,10 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
               .select(".govuk-table__row")
 
             assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.fillingDateOne(taxYearEnd.toString), SignUpComplete.deadlineDateOne(taxYearEnd.toString))
-            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.fillingDateTwo(taxYearEnd.toString), SignUpComplete.deadlineDateTwo(taxYearEnd.toString))
-            assertTableRow(tableRows, rowIndex = 3, SignUpComplete.fillingDateThree((taxYearEnd).toString, (taxYearEnd + 1).toString), SignUpComplete.deadlineDateThree((taxYearEnd + 1).toString))
-            assertTableRow(tableRows, rowIndex = 4, SignUpComplete.fillingDateFour((taxYearEnd + 1).toString), SignUpComplete.deadlineDateFour((taxYearEnd + 1).toString))
+            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateOne(taxYearEnd.toString), SignUpComplete.deadlineDateOne(taxYearEnd.toString))
+            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.filingDateTwo(taxYearEnd.toString), SignUpComplete.deadlineDateTwo(taxYearEnd.toString))
+            assertTableRow(tableRows, rowIndex = 3, SignUpComplete.filingDateThree((taxYearEnd).toString, (taxYearEnd + 1).toString), SignUpComplete.deadlineDateThree((taxYearEnd + 1).toString))
+            assertTableRow(tableRows, rowIndex = 4, SignUpComplete.filingDateFour((taxYearEnd + 1).toString), SignUpComplete.deadlineDateFour((taxYearEnd + 1).toString))
         }
       }
 
@@ -170,7 +170,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
             documentCurrentTaxYear(q1).select("ol.govuk-list > li:nth-of-type(2) > p:nth-of-type(1)").text mustBe SignUpComplete.CurrentYear.whatNowNumber3
           }
 
-          "have filling and deadline dates" in {
+          "have filing and deadline dates" in {
             val tableRows =
               documentCurrentTaxYear(q1)
                 .select("ol.govuk-list > li:nth-of-type(2)")
@@ -178,10 +178,10 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
                 .select(".govuk-table__row")
 
             assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.fillingDateOne((taxYearEnd - 1).toString), SignUpComplete.deadlineDateOne((taxYearEnd - 1).toString))
-            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.fillingDateTwo((taxYearEnd - 1).toString), SignUpComplete.deadlineDateTwo((taxYearEnd - 1).toString))
-            assertTableRow(tableRows, rowIndex = 3, SignUpComplete.fillingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString), SignUpComplete.deadlineDateThree(taxYearEnd.toString))
-            assertTableRow(tableRows, rowIndex = 4, SignUpComplete.fillingDateFour(taxYearEnd.toString), SignUpComplete.deadlineDateFour(taxYearEnd.toString))
+            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateOne((taxYearEnd - 1).toString), SignUpComplete.deadlineDateOne((taxYearEnd - 1).toString))
+            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.filingDateTwo((taxYearEnd - 1).toString), SignUpComplete.deadlineDateTwo((taxYearEnd - 1).toString))
+            assertTableRow(tableRows, rowIndex = 3, SignUpComplete.filingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString), SignUpComplete.deadlineDateThree(taxYearEnd.toString))
+            assertTableRow(tableRows, rowIndex = 4, SignUpComplete.filingDateFour(taxYearEnd.toString), SignUpComplete.deadlineDateFour(taxYearEnd.toString))
           }
         }
 
@@ -202,7 +202,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
             documentCurrentTaxYear(currentDate).select("ol.govuk-list > li:nth-of-type(2) > p:nth-of-type(1)").text mustBe SignUpComplete.CurrentYear.whatNowNumber2Para1
           }
 
-          "have filling and deadline dates for Q2" in {
+          "have filing and deadline dates for Q2" in {
             val tableRows =
               documentCurrentTaxYear(q2)
                 .select("ol.govuk-list > li:nth-of-type(2)")
@@ -210,10 +210,10 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
                 .select(".govuk-table__row")
 
             assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.fillingDateOne((taxYearEnd - 1).toString), SignUpComplete.deadlineDateOne((taxYearEnd - 1).toString))
+            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateOne((taxYearEnd - 1).toString), SignUpComplete.deadlineDateOne((taxYearEnd - 1).toString))
           }
 
-          "have filling and deadline dates for Q3" in {
+          "have filing and deadline dates for Q3" in {
             val tableRows =
               documentCurrentTaxYear(q3)
                 .select("ol.govuk-list > li:nth-of-type(2)")
@@ -221,11 +221,11 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
                 .select(".govuk-table__row")
 
             assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.fillingDateOne((taxYearEnd - 1).toString), SignUpComplete.deadlineDateOne((taxYearEnd - 1).toString))
-            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.fillingDateTwo((taxYearEnd - 1).toString), SignUpComplete.deadlineDateTwo((taxYearEnd - 1).toString))
+            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateOne((taxYearEnd - 1).toString), SignUpComplete.deadlineDateOne((taxYearEnd - 1).toString))
+            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.filingDateTwo((taxYearEnd - 1).toString), SignUpComplete.deadlineDateTwo((taxYearEnd - 1).toString))
           }
 
-          "have filling and deadline dates for Q4" in {
+          "have filing and deadline dates for Q4" in {
             val tableRows =
               documentCurrentTaxYear(q4)
                 .select("ol.govuk-list > li:nth-of-type(2)")
@@ -233,9 +233,9 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
                 .select(".govuk-table__row")
 
             assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.fillingDateOne((taxYearEnd - 1).toString), SignUpComplete.deadlineDateOne((taxYearEnd - 1).toString))
-            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.fillingDateTwo((taxYearEnd - 1).toString), SignUpComplete.deadlineDateTwo((taxYearEnd - 1).toString))
-            assertTableRow(tableRows, rowIndex = 3, SignUpComplete.fillingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString), SignUpComplete.deadlineDateThree(taxYearEnd.toString))
+            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateOne((taxYearEnd - 1).toString), SignUpComplete.deadlineDateOne((taxYearEnd - 1).toString))
+            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.filingDateTwo((taxYearEnd - 1).toString), SignUpComplete.deadlineDateTwo((taxYearEnd - 1).toString))
+            assertTableRow(tableRows, rowIndex = 3, SignUpComplete.filingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString), SignUpComplete.deadlineDateThree(taxYearEnd.toString))
           }
 
           "has paragraph2" in {
@@ -248,7 +248,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
             documentCurrentTaxYear(currentDate).select("ol.govuk-list > li:nth-of-type(3) > p:nth-of-type(1)").text mustBe SignUpComplete.CurrentYear.whatNowNumber3
           }
 
-          "have filling and deadline dates for Q2" in {
+          "have filing and deadline dates for Q2" in {
             val tableRows: Elements =
               documentCurrentTaxYear(q2)
                 .select("ol.govuk-list > li:nth-of-type(3)")
@@ -256,11 +256,11 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
                 .select(".govuk-table__row")
 
             assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.fillingDateTwo((taxYearEnd - 1).toString), SignUpComplete.deadlineDateTwo((taxYearEnd - 1).toString))
-            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.fillingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString), SignUpComplete.deadlineDateThree(taxYearEnd.toString))
+            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateTwo((taxYearEnd - 1).toString), SignUpComplete.deadlineDateTwo((taxYearEnd - 1).toString))
+            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.filingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString), SignUpComplete.deadlineDateThree(taxYearEnd.toString))
           }
 
-          "have filling and deadline dates for Q3" in {
+          "have filing and deadline dates for Q3" in {
             val tableRows: Elements =
               documentCurrentTaxYear(q3)
                 .select("ol.govuk-list > li:nth-of-type(3)")
@@ -268,10 +268,10 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
                 .select(".govuk-table__row")
 
             assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.fillingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString), SignUpComplete.deadlineDateThree(taxYearEnd.toString))
+            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString), SignUpComplete.deadlineDateThree(taxYearEnd.toString))
           }
 
-          "have filling and deadline dates for Q4" in {
+          "have filing and deadline dates for Q4" in {
             val tableRows: Elements =
               documentCurrentTaxYear(q4)
                 .select("ol.govuk-list > li:nth-of-type(3)")
@@ -279,7 +279,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
                 .select(".govuk-table__row")
 
             assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.fillingDateFour(taxYearEnd.toString), SignUpComplete.deadlineDateFour(taxYearEnd.toString))
+            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateFour(taxYearEnd.toString), SignUpComplete.deadlineDateFour(taxYearEnd.toString))
           }
         }
       }
@@ -346,19 +346,19 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
         "So you will need to inform them if they would like to use this service themselves."
     }
 
-    def fillingDateOne(year: String): String = s"6 April $year - 5 July $year"
+    def filingDateOne(year: String): String = s"6 April $year - 5 July $year"
 
     def deadlineDateOne(year: String): String = s"5 August $year"
 
-    def fillingDateTwo(year: String): String = s"6 July $year - 5 October $year"
+    def filingDateTwo(year: String): String = s"6 July $year - 5 October $year"
 
     def deadlineDateTwo(year: String): String = s"5 November $year"
 
-    def fillingDateThree(yearFrom: String, yearTo: String): String = s"6 October $yearFrom - 5 January $yearTo"
+    def filingDateThree(yearFrom: String, yearTo: String): String = s"6 October $yearFrom - 5 January $yearTo"
 
     def deadlineDateThree(year: String): String = s"5 February $year"
 
-    def fillingDateFour(year: String): String = s"6 January $year - 5 April $year"
+    def filingDateFour(year: String): String = s"6 January $year - 5 April $year"
 
     def deadlineDateFour(year: String): String = s"5 May $year"
   }

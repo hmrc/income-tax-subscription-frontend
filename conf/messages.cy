@@ -28,6 +28,7 @@ base.remove                                                     = Dileu
 base.add                                                        = Ychwanegu
 base.update_heading                                             = Diweddariadau chwarterol
 base.deadline_heading                                           = Dyddiad cau
+base.to                                                         = i
 
 error-notification.prefix                                       = Gwall:
 
@@ -154,7 +155,10 @@ cannot-use-service.line1                                        = Gallwch ond co
 business.what_year_to_sign_up.title                             = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
 business.what_year_to_sign_up.heading                           = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
 business.what_year_to_sign_up.line_1                            = Gallwch ddechrau anfon diweddariadau treth incwm yn ystod y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf. Ni fydd yn effeithio ar faint o dreth y byddwch yn ei thalu.
-business.what_year_to_sign_up.line_2                            = Ychwanegu’r holl incwm a threuliau busnes at eich meddalwedd o 6 Ebrill ymlaen:
+business.what_year_to_sign_up.line_2                            = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol, ond bydd yn rhaid i chi wneud diweddariadau ar gyfer y chwarteri yr ydych wedi eu methu.
+business.what_year_to_sign_up.line_3                            = Gallwch gyflwyno cymaint o ddiweddariadau ag y dymunwch, ond mae’n rhaid i chi eu cyflwyno erbyn y dyddiadau cau canlynol:
+business.what_year_to_sign_up.table_caption                     = Enghraifft o ddyddiadau chwarterol
+business.what_year_to_sign_up.radio_heading                     = Dewiswch y flwyddyn dreth
 business.what_year_to_sign_up.option_1                          = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.what_year_to_sign_up.option_2                          = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 business.what_year_to_sign_up.conditional.1.line_1              = Mae angen i chi anfon diweddariad cyflwyno chwarterol ar gyfer:

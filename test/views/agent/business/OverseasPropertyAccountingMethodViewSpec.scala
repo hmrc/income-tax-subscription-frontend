@@ -79,7 +79,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
     }
 
     "have a heading" in {
-      document().mainContent.getH1Element.text mustBe OverseasPropertyAccountingMethodMessages.heading
+      document().mainContent.getElementsByClass("govuk-fieldset__legend").text mustBe OverseasPropertyAccountingMethodMessages.heading
     }
 
     "have a form" which {

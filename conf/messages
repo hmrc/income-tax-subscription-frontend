@@ -28,6 +28,7 @@ base.remove                                                     = Remove
 base.add                                                        = Add
 base.update_heading                                             = Quarterly update
 base.deadline_heading                                           = Deadline
+base.to                                                         = to
 
 error-notification.prefix                                       = Error:
 
@@ -152,7 +153,10 @@ cannot-use-service.line1                                        = You can only s
 business.what_year_to_sign_up.title                             = Which tax year do you want to start using software to file updates for?
 business.what_year_to_sign_up.heading                           = Which tax year do you want to start using software to file updates for?
 business.what_year_to_sign_up.line_1                            = You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount of tax you will pay.
-business.what_year_to_sign_up.line_2                            = Add all business income and expenses into your software from 6 April:
+business.what_year_to_sign_up.line_2                            = There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
+business.what_year_to_sign_up.line_3                            = You can file as many updates as you want but you must submit them by these deadlines:
+business.what_year_to_sign_up.table_caption                     = Example of Quarterly dates
+business.what_year_to_sign_up.radio_heading                     = Select tax year
 business.what_year_to_sign_up.option_1                          = Current tax year (6 April {0} to 5 April {1})
 business.what_year_to_sign_up.option_2                          = Next tax year (6 April {0} to 5 April {1})
 business.what_year_to_sign_up.conditional.1.line_1              = You need to send a quarterly filing update for:

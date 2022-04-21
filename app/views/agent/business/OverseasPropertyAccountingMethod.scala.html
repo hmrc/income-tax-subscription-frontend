@@ -43,6 +43,7 @@
     @radioHelper(
       field = accountingMethodOverseasPropertyForm(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty),
       legend = messages("agent.overseas.property.accounting_method.title"),
+      headingClasses = "govuk-fieldset__legend--l",
       radioItems = Seq(
         RadioItem(content = Text(messages("agent.overseas.property.accounting_method.radio.cash")), value = Some(AccountingMethodMapping.option_cash)),
         RadioItem(content = Text(messages("agent.overseas.property.accounting_method.radio.accruals")), value = Some(AccountingMethodMapping.option_accruals))
