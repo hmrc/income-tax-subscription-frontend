@@ -19,29 +19,27 @@
 @import services.AccountingPeriodService
 @import views.html.helpers.injected.{ContinueButton, RadioHelper}
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.injected.UpdateDeadlineTable
+@import views.html.helpers.injected.ReturnDeadlineTable
 
 @this(
     mainTemplate: AgentMainTemplate,
     radioHelper: RadioHelper,
     continueButton: ContinueButton,
     accountingPeriodService: AccountingPeriodService,
-    table: UpdateDeadlineTable,
+    table: ReturnDeadlineTable,
     form : FormWithCSRF
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@quarterDayTb = {@table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current))}
+
 @optionCurrentContent = {
-  <p>@messages("agent.business.what_year_to_sign_up.conditional.1.line_1")</p>
-  @table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current))
-  <p>@messages("agent.business.what_year_to_sign_up.conditional.1.line_2", (endYearOfCurrentTaxPeriod + 1).toString)</p>
+  <p>@messages("agent.business.what_year_to_sign_up.option_current_hint", (endYearOfCurrentTaxPeriod + 1).toString)</p>
 }
 
 @optionNextContent = {
-  <p>@messages("agent.business.what_year_to_sign_up.conditional.2.line_1")</p>
-  @table(accountingPeriodService.getAllUpdateAndDeadlineDates(Next))
-  <p>@messages("agent.business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString)</p>
+  <p>@messages("agent.business.what_year_to_sign_up.option_next_hint", (endYearOfCurrentTaxPeriod + 2).toString)</p>
 }
 
 @mainTemplate(title = messages("agent.business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
@@ -52,10 +50,13 @@
     <p class="govuk-body">@messages("agent.business.what_year_to_sign_up.line_2")</p>
     <p class="govuk-body">@messages("agent.business.what_year_to_sign_up.line_3")</p>
 
+    @quarterDayTb
+
     @radioHelper(
       field = accountingYearForm(AccountingYearForm.accountingYear),
-      legend = messages("agent.business.what_year_to_sign_up.heading"),
+      legend = messages("agent.business.what_year_to_sign_up.radio_option_heading"),
       isPageHeading = false,
+      headingClasses = "govuk-fieldset__legend--m",
       radioItems = Seq(
         RadioItem(
           content = Text(messages("agent.business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),

@@ -158,7 +158,7 @@ business.what_year_to_sign_up.line_1                            = Gallwch ddechr
 business.what_year_to_sign_up.line_2                            = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol, ond bydd yn rhaid i chi wneud diweddariadau ar gyfer y chwarteri yr ydych wedi eu methu.
 business.what_year_to_sign_up.line_3                            = Gallwch gyflwyno cymaint o ddiweddariadau ag y dymunwch, ond mae’n rhaid i chi eu cyflwyno erbyn y dyddiadau cau canlynol:
 business.what_year_to_sign_up.table_caption                     = Enghraifft o ddyddiadau chwarterol
-business.what_year_to_sign_up.radio_heading                     = Dewiswch y flwyddyn dreth
+business.what_year_to_sign_up.radio_option_heading              = Dewiswch y flwyddyn dreth
 business.what_year_to_sign_up.option_1                          = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.what_year_to_sign_up.option_2                          = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 business.what_year_to_sign_up.conditional.1.line_1              = Mae angen i chi anfon diweddariad cyflwyno chwarterol ar gyfer:
@@ -746,14 +746,13 @@ agent.property.income.line_1                                    = Dyma’r swm a
 ## Accounting Year page
 agent.business.what_year_to_sign_up.title                     = Ar gyfer pa flwyddyn dreth ydych am i’ch cleient ddechrau cyflwyno diweddariadau treth incwm?
 agent.business.what_year_to_sign_up.heading                   = Ar gyfer pa flwyddyn dreth ydych am i’ch cleient ddechrau cyflwyno diweddariadau treth incwm?
-agent.business.what_year_to_sign_up.line_1                    = Gallwch ddechrau anfon diweddariadau treth incwm yn ystod y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf. Ni fydd yn effeithio ar faint yr ydych yn ei dalu.
-agent.business.what_year_to_sign_up.line_2                    = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol.
-agent.business.what_year_to_sign_up.line_3                    = Bydd angen i chi neu’ch cleient nodi’r holl incwm a threuliau busnes ar eich meddalwedd o 6 Ebrill ymlaen:
+agent.business.what_year_to_sign_up.line_1                    = Gallwch ddechrau anfon diweddariadau chwarterol yn ystod y flwyddyn dreth gyfredol neu’r flwyddyn dreth nesaf. Ni fydd yn effeithio ar faint yr ydych yn ei dalu.
+agent.business.what_year_to_sign_up.line_2                    = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol, ond bydd yn rhaid i chi wneud diweddariadau ar gyfer y chwarteri yr ydych wedi eu methu.
+agent.business.what_year_to_sign_up.line_3                    = Gallwch gyflwyno cymaint o ddiweddariadau ag y dymunwch, ond mae’n rhaid i chi eu cyflwyno erbyn y dyddiadau cau canlynol:
+agent.business.what_year_to_sign_up.radio_option_heading      = Dewiswch y flwyddyn dreth
 agent.business.what_year_to_sign_up.option_1                  = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.what_year_to_sign_up.option_2                  = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-agent.business.what_year_to_sign_up.conditional.1.line_1      = Bydd angen i chi neu’ch cleient fewnbynnu yr holl incwm a threuliau busnes i’ch meddalwedd o ddechrau’r flwyddyn dreth bresennol. Mae angen i chi neu’ch cleient anfon diweddariad chwarterol ar gyfer:
 agent.business.what_year_to_sign_up.conditional.1.line_2      = Bydd angen i chi neu’ch cleient gyflwyno datganiad terfynol erbyn 31 Ionawr {0}.
-agent.business.what_year_to_sign_up.conditional.2.line_1      = Mae angen i chi neu’ch cleient anfon diweddariad chwarterol ar gyfer:
 agent.business.what_year_to_sign_up.conditional.2.line_2      = Bydd angen i chi neu’ch cleient gyflwyno datganiad terfynol erbyn 31 Ionawr {0}, a bydd angen llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer.
 
 # Sole trader page
