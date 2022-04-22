@@ -65,167 +65,101 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
       "has paragraph 2" in {
         paragraphs.get(1).text() mustBe WhatYearToSignUp.paragraph2
       }
-    }
 
-    "have the current tax year hint paragraphs" which {
-      val hintParagraphs =
-        document()
-          .select(".govuk-radios__item")
-          .get(0)
-          .select(".govuk-hint")
-          .select("p")
-
-      "has the paragraph 1" in {
-        hintParagraphs.get(0).text() mustBe WhatYearToSignUp.currentYearOptionHintParagraph1
-      }
-
-      "has the paragraph 2" in {
-        hintParagraphs.get(1).text() mustBe WhatYearToSignUp.currentYearOptionHintParagraph2
+      "has paragraph 3" in {
+        paragraphs.get(2).text() mustBe WhatYearToSignUp.paragraph3
       }
     }
 
-    "have the current tax year hint filling and deadline dates" which {
-      val tableRows =
-        document()
-          .select(".govuk-radios__item")
-          .get(0)
-          .select(".govuk-hint")
-          .select(".govuk-table")
-          .select(".govuk-table__row")
 
-      "has the filling and deadline headers" in {
-        val tableHeaders =
+    "has a caption for the table and it is visually hidden" in {
+      document().tagName("caption").getElementsByClass("govuk-visually-hidden").get(1).text() mustBe WhatYearToSignUp.returnTableCaption
+
+    }
+    "have a return quarterly example table filing and deadline dates" which {
+      val tableRows = document().select(".govuk-table__row")
+
+      "has the filing and deadline heading" in {
+        val tableRows =
+          document()
+            .select(".govuk-table__row")
+
+        tableRows.get(0).select(".govuk-table__header").get(0).text() mustBe WhatYearToSignUp.updatesHeader
+        tableRows.get(0).select(".govuk-table__header").get(1).text() mustBe WhatYearToSignUp.deadlineHeader
+      }
+
+      "has the filing and deadline dates 1" in {
+        val tableCellsHeader =
           tableRows
-            .get(0)
+            .get(1)
             .select(".govuk-table__header")
 
-        tableHeaders.get(0).text() mustBe WhatYearToSignUp.updatesHeader
-        tableHeaders.get(1).text() mustBe WhatYearToSignUp.deadlineHeader
-      }
-
-      "has the filling and deadline dates 1" in {
         val tableCells =
           tableRows
             .get(1)
             .select(".govuk-table__cell")
 
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateOne((taxYearEnd - 1).toString)
-        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateOne((taxYearEnd - 1).toString)
+        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateOne
+        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateOne
       }
 
-      "has the filling and deadline dates 2" in {
-        val tableCells =
+      "has the filing and deadline dates 2" in {
+        val tableCellsHeader =
           tableRows
             .get(2)
-            .select(".govuk-table__cell")
-
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateTwo((taxYearEnd - 1).toString)
-        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateTwo((taxYearEnd - 1).toString)
-      }
-
-      "has the filling and deadline dates 3" in {
-        val tableCells =
-          tableRows
-            .get(3)
-            .select(".govuk-table__cell")
-
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateThree((taxYearEnd - 1).toString, taxYearEnd.toString)
-        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateThree(taxYearEnd.toString)
-      }
-
-      "has the filling and deadline dates 4" in {
-        val tableCells =
-          tableRows
-            .get(4)
-            .select(".govuk-table__cell")
-
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateFour(taxYearEnd.toString)
-        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateFour(taxYearEnd.toString)
-      }
-    }
-
-    "have the next tax year hint paragraphs" which {
-      val hintParagraphs =
-        document()
-          .select(".govuk-radios__item")
-          .get(1)
-          .select(".govuk-hint")
-          .select("p")
-
-      "has the paragraph 1" in {
-        hintParagraphs.get(0).text() mustBe WhatYearToSignUp.nextYearOptionHintParagraph1
-      }
-
-      "has the paragraph 2" in {
-        hintParagraphs.get(1).text() mustBe WhatYearToSignUp.nextYearOptionHintParagraph2
-      }
-    }
-
-    "have the next tax year hint filling and deadline dates" which {
-      val tableRows =
-        document()
-          .select(".govuk-radios__item")
-          .get(1)
-          .select(".govuk-hint")
-          .select(".govuk-table")
-          .select(".govuk-table__row")
-
-      "has the filling and deadline headers" in {
-        val tableHeaders =
-          tableRows
-            .get(0)
             .select(".govuk-table__header")
 
-        tableHeaders.get(0).text() mustBe WhatYearToSignUp.updatesHeader
-        tableHeaders.get(1).text() mustBe WhatYearToSignUp.deadlineHeader
-      }
-
-      "has the filling and deadline dates 1" in {
-        val tableCells =
-          tableRows
-            .get(1)
-            .select(".govuk-table__cell")
-
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateOne(taxYearEnd.toString)
-        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateOne(taxYearEnd.toString)
-      }
-
-      "has the filling and deadline dates 2" in {
         val tableCells =
           tableRows
             .get(2)
             .select(".govuk-table__cell")
 
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateTwo(taxYearEnd.toString)
-        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateTwo(taxYearEnd.toString)
+        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateTwo
+        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateTwo
       }
 
-      "has the filling and deadline dates 3" in {
+      "has the filing and deadline dates 3" in {
+        val tableCellsHeader =
+          tableRows
+            .get(3)
+            .select(".govuk-table__header")
+
         val tableCells =
           tableRows
             .get(3)
             .select(".govuk-table__cell")
 
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateThree(taxYearEnd.toString, (taxYearEnd + 1).toString)
-        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateThree((taxYearEnd + 1).toString)
+        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateThree
+        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateThree
       }
 
-      "has the filling and deadline dates 4" in {
+      "has the filing and deadline dates 4" in {
+        val tableCellsHeader =
+          tableRows
+            .get(4)
+            .select(".govuk-table__header")
+
         val tableCells =
           tableRows
             .get(4)
             .select(".govuk-table__cell")
 
-        tableCells.get(0).text() mustBe WhatYearToSignUp.fillingDateFour((taxYearEnd + 1).toString)
-        tableCells.get(1).text() mustBe WhatYearToSignUp.deadlineDateFour((taxYearEnd + 1).toString)
+        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateFour
+        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateFour
       }
     }
+
 
     "have a form" which {
       "has correct attributes" in {
         val form: Elements = document().select("form")
         form.attr("method") mustBe testCall.method
         form.attr("action") mustBe testCall.url
+      }
+
+      "has a medium size legend for radio options heading" in {
+        document().select(".govuk-fieldset__legend--m").text() mustBe WhatYearToSignUp.radioSectionHeading
+
       }
 
       "has a current tax year radio button" in {
@@ -242,6 +176,14 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         radio.select("label[for=accountingYear-2]").text mustBe Seq(
           WhatYearToSignUp.nextYearOption(taxYearEnd.toString, (taxYearEnd + 1).toString)
         ).mkString(" ")
+      }
+
+      "have the current tax year hint paragraph" in {
+        document().getElementById("accountingYear-item-hint").text mustBe WhatYearToSignUp.currentYearOptionHint
+      }
+
+      "have the next tax year hint paragraph" in {
+        document().getElementById("accountingYear-2-item-hint").text mustBe WhatYearToSignUp.nextYearOptionHint
       }
 
       "has a continue button" that {
@@ -270,39 +212,39 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
   object WhatYearToSignUp {
     val heading = "Which tax year do you want to start using software to file updates for?"
+    val returnTableCaption = "Example of Quarterly dates"
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
     val paragraph1 = "You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount of tax you will pay."
-    val paragraph2 = "Add all business income and expenses into your software from 6 April:"
+    val paragraph2 = "There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed."
+    val paragraph3 = "You can file as many updates as you want but you must submit them by these deadlines:"
 
-    val currentYearOptionHintParagraph1: String = "You need to send a quarterly filing update for:"
+    val currentYearOptionHint = s"Send a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
 
-    val currentYearOptionHintParagraph2 = s"Send a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
-
-    val nextYearOptionHintParagraph1: String = "You need to send a quarterly filing update for:"
-
-    val nextYearOptionHintParagraph2: String =
+    val nextYearOptionHint: String =
       s"Send a final declaration by 31 January ${(taxYearEnd + 2).toString} and " +
         "complete a Self Assessment return for the current tax year as normal."
+
+    val radioSectionHeading: String = "Select tax year"
 
     def currentYearOption(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
 
     def nextYearOption(fromYear: String, toYear: String): String = s"Next tax year (6 April $fromYear to 5 April $toYear)"
 
-    def fillingDateOne(year: String): String = s"6 April $year - 5 July $year"
+    def filingDateOne: String = s"6 April to 5 July"
 
-    def deadlineDateOne(year: String): String = s"5 August $year"
+    def deadlineDateOne: String = s"5 August"
 
-    def fillingDateTwo(year: String): String = s"6 July $year - 5 October $year"
+    def filingDateTwo: String = s"6 July to 5 October"
 
-    def deadlineDateTwo(year: String): String = s"5 November $year"
+    def deadlineDateTwo: String = s"5 November"
 
-    def fillingDateThree(yearFrom: String, yearTo: String): String = s"6 October $yearFrom - 5 January $yearTo"
+    def filingDateThree: String = s"6 October to 5 January"
 
-    def deadlineDateThree(year: String): String = s"5 February $year"
+    def deadlineDateThree: String = s"5 February"
 
-    def fillingDateFour(year: String): String = s"6 January $year - 5 April $year"
+    def filingDateFour: String = s"6 January to 5 April"
 
-    def deadlineDateFour(year: String): String = s"5 May $year"
+    def deadlineDateFour: String = s"5 May"
   }
 }

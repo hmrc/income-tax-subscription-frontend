@@ -82,7 +82,7 @@ class RemoveClientOverseasPropertyViewSpec extends ViewSpec {
     "have a fieldset" when {
       "there is an error" should {
         "have a legend with the page heading" in new ViewTest(true) {
-          document.selectHead(".govuk-fieldset__heading").text mustBe RemoveClientOverseasPropertyMessages.heading
+          document.getElementsByClass("govuk-fieldset__legend").text mustBe RemoveClientOverseasPropertyMessages.heading
         }
 
         "have a hint" in new ViewTest(true) {

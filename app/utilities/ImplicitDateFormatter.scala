@@ -36,6 +36,10 @@ trait ImplicitDateFormatter {
       languageUtils.Dates.formatDate(LocalDate.parse(date.toString))(messages)
     }
 
+    def toLongDateNoYear: String = {
+      val splitDate = date.toLongDate.split(" ")
+      s"${splitDate(0)} ${splitDate(1)}"
+    }
   }
 
 }

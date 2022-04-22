@@ -92,7 +92,7 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
 
         "has a legend" that {
           "is the heading for the page" in new ViewTest {
-            mainContent.getForm.getFieldset.getH1Element.text mustBe RemoveOverseasPropertyMessages.heading
+            mainContent.getForm.getFieldset.getElementsByClass("govuk-fieldset__legend").text mustBe RemoveOverseasPropertyMessages.heading
           }
         }
 

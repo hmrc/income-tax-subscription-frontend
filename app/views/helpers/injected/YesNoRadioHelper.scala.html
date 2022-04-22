@@ -20,12 +20,13 @@
     radioHelper: RadioHelper
 )
 
-@(field: Field, legend: String, isPageHeading: Boolean = true, hint: Option[String] = None, inline: Boolean = true)(implicit messages: Messages)
+@(field: Field, legend: String, isPageHeading: Boolean = true, headingClasses: String = "govuk-visually-hidden", hint: Option[String] = None, inline: Boolean = true)(implicit messages: Messages)
 
 @radioHelper(
     field = field,
     legend = legend,
     isPageHeading = isPageHeading,
+    headingClasses = headingClasses,
     hint = hint.map(Text),
     inline = inline,
     radioItems = Seq(
