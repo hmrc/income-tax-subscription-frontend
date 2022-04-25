@@ -18,6 +18,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     val title: String = "Are all of your client’s business accounting periods from 6 April to 5 April?"
     val heading: String = "Are all of your client’s business accounting periods from 6 April to 5 April?"
+    val hint: String = "The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service."
     val invalidError: String = "Select yes if all of your client’s business accounting periods are from 6 April to 5 April"
 
     val yes: String = "Yes"
@@ -54,6 +55,10 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     "have a view with the correct heading" in new GetSetup {
       pageMainContent.getH1Element.text mustBe AccountingPeriodCheckMessages.heading
+    }
+
+    "has a hint paragraph to explain what is accounting period check" in new GetSetup {
+      pageMainContent.getElementsByClass("govuk-hint").text mustBe AccountingPeriodCheckMessages.hint
     }
 
     "have a form" which {

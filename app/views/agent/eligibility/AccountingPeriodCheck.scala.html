@@ -42,6 +42,7 @@ continueButton: ContinueButton
             field = accountingPeriodCheckForm(AccountingPeriodCheckForm.accountingPeriodCheck),
             legend = messages("agent.accounting_period_check.heading"),
             isPageHeading = false,
+            hint = Some(Text(messages("agent.business.accounting_method.heading_hint"))),
             radioItems = Seq(
                 RadioItem(
                     content = Text(Yes.toMessageString),
