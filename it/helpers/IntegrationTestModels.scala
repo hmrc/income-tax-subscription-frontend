@@ -64,7 +64,7 @@ object IntegrationTestModels {
         "lonely town",
         "quiet county"
       ),
-      postcode = "ZZ11ZZ"
+      postcode = Some("ZZ1 1ZZ")
     )
   )
   val testAccountingMethod: AccountingMethodModel = AccountingMethodModel(Cash)
@@ -100,7 +100,7 @@ object IntegrationTestModels {
 
   val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
   val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
-  val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
+  val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
   val testId = "testId"
 
   lazy val fullSubscriptionDataBothPost: Map[String, JsValue] =
@@ -196,6 +196,6 @@ object IntegrationTestModels {
       businessStartDate = Some(testBusinessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
     ))
 }

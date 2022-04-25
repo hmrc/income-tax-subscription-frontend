@@ -32,7 +32,7 @@ class SummaryModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
     businessStartDate = Some(BusinessStartDate(date)),
     businessName = Some(BusinessNameModel("Fake Name")),
     businessTradeName = Some(BusinessTradeNameModel("Trade")),
-    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), "Postcode")))
+    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode"))))
   )
 
   "Individual Summary" should {

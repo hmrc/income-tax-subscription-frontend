@@ -45,7 +45,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
     businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "2018"))),
     businessName = Some(BusinessNameModel(s"ABC Limited $id")),
     businessTradeName = Some(BusinessTradeNameModel(s"Plumbing $id")),
-    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
+    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
   )
 
   val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext

@@ -52,7 +52,7 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
         businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "2017"))),
         businessName = Some(BusinessNameModel("ABC Limited")),
         businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-        businessAddress = Some(BusinessAddressModel("12345", Address(Seq("line1", "line2", "line3", "line4"), "TF3 4NT")))
+        businessAddress = Some(BusinessAddressModel("12345", Address(Seq("line1", "line2", "line3", "line4"), Some("TF3 4NT"))))
       ))),
       accountingMethod = Some(Cash),
       incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
