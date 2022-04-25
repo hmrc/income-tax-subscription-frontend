@@ -97,7 +97,11 @@ class AgentTaskListViewSpec extends ViewSpec {
     }
 
     "have a client name and client nino" in {
-      document().mainContent.selectNth("p", 1).text mustBe "clientName clientNino"
+      document().mainContent.getElementById("userNameNino").text mustBe "clientName"+" "+"|"+" "+"clientNino"
+    }
+
+    "have a paragraph for accounting period confirm" in {
+      document().mainContent.getElementById("accountingPeriodConfirm").text mustBe "Accounting period confirmed: 6 April to 5 April"
     }
 
     "have a contents list" in {
@@ -110,11 +114,11 @@ class AgentTaskListViewSpec extends ViewSpec {
     "display the dynamic content correctly" when {
       "there is no user data" must {
         "display the application is incomplete" in {
-          document().selectNth("h2", 1).text mustBe subHeadingIncomplete
+          document().getElementById("taskListStatus").text mustBe subHeadingIncomplete
         }
 
         "display the number of sections complete out of the total" in {
-          document().mainContent.selectNth("p", 2).text mustBe contentSummary(0, 2)
+          document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
         }
 
         "in the select tax year section: display the select tax year link with status incomplete" when {
@@ -145,11 +149,11 @@ class AgentTaskListViewSpec extends ViewSpec {
 
       "there is partial user data" must {
         "display the application is incomplete" in {
-          document(partialTaskListComplete).selectNth("h2", 1).text mustBe subHeadingIncomplete
+          document(partialTaskListComplete).getElementById("taskListStatus").text mustBe subHeadingIncomplete
         }
 
         "display the number of sections complete out of the total" in {
-          document(partialTaskListComplete).mainContent.selectNth("p", 2).text mustBe
+          document(partialTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe
             contentSummary(numberComplete = 0, numberTotal = 5)
         }
 
@@ -217,7 +221,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           "contains a change link" in {
             val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
             overseasPropertyLink.text mustBe overseasPropertyBusiness
-            overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
+            overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
             overseasPropertySection.selectNth("span", 2).text mustBe incomplete
           }
 
@@ -251,11 +255,11 @@ class AgentTaskListViewSpec extends ViewSpec {
 
       "there is full user data" must {
         "display the application is complete" in {
-          document(completedTaskListComplete).selectNth("h2", 1).text mustBe subHeadingComplete
+          document(completedTaskListComplete).getElementById("taskListStatus").text mustBe subHeadingComplete
         }
 
         "display the number of sections complete out of the total" in {
-          document(completedTaskListComplete).mainContent.selectNth("p", 2).text mustBe contentSummary(4, 4)
+          document(completedTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(4, 4)
         }
 
         "display a complete tax year with an edit link to the Tax Year CYA" when {

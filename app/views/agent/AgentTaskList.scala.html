@@ -170,13 +170,22 @@
 
 @mainTemplate(title = messages("agent.business.task-list.title")) {
   <h1 class="govuk-heading-xl">@messages("agent.business.task-list.title")</h1>
-  <p class="govuk-body-l govuk-!-font-weight-bold">
-      @clientName @clientNino
-  </p>
-  <h2 class="govuk-heading-s govuk-!-margin-bottom-2">@applicationStatus</h2>
-  <p class="govuk-body govuk-!-margin-bottom-7">@messages("agent.business.task-list.content.summary", viewModel.sectionsComplete, viewModel.sectionsTotal)</p>
 
-  <div class="govuk-form-group">
+<ol class = "app-task-list">
+  <li>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="userNameNino">
+      @clientName | @clientNino
+    </h2>
+    <p class="app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="accountingPeriodConfirm">@messages("agent.business.task-list.accounting-period-confirm")</p>
+  </li>
+
+  <li>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="taskListStatus" >@applicationStatus</h2>
+    <p class=" app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="taskListCompletedSummary">@messages("agent.business.task-list.content.summary", viewModel.sectionsComplete, viewModel.sectionsTotal)</p>
+  </li>
+
+</ol>
+  <div class="govuk-form-group govuk-!-padding-top-7">
     @form(action = postAction) {
       <ol class="app-task-list">
         <li>
