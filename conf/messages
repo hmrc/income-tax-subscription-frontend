@@ -156,7 +156,7 @@ business.what_year_to_sign_up.line_1                            = You can start 
 business.what_year_to_sign_up.line_2                            = There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
 business.what_year_to_sign_up.line_3                            = You can file as many updates as you want but you must submit them by these deadlines:
 business.what_year_to_sign_up.table_caption                     = Example of Quarterly dates
-business.what_year_to_sign_up.radio_heading                     = Select tax year
+business.what_year_to_sign_up.radio_option_heading              = Select tax year
 business.what_year_to_sign_up.option_1                          = Current tax year (6 April {0} to 5 April {1})
 business.what_year_to_sign_up.option_2                          = Next tax year (6 April {0} to 5 April {1})
 business.what_year_to_sign_up.conditional.1.line_1              = You need to send a quarterly filing update for:
@@ -705,15 +705,14 @@ agent.property.income.line_1                                    = This is the am
 ## Accounting Year page
 agent.business.what_year_to_sign_up.title                       = Which tax year do you want your client to start filing income tax updates for?
 agent.business.what_year_to_sign_up.heading                     = Which tax year do you want your client to start filing income tax updates for?
-agent.business.what_year_to_sign_up.line_1                      = You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount you pay.
-agent.business.what_year_to_sign_up.line_2                      = There is no penalty if you start making updates mid-way through the current tax year.
-agent.business.what_year_to_sign_up.line_3                      = You or your client will need to add all business income and expenses into your software from 6 April:
+agent.business.what_year_to_sign_up.line_1                      = You can start sending quarterly updates during the current tax year or the next tax year. It will not affect the amount your client pays.
+agent.business.what_year_to_sign_up.line_2                      = There is no penalty if you start making updates for your client mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
+agent.business.what_year_to_sign_up.line_3                      = You can file as many updates as you want. You must submit them by these deadlines:
+agent.business.what_year_to_sign_up.radio_option_heading        = Select tax year
 agent.business.what_year_to_sign_up.option_1                    = Current tax year (6 April {0} to 5 April {1})
 agent.business.what_year_to_sign_up.option_2                    = Next tax year (6 April {0} to 5 April {1})
-agent.business.what_year_to_sign_up.conditional.1.line_1        = You or your client will need to add all business income and expenses into your software from the start of the current tax year. You or your client need to send a quarterly update for:
-agent.business.what_year_to_sign_up.conditional.1.line_2        = You or your client will need to submit a final declaration by the 31 January {0}.
-agent.business.what_year_to_sign_up.conditional.2.line_1        = You or your client need to send a quarterly update for:
-agent.business.what_year_to_sign_up.conditional.2.line_2        = You or your client will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
+agent.business.what_year_to_sign_up.option_current_hint         = You or your client will need to submit a final declaration by the 31 January {0}.
+agent.business.what_year_to_sign_up.option_next_hint            = You or your client will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
 
 # Agent Sole trader page
 agent.eligibility.sole_trader.heading                           = Did your client’s sole trader business start trading on or after {0}?
