@@ -752,8 +752,8 @@ agent.business.what_year_to_sign_up.line_3                    = Gallwch gyflwyno
 agent.business.what_year_to_sign_up.radio_option_heading      = Dewiswch y flwyddyn dreth
 agent.business.what_year_to_sign_up.option_1                  = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.what_year_to_sign_up.option_2                  = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-agent.business.what_year_to_sign_up.conditional.1.line_2      = Bydd angen i chi neu’ch cleient gyflwyno datganiad terfynol erbyn 31 Ionawr {0}.
-agent.business.what_year_to_sign_up.conditional.2.line_2      = Bydd angen i chi neu’ch cleient gyflwyno datganiad terfynol erbyn 31 Ionawr {0}, a bydd angen llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer.
+agent.business.what_year_to_sign_up.option_current_hint       = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}.
+agent.business.what_year_to_sign_up.option_next_hint          = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}, a llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth gyfredol yn ôl yr arfer.
 
 # Sole trader page
 agent.eligibility.sole_trader.heading                           = A ddechreuodd busnes unig fasnachwr eich cleient fasnachu ar neu ar ôl {0}?
