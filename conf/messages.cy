@@ -1021,6 +1021,7 @@ agent.error.overseas.property.year.length                       = Mae’n rhaid 
 agent.business.task-list.title                                        = Gwirio a llenwi manylion busnes eich cleient
 agent.business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 agent.business.task-list.heading.complete                             = Cais wedi’i gwblhau
+agent.business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi'i gadarnhau: 6 Ebrill i 5 Ebrill
 agent.business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.
 agent.business.task-list.content.section1                             = Dewiswch flwyddyn dreth i gofrestru
 agent.business.task-list.content.section1.action                      = Dewiswch y flwyddyn dreth

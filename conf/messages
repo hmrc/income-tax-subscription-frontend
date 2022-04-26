@@ -937,6 +937,7 @@ agent.no-sa.line_1                                              = To use this se
 agent.business.task-list.title                                        = Check and complete your client’s business details
 agent.business.task-list.heading.incomplete                           = Application incomplete
 agent.business.task-list.heading.complete                             = Application complete
+agent.business.task-list.accounting-period-confirm                    = Accounting period confirmed: 6 April to 5 April
 agent.business.task-list.content.summary                              = You have completed {0} of {1} sections.
 agent.business.task-list.content.section1                             = Choose a tax year to sign up
 agent.business.task-list.content.section1.action                      = Select tax year
