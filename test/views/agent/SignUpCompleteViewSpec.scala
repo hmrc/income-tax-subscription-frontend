@@ -110,6 +110,10 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
       "has paragraph 2" in {
         documentNextTaxYear.select(".govuk-panel__body p:nth-of-type(2)").text() mustBe SignUpComplete.panelParagraph2
       }
+
+      "has paragraph 3" in {
+        documentNextTaxYear.select(".govuk-panel__body p:nth-of-type(3)").text() mustBe SignUpComplete.panelParagraph3
+      }
     }
 
     "have a 'What you need to do next' section for Next Tax Year" which {
@@ -285,12 +289,12 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
       }
     }
 
-    s"has ${SignUpComplete.whatNowHeading}  paragraph 1" in {
-      documentNextTaxYear.select(":not(ol) > p").get(4).text() mustBe SignUpComplete.whatNowHeadingParagraph1
+    s"have ${SignUpComplete.whatNowHeading} paragraph 1" in {
+      documentNextTaxYear.select(":not(ol) > p").get(5).text() mustBe SignUpComplete.whatNowHeadingParagraph1
     }
 
-    s"has ${SignUpComplete.whatNowHeading} paragraph 2" in {
-      documentNextTaxYear.select(":not(ol) > p").get(5).text() mustBe SignUpComplete.whatNowHeadingParagraph2
+    s"have ${SignUpComplete.whatNowHeading} paragraph 2" in {
+      documentNextTaxYear.select(":not(ol) > p").get(6).text() mustBe SignUpComplete.whatNowHeadingParagraph2
     }
 
     "have a add another client button" in {
@@ -318,8 +322,9 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
     val heading = "Client sign up complete"
-    val panelParagraph1 = "Test User 1234567890 is now signed up for Making Tax Digital for Income Tax."
-    val panelParagraph2 = "You can now use software to send Income Tax updates"
+    val panelParagraph1 = "Test User 1234567890"
+    val panelParagraph2 = "is now signed up for Making Tax Digital for Income Tax."
+    val panelParagraph3 = "You can now use software to send Income Tax updates"
 
     val whatNowHeading = "What happens now"
     val whatNowHeadingParagraph1 = "After you’ve sent an update, your client will get an Income Tax year-to-date estimate. " +
