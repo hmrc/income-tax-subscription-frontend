@@ -36,7 +36,7 @@ object SummaryHelper {
     Seq(messageOrNone(messages("agent.summary.income_source.business"), src.selfEmployment),
       messageOrNone(messages("agent.summary.income_source.uk_property"), src.ukProperty),
       messageOrNone(messages("agent.summary.income_source.overseas_property"), src.foreignProperty)
-    ).flatten.mkString("<br>")
+    ).flatten.map(s => s"<p>$s</p>").mkString
   }
 
   def accountingYearText(src: AccountingYearModel)(implicit messages: Messages): String = src.accountingYear match {

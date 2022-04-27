@@ -68,7 +68,7 @@ private object AppDependencies {
         "org.scalatest"                %% "scalatest"            % scalaTestVersion     % scope,
         "com.typesafe.play"            %% "play-test"            % PlayVersion.current  % scope,
         "org.scalatestplus.play"       %% "scalatestplus-play"   % scalaTestPlusVersion % scope,
-        "com.github.fge"               % "json-schema-validator" % "2.2.14"             % scope,
+        "com.github.fge"               % "json-schema-validator" % "2.2.6"             % scope,
         "org.jsoup"                    % "jsoup"                 % jsoupVersion         % scope,
         "com.github.tomakehurst"       % "wiremock-jre8"         % wiremockVersion      % scope,
         "com.vladsch.flexmark"         % "flexmark-all"          % flexmarkVersion      % scope,
