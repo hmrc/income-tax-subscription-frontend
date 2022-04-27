@@ -51,7 +51,7 @@ class AddMTDITOverviewSpec extends ViewSpecTrait {
     }
 
     "have a sub-heading" in new Setup {
-      document.select("h3").text mustBe messages.subHeading
+      document.select("h2").first().text mustBe messages.subHeading
     }
 
     "have a inset text" in new Setup {
