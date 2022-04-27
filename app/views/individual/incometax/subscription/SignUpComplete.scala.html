@@ -15,48 +15,47 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.injected.ButtonHelper
+@import views.html.helpers.injected.{ButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
-@import services.AccountingPeriodService
 @import utilities.ImplicitDateFormatterImpl
+@import services.AccountingPeriodService
+@import views.html.helpers.injected.UpdateDeadlineTable
 
 @this(
         principalMainTemplate: PrincipalMainTemplate,
         buttonHelper: ButtonHelper,
         form: FormWithCSRF,
         govukPanel: GovukPanel,
-        accountingPeriodService: AccountingPeriodService,
-        govukTable: GovukTable,
-        implicitDateFormatter: ImplicitDateFormatterImpl
+        implicitDateFormatter: ImplicitDateFormatterImpl,
+        table: UpdateDeadlineTable,
+        accountingPeriodService: AccountingPeriodService
 )(
-        implicit appConfig: AppConfig
+	implicit appConfig: AppConfig
 )
 
-@(selectedTaxYear: Option[AccountingYear], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(taxYearSelection: Option[AccountingYear], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
+
+@headingPanelContent = {
+    <p>
+        @messages("sign-up-complete.can-use-software")
+    </p>
+}
+
+@headingPanel = @{
+    govukPanel(Panel(
+        title = Text(messages("sign-up-complete.heading")),
+        content = HtmlContent(headingPanelContent)
+    ))
+}
 
 @previousUpdates(previous: List[UpdateDeadline]) = {
     @if(previous.nonEmpty) {
         <li>
-            <p class="govuk-body">@messages("sign-up-complete.whatHappensNow.previous-updates")</p>
-            <p class="govuk-body">@messages("sign-up-complete.whatHappensNow.no-penalty")</p>
-            @govukTable(Table(
-                rows = previous.map { updateDeadline =>
-                    Seq(
-                        TableRow(content = Text(updateDeadline.updateTo.toLongDate)),
-                        TableRow(content = Text(updateDeadline.deadline.toLongDate))
-                    )
-                },
-                head = Some(Seq(
-                    HeadCell(
-                        content = Text(messages("sign-up-complete.whatHappensNow.updates-table.update-heading"))
-                    ),
-                    HeadCell(
-                        content = Text(messages("sign-up-complete.whatHappensNow.updates-table.deadline-heading"))
-                    )
-                ))
-            ))
+            <p class="govuk-body">@messages("sign-up-complete.what-now.previous-updates")</p>
+            @table(previous)
+            <p class="govuk-body">@messages("sign-up-complete.what-now.no-penalty")</p>
         </li>
     }
 }
@@ -64,71 +63,52 @@
 @nextUpdates(next: List[UpdateDeadline], isNextYear: Boolean = false) = {
     <li>
         @if(isNextYear) {
-            <p class="govuk-body">@messages("sign-up-complete.whatHappensNow.send-quarterly")</p>
+            <p class="govuk-body">@messages("sign-up-complete.what-now.send-quarterly")</p>
         } else {
-            <p class="govuk-body">@messages("sign-up-complete.whatHappensNow.next-updates")</p>
+            <p class="govuk-body">@messages("sign-up-complete.what-now.next-updates")</p>
         }
-        @govukTable(Table(
-            rows = next.map { updateDeadline =>
-                Seq(
-                    TableRow(content = Text(updateDeadline.updateTo.toLongDate)),
-                    TableRow(content = Text(updateDeadline.deadline.toLongDate))
-                )
-            },
-            head = Some(Seq(
-                HeadCell(
-                    content = Text(messages("sign-up-complete.whatHappensNow.updates-table.update-heading"))
-                ),
-                HeadCell(
-                    content = Text(messages("sign-up-complete.whatHappensNow.updates-table.deadline-heading"))
-                )
-            ))
-        ))
+        @table(next)
     </li>
 }
 
-@principalMainTemplate(title = messages("sign-up-complete.heading")) {
-
-    <div class="govuk-form-group">
-        @govukPanel(
-            Panel(
-                headingLevel = 1,
-                title = Text(messages("sign-up-complete.heading"))
-            )
-        )
-    </div>
-
-    <h2 class="govuk-heading-m">@messages("sign-up-complete.whatHappensNow.heading")</h2>
-
+@whatHappensNow = {
+    <h2 class="govuk-heading-m">@messages("sign-up-complete.what-now.heading")</h2>
 
     <ol class="govuk-list govuk-list--number govuk-!-margin-2">
         <li>
             @Html(messages(
-                key = "sign-up-complete.whatHappensNow.number1",
-                args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} rel="noreferrer noopener" target="_blank">{messages("sign-up-complete.whatHappensNow.number1.link")}</a>
+            key = "sign-up-complete.what-now.find-software",
+            args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} rel="noreferrer noopener" target="_blank">{messages("sign-up-complete.what-now.find-software.link")}</a>
             ))
         </li>
-        @if(selectedTaxYear.contains(Next)) {
+        @if(taxYearSelection.contains(Next)) {
             @nextUpdates(accountingPeriodService.getAllUpdateAndDeadlineDates(Next), isNextYear = true)
-            <li>@messages("sign-up-complete.whatHappensNow.submit-annual", (accountingPeriodService.currentTaxYear + 2).toString)</li>
+            <li>@messages("sign-up-complete.what-now.submit-annual", (accountingPeriodService.currentTaxYear + 2).toString)</li>
         } else {
             @previousUpdates(accountingPeriodService.getCurrentYearUpdateDates.previous)
             @nextUpdates(accountingPeriodService.getCurrentYearUpdateDates.next)
-            <li>@messages("sign-up-complete.whatHappensNow.submit-annual", (accountingPeriodService.currentTaxYear + 1).toString)</li>
+            <li>@messages("sign-up-complete.what-now.submit-annual", (accountingPeriodService.currentTaxYear + 1).toString)</li>
         }
     </ol>
+}
+
+@principalMainTemplate(title = messages("sign-up-complete.heading")) {
+
+    @headingPanel
+
+    @whatHappensNow
 
     <p class="govuk-body">
         @Html(messages(
-            "sign-up-complete.whatHappensNow.para",
-            <a class="govuk-link" id="btaLink" href={appConfig.btaUrl} rel="noreferrer noopener" target="_blank">{messages("sign-up-complete.whatHappensNow.para.link")}</a>
+            "sign-up-complete.what-now.para",
+            <a class="govuk-link" id="btaLink" href={appConfig.btaUrl} rel="noreferrer noopener" target="_blank">{messages("sign-up-complete.what-now.para.link")}</a>
         ))
     </p>
 
-    <p class="govuk-body">@messages("sign-up-complete.whatHappensNow.para2")</p>
+    <p class="govuk-body">@messages("sign-up-complete.what-now.para2")</p>
 
     @form(action = postAction) {
-        @buttonHelper(messages("sign-up-complete.whatHappensNow.signOut"))
+        @buttonHelper(messages("sign-up-complete.what-now.signOut"))
     }
 
 }

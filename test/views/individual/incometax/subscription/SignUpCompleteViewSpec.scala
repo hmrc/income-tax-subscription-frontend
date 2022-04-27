@@ -58,7 +58,7 @@ class SignUpCompleteViewSpec extends ViewSpec {
     .build().injector.instanceOf[SignUpComplete]
 
   def page(selectedTaxYear: AccountingYear): Html = signUpComplete(
-    selectedTaxYear = Some(selectedTaxYear),
+    taxYearSelection = Some(selectedTaxYear),
     postAction = testCall
   )
 
@@ -76,8 +76,9 @@ class SignUpCompleteViewSpec extends ViewSpec {
     val sendNextUpdatesBy = "Send next quarterly updates using your software by:"
     val noPenaltyMidYear = "There is no penalty if you start making updates mid-way through the current tax year."
 
-    val quarterlyFiling = "Quarterly filing"
+    val quarterlyUpdate = "Quarterly update"
     val deadline = "Deadline"
+    val quarterlyTableCaption = "Submit quarterly updates by the deadline"
 
     def submitAnnualBy(year: String): String = s"Submit your annual updates and declare for the tax year by 31 January $year."
 
@@ -131,12 +132,12 @@ class SignUpCompleteViewSpec extends ViewSpec {
         val point2: Element = orderedList.selectNth("li", 2)
         point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.sendUpdatesBy
         point2.mustHaveTable(
-          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableHeads = List(SignUpCompleteMessages.quarterlyUpdate, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.updateTo.toLongDate, q1Update.deadline.toLongDate),
-            List(q2Update.updateTo.toLongDate, q2Update.deadline.toLongDate),
-            List(q3Update.updateTo.toLongDate, q3Update.deadline.toLongDate),
-            List(q4Update.updateTo.toLongDate, q4Update.deadline.toLongDate)
+            List(q1Update.toRangeString(d => d.toLongDate), q1Update.deadline.toLongDate),
+            List(q2Update.toRangeString(d => d.toLongDate), q2Update.deadline.toLongDate),
+            List(q3Update.toRangeString(d => d.toLongDate), q3Update.deadline.toLongDate),
+            List(q4Update.toRangeString(d => d.toLongDate), q4Update.deadline.toLongDate)
           )
         )
 
@@ -159,12 +160,12 @@ class SignUpCompleteViewSpec extends ViewSpec {
         val point2: Element = orderedList.selectNth("li", 2)
         point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.sendNextUpdatesBy
         point2.mustHaveTable(
-          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableHeads = List(SignUpCompleteMessages.quarterlyUpdate, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.updateTo.toLongDate, q1Update.deadline.toLongDate),
-            List(q2Update.updateTo.toLongDate, q2Update.deadline.toLongDate),
-            List(q3Update.updateTo.toLongDate, q3Update.deadline.toLongDate),
-            List(q4Update.updateTo.toLongDate, q4Update.deadline.toLongDate)
+            List(q1Update.toRangeString(d => d.toLongDate), q1Update.deadline.toLongDate),
+            List(q2Update.toRangeString(d => d.toLongDate), q2Update.deadline.toLongDate),
+            List(q3Update.toRangeString(d => d.toLongDate), q3Update.deadline.toLongDate),
+            List(q4Update.toRangeString(d => d.toLongDate), q4Update.deadline.toLongDate)
           )
         )
 
@@ -187,22 +188,25 @@ class SignUpCompleteViewSpec extends ViewSpec {
         val point2: Element = orderedList.selectNth("li", 2)
         point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.fileQuarterly
         point2.selectNth("p", 2).text mustBe SignUpCompleteMessages.noPenaltyMidYear
+
         point2.mustHaveTable(
-          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableHeads = List(SignUpCompleteMessages.quarterlyUpdate, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.updateTo.toLongDate, q1Update.deadline.toLongDate)
-          )
+            List(q1Update.toRangeString(d => d.toLongDate), q1Update.deadline.toLongDate)
+          ),
+          maybeCaption = Some(SignUpCompleteMessages.quarterlyTableCaption)
         )
 
         val point3: Element = orderedList.selectNth("li", 3)
         point3.selectHead("p").text mustBe SignUpCompleteMessages.sendNextUpdatesBy
         point3.mustHaveTable(
-          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableHeads = List(SignUpCompleteMessages.quarterlyUpdate, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q2Update.updateTo.toLongDate, q2Update.deadline.toLongDate),
-            List(q3Update.updateTo.toLongDate, q3Update.deadline.toLongDate),
-            List(q4Update.updateTo.toLongDate, q4Update.deadline.toLongDate)
-          )
+            List(q2Update.toRangeString(d => d.toLongDate), q2Update.deadline.toLongDate),
+            List(q3Update.toRangeString(d => d.toLongDate), q3Update.deadline.toLongDate),
+            List(q4Update.toRangeString(d => d.toLongDate), q4Update.deadline.toLongDate)
+          ),
+          maybeCaption = Some(SignUpCompleteMessages.quarterlyTableCaption)
         )
 
         val point4: Element = orderedList.selectNth("li", 4)
@@ -225,21 +229,23 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.fileQuarterly
         point2.selectNth("p", 2).text mustBe SignUpCompleteMessages.noPenaltyMidYear
         point2.mustHaveTable(
-          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableHeads = List(SignUpCompleteMessages.quarterlyUpdate, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.updateTo.toLongDate, q1Update.deadline.toLongDate),
-            List(q2Update.updateTo.toLongDate, q2Update.deadline.toLongDate)
-          )
+            List(q1Update.toRangeString(d => d.toLongDate), q1Update.deadline.toLongDate),
+            List(q2Update.toRangeString(d => d.toLongDate), q2Update.deadline.toLongDate)
+          ),
+          maybeCaption = Some(SignUpCompleteMessages.quarterlyTableCaption)
         )
 
         val point3: Element = orderedList.selectNth("li", 3)
         point3.selectHead("p").text mustBe SignUpCompleteMessages.sendNextUpdatesBy
         point3.mustHaveTable(
-          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableHeads = List(SignUpCompleteMessages.quarterlyUpdate, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q3Update.updateTo.toLongDate, q3Update.deadline.toLongDate),
-            List(q4Update.updateTo.toLongDate, q4Update.deadline.toLongDate)
-          )
+            List(q3Update.toRangeString(d => d.toLongDate), q3Update.deadline.toLongDate),
+            List(q4Update.toRangeString(d => d.toLongDate), q4Update.deadline.toLongDate)
+          ),
+          maybeCaption = Some(SignUpCompleteMessages.quarterlyTableCaption)
         )
 
         val point4: Element = orderedList.selectNth("li", 4)
@@ -262,21 +268,23 @@ class SignUpCompleteViewSpec extends ViewSpec {
         point2.selectNth("p", 1).text mustBe SignUpCompleteMessages.fileQuarterly
         point2.selectNth("p", 2).text mustBe SignUpCompleteMessages.noPenaltyMidYear
         point2.mustHaveTable(
-          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableHeads = List(SignUpCompleteMessages.quarterlyUpdate, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q1Update.updateTo.toLongDate, q1Update.deadline.toLongDate),
-            List(q2Update.updateTo.toLongDate, q2Update.deadline.toLongDate),
-            List(q3Update.updateTo.toLongDate, q3Update.deadline.toLongDate)
-          )
+            List(q1Update.toRangeString(d => d.toLongDate), q1Update.deadline.toLongDate),
+            List(q2Update.toRangeString(d => d.toLongDate), q2Update.deadline.toLongDate),
+            List(q3Update.toRangeString(d => d.toLongDate), q3Update.deadline.toLongDate)
+          ),
+          maybeCaption = Some(SignUpCompleteMessages.quarterlyTableCaption)
         )
 
         val point3: Element = orderedList.selectNth("li", 3)
         point3.selectHead("p").text mustBe SignUpCompleteMessages.sendNextUpdatesBy
         point3.mustHaveTable(
-          tableHeads = List(SignUpCompleteMessages.quarterlyFiling, SignUpCompleteMessages.deadline),
+          tableHeads = List(SignUpCompleteMessages.quarterlyUpdate, SignUpCompleteMessages.deadline),
           tableRows = List(
-            List(q4Update.updateTo.toLongDate, q4Update.deadline.toLongDate)
-          )
+            List(q4Update.toRangeString(d => d.toLongDate), q4Update.deadline.toLongDate)
+          ),
+          maybeCaption = Some(SignUpCompleteMessages.quarterlyTableCaption)
         )
 
         val point4: Element = orderedList.selectNth("li", 4)

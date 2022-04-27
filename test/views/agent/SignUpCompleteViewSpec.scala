@@ -37,7 +37,7 @@ import views.html.agent.SignUpComplete
 
 import java.time.LocalDate
 
-class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
+class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach {
   val mockCurrentDateProvider: CurrentDateProvider = mock[CurrentDateProvider]
 
   override def beforeEach(): Unit = {
@@ -132,7 +132,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
         documentNextTaxYear.select("ol > li:nth-of-type(1)").select("a").attr("href") mustBe appConfig.softwareUrl
       }
 
-      s"has a 2nd list item" which {
+      "has a 2nd list item" which {
         "has paragraph1" in {
           documentNextTaxYear.select("ol.govuk-list > li:nth-of-type(2) > p:nth-of-type(1)").text mustBe SignUpComplete.NextYear.whatNowNumber2Para1
         }
@@ -144,11 +144,23 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
               .select(".govuk-table")
               .select(".govuk-table__row")
 
-            assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
-            assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateOne(taxYearEnd.toString), SignUpComplete.deadlineDateOne(taxYearEnd.toString))
-            assertTableRow(tableRows, rowIndex = 2, SignUpComplete.filingDateTwo(taxYearEnd.toString), SignUpComplete.deadlineDateTwo(taxYearEnd.toString))
-            assertTableRow(tableRows, rowIndex = 3, SignUpComplete.filingDateThree((taxYearEnd).toString, (taxYearEnd + 1).toString), SignUpComplete.deadlineDateThree((taxYearEnd + 1).toString))
-            assertTableRow(tableRows, rowIndex = 4, SignUpComplete.filingDateFour((taxYearEnd + 1).toString), SignUpComplete.deadlineDateFour((taxYearEnd + 1).toString))
+          assertTableRow(tableRows, rowIndex = 0, SignUpComplete.updatesHeader, SignUpComplete.deadlineHeader, isHeader = true)
+          assertTableRow(tableRows, rowIndex = 1, SignUpComplete.filingDateOne(taxYearEnd.toString), SignUpComplete.deadlineDateOne(taxYearEnd.toString))
+          assertTableRow(tableRows, rowIndex = 2, SignUpComplete.filingDateTwo(taxYearEnd.toString), SignUpComplete.deadlineDateTwo(taxYearEnd.toString))
+          assertTableRow(tableRows, rowIndex = 3, SignUpComplete.filingDateThree((taxYearEnd).toString, (taxYearEnd + 1).toString), SignUpComplete.deadlineDateThree((taxYearEnd + 1).toString))
+          assertTableRow(tableRows, rowIndex = 4, SignUpComplete.filingDateFour((taxYearEnd + 1).toString), SignUpComplete.deadlineDateFour((taxYearEnd + 1).toString))
+        }
+
+        val caption = documentNextTaxYear
+          .select("ol.govuk-list > li:nth-of-type(2)")
+          .select(".govuk-table")
+          .select(".govuk-table__caption")
+
+        "has a caption on the table" in {
+          caption.text() mustBe SignUpComplete.quarterTableCaption
+        }
+        "has a visually hidden caption on the table" in {
+          caption.attr("class") mustBe "govuk-table__caption govuk-visually-hidden"
         }
       }
 
@@ -339,6 +351,8 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
 
     val whatNowNumber1LinkText = "find software that’s compatible (opens in new tab)"
     val whatNowNumber1 = s"If you have not already done so, $whatNowNumber1LinkText and allow it to interact with HMRC."
+
+    val quarterTableCaption = "Submit quarterly updates by the deadline"
 
     object NextYear {
       val whatNowNumber2Para1 = "You will need to send quarterly updates using your software by:"

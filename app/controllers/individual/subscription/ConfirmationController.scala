@@ -41,7 +41,7 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
       withReference { reference =>
         subscriptionDetailsService.fetchAll(reference) map { cacheMap =>
           Ok(signUpComplete(
-            selectedTaxYear = cacheMap.getSelectedTaxYear.map(_.accountingYear),
+            taxYearSelection = cacheMap.getSelectedTaxYear.map(_.accountingYear),
             postAction = routes.ConfirmationController.submit
           ))
         }

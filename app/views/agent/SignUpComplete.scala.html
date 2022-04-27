@@ -36,12 +36,6 @@
 
 @import implicitDateFormatter.LongDate
 
-@dataHelper(metricId: String, optFieldValue: Option[String]) = {
-    @for(value <- optFieldValue) {
-        <div data-metrics="itsa:@metricId:@value"></div>
-    }
-}
-
 @headingPanelContent = {
     <p class="govuk-panel__body">
         <strong>@messages("agent.sign-up-complete.panel-client", clientName, clientNino)</strong>

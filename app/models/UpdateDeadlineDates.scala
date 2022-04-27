@@ -20,4 +20,6 @@ import java.time.LocalDate
 
 case class UpdateDeadlineDates(previous: List[UpdateDeadline], next: List[UpdateDeadline])
 
-case class UpdateDeadline(updateFrom: LocalDate, updateTo: LocalDate, deadline: LocalDate)
+case class UpdateDeadline(updateFrom: LocalDate, updateTo: LocalDate, deadline: LocalDate) {
+  def toRangeString(dateFormatter: LocalDate => String): String = s"${dateFormatter(updateFrom)} - ${dateFormatter(updateTo)}"
+}
