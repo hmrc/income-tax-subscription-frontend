@@ -761,6 +761,7 @@ agent.eligibility.sole_trader.heading                           = A ddechreuodd 
 ## Business Income page
 agent.business.accounting_method.title                          = Pa ddull cyfrifyddu mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
 agent.business.accounting_method.heading                        = Pa ddull cyfrifyddu mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
+agent.business.accounting_method.heading_hint                   = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae angen i’r cyfnod cyfrifyddu ar gyfer hunangyflogaeth neu fusnes eiddo’ch cleient gyfateb â hyn os hoffech ei gofrestru ar gyfer y gwasanaeth hwn.
 agent.business.accounting_method.cash                           = Cyfrifyddu arian parod
 agent.business.accounting_method.accruals                       = Cyfrifyddu safonol
 

@@ -720,6 +720,7 @@ agent.eligibility.sole_trader.heading                           = Did your clien
 ## Business Income page
 agent.business.accounting_method.title                          = What accounting method does your client use for their self-employed business?
 agent.business.accounting_method.heading                        = What accounting method does your client use for their self-employed business?
+agent.business.accounting_method.heading_hint                   = The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service.
 agent.business.accounting_method.cash                           = Cash accounting
 agent.business.accounting_method.accruals                       = Standard accounting
 
