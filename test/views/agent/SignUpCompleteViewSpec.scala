@@ -104,15 +104,21 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach{
       }
 
       "has paragraph 1" in {
-        documentNextTaxYear.select(".govuk-panel__body p:nth-of-type(1)").text() mustBe SignUpComplete.panelParagraph1
+        val firstPara = documentNextTaxYear.select(".govuk-panel__body p:nth-of-type(1)")
+        firstPara.text() mustBe SignUpComplete.panelParagraph1
+        firstPara.attr("class") mustBe ""
       }
 
       "has paragraph 2" in {
-        documentNextTaxYear.select(".govuk-panel__body p:nth-of-type(2)").text() mustBe SignUpComplete.panelParagraph2
+        val secondPara = documentNextTaxYear.select(".govuk-panel__body p:nth-of-type(2)")
+        secondPara.text() mustBe SignUpComplete.panelParagraph2
+        secondPara.attr("class") mustBe ""
       }
 
       "has paragraph 3" in {
-        documentNextTaxYear.select(".govuk-panel__body p:nth-of-type(3)").text() mustBe SignUpComplete.panelParagraph3
+        val thirdPara = documentNextTaxYear.select(".govuk-panel__body p:nth-of-type(3)")
+        thirdPara.text() mustBe SignUpComplete.panelParagraph3
+        thirdPara.attr("class") mustBe "govuk-panel__body--secondary"
       }
     }
 
