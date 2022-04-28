@@ -34,7 +34,7 @@ trait MockTaskList extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockTaskList(): Unit = {
-    when(taskList(any(), any(), any())(any(),any(), any()))
+    when(taskList(any(), any(), any(), any())(any(),any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

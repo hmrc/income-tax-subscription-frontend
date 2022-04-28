@@ -33,10 +33,12 @@ import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys.SPSEntityId
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.individual.incometax.business.TaskList
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.matching.Regex
 
 @Singleton
 class TaskListController @Inject()(val taskListView: TaskList,
@@ -45,13 +47,26 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val subscriptionService: SubscriptionOrchestrationService,
                                    val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+
                                    val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval with Logging {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit user =>
-    implicit request => {
+
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+
+  }
+
+  val show: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user => {
       if (isEnabled(SaveAndRetrieve)) {
         withReference { reference =>
           getTaskListModel(reference) map {
@@ -59,7 +74,8 @@ class TaskListController @Inject()(val taskListView: TaskList,
               Ok(taskListView(
                 postAction = controllers.individual.business.routes.TaskListController.submit(),
                 viewModel = viewModel,
-                accountingPeriodService = accountingPeriodService
+                accountingPeriodService = accountingPeriodService,
+                individualUserNino = user.nino.get
               ))
           }
         }

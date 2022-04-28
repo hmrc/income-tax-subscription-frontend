@@ -26,7 +26,7 @@ import play.api.test.Helpers.{await, _}
 import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 import utilities.individual.TestConstants
-import utilities.{ITSASessionKeys, UnitTestTrait}
+import utilities.{ITSASessionKeys, UnitTestTrait, UserMatchingSessionUtil}
 
 trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
 
@@ -72,6 +72,8 @@ trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
 
   lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> SignUp.name,
+    UserMatchingSessionUtil.firstName -> "FirstName",
+    UserMatchingSessionUtil.lastName -> "LastName",
     ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr,
     ITSASessionKeys.SPSEntityId -> TestConstants.testSpsEntityId,

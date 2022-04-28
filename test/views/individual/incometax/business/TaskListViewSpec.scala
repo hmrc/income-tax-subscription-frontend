@@ -80,7 +80,8 @@ class TaskListViewSpec extends ViewSpec {
   def page(taskList: TaskListModel = customTaskListModel()): Html = taskListView(
     postAction = postAction,
     viewModel = taskList,
-    accountingPeriodService = accountingPeriodService
+    accountingPeriodService = accountingPeriodService,
+    individualUserNino = "individualUserNino"
   )(request, implicitly, appConfig)
 
 
@@ -95,6 +96,14 @@ class TaskListViewSpec extends ViewSpec {
       document().select("h1").text mustBe heading
     }
 
+    "have a user name and user nino" in {
+      document().mainContent.getElementById("userNameNino").text mustBe "individualUserNino"
+    }
+
+    "have a paragraph for accounting period confirm" in {
+      document().mainContent.getElementById("accountingPeriodConfirm").text mustBe "Accounting period confirmed: 6 April to 5 April"
+    }
+
     "have a contents list" in {
       val contentList = document().select("ol").select("h2")
       contentList.text() must include(item1)
@@ -105,11 +114,12 @@ class TaskListViewSpec extends ViewSpec {
     "display the dynamic content correctly" when {
       "there is no user data" must {
         "display the application is incomplete" in {
-          document().selectNth("h2", 1).text mustBe subHeadingIncomplete
+          document().getElementById("taskListStatus").text mustBe subHeadingIncomplete
         }
 
+
         "display the number of sections complete out of the total" in {
-          document().mainContent.selectNth("p", 1).text mustBe contentSummary(0, 2)
+          document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
         }
 
         "in the select tax year section: display the select tax year link with status incomplete" when {
@@ -140,11 +150,11 @@ class TaskListViewSpec extends ViewSpec {
 
       "there is partial user data" must {
         "display the application is incomplete" in {
-          document(partialTaskListComplete).selectNth("h2", 1).text mustBe subHeadingIncomplete
+          document(partialTaskListComplete).getElementById("taskListStatus").text mustBe subHeadingIncomplete
         }
 
         "display the number of sections complete out of the total" in {
-          document(partialTaskListComplete).mainContent.selectNth("p", 1).text mustBe
+          document(partialTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe
             contentSummary(numberComplete = 0, numberTotal = 5)
         }
 
@@ -246,11 +256,11 @@ class TaskListViewSpec extends ViewSpec {
 
       "there is full user data" must {
         "display the application is complete" in {
-          document(completedTaskListComplete).selectNth("h2", 1).text mustBe subHeadingComplete
+          document(completedTaskListComplete).getElementById("taskListStatus").text mustBe subHeadingComplete
         }
 
         "display the number of sections complete out of the total" in {
-          document(completedTaskListComplete).mainContent.selectNth("p", 1).text mustBe contentSummary(4, 4)
+          document(completedTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(4, 4)
         }
 
         "display a complete tax year with an edit link to the Tax Year CYA" when {
