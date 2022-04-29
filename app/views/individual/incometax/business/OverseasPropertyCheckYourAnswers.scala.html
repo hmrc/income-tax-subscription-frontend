@@ -46,9 +46,10 @@
     }
   }
 
-@mainTemplate(title = messages("business.check-your-answers.title"), backLink = Some(backUrl)){
-  @checkYourAnswers(
+@mainTemplate(title = messages("business.check-your-answers.content.overseas-property.title"), backLink = Some(backUrl)){
+@checkYourAnswers(
     heading = messages("business.check-your-answers.title"),
+    caption = messages("business.check-your-answers.content.overseas-property.caption"),
     isIndividual = true,
     postAction = postAction,
     isComplete = viewModel.startDate.isDefined && viewModel.accountingMethod.isDefined,

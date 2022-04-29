@@ -43,9 +43,9 @@
   }
 }
 
-@mainTemplate(title = messages("agent.business.check-your-answers.title"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.business.check-your-answers.content.tax-year.title"), backLink = Some(backUrl)) {
 
-  @checkYourAnswers(heading = messages("business.check-your-answers.title"), isIndividual = false, postAction = postAction) {
+  @checkYourAnswers(heading = messages("business.check-your-answers.title"),caption = messages("agent.business.check-your-answers.content.tax-year.content.caption"), isIndividual = false, postAction = postAction) {
     @checkYourAnswersRow(
       field = "tax-year",
       question = messages("agent.business.check-your-answers.content.tax-year.question"),

@@ -25,6 +25,7 @@
 
 @(
   heading: String,
+  caption: String,
   postAction: Call,
   isIndividual: Boolean,
   headingHidden: Option[String] = None,
@@ -33,7 +34,13 @@
   saveAndContinue: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-<h1 class="govuk-heading-l">@accessibleTextHelper(heading, headingHidden)</h1>
+<header class="hmrc-page-heading">
+    <p class="hmrc-caption govuk-caption-xl">
+        <span class="govuk-visually-hidden">@Messages("base.caption")</span>
+        @caption
+    </p>
+    <h1 class="govuk-heading-l">@accessibleTextHelper(heading, headingHidden)</h1>
+</header>
 
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
   @contentBlock

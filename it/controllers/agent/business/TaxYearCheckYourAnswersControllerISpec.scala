@@ -50,7 +50,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(OK),
           pageTitle(
-            s"${messages("business.check-your-answers.title")} - Use software to report your client’s Income Tax - GOV.UK"
+            s"${messages("agent.business.check-your-answers.content.tax-year.title")} - Use software to report your client’s Income Tax - GOV.UK"
           )
         )
       }

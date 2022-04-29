@@ -43,9 +43,8 @@
   }
 }
 
-@mainTemplate(title = messages("business.check-your-answers.title"), backLink = Some(backUrl)) {
-
-  @checkYourAnswers(heading = messages("business.check-your-answers.title"), isIndividual = true, postAction = postAction) {
+@mainTemplate(title = messages("business.check-your-answers.content.tax-year.title"), backLink = Some(backUrl)) {
+  @checkYourAnswers(heading = messages("business.check-your-answers.title"), caption = messages("business.check-your-answers.content.tax-year.caption"), isIndividual = true, postAction = postAction) {
     @checkYourAnswersRow(
       field = "tax-year",
       question = messages("business.check-your-answers.content.tax-year.question"),

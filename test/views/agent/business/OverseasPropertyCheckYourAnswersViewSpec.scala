@@ -50,7 +50,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   private val incompleteProperty = OverseasPropertyModel()
 
   object OverseasPropertyCheckYourAnswers {
-    val title = "Check your answers"
+    val title = "Check your overseas property answers"
     val heading = "Check your answers"
     val startDateQuestion = "Overseas property business trading start date"
     val accountMethodQuestion = "Overseas property business accounting method"

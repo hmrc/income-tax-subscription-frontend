@@ -29,6 +29,7 @@ base.add                                                        = Add
 base.update_heading                                             = Quarterly update
 base.deadline_heading                                           = Deadline
 base.to                                                         = to
+base.caption                                                    = This section is
 
 error-notification.prefix                                       = Error:
 
@@ -502,8 +503,9 @@ user-details-lockout.heading                                    = You’ve been 
 user-details-lockout.line_1                                     = To sign up for quarterly reporting, you’ll have to try again in {0}.
 
 # Check your details page
-user-details.summary.title                                      = Check your answers
+user-details.summary.title                                      = Check your user details
 user-details.summary.heading                                    = Check your answers
+user-details.summary.caption                                    = Details you are signing up with
 user-details.summary.first_name                                 = First name
 user-details.summary.last_name                                  = Last name
 user-details.summary.nino                                       = National Insurance number
@@ -670,8 +672,9 @@ agent.client-details-lockout.heading                            = You’ve been 
 agent.client-details-lockout.line_1                             = To sign your client up for quarterly reporting, you’ll have to try again in {0}.
 
 # Check your client’s details page
-agent.client-details.summary.title                              = Confirm your client
+agent.client-details.summary.title                              = Confirm your client’s details
 agent.client-details.summary.heading                            = Check your answers
+agent.client-details.summary.caption                            = Details you are signing up your client with
 agent.client-details.summary.heading_hidden                     = before looking up your client
 agent.client-details.summary.first_name                         = First name
 agent.client-details.summary.last_name                          = Last name
@@ -1006,11 +1009,13 @@ agent.error.overseas.property.month.invalid                     = The date must 
 agent.error.overseas.property.year.length                       = The year must be in four digits. For example, 2020.
 
 ## agent Tax Year Check Your Answers
+agent.business.check-your-answers.content.tax-year.title              = Check your tax year answers
 agent.business.check-your-answers.title                               = Check your answers
 agent.business.check-your-answers.content.tax-year.question           = Tax year you are signing up for
 agent.business.check-your-answers.content.tax-year.question.hidden    = Change tax year you are signing up for
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
+agent.business.check-your-answers.content.tax-year.content.caption    = Tax year you are signing your client up for
 
 ## Agent UK property check your answers
 agent.business.check-your-answers.content.uk-property-start-date.question = UK property business trading start date
@@ -1019,6 +1024,8 @@ agent.business.check-your-answers.content.uk-property-start-date.change = Change
 agent.business.check-your-answers.content.uk-property-accounting-method.question = UK property business accounting method
 agent.business.check-your-answers.content.uk-property-accounting-method.add = Add UK property business accounting method
 agent.business.check-your-answers.content.uk-property-accounting-method.change = Change UK property business accounting method
+agent.business.check-your-answers.content.uk-property.caption = UK property business you entered
+agent.business.check-your-answers.content.uk-property.title = Check your UK property answers
 
 ## Agent Overseas property check your answers
 agent.business.check-your-answers.content.overseas-property-start-date.question = Overseas property business trading start date
@@ -1027,6 +1034,8 @@ agent.business.check-your-answers.content.overseas-property-start-date.change = 
 agent.business.check-your-answers.content.overseas-property-accounting-method.question = Overseas property business accounting method
 agent.business.check-your-answers.content.overseas-property-accounting-method.add = Add Overseas property business accounting method
 agent.business.check-your-answers.content.overseas-property-accounting-method.change = Change Overseas property business accounting method
+agent.business.check-your-answers.content.overseas-property.caption = Overseas property business you entered
+agent.business.check-your-answers.overseas-property.title = Check your overseas property answers
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.heading                  = Are you sure you want to delete {0}{1}?
@@ -1117,12 +1126,14 @@ error.remove-overseas-property-business.invalid                 = Select yes if 
 
 ## Tax Year Check Your Answers
 business.check-your-answers.title                               = Check your answers
+business.check-your-answers.content.tax-year.title              = Check your tax year answers
 business.check-your-answers.content.tax-year.question           = Tax year you are signing up for
 business.check-your-answers.content.tax-year.question.hidden    = Change tax year you are signing up for
 business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
 business.check-your-answers.content.accounting-method.cash      = Cash accounting
 business.check-your-answers.content.accounting-method.accruals  = Standard accounting
+business.check-your-answers.content.tax-year.caption            = Tax year you are signing up for
 
 ## UK property check your answers
 business.check-your-answers.content.uk-property-start-date.question = UK property business trading start date
@@ -1131,6 +1142,9 @@ business.check-your-answers.content.uk-property-start-date.change = Change UK pr
 business.check-your-answers.content.uk-property-accounting-method.question = UK property business accounting method
 business.check-your-answers.content.uk-property-accounting-method.add = Add UK property business accounting method
 business.check-your-answers.content.uk-property-accounting-method.change = Change UK property business accounting method
+business.check-your-answers.content.uk-property.caption = UK property business details you entered
+business.check-your-answers.content.uk-property.title = Check your UK property answers
+
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property-start-date.question = Overseas property business trading start date
 business.check-your-answers.content.overseas-property-start-date.add  = Add Overseas property business trading start date
@@ -1138,6 +1152,8 @@ business.check-your-answers.content.overseas-property-start-date.change = Change
 business.check-your-answers.content.overseas-property-accounting-method.question = Overseas property business accounting method
 business.check-your-answers.content.overseas-property-accounting-method.add = Add Overseas property business accounting method
 business.check-your-answers.content.overseas-property-accounting-method.change = Change Overseas property business accounting method
+business.check-your-answers.content.overseas-property.caption = Overseas property business details you entered
+business.check-your-answers.content.overseas-property.title = Check your overseas property answers
 
 ## Remove business
 business.remove-sole-trader-business.heading      = Are you sure you want to delete {0}{1}?
