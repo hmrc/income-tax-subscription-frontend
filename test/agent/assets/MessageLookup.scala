@@ -118,7 +118,7 @@ object MessageLookup {
 
     def line1(year: Int) = s"For example, if your accounting period is 1 August ${year - 1} to 31 July $year, you will be signing up for the $year to ${year + 1} tax year."
 
-    def exampleStartDate(year: Int): String = s"For example, 1 4 ${year.toString}"
+    def hint(year: Int): String = s"For example, 1 4 ${year.toString}"
 
     def exampleEndDate(year: Int): String = s"For example, 31 3 ${year.toString}"
   }
@@ -425,7 +425,7 @@ object MessageLookup {
     val field3 = "National Insurance number"
     val field4 = "Date of birth"
     val formhint1_line1 = "For example, ‘QQ 12 34 56 C’."
-    val formhint2 = "For example, 10 12 1990"
+    val formhint2 = "For example, 17 2 1990."
   }
 
   object AgentNotAuthorisedError {

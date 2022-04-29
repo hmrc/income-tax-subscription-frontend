@@ -32,7 +32,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   object OverseasPropertyStartDateMessages {
     val title = "When did your overseas property business start trading?"
     val heading: String = title
-    val exampleStartDate = "For example, 1 8 2014"
+    val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
@@ -105,7 +105,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         document.mustHaveDateInput(
           name = "startDate",
           label = OverseasPropertyStartDateMessages.heading,
-          hint = Some(OverseasPropertyStartDateMessages.exampleStartDate)
+          hint = Some(OverseasPropertyStartDateMessages.hint)
         )
       }
       "there is max date error" in new Setup(
@@ -114,7 +114,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         document.mustHaveGovukDateField(
           "startDate",
           OverseasPropertyStartDateMessages.heading,
-          OverseasPropertyStartDateMessages.exampleStartDate,
+          OverseasPropertyStartDateMessages.hint,
           Some(OverseasPropertyStartDateMessages.maxDate)
         )
       }
@@ -124,7 +124,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         document.mustHaveGovukDateField(
           "startDate",
           OverseasPropertyStartDateMessages.heading,
-          OverseasPropertyStartDateMessages.exampleStartDate,
+          OverseasPropertyStartDateMessages.hint,
           Some(OverseasPropertyStartDateMessages.minDate)
         )
       }

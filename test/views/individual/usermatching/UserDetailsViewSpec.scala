@@ -50,7 +50,7 @@ class UserDetailsViewSpec extends ViewSpec {
     val ninoLabel = "National Insurance number"
     val dateOfBirthLabel = "Date of birth"
     val ninoHint = "It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’."
-    val dateOfBirthHint = "For example, 10 12 1990"
+    val dateOfBirthHint = "For example, 17 2 1990."
     val notInPast = "Your date of birth must be in the past"
   }
 

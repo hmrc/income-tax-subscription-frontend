@@ -41,7 +41,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
   object OverseasPropertyStartDateMessages {
     val heading = "When did your client’s overseas property business start trading?"
     val para = "This is the date that letting or renting out any overseas property first started."
-    val exampleStartDate = "For example, 1 8 2014"
+    val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
@@ -118,7 +118,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
       document().mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
-        OverseasPropertyStartDateMessages.exampleStartDate)
+        OverseasPropertyStartDateMessages.hint)
     }
 
     "have a continue button when not in edit mode and not in save and retrieve mode" in {
@@ -142,7 +142,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
       doc.mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
-        OverseasPropertyStartDateMessages.exampleStartDate,
+        OverseasPropertyStartDateMessages.hint,
         Some(OverseasPropertyStartDateMessages.maxDate)
       )
     }
@@ -153,7 +153,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
       doc.mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
-        OverseasPropertyStartDateMessages.exampleStartDate,
+        OverseasPropertyStartDateMessages.hint,
         Some(OverseasPropertyStartDateMessages.minDate)
       )
     }

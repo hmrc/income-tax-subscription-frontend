@@ -33,7 +33,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
 
   object PropertyStartDateMessages {
     val heading: String = "When did your UK property business start trading?"
-    val exampleStartDate = "For example, 1 8 2014"
+    val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
@@ -89,7 +89,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       document().mustHaveDateInput(
         name = PropertyStartDateForm.startDate,
         label = PropertyStartDateMessages.heading,
-        hint = Some(PropertyStartDateMessages.exampleStartDate)
+        hint = Some(PropertyStartDateMessages.hint)
       )
     }
 
@@ -114,7 +114,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       document(propertyStartDateForm = formWithError).mustHaveGovukDateField(
         "startDate",
         PropertyStartDateMessages.heading,
-        PropertyStartDateMessages.exampleStartDate,
+        PropertyStartDateMessages.hint,
         Some(PropertyStartDateMessages.maxDate)
       )
     }
@@ -125,7 +125,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       document(propertyStartDateForm = formWithError).mustHaveGovukDateField(
         "startDate",
         PropertyStartDateMessages.heading,
-        PropertyStartDateMessages.exampleStartDate,
+        PropertyStartDateMessages.hint,
         Some(PropertyStartDateMessages.minDate)
       )
     }
