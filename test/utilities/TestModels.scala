@@ -60,7 +60,7 @@ object TestModels {
   val testOverseasAccountingMethodProperty = OverseasAccountingMethodPropertyModel(Cash)
   val testBusinessTradeName = BusinessTradeNameModel("test trade name")
   val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
-  val testBusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF"))
+  val testBusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
   val testId = "testId"
 
   val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
@@ -179,7 +179,7 @@ object TestModels {
       businessStartDate = Some(testBusinessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), "TF2 1PF")))
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
     )
     )
 

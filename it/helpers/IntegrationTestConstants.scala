@@ -81,7 +81,7 @@ object IntegrationTestConstants {
       businessStartDate = Some(businessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel("", Address(Seq("1 long road", "lonely town", "quiet county"), "ZZ11ZZ")))
+      businessAddress = Some(BusinessAddressModel("", Address(Seq("1 long road", "lonely town", "quiet county"), Some("ZZ1 1ZZ"))))
     )
     )
 

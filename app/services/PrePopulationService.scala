@@ -52,8 +52,10 @@ class PrePopulationService @Inject()(
           se.businessStartDate.map(date => BusinessStartDate(date)),
           se.businessName.map(name => BusinessNameModel(name)),
           Some(BusinessTradeNameModel(se.businessTradeName)),
-          se.businessAddressPostCode.map(pc =>
-            BusinessAddressModel(UUID.randomUUID().toString, address = Address(se.businessAddressFirstLine.toList.seq, pc)))
+          if (se.businessAddressPostCode.isDefined || se.businessAddressFirstLine.isDefined)
+            Some(BusinessAddressModel(UUID.randomUUID().toString, address = Address(se.businessAddressFirstLine.toList.seq, se.businessAddressPostCode)))
+          else
+            None
         ))
         subscriptionDetailsService.saveBusinesses(reference, listSelfEmploymentData)
     }

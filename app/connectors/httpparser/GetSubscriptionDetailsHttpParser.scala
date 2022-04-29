@@ -17,7 +17,7 @@
 package connectors.httpparser
 
 import play.api.http.Status._
-import play.api.libs.json.{JsSuccess, Reads}
+import play.api.libs.json.{JsError, JsSuccess, Reads}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse, InternalServerException}
 
 
@@ -28,8 +28,8 @@ object GetSubscriptionDetailsHttpParser {
       response.status match {
         case OK => response.json.validate[T] match {
           case JsSuccess(value, _) => Some(value)
-          case _ =>
-            throw new InternalServerException("Invalid Json for getSubscriptionDetailsHttpReads")
+          case JsError(errors) =>
+            throw new InternalServerException(s"Invalid Json for getSubscriptionDetailsHttpReads: $errors")
         }
         case NO_CONTENT => None
         case status => throw new InternalServerException(s"Unexpected status: $status")

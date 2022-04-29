@@ -93,7 +93,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
           businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
           businessName = Some(BusinessNameModel("business name")),
           businessTradeName = Some(BusinessTradeNameModel("business trade")),
-          businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), "ZZ1 1ZZ")))
+          businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
         )
       )))
       mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(Some(AccountingMethodModel(Cash)))
