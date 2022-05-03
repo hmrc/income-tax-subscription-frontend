@@ -32,6 +32,8 @@
       TableRow(content = Text(updateDeadline.deadline.toLongDate))
     )
   },
+  caption = Some(messages("agent.sign-up-complete.quarter-table-caption")),
+  captionClasses = "govuk-visually-hidden",
   head = Some(Seq(
     HeadCell(
       content = Text(messages("base.update_heading"))

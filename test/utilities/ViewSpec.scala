@@ -216,8 +216,15 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       )
     }
 
-    def mustHaveTable(tableHeads: List[String], tableRows: List[List[String]]): Assertion = {
+    def mustHaveTable(tableHeads: List[String], tableRows: List[List[String]], maybeCaption: Option[String] = None): Assertion = {
       val table: Element = element.selectHead("table")
+
+      maybeCaption map {
+        captionString =>
+          val caption = table.selectHead("caption")
+          caption.text() must be(captionString)
+          caption.attr("class") must be ("govuk-table__caption govuk-visually-hidden")
+      }
 
       tableHeads.zip(1 to tableHeads.length).map { case (th, index) =>
         table.selectHead("thead").selectHead("tr").selectNth("th", index).text mustBe th
@@ -229,6 +236,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
           tableRow.selectNth("td", index).text mustBe td
         } forall (_ == succeed)
       } forall (_ == true) mustBe true
+
     }
 
     def mustHaveTextInput(name: String,
