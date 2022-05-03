@@ -27,7 +27,7 @@
     continueButton: ContinueButton
 )
 
-@(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @signUpSectionContent = @{
   if(viewModel.taskListComplete ) {
@@ -181,8 +181,22 @@
 @mainTemplate(title = messages("business.task-list.title")) {
 
     <h1 class="govuk-heading-xl">@messages("business.task-list.title")</h1>
-    <h2 class="govuk-heading-s govuk-!-margin-bottom-2">@applicationStatus</h2>
-    <p class="govuk-body govuk-!-margin-bottom-7">@messages("business.task-list.content.summary", viewModel.sectionsComplete, viewModel.sectionsTotal)</p>
+    <ol class = "app-task-list">
+    <li>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="userNameNino">
+            @individualUserNino
+        </h2>
+        <p class="app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="accountingPeriodConfirm">@messages("business.task-list.accounting-period-confirm")</p>
+    </li>
+
+    <li>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="taskListStatus" >@applicationStatus</h2>
+        <p class=" app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="taskListCompletedSummary">@messages("business.task-list.content.summary", viewModel.sectionsComplete, viewModel.sectionsTotal)</p>
+    </li>
+
+</ol>
+
+<div class="govuk-form-group govuk-!-padding-top-7">
 
     <div class="govuk-form-group">
         @form(action = postAction) {

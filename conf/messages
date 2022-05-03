@@ -1120,6 +1120,7 @@ business.task-list.status.completed                             = Complete
 business.task-list.status.incomplete                            = Incomplete
 business.task-list.status.in-progress                           = In progress
 business.task-list.status.not-started                           = Not started
+business.task-list.accounting-period-confirm                    = Accounting period confirmed: 6 April to 5 April
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = Are you sure you want to delete your overseas property business?

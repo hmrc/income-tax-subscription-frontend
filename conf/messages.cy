@@ -1121,6 +1121,7 @@ business.task-list.status.completed                             = Wedi’i gwblh
 business.task-list.status.incomplete                            = Anghyflawn
 business.task-list.status.in-progress                           = Ar waith
 business.task-list.status.not-started                           = Heb ddechrau
+business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi'i gadarnhau: 6 Ebrill i 5 Ebrill
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = Ydych chi’n siŵr eich bod am ddileu’ch busnes eiddo tramor?
