@@ -48,7 +48,7 @@
 
 @mainTemplate(title = messages("business.check-your-answers.content.overseas-property.title"), backLink = Some(backUrl)){
 @checkYourAnswers(
-    heading = messages("business.check-your-answers.title"),
+    heading = messages("business.check-your-answers.heading"),
     caption = messages("business.check-your-answers.content.overseas-property.caption"),
     isIndividual = true,
     postAction = postAction,
@@ -64,9 +64,9 @@
       changeUrl = Some(controllers.individual.business.routes.OverseasPropertyStartDateController.show(editMode = true).url),
       hiddenContent =
         if (viewModel.startDate.isDefined)
-          Some(messages("business.check-your-answers.content.overseas-property-start-date.change"))
+          messages("business.check-your-answers.content.overseas-property-start-date.change")
         else
-          Some(messages("business.check-your-answers.content.overseas-property-start-date.add"))
+          messages("business.check-your-answers.content.overseas-property-start-date.add")
     )
     @checkYourAnswersRow(
       field = "accounting-method",
@@ -76,9 +76,9 @@
       changeUrl = Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url),
       hiddenContent =
         if (viewModel.accountingMethod.isDefined)
-          Some(messages("business.check-your-answers.content.overseas-property-accounting-method.change"))
+          messages("business.check-your-answers.content.overseas-property-accounting-method.change")
         else
-          Some(messages("business.check-your-answers.content.overseas-property-accounting-method.add"))
+          messages("business.check-your-answers.content.overseas-property-accounting-method.add")
     )
   }
 }

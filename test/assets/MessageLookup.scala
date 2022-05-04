@@ -354,9 +354,11 @@ object MessageLookup {
   }
 
   object TaxYearCheckYourAnswers {
-    val title = "Check your tax year answers - Use software to send Income Tax updates - GOV.UK"
-    val agentTitle = "Check your tax year answers - Use software to report your client’s Income Tax - GOV.UK"
+    val title = "Check your answers - tax year - Use software to send Income Tax updates - GOV.UK"
+    val agentTitle = "Check your answers - tax year - Use software to report your client’s Income Tax - GOV.UK"
     val heading = "Check your answers"
+    val caption = "This section is Tax year you are signing up for"
+    val agentCaption = "This section is Tax year you are signing your client up for"
     val question = "Tax year you are signing up for"
     val hiddenQuestion = "Change tax year you are signing up for"
 

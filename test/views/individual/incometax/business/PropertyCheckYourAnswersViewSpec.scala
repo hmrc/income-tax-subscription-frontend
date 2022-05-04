@@ -52,8 +52,9 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
   private val incompleteProperty = PropertyModel()
 
   object PropertyCheckYourAnswers {
-    val title = "Check your UK property answers"
+    val title = "Check your answers - UK property business"
     val heading = "Check your answers"
+    val caption = "This section is UK property business details you entered"
     val startDateQuestion = "UK property business trading start date"
     val accountMethodQuestion = "UK property business accounting method"
     val confirmedAndContinue = "Confirm and continue"
@@ -78,6 +79,10 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       document()
         .select("h1")
         .text() mustBe PropertyCheckYourAnswers.heading
+    }
+
+    "have a caption" in {
+      document().select(".hmrc-page-heading p").text mustBe PropertyCheckYourAnswers.caption
     }
 
     "display property details" when {

@@ -42,6 +42,10 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
       document().select("h1").text mustBe heading
     }
 
+    "have a caption" in {
+      document().select(".hmrc-page-heading p").text mustBe agentCaption
+    }
+
     "display the tax year section question" in {
       document()
         .mainContent

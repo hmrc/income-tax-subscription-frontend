@@ -48,7 +48,7 @@
 
 @mainTemplate(title = messages("business.check-your-answers.content.uk-property.title"), backLink = Some(backUrl)) {
   @checkYourAnswers(
-    heading = messages("business.check-your-answers.title"),
+    heading = messages("business.check-your-answers.heading"),
     caption = messages("business.check-your-answers.content.uk-property.caption"),
     isIndividual = true,
     postAction = postAction,
@@ -63,9 +63,9 @@
       changeUrl = Some(controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url),
       hiddenContent =
         if (viewModel.startDate.isDefined)
-          Some(messages("business.check-your-answers.content.uk-property-start-date.change"))
+          messages("business.check-your-answers.content.uk-property-start-date.change")
         else
-          Some(messages("business.check-your-answers.content.uk-property-start-date.add"))
+          messages("business.check-your-answers.content.uk-property-start-date.add")
     )
     @checkYourAnswersRow(
       field = "accounting-method",
@@ -75,9 +75,9 @@
       changeUrl = Some(controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url),
       hiddenContent =
         if (viewModel.accountingMethod.isDefined)
-          Some(messages("business.check-your-answers.content.uk-property-accounting-method.change"))
+          messages("business.check-your-answers.content.uk-property-accounting-method.change")
         else
-          Some(messages("business.check-your-answers.content.uk-property-accounting-method.add"))
+          messages("business.check-your-answers.content.uk-property-accounting-method.add")
     )
   }
 }

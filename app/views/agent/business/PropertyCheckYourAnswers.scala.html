@@ -48,7 +48,7 @@
 
  @mainTemplate(title = messages("agent.business.check-your-answers.content.uk-property.title"), backLink = Some(backUrl)) {
 @checkYourAnswers(
-   heading = messages("agent.business.check-your-answers.title"),
+   heading = messages("agent.business.check-your-answers.heading"),
    caption = messages("agent.business.check-your-answers.content.uk-property.caption"),
    isIndividual = false,
    postAction = postAction,
@@ -63,9 +63,9 @@
     changeUrl = Some(controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url),
     hiddenContent =
      if (viewModel.startDate.isDefined)
-      Some(messages("agent.business.check-your-answers.content.uk-property-start-date.change"))
+      messages("agent.business.check-your-answers.content.uk-property-start-date.change")
      else
-      Some(messages("agent.business.check-your-answers.content.uk-property-start-date.add"))
+      messages("agent.business.check-your-answers.content.uk-property-start-date.add")
    )
    @checkYourAnswersRow(
     field = "accounting-method",
@@ -75,9 +75,9 @@
     changeUrl = Some(controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url),
     hiddenContent =
      if (viewModel.accountingMethod.isDefined)
-      Some(messages("agent.business.check-your-answers.content.uk-property-accounting-method.change"))
+      messages("agent.business.check-your-answers.content.uk-property-accounting-method.change")
      else
-      Some(messages("agent.business.check-your-answers.content.uk-property-accounting-method.add"))
+      messages("agent.business.check-your-answers.content.uk-property-accounting-method.add")
    )
   }
  }

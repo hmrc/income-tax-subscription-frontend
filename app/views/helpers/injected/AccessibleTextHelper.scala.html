@@ -16,15 +16,7 @@
 
 @this()
 
-@(mainText: String, maybeAccessibleText: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(mainText: String, accessibleText: String)(implicit request: Request[_], messages: Messages)
 
-<div>
-    @{maybeAccessibleText match {
-        case None =>
-            <span>{mainText}</span>
-        case Some(accessibleText) =>
-            <span aria-hidden="true">{mainText}</span>
-            <span class="govuk-visually-hidden">{accessibleText}</span>
-        }
-    }
-</div>
+<span aria-hidden="true">@mainText</span>
+<span class="govuk-visually-hidden">@accessibleText</span>
