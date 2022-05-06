@@ -55,7 +55,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
   object PropertyStartDateMessages {
     val title = "When did your client’s UK property business start trading?"
     val heading: String = title
-    val exampleStartDate = "For example, 1 8 2014"
+    val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
@@ -107,7 +107,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     }
 
     "have a fieldset with dateInputs" in {
-      document().mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.exampleStartDate)
+      document().mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.hint)
     }
 
     "have a continue button when not in edit mode" in {
@@ -141,7 +141,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       doc.mustHaveGovukDateField(
         "startDate",
         PropertyStartDateMessages.heading,
-        PropertyStartDateMessages.exampleStartDate,
+        PropertyStartDateMessages.hint,
         Some(PropertyStartDateMessages.maxDate)
       )
     }
@@ -157,7 +157,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       doc.mustHaveGovukDateField(
         "startDate",
         PropertyStartDateMessages.heading,
-        PropertyStartDateMessages.exampleStartDate,
+        PropertyStartDateMessages.hint,
         Some(PropertyStartDateMessages.minDate)
       )
     }

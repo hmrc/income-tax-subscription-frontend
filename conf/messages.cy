@@ -115,7 +115,7 @@ income_source.rentUkProperty                                    = Rhoi eiddo yn 
 income_source.foreignProperty                                   = Rhoi eiddo tramor ar osod
 individual.error.income_source.invalid                          = Dewiswch eich ffynonellau incwm
 individual.error.income_source_foreignProperty.invalid          = Dewiswch eich ffynonellau incwm
-income_source.checkbox.hint                                     = Dewiswch bob un sy’n gymwys
+income_source.checkbox.hint                                     = Dewiswch bob un sy’n gymwys.
 
 ## Individual what income source to sign up page
 what_income_source_to_sign_up.title                             = Pa ffynhonnell incwm ydych chi am ei chofrestru?
@@ -213,7 +213,7 @@ business.name.signup.line_1                                     = Dyma enw’r b
 business.property.name.title                                    = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
 business.property.name.heading                                  = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
 business.property.line_1                                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo yn y DU ar osod yn y lle cyntaf.
-business.property.start_date.exampleStartDate                   = Er enghraifft, 1 8 2014
+business.property.start_date.hint                               = Er enghraifft, 17 8 2014.
 
 # Property Start Date errors
 error.property.day_month_year.empty                             = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
@@ -251,7 +251,7 @@ mtdit-overview.paragraph5                                       = I ychwanegu’
 # Agent Property Start Date Date
 agent.property.name.heading                                     = Pryd y dechreuodd busnes eiddo yn y DU eich cleient fasnachu?
 agent.property.line_1                                           = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
-agent.property.start_date.exampleStartDate                      = Er enghraifft, 1 8 2014
+agent.property.start_date.hint                                  = Er enghraifft, 17 8 2014.
 
 # Agent Property Start Date errors
 agent.error.property.day_month_year.empty                       = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
@@ -322,12 +322,12 @@ agent.business.progress-saved.content.sign-in-link                    = mewngofn
 overseas.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
 overseas.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
 overseas.property.line_1                                         = Dyma’r dyddiad y dechreuwyd rhoi unrhyw eiddo tramor ar osod yn y lle cyntaf.
-overseas.property.start_date.exampleStartDate                    = Er enghraifft, 1 8 2014
+overseas.property.start_date.hint                                = Er enghraifft, 17 8 2014.
 
 # Agent Overseas Property Start Date
 agent.overseas.property.name.heading                            = Pryd y dechreuodd busnes eiddo tramor eich cleient fasnachu?
 agent.overseas.property.line_1                                  = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
-agent.overseas.property.start_date.exampleStartDate             = Er enghraifft, 1 8 2014
+agent.overseas.property.start_date.hint                         = Er enghraifft, 17 8 2014.
 
 # Overseas Property Start Date errors
 error.overseas.property.day_month_year.empty                     = Nodwch y dyddiad y dechreuodd eich busnes eiddo tramor fasnachu
@@ -377,7 +377,6 @@ summary.heading                                                 = Gwiriwch eich 
 summary.heading_hidden                                          = cyn cofrestru
 summary.confirm_and_sign_up                                     = Cadarnhau a chofrestru
 summary.line_1                                                  = Gallwch olygu’ch atebion, os oes angen.<br>Pan fyddwch chi’n barod, cyflwynwch eich atebion er mwyn cofrestru i anfon diweddariadau digidol i CThEM ynglŷn ag incwm a gwariant.
-summary.income_source                                           = O ble mae’ch incwm yn dod?
 summary.rent_uk_property_1                                      = Rydych yn gosod eiddo yn y DU
 summary.rent_uk_property_2                                      = Rydych ond yn cael incwm o hunan-gyflogaeth
 summary.income_source                                           = Incwm a gafwyd o
@@ -540,8 +539,8 @@ stub.user.details.field_3                                       = National Insur
 stub.user.details.field_4                                       = Self Assessment Unique Tax Reference
 stub.user.details.field_5                                       = Date of birth
 stub.user.details.formhint.1.line_1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
-stub.user.details.formhint.2                                    = For example, 10 12 1990
-stub.user.details.formhint.3                                    = For example, ’1234546734’
+stub.user.details.formhint.2                                    = For example, 17 2 1990.
+stub.user.details.formhint.3                                    = For example, ’1234546734’.
 
 ## User Details ##
 user-details.title                                              = Cadarnhau’ch manylion
@@ -552,7 +551,7 @@ user-details.field_2                                            = Enw olaf
 user-details.field_3                                            = Rhif Yswiriant Gwladol
 user-details.field_4                                            = Dyddiad geni
 user_details.formhint.1.line_1                                  = Mae hwn ar eich cerdyn Yswiriant Gwladol, llythyr ynghylch budd-daliadau, slip cyflog neu P60. Er enghraifft, ‘QQ 12 34 56 C’.
-user-details.formhint.2                                         = Er enghraifft, 10 12 1990
+user-details.formhint.2                                         = Er enghraifft, 17 2 1990.
 
 
 # User details page
@@ -733,7 +732,7 @@ agent.client-details.summary.dob                                = Dyddiad geni
 
 ## agent income source page
 agent.income_source.heading                                     = Sut mae’ch cleient yn cael ei incwm?
-agent.income_source.checkbox.hint                               = Dewiswch bob un sy’n gymwys
+agent.income_source.checkbox.hint                               = Dewiswch bob un sy’n gymwys.
 agent.income_source.selfEmployed                                = Unig fasnachwr gydag un neu fwy o fusnesau
 agent.income_source.rentUkProperty                              = Rhoi eiddo yn y DU ar osod
 agent.income_source.foreignProperty                             = Rhoi eiddo tramor ar osod
@@ -977,7 +976,7 @@ agent.client-details.field_2                                    = Enw olaf
 agent.client-details.field_3                                    = Rhif Yswiriant Gwladol
 agent.client-details.field_4                                    = Dyddiad geni
 agent.client_details.formhint.1.line_1                          = Er enghraifft, ‘QQ 12 34 56 C’.
-agent.client-details.formhint.2                                 = Er enghraifft, 10 12 1990
+agent.client-details.formhint.2                                 = Er enghraifft, 17 2 1990.
 
 agent.no-sa.title                                               = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.heading                                             = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad

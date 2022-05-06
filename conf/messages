@@ -115,7 +115,7 @@ income_source.rentUkProperty                                    = Rent out UK pr
 income_source.foreignProperty                                   = Rent out overseas properties
 individual.error.income_source.invalid                          = Select your sources of income
 individual.error.income_source_foreignProperty.invalid          = Select your sources of income
-income_source.checkbox.hint                                     = Select all that apply
+income_source.checkbox.hint                                     = Select all that apply.
 
 ## Individual what income source to sign up page
 what_income_source_to_sign_up.title                             = What source of income do you want to sign up?
@@ -211,7 +211,7 @@ business.name.signup.line_1                                     = This is the bu
 business.property.name.title                                    = When did your UK property business start trading?
 business.property.name.heading                                  = When did your UK property business start trading?
 business.property.line_1                                        = This is the date that letting or renting out any UK property first started.
-business.property.start_date.exampleStartDate                   = For example, 1 8 2014
+business.property.start_date.hint                               = For example, 17 8 2014.
 
 # Property Start Date errors
 error.property.day_month_year.empty                             = Enter the date your UK property business started trading
@@ -235,7 +235,7 @@ error.property.year.length                                      = The year must 
 # Agent Property Start Date Date
 agent.property.name.heading                                     = When did your client’s UK property business start trading?
 agent.property.line_1                                           = This is the date that letting or renting out any property first started.
-agent.property.start_date.exampleStartDate                      = For example, 1 8 2014
+agent.property.start_date.hint                                  = For example, 17 8 2014.
 
 # Agent Property Start Date errors
 agent.error.property.day_month_year.empty                       = Enter the date your client’s UK property business started trading
@@ -260,12 +260,12 @@ agent.error.property.year.length                                = The year must 
 overseas.property.name.title                                    = When did your overseas property business start trading?
 overseas.property.name.heading                                  = When did your overseas property business start trading?
 overseas.property.line_1                                        = This is the date that letting or renting out any overseas property first started.
-overseas.property.start_date.exampleStartDate                   = For example, 1 8 2014
+overseas.property.start_date.hint                               = For example, 17 8 2014.
 
 # Agent Overseas Property Start Date
 agent.overseas.property.name.heading                            = When did your client’s overseas property business start trading?
 agent.overseas.property.line_1                                  = This is the date that letting or renting out any overseas property first started.
-agent.overseas.property.start_date.exampleStartDate             = For example, 1 8 2014
+agent.overseas.property.start_date.hint                         = For example, 17 8 2014.
 
 # Overseas Property Start Date errors
 error.overseas.property.day_month_year.empty                    = Enter the date your overseas property business started trading
@@ -315,7 +315,6 @@ summary.heading                                                 = Check your ans
 summary.heading_hidden                                          = before signing up
 summary.confirm_and_sign_up                                     = Confirm and sign up
 summary.line_1                                                  = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
-summary.income_source                                           = Where does your income come from?
 summary.rent_uk_property_1                                      = You rent out UK property
 summary.rent_uk_property_2                                      = You only receive income from self-employment
 summary.income_source                                           = Income received from
@@ -478,7 +477,7 @@ user-details.field_2                                            = Last name
 user-details.field_3                                            = National Insurance number
 user-details.field_4                                            = Date of birth
 user_details.formhint.1.line_1                                  = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
-user-details.formhint.2                                         = For example, 10 12 1990
+user-details.formhint.2                                         = For example, 17 2 1990.
 
 ## Stub User Details ##
 stub.user.details.title                                         = User stubbing service - Use software to send Income Tax updates - GOV.UK
@@ -490,8 +489,8 @@ stub.user.details.field_3                                       = National Insur
 stub.user.details.field_4                                       = Self Assessment Unique Tax Reference
 stub.user.details.field_5                                       = Date of birth
 stub.user.details.formhint.1.line_1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
-stub.user.details.formhint.2                                    = For example, 10 12 1990
-stub.user.details.formhint.3                                    = For example, ’1234546734’
+stub.user.details.formhint.2                                    = For example, 17 2 1990.
+stub.user.details.formhint.3                                    = For example, ’1234546734’.
 
 # User details page
 user-details-error.title                                        = User match error
@@ -684,7 +683,7 @@ agent.client-details.summary.dob                                = Date of birth
 
 ## agent income source page
 agent.income_source.heading                                     = How does your client receive their income?
-agent.income_source.checkbox.hint                               = Select all that apply
+agent.income_source.checkbox.hint                               = Select all that apply.
 agent.income_source.selfEmployed                                = Sole trader with one or more businesses
 agent.income_source.rentUkProperty                              = Rent out UK properties
 agent.income_source.foreignProperty                             = Rent out overseas properties
@@ -933,7 +932,7 @@ agent.client-details.field_2                                    = Last name
 agent.client-details.field_3                                    = National Insurance number
 agent.client-details.field_4                                    = Date of birth
 agent.client_details.formhint.1.line_1                          = For example, ‘QQ 12 34 56 C’.
-agent.client-details.formhint.2                                 = For example, 10 12 1990
+agent.client-details.formhint.2                                 = For example, 17 2 1990.
 
 agent.no-sa.title                                               = Your client is not registered for Self Assessment
 agent.no-sa.heading                                             = Your client is not registered for Self Assessment

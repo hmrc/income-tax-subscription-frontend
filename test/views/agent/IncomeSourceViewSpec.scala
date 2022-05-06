@@ -102,7 +102,7 @@ class IncomeSourceViewSpec extends ViewSpec {
       document.selectHead("fieldset").selectHead("legend").selectHead("h1").text mustBe messages.heading
     }
     "have a hint" in new ViewTest {
-      document.selectHead("fieldset").selectHead(".govuk-hint").text mustBe "Select all that apply"
+      document.selectHead("fieldset").selectHead(".govuk-hint").text mustBe "Select all that apply."
     }
     "have an error" when {
       "there is an error" in new ViewTest(hasError = true) {

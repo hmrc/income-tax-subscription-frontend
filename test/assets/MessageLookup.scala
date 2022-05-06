@@ -159,7 +159,7 @@ object MessageLookup {
   object PropertyStartDateMessages {
     val title = "When did your UK property business start trading?"
     val heading: String = title
-    val exampleStartDate = "For example, 1 4 2018"
+    val hint = "For example, 1 4 2018"
     val continue = "Continue"
     val backLink = "Back"
     val update = "Update"

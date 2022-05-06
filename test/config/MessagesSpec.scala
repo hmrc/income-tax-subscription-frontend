@@ -23,19 +23,34 @@ import scala.io.Source
 
 class MessagesSpec extends AnyFunSuite {
 
-  lazy val messageKeysEnglish = getMessageKeys("messages")
-  lazy val messageKeysWelsh = getMessageKeys("messages.cy")
+  private val messageKeysEnglish: List[String] = getMessageKeys("messages").toList
+  lazy val messageKeySetEnglish = messageKeysEnglish.toSet
+
+  private val messageKeysWelsh: List[String] = getMessageKeys("messages.cy").toList
+  lazy val messageKeySetWelsh = messageKeysWelsh.toSet
 
   test("Messages present in Welsh (conf/messages.cy) should also have an English translation (conf/messages)") {
-    val keysInWelshNotEnglish = messageKeysWelsh -- messageKeysEnglish
+    val keysInWelshNotEnglish = messageKeySetWelsh -- messageKeySetEnglish
     keysInWelshNotEnglish foreach println
     keysInWelshNotEnglish.size mustBe 0
   }
 
   test("Messages present in English (conf/messages) should also have a Welsh translation (conf/messages.cy)") {
-    val keysInEnglishNotWelsh = messageKeysEnglish -- messageKeysWelsh
+    val keysInEnglishNotWelsh = messageKeySetEnglish -- messageKeySetWelsh
     keysInEnglishNotWelsh foreach println
     keysInEnglishNotWelsh.size mustBe 0
+  }
+
+  test("No duplicate keys in English") {
+    val duplicateMessagesEnglish = messageKeysEnglish.diff(messageKeysEnglish.distinct).distinct
+    duplicateMessagesEnglish foreach println
+    duplicateMessagesEnglish.size mustBe (0)
+  }
+
+  test("No duplicate keys in Welsh") {
+    val duplicateMessagesWelsh = messageKeysWelsh.diff(messageKeysWelsh.distinct).distinct
+    duplicateMessagesWelsh foreach println
+    duplicateMessagesWelsh.size mustBe (0)
   }
 
   private def getMessageKeys(fileName: String) = {
@@ -45,6 +60,5 @@ class MessagesSpec extends AnyFunSuite {
       .filter(!_.startsWith("#"))
       .filter(_.nonEmpty)
       .map(_.split(' ').head)
-      .toSet
   }
 }
