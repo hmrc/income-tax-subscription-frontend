@@ -30,7 +30,7 @@ base.update_heading                                             = Diweddariadau 
 base.deadline_heading                                           = Dyddiad cau
 base.to                                                         = i
 base.caption                                                    = Mae'r adran hon yn
-
+base.submit_and_continue                                        = Cyflwyno ac yn eich blaen
 error-notification.prefix                                       = Gwall:
 
 ## base.userResearch.text                                       = Mae’r cysylltiad hwn yn agor tab newydd. Sylwer - nid yw’r gwasanaeth hwn ar gael yn Gymraeg.
@@ -1053,7 +1053,6 @@ agent.business.task-list.status.completed                             = Wedi’i
 agent.business.task-list.status.incomplete                            = Heb ei gwblhau
 agent.business.task-list.status.in-progress                           = Ar waith
 agent.business.task-list.status.not-started                           = Heb ddechrau
-agent.continue.button                                                 = Cyflwyno ac yn y blaen
 
 ## Service name
 agent_service_name.title                                        = Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient

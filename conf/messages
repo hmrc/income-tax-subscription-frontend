@@ -30,6 +30,7 @@ base.update_heading                                             = Quarterly upda
 base.deadline_heading                                           = Deadline
 base.to                                                         = to
 base.caption                                                    = This section is
+base.submit_and_continue                                        = Submit and continue
 
 error-notification.prefix                                       = Error:
 
@@ -962,7 +963,6 @@ agent.business.task-list.status.completed                             = Complete
 agent.business.task-list.status.incomplete                            = Incomplete
 agent.business.task-list.status.in-progress                           = In progress
 agent.business.task-list.status.not-started                           = Not started
-agent.continue.button                                                 = Submit and continue
 
 
 # Not eligible for income tax

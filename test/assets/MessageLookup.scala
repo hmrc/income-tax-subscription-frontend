@@ -340,7 +340,7 @@ object MessageLookup {
     val signUp = "3. Sign up"
     val signUpIncompleteText = "You need to complete the `Tell us about your income` section before you can confirm and sign up"
     val agentSignUpIncompleteText = "You need to complete the `Tell us about your client’s income` section before you can confirm and sign up"
-    val continue = "Continue"
+    val continue = "Submit and continue"
     val submitContinue = "Submit and continue"
     val selectTaxYear = "Select tax year"
     val complete = "Complete"
