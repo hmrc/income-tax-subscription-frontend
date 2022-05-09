@@ -133,7 +133,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the add a business link" in {
-          val businessLink = document().mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectHead("a")
+          val businessLink = document().mainContent.getElementById("add_business")
           businessLink.text mustBe addBusiness
           businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
@@ -237,9 +237,7 @@ class TaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document(partialTaskListComplete)
             .mainContent
-            .selectHead("ol > li:nth-of-type(2) > ul")
-            .selectNth("li", 5)
-            .selectHead("a")
+            .getElementById("add_business")
           businessLink.text mustBe addBusiness
           businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
@@ -298,7 +296,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the add a business link" in {
-          val businessLink = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 4).selectHead("a")
+          val businessLink = document(completedTaskListComplete).mainContent.getElementById("add_business")
           businessLink.text mustBe addBusiness
           businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }

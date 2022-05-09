@@ -95,8 +95,16 @@
 
 }
 
+@addBusiness = @{if(viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) {
+<div class="app-task-list__items">
+  <a href={controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url} id="add_business">
+    {messages("agent.business.task-list.content.section2.add")}
+  </a>
+</div>
+}}
+
 @businesses = @{
-  <ul class="app-task-list__items">
+  <ul class="app-task-list__items govuk-!-margin-bottom-3">
     {viewModel.selfEmployments.map(se =>
     <li class="app-task-list__item">
       <span class="app-task-list__task-name">
@@ -155,16 +163,6 @@
       </span>
     </li>
     ).getOrElse({})}
-
-    {if(viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) {
-    <li class="app-task-list__item">
-      <span class="app-task-list__task-name">
-        <a href={controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url} id="add_business">
-        {messages("agent.business.task-list.content.section2.add")}
-        </a>
-      </span>
-    </li>
-    }}
   </ul>
 }
 
@@ -201,6 +199,7 @@
               @messages("agent.business.task-list.content.section2")
           </h2>
           @businesses
+          @addBusiness
         </li>
         <li>
           <h2 class="app-task-list__section govuk-heading-m">
