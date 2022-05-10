@@ -182,54 +182,50 @@
 
 @mainTemplate(title = messages("business.task-list.title")) {
 
-    <h1 class="govuk-heading-xl">@messages("business.task-list.title")</h1>
-    <ol class = "app-task-list">
+  <h1 class="govuk-heading-xl">@messages("business.task-list.title")</h1>
+  <ul class="app-task-list">
     <li>
         <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="userNameNino">
             @individualUserNino
         </h2>
         <p class="app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="accountingPeriodConfirm">@messages("business.task-list.accounting-period-confirm")</p>
     </li>
-
     <li>
         <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="taskListStatus" >@applicationStatus</h2>
         <p class=" app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="taskListCompletedSummary">@messages("business.task-list.content.summary", viewModel.sectionsComplete, viewModel.sectionsTotal)</p>
     </li>
+  </ul>
 
-</ol>
-
-<div class="govuk-form-group govuk-!-padding-top-7">
-
-    <div class="govuk-form-group">
-        @form(action = postAction) {
-            <ol class="app-task-list">
-                <li>
-                  <h2 class="app-task-list__section govuk-heading-m">
-                    <span class="app-task-list__section-number">1.</span>
-                    @messages("business.task-list.content.section1")
-                  </h2>
-                  @selectTaxYear
+  <div class="govuk-form-group govuk-!-padding-top-7">
+    @form(action = postAction) {
+        <ol class="app-task-list">
+            <li>
+              <h2 class="app-task-list__section govuk-heading-m">
+                <span class="app-task-list__section-number">1.</span>
+                @messages("business.task-list.content.section1")
+              </h2>
+              @selectTaxYear
+            </li>
+            <li>
+              <h2 class="app-task-list__section">
+                <span class="app-task-list__section-number govuk-heading-m">2.</span>
+                @messages("business.task-list.content.section2")
+              </h2>
+              @businesses
+              @addBusiness
+            </li>
+            <li>
+              <h2 class="app-task-list__section govuk-heading-m">
+                <span class="app-task-list__section-number">3.</span>
+                @messages("business.task-list.content.section3")
+              </h2>
+              <ul class="app-task-list__items">
+                <li class="border-none">
+                  @signUpSectionContent
                 </li>
-                <li>
-                  <h2 class="app-task-list__section">
-                    <span class="app-task-list__section-number govuk-heading-m">2.</span>
-                    @messages("business.task-list.content.section2")
-                  </h2>
-                  @businesses
-                  @addBusiness
-                </li>
-                <li>
-                  <h2 class="app-task-list__section govuk-heading-m">
-                    <span class="app-task-list__section-number">3.</span>
-                    @messages("business.task-list.content.section3")
-                  </h2>
-                  <ul class="app-task-list__items">
-                    <li class="border-none">
-                      @signUpSectionContent
-                    </li>
-                  </ul>
-                </li>
-            </ol>
-        }
-    </div>
+              </ul>
+            </li>
+        </ol>
+    }
+  </div>
 }

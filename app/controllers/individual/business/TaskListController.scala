@@ -33,7 +33,6 @@ import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys.SPSEntityId
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.individual.incometax.business.TaskList
 
 import javax.inject.{Inject, Singleton}
@@ -55,15 +54,6 @@ class TaskListController @Inject()(val taskListView: TaskList,
 
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
-
-  private def formatNino(clientNino: String): String = {
-    clientNino match {
-      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
-        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
-      case other => other
-    }
-
-  }
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
