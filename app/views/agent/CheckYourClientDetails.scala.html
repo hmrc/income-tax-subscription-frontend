@@ -33,13 +33,13 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @agentMainTemplate(title = messages("agent.client-details.summary.title"), backLink = Some(backUrl)) {
-@checkYourAnswers(heading = messages("agent.client-details.summary.heading"), caption = messages("agent.client-details.summary.caption"), isIndividual = false, postAction = postAction, headingHidden = Some(messages("agent.client-details.summary.heading_hidden"))) {
+@checkYourAnswers(heading = messages("agent.client-details.summary.heading"), caption = messages("agent.client-details.summary.caption"), isIndividual = false, postAction = postAction) {
     @checkYourAnswersRow(
       field = FirstNameId,
       question = messages("agent.client-details.summary.first_name"),
       answer = userDetailsModel.firstName,
       changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-      hiddenContent = Some(messages("userdetail.cya.change.firstname"))
+      hiddenContent = messages("userdetail.cya.change.firstname")
     )
 
     @checkYourAnswersRow(
@@ -47,7 +47,7 @@
       question = messages("agent.client-details.summary.last_name"),
       answer = userDetailsModel.lastName,
       changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-      hiddenContent = Some(messages("userdetail.cya.change.lastname"))
+      hiddenContent = messages("userdetail.cya.change.lastname")
     )
 
     @checkYourAnswersRow(
@@ -55,7 +55,7 @@
       question = messages("agent.client-details.summary.nino"),
       answer = userDetailsModel.ninoInDisplayFormat,
       changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-      hiddenContent = Some(messages("userdetail.cya.change.nationalinsurance"))
+      hiddenContent = messages("userdetail.cya.change.nationalinsurance")
     )
 
     @checkYourAnswersRow(
@@ -63,7 +63,7 @@
       question = messages("agent.client-details.summary.dob"),
       answer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat,
       changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-      hiddenContent = Some(messages("userdetail.cya.change.dateofbirth"))
+      hiddenContent = messages("userdetail.cya.change.dateofbirth")
     )
   }
 }

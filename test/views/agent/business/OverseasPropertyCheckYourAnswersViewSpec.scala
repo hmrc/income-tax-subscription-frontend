@@ -50,8 +50,9 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   private val incompleteProperty = OverseasPropertyModel()
 
   object OverseasPropertyCheckYourAnswers {
-    val title = "Check your overseas property answers"
+    val title = "Check your answers - overseas property business"
     val heading = "Check your answers"
+    val caption = "This section is Overseas property business you entered"
     val startDateQuestion = "Overseas property business trading start date"
     val accountMethodQuestion = "Overseas property business accounting method"
     val confirmedAndContinue = "Confirm and continue"
@@ -77,6 +78,12 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       document()
         .select("h1")
         .text() mustBe OverseasPropertyCheckYourAnswers.heading
+    }
+
+    "have a caption" in {
+      document()
+        .select(".hmrc-page-heading p")
+        .text() mustBe OverseasPropertyCheckYourAnswers.caption
     }
 
     "display property details" when {

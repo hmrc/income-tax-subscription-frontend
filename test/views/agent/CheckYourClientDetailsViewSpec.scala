@@ -17,7 +17,7 @@
 package views.agent
 
 import agent.assets.MessageLookup
-import agent.assets.MessageLookup.{Base => common, ConfirmClient => messages}
+import agent.assets.MessageLookup.{Base => common}
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import models.usermatching.UserDetailsModel._
@@ -79,17 +79,17 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       backLink.attr("href") mustBe backUrl
     }
 
-    s"have the title '${messages.title}'" in {
+    s"have the title '${ConfirmClient.title}'" in {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      document().title() mustBe messages.title + serviceNameGovUk
+      document().title() mustBe ConfirmClient.title + serviceNameGovUk
     }
 
-    s"have the heading (H1) '${messages.heading}'" in {
-      document().select("h1").text() must include(messages.heading)
+    s"have the heading (H1) '${ConfirmClient.heading}'" in {
+      document().select("h1").text() must include(ConfirmClient.heading)
     }
 
-    s"have visually hidden text as part of the (H1) '${messages.heading_hidden}'" in {
-      document().select("h1 span").text() must include(messages.heading_hidden)
+    "have a caption" in {
+      document().select(".hmrc-page-heading p").text mustBe ConfirmClient.caption
     }
 
     "has a form" which {
@@ -107,38 +107,29 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
 
     }
 
-    def sectionTest(sectionId: String,
-                    expectedQuestion: String,
-                    expectedAnswer: String,
-                    expectedEditLink: Option[String],
-                    rowNo: Int,
-                    expectedHiddenContent: Option[String]): Unit = {
-      val question = document().getElementById(questionId(sectionId))
-      val answer = document().getElementById(answerId(sectionId))
-      val editLink = document().getElementById(editLinkId(sectionId))
-      val hiddenContent = document.getElementsByClass("govuk-visually-hidden").get(rowNo).text()
-
-      questionStyleCorrectness(question)
-      answerStyleCorrectness(answer)
-      if (expectedEditLink.nonEmpty) editLinkStyleCorrectness(editLink)
-
-      question.text() mustBe expectedQuestion
-      answer.text() mustBe expectedAnswer
-      if (expectedEditLink.nonEmpty) {
-        val link = editLink.select(".govuk-link")
-        link.attr("href") mustBe expectedEditLink.get
-        link.text() must include(MessageLookup.Base.change)
-        link.select(".govuk-visually-hidden").get(0).text() mustBe hiddenContent
-      }
-    }
-
     "display the correct info for firstName" in {
       val sectionId = FirstNameId
-      val expectedQuestion = messages.firstName
+      val expectedQuestion = ConfirmClient.firstName
       val expectedAnswer = testFirstName
       val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + messages.firstName
+      val expectedHiddenContent = "Change" + ConfirmClient.firstName
 
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = Some(expectedEditLink),
+        rowNo = 2,
+        expectedHiddenContent = Some(expectedHiddenContent)
+      )
+    }
+
+    "display the correct info for lastName" in {
+      val sectionId = LastNameId
+      val expectedQuestion = ConfirmClient.lastName
+      val expectedAnswer = testLastName
+      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
+      val expectedHiddenContent = "Change" + ConfirmClient.lastName
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
@@ -149,12 +140,12 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       )
     }
 
-    "display the correct info for lastName" in {
-      val sectionId = LastNameId
-      val expectedQuestion = messages.lastName
-      val expectedAnswer = testLastName
+    "display the correct info for nino" in {
+      val sectionId = NinoId
+      val expectedQuestion = ConfirmClient.nino
+      val expectedAnswer = testNino.toNinoDisplayFormat
       val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + messages.lastName
+      val expectedHiddenContent = "Change" + ConfirmClient.nino
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
@@ -165,12 +156,12 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       )
     }
 
-    "display the correct info for nino" in {
-      val sectionId = NinoId
-      val expectedQuestion = messages.nino
-      val expectedAnswer = testNino.toNinoDisplayFormat
+    "display the correct info for dob" in {
+      val sectionId = DobId
+      val expectedQuestion = ConfirmClient.dob
+      val expectedAnswer = testDob.toCheckYourAnswersDateFormat
       val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + messages.nino
+      val expectedHiddenContent = "Change" + ConfirmClient.dob
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
@@ -180,23 +171,40 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
         expectedHiddenContent = Some(expectedHiddenContent)
       )
     }
-
-    "display the correct info for dob" in {
-      val sectionId = DobId
-      val expectedQuestion = messages.dob
-      val expectedAnswer = testDob.toCheckYourAnswersDateFormat
-      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + messages.dob
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = Some(expectedEditLink),
-        rowNo = 6,
-        expectedHiddenContent = Some(expectedHiddenContent)
-      )
-    }
-
   }
 
+  private def sectionTest(sectionId: String,
+                  expectedQuestion: String,
+                  expectedAnswer: String,
+                  expectedEditLink: Option[String],
+                  rowNo: Int,
+                  expectedHiddenContent: Option[String]): Unit = {
+    val question = document().getElementById(questionId(sectionId))
+    val answer = document().getElementById(answerId(sectionId))
+    val editLink = document().getElementById(editLinkId(sectionId))
+    val hiddenContent = document.getElementsByClass("govuk-visually-hidden").get(rowNo).text()
+
+    questionStyleCorrectness(question)
+    answerStyleCorrectness(answer)
+    if (expectedEditLink.nonEmpty) editLinkStyleCorrectness(editLink)
+
+    question.text() mustBe expectedQuestion
+    answer.text() mustBe expectedAnswer
+    if (expectedEditLink.nonEmpty) {
+      val link = editLink.select(".govuk-link")
+      link.attr("href") mustBe expectedEditLink.get
+      link.text() must include(MessageLookup.Base.change)
+      link.select(".govuk-visually-hidden").get(0).text() mustBe hiddenContent
+    }
+  }
+
+  object ConfirmClient {
+    val title = "Check your answers - client’s details"
+    val heading = "Check your answers"
+    val caption = "This section is Details you are signing up your client with"
+    val firstName = "First name"
+    val lastName = "Last name"
+    val nino = "National Insurance number"
+    val dob = "Date of birth"
+  }
 }

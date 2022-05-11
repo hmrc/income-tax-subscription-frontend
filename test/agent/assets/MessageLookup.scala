@@ -434,17 +434,6 @@ object MessageLookup {
     val para1 = "You can still sign up your client, but we’ll hold their information until they’ve authorised you as their agent."
   }
 
-  object ConfirmClient {
-    val title = "Confirm your client’s details"
-    val heading = "Check your answers"
-    val heading_hidden = "before looking up your client"
-    val firstName = "First name"
-    val lastName = "Last name"
-    val nino = "National Insurance number"
-    val dob = "Date of birth"
-  }
-
-
   object ThankYou {
     val title = "Thank you"
     val heading = "Thank you"

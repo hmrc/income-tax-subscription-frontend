@@ -44,13 +44,13 @@
 }
 
 @mainTemplate(title = messages("business.check-your-answers.content.tax-year.title"), backLink = Some(backUrl)) {
-  @checkYourAnswers(heading = messages("business.check-your-answers.title"), caption = messages("business.check-your-answers.content.tax-year.caption"), isIndividual = true, postAction = postAction) {
+  @checkYourAnswers(heading = messages("business.check-your-answers.heading"), caption = messages("business.check-your-answers.content.tax-year.caption"), isIndividual = true, postAction = postAction) {
     @checkYourAnswersRow(
       field = "tax-year",
       question = messages("business.check-your-answers.content.tax-year.question"),
       answer = taxYear(viewModel),
       changeUrl = Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url),
-      hiddenContent = Some(messages("business.check-your-answers.content.tax-year.question.hidden"))
+      hiddenContent = messages("business.check-your-answers.content.tax-year.question.hidden")
     )
   }
 

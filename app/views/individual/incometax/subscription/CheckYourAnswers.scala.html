@@ -15,17 +15,14 @@
  *@
 
 @import config.AppConfig
-@import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.injected.{ButtonHelper, AccessibleTextHelper}
-@import models.common.business._
-@import models.common._
 @import models.IndividualSummary
-@import views.individual.helpers._
+@import models.common.{OverseasPropertyStartDateModel, PropertyStartDateModel, _}
+@import models.common.business._
+@import utilities.ImplicitDateFormatter
+@import views.html.helpers.injected.{AccessibleTextHelper, ButtonHelper}
+@import views.html.templates.PrincipalMainTemplate
 @import views.individual.helpers.SummaryHelper._
 @import views.individual.helpers.SummaryIdConstants._
-@import utilities.ImplicitDateFormatter
-@import models.common.PropertyStartDateModel
-@import models.common.OverseasPropertyStartDateModel
 
 @this(
         principalMainTemplate: PrincipalMainTemplate,
@@ -36,7 +33,7 @@
 
 @(summaryModel: IndividualSummary, postAction: Call, backUrl: String, implicitDateFormatter: ImplicitDateFormatter)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, hiddenContent: Option[String] = None, enableHtml: Boolean = false) = {
+@summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, hiddenContent: String, enableHtml: Boolean = false) = {
 <div class="govuk-summary-list__row" id="@field-row">
     <dt class="govuk-summary-list__key" id="@field-question">@question</dt>
     <dd class="govuk-summary-list__value" id="@field-answer">
@@ -63,7 +60,7 @@
     val rowQuestion = messages("summary.income_source")
     val rowAnswer = incomeSourceText(incomeSourceModel)
     val rowUrl = Some(controllers.individual.incomesource.routes.IncomeSourceController.show(editMode = true).url)
-    val hiddenContent = Some(messages("final.cya.change.incomereceived"))
+    val hiddenContent = messages("final.cya.change.incomereceived")
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
 }
 
@@ -72,7 +69,7 @@
     val rowQuestion = messages("summary.self_employments")
     val rowAnswer = businesses.count(_.isComplete).toString
     val rowUrl = Some(appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/details/business-list")
-    val hiddenContent = Some(messages("final.cya.change.signupbusinessnumber"))
+    val hiddenContent = messages("final.cya.change.signupbusinessnumber")
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -81,7 +78,7 @@
     val rowQuestion = messages("summary.selected_year")
     val rowAnswer = accountingYearText(selectedTaxYear.fold(AccountingYearModel(Current))(identity))
     val rowUrl = Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url)
-    val hiddenContent = Some(messages("final.cya.change.taxyearstartfiling"))
+    val hiddenContent = messages("final.cya.change.taxyearstartfiling")
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent, enableHtml = true)
 }
 
@@ -90,7 +87,7 @@
     val rowQuestion = messages("summary.income_type")
     val rowAnswer = accountingMethodText(accountingModel.accountingMethod)
     val rowUrl = Some(appConfig.incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl+"?isEditMode=true")
-    val hiddenContent = Some(messages("final.cya.change.soletraderaccountingmethod"))
+    val hiddenContent = messages("final.cya.change.soletraderaccountingmethod")
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -100,7 +97,7 @@
     val rowQuestion = messages("summary.property_start_date")
     val rowAnswer = propertyStartDateModel.startDate.toLocalDate.toLongDate
     val rowUrl = Some(controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url)
-    val hiddenContent = Some(messages("final.cya.change.ukpropertystradestartdate"))
+    val hiddenContent = messages("final.cya.change.ukpropertystradestartdate")
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -109,7 +106,7 @@
     val rowQuestion = messages("summary.accounting_method_property")
     val rowAnswer = accountingMethodText(propertyModel.propertyAccountingMethod)
     val rowUrl = Some(controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url)
-    val hiddenContent = Some(messages("final.cya.change.ukpropertyaccountingmethod"))
+    val hiddenContent = messages("final.cya.change.ukpropertyaccountingmethod")
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -119,7 +116,7 @@
     val rowQuestion = messages("summary.overseas_property_start_date")
     val rowAnswer = overseasPropertyStartDateModel.startDate.toLocalDate.toLongDate
     val rowUrl = Some(controllers.individual.business.routes.OverseasPropertyStartDateController.show(editMode = true).url)
-    val hiddenContent = Some(messages("final.cya.change.overseaspropertytradestartdate"))
+    val hiddenContent = messages("final.cya.change.overseaspropertytradestartdate")
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -128,33 +125,32 @@
     val rowQuestion = messages("summary.accounting_method_foreign_property")
     val rowAnswer = accountingMethodText(overseasPropertyModel.overseasPropertyAccountingMethod)
     val rowUrl = Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url)
-    val hiddenContent = Some(messages("final.cya.change.overseaspropertyaccountingmethod"))
+    val hiddenContent = messages("final.cya.change.overseaspropertyaccountingmethod")
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
 @principalMainTemplate(title = messages("summary.title"), backLink = Some(backUrl)) {
 
+    <h1 class="govuk-heading-l">
+        @accessibleTextHelper(messages("summary.heading"), messages("summary.heading_hidden"))
+    </h1>
 
-<h1 class="govuk-heading-l">
-    @accessibleTextHelper(messages("summary.heading"), Some(messages("summary.heading_hidden")))
-</h1>
+    <div class="govuk-form-group">
 
-<div class="govuk-form-group">
+        <dl class="govuk-summary-list">
+            @selectedTaxYear(summaryModel.selectedTaxYear)
+            @summaryModel.incomeSource.map(incomeReceivedFrom)
+            @summaryModel.selfEmployments.map(selfEmployments)
+            @summaryModel.accountingMethod.map(accountingMethod)
+            @summaryModel.propertyStartDate.map(propertyStart)
+            @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
+            @summaryModel.overseasPropertyStartDate.map(overseasPropertyStart)
+            @summaryModel.overseasAccountingMethodProperty.map(accountingMethodForeignProperty)
+        </dl>
+    </div>
 
-    <dl class="govuk-summary-list">
-        @selectedTaxYear(summaryModel.selectedTaxYear)
-        @summaryModel.incomeSource.map(incomeReceivedFrom)
-        @summaryModel.selfEmployments.map(selfEmployments)
-        @summaryModel.accountingMethod.map(accountingMethod)
-        @summaryModel.propertyStartDate.map(propertyStart)
-        @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
-        @summaryModel.overseasPropertyStartDate.map(overseasPropertyStart)
-        @summaryModel.overseasAccountingMethodProperty.map(accountingMethodForeignProperty)
-    </dl>
-</div>
-
-@form(action = postAction) {
-    @buttonHelper(Messages("summary.confirm_and_sign_up"))
-}
+    @form(action = postAction) {
+        @buttonHelper(Messages("summary.confirm_and_sign_up"))
+    }
 
 }

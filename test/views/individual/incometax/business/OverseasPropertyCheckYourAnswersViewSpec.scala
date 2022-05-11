@@ -27,8 +27,9 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[OverseasPropertyCheckYourAnswers]
 
   object OverseasPropertyCheckYourAnswers {
-    val title = "Check your overseas property answers"
+    val title = "Check your answers - overseas property business"
     val heading = "Check your answers"
+    val caption = "This section is Overseas property business details you entered"
     val startDateQuestion = "Overseas property business trading start date"
     val accountMethodQuestion = "Overseas property business accounting method"
     val confirmedAndContinue = "Confirm and continue"
@@ -77,6 +78,10 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       document(viewModel = completeCashProperty)
         .select("h1")
         .text() mustBe OverseasPropertyCheckYourAnswers.heading
+    }
+
+    "have a caption" in {
+      document(viewModel = completeCashProperty).select(".hmrc-page-heading p").text mustBe OverseasPropertyCheckYourAnswers.caption
     }
 
     "have overseas property details" when {

@@ -46,7 +46,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         res must have (
           httpStatus(OK),
           pageTitle(
-            s"${messages("agent.business.check-your-answers.overseas-property.title")} - Use software to report your client’s Income Tax - GOV.UK"
+            s"${messages("agent.business.check-your-answers.content.overseas-property.title")} - Use software to report your client’s Income Tax - GOV.UK"
           )
         )
       }

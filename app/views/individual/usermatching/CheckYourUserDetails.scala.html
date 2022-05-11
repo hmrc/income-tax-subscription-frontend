@@ -16,22 +16,22 @@
 
 @import config.AppConfig
 @import models.usermatching.UserDetailsModel
-@import views.html.helpers.injected.{ContinueButton, AccessibleTextHelper}
+@import views.html.helpers.injected.{AccessibleTextHelper, ContinueButton}
 @import views.html.templates.PrincipalMainTemplate
 @import views.individual.helpers.ConfirmUserIdConstants._
-@import views.individual.helpers._
 
 
 @this(
   principalMainTemplate: PrincipalMainTemplate,
   continueButton: ContinueButton,
+  hmrcPageHeading: HmrcPageHeadingHelper,
   accessibleTextHelper: AccessibleTextHelper,
   form: FormWithCSRF
 )
 
 @(userDetailsModel: UserDetailsModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, hiddenContent: Option[String] = None, enableHtml: Boolean = false) = {
+@summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, hiddenContent: String, enableHtml: Boolean = false) = {
   <div class="govuk-summary-list__row" id="@field-row">
     <dt class="govuk-summary-list__key" id="@field-question">@question</dt>
     <dd class="govuk-summary-list__value" id="@field-answer">
@@ -55,7 +55,7 @@
   val rowQuestion = Messages("user-details.summary.first_name")
   val rowAnswer = userDetailsModel.firstName
   val rowUrl = Some(controllers.usermatching.routes.UserDetailsController.show(editMode = true).url)
-  val hiddenContent = Some(Messages("userdetail.cya.change.firstname"))
+  val hiddenContent = Messages("userdetail.cya.change.firstname")
   summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -64,7 +64,7 @@
   val rowQuestion = Messages("user-details.summary.last_name")
   val rowAnswer = userDetailsModel.lastName
   val rowUrl = Some(controllers.usermatching.routes.UserDetailsController.show(editMode = true).url)
-  val hiddenContent = Some(Messages("userdetail.cya.change.lastname"))
+  val hiddenContent = Messages("userdetail.cya.change.lastname")
   summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -73,7 +73,7 @@
   val rowQuestion = Messages("user-details.summary.nino")
   val rowAnswer = userDetailsModel.ninoInDisplayFormat
   val rowUrl = Some(controllers.usermatching.routes.UserDetailsController.show(editMode = true).url)
-  val hiddenContent = Some(Messages("userdetail.cya.change.nationalinsurance"))
+  val hiddenContent = Messages("userdetail.cya.change.nationalinsurance")
   summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
@@ -82,17 +82,16 @@
   val rowQuestion = Messages("user-details.summary.dob")
   val rowAnswer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat
   val rowUrl = Some(controllers.usermatching.routes.UserDetailsController.show(editMode = true).url)
-  val hiddenContent = Some(Messages("userdetail.cya.change.dateofbirth"))
+  val hiddenContent = Messages("userdetail.cya.change.dateofbirth")
   summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
 }
 
 @principalMainTemplate(title = messages("user-details.summary.title"), backLink = Some(backUrl)) {
 
-<header class="hmrc-page-heading">
-    <p class="hmrc-caption govuk-caption-xl"><span class="govuk-visually-hidden">@Messages("base.caption")</span>
-        @Messages("user-details.summary.caption")</p>
-    <h1 class="govuk-heading-l">@Messages("user-details.summary.heading")</h1>
-</header>
+  @hmrcPageHeading(PageHeading(
+    text = Messages("user-details.summary.heading"),
+    section = Some(Messages("user-details.summary.caption"))
+  ))
 
   <dl class="govuk-summary-list">
     @firstName(userDetailsModel)
@@ -104,4 +103,5 @@
   @form(action = postAction) {
     @continueButton()
   }
+
 }
