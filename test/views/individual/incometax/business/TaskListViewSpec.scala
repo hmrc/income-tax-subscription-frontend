@@ -124,7 +124,7 @@ class TaskListViewSpec extends ViewSpec {
 
         "in the select tax year section: display the select tax year link with status incomplete" when {
           "the user has not selected any tax year to sign up" in {
-            val selectTaxYearSection = document().mainContent.selectNth("ul", 1)
+            val selectTaxYearSection = document().mainContent.selectHead("ul.app-task-list__items")
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
             selectTaxYearLink.text mustBe selectTaxYear
             selectTaxYearSection.selectNth("span", 2).text mustBe notStarted
@@ -160,7 +160,7 @@ class TaskListViewSpec extends ViewSpec {
 
         "in the select tax year section: display the select tax year link with status in progress" when {
           "the user has selected the tax year but not confirmed the answer in tax year CYA page" in {
-            val selectTaxYearSection = document(partialTaskListComplete).mainContent.selectNth("ul", 1)
+            val selectTaxYearSection = document(partialTaskListComplete).mainContent.selectHead("ul.app-task-list__items")
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
             selectTaxYearLink.text mustBe selectTaxYear
             selectTaxYearSection.selectNth("span", 2).text mustBe inProgress
@@ -263,7 +263,7 @@ class TaskListViewSpec extends ViewSpec {
 
         "display a complete tax year with an edit link to the Tax Year CYA" when {
           "the user has selected the tax year and confirmed the answer in tax year CYA page" in {
-            val selectTaxYearSection = document(completedTaskListComplete).mainContent.selectNth("ul", 1)
+            val selectTaxYearSection = document(completedTaskListComplete).mainContent.selectHead("ul.app-task-list__items")
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
             selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
             selectTaxYearSection.selectNth("span", 2).text mustBe complete
