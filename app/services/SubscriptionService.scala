@@ -16,7 +16,6 @@
 
 package services
 
-import config.featureswitch.FeatureSwitching
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
@@ -36,7 +35,7 @@ import scala.concurrent.Future
 @Singleton
 class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: MultipleIncomeSourcesSubscriptionConnector,
                                     subscriptionConnector: SubscriptionConnector
-                                   ) extends FeatureSwitching with Logging {
+                                   ) extends Logging {
 
 
   private[services] def getAccountingPeriod(summaryData: SummaryModel): Option[AccountingPeriodModel] = {

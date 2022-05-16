@@ -16,39 +16,178 @@
 
 package config.featureswitch
 
+import config.FrontendAppConfig
+import config.featureswitch.FeatureSwitch._
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.Configuration
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utilities.UnitTestTrait
 
-class FeatureSwitchingSpec extends UnitTestTrait {
+class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
-  FeatureSwitch.switches foreach { switch =>
-    s"isEnabled(${switch.name})" should {
-      "return true when a feature switch is set" in {
-        enable(switch)
-        isEnabled(switch) mustBe true
-      }
+  val servicesConfig: ServicesConfig = app.injector.instanceOf[ServicesConfig]
+  val mockConfig: Configuration = mock[Configuration]
+  override val appConfig: FrontendAppConfig = new FrontendAppConfig(servicesConfig, mockConfig)
 
-      "return false when a feature switch is set to false" in {
-        disable(switch)
-        isEnabled(switch) mustBe false
-      }
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockConfig)
+    FeatureSwitch.switches foreach { switch =>
+      sys.props -= switch.name
+    }
+  }
 
-      "return false when a feature switch has not been set" in {
-        sys.props -= switch.name
-        sys.props.get(switch.name) mustBe empty
-        isEnabled(switch) mustBe false
-      }
+  "FeatureSwitching constants" should {
+    "be true and false" in {
+      FEATURE_SWITCH_ON mustBe "true"
+      FEATURE_SWITCH_OFF mustBe "false"
+    }
+  }
+
+  "ForeignProperty" should {
+    "return true if ForeignProperty feature switch is enabled in sys.props" in {
+      enable(ForeignProperty)
+      isEnabled(ForeignProperty) mustBe true
+    }
+    "return false if ForeignProperty feature switch is disabled in sys.props" in {
+      disable(ForeignProperty)
+      isEnabled(ForeignProperty) mustBe false
+    }
+
+    "return false if ForeignProperty feature switch does not exist" in {
+      when(mockConfig.getOptional[String]("feature-switch.enable-foreign-property")).thenReturn(None)
+      isEnabled(ForeignProperty) mustBe false
+    }
+
+    "return false if ForeignProperty feature switch is not in sys.props but is set to off in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.enable-foreign-property")).thenReturn(Some(FEATURE_SWITCH_OFF))
+      isEnabled(ForeignProperty) mustBe false
+    }
+
+    "return true if ForeignProperty feature switch is not in sys.props but is set to on in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.enable-foreign-property")).thenReturn(Some(FEATURE_SWITCH_ON))
+      isEnabled(ForeignProperty) mustBe true
+    }
+  }
+
+  "RemoveCovidPages" should {
+    "return true if RemoveCovidPages feature switch is enabled in sys.props" in {
+      enable(RemoveCovidPages)
+      isEnabled(RemoveCovidPages) mustBe true
+    }
+    "return false if RemoveCovidPages feature switch is disabled in sys.props" in {
+      disable(RemoveCovidPages)
+      isEnabled(RemoveCovidPages) mustBe false
+    }
+
+    "return false if RemoveCovidPages feature switch does not exist" in {
+      when(mockConfig.getOptional[String]("feature-switch.remove-covid-eligibility-and-kickout-page")).thenReturn(None)
+      isEnabled(RemoveCovidPages) mustBe false
+    }
+
+    "return false if RemoveCovidPages feature switch is not in sys.props but is set to off in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.remove-covid-eligibility-and-kickout-page")).thenReturn(Some(FEATURE_SWITCH_OFF))
+      isEnabled(RemoveCovidPages) mustBe false
+    }
+
+    "return true if RemoveCovidPages feature switch is not in sys.props but is set to on in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.remove-covid-eligibility-and-kickout-page")).thenReturn(Some(FEATURE_SWITCH_ON))
+      isEnabled(RemoveCovidPages) mustBe true
+    }
+  }
+
+  "SaveAndRetrieve" should {
+    "return true if SaveAndRetrieve feature switch is enabled in sys.props" in {
+      enable(SaveAndRetrieve)
+      isEnabled(SaveAndRetrieve) mustBe true
+    }
+    "return false if SaveAndRetrieve feature switch is disabled in sys.props" in {
+      disable(SaveAndRetrieve)
+      isEnabled(SaveAndRetrieve) mustBe false
+    }
+
+    "return false if SaveAndRetrieve feature switch does not exist" in {
+      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(None)
+      isEnabled(SaveAndRetrieve) mustBe false
+    }
+
+    "return false if SaveAndRetrieve feature switch is not in sys.props but is set to off in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(Some(FEATURE_SWITCH_OFF))
+      isEnabled(SaveAndRetrieve) mustBe false
+    }
+
+    "return true if SaveAndRetrieve feature switch is not in sys.props but is set to on in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(Some(FEATURE_SWITCH_ON))
+      isEnabled(SaveAndRetrieve) mustBe true
+    }
+  }
+
+  "PrePopulate" should {
+    "return true if PrePopulate feature switch is enabled in sys.props" in {
+      enable(PrePopulate)
+      isEnabled(PrePopulate) mustBe true
+    }
+    "return false if PrePopulate feature switch is disabled in sys.props" in {
+      disable(PrePopulate)
+      isEnabled(PrePopulate) mustBe false
+    }
+
+    "return false if PrePopulate feature switch does not exist" in {
+      when(mockConfig.getOptional[String]("feature-switch.prepopulate")).thenReturn(None)
+      isEnabled(PrePopulate) mustBe false
+    }
+
+    "return false if PrePopulate feature switch is not in sys.props but is set to off in config" in {
+
+      when(mockConfig.getOptional[String]("feature-switch.prepopulate")).thenReturn(Some(FEATURE_SWITCH_OFF))
+      isEnabled(PrePopulate) mustBe false
+    }
+
+    "return true if PrePopulate feature switch is not in sys.props but is set to on in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.prepopulate")).thenReturn(Some(FEATURE_SWITCH_ON))
+      isEnabled(PrePopulate) mustBe true
+    }
+  }
+
+  "Throttle" should {
+    "return true if Throttle feature switch is enabled in sys.props" in {
+      enable(Throttle)
+      isEnabled(Throttle) mustBe true
+    }
+    "return false if Throttle feature switch is disabled in sys.props" in {
+      disable(Throttle)
+      isEnabled(Throttle) mustBe false
+    }
+
+    "return false if Throttle feature switch does not exist" in {
+      when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(None)
+      isEnabled(Throttle) mustBe false
+    }
+
+    "return false if Throttle feature switch is not in sys.props but is set to off in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_OFF))
+      isEnabled(Throttle) mustBe false
+    }
+
+    "return true if Throttle feature switch is not in sys.props but is set to on in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_ON))
+      isEnabled(Throttle) mustBe true
     }
   }
 
 }
 
 trait FeatureSwitchingUtil extends FeatureSwitching {
+
   def withFeatureSwitch(featureSwitch: FeatureSwitch)(f: => Any): Any = {
-    enable (featureSwitch)
+    enable(featureSwitch)
     try {
       f
     } finally {
-      disable (featureSwitch)
+      disable(featureSwitch)
     }
   }
+
 }

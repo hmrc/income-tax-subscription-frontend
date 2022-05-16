@@ -17,7 +17,6 @@
 package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
-import config.MockConfig
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import forms.agent.IncomeSourceForm
@@ -30,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, IncomeSource}
-import utilities.TestModels.{testAccountingMethod, testAccountingMethodProperty, testCacheMap, testPropertyStartDateModel, testSelectedTaxYearCurrent, testSummaryDataSelfEmploymentData}
+import utilities.TestModels._
 import utilities.individual.TestConstants.testSelfEmploymentData
 import views.agent.mocks.MockIncomeSource
 
@@ -40,7 +39,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
   with MockIncomeSource
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
-  with MockConfig
   with MockAuditingService
    {
 

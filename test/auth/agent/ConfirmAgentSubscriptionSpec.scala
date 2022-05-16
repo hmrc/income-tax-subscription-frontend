@@ -21,6 +21,7 @@ import auth.individual.AuthPredicates._
 import auth.individual.IncomeTaxSAUser
 import config.MockConfig
 import org.scalatest.EitherValues
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
@@ -29,37 +30,24 @@ import utilities.individual.{Constants, TestConstants}
 import utilities.{ITSASessionKeys, UnitTestTrait}
 
 
-class ConfirmAgentSubscriptionSpec extends UnitTestTrait  with MockConfig with EitherValues {
+class ConfirmAgentSubscriptionSpec extends UnitTestTrait with EitherValues {
 
-  implicit val config = MockConfig
+  implicit val config: MockConfig.type = MockConfig
 
-  lazy val journeyState = ConfirmAgentSubscription
+  lazy val journeyState: ConfirmAgentSubscription.type = ConfirmAgentSubscription
 
-  journeyState.featureSwitch foreach { featureSwitch =>
-    "isEnabled" should {
-      s"return true if the config for ${featureSwitch.displayText} is enabled" in {
-        enable(featureSwitch)
-        journeyState.isEnabled mustBe true
-      }
-      s"return false if the config for ${featureSwitch.displayText} is disabled" in {
-        disable(featureSwitch)
-        journeyState.isEnabled mustBe false
-      }
-    }
-  }
-
-  lazy val request = FakeRequest().withSession(
+  lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> journeyState.name,
     ITSASessionKeys.NINO -> testNino,
     ITSASessionKeys.UTR -> testUtr
   )
-  lazy val testUser = IncomeTaxSAUser(Enrolments(Set.empty), Some(AffinityGroup.Individual), None, ConfidenceLevel.L200, "")
-  lazy val testEnrolledUser = IncomeTaxSAUser(Enrolments(Set(
+  lazy val testUser: IncomeTaxSAUser = IncomeTaxSAUser(Enrolments(Set.empty), Some(AffinityGroup.Individual), None, ConfidenceLevel.L200, "")
+  lazy val testEnrolledUser: IncomeTaxSAUser = IncomeTaxSAUser(Enrolments(Set(
     Enrolment(Constants.mtdItsaEnrolmentName,
       Seq(EnrolmentIdentifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
       "Activated"
     ))
-  ), Some(AffinityGroup.Individual), None, ConfidenceLevel.L200,"")
+  ), Some(AffinityGroup.Individual), None, ConfidenceLevel.L200, "")
 
   "authPredicates" should {
     s"return $AuthPredicateSuccess when the session contains the correct state" in {

@@ -16,7 +16,6 @@
 
 package utilities
 
-import config.featureswitch.FeatureSwitching
 import models.common._
 import models.common.business._
 import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
@@ -27,7 +26,7 @@ import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 import utilities.SubscriptionDataKeys._
 
 //scalastyle:off
-object SubscriptionDataUtil extends FeatureSwitching {
+object SubscriptionDataUtil{
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 

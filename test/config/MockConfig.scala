@@ -17,8 +17,11 @@
 package config
 
 import models.common.subscription.EnrolmentKey
+import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.Configuration
+import utilities.UnitTestTrait
 
-trait MockConfig extends AppConfig {
+trait MockConfig extends UnitTestTrait with AppConfig {
 
   override val appName: String = "app"
   override val wrongCredentials: String = ""
@@ -137,4 +140,8 @@ trait MockConfig extends AppConfig {
 
 }
 
-object MockConfig extends MockConfig
+object MockConfig extends MockConfig {
+
+  override val configuration: Configuration = mock[Configuration]
+
+}
