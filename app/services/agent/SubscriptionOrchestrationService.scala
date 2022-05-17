@@ -18,7 +18,6 @@ package services.agent
 
 import cats.data.EitherT
 import cats.implicits._
-import config.featureswitch.FeatureSwitching
 import connectors.agent.AgentSPSConnector
 import models.common.subscription.{CreateIncomeSourcesModel, CreateIncomeSourcesSuccess, SubscriptionSuccess}
 import models.{AgentSummary, ConnectorError, SummaryModel}
@@ -32,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,
                                                  autoEnrolmentService: AutoEnrolmentService,
                                                  agentSPSConnector: AgentSPSConnector)
-                                                (implicit ec: ExecutionContext) extends FeatureSwitching {
+                                                (implicit ec: ExecutionContext){
 
   def createSubscriptionFromTaskList(arn: String,
                                      nino: String,

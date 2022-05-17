@@ -17,7 +17,6 @@
 package controllers.individual.incomesource
 
 import agent.audit.mocks.MockAuditingService
-import config.MockConfig
 import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
@@ -44,7 +43,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   with MockIncomeSource
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
-  with MockConfig
   with MockAuditingService
    {
 

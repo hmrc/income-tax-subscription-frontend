@@ -16,13 +16,12 @@
 
 package services
 
-import config.featureswitch.FeatureSwitching
 import connectors.SPSConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 
-class SPSService @Inject()(val spsConnector: SPSConnector) extends FeatureSwitching {
+class SPSService @Inject()(val spsConnector: SPSConnector){
 
   def confirmPreferences(itsaId: String, maybeSpsEntityId: Option[String])(implicit hc: HeaderCarrier): Unit =
     maybeSpsEntityId map { entityId =>

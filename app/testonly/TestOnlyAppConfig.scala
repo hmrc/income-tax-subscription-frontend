@@ -19,11 +19,14 @@
 package testonly
 
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
+import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import javax.inject.{Inject, Singleton}
+
 @Singleton
-class TestOnlyAppConfig @Inject()(config: ServicesConfig) extends FrontendAppConfig(config: ServicesConfig){
+class TestOnlyAppConfig @Inject()(config: ServicesConfig, configuration: Configuration)
+  extends FrontendAppConfig(config: ServicesConfig, configuration: Configuration) {
 
   override lazy val ggAuthenticationURL: String = config.baseUrl("gg-authentication")
 

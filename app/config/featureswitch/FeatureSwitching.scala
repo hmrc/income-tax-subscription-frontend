@@ -16,14 +16,22 @@
 
 package config.featureswitch
 
-import javax.inject.Singleton
+import config.AppConfig
+
+import javax.inject.{Inject, Singleton}
 
 trait FeatureSwitching {
+
+  val appConfig: AppConfig
+
   val FEATURE_SWITCH_ON = "true"
   val FEATURE_SWITCH_OFF = "false"
 
   def isEnabled(featureSwitch: FeatureSwitch): Boolean =
-    sys.props get featureSwitch.name contains FEATURE_SWITCH_ON
+    (sys.props.get(featureSwitch.name) orElse appConfig.configuration.getOptional[String](featureSwitch.name)) contains FEATURE_SWITCH_ON
+
+  def isDisabled(featureSwitch: FeatureSwitch): Boolean =
+    (sys.props.get(featureSwitch.name) orElse appConfig.configuration.getOptional[String](featureSwitch.name)) contains FEATURE_SWITCH_OFF
 
   def enable(featureSwitch: FeatureSwitch): Unit =
     sys.props += featureSwitch.name -> FEATURE_SWITCH_ON
@@ -33,4 +41,4 @@ trait FeatureSwitching {
 }
 
 @Singleton
-class FeatureSwitchingImpl extends FeatureSwitching
+class FeatureSwitchingImpl @Inject()(val appConfig: AppConfig) extends FeatureSwitching

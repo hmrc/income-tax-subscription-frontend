@@ -18,14 +18,12 @@ package auth.individual
 
 import auth.individual.AuthPredicate._
 import config.AppConfig
-import config.featureswitch.FeatureSwitch
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 
-trait UserJourney[User <: IncomeTaxUser] {
+trait UserJourney[User <: IncomeTaxUser]{
+
   final implicit lazy val instance: this.type = this
 
-  final def isEnabled(implicit appConfig: AppConfig): Boolean = featureSwitch.fold(true)(appConfig.isEnabled)
-
-  val featureSwitch: Option[FeatureSwitch] = None
-
   def authPredicates(implicit appConfig: AppConfig): AuthPredicate[User]
+
 }

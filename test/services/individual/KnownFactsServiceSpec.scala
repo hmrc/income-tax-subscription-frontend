@@ -16,6 +16,8 @@
 
 package services.individual
 
+import config.{AppConfig, MockConfig}
+import config.featureswitch.FeatureSwitchingImpl
 import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import services.individual.mocks.TestKnownFactsService
@@ -27,6 +29,10 @@ import utilities.individual.TestConstants._
 import scala.concurrent.Future
 
 class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService with ScalaFutures {
+
+  val configuration = MockConfig.configuration
+  override val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  val featureSwitching = new FeatureSwitchingImpl(appConfig)
 
   "addKnownFacts" should {
 

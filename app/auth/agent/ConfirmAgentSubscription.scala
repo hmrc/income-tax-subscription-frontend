@@ -24,10 +24,10 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch
 
 object ConfirmAgentSubscription extends UserJourney[IncomeTaxSAUser] with JourneyState {
-  override val name: String = "confirmAgentSubscription"
 
-  override val featureSwitch: Option[FeatureSwitch] = None
+  override val name: String = "confirmAgentSubscription"
 
   override def authPredicates(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] =
     defaultPredicates |+| journeyStatePredicate |+| notEnrolledPredicate
+
 }

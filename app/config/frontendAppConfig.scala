@@ -16,16 +16,17 @@
 
 package config
 
-import config.featureswitch.FeatureSwitching
 import models.common.subscription.EnrolmentKey
+import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 
-trait AppConfig extends FeatureSwitching {
+trait AppConfig {
 
+  val configuration: Configuration
   val appName: String
 
   val contactFormServiceIdentifier: String
@@ -146,10 +147,9 @@ trait AppConfig extends FeatureSwitching {
 }
 
 @Singleton
-class FrontendAppConfig @Inject()(config: ServicesConfig) extends AppConfig {
+class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Configuration) extends AppConfig {
 
   val appName: String = config.getString("appName")
-
 
   // AutoEnrolment links
   def usersGroupsSearchUrl: String = config.baseUrl("users-groups-search")

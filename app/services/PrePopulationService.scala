@@ -16,7 +16,6 @@
 
 package services
 
-import config.featureswitch.FeatureSwitching
 import models.PrePopData
 import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
@@ -28,9 +27,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PrePopulationService @Inject()(
-                                      val subscriptionDetailsService: SubscriptionDetailsService
-                                    ) extends FeatureSwitching with Logging {
+class PrePopulationService @Inject()( val subscriptionDetailsService: SubscriptionDetailsService
+                                    ) extends Logging {
 
   def prePopulate(reference: String, prepop: PrePopData)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = for {
