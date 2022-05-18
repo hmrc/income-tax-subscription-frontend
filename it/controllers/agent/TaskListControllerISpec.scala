@@ -161,7 +161,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              selfEmployments = Some(testSoleTraderBusinesses)
+              soleTraderBusinesses = Some(testSoleTraderBusinesses)
             )
           )(NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
@@ -335,7 +335,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              selfEmployments = Some(testSoleTraderBusinesses),
+              soleTraderBusinesses = Some(testSoleTraderBusinesses),
               ukProperty = Some(testUkProperty)
             )
           )(NO_CONTENT)
@@ -394,7 +394,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              selfEmployments = Some(testSoleTraderBusinesses),
+              soleTraderBusinesses = Some(testSoleTraderBusinesses),
               overseasProperty = Some(testOverseasProperty)
             )
           )(NO_CONTENT)
@@ -525,7 +525,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              selfEmployments = Some(testSoleTraderBusinesses),
+              soleTraderBusinesses = Some(testSoleTraderBusinesses),
               ukProperty = Some(testUkProperty),
               overseasProperty = Some(testOverseasProperty)
             )
@@ -580,7 +580,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              selfEmployments = Some(testSoleTraderBusinesses)
+              soleTraderBusinesses = Some(testSoleTraderBusinesses)
             )
           )(NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
@@ -624,7 +624,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              selfEmployments = Some(testSoleTraderBusinesses)
+              soleTraderBusinesses = Some(testSoleTraderBusinesses)
             )
           )(NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()

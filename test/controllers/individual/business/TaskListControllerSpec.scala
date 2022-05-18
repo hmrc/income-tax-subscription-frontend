@@ -145,7 +145,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
             startDate = Some(testValidStartDate),
             confirmed = true
           )))
-          val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None)
+          val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
           mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(testNino, testIncomeSourceModel)
 
           val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
@@ -173,7 +173,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
             startDate = Some(testValidStartDate),
             confirmed = true
           )))
-          val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None)
+          val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
           mockSignUpAndCreateIncomeSourcesFromTaskListFailure(testNino, testIncomeSourceModel)
 
           val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)

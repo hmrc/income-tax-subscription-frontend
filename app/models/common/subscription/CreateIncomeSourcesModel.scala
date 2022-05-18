@@ -23,11 +23,11 @@ import play.api.libs.json.Json
 
 case class CreateIncomeSourcesModel(
                                      nino: String,
-                                     selfEmployments: Option[SoleTraderBusinesses] = None,
+                                     soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
                                      ukProperty: Option[UkProperty] = None,
                                      overseasProperty: Option[OverseasProperty] = None
                                    ){
-  require(selfEmployments.isDefined || ukProperty.isDefined || overseasProperty.isDefined, "at least one income source is required")
+  require(soleTraderBusinesses.isDefined || ukProperty.isDefined || overseasProperty.isDefined, "at least one income source is required")
 }
 
 case class SoleTraderBusinesses(
