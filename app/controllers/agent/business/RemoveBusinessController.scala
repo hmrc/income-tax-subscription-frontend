@@ -23,12 +23,13 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import controllers.utils.ReferenceRetrieval
 import forms.agent.RemoveBusinessForm
-import models.{No, Yes, YesNo}
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
+import models.{No, Yes, YesNo}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.agent.business.RemoveBusiness
 
@@ -44,7 +45,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
                                         )(implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
                                           mcc: MessagesControllerComponents
-                                        ) extends AuthenticatedController with ReferenceRetrieval {
+                                        ) extends AuthenticatedController with ReferenceRetrieval with WithUrlEncodedOnlyFormBinding {
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withAgentReference { reference =>

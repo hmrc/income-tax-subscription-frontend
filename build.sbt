@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import FrontendBuild._
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
@@ -30,7 +29,7 @@ lazy val scoverageSettings = {
   )
 }
 
-lazy val microservice = Project(appName, file("."))
+lazy val microservice = Project(AppDependencies.appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(scoverageSettings: _*)
@@ -45,7 +44,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(scalacOptions += s"-Wconf:src=${target.value}/.*:s")
   .settings(
-    libraryDependencies ++= appDependencies,
+    libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test ++ AppDependencies.integrationTest),
     retrieveManaged := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )

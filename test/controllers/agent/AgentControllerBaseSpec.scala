@@ -63,6 +63,8 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
 
     implicit def post[T](form: Form[T]): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+        .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
+        .withMethod(POST)
 
     def addingToSession(newSessions: (String, String)*): FakeRequest[C] = {
       fakeRequest.withSession(fakeRequest.session.data ++: newSessions: _*)
@@ -110,7 +112,7 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
     ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr,
     ITSASessionKeys.REFERENCE -> "test-reference"
-  )
+  ).withMethod("POST")
 
   lazy val subscriptionRequestWithName = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
