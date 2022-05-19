@@ -38,10 +38,9 @@ import views.html.individual.incometax.business.RemoveBusiness
 import scala.concurrent.Future
 
 class RemoveBusinessControllerSpec extends ControllerBaseSpec
-with MockAuditingService
-with MockSubscriptionDetailsService
-with MockIncomeTaxSubscriptionConnector
- {
+  with MockAuditingService
+  with MockSubscriptionDetailsService
+  with MockIncomeTaxSubscriptionConnector {
   override val controllerName: String = "RemoveBusinessController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 

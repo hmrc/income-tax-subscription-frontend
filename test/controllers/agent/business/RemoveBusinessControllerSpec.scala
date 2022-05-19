@@ -40,8 +40,7 @@ import scala.concurrent.Future
 class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockIncomeTaxSubscriptionConnector
-   {
+  with MockIncomeTaxSubscriptionConnector {
   override val controllerName: String = "RemoveBusinessController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 

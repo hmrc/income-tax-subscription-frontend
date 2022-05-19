@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import utilities.SubscriptionDataKeys
 import views.html.individual.incometax.business.RemoveUkProperty
 
@@ -41,7 +42,7 @@ class RemoveUkPropertyController @Inject()(val auditingService: AuditingService,
                                            removeUkProperty: RemoveUkProperty)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController
+                                           mcc: MessagesControllerComponents) extends SignUpController with WithUrlEncodedOnlyFormBinding
    with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
