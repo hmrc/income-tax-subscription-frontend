@@ -163,7 +163,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
                 nino = testNino,
-                selfEmployments = Some(testSoleTraderBusinesses)
+                soleTraderBusinesses = Some(testSoleTraderBusinesses)
               )
             )(NO_CONTENT)
 
@@ -221,7 +221,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
                 nino = testNino,
-                selfEmployments = None,
+                soleTraderBusinesses = None,
                 ukProperty = Some(testUkProperty),
                 overseasProperty = None
               )
@@ -280,7 +280,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
                 nino = testNino,
-                selfEmployments = None,
+                soleTraderBusinesses = None,
                 overseasProperty = Some(testOverseasProperty)
               )
             )(NO_CONTENT)
@@ -346,7 +346,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
                 nino = testNino,
-                selfEmployments = Some(testSoleTraderBusinesses),
+                soleTraderBusinesses = Some(testSoleTraderBusinesses),
                 ukProperty = Some(testUkProperty),
                 overseasProperty = Some(testOverseasProperty)
               )
@@ -400,7 +400,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              selfEmployments = Some(testSoleTraderBusinesses)
+              soleTraderBusinesses = Some(testSoleTraderBusinesses)
             )
           )(INTERNAL_SERVER_ERROR)
 

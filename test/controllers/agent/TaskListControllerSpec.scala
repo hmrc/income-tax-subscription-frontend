@@ -144,7 +144,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
             startDate = Some(testValidStartDate),
             confirmed = true
           )))
-          val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None)
+          val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
           mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
 
           val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
@@ -173,7 +173,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
             confirmed = true
           )))
 
-          val testIncomeSourceModel = testCreateIncomeSources.copy(selfEmployments = None)
+          val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
           mockCreateSubscriptionFromTaskListFailure(testARN, testNino, testUtr, testIncomeSourceModel)
 
           val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)

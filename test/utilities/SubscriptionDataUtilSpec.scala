@@ -139,7 +139,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           result shouldBe
             CreateIncomeSourcesModel(
               testNino,
-              selfEmployments = None,
+              soleTraderBusinesses = None,
               Some(testUkProperty),
               None
             )
@@ -203,7 +203,7 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
           result shouldBe
             CreateIncomeSourcesModel(
               testNino,
-              selfEmployments = None,
+              soleTraderBusinesses = None,
               ukProperty = None,
               Some(testOverseasProperty)
 

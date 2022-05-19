@@ -137,7 +137,7 @@ object SubscriptionDataUtil{
 
       CreateIncomeSourcesModel(
         nino = nino,
-        selfEmployments = soleTraderBusinesses,
+        soleTraderBusinesses = soleTraderBusinesses,
         ukProperty = ukProperty,
         overseasProperty = overseas
       )
