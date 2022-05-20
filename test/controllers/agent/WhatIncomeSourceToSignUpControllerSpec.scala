@@ -27,7 +27,7 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import play.api.http.Status
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
@@ -48,7 +48,7 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   "show" should {
-    "return 200 OK status" when {
+    "return 200 OK status if _anything_ is available and foreign property is allowed" when {
       List(
         IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true),
         IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = false),
@@ -61,6 +61,7 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         s"self employment available = ${incomeSourcesStatus.selfEmploymentAvailable}," +
           s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and" +
           s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
+          enable(ForeignPropertyFeature)
           enable(SaveAndRetrieve)
 
           mockIncomeSourcesStatus(incomeSourcesStatus)
@@ -69,6 +70,40 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
           status(result) mustBe OK
           contentType(result) mustBe Some(HTML)
+        }
+      }
+    }
+    "redirect to task list" when {
+      "only foreign property is available but foreign property is not allowed" when {
+        val incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = false, overseasPropertyAvailable = true)
+        s"self employment available = ${incomeSourcesStatus.selfEmploymentAvailable}," +
+          s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and" +
+          s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
+          disable(ForeignPropertyFeature)
+          enable(SaveAndRetrieve)
+
+          mockIncomeSourcesStatus(incomeSourcesStatus)
+
+          val result = await(controller.show()(subscriptionRequest))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe controllers.agent.routes.TaskListController.show().url
+        }
+      }
+      "nothing is available even though foreign property is allowed" when {
+        val incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = false, overseasPropertyAvailable = false)
+        s"self employment available = ${incomeSourcesStatus.selfEmploymentAvailable}," +
+          s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and" +
+          s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
+          enable(ForeignPropertyFeature)
+          enable(SaveAndRetrieve)
+
+          mockIncomeSourcesStatus(incomeSourcesStatus)
+
+          val result = await(controller.show()(subscriptionRequest))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe controllers.agent.routes.TaskListController.show().url
         }
       }
     }

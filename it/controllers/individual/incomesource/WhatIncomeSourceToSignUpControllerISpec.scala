@@ -20,6 +20,7 @@ import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => F
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
+import helpers.IntegrationTestModels.{testFullPropertyModel, testTooManyBusinesses, testFullOverseasPropertyModel}
 import helpers.servicemocks.AuthStub
 import models.Cash
 import models.common._
@@ -27,6 +28,7 @@ import models.common.business.SelfEmploymentData
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
+import controllers.individual.business.{routes => businessRoutes}
 
 class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
 
@@ -60,6 +62,29 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         )
       }
     }
+
+    "redirect to task list" when {
+      "the save and retrieve feature switch is enabled, but there are no options left" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testTooManyBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+
+        And("save & retrieve feature switch is enabled")
+        enable(SaveAndRetrieve)
+
+        When(s"GET ${routes.WhatIncomeSourceToSignUpController.show().url} is called")
+        val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
+
+        Then("Should return 303 with the task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(businessRoutes.TaskListController.show().url)
+        )
+      }
+    }
+
 
     "return NOT_FOUND" when {
       "the save & retrieve feature switch is disabled" in {

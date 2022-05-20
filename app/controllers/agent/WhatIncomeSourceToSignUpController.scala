@@ -46,8 +46,9 @@ class WhatIncomeSourceToSignUpController @Inject()(val whatIncomeSourceToSignUp:
     implicit user =>
       if (isEnabled(SaveAndRetrieve)) {
         withAgentReference { reference =>
-          withIncomeSourceStatuses(reference) { incomeSourcesStatus =>
-            Ok(view(businessIncomeSourceForm(incomeSourcesStatus), incomeSourcesStatus))
+          withIncomeSourceStatuses(reference) {
+            case IncomeSourcesStatus(false, false, false) => Redirect(controllers.agent.routes.TaskListController.show())
+            case incomeSourcesStatus => Ok(view(businessIncomeSourceForm(incomeSourcesStatus), incomeSourcesStatus))
           }
         }
       } else {
@@ -102,7 +103,11 @@ class WhatIncomeSourceToSignUpController @Inject()(val whatIncomeSourceToSignUp:
   }
 
   private def overseasPropertyAvailable(reference: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    subscriptionDetailsService.fetchOverseasProperty(reference) map (_.isEmpty && isEnabled(ForeignPropertyFeature))
+    if (isEnabled(ForeignPropertyFeature)) {
+      subscriptionDetailsService.fetchOverseasProperty(reference) map (_.isEmpty)
+    } else {
+      Future.successful(false)
+    }
   }
 
   private def view(form: Form[BusinessIncomeSource], incomeSourcesStatus: IncomeSourcesStatus)(implicit request: Request[_]) = {
