@@ -132,14 +132,20 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString
 
-    val defaultCookies: Map[String, String] = Map(
-      ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN,
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-      ITSASessionKeys.REFERENCE -> "test-reference"
-    )
+    def defaultCookies(withUTR: Boolean = true): Map[String, String] = {
+      val utrKvp = if (withUTR)
+        Map(ITSASessionKeys.UTR -> "123456")
+      else
+        Map()
+      Map(
+        ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN,
+        ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+        ITSASessionKeys.REFERENCE -> "test-reference"
+      ) ++ utrKvp
+    }
 
     val headers: Seq[(String, String)] = Seq(
-      HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies),
+      HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies()),
       "Csrf-Token" -> "nocheck"
     )
 
@@ -150,22 +156,24 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       Session()
     )
 
-    def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse =
+    def get(uri: String, additionalCookies: Map[String, String] = Map.empty, withUTR: Boolean = true): WSResponse =
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies))
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withUTR) ++ additionalCookies))
         .get()
         .futureValue
 
-    def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse =
+    def post(uri: String, additionalCookies: Map[String, String] = Map.empty, withUTR: Boolean = true)(body: Map[String, Seq[String]]): WSResponse =
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withUTR) ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
         .futureValue
 
     def startPage(): WSResponse = get("/")
 
     def indexPage(journeySate: Option[AgentJourneyState] = None, sessionMap: Map[String, String] = Map.empty[String, String]): WSResponse = {
-      get("/index", journeySate.fold(sessionMap)(state => sessionMap.+(ITSASessionKeys.JourneyStateKey -> state.name)))
+      get("/index", journeySate.fold(sessionMap)(
+        state => sessionMap.+(ITSASessionKeys.JourneyStateKey -> state.name)), withUTR = false
+      )
     }
 
     def showOtherSourcesOfIncome: WSResponse = get("/eligibility/income-sources")
@@ -186,7 +194,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
 
-    def showCovid19ClaimCheck(): WSResponse = get("/eligibility/covid-19")
+    def showCovid19ClaimCheck(): WSResponse = get("/eligibility/covid-19", withUTR = false)
 
     def submitCovid19ClaimCheck(request: Option[YesNo]): WSResponse = post("/eligibility/covid-19")(
       request.fold(Map.empty[String, Seq[String]])(
@@ -290,12 +298,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
                             storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails)): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
-        case count => Map(ITSASessionKeys.FailedClientMatching -> previouslyFailedAttempts.toString)
+        case _ => Map(ITSASessionKeys.FailedClientMatching -> previouslyFailedAttempts.toString)
       }
       post("/confirm-client",
         additionalCookies = failedAttemptCounter ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
-          .addUserDetails(storedUserDetails)
-      )(Map.empty)
+          .addUserDetails(storedUserDetails), withUTR = false)(Map.empty)
     }
 
     def businessIncomeSource(sessionData: Map[String, String] = Map.empty): WSResponse = {

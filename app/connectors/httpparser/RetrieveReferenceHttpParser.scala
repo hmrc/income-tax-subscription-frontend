@@ -23,13 +23,17 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object RetrieveReferenceHttpParser {
 
-  type RetrieveReferenceResponse = Either[RetrieveReferenceFailure, String]
+  type RetrieveReferenceResponse = Either[RetrieveReferenceFailure, Existence]
 
   implicit def retrieveReferenceHttpReads: HttpReads[RetrieveReferenceResponse] =
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK => (response.json \ "reference").validate[String] match {
-          case JsSuccess(value, _) => Right(value)
+          case JsSuccess(value, _) => Right(Existing(value))
+          case _ => Left(InvalidJsonFailure)
+        }
+        case CREATED => (response.json \ "reference").validate[String] match {
+          case JsSuccess(value, _) => Right(Created(value))
           case _ => Left(InvalidJsonFailure)
         }
         case status => Left(UnexpectedStatusFailure(status))
@@ -42,4 +46,8 @@ object RetrieveReferenceHttpParser {
 
   case class UnexpectedStatusFailure(status: Int) extends RetrieveReferenceFailure
 
+  sealed trait Existence
+
+  case class Existing(reference:String) extends Existence
+  case class Created(reference:String) extends Existence
 }

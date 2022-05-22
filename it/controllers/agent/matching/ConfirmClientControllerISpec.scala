@@ -165,8 +165,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
     }
     
 
-    "tbe client does not have an SAUTR" should {
-      "redirects to the sign up to self assessment page" in {
+    "the client does not have an SAUTR" should {
+      "redirect to the sign up for self assessment page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()

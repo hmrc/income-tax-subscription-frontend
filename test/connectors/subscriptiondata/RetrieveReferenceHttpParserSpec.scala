@@ -18,6 +18,7 @@ package connectors.subscriptiondata
 
 import connectors.httpparser.RetrieveReferenceHttpParser._
 import org.scalatest.EitherValues
+import play.api.http.Status.CREATED
 import play.api.libs.json.Json
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, OK}
 import uk.gov.hmrc.http.HttpResponse
@@ -30,7 +31,7 @@ class RetrieveReferenceHttpParserSpec extends UnitTestTrait with EitherValues {
 
   "RetrieveReferenceHttpParser" when {
     "read" should {
-      "parse a correctly formatted OK response as a PostSelfEmploymentsSuccessResponse" in {
+      "parse a correctly formatted OK response and turn an Existing reference" in {
         val httpResponse = HttpResponse(
           status = OK,
           json = Json.obj(
@@ -41,10 +42,62 @@ class RetrieveReferenceHttpParserSpec extends UnitTestTrait with EitherValues {
 
         val res = retrieveReferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res mustBe Right("test-reference")
+        res mustBe Right(Existing("test-reference"))
       }
 
       "parse a incorrectly formatted OK response as a InvalidJsonFailure" in {
+        val httpResponse = HttpResponse(
+          status = OK,
+          json = Json.obj(),
+          headers = Map.empty
+        )
+
+        val res = retrieveReferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+
+        res mustBe Left(InvalidJsonFailure)
+      }
+
+      "parse a OK response and turn an Existing reference" in {
+        val httpResponse = HttpResponse(
+          status = OK,
+          json = Json.obj(
+            "reference" -> "test-reference"
+          ),
+          headers = Map.empty
+        )
+
+        val res = retrieveReferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+
+        res mustBe Right(Existing("test-reference"))
+      }
+
+      "parse a OK response as a InvalidJsonFailure" in {
+        val httpResponse = HttpResponse(
+          status = OK,
+          json = Json.obj(),
+          headers = Map.empty
+        )
+
+        val res = retrieveReferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+
+        res mustBe Left(InvalidJsonFailure)
+      }
+
+      "parse a CREATED response and turn an Created reference" in {
+        val httpResponse = HttpResponse(
+          status = CREATED,
+          json = Json.obj(
+            "reference" -> "test-reference"
+          ),
+          headers = Map.empty
+        )
+
+        val res = retrieveReferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+
+        res mustBe Right(Created("test-reference"))
+      }
+
+      "parse a CREATED response as a InvalidJsonFailure" in {
         val httpResponse = HttpResponse(
           status = OK,
           json = Json.obj(),
