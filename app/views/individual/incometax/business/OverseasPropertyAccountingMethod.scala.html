@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import play.api.data.Form
 @import config.AppConfig
 @import forms.individual.business.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
+@import play.api.data.Form
+@import views.html.helpers.injected.{ButtonHelper, ContinueButton, DetailsHelper, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
-@import views.individual.helpers._
-@import views.html.helpers.injected.{ContinueButton, RadioHelper, DetailsHelper}
-@import views.html.helpers.injected.ButtonHelper
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -59,7 +57,7 @@
     @buttonHelper(
       classes = Some("govuk-button--secondary save-and-come-back-later"),
       buttonText = messages("base.save-and-come-back-later"),
-      href = Some(controllers.individual.business.routes.ProgressSavedController.show.url)
+      href = Some(controllers.individual.business.routes.ProgressSavedController.show().url)
     )
   </div>
 }

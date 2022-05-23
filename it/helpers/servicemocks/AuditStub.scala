@@ -1,6 +1,8 @@
 
 package helpers.servicemocks
 
+import helpers.WiremockHelper.verifyPost
+
 object AuditStub extends WireMockMethods {
 
   def stubAuditing(): Unit = {
@@ -11,9 +13,9 @@ object AuditStub extends WireMockMethods {
       .thenReturn(status = 200, body = """{"x":2}""")
   }
 
-  def verifyAudit(): Unit = {
+  def verifyAudit(count: Option[Int] = None): Unit = {
     //We cannot verify content of audit body without string matching/regex
     //It is tested in more detail at unit level
-    verify(method = POST, uri = "/write/audit")
+    verifyPost(uri = "/write/audit", optBody = None, count = count)
   }
 }

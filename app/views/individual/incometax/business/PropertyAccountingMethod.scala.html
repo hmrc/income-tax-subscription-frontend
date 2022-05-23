@@ -17,10 +17,9 @@
 @import config.AppConfig
 @import forms.individual.business.AccountingMethodPropertyForm
 @import forms.submapping.AccountingMethodMapping
-@import views.html.templates.PrincipalMainTemplate
-@import views.individual.helpers._
 @import play.api.data.Form
-@import views.html.helpers.injected.{ContinueButton, RadioHelper, DetailsHelper, ButtonHelper}
+@import views.html.helpers.injected.{ButtonHelper, ContinueButton, DetailsHelper, RadioHelper}
+@import views.html.templates.PrincipalMainTemplate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -58,7 +57,7 @@
         @buttonHelper(
             classes = Some("govuk-button--secondary"),
             buttonText = messages("base.save-and-come-back-later"),
-            href = Some(controllers.individual.business.routes.ProgressSavedController.show.url)
+            href = Some(controllers.individual.business.routes.ProgressSavedController.show().url)
         )
     </div>
 }

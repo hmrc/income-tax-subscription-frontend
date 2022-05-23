@@ -34,9 +34,9 @@
     buttonText = messages("base.save-and-come-back-later"),
     classes = Some("govuk-button govuk-button--secondary"),
     href = if(isIndividual) {
-      Some(controllers.individual.business.routes.ProgressSavedController.show.url)
+      Some(controllers.individual.business.routes.ProgressSavedController.show().url)
     } else {
-      Some(controllers.agent.business.routes.ProgressSavedController.show.url)
+      Some(controllers.agent.business.routes.ProgressSavedController.show().url)
     }
   )
 }

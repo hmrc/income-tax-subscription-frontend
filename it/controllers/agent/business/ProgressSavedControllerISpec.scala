@@ -18,16 +18,18 @@ package controllers.agent.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestModels.subscriptionData
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import play.api.http.Status.{NOT_FOUND, OK}
+import helpers.servicemocks.AuditStub.verifyAudit
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsNumber, JsObject}
-import utilities.SubscriptionDataKeys.lastUpdatedTimestamp
+import utilities.SubscriptionDataKeys._
 
 class ProgressSavedControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/progress-saved" should {
     "return OK" when {
-      "the save & retrieve feature switch is enabled" in {
+      "the save & retrieve feature switch is enabled and the location is not provided" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -46,6 +48,35 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
             s"${messages("business.progress-saved.title")} - Use software to report your client’s Income Tax - GOV.UK"
           )
         )
+        verifyAudit(Some(1))
+      }
+
+      "the save & retrieve feature switch is enabled and the location is provided" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+
+        And("save & retrieve feature switch is enabled")
+        enable(SaveAndRetrieve)
+
+        When("GET /business/progress-saved is called")
+        val res = IncomeTaxSubscriptionFrontend.getProgressSaved(saveAndRetrieveLocation = Some("test-location"))
+
+        Then("Should return OK with progress saved page")
+        res must have(
+          httpStatus(OK),
+          pageTitle(
+            s"${messages("business.progress-saved.title")} - Use software to report your client’s Income Tax - GOV.UK"
+          )
+        )
+        verifyAudit(Some(2))
       }
     }
 

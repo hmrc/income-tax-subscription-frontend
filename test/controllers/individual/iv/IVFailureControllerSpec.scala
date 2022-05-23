@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentType, defaultAwaitTimeout, session, status}
 import play.twirl.api.HtmlFormat
+import services.AuditModel
 import utilities.ITSASessionKeys
 import views.html.individual.iv.IVFailure
 
@@ -70,7 +71,7 @@ class IVFailureControllerSpec extends ControllerBaseSpec with MockAuditingServic
         status(result) mustBe OK
         contentType(result) mustBe Some("text/html")
         session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-        verify(mockAuditingService, never()).audit(any())(any(), any())
+        verify(mockAuditingService, never()).audit(any[AuditModel]())(any(), any())
       }
     }
   }

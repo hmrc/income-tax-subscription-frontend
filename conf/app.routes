@@ -137,7 +137,7 @@ GET         /business/remove-sole-trader-business                controllers.ind
 POST        /business/remove-sole-trader-business                controllers.individual.business.RemoveBusinessController.submit(id: String)
 
 # Progress saved
-GET         /business/progress-saved                             controllers.individual.business.ProgressSavedController.show()
+GET         /business/progress-saved                             controllers.individual.business.ProgressSavedController.show(location: Option[String] ?= None)
 
 # Remove overseas property business
 GET         /business/remove-overseas-property-business          controllers.individual.business.RemoveOverseasPropertyController.show
