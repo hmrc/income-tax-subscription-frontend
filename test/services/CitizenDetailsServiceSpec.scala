@@ -16,7 +16,6 @@
 
 package services
 
-import models.usermatching.CitizenDetailsSuccess
 import org.scalatest.concurrent.ScalaFutures
 import services.mocks.TestCitizenDetailsService
 import utilities.UnitTestTrait
@@ -43,26 +42,6 @@ class CitizenDetailsServiceSpec extends UnitTestTrait with TestCitizenDetailsSer
       val result = call
 
       whenReady(result.failed)(_.getMessage mustBe "unexpected error calling the citizen details service")
-    }
-  }
-
-  "lookupNino" should {
-    def call: Future[String] = TestCitizenDetailsService.lookupNino(testUtr)
-
-    "return a success from the CitizenDetailsConnector" in {
-      mockLookupNino(testUtr)(Future.successful(Right(Some(CitizenDetailsSuccess(None, testNino)))))
-
-      whenReady(call)(_ mustBe testNino)
-    }
-
-    "return a failure from the CitizenDetailsConnector" in {
-      val failureMessage = "unexpected error calling the citizen details service"
-
-      mockLookupNino(testUtr)(Future.failed(new Exception(failureMessage)))
-
-      val result = call
-
-      whenReady(result.failed)(_.getMessage mustBe failureMessage)
     }
   }
 

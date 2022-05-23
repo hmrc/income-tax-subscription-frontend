@@ -16,7 +16,6 @@
 
 package auth.individual
 
-import auth.agent.ConfirmAgentSubscription
 import auth.individual.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import auth.individual.JourneyState._
 import cats.implicits._
@@ -39,8 +38,6 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
 
   val appConfig: AppConfig
   val auditingService: AuditingService
-
-  import AuthPredicates._
 
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
@@ -87,13 +84,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
     else Left(Future.successful(claimEnrolmentRoute))
 
   val preferencesJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.session.isInState(SignUp)
-      || request.session.isInState(ConfirmAgentSubscription))
-      Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
-  val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
+    if (request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   val administratorRolePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
@@ -132,12 +123,9 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
     }
   }
 
-  val defaultPredicates: AuthPredicate[IncomeTaxSAUser] = timeoutPredicate |+| affinityPredicate |+| ninoPredicate |+| ivPredicate
+  val defaultPredicates: AuthPredicate[IncomeTaxSAUser] = timeoutPredicate |+| affinityPredicate |+| ivPredicate
 
   val homePredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| ivPredicate
-
-  val userMatchingPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
-    timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate |+| ivPredicate
 
   val subscriptionPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
     defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
@@ -156,13 +144,6 @@ object AuthPredicates extends Results {
 
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val userMatching: Result = Redirect(controllers.usermatching.routes.UserDetailsController.show())
-
-  val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user =>
-    if (user.nino.isDefined) Right(AuthPredicateSuccess)
-    else if (user.utr.isDefined) Left(Future.successful(homeRoute))
-    else Left(Future.successful(userMatching withJourneyState UserMatching))
-
   lazy val alreadyEnrolledRoute: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show)
 
   lazy val notEnrolledPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
@@ -175,20 +156,17 @@ object AuthPredicates extends Results {
 
   lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show)
 
-  val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
       Left(Future.successful(timeoutRoute))
     }
     else Right(AuthPredicateSuccess)
 
-  def affinityPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  def affinityPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     user.affinityGroup match {
       case Some(Individual) | Some(Organisation) => Right(AuthPredicateSuccess)
       case _ => Left(Future.successful(wrongAffinity))
     }
-
-  def defaultPredicates: AuthPredicate[IncomeTaxSAUser] =
-    timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
   val journeyStatePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if ((request.session get JourneyStateKey).isDefined) Right(AuthPredicateSuccess)

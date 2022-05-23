@@ -23,8 +23,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants.testException
 
@@ -35,7 +34,7 @@ trait MockCitizenDetailsConnector extends UnitTestTrait with MockitoSugar {
 
   val mockCitizenDetailsConnector: CitizenDetailsConnector = mock[CitizenDetailsConnector]
 
-  private def mockLookupUtr(nino: String)(response: Future[Either[CitizenDetailsFailureResponse, Option[CitizenDetailsSuccess]]]) =
+  private def mockLookupUtr(nino: String)(response: Future[Either[CitizenDetailsFailureResponse, Option[CitizenDetailsSuccess]]]): Unit =
     when(
       mockCitizenDetailsConnector.lookupUtr(
         ArgumentMatchers.eq(nino)
@@ -44,20 +43,11 @@ trait MockCitizenDetailsConnector extends UnitTestTrait with MockitoSugar {
       )
     ).thenReturn(response)
 
-  def mockLookupNino(utr: String)(response: Future[Either[CitizenDetailsFailureResponse, Option[CitizenDetailsSuccess]]]): Unit =
-    when(
-      mockCitizenDetailsConnector.lookupNino(
-        ArgumentMatchers.eq(utr)
-      )(
-        ArgumentMatchers.any[HeaderCarrier]
-      )
-    ).thenReturn(response)
-
   def mockLookupUserWithUtr(nino: String)(utr: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(Some(utr), nino)))))
+    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(Some(utr))))))
 
   def mockLookupUserWithoutUtr(nino: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(None, nino)))))
+    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(None)))))
 
   def mockLookupUserNotFound(nino: String): Unit =
     mockLookupUtr(nino)(Future.successful(Right(None)))

@@ -18,9 +18,8 @@ package auth.individual
 
 import auth.individual.AuthPredicate._
 import config.AppConfig
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 
-trait UserJourney[User <: IncomeTaxUser]{
+trait UserJourney[User <: IncomeTaxUser] {
 
   final implicit lazy val instance: this.type = this
 

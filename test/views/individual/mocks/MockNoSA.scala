@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.twirl.api.HtmlFormat
-import views.html.individual.usermatching.NoSA
+import views.html.individual.NoSA
 
 trait MockNoSA extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 

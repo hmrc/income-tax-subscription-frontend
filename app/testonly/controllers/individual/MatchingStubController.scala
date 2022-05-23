@@ -22,7 +22,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import testonly.connectors.individual.{MatchingStubConnector, UserData}
-import testonly.form.individual.UserToStubForm
+import testonly.form.individual.UserToStubForm.userDetailsForm
 import testonly.models.UserToStubModel
 import testonly.views.html.individual.{ShowStubbedDetails, StubUser}
 import uk.gov.hmrc.http.InternalServerException
@@ -30,7 +30,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
@@ -50,11 +49,11 @@ class MatchingStubController @Inject()(mcc: MessagesControllerComponents,
   }
 
   def show: Action[AnyContent] = Action { implicit request =>
-    Ok(view(UserToStubForm.userToStubForm.form.fill(UserData().toUserToStubModel)))
+    Ok(view(userDetailsForm.fill(UserData().toUserToStubModel)))
   }
 
   def submit: Action[AnyContent] = Action.async { implicit request =>
-    UserToStubForm.userToStubForm.bindFromRequest.fold(
+    userDetailsForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
       userDetails =>
         matchingStubConnector.newUser(userDetails) map {

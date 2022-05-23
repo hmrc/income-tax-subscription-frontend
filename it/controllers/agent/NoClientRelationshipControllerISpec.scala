@@ -34,7 +34,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
   trait Setup {
     AuthStub.stubAuthSuccess()
 
-    val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship()
+    val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship
 
     val doc: Document = Jsoup.parse(result.body)
   }

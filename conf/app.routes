@@ -51,22 +51,6 @@ GET         /error/affinity-group                                controllers.use
 # Claim Subscription
 GET         /claim-subscription                                  controllers.individual.subscription.ClaimSubscriptionController.claim
 
-
-# User Matching
-GET         /user-details                                        controllers.usermatching.UserDetailsController.show(editMode: Boolean ?= false)
-POST        /user-details                                        controllers.usermatching.UserDetailsController.submit(editMode: Boolean ?= false)
-
-# User Lockout
-GET         /error/lockout                                       controllers.usermatching.UserDetailsLockoutController.show
-
-# Confirm User
-GET         /confirm-user                                        controllers.usermatching.ConfirmUserController.show()
-POST        /confirm-user                                        controllers.usermatching.ConfirmUserController.submit()
-
-# User Details Error
-GET         /error/user-details                                  controllers.usermatching.UserDetailsErrorController.show()
-POST        /error/user-details                                  controllers.usermatching.UserDetailsErrorController.submit()
-
 # Cannot Use Service
 GET         /error/cannot-use-service                            controllers.individual.incomesource.CannotUseServiceController.show()
 

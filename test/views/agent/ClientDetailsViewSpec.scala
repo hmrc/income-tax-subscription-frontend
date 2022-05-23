@@ -31,10 +31,10 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
   val clientDetails: ClientDetails = app.injector.instanceOf[ClientDetails]
   val action: Call = ViewSpecTrait.testCall
 
-  val clientDetailsForm: Form[UserDetailsModel] = ClientDetailsForm.clientDetailsForm.form
+  val clientDetailsForm: Form[UserDetailsModel] = ClientDetailsForm.clientDetailsForm
 
   def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = clientDetails(
-    clientDetailsForm = ClientDetailsForm.clientDetailsForm.form.addError(addFormErrors),
+    clientDetailsForm = ClientDetailsForm.clientDetailsForm.addError(addFormErrors),
     postAction = action,
     isEditMode = isEditMode
   )(FakeRequest(), mockMessages, appConfig)

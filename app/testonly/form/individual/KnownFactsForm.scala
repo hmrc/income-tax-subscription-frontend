@@ -16,7 +16,6 @@
 
 package testonly.form.individual
 
-import forms.prevalidation.{PreprocessedForm, PrevalidationAPI, trimAllFunc}
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
@@ -26,47 +25,40 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 import testonly.models.KnownFactsModel
 
 object KnownFactsForm {
+
   val mtdid = "mtdid"
   val nino = "nino"
 
-  val ninoEmpty: Constraint[String] = constraint[String](
-    nino => {
-      lazy val emptyNino = Invalid("You must enter a nino")
-      if (nino.isEmpty) emptyNino else Valid
-    }
-  )
+  val ninoEmpty: Constraint[String] = constraint[String] { nino =>
+    lazy val emptyNino = Invalid("You must enter a nino")
+    if (nino.isEmpty) emptyNino else Valid
+  }
 
-  val ninoInvalid: Constraint[String] = constraint[String](
-    nino => {
-      lazy val invalidNino = Invalid("You must enter a valid nino")
-      if (Patterns.validNino(trimAllFunc(nino).toUpperCase())) Valid else invalidNino
-    }
-  )
+  val ninoInvalid: Constraint[String] = constraint[String] { nino =>
+    lazy val invalidNino = Invalid("You must enter a valid nino")
+    if (Patterns.validNino(nino.toUpperCase())) Valid else invalidNino
+  }
 
-  val mtdidEmpty: Constraint[String] = constraint[String](
-    mtdid => {
-      lazy val emptyMtdid = Invalid("You must enter a MTD-ID")
-      if (mtdid.isEmpty) emptyMtdid else Valid
-    }
-  )
+  val mtdidEmpty: Constraint[String] = constraint[String] { mtdid =>
+    lazy val emptyMtdid = Invalid("You must enter a MTD-ID")
+    if (mtdid.isEmpty) emptyMtdid else Valid
+  }
 
-  val mtdidInvalid: Constraint[String] = constraint[String](
-    mtdid => {
-      lazy val invalidMtdid = Invalid("You must enter a valid MTD-ID")
-      val id = trimAllFunc(mtdid)
-      id.length match {
-        case 15 | 16 => Valid
-        case _ => invalidMtdid
-      }
+  val mtdidInvalid: Constraint[String] = constraint[String] { mtdid =>
+    lazy val invalidMtdid = Invalid("You must enter a valid MTD-ID")
+    val id = mtdid
+    id.length match {
+      case 15 | 16 => Valid
+      case _ => invalidMtdid
     }
-  )
+  }
 
-  val knownFactsValidationForm = Form(
+
+  val knownFactsForm: Form[KnownFactsModel] = Form(
     mapping(
       nino -> oText.toText.verifying(ninoEmpty andThen ninoInvalid),
       mtdid -> oText.toText.verifying(mtdidEmpty andThen mtdidInvalid)
     )(KnownFactsModel.apply)(KnownFactsModel.unapply)
   )
 
-  val knownFactsForm: PrevalidationAPI[KnownFactsModel] = PreprocessedForm(knownFactsValidationForm)
 }

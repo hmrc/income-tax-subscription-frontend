@@ -18,7 +18,7 @@ package controllers.usermatching
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.individual.usermatching.NoSA
+import views.html.individual.NoSA
 
 import javax.inject.{Inject, Singleton}
 

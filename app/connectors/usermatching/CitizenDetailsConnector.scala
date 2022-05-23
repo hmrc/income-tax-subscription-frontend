@@ -18,10 +18,9 @@ package connectors.usermatching
 
 import config.AppConfig
 import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser._
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -35,9 +34,6 @@ class CitizenDetailsConnector @Inject()(appConfig: AppConfig,
 
   def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
     http.GET[GetCitizenDetailsResponse](lookupUtrUrl(nino))
-
-  def lookupNino(utr: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
-    http.GET[GetCitizenDetailsResponse](lookupNinoUrl(utr))
 }
 
 object CitizenDetailsConnector {

@@ -17,9 +17,6 @@
 package testonly.form.individual
 
 import forms.formatters.DateModelMapping
-import forms.prevalidation.CaseOption._
-import forms.prevalidation.TrimOption._
-import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.Constraints._
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
@@ -78,7 +75,7 @@ object UserToStubForm {
     }
   )
 
-  val userDetailsValidationForm = Form(
+  val userDetailsForm: Form[UserToStubModel] = Form(
     mapping(
       userFirstName -> oText.toText.verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       userLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
@@ -86,14 +83,6 @@ object UserToStubForm {
       userSautr -> oText.verifying(validateUtr),
       userDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = false, "user_details.date_of_birth", None, None, None).verifying(dobEmpty andThen dobValidation)
     )(UserToStubModel.apply)(UserToStubModel.unapply)
-  )
-
-
-
-  val userToStubForm: PrevalidationAPI[UserToStubModel] = PreprocessedForm(
-    validation = userDetailsValidationForm,
-    trimRules = Map(userNino -> bothAndCompress),
-    caseRules = Map(userNino -> upper)
   )
 
 }

@@ -20,7 +20,7 @@ import connectors.usermatching.mocks.MockCitizenDetailsConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import services.individual.{CitizenDetailsService, OptionalIdentifiers}
+import services.individual.CitizenDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants._
@@ -36,7 +36,7 @@ trait TestCitizenDetailsService extends MockCitizenDetailsConnector {
 trait MockCitizenDetailsService extends UnitTestTrait with MockitoSugar {
   val mockCitizenDetailsService: CitizenDetailsService = mock[CitizenDetailsService]
 
-  private def mockLookupUtr(nino: String)(response: Future[Option[String]]) =
+  private def mockLookupUtr(nino: String)(response: Future[Option[String]]): Unit =
     when(
       mockCitizenDetailsService.lookupUtr(
         ArgumentMatchers.eq(nino)
@@ -44,24 +44,6 @@ trait MockCitizenDetailsService extends UnitTestTrait with MockitoSugar {
         ArgumentMatchers.any[HeaderCarrier]
       )
     ).thenReturn(response)
-
-  private def mockLookupNino(utr: String)(response: Future[String]) =
-    when(
-      mockCitizenDetailsService.lookupNino(
-        ArgumentMatchers.eq(utr)
-      )(ArgumentMatchers.any[HeaderCarrier])
-    ).thenReturn(response)
-
-  def mockResolveIdentifiers(optNino: Option[String], optUtr: Option[String])
-                            (optReturnNino: Option[String], optReturnUtr: Option[String]): Unit =
-    when(
-      mockCitizenDetailsService.resolveKnownFacts(
-        ArgumentMatchers.eq(optNino),
-        ArgumentMatchers.eq(optUtr)
-      )(
-        ArgumentMatchers.any[HeaderCarrier]
-      )
-    ).thenReturn(Future.successful(OptionalIdentifiers(optReturnNino, optReturnUtr)))
 
   def mockLookupUserWithUtr(nino: String)(utr: String): Unit =
     mockLookupUtr(nino)(Future.successful(Some(utr)))
@@ -71,8 +53,5 @@ trait MockCitizenDetailsService extends UnitTestTrait with MockitoSugar {
 
   def mockLookupException(nino: String): Unit =
     mockLookupUtr(nino)(Future.failed(testException))
-
-  def mockLookupNinoSuccess(utr: String): Unit =
-    mockLookupNino(utr)(Future.successful(testNino))
 
 }

@@ -17,7 +17,7 @@
 package controllers.usermatching
 
 import auth.individual.JourneyState._
-import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserMatching}
+import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
@@ -54,19 +54,22 @@ class HomeController @Inject()(val auditingService: AuditingService,
     Authenticated.async { implicit request =>
       implicit user =>
         val timestamp: String = java.time.LocalDateTime.now().toString
-        citizenDetailsService.resolveKnownFacts(user.nino, user.utr) flatMap {
-          case OptionalIdentifiers(Some(nino), Some(utr)) =>
+        val nino: String = user.nino.getOrElse(throw new InternalServerException("[HomeController][index] - Could not retrieve nino from user"))
+        val lookupUtr: Future[Option[String]] = user.utr match {
+          case Some(value) => Future.successful(Some(value))
+          case None => citizenDetailsService.lookupUtr(nino)
+        }
+        lookupUtr flatMap {
+          case Some(utr) =>
             getSubscription(nino) flatMap {
               case Some(SubscriptionSuccess(mtditId)) =>
                 claimSubscription(mtditId, nino, utr)
               case None =>
                 handleNoSubscriptionFound(utr, timestamp, nino)
             }
-          case OptionalIdentifiers(Some(_), None) =>
+          case None =>
             Future.successful(Redirect(routes.NoSAController.show)
               .removingFromSession(JourneyStateKey))
-          case _ =>
-            Future.successful(goToUserMatching withJourneyState UserMatching)
         }
     }
 
@@ -90,8 +93,6 @@ class HomeController @Inject()(val auditingService: AuditingService,
 
   lazy val goToPreferences: Result = Redirect(controllers.individual.routes.PreferencesController.checkPreferences)
   lazy val goToSPSHandoff: Result = Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
-
-  lazy val goToUserMatching: Result = Redirect(controllers.usermatching.routes.UserDetailsController.show())
 
   private def getSubscription(nino: String)(implicit request: Request[AnyContent]): Future[Option[SubscriptionSuccess]] =
     subscriptionService.getSubscription(nino) map {

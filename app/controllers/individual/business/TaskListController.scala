@@ -37,7 +37,6 @@ import views.html.individual.incometax.business.TaskList
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.matching.Regex
 
 @Singleton
 class TaskListController @Inject()(val taskListView: TaskList,
@@ -50,10 +49,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval with Logging {
-
-
-  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+                                   mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with Logging {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
