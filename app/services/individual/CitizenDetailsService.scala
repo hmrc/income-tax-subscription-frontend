@@ -34,35 +34,15 @@ class CitizenDetailsService @Inject()(appConfig: AppConfig,
 *  The hc must not be edited in production
 */
   def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
-    if(appConfig.hasEnabledTestOnlyRoutes) hc.copy(trueClientIp = Some("ITSA"))
+    if (appConfig.hasEnabledTestOnlyRoutes) hc.copy(trueClientIp = Some("ITSA"))
     else hc
 
   def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
     citizenDetailsConnector.lookupUtr(nino)(amendHCForTest) map {
-      case Right(Some(CitizenDetailsSuccess(utr, _))) =>
-        utr
+      case Right(Some(CitizenDetailsSuccess(utr))) => utr
       case _ =>
         throw new InternalServerException("unexpected error calling the citizen details service")
     }
-
-  def lookupNino(utr: String)(implicit hc: HeaderCarrier): Future[String] =
-    citizenDetailsConnector.lookupNino(utr)(amendHCForTest) map {
-      case Right(Some(CitizenDetailsSuccess(_, nino))) =>
-        nino
-      case _ =>
-        throw new InternalServerException("unexpected error calling the citizen details service")
-    }
-
-  def resolveKnownFacts(optNino: Option[String], optUtr: Option[String])
-                       (implicit hc: HeaderCarrier): Future[OptionalIdentifiers] = {
-
-    (optNino, optUtr) match {
-      case (Some(nino), Some(utr)) => Future.successful(OptionalIdentifiers(Some(nino), Some(utr)))
-      case (Some(nino), _        ) => lookupUtr(nino) map (optUtr => OptionalIdentifiers(Some(nino), optUtr))
-      case (_         , Some(utr)) => lookupNino(utr) map (nino => OptionalIdentifiers(Some(nino), Some(utr)))
-      case _ => Future.successful(OptionalIdentifiers(None, None))
-    }
-  }
 }
 
 case class OptionalIdentifiers(nino: Option[String], utr: Option[String])

@@ -17,7 +17,6 @@
 package forms.agent
 
 import forms.formatters.DateModelMapping
-import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
@@ -62,22 +61,13 @@ object ClientDetailsForm {
     }
   }
 
-  val clientDetailsValidationForm: Form[UserDetailsModel] = Form[UserDetailsModel](
+  val clientDetailsForm: Form[UserDetailsModel] = Form[UserDetailsModel](
     mapping(
       clientFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       clientNino -> default(text, "").verifying(emptyClientNino andThen validateClientNino),
       clientDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = true, errorContext, None, None, None).verifying(dateInPast)
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
-  )
-
-  import forms.prevalidation.CaseOption._
-  import forms.prevalidation.TrimOption._
-
-  val clientDetailsForm: PrevalidationAPI[UserDetailsModel] = PreprocessedForm(
-    validation = clientDetailsValidationForm,
-    trimRules = Map(clientNino -> bothAndCompress),
-    caseRules = Map(clientNino -> upper)
   )
 
 }

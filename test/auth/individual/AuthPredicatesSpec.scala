@@ -17,7 +17,6 @@
 package auth.individual
 
 import auth.individual.AuthPredicate.AuthPredicateSuccess
-import auth.individual.JourneyState._
 import config.AppConfig
 import org.mockito.Mockito.reset
 import org.scalatest.EitherValues
@@ -92,27 +91,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   lazy val homelessAuthorisedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(authToken -> "", lastRequestTimestamp -> "")
 
   lazy val signUpRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> SignUp.name)
-
-  lazy val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> UserMatching.name)
-
-
-  "ninoPredicate" should {
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-
-    "return an AuthPredicateSuccess where a nino enrolment exists" in {
-      AuthPredicates.ninoPredicate(FakeRequest())(userWithNinoEnrolment).value mustBe AuthPredicateSuccess
-    }
-
-    "redirect to user matching if nino enrolment does not exist" in {
-      val res = await(AuthPredicates.ninoPredicate(request)(blankUser).left.value)
-      res mustBe (AuthPredicates.userMatching withJourneyState UserMatching)
-    }
-
-    "redirect to home if a nino enrolment does not exist but a utr enrolment does" in {
-      await(AuthPredicates.ninoPredicate(FakeRequest())(userWithUtrButNoNino).left.value) mustBe AuthPredicates.homeRoute
-
-    }
-  }
 
   "mtdidPredicate" should {
     "return an AuthPredicateSuccess where an mtdid enrolment does not already exist" in {
@@ -256,22 +234,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
   }
 
-  "userMatchingPredicates" should {
-    "return an AuthPredicateSuccess where the user has no nino and has the JourneyState flag set to UserMatching" in {
-      userMatchingPredicates(userMatchingRequest)(userWithIndividualAffinity).value mustBe AuthPredicateSuccess
-    }
-
-    "return user to index if the user does not have the JourneyState flag set to UserMatching" in {
-      await(userMatchingPredicates(homelessAuthorisedRequest)(userWithIndividualAffinity).left.value) mustBe homeRoute
-    }
-    "redirect to iv when the user doesn't have high enough confidence level" in {
-      val result = await(userMatchingPredicates(userMatchingRequest)(userWithIndividualAffinity.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
-    }
-  }
-
-
   "signUpJourneyPredicate" should {
     "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
       signUpJourneyPredicate(signUpRequest)(blankUser).value mustBe AuthPredicateSuccess
@@ -279,16 +241,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
     "return the index page for any other state" in {
       await(signUpJourneyPredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
-    }
-  }
-
-  "userMatchingJourneyPredicate" should {
-    "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
-      userMatchingJourneyPredicate(userMatchingRequest)(blankUser).value mustBe AuthPredicateSuccess
-    }
-
-    "return the index page for any other state" in {
-      await(userMatchingJourneyPredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
     }
   }
 

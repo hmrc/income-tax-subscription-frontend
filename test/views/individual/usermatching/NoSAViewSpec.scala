@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.ViewSpec
-import views.html.individual.usermatching.NoSA
+import views.html.individual.NoSA
 
 class NoSAViewSpec extends ViewSpec {
 

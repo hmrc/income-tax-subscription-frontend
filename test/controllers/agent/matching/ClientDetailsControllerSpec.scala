@@ -129,7 +129,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
         def callSubmit(request: FakeRequest[AnyContentAsEmpty.type])(isEditMode: Boolean): Future[Result] =
           controller.submit(isEditMode = isEditMode)(
-            request.post(ClientDetailsForm.clientDetailsForm.form, testClientDetails)
+            request.post(ClientDetailsForm.clientDetailsForm, testClientDetails)
           )
 
         "there are no stored data" should {
@@ -200,7 +200,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         def callSubmit(isEditMode: Boolean): Future[Result] =
           controller.submit(isEditMode = isEditMode)(
             userMatchingRequest
-              .post(ClientDetailsForm.clientDetailsForm.form, newTestUserDetails)
+              .post(ClientDetailsForm.clientDetailsForm, newTestUserDetails)
           )
 
         "return a bad request status (BAD_REQUEST - 400)" in {

@@ -20,16 +20,16 @@ package testonly.controllers.individual
 
 import auth.individual.SignUpController
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService}
 import services.individual.KnownFactsService
+import services.{AuditingService, AuthService}
 import testonly.form.individual.KnownFactsForm._
 import testonly.models.KnownFactsModel
 import testonly.views.html.individual.AddKnownFacts
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -48,16 +48,16 @@ class KnownFactsController @Inject()(val auditingService: AuditingService,
     )
 
   def show: Action[AnyContent] = Action { implicit request =>
-    Ok(view(knownFactsForm.form))
+    Ok(view(knownFactsForm))
   }
 
   def submit: Action[AnyContent] = Action.async { implicit request =>
-    knownFactsForm.form.bindFromRequest.fold(
+    knownFactsForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(view(form = formWithErrors))),
       knownFacts => {
-        import forms.prevalidation.trimAllFunc
-        val nino = trimAllFunc(knownFacts.nino).toUpperCase()
-        val mtdid = trimAllFunc(knownFacts.mtditid).toUpperCase()
+
+        val nino = knownFacts.nino.toUpperCase()
+        val mtdid = knownFacts.mtditid.toUpperCase()
 
         knownFactsService.addKnownFacts(mtdid, nino).map {
           case Right(_) => Ok(s"known facts added: nino=$nino mtdid=$mtdid")

@@ -19,16 +19,13 @@ package models.usermatching
 import models.ConnectorError
 import play.api.libs.json._
 
-case class CitizenDetailsSuccess(utr: Option[String], nino: String)
+case class CitizenDetailsSuccess(utr: Option[String])
 
 object CitizenDetailsSuccess {
 
-  implicit val reader: Reads[CitizenDetailsSuccess] = new Reads[CitizenDetailsSuccess]{
-    override def reads(json: JsValue): JsResult[CitizenDetailsSuccess] = for {
-      optUtr <- (json \ "ids" \ "sautr").validateOpt[String]
-      nino <- (json \ "ids" \ "nino").validate[String]
-    } yield CitizenDetailsSuccess(optUtr, nino)
-  }
+  implicit val reader: Reads[CitizenDetailsSuccess] = (json: JsValue) => for {
+    optUtr <- (json \ "ids" \ "sautr").validateOpt[String]
+  } yield CitizenDetailsSuccess(optUtr)
 }
 
 case class CitizenDetailsFailureResponse(status: Int) extends ConnectorError

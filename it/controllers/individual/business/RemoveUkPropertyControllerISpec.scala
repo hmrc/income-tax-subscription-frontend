@@ -43,7 +43,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
             When("GET /business/remove-uk-property-business is called")
-            val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty()
+            val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty
             val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
             Then("Should return a OK with the remove Uk property confirmation page")
             res must have(
@@ -60,7 +60,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
             When("GET /business/remove-uk-property-business is called")
-            val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty()
+            val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty
 
             Then("Should return NOT_FOUND")
             res must have(

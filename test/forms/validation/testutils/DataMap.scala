@@ -18,8 +18,7 @@ package forms.validation.testutils
 
 import forms.agent.AccountingMethodOverseasPropertyForm
 import forms.formatters.DateModelMapping
-import forms.individual.business.BusinessNameForm._
-import forms.individual.business.{AccountingMethodForm, AccountingYearForm}
+import forms.individual.business.AccountingYearForm
 import forms.validation.utils.ConstraintUtil._
 import play.api.data.validation._
 
@@ -41,10 +40,6 @@ object DataMap {
 
     val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
 
-    def busName(name: String): DataMap = Map(businessName -> name)
-
-    def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
-
     def overseasPropertyAccountingMethod(iType: String): DataMap = Map(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty -> iType)
 
     def accountingYear(iType: String): DataMap = Map(AccountingYearForm.accountingYear -> iType)
@@ -52,7 +47,7 @@ object DataMap {
     def incomeSource(business: String, ukProperty: String, overseasProperty: String): DataMap =
       Map(forms.individual.incomesource.IncomeSourceForm.selfEmployedKey -> business,
         forms.individual.incomesource.IncomeSourceForm.ukPropertyKey -> ukProperty,
-      forms.individual.incomesource.IncomeSourceForm.overseasPropertyKey -> overseasProperty)
+        forms.individual.incomesource.IncomeSourceForm.overseasPropertyKey -> overseasProperty)
 
     val alwaysFailInvalid: Invalid = Invalid("always fail")
 

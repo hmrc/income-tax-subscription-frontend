@@ -19,7 +19,6 @@ import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import models._
 import models.common._
-import models.common.business.AccountingMethodModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -34,7 +33,7 @@ import play.api.http.HeaderNames
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{JsArray, JsValue, Writes}
+import play.api.libs.json.{JsArray, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
@@ -150,7 +149,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
 
-
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(
       FakeRequest().withHeaders(Headers(headers: _*)),
       Session()
@@ -246,7 +244,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
       post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(storedSubmission))(
         newSubmission.fold(Map.empty: Map[String, Seq[String]])(
-          cd => toFormData(ClientDetailsForm.clientDetailsValidationForm, cd)
+          cd => toFormData(ClientDetailsForm.clientDetailsForm, cd)
         )
       )
 
@@ -270,7 +268,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def notEnrolledAgentServices(): WSResponse = get("/not-enrolled-agent-services")
 
-    def getNoClientRelationship(): WSResponse = get("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+    def getNoClientRelationship: WSResponse = get("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
     def postNoClientRelationship(): WSResponse = post("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 
@@ -398,7 +396,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def submitRemoveBusiness(request: Option[YesNo]): WSResponse = post(s"/business/remove-sole-trader-business?id=$testId")(
       request.fold(Map.empty[String, Seq[String]])(
-        model => RemoveBusinessForm.removeBusinessForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        model => RemoveBusinessForm.removeBusinessForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
@@ -442,16 +440,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
-      val uri = s"/business/accounting-method?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingMethodForm.accountingMethodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
@@ -502,9 +490,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
     form.fill(data).data map { case (k, v) => k -> Seq(v) }
 
-  implicit val nilWrites: Writes[Nil.type] = new Writes[Nil.type] {
-    override def writes(o: Nil.type): JsValue = JsArray()
-  }
+  implicit val nilWrites: Writes[Nil.type] = (o: Nil.type) => JsArray()
 
   def removeHtmlMarkup(stringWithMarkup: String): String =
     stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim

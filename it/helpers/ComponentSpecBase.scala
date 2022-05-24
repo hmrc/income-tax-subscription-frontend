@@ -16,18 +16,15 @@
 
 package helpers
 
-import auth.individual.{JourneyState, SignUp, UserMatching, ClaimEnrolment => ClaimEnrolmentJourney}
+import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
 import forms.individual.incomesource.{BusinessIncomeSourceForm, IncomeSourceForm}
-import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
 import models.common._
-import models.common.business.AccountingMethodModel
-import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -283,7 +280,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def submitRemoveBusiness(request: Option[YesNo]): WSResponse = post(s"/business/remove-sole-trader-business?id=$testId")(
       request.fold(Map.empty[String, Seq[String]])(
-        model => RemoveBusinessForm.removeBusinessForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        model => RemoveBusinessForm.removeBusinessForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
@@ -302,7 +299,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def propertyAccountingMethod(): WSResponse = get("/business/accounting-method-property")
 
-    def getRemoveUkProperty(): WSResponse = get("/business/remove-uk-property-business")
+    def getRemoveUkProperty: WSResponse = get("/business/remove-uk-property-business")
 
     def submitRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business")(body)
 
@@ -385,16 +382,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def alreadySignedUp(): WSResponse = get("/claim-enrolment/already-signed-up", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
 
-    def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
-      val uri = s"/business/accounting-method?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingMethodForm.accountingMethodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
     def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
       val uri = s"/business/accounting-method-property?editMode-=$inEditMode"
       post(uri, Map(ITSASessionKeys.UTR -> testUtr))(
@@ -445,32 +432,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
-
     def iv(): WSResponse = get("/iv")
-
-    def showUserDetails(): WSResponse = get("/user-details", Map(JourneyStateKey -> UserMatching.name))
-
-    def submitUserDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
-      post("/user-details", Map(JourneyStateKey -> UserMatching.name).addUserDetails(storedSubmission))(
-        newSubmission.fold(Map.empty: Map[String, Seq[String]])(
-          cd => toFormData(UserDetailsForm.userDetailsValidationForm, cd)
-        )
-      )
-
-    def showUserDetailsError(): WSResponse = get("/error/user-details", Map(JourneyStateKey -> UserMatching.name))
-
-    def showUserDetailsLockout(): WSResponse = get("/error/lockout", Map(JourneyStateKey -> UserMatching.name))
-
-    def submitConfirmUser(previouslyFailedAttempts: Int = 0,
-                          storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testUserDetails)): WSResponse = {
-      val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
-        case 0 => Map.empty
-        case count => Map(FailedUserMatching -> previouslyFailedAttempts.toString)
-      }
-      post("/confirm-user",
-        additionalCookies = Map(JourneyStateKey -> UserMatching.name) ++ failedAttemptCounter.addUserDetails(storedUserDetails)
-      )(Map.empty)
-    }
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
 

@@ -18,7 +18,7 @@ package controllers.agent.matching
 
 import auth.agent.{IncomeTaxAgentUser, UserMatchingController}
 import config.AppConfig
-import forms.agent.ClientDetailsForm
+import forms.agent.ClientDetailsForm.clientDetailsForm
 import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
@@ -57,14 +57,14 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        Future.successful(Ok(view(ClientDetailsForm.clientDetailsForm.form.fill(request.fetchUserDetails), isEditMode = isEditMode)))
+        Future.successful(Ok(view(clientDetailsForm.fill(request.fetchUserDetails), isEditMode = isEditMode)))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
+        clientDetailsForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
           clientDetails =>
             Future.successful(Redirect(routes.ConfirmClientController.show).saveUserDetails(clientDetails))

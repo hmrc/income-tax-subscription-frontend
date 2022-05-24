@@ -16,7 +16,6 @@
 
 package testonly.form.individual
 
-import forms.prevalidation._
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
@@ -29,31 +28,20 @@ object ClearPreferencesForm {
 
   val nino = "nino"
 
-  val ninoEmpty: Constraint[String] = constraint[String](
-    nino => {
-      lazy val emptyNino = Invalid("You must enter a nino")
-      if (nino.isEmpty) emptyNino else Valid
-    }
-  )
+  val ninoEmpty: Constraint[String] = constraint[String] { nino =>
+    lazy val emptyNino = Invalid("You must enter a nino")
+    if (nino.isEmpty) emptyNino else Valid
+  }
 
-  val ninoInvalid: Constraint[String] = constraint[String](
-    nino => {
-      lazy val invalidNino = Invalid("You must enter a valid nino")
-      if (Patterns.validNino(trimAllFunc(nino).toUpperCase())) Valid else invalidNino
-    }
-  )
+  val ninoInvalid: Constraint[String] = constraint[String] { nino =>
+    lazy val invalidNino = Invalid("You must enter a valid nino")
+    if (Patterns.validNino(nino.toUpperCase())) Valid else invalidNino
+  }
 
-  val ClearPreferenceValidationForm = Form(
+  val clearPreferenceForm: Form[ClearPreferencesModel] = Form(
     mapping(
       nino -> oText.toText.verifying(ninoEmpty andThen ninoInvalid)
     )(ClearPreferencesModel.apply)(ClearPreferencesModel.unapply)
   )
-
-  val ClearPreferenceForm: PrevalidationAPI[ClearPreferencesModel] =
-    PreprocessedForm(
-      ClearPreferenceValidationForm,
-      trimRules = Map(nino -> TrimOption.all),
-      caseRules = Map(nino -> CaseOption.upper)
-    )
 
 }

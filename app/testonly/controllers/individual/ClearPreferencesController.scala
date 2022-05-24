@@ -18,17 +18,17 @@ package testonly.controllers.individual
 
 import auth.individual.StatelessController
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService}
 import testonly.connectors.individual.ClearPreferencesConnector
-import testonly.form.individual.ClearPreferencesForm
+import testonly.form.individual.ClearPreferencesForm.clearPreferenceForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
 import testonly.views.html.individual.ClearPreferences
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -67,11 +67,11 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
     )
 
   val show: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(showView(ClearPreferencesForm.ClearPreferenceValidationForm)))
+    Future.successful(Ok(showView(clearPreferenceForm)))
   }
 
   val submit: Action[AnyContent] = Action.async { implicit request =>
-    ClearPreferencesForm.ClearPreferenceForm.bindFromRequest().fold(
+    clearPreferenceForm.bindFromRequest().fold(
       badRequest => Future.successful(BadRequest(showView(badRequest))),
       clearPreferences =>
         clearUser(clearPreferences.nino) map {

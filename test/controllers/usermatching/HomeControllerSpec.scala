@@ -88,7 +88,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       "the user already has an MTDIT subscription on ETMP" should {
         "redirect to the claim subscription page" in {
           mockNinoAndUtrRetrieval()
-          mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+          mockLookupUserWithUtr(testNino)(testUtr)
           setupMockGetSubscriptionFound(testNino)
           setupMockSubscriptionDetailsSaveFunctions()
           mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -109,7 +109,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 "feature switch PrePopulate is enabled but there is no PrePop" when {
                   "redirect to SPSHandoff controller" in {
                     mockNinoAndUtrRetrieval()
-                    mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+                    mockLookupUserWithUtr(testNino)(testUtr)
                     setupMockGetSubscriptionNotFound(testNino)
                     mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
 
@@ -125,7 +125,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 "feature switch PrePopulate is enabled and there is PrePop" when {
                   "redirect to SPSHandoff controller after saving prepop informtion" in {
                     mockNinoAndUtrRetrieval()
-                    mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+                    mockLookupUserWithUtr(testNino)(testUtr)
                     setupMockGetSubscriptionNotFound(testNino)
                     mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
                     mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -144,7 +144,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 "feature switch PrePopulate is disabled" when {
                   "redirect to SPSHandoff controller" in {
                     mockNinoAndUtrRetrieval()
-                    mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+                    mockLookupUserWithUtr(testNino)(testUtr)
                     setupMockGetSubscriptionNotFound(testNino)
                     mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
 
@@ -166,7 +166,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               "the user has a matching utr in CID against their NINO" when {
                 "redirect to SPSHandoff controller" in {
                   mockNinoRetrieval()
-                  mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
+                  mockLookupUserWithUtr(testNino)(testUtr)
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
 
@@ -182,16 +182,16 @@ class HomeControllerSpec extends ControllerBaseSpec
               "the user does not have a matching utr in CID" should {
                 "redirect to the no SA page" in {
                   mockNinoRetrieval()
-                  mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
+                  mockLookupUserWithoutUtr(testNino)
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
 
-                  val result = testHomeController().index()(userMatchingRequest)
+                  val result = testHomeController().index()(fakeRequest)
 
                   status(result) mustBe SEE_OTHER
                   redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show.url
 
-                  await(result).session(userMatchingRequest).get(ITSASessionKeys.UTR) mustBe None
+                  session(result).get(ITSASessionKeys.UTR) mustBe None
                 }
               }
             }
@@ -200,7 +200,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         "the user is not eligible" should {
           "redirect to the Not eligible page" in {
             mockNinoAndUtrRetrieval()
-            mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+            mockLookupUserWithUtr(testNino)(testUtr)
             setupMockGetSubscriptionNotFound(testNino)
             mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
 
@@ -213,80 +213,19 @@ class HomeControllerSpec extends ControllerBaseSpec
       "the call to check the user's subscription status fails" should {
         "return an error page" in {
           mockNinoAndUtrRetrieval()
-          mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
+          mockLookupUserWithUtr(testNino)(testUtr)
           setupMockGetSubscriptionFailure(testNino)
 
           intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
         }
       }
     }
-    "the user does not have a nino but has an IR-SA enrolment" when {
-      "the user already has an MTDIT subscription on ETMP" should {
-        "redirect to the claim subscription page" in {
-          mockUtrRetrieval()
-          mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
-          setupMockGetSubscriptionFound(testNino)
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockRetrieveReferenceSuccess(testUtr)(testReference)
-
-          val result = testHomeController().index(fakeRequest)
-
-          status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim.url
-
-          verifySubscriptionDetailsSave(MtditId, 1)
-        }
-      }
-      "the user does not already have an MTDIT subscription on ETMP" when {
-        "the user is eligible" when {
-          "the user does not have a current unauthorised subscription journey" when {
-            "redirect to the sign up journey" when {
-              "redirect to SPSHandoff controller" in {
-                mockUtrRetrieval()
-                mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
-                setupMockGetSubscriptionNotFound(testNino)
-                mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
-
-                val result = await(testHomeController().index(fakeRequest))
-                status(result) must be(Status.SEE_OTHER)
-                redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-                session(result).get(ITSASessionKeys.NINO) must contain(testNino)
-              }
-            }
-          }
-        }
-        "the user is not eligible" should {
-          "redirect to the Not eligible page" in {
-            mockUtrRetrieval()
-            mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
-            setupMockGetSubscriptionNotFound(testNino)
-            mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
-
-            val result = await(testHomeController().index(fakeRequest))
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
-          }
-        }
-      }
-      "the call to check the user's subscription status fails" should {
-        "return an error page" in {
-          mockNinoAndUtrRetrieval()
-          mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-          setupMockGetSubscriptionFailure(testNino)
-
-          intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
-        }
-      }
-    }
-    "the user does not have a nino or an IR-SA enrolment" should {
-      "redirect to the NINO resolver if the user doesn't have an IR-SA enrolment" in {
-        mockResolveIdentifiers(None, None)(None, None)
+    "the user does not have a nino" should {
+      "throw an InternalServerException describing the issue" in {
         mockIndividualWithNoEnrolments()
 
-        val result = testHomeController().index(fakeRequest)
-
-        status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsController.show().url
+        intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
+          .message mustBe "[HomeController][index] - Could not retrieve nino from user"
       }
     }
   }
