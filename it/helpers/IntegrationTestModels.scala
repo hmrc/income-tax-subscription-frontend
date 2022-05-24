@@ -85,6 +85,14 @@ object IntegrationTestModels {
     businessTradeName = Some(testBusinessTrade),
     businessAddress = Some(testBusinessAddress)
   ))
+  val testTooManyBusinesses: Seq[SelfEmploymentData] = Array.range(1, 51).map( i =>
+    SelfEmploymentData(
+    id = i.toString,
+    businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
+    businessName = Some(BusinessNameModel(s"${testBusinessName.businessName} $i")),
+    businessTradeName = Some(testBusinessTrade),
+    businessAddress = Some(testBusinessAddress)
+  )).toSeq
   val testInvalidOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testInvalidStartDate)
   val testFullPropertyModel: PropertyModel = PropertyModel(
     accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),

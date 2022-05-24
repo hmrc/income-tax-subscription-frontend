@@ -46,8 +46,9 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
     implicit user =>
       if (isEnabled(SaveAndRetrieve)) {
         withReference { reference =>
-          withIncomeSourceStatuses(reference) { incomeSourcesStatus =>
-            Ok(view(businessIncomeSourceForm(incomeSourcesStatus), incomeSourcesStatus))
+          withIncomeSourceStatuses(reference) {
+            case IncomeSourcesStatus(false, false, false) => Redirect(controllers.individual.business.routes.TaskListController.show())
+            case incomeSourcesStatus => Ok(view(businessIncomeSourceForm(incomeSourcesStatus), incomeSourcesStatus))
           }
         }
       } else {
@@ -91,7 +92,11 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
   }
 
   private def overseasPropertyAvailable(reference: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    subscriptionDetailsService.fetchOverseasProperty(reference) map (_.isEmpty && isEnabled(ForeignPropertyFeature))
+    if (isEnabled(ForeignPropertyFeature)) {
+      subscriptionDetailsService.fetchOverseasProperty(reference) map (_.isEmpty)
+    } else {
+      Future.successful(false)
+    }
   }
 
   private def withIncomeSourceStatuses(reference: String)(f: IncomeSourcesStatus => Result)(implicit hc: HeaderCarrier): Future[Result] = {

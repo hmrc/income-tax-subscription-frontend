@@ -18,6 +18,7 @@ package controllers.agent
 
 import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestModels.{testFullOverseasPropertyModel, testFullPropertyModel, testTooManyBusinesses}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
 import helpers.agent.servicemocks.AuthStub
@@ -28,7 +29,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 
-class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
+class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
   private val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
   "GET /report-quarterly/income-and-expenses/sign-up/client/income-source" should {
     "return OK" when {
@@ -46,11 +47,33 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
 
         Then("Should return OK with the income source page")
-        res must have (
+        res must have(
           httpStatus(OK),
           pageTitle(
             s"${messages("agent.what_income_source_to_sign_up.heading")} - $serviceNameGovUk"
           )
+        )
+      }
+    }
+
+    "redirect to task list" when {
+      "the save and retrieve feature switch is enabled, but there are no options left" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testTooManyBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+
+        And("save & retrieve feature switch is enabled")
+        enable(SaveAndRetrieve)
+
+        When(s"GET ${routes.WhatIncomeSourceToSignUpController.show().url} is called")
+        val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
+
+        Then("Should return 303 with the task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(routes.TaskListController.show().url)
         )
       }
     }
