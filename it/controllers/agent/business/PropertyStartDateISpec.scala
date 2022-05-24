@@ -230,6 +230,7 @@ class PropertyStartDateISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
+
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)

@@ -18,10 +18,11 @@ package controllers.utils
 
 import auth.agent.IncomeTaxAgentUser
 import auth.individual.IncomeTaxSAUser
-import connectors.httpparser.RetrieveReferenceHttpParser.{InvalidJsonFailure, UnexpectedStatusFailure}
+import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existing, InvalidJsonFailure, UnexpectedStatusFailure}
 import controllers.agent.ITSASessionKeys
+import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import play.api.mvc.{AnyContent, Request, Result}
-import services.SubscriptionDetailsService
+import services.{AuditingService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,6 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 trait ReferenceRetrieval {
 
   val subscriptionDetailsService: SubscriptionDetailsService
+  val auditingService: AuditingService
   implicit val ec: ExecutionContext
 
   def withReference(f: String => Future[Result])
@@ -56,7 +58,10 @@ trait ReferenceRetrieval {
             throw new InternalServerException(s"[ReferenceRetrieval][withReference] - Unable to parse json returned")
           case Left(UnexpectedStatusFailure(status)) =>
             throw new InternalServerException(s"[ReferenceRetrieval][withReference] - Unexpected status returned: $status")
-          case Right(value) =>
+          case Right(Existing(value)) =>
+            auditingService.audit(SignupRetrieveAuditModel(userType = "individual", None, utr, user.nino))
+            f(value).map(_.addingToSession(ITSASessionKeys.REFERENCE -> value))
+          case Right(Created(value)) =>
             f(value).map(_.addingToSession(ITSASessionKeys.REFERENCE -> value))
         }
     }
@@ -66,22 +71,11 @@ trait ReferenceRetrieval {
                         (implicit request: Request[AnyContent],
                          hc: HeaderCarrier,
                          user: IncomeTaxAgentUser): Future[Result] = {
-    user.clientReference match {
-      case Some(reference) =>
-        f(reference)
-      case None =>
-        val clientsUtr: String = user.clientUtr.getOrElse(
-          throw new InternalServerException("[ReferenceRetrieval][withAgentReference] - Unable to retrieve clients utr")
-        )
-        subscriptionDetailsService.retrieveReference(clientsUtr).flatMap {
-          case Left(InvalidJsonFailure) =>
-            throw new InternalServerException(s"[ReferenceRetrieval][withAgentReference] - Unable to parse json returned")
-          case Left(UnexpectedStatusFailure(status)) =>
-            throw new InternalServerException(s"[ReferenceRetrieval][withAgentReference] - Unexpected status returned: $status")
-          case Right(value) =>
-            f(value).map(_.addingToSession(ITSASessionKeys.REFERENCE -> value))
-        }
-    }
+    withAgentReference(
+      user.clientUtr.getOrElse(
+        throw new InternalServerException("[ReferenceRetrieval][withAgentReference] - Unable to retrieve clients utr")
+      )
+    )(f)
   }
 
   def withAgentReference(clientsUtr: String)
@@ -98,7 +92,10 @@ trait ReferenceRetrieval {
             throw new InternalServerException(s"[ReferenceRetrieval][withAgentReference] - Unable to parse json returned")
           case Left(UnexpectedStatusFailure(status)) =>
             throw new InternalServerException(s"[ReferenceRetrieval][withAgentReference] - Unexpected status returned: $status")
-          case Right(value) =>
+          case Right(Existing(value)) =>
+            auditingService.audit(SignupRetrieveAuditModel(userType = "agent", user.arn, clientsUtr, user.clientNino))
+            f(value).map(_.addingToSession(ITSASessionKeys.REFERENCE -> value))
+          case Right(Created(value)) =>
             f(value).map(_.addingToSession(ITSASessionKeys.REFERENCE -> value))
         }
     }

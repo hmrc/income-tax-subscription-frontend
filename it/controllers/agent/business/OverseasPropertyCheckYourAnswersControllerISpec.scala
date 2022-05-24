@@ -18,9 +18,10 @@ package controllers.agent.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import controllers.agent.ITSASessionKeys
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.taskListURI
+import helpers.agent.IntegrationTestConstants.{taskListURI, testUtr}
 import helpers.agent.servicemocks.AuthStub
 import models.Cash
 import models.common.OverseasPropertyModel
@@ -40,7 +41,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         enable(SaveAndRetrieve)
 
         When("GET business/overseas-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers()
+        val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
 
         Then("Should return OK with the property CYA page")
         res must have (
@@ -62,7 +63,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         disable(SaveAndRetrieve)
 
         When("GET business/overseas-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers()
+        val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
 
         Then("Should return NOT_FOUND")
         res must have(
@@ -82,7 +83,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         enable(SaveAndRetrieve)
 
         When("POST business/overseas-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
 
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
@@ -121,7 +122,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends  ComponentSpecBase
         disable(SaveAndRetrieve)
 
         When("POST business/overseas-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
 
         Then("Should return NOT_FOUND")
         res must have(

@@ -18,11 +18,12 @@ package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
+import connectors.httpparser.RetrieveReferenceHttpParser
+import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, RetrieveReferenceResponse}
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
 import org.mockito.ArgumentMatchers.{any, argThat}
-import org.mockito.Mockito.{atLeastOnce, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -97,16 +98,16 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     verify(mockConnector, atLeastOnce())
       .getSubscriptionDetails(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-  def mockRetrieveReferenceSuccess(utr: String)(reference: String): Unit = {
+  def mockRetrieveReferenceSuccess(utr: String, existence: String => Existence = RetrieveReferenceHttpParser.Created)(reference: String): Unit = {
     when(mockConnector.retrieveReference(
       ArgumentMatchers.eq(utr)
-    )(ArgumentMatchers.any())) thenReturn Future.successful(Right(reference))
+    )(ArgumentMatchers.any())) thenReturn Future.successful(Right(existence(reference)))
   }
 
   def mockRetrieveReferenceSuccessFromSubscriptionDetails(utr: String)(reference: String): Unit = {
     when(mockConnector.retrieveReference(
       ArgumentMatchers.eq(utr)
-    )(ArgumentMatchers.any())) thenReturn Future.successful(Right(reference))
+    )(ArgumentMatchers.any())) thenReturn Future.successful(Right(Created(reference)))
   }
 
   def mockRetrieveReference(utr: String)(response: RetrieveReferenceResponse): Unit = {
