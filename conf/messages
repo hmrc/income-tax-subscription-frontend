@@ -31,6 +31,7 @@ base.deadline_heading                                           = Deadline
 base.to                                                         = to
 base.caption                                                    = This section is
 base.submit_and_continue                                        = Submit and continue
+base.opens_in_a_new_tab                                         = (opens in new tab)
 
 error-notification.prefix                                       = Error:
 
@@ -813,7 +814,7 @@ agent.sign-up-complete.quarter-table-caption                    = Submit quarter
 agent.sign-up-complete.can-use-software                         = You can now use software to send Income Tax updates
 agent.sign-up-complete.what-now.heading                         = What happens now
 agent.sign-up-complete.what-now.find-software                   = If you have not already done so, {0} and allow it to interact with HMRC.
-agent.sign-up-complete.what-now.find-software.link              = find software that’s compatible (opens in new tab)
+agent.sign-up-complete.what-now.find-software.link              = find software that’s compatible
 agent.sign-up-complete.what-now.previous-updates                = You need to add all income and expenses for the previous updates using your software for:
 agent.sign-up-complete.what-now.no-penalty                      = There is no penalty if you or your client start making updates mid-way through the current tax year. And, you can make as many updates as you wish, during each quarter.
 agent.sign-up-complete.what-now.next-updates                    = Send next quarterly updates using your software by:

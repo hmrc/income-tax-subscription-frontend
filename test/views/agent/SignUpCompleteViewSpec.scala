@@ -347,9 +347,9 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach {
     val whatNowHeading = "What happens now"
     val whatNowHeadingParagraph1 = "After you’ve sent an update, your client will get an Income Tax year-to-date estimate. " +
       "They can see what they owe for the tax year after you’ve sent their final update."
-    val whatNowHeadingParagraph2 = "It may take a few hours before new information is displayed in your agent service account."
+    val whatNowHeadingParagraph2 = "It may take a few hours before new information is displayed in your agent service account (opens in a new tab) ."
 
-    val whatNowNumber1LinkText = "find software that’s compatible (opens in new tab)"
+    val whatNowNumber1LinkText = "find software that’s compatible (opens in a new tab)"
     val whatNowNumber1 = s"If you have not already done so, $whatNowNumber1LinkText and allow it to interact with HMRC."
 
     val quarterTableCaption = "Submit quarterly updates by the deadline"
