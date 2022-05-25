@@ -33,9 +33,10 @@ import play.api.mvc.{AnyContent, Request, Results, Session}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, session, status}
 import services.mocks.MockSubscriptionDetailsService
-import services.{AuditingService, SubscriptionDetailsService}
+import services.{AuditModel, AuditingService, SubscriptionDetailsService}
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 class ReferenceRetrievalSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService with Results {
@@ -181,7 +182,7 @@ class ReferenceRetrievalSpec extends PlaySpec with Matchers with MockSubscriptio
 
               session(result) mustBe Session(Map("UTR" -> utr, "reference" -> "test-reference"))
 
-              verify(TestReferenceRetrieval.auditingService, never).audit(any())(any(), any())
+              verify(TestReferenceRetrieval.auditingService, never).audit(any[AuditModel]())(any(), any())
               status(result) mustBe OK
             }
           }
@@ -309,7 +310,7 @@ class ReferenceRetrievalSpec extends PlaySpec with Matchers with MockSubscriptio
               status(result) mustBe OK
               result.session(request) mustBe Session(Map("reference" -> "test-reference"))
 
-              verify(TestReferenceRetrieval.auditingService, never).audit(any())(any(), any())
+              verify(TestReferenceRetrieval.auditingService, never).audit(any[AuditModel]())(any(), any())
             }
           }
         }

@@ -284,8 +284,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     )
 
-    def getProgressSaved(sessionData: Map[String, String] = Map.empty): WSResponse = {
-      get("/business/progress-saved", sessionData)
+    def getProgressSaved(saveAndRetrieveLocation: Option[String] = None, sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get(
+        saveAndRetrieveLocation.fold(
+          "/business/progress-saved"
+        )(
+          location => s"/business/progress-saved?location=$location"
+        ), sessionData
+      )
     }
 
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)

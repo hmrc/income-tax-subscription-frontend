@@ -26,6 +26,7 @@ import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, session, status}
+import services.AuditModel
 import utilities.ITSASessionKeys
 import utilities.individual.TestConstants.testNino
 
@@ -84,7 +85,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.home.url)
             session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-            verify(mockAuditingService, never()).audit(any())(any(), any())
+            verify(mockAuditingService, never()).audit(any[AuditModel]())(any(), any())
           }
         }
       }

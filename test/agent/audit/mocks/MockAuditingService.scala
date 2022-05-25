@@ -21,7 +21,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request
-import services.{AuditModel, AuditingService}
+import services.{AuditModel, AuditingService, JsonAuditModel}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
 
@@ -35,6 +35,14 @@ trait MockAuditingService extends UnitTestTrait with MockitoSugar with BeforeAnd
   val mockAuditingService: AuditingService = mock[AuditingService]
 
   def verifyAudit(model: AuditModel): Unit =
+    verify(mockAuditingService).audit(
+      ArgumentMatchers.eq(model)
+    )(
+      ArgumentMatchers.any[HeaderCarrier],
+      ArgumentMatchers.any[Request[_]]
+    )
+
+  def verifyAudit(model: JsonAuditModel): Unit =
     verify(mockAuditingService).audit(
       ArgumentMatchers.eq(model)
     )(

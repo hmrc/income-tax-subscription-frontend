@@ -472,8 +472,19 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       post("/business/tax-year-check-your-answers", sessionData)(Map.empty)
     }
 
-    def getProgressSaved(sessionData: Map[String, String] = Map.empty): WSResponse = {
-      get("/business/progress-saved", sessionData)
+    def getProgressSaved(saveAndRetrieveLocation: Option[String] = None, sessionData: Map[String, String] = Map(
+      ITSASessionKeys.ArnKey -> testARN,
+      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+      ITSASessionKeys.NINO -> testNino,
+      ITSASessionKeys.UTR -> testUtr
+    )): WSResponse = {
+      get(
+        saveAndRetrieveLocation.fold(
+          "/business/progress-saved"
+        )(
+          location => s"/business/progress-saved?location=$location"
+        ), sessionData
+      )
     }
 
     def noSA(): WSResponse = get("/register-for-SA")

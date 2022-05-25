@@ -120,7 +120,7 @@ POST        /business/uk-property-check-your-answers             controllers.age
 GET         /business/overseas-property-check-your-answers       controllers.agent.business.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-check-your-answers       controllers.agent.business.OverseasPropertyCheckYourAnswersController.submit()
 
-GET         /business/progress-saved                            controllers.agent.business.ProgressSavedController.show
+GET         /business/progress-saved                            controllers.agent.business.ProgressSavedController.show(location: Option[String] ?= None)
 
 #Task List Routes
 GET         /business/task-list                                  controllers.agent.TaskListController.show()
