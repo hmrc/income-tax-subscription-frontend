@@ -37,7 +37,7 @@ import services.{AuditModel, AuditingService, SubscriptionDetailsService}
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 class ReferenceRetrievalSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService with Results {
 
