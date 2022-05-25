@@ -20,65 +20,66 @@
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
 
 @this(
-  mainTemplate: PrincipalMainTemplate,
-  checkYourAnswers: CheckYourAnswers,
-  checkYourAnswersRow: CheckYourAnswersRow
+        mainTemplate: PrincipalMainTemplate,
+        checkYourAnswers: CheckYourAnswers,
+        checkYourAnswersRow: CheckYourAnswersRow
 )
 
 @(
-  viewModel: OverseasPropertyModel,
-  postAction: Call,
-  backUrl: String
+        viewModel: OverseasPropertyModel,
+        postAction: Call,
+        backUrl: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-  @startDate(maybeStartDate: Option[DateModel]) = @{
+@startDate(maybeStartDate: Option[DateModel]) = @{
     maybeStartDate match {
-      case Some(startDate) => startDate.toCheckYourAnswersDateFormat
-      case None => ""
+        case Some(startDate) => startDate.toCheckYourAnswersDateFormat
+        case None => ""
     }
-  }
+}
 
-  @accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
+@accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
     accountingMethod match {
-      case Some(Cash) => messages("business.check-your-answers.content.accounting-method.cash")
-      case Some(Accruals) => messages("business.check-your-answers.content.accounting-method.accruals")
-      case None => ""
+        case Some(Cash) => messages("business.check-your-answers.content.accounting-method.cash")
+        case Some(Accruals) => messages("business.check-your-answers.content.accounting-method.accruals")
+        case None => ""
     }
-  }
+}
 
-@mainTemplate(title = messages("business.check-your-answers.content.overseas-property.title"), backLink = Some(backUrl)){
-@checkYourAnswers(
-    heading = messages("business.check-your-answers.heading"),
-    caption = messages("business.check-your-answers.content.overseas-property.caption"),
-    isIndividual = true,
-    postAction = postAction,
-    isComplete = viewModel.startDate.isDefined && viewModel.accountingMethod.isDefined,
-    isConfirmed = viewModel.confirmed,
-    saveAndContinue = true
-  ) {
-    @checkYourAnswersRow(
-      field = "start-date",
-      question = messages("business.check-your-answers.content.overseas-property-start-date.question"),
-      answer = startDate(viewModel.startDate),
-      changeText = if (viewModel.startDate.isDefined) None else Some(messages("base.add")),
-      changeUrl = Some(controllers.individual.business.routes.OverseasPropertyStartDateController.show(editMode = true).url),
-      hiddenContent =
-        if (viewModel.startDate.isDefined)
-          messages("business.check-your-answers.content.overseas-property-start-date.change")
-        else
-          messages("business.check-your-answers.content.overseas-property-start-date.add")
-    )
-    @checkYourAnswersRow(
-      field = "accounting-method",
-      question = messages("business.check-your-answers.content.overseas-property-accounting-method.question"),
-      answer = accountingMethod(viewModel.accountingMethod),
-      changeText = if (viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
-      changeUrl = Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url),
-      hiddenContent =
-        if (viewModel.accountingMethod.isDefined)
-          messages("business.check-your-answers.content.overseas-property-accounting-method.change")
-        else
-          messages("business.check-your-answers.content.overseas-property-accounting-method.add")
-    )
-  }
+@mainTemplate(title = messages("business.check-your-answers.content.overseas-property.title"), backLink = Some(backUrl)) {
+    @checkYourAnswers(
+        heading = messages("business.check-your-answers.heading"),
+        caption = messages("business.check-your-answers.content.overseas-property.caption"),
+        isIndividual = true,
+        postAction = postAction,
+        isComplete = viewModel.startDate.isDefined && viewModel.accountingMethod.isDefined,
+        isConfirmed = viewModel.confirmed,
+        saveAndContinue = true,
+        saveAndReturnReference = Some("overseas-property-check-your-answers")
+    ) {
+        @checkYourAnswersRow(
+            field = "start-date",
+            question = messages("business.check-your-answers.content.overseas-property-start-date.question"),
+            answer = startDate(viewModel.startDate),
+            changeText = if(viewModel.startDate.isDefined) None else Some(messages("base.add")),
+            changeUrl = Some(controllers.individual.business.routes.OverseasPropertyStartDateController.show(editMode = true).url),
+            hiddenContent =
+                    if(viewModel.startDate.isDefined)
+                        messages("business.check-your-answers.content.overseas-property-start-date.change")
+                    else
+                        messages("business.check-your-answers.content.overseas-property-start-date.add")
+        )
+        @checkYourAnswersRow(
+            field = "accounting-method",
+            question = messages("business.check-your-answers.content.overseas-property-accounting-method.question"),
+            answer = accountingMethod(viewModel.accountingMethod),
+            changeText = if(viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
+            changeUrl = Some(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url),
+            hiddenContent =
+                    if(viewModel.accountingMethod.isDefined)
+                        messages("business.check-your-answers.content.overseas-property-accounting-method.change")
+                    else
+                        messages("business.check-your-answers.content.overseas-property-accounting-method.add")
+        )
+    }
 }

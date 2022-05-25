@@ -20,20 +20,20 @@ import assets.MessageLookup.OverseasPropertyAccountingMethod.{radioAccruals, rad
 import assets.MessageLookup.{Base => common, OverseasPropertyAccountingMethod => messages}
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import utilities.ViewSpec
 import views.ViewSpecTrait
 import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 
-class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
+class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
 
   val backUrl: String = ViewSpecTrait.testBackUrl
   val action: Call = ViewSpecTrait.testCall
 
-  implicit val request: Request[_] = FakeRequest()
   val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
 
   class Setup(isEditMode: Boolean = false, isSaveAndRetrieve: Boolean = false) {
@@ -106,15 +106,16 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpecTrait {
 
       "has a save and continue button" that {
         s"displays ${common.saveAndContinue} when save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
-          document.select(".save-and-continue").text mustBe common.saveAndContinue
+          document.mainContent.selectHead("div.govuk-button-group").selectHead("button").text mustBe common.saveAndContinue
         }
       }
 
       "has a save and come back later button" that {
         s"displays ${common.saveAndComeBackLater} when save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
-          val saveAndComeBackButton = document.select(".save-and-come-back-later")
+          val saveAndComeBackButton: Element = document.mainContent.selectHead("div.govuk-button-group").selectHead("a")
           saveAndComeBackButton.text mustBe common.saveAndComeBackLater
-          saveAndComeBackButton.attr("href") mustBe controllers.individual.business.routes.ProgressSavedController.show().url
+          saveAndComeBackButton.attr("href") mustBe
+            controllers.individual.business.routes.ProgressSavedController.show().url + "?location=overseas-property-accounting-type"
         }
       }
     }

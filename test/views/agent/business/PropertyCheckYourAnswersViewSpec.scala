@@ -122,7 +122,8 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
         "have a save and come back later button" in {
           val buttonLink: Element = document(viewModel = completeAccrualsProperty).selectHead(".govuk-button--secondary")
           buttonLink.text mustBe PropertyCheckYourAnswers.saveAndComeBack
-          buttonLink.attr("href") mustBe controllers.agent.business.routes.ProgressSavedController.show().url
+          buttonLink.attr("href") mustBe
+            controllers.agent.business.routes.ProgressSavedController.show(Some("uk-property-check-your-answers")).url
         }
 
         "have a continue button if confirmed" in {

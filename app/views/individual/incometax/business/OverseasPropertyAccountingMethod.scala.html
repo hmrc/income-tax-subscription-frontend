@@ -18,16 +18,16 @@
 @import forms.individual.business.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
 @import play.api.data.Form
-@import views.html.helpers.injected.{ButtonHelper, ContinueButton, DetailsHelper, RadioHelper}
+@import views.html.helpers.injected.{ContinueButton, DetailsHelper, RadioHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
-    mainTemplate: PrincipalMainTemplate,
-    form: FormWithCSRF,
-    detailsHelper: DetailsHelper,
-    radioHelper: RadioHelper,
-    continueButton: ContinueButton,
-    buttonHelper: ButtonHelper
+        mainTemplate: PrincipalMainTemplate,
+        form: FormWithCSRF,
+        detailsHelper: DetailsHelper,
+        radioHelper: RadioHelper,
+        continueButton: ContinueButton,
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(overseasPropertyAccountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, isSaveAndRetrieve: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -37,10 +37,10 @@
 }
 
 @detailsContent = {
-    <p>@Messages("property.accounting_method.accordion.content.para")</p>
+    <p>@messages("property.accounting_method.accordion.content.para")</p>
     <ul class="govuk-list govuk-list--bullet">
-        <li>@Messages("overseas.property.accounting_method.accordion.content.bullet1")</li>
-        <li>@Messages("overseas.property.accounting_method.accordion.content.bullet2")</li>
+        <li>@messages("overseas.property.accounting_method.accordion.content.bullet1")</li>
+        <li>@messages("overseas.property.accounting_method.accordion.content.bullet2")</li>
     </ul>
 }
 
@@ -48,21 +48,7 @@
     <h1 class="govuk-heading-l">@heading</h1>
 }
 
-@saveAndRetrieveButton = {
-  <div class="govuk-button-group">
-    @buttonHelper(
-      classes = Some("save-and-continue"),
-      buttonText = messages("base.save-and-continue")
-    )
-    @buttonHelper(
-      classes = Some("govuk-button--secondary save-and-come-back-later"),
-      buttonText = messages("base.save-and-come-back-later"),
-      href = Some(controllers.individual.business.routes.ProgressSavedController.show().url)
-    )
-  </div>
-}
-
-@mainTemplate(title = messages("overseas.property.accounting_method.title"), optForm = Some(overseasPropertyAccountingMethodForm), backLink = Some(backUrl))  {
+@mainTemplate(title = messages("overseas.property.accounting_method.title"), optForm = Some(overseasPropertyAccountingMethodForm), backLink = Some(backUrl)) {
     @form(action = postAction) {
         @heading(messages("overseas.property.accounting_method.heading"))
 
@@ -91,9 +77,12 @@
         )
 
         @if(isSaveAndRetrieve) {
-          @saveAndRetrieveButton
+            @saveAndContinueButtonHelper(
+                isIndividual = true,
+                saveAndReturnReference = Some("overseas-property-accounting-type")
+            )
         } else {
-          @continueButton(isEditMode = isEditMode)
+            @continueButton(isEditMode = isEditMode)
         }
-      }
+    }
 }

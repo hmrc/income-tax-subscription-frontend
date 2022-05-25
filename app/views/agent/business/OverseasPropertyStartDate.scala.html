@@ -52,7 +52,7 @@
         )
 
         @if(featureSwitchingImpl.isEnabled(SaveAndRetrieve)) {
-            @saveAndContinueButtonHelper(isIndividual = false, hasSaveAndReturnLink = false)
+            @saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = None)
         } else {
             @continueButton(isEditMode = isEditMode)
         }

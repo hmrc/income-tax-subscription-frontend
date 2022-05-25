@@ -21,49 +21,54 @@
 @import views.html.templates.injected.{CheckYourAnswersRow, CheckYourAnswers => CYA}
 
 @this(
-  agentMainTemplate: AgentMainTemplate,
-  checkYourAnswers: CYA,
-  checkYourAnswersRow: CheckYourAnswersRow
+        agentMainTemplate: AgentMainTemplate,
+        checkYourAnswers: CYA,
+        checkYourAnswersRow: CheckYourAnswersRow
 )
 
 @(
-    userDetailsModel: UserDetailsModel,
-    postAction: Call,
-    backUrl: String
+        userDetailsModel: UserDetailsModel,
+        postAction: Call,
+        backUrl: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @agentMainTemplate(title = messages("agent.client-details.summary.title"), backLink = Some(backUrl)) {
-@checkYourAnswers(heading = messages("agent.client-details.summary.heading"), caption = messages("agent.client-details.summary.caption"), isIndividual = false, postAction = postAction) {
-    @checkYourAnswersRow(
-      field = FirstNameId,
-      question = messages("agent.client-details.summary.first_name"),
-      answer = userDetailsModel.firstName,
-      changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-      hiddenContent = messages("userdetail.cya.change.firstname")
-    )
+    @checkYourAnswers(
+        heading = messages("agent.client-details.summary.heading"),
+        caption = messages("agent.client-details.summary.caption"),
+        isIndividual = false,
+        postAction = postAction
+    ) {
+        @checkYourAnswersRow(
+            field = FirstNameId,
+            question = messages("agent.client-details.summary.first_name"),
+            answer = userDetailsModel.firstName,
+            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
+            hiddenContent = messages("userdetail.cya.change.firstname")
+        )
 
-    @checkYourAnswersRow(
-      field = LastNameId,
-      question = messages("agent.client-details.summary.last_name"),
-      answer = userDetailsModel.lastName,
-      changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-      hiddenContent = messages("userdetail.cya.change.lastname")
-    )
+        @checkYourAnswersRow(
+            field = LastNameId,
+            question = messages("agent.client-details.summary.last_name"),
+            answer = userDetailsModel.lastName,
+            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
+            hiddenContent = messages("userdetail.cya.change.lastname")
+        )
 
-    @checkYourAnswersRow(
-      field = NinoId,
-      question = messages("agent.client-details.summary.nino"),
-      answer = userDetailsModel.ninoInDisplayFormat,
-      changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-      hiddenContent = messages("userdetail.cya.change.nationalinsurance")
-    )
+        @checkYourAnswersRow(
+            field = NinoId,
+            question = messages("agent.client-details.summary.nino"),
+            answer = userDetailsModel.ninoInDisplayFormat,
+            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
+            hiddenContent = messages("userdetail.cya.change.nationalinsurance")
+        )
 
-    @checkYourAnswersRow(
-      field = DobId,
-      question = messages("agent.client-details.summary.dob"),
-      answer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat,
-      changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-      hiddenContent = messages("userdetail.cya.change.dateofbirth")
-    )
-  }
+        @checkYourAnswersRow(
+            field = DobId,
+            question = messages("agent.client-details.summary.dob"),
+            answer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat,
+            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
+            hiddenContent = messages("userdetail.cya.change.dateofbirth")
+        )
+    }
 }

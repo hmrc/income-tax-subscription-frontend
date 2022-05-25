@@ -22,36 +22,36 @@
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
 
 @this(
-  mainTemplate: PrincipalMainTemplate,
-  checkYourAnswers: CheckYourAnswers,
-  checkYourAnswersRow: CheckYourAnswersRow,
-  continueButton: ContinueButton
+        mainTemplate: PrincipalMainTemplate,
+        checkYourAnswers: CheckYourAnswers,
+        checkYourAnswersRow: CheckYourAnswersRow,
+        continueButton: ContinueButton
 )
 
 @(
-  postAction: Call,
-  viewModel: Option[AccountingYearModel],
-  accountingPeriodService: AccountingPeriodService,
-  backUrl: String
+        postAction: Call,
+        viewModel: Option[AccountingYearModel],
+        accountingPeriodService: AccountingPeriodService,
+        backUrl: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @taxYear(accountingYear: Option[AccountingYearModel]) = @{
-  accountingYear.map(_.accountingYear) match {
-    case Some(Current) => messages("business.check-your-answers.content.tax-year.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
-    case Some(Next) => messages("business.check-your-answers.content.tax-year.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
-    case None => ""
-  }
+    accountingYear.map(_.accountingYear) match {
+        case Some(Current) => messages("business.check-your-answers.content.tax-year.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
+        case Some(Next) => messages("business.check-your-answers.content.tax-year.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
+        case None => ""
+    }
 }
 
 @mainTemplate(title = messages("business.check-your-answers.content.tax-year.title"), backLink = Some(backUrl)) {
-  @checkYourAnswers(heading = messages("business.check-your-answers.heading"), caption = messages("business.check-your-answers.content.tax-year.caption"), isIndividual = true, postAction = postAction) {
-    @checkYourAnswersRow(
-      field = "tax-year",
-      question = messages("business.check-your-answers.content.tax-year.question"),
-      answer = taxYear(viewModel),
-      changeUrl = Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url),
-      hiddenContent = messages("business.check-your-answers.content.tax-year.question.hidden")
-    )
-  }
+    @checkYourAnswers(heading = messages("business.check-your-answers.heading"), caption = messages("business.check-your-answers.content.tax-year.caption"), isIndividual = true, postAction = postAction) {
+        @checkYourAnswersRow(
+            field = "tax-year",
+            question = messages("business.check-your-answers.content.tax-year.question"),
+            answer = taxYear(viewModel),
+            changeUrl = Some(controllers.individual.business.routes.WhatYearToSignUpController.show(editMode = true).url),
+            hiddenContent = messages("business.check-your-answers.content.tax-year.question.hidden")
+        )
+    }
 
 }

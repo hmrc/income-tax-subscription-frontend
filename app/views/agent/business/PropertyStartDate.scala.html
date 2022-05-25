@@ -51,7 +51,7 @@
     )
 
     @if(featureSwitches.isEnabled(SaveAndRetrieve)) {
-      @saveAndContinueButton(isIndividual = false, hasSaveAndReturnLink = false)
+      @saveAndContinueButton(isIndividual = false, saveAndReturnReference = None)
     } else {
       @continueButton(isEditMode = isEditMode)
     }
