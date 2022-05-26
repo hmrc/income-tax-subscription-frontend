@@ -138,6 +138,11 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
       val pageContent: Element = Jsoup.parse(response.body).mainContent
 
       pageContent.select(".govuk-error-message").text mustBe s"Error: ${AccountingPeriodCheckMessages.invalidError}"
+      pageContent.firstOf(s"a[href=#${AccountingPeriodCheckForm.accountingPeriodCheck}]").text mustBe AccountingPeriodCheckMessages.invalidError
+
+      val form: Element = pageContent.getForm
+      form.attr("method") mustBe "POST"
+      form.attr("action") mustBe controllers.agent.eligibility.routes.AccountingPeriodCheckController.submit.url
     }
 
   }
