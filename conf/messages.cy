@@ -31,6 +31,8 @@ base.deadline_heading                                           = Dyddiad cau
 base.to                                                         = i
 base.caption                                                    = Mae'r adran hon yn
 base.submit_and_continue                                        = Cyflwyno ac yn eich blaen
+base.opens_in_a_new_tab                                         = (yn agor tab newydd)
+
 error-notification.prefix                                       = Gwall:
 
 ## base.userResearch.text                                       = Mae’r cysylltiad hwn yn agor tab newydd. Sylwer - nid yw’r gwasanaeth hwn ar gael yn Gymraeg.
@@ -859,7 +861,7 @@ agent.sign-up-complete.quarter-table-caption                    = Cyflwynwch ddi
 agent.sign-up-complete.can-use-software                         = Erbyn hyn, gallwch ddefnyddio meddalwedd er mwyn anfon diweddariadau ynghylch Treth Incwm
 agent.sign-up-complete.what-now.heading                         = Yr hyn sy’n digwydd nawr
 agent.sign-up-complete.what-now.find-software                   = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEM.
-agent.sign-up-complete.what-now.find-software.link              = dewch o hyd i feddalwedd sy’n cydweddu (yn agor tab newydd)
+agent.sign-up-complete.what-now.find-software.link              = dewch o hyd i feddalwedd sy’n cydweddu
 agent.sign-up-complete.what-now.previous-updates                = Mae’n rhaid i chi ychwanegu’r holl incwm a threuliau ar gyfer y diweddariadau blaenorol gan ddefnyddio’ch meddalwedd ar gyfer:
 agent.sign-up-complete.what-now.no-penalty                      = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol.
 agent.sign-up-complete.what-now.next-updates                    = Anfonwch eich diweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd erbyn:

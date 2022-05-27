@@ -16,6 +16,8 @@
 
 @import config.AppConfig
 @import views.html.helpers.injected.{ButtonHelper, SignOutLink}
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import views.html.templates.AgentMainTemplate
 @import utilities.ImplicitDateFormatterImpl
 @import services.AccountingPeriodService
@@ -24,6 +26,7 @@
 @this(
         agentMainTemplate: AgentMainTemplate,
         buttonHelper: ButtonHelper,
+        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
         signOutLink: SignOutLink,
         form: FormWithCSRF,
         govukPanel: GovukPanel,
@@ -83,7 +86,7 @@
         <li>
             @Html(messages(
                 key = "agent.sign-up-complete.what-now.find-software",
-                args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} rel="noreferrer noopener" target="_blank">{messages("agent.sign-up-complete.what-now.find-software.link")}</a>
+                args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.sign-up-complete.what-now.find-software.link"), Some(appConfig.softwareUrl)))
             ))
         </li>
         @if(taxYearSelection.contains(Next)) {
@@ -109,7 +112,7 @@
     <p class="govuk-body">
         @Html(messages(
             key = "agent.sign-up-complete.what-now.agent-services-account",
-            args = <a class="govuk-link" href={appConfig.agentServicesAccountHomeUrl} rel="referrer noopener" target="_blank">{messages("agent.sign-up-complete.what-now.agent-services-account.link")}</a>
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.sign-up-complete.what-now.agent-services-account.link"), Some(appConfig.agentServicesAccountHomeUrl)))
         ))
     </p>
 
