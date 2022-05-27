@@ -24,7 +24,7 @@ import play.api.libs.json._
 import services.JsonAuditModel
 
 object SaveAndComebackAuditing {
-  val auditType: String = "SignUpSaveAndComeBack"
+  val signUpSaveAndComeBackAudit: String = "SignUpSaveAndComeBack"
   val individualUserType: String = "individual"
   val agentUserType: String = "agent"
 
@@ -45,7 +45,7 @@ object SaveAndComebackAuditing {
                                         maybePropertyModel: Option[PropertyModel],
                                         maybeOverseasPropertyModel: Option[OverseasPropertyModel]
                                       ) extends JsonAuditModel {
-    override val auditType: String = auditType
+    override val auditType: String = signUpSaveAndComeBackAudit
 
     val income: Seq[JsValue] = Seq() ++ maybePropertyModel.map { property => {
       Json.toJson(AuditDetailPropertyIncome(

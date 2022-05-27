@@ -91,7 +91,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |}
           |""".stripMargin
 
-      SaveAndComeBackAuditModel(
+      val auditData = SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
         utr = "testUtr",
         nino = "testNino",
@@ -102,7 +102,10 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
-      ).detail mustBe Json.parse(expectedDetail)
+      )
+
+      auditData.detail mustBe Json.parse(expectedDetail)
+      auditData.auditType mustBe "SignUpSaveAndComeBack"
     }
 
     "convert all data with multiple self employments to the correct format" in {
@@ -158,7 +161,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |}
           |""".stripMargin
 
-      SaveAndComeBackAuditModel(
+      val auditData = SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
         utr = "testUtr",
         nino = "testNino",
@@ -177,7 +180,10 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
-      ).detail mustBe Json.parse(expectedDetail)
+      )
+
+      auditData.detail mustBe Json.parse(expectedDetail)
+      auditData.auditType mustBe "SignUpSaveAndComeBack"
     }
 
     "convert data without self employment data to the correct format" in {
@@ -204,7 +210,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |}
           |""".stripMargin
 
-      SaveAndComeBackAuditModel(
+      val auditData = SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
         utr = "testUtr",
         nino = "testNino",
@@ -215,7 +221,10 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
-      ).detail mustBe Json.parse(expectedDetail)
+      )
+
+      auditData.detail mustBe Json.parse(expectedDetail)
+      auditData.auditType mustBe "SignUpSaveAndComeBack"
     }
 
     "convert data without self employment and overseas property data to the correct format" in {
@@ -237,7 +246,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |}
           |""".stripMargin
 
-      SaveAndComeBackAuditModel(
+      val auditData = SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
         utr = "testUtr",
         nino = "testNino",
@@ -248,7 +257,10 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = None
-      ).detail mustBe Json.parse(expectedDetail)
+      )
+
+      auditData.detail mustBe Json.parse(expectedDetail)
+      auditData.auditType mustBe "SignUpSaveAndComeBack"
     }
 
     "convert data without any income source to the correct format" in {
@@ -264,7 +276,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |}
           |""".stripMargin
 
-      SaveAndComeBackAuditModel(
+      val auditData = SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
         utr = "testUtr",
         nino = "testNino",
@@ -275,7 +287,10 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None
-      ).detail mustBe Json.parse(expectedDetail)
+      )
+
+      auditData.detail mustBe Json.parse(expectedDetail)
+      auditData.auditType mustBe "SignUpSaveAndComeBack"
     }
 
     "convert agent data without any income source to the correct format" in {
@@ -292,7 +307,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |}
           |""".stripMargin
 
-      SaveAndComeBackAuditModel(
+      val auditData = SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
         utr = "testUtr",
         nino = "testNino",
@@ -304,11 +319,14 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None
-      ).detail mustBe Json.parse(expectedDetail)
+      )
+
+      auditData.detail mustBe Json.parse(expectedDetail)
+      auditData.auditType mustBe "SignUpSaveAndComeBack"
     }
 
     "convert empty data to the correct format" in {
-      SaveAndComeBackAuditModel(
+      val auditData = SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
         utr = "testUtr",
         nino = "testNino",
@@ -319,13 +337,16 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None
-      ).detail mustBe Json.obj(
+      )
+
+      auditData.detail mustBe Json.obj(
         "userType" -> "individual",
         "saUtr" -> "testUtr",
         "nino" -> "testNino",
         "saveAndRetrieveLocation" -> "testLocation",
         "income" -> Json.arr()
       )
+      auditData.auditType mustBe "SignUpSaveAndComeBack"
     }
   }
 }
