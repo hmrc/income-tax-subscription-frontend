@@ -105,16 +105,17 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait  {
       }
 
       "has a save and continue button" that {
-        s"displays ${common.saveAndContinue} save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+        s"displays ${common.saveAndContinue} when the save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
           document.select("#main-content > div > div > form > div.govuk-button-group > button:nth-child(1)").text mustBe common.saveAndContinue
         }
       }
 
       "has a save and come back later button and with a link that redirect to save and retrieve page" that {
         s"displays ${common.saveAndComeBackLater} save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
-          val saveAndComeBackButton = document.select("#main-content > div > div > form > div.govuk-button-group > a")
+          val saveAndComeBackButton: Elements = document.select("#main-content > div > div > form > div.govuk-button-group > a")
           saveAndComeBackButton.text mustBe common.saveAndComeBackLater
-          saveAndComeBackButton.attr("href") mustBe controllers.individual.business.routes.ProgressSavedController.show().url
+          saveAndComeBackButton.attr("href") mustBe
+            controllers.individual.business.routes.ProgressSavedController.show().url + "?location=uk-property-accounting-type"
         }
       }
 

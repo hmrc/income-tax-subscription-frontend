@@ -181,7 +181,8 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     "have the save and come back later button" in {
       val buttonLink: Element = document(viewModel = completeCashProperty).selectHead(".govuk-button--secondary")
       buttonLink.text mustBe OverseasPropertyCheckYourAnswers.saveAndComeBack
-      buttonLink.attr("href") mustBe controllers.individual.business.routes.ProgressSavedController.show().url
+      buttonLink.attr("href") mustBe
+        controllers.individual.business.routes.ProgressSavedController.show().url + "?location=overseas-property-check-your-answers"
     }
   }
 

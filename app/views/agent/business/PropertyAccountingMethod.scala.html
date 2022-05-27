@@ -68,7 +68,7 @@
         )
 
         @if(featureSwitch.isEnabled(SaveAndRetrieve)) {
-            @saveAndContinueButtonHelper(isIndividual = false)
+            @saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = Some("uk-property-accounting-type"))
         } else {
             @continueButton(isEditMode = isEditMode)
         }

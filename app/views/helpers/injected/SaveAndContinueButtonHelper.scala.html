@@ -22,21 +22,29 @@
   appConfig: AppConfig
 )
 
-@(isIndividual: Boolean, saveAndContinueText: Option[String] = None, hasSaveAndReturnLink: Boolean = true, disabled: Boolean = false)(implicit messages: Messages)
+@(isIndividual: Boolean, saveAndContinueText: Option[String] = None, saveAndReturnReference: Option[String], disabled: Boolean = false)(implicit messages: Messages)
 
-@buttonHelper(
-  buttonText = saveAndContinueText.getOrElse(messages("base.save-and-continue")),
-  disabled = disabled
-)
-
-@if(hasSaveAndReturnLink) {
-  @buttonHelper(
-    buttonText = messages("base.save-and-come-back-later"),
-    classes = Some("govuk-button govuk-button--secondary"),
-    href = if(isIndividual) {
-      Some(controllers.individual.business.routes.ProgressSavedController.show().url)
+@href = @{
+    if(isIndividual) {
+        controllers.individual.business.routes.ProgressSavedController.show(saveAndReturnReference).url
     } else {
-      Some(controllers.agent.business.routes.ProgressSavedController.show().url)
+        controllers.agent.business.routes.ProgressSavedController.show(saveAndReturnReference).url
     }
-  )
 }
+
+<div class="govuk-button-group">
+
+    @buttonHelper(
+      buttonText = saveAndContinueText.getOrElse(messages("base.save-and-continue")),
+      disabled = disabled
+    )
+
+    @saveAndReturnReference.map { location =>
+      @buttonHelper(
+        buttonText = messages("base.save-and-come-back-later"),
+        classes = Some("govuk-button govuk-button--secondary"),
+        href = Some(href)
+      )
+    }
+
+</div>

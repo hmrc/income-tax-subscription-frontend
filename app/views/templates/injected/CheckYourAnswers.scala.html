@@ -17,41 +17,43 @@
 @import views.html.helpers.injected.{ContinueButton, SaveAndContinueButtonHelper}
 
 @this(
-  form: FormWithCSRF,
-  continueButton: ContinueButton,
-  hmrcPageHeading: HmrcPageHeadingHelper,
-  saveAndContinueButton: SaveAndContinueButtonHelper
+        form: FormWithCSRF,
+        continueButton: ContinueButton,
+        hmrcPageHeading: HmrcPageHeadingHelper,
+        saveAndContinueButton: SaveAndContinueButtonHelper
 )
 
 @(
-  heading: String,
-  caption: String,
-  postAction: Call,
-  isIndividual: Boolean,
-  isComplete: Boolean = false,
-  isConfirmed: Boolean = false,
-  saveAndContinue: Boolean = false
+        heading: String,
+        caption: String,
+        postAction: Call,
+        isIndividual: Boolean,
+        isComplete: Boolean = false,
+        isConfirmed: Boolean = false,
+        saveAndContinue: Boolean = false,
+        saveAndReturnReference: Option[String] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @hmrcPageHeading(PageHeading(
-  text = heading,
-  section = Some(caption)
+    text = heading,
+    section = Some(caption)
 ))
 
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-  @contentBlock
+    @contentBlock
 </dl>
 
 @form(action = postAction) {
-  <div class="form-group">
-    @if(saveAndContinue) {
-      @saveAndContinueButton(
-        isIndividual = isIndividual,
-        saveAndContinueText = if(isConfirmed) Some(messages("base.continue")) else Some(messages("base.confirm-and-continue")),
-        disabled = !isComplete
-      )
-    } else {
-      @continueButton()
-    }
-  </div>
+    <div class="form-group">
+        @if(saveAndContinue) {
+            @saveAndContinueButton(
+                isIndividual = isIndividual,
+                saveAndReturnReference = saveAndReturnReference,
+                saveAndContinueText = if(isConfirmed) Some(messages("base.continue")) else Some(messages("base.confirm-and-continue")),
+                disabled = !isComplete
+            )
+        } else {
+            @continueButton()
+        }
+    </div>
 }

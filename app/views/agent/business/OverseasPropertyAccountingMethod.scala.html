@@ -51,7 +51,7 @@
     )
 
     @if(featureSwitchingImpl.isEnabled(SaveAndRetrieve)) {
-      @saveAndContinueButtonHelper(isIndividual = false)
+      @saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = Some("overseas-property-accounting-type"))
     } else {
       @continueButton(isEditMode = isEditMode)
     }

@@ -20,9 +20,9 @@
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
 
 @this(
-    mainTemplate: PrincipalMainTemplate,
-    checkYourAnswers: CheckYourAnswers,
-    checkYourAnswersRow: CheckYourAnswersRow
+        mainTemplate: PrincipalMainTemplate,
+        checkYourAnswers: CheckYourAnswers,
+        checkYourAnswersRow: CheckYourAnswersRow
 )
 
 @(
@@ -32,52 +32,53 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @startDate(maybeStartDate: Option[DateModel]) = @{
-  maybeStartDate match {
-    case Some(startDate) => startDate.toCheckYourAnswersDateFormat
-    case None => ""
-  }
+    maybeStartDate match {
+        case Some(startDate) => startDate.toCheckYourAnswersDateFormat
+        case None => ""
+    }
 }
 
 @accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
-  accountingMethod match {
-    case Some(Cash) => messages("business.check-your-answers.content.accounting-method.cash")
-    case Some(Accruals) => messages("business.check-your-answers.content.accounting-method.accruals")
-    case None => ""
-  }
+    accountingMethod match {
+        case Some(Cash) => messages("business.check-your-answers.content.accounting-method.cash")
+        case Some(Accruals) => messages("business.check-your-answers.content.accounting-method.accruals")
+        case None => ""
+    }
 }
 
 @mainTemplate(title = messages("business.check-your-answers.content.uk-property.title"), backLink = Some(backUrl)) {
-  @checkYourAnswers(
-    heading = messages("business.check-your-answers.heading"),
-    caption = messages("business.check-your-answers.content.uk-property.caption"),
-    isIndividual = true,
-    postAction = postAction,
-    isComplete = viewModel.startDate.isDefined && viewModel.accountingMethod.isDefined,
-    saveAndContinue = !viewModel.confirmed
-  ) {
-    @checkYourAnswersRow(
-      field = "start-date",
-      question = messages("business.check-your-answers.content.uk-property-start-date.question"),
-      answer = startDate(viewModel.startDate),
-      changeText = if (viewModel.startDate.isDefined) None else Some(messages("base.add")),
-      changeUrl = Some(controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url),
-      hiddenContent =
-        if (viewModel.startDate.isDefined)
-          messages("business.check-your-answers.content.uk-property-start-date.change")
-        else
-          messages("business.check-your-answers.content.uk-property-start-date.add")
-    )
-    @checkYourAnswersRow(
-      field = "accounting-method",
-      question = messages("business.check-your-answers.content.uk-property-accounting-method.question"),
-      answer = accountingMethod(viewModel.accountingMethod),
-      changeText = if (viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
-      changeUrl = Some(controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url),
-      hiddenContent =
-        if (viewModel.accountingMethod.isDefined)
-          messages("business.check-your-answers.content.uk-property-accounting-method.change")
-        else
-          messages("business.check-your-answers.content.uk-property-accounting-method.add")
-    )
-  }
+    @checkYourAnswers(
+        heading = messages("business.check-your-answers.heading"),
+        caption = messages("business.check-your-answers.content.uk-property.caption"),
+        isIndividual = true,
+        postAction = postAction,
+        isComplete = viewModel.startDate.isDefined && viewModel.accountingMethod.isDefined,
+        saveAndContinue = !viewModel.confirmed,
+        saveAndReturnReference = Some("uk-property-check-your-answers")
+    ) {
+        @checkYourAnswersRow(
+            field = "start-date",
+            question = messages("business.check-your-answers.content.uk-property-start-date.question"),
+            answer = startDate(viewModel.startDate),
+            changeText = if(viewModel.startDate.isDefined) None else Some(messages("base.add")),
+            changeUrl = Some(controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url),
+            hiddenContent =
+                    if(viewModel.startDate.isDefined)
+                        messages("business.check-your-answers.content.uk-property-start-date.change")
+                    else
+                        messages("business.check-your-answers.content.uk-property-start-date.add")
+        )
+        @checkYourAnswersRow(
+            field = "accounting-method",
+            question = messages("business.check-your-answers.content.uk-property-accounting-method.question"),
+            answer = accountingMethod(viewModel.accountingMethod),
+            changeText = if(viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
+            changeUrl = Some(controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url),
+            hiddenContent =
+                    if(viewModel.accountingMethod.isDefined)
+                        messages("business.check-your-answers.content.uk-property-accounting-method.change")
+                    else
+                        messages("business.check-your-answers.content.uk-property-accounting-method.add")
+        )
+    }
 }
