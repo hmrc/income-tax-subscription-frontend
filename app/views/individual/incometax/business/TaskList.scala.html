@@ -58,7 +58,7 @@
 
 @addBusiness = @{if(viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) {
     <div class="app-task-list__items">
-        <a href={controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show.url} id="add_business">
+        <a href={controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show.url} id="add_business" class="govuk-link">
             {messages("business.task-list.content.section2.add")}
         </a>
     </div>
