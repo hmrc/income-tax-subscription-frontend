@@ -135,6 +135,7 @@ class TaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document().mainContent.getElementById("add_business")
           businessLink.text mustBe addBusiness
+          businessLink.classNames() must contain ("govuk-link")
           businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
 
