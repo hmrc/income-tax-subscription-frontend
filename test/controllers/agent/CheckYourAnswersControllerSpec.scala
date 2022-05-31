@@ -99,7 +99,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       "return ok (200)" in {
         mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
         mockFetchAllFromSubscriptionDetails(Some(TestModels.testCacheMap))
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
         mockFetchProperty(None)
         mockFetchOverseasProperty(None)
@@ -161,7 +161,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         "return a redirect status (SEE_OTHER - 303)" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(Some(testSummary))
-          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(testPropertyModel))
           mockFetchOverseasProperty(Some(testOverseasPropertyModel))
@@ -191,7 +191,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         "return a failure if subscription fails" in {
           mockFetchAllFromSubscriptionDetails(Some(TestModels.testCacheMap))
-          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(testPropertyModel))
           mockFetchOverseasProperty(Some(testOverseasPropertyModel))

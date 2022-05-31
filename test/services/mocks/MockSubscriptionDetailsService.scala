@@ -286,8 +286,8 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       maybeOverseasPropertyModel match { case None => ArgumentMatchers.any(); case Some(overseasPropertyModel) => ArgumentMatchers.eq(overseasPropertyModel) }
     )(any(), any())
 
-  protected final def mockFetchAllSelfEmployments(selfEmployments: Option[Seq[SelfEmploymentData]] = None): Unit = {
-    when(mockConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessesKey))(any(), any()))
+  protected final def mockFetchAllSelfEmployments(selfEmployments: Seq[SelfEmploymentData] = Seq.empty): Unit = {
+    when(mockConnector.getSubscriptionDetailsSeq[SelfEmploymentData](any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessesKey))(any(), any()))
       .thenReturn(Future.successful(selfEmployments))
   }
 

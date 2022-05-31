@@ -65,12 +65,14 @@
 }
 
 @selfEmployments(businesses: Seq[SelfEmploymentData]) = @{
-    val rowName = SelfEmploymentsId
-    val rowQuestion = Messages("agent.summary.self_employments")
-    val rowAnswer = businesses.count(_.isComplete).toString
-    val rowUrl = Some(appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-list")
-    val hiddenContent = Messages("final.cya.change.signupbusinessnumber")
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
+    if (!businesses.isEmpty) {
+        val rowName = SelfEmploymentsId
+        val rowQuestion = Messages("agent.summary.self_employments")
+        val rowAnswer = businesses.count(_.isComplete).toString
+        val rowUrl = Some(appConfig.incomeTaxSelfEmploymentsFrontendUrl + "/client/details/business-list")
+        val hiddenContent = Messages("final.cya.change.signupbusinessnumber")
+        summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, hiddenContent)
+    }
 }
 
 @selectedTaxYear(selectedTaxYear: AccountingYearModel) = @{
@@ -143,7 +145,7 @@
     <dl class="govuk-summary-list">
         @summaryModel.selectedTaxYear.map(selectedTaxYear)
         @summaryModel.incomeSource.map(incomeSource)
-        @summaryModel.selfEmployments.map(selfEmployments)
+        @selfEmployments(summaryModel.selfEmployments)
         @summaryModel.accountingMethod.map(accountingMethod)
         @summaryModel.propertyStartDate.map(propertyStartDate)
         @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
@@ -152,7 +154,6 @@
     </dl>
 
     </div>
-
     @form(action = postAction) {
         @buttonHelper(Messages("agent.summary.confirm_and_sign_up"))
     }

@@ -60,7 +60,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
   def customTestSummary(
                          incomeSource: Option[IncomeSourceModel] = Some(testIncomeSourceBoth),
                          businessName: Option[BusinessNameModel] = Some(testBusinessName),
-                         selfEmployments: Option[Seq[SelfEmploymentData]] = Some(testSelfEmployments),
+                         selfEmployments: Seq[SelfEmploymentData] = testSelfEmployments,
                          selectedTaxYear: Option[AccountingYearModel] = Some(testSelectedTaxYear),
                          accountingMethod: Option[AccountingMethodModel] = Some(testAccountingMethod),
                          propertyStartDate: Option[PropertyStartDateModel] = Some(testPropertyStart),

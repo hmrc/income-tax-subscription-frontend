@@ -37,6 +37,14 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
     reset(mockIncomeTaxSubscriptionConnector)
   }
 
+  def mockGetSelfEmploymentsSeq[T](id: String)
+                               (response: Seq[T]): OngoingStubbing[Future[Seq[T]]] = {
+    when(mockIncomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[T](
+      ArgumentMatchers.any(), ArgumentMatchers.eq(id)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
+  }
+
+
   def mockGetSelfEmployments[T](id: String)
                                (response: Option[T]): OngoingStubbing[Future[Option[T]]] = {
     when(mockIncomeTaxSubscriptionConnector.getSubscriptionDetails[T](

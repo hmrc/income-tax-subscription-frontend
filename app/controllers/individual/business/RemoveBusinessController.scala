@@ -71,7 +71,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
             },
             {
               case Yes => for {
-                businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+                businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
                 _ = deleteBusiness(reference, businessId, businesses)
               } yield Redirect(controllers.individual.business.routes.TaskListController.show())
               case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
@@ -84,14 +84,12 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
     }
   }
 
-  private def deleteBusiness(reference: String, businessId: String, maybeBusinesses: Option[Seq[SelfEmploymentData]])(
+  private def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData])(
     implicit hc: HeaderCarrier
-  ): Option[Future[PostSubscriptionDetailsResponse]] = {
-    maybeBusinesses map { businesses =>
+  ): Future[PostSubscriptionDetailsResponse] = {
       incomeTaxSubscriptionConnector
         .saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, businesses.filterNot(_.id == businessId))
     }
-  }
 
   private def withBusinessData(
                                 reference: String,
@@ -107,10 +105,8 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   }
 
   private def fetchBusinessData(reference: String, id: String)(implicit hc: HeaderCarrier): Future[Option[SelfEmploymentData]] = {
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey).map {
-      case Some(businesses) =>
-        businesses.find(_.id == id)
-      case None => None
+    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey).map {
+        _.find(_.id == id)
     }
   }
 

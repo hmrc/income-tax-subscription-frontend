@@ -38,17 +38,14 @@ object SubscriptionDataUtil{
 
     def getAccountingMethod: Option[AccountingMethodModel] = cacheMap.getEntry[AccountingMethodModel](AccountingMethod)
 
-    def getTaskListModel(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+    def getTaskListModel(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                          selfEmploymentAccountingMethod: Option[AccountingMethodModel] = None,
                          property: Option[PropertyModel],
                          overseasProperty: Option[OverseasPropertyModel]
                         ): TaskListModel = {
       TaskListModel(
         taxYearSelection = getSelectedTaxYear,
-        selfEmployments = selfEmployments match {
-          case Some(businesses) => businesses
-          case None => Seq.empty[SelfEmploymentData]
-        },
+        selfEmployments,
         ukProperty = property,
         overseasProperty = overseasProperty,
         selfEmploymentAccountingMethod = selfEmploymentAccountingMethod.map(_.accountingMethod)
@@ -57,7 +54,7 @@ object SubscriptionDataUtil{
 
 
     def createIncomeSources(nino: String,
-                            selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+                            selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                             selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                             property: Option[PropertyModel] = None,
                             overseasProperty: Option[OverseasPropertyModel] = None
@@ -76,19 +73,19 @@ object SubscriptionDataUtil{
       val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
 
         (selfEmployments, selfEmploymentsAccountingMethod) match {
-          case (Some(selfEmployments), Some(accountingMethod)) if selfEmployments.forall(_.isComplete) =>
+          case (Seq(), None) => None
+          case (Seq(), Some(_)) =>
+            throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - self employment accounting method found without any self employments")
+          case (_, None) =>
+            throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - self employment businesses found without any accounting method")
+          case (selfEmployments, _) if selfEmployments.exists(!_.isComplete) =>
+            throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - not all self employment businesses are complete")
+          case (selfEmployments, Some(accountingMethod)) =>
             Some(SoleTraderBusinesses(
               accountingPeriod = accountingPeriod,
               accountingMethod = accountingMethod.accountingMethod,
               businesses = selfEmployments
             ))
-          case (Some(_), Some(_)) =>
-            throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - not all self employment businesses are complete")
-          case (Some(_), None) =>
-            throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - self employment businesses found without any accounting method")
-          case (None, Some(_)) =>
-            throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - self employment accounting method found without any self employments")
-          case (None, None) => None
         }
 
       }
@@ -143,7 +140,7 @@ object SubscriptionDataUtil{
       )
     }
 
-    def getSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+    def getSummary(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                    selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                    property: Option[PropertyModel] = None,
                    overseasProperty: Option[OverseasPropertyModel] = None): IndividualSummary = {
@@ -162,7 +159,7 @@ object SubscriptionDataUtil{
       }
     }
 
-    def getAgentSummary(selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+    def getAgentSummary(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                         selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                         property: Option[PropertyModel] = None,
                         overseasProperty: Option[OverseasPropertyModel] = None): AgentSummary = {
@@ -183,7 +180,7 @@ object SubscriptionDataUtil{
       }
     }
 
-    private def applySelfEmploymentsData(selfEmployments: Option[Seq[SelfEmploymentData]],
+    private def applySelfEmploymentsData(selfEmployments: Seq[SelfEmploymentData],
                                          selfEmploymentsAccountingMethod: Option[AccountingMethodModel],
                                          hasSelfEmployments: Boolean,
                                          isAgent: Boolean = false): SummaryModel = {

@@ -140,7 +140,7 @@
         <dl class="govuk-summary-list">
             @selectedTaxYear(summaryModel.selectedTaxYear)
             @summaryModel.incomeSource.map(incomeReceivedFrom)
-            @summaryModel.selfEmployments.map(selfEmployments)
+            @selfEmployments(summaryModel.selfEmployments)
             @summaryModel.accountingMethod.map(accountingMethod)
             @summaryModel.propertyStartDate.map(propertyStart)
             @summaryModel.accountingMethodProperty.map(accountingMethodProperty)

@@ -93,8 +93,8 @@ class WhatIncomeSourceToSignUpController @Inject()(val whatIncomeSourceToSignUp:
 
   private def selfEmploymentAvailable(reference: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     subscriptionDetailsService.fetchAllSelfEmployments(reference).map {
-      case Some(selfEmployments) => selfEmployments.length < appConfig.maxSelfEmployments
-      case None => true
+      case Seq() => true
+      case selfEmployments => selfEmployments.length < appConfig.maxSelfEmployments
     }
   }
 

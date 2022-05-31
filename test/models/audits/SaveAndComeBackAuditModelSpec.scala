@@ -98,7 +98,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         saveAndRetrieveLocation = "testLocation",
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
-        maybeSelfEmployments = Some(selfEmployments),
+        selfEmployments = selfEmployments,
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
@@ -168,15 +168,14 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         saveAndRetrieveLocation = "testLocation",
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
-        maybeSelfEmployments = Some(
-          selfEmployments ++ Seq(SelfEmploymentData(
+        selfEmployments = selfEmployments :+
+          SelfEmploymentData(
             id = "id",
             businessStartDate = Some(BusinessStartDate(DateModel("6", "5", "2020"))),
             businessName = Some(BusinessNameModel("Money Business")),
             businessTradeName = Some(BusinessTradeNameModel("Consulting")),
             businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
-          ))
-        ),
+          ),
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
@@ -217,7 +216,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         saveAndRetrieveLocation = "testLocation",
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
-        maybeSelfEmployments = None,
+        selfEmployments = Seq.empty,
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
@@ -253,7 +252,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         saveAndRetrieveLocation = "testLocation",
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
-        maybeSelfEmployments = None,
+        selfEmployments = Seq.empty,
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = None
@@ -283,7 +282,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         saveAndRetrieveLocation = "testLocation",
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
-        maybeSelfEmployments = None,
+        selfEmployments = Seq.empty,
         maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None
@@ -315,7 +314,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         maybeAgentReferenceNumber = Some("testAgentReferenceNumber"),
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
-        maybeSelfEmployments = None,
+        selfEmployments = Seq.empty,
         maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None
@@ -333,7 +332,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         saveAndRetrieveLocation = "testLocation",
         currentTaxYear = currentYear,
         selectedTaxYear = None,
-        maybeSelfEmployments = None,
+        selfEmployments = Seq.empty,
         maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None

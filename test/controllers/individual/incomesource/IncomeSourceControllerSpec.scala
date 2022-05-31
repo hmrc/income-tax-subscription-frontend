@@ -181,7 +181,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user selects self-employment and self-employment journey has not been completed before" when {
         s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(None)
           mockFetchOverseasProperty(None)
@@ -204,7 +204,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user selected UK property and UK property journey has not been completed before" should {
         s"redirect to ${controllers.individual.business.routes.PropertyStartDateController.show()}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(None)
           mockFetchOverseasProperty(None)
@@ -228,7 +228,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user selected overseas property and overseas property journey has not been completed before" should {
         s"redirect to ${controllers.individual.business.routes.OverseasPropertyStartDateController.show().url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(None)
           mockFetchOverseasProperty(None)
@@ -251,7 +251,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user select self-employment and self-employment journey has completed before" should {
         s" redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show.url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSummaryDataSelfEmploymentData))
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(None)
           mockFetchOverseasProperty(None)
@@ -274,7 +274,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user select self-employment and UK property and both journeys have been completed before" should {
         s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSummaryDataSelfEmploymentData))
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
@@ -299,7 +299,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user select self-employment and UK property and self-employment journeys has not been completed before" should {
         s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(None)
           mockFetchOverseasProperty(None)
@@ -322,7 +322,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user select self-employment and overseas property and both journeys have been completed before" should {
         s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSummaryDataSelfEmploymentData))
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(None)
           mockFetchOverseasProperty(Some(OverseasPropertyModel(
@@ -348,7 +348,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user select self-employment, UK property and overseas property and all three journeys have been completed before" should {
         s"return an SEE OTHER (303)" + s"${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSummaryDataSelfEmploymentData))
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(testSummaryDataSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
@@ -377,7 +377,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user select UK property and UK property journeys has been completed before" should {
         s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show.url}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
@@ -402,7 +402,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user select overseas property and overseas property journeys has been completed before" should {
         s"return an SEE OTHER (303)" + s" ${controllers.individual.subscription.routes.CheckYourAnswersController.submit}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(None)
           mockFetchOverseasProperty(Some(OverseasPropertyModel(
@@ -427,7 +427,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user select UK property and overseas property and both journeys have been completed before" should {
         s" redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
@@ -455,7 +455,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       "the user selects self-employment and no UK property or overseas property and self-employment journey has been completed before" should {
         s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show}" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockGetSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey)(Some(testSelfEmploymentData))
+          mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(testSelfEmploymentData)
           mockGetSubscriptionDetails[AccountingMethodModel](BusinessAccountingMethod)(Some(testAccountingMethod))
           mockFetchProperty(None)
           mockFetchOverseasProperty(None)

@@ -78,13 +78,13 @@ object IntegrationTestModels {
   val testOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidStartDate)
   val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(DateModel("05", "04", "2017"))
   val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
-  val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData(
+  val testBusinesses: Option[Seq[SelfEmploymentData]] = Some(Seq(SelfEmploymentData(
     id = "12345",
     businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
     businessName = Some(testBusinessName),
     businessTradeName = Some(testBusinessTrade),
     businessAddress = Some(testBusinessAddress)
-  ))
+  )))
   val testTooManyBusinesses: Seq[SelfEmploymentData] = Array.range(1, 51).map( i =>
     SelfEmploymentData(
     id = i.toString,

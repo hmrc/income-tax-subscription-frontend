@@ -43,6 +43,12 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
     )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
   }
 
+  def mockGetSubscriptionDetailsSeq[T](id: String)(response: Seq[T]): OngoingStubbing[Future[Seq[T]]] = {
+    when(mockIncomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[T](
+      ArgumentMatchers.any(), ArgumentMatchers.eq(id)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
+  }
+
   def mockSaveSubscriptionDetails[T](id: String, value: T)
                                     (response: PostSubscriptionDetailsResponse): OngoingStubbing[Future[PostSubscriptionDetailsResponse]] = {
     when(mockIncomeTaxSubscriptionConnector.saveSubscriptionDetails[T](

@@ -65,7 +65,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait with ImplicitDateFormatter 
                         overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = Some(testOverseasPropertyStartDate)): AgentSummary = AgentSummary(
     businessName = Some(testBusinessName),
     selectedTaxYear = selectedTaxYear,
-    selfEmployments = Some(testSelfEmployments),
+    selfEmployments = testSelfEmployments,
     accountingMethod = Some(testAccountingMethod),
     propertyStartDate = propertyStartDate,
     accountingMethodProperty = accountingMethodProperty,
