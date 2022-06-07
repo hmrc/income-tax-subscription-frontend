@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
@@ -25,43 +24,15 @@ import play.api.http.Status.SEE_OTHER
 
 class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  {
 
-  override def beforeEach(): Unit = {
-    disable(RemoveCovidPages)
-    super.beforeEach()
-  }
-
-  "GET /add-another - when RemoveCovidPages FS Enabled" when {
-    s"clear the Subscription Details  and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
-      Given("I setup the wiremock stubs and feature switch is enabled")
-      AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
-
-      When("I call GET /add-another")
-      enable(RemoveCovidPages)
-      val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = true)
-      val expectedRedirect: String = eligibility.routes.OtherSourcesOfIncomeController.show.url
-
-      Then(s"The result must have a status of SEE_OTHER and redirect to '$expectedRedirect'")
-      res must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(expectedRedirect)
-      )
-
-      val cookie = getSessionMap(res)
-      cookie.keys must not contain ITSASessionKeys.MTDITID
-      cookie.keys must not contain ITSASessionKeys.JourneyStateKey
-    }
-  }
-
   "GET /add-another" when {
     s"clear the Subscription Details  and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
-      Given("I setup the wiremock stubs and feature switch is enabled")
+      Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
 
       When("I call GET /add-another")
       val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = true)
-      val expectedRedirect: String = eligibility.routes.Covid19ClaimCheckController.show.url
+      val expectedRedirect: String = eligibility.routes.OtherSourcesOfIncomeController.show.url
 
       Then(s"The result must have a status of SEE_OTHER and redirect to '$expectedRedirect'")
       res must have(

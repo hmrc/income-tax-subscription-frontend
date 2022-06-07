@@ -74,12 +74,6 @@ GET         /register-for-SA                        controllers.agent.matching.N
 #Language
 GET         /language/:lang                         controllers.agent.LanguageSwitchController.switchToLanguage(lang: String)
 
-#Covid19 Routes
-GET         /eligibility/covid-19                   controllers.agent.eligibility.Covid19ClaimCheckController.show
-POST        /eligibility/covid-19                   controllers.agent.eligibility.Covid19ClaimCheckController.submit
-
-GET         /error/covid-cannot-sign-up             controllers.agent.eligibility.CovidCannotSignUpController.show
-
 ######################### Business Routes
 
 #What Tax Year To Sign Up Routes

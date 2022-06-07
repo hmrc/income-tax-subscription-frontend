@@ -72,32 +72,6 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "RemoveCovidPages" should {
-    "return true if RemoveCovidPages feature switch is enabled in sys.props" in {
-      enable(RemoveCovidPages)
-      isEnabled(RemoveCovidPages) mustBe true
-    }
-    "return false if RemoveCovidPages feature switch is disabled in sys.props" in {
-      disable(RemoveCovidPages)
-      isEnabled(RemoveCovidPages) mustBe false
-    }
-
-    "return false if RemoveCovidPages feature switch does not exist" in {
-      when(mockConfig.getOptional[String]("feature-switch.remove-covid-eligibility-and-kickout-page")).thenReturn(None)
-      isEnabled(RemoveCovidPages) mustBe false
-    }
-
-    "return false if RemoveCovidPages feature switch is not in sys.props but is set to off in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.remove-covid-eligibility-and-kickout-page")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      isEnabled(RemoveCovidPages) mustBe false
-    }
-
-    "return true if RemoveCovidPages feature switch is not in sys.props but is set to on in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.remove-covid-eligibility-and-kickout-page")).thenReturn(Some(FEATURE_SWITCH_ON))
-      isEnabled(RemoveCovidPages) mustBe true
-    }
-  }
-
   "SaveAndRetrieve" should {
     "return true if SaveAndRetrieve feature switch is enabled in sys.props" in {
       enable(SaveAndRetrieve)

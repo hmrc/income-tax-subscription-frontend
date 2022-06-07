@@ -988,26 +988,6 @@ not_eligible_for_income_tax.title                               = Ni allwch ddef
 not_eligible_for_income_tax.heading                             = Ni allwch ddefnyddio’r gwasanaeth hwn eto
 not_eligible_for_income_tax.para1                               = Mae hwn yn wasanaeth sy’n cael ei brofi. Efallai y gallwch ddefnyddio’r gwasanaeth ‘Rhoi gwybod am eich incwm a’ch treuliau bob chwarter’ yn y dyfodol.
 
-# Agent Covid-19 page
-agent.covid_19_claim_check.title                                = A yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu a yw’n bwriadu gwneud hynny yn y dyfodol?
-agent.covid_19_claim_check.heading                              = A yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu a yw’n bwriadu gwneud hynny yn y dyfodol?
-agent.covid_19_claim_check.open_new_tab                         = (Yn agor tab newydd)
-agent.covid_19_claim_check.join_pilot                           = Ni all eich cleient ymuno â’r cynllun peilot ar hyn o bryd os yw wedi hawlio un neu ragor o’r grantiau hyn (mae’r cysylltiadau canlynol yn agor tab newydd):
-agent.covid_19_claim_check.join_pilot_support_scheme_point.link = Cynllun Cymhorthdal Incwm Hunangyflogaeth
-agent.covid_19_claim_check.join_pilot_retention_scheme.link     = Cynllun Cadw Swyddi yn sgil Coronafeirws
-agent.covid_19_claim_check.still_sign_your_client               = Gallwch ddal i gofrestru’ch cleient os mai dim ond wedi hawlio ad-daliad drwy’r:
-agent.covid_19_claim_check.claim_sick_pay.link                  = Cynllun Ad-dalu Tâl Salwch Statudol Coronafeirws
-agent.covid_19_claim_check.test_and_trace_support_pay.link      = Cynllun Taliadau Cymorth Profi ac Olrhain
-agent.covid_19_claim_check.error                                = Dewiswch ‘Iawn’ os yw’ch cleient erioed wedi hawlio grant coronafeirws (COVID‑19) neu’n bwriadu gwneud hynny
-agent.covid_19_claim_check.local_authority_grants.link          = Grantiau Awdurdodau Lleol
-
-# Covid Cannot Sign Up page
-agent.covid_cannot_sign_up.title                                = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
-agent.covid_cannot_sign_up.heading                              = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
-agent.covid_cannot_sign_up.line1                                = Ni fyddwch yn gallu cymryd rhan yn y cynllun peilot hwn ar ran eich cleient os yw erioed wedi hawlio grant coronafeirws (COVID-19) neu’n bwriadu gwneud hynny yn y dyfodol.
-agent.covid_cannot_sign_up.line2                                = Bydd angen i chi anfon {0} yn lle hynny, ac efallai y bydd modd i chi gofrestru’ch cleient yn y dyfodol.
-agent.covid_cannot_sign_up.line2.link                           = Ffurflen Dreth Hunanasesiad
-
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole_trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
 
