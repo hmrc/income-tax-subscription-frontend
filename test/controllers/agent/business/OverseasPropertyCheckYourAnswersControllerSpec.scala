@@ -22,14 +22,16 @@ import config.featureswitch.FeatureSwitchingConfig
 import controllers.agent.AgentControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import utilities.SubscriptionDataKeys
 import views.html.agent.business.OverseasPropertyCheckYourAnswers
 
 import scala.concurrent.Future
@@ -83,16 +85,40 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   }
 
   "submit" should {
-    "redirect to the task list when the submission is successful" in withFeatureSwitch(SaveAndRetrieve) {
-      withController { controller =>
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-        setupMockSubscriptionDetailsSaveFunctions()
+    "redirect to the task list" when {
+      "Feature Switch(SaveAndRetrieve) is enabled" when {
+        "the user answer all the answers for the overseas property" should {
+          "save the overseas property answers" in withFeatureSwitch(SaveAndRetrieve) {
+            withController { controller =>
+              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+              setupMockSubscriptionDetailsSaveFunctions()
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+              val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+              verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+            }
+          }
+        }
+
+        "the user answer partial answers for the overseas property" should {
+          "not save the overseas property answers" in withFeatureSwitch(SaveAndRetrieve) {
+            withController { controller =>
+              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+
+              val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+              verify(mockConnector, never).saveSubscriptionDetails[OverseasPropertyModel](
+                any(),
+                ArgumentMatchers.eq(SubscriptionDataKeys.Property),
+                any()
+              )(any(), any())
+            }
+          }
+        }
       }
     }
 

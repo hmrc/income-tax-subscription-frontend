@@ -28,7 +28,6 @@
         caption: String,
         postAction: Call,
         isIndividual: Boolean,
-        isComplete: Boolean = false,
         isConfirmed: Boolean = false,
         saveAndContinue: Boolean = false,
         saveAndReturnReference: Option[String] = None
@@ -49,8 +48,7 @@
             @saveAndContinueButton(
                 isIndividual = isIndividual,
                 saveAndReturnReference = saveAndReturnReference,
-                saveAndContinueText = if(isConfirmed) Some(messages("base.continue")) else Some(messages("base.confirm-and-continue")),
-                disabled = !isComplete
+                saveAndContinueText = if(isConfirmed) Some(messages("base.continue")) else Some(messages("base.confirm-and-continue"))
             )
         } else {
             @continueButton()

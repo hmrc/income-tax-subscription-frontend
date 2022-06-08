@@ -37,7 +37,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
                                                           (implicit val ec: ExecutionContext,
                                                            mcc: MessagesControllerComponents,
                                                            val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
-  def show(isEditMode: Boolean): Action[AnyContent]  = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
@@ -61,9 +61,13 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
       withAgentReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
           withOverseasProperty(reference) { property =>
-            subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map(_ => {
-              Redirect(controllers.agent.routes.TaskListController.show())
-            })
+            if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+              subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map{_ =>
+                Redirect(controllers.agent.routes.TaskListController.show())
+              }
+            } else {
+              Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
+            }
           }
         } else {
           Future.failed(new NotFoundException("[OverseasPropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
