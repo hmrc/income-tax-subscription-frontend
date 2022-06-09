@@ -48,7 +48,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
           AuthStub.stubAuthSuccess()
 
           When("I call GET /index")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
+          val res = IncomeTaxSubscriptionFrontend.indexPage(None)
 
           Then("the result must have a status of SEE_OTHER and a redirect location of /client-details")
           res must have(

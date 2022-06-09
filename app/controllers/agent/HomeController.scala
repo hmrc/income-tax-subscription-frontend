@@ -17,11 +17,11 @@
 package controllers.agent
 
 import auth.agent.AgentJourneyState._
-import auth.agent.{AgentSignUp, AgentUserMatching, StatelessController}
+import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching, StatelessController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.agent.ITSASessionKeys._
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services.{AuditingService, AuthService}
 
 import javax.inject.{Inject, Singleton}
@@ -40,24 +40,32 @@ class HomeController @Inject()(val auditingService: AuditingService,
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      user.arn match {
-        case Some(arn) =>
-          (user.clientNino, user.clientUtr) match {
-            case (Some(_), Some(_)) =>
-              if(isEnabled(SaveAndRetrieve)) {
-                Future.successful(Redirect(controllers.agent.routes.TaskListController.show()).withJourneyState(AgentSignUp))
-              } else {
-                Future.successful(Redirect(controllers.agent.routes.WhatYearToSignUpController.show()).withJourneyState(AgentSignUp))
-              }
-            case (Some(_), _) =>
-              Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show).removingFromSession(ITSASessionKeys.JourneyStateKey))
-            case _ =>
-              Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
-                .addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching))
-          }
-        case None =>
-          Future.successful(Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show))
+      val alreadyInSignUp = request.session.isInState(AgentSignUp)
+      val saveAndRetrieve = isEnabled(SaveAndRetrieve)
+      val ninoPresent = user.clientNino.isDefined
+      val utrPresent = user.clientUtr.isDefined
+      val arnMaybe = user.arn
+      val redirect = (alreadyInSignUp, saveAndRetrieve, ninoPresent, utrPresent, arnMaybe) match {
+        // this session has already passed through the throttle, and we are in S&R
+        case (true, true, _, _, _) => Redirect(controllers.agent.routes.TaskListController.show())
+        // this session has already passed through the throttle and we are not in S&R
+        case (true, _, _, _, _) => Redirect(controllers.agent.routes.WhatYearToSignUpController.show())
+        // this session is new, has full data, and we are in S&R
+        case (_, true, true, true, _) => Redirect(controllers.agent.routes.TaskListController.show()).withJourneyState(AgentSignUp)
+        // this session is new, has full data, and we are not in S&R
+        case (_, _, true, true, _) => Redirect(controllers.agent.routes.WhatYearToSignUpController.show()).withJourneyState(AgentSignUp)
+        // this session has missing data
+        case (_, _, true, _, _) => Redirect(controllers.agent.matching.routes.NoSAController.show).removingFromSession(ITSASessionKeys.JourneyStateKey)
+        // Got an agent enrolment only - no user data at all
+        case (_, _, _, _, Some(arn)) =>
+          Redirect(controllers.agent.matching.routes.ClientDetailsController.show()).addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching)
+        // Got nothing. Are you even enrolled?
+        case (_, _, _, _, _) => Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show)
       }
+      Future.successful(redirect)
   }
+
+  implicit val cacheSessionFunctions: Session => SessionFunctions = AgentJourneyState.SessionFunctions
+  implicit val cacheRequestFunctions: Request[_] => RequestFunctions = AgentJourneyState.RequestFunctions
 
 }

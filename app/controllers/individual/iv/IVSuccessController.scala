@@ -16,10 +16,11 @@
 
 package controllers.individual.iv
 
-import auth.individual.{StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
+import auth.individual.{JourneyState, StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
+import auth.individual.JourneyState.{RequestFunctions, SessionFunctions}
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Session}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ITSASessionKeys
@@ -51,5 +52,9 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
           )
         }
   }
+
+  implicit val cacheSessionFunctions: Session => SessionFunctions = JourneyState.SessionFunctions
+  implicit val cacheRequestFunctions: Request[_] => RequestFunctions = JourneyState.RequestFunctions
+
 
 }

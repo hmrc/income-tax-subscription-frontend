@@ -131,16 +131,19 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString
 
-    def defaultCookies(withUTR: Boolean = true): Map[String, String] = {
+    def defaultCookies(withUTR: Boolean = true, withJourneyStateSignUp: Boolean = true): Map[String, String] = {
       val utrKvp = if (withUTR)
         Map(ITSASessionKeys.UTR -> "123456")
       else
         Map()
+      val stateKvp = if (withJourneyStateSignUp)
+        Map(ITSASessionKeys.JourneyStateKey -> AgentSignUp.name)
+      else
+        Map()
       Map(
         ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN,
-        ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
         ITSASessionKeys.REFERENCE -> "test-reference"
-      ) ++ utrKvp
+      ) ++ utrKvp ++ stateKvp
     }
 
     val headers: Seq[(String, String)] = Seq(
@@ -154,9 +157,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       Session()
     )
 
-    def get(uri: String, additionalCookies: Map[String, String] = Map.empty, withUTR: Boolean = true): WSResponse =
+    def get(uri: String, additionalCookies: Map[String, String] = Map.empty, withUTR: Boolean = true, withJourneyStateSignUp: Boolean = true): WSResponse =
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withUTR) ++ additionalCookies))
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withUTR, withJourneyStateSignUp) ++ additionalCookies))
         .get()
         .futureValue
 
@@ -168,9 +171,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def startPage(): WSResponse = get("/")
 
-    def indexPage(journeySate: Option[AgentJourneyState] = None, sessionMap: Map[String, String] = Map.empty[String, String]): WSResponse = {
-      get("/index", journeySate.fold(sessionMap)(
-        state => sessionMap.+(ITSASessionKeys.JourneyStateKey -> state.name)), withUTR = false
+    def indexPage(maybeJourneyState: Option[AgentJourneyState] = Some(AgentSignUp), sessionMap: Map[String, String] = Map.empty[String, String]): WSResponse = {
+      get("/index",
+        sessionMap ++ maybeJourneyState.map(state => ITSASessionKeys.JourneyStateKey -> state.name),
+        withUTR = false,
+        withJourneyStateSignUp = false
       )
     }
 
