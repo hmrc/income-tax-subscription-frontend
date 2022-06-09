@@ -58,7 +58,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
     "return OK status" when {
       "the save and retrieve feature enabled" in withController { controller =>
         enable(SaveAndRetrieve)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(testBusinesses))
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.show("id")(subscriptionRequest))
 
@@ -71,7 +71,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
     "throw an exception" when {
       "the save and retrieve feature disabled" in withController { controller =>
         disable(SaveAndRetrieve)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(testBusinesses))
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.show("id")(subscriptionRequest))
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
@@ -79,7 +79,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
 
       "the Sole trader business cannot be retrieved" in withController { controller =>
         enable(SaveAndRetrieve)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(testBusinesses))
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.show("unknown")(subscriptionRequest))
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
@@ -91,7 +91,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
     "redirect to the task list page" when {
       "the user selects 'yes'" in withController { controller =>
         enable(SaveAndRetrieve)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(testBusinesses))
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
         mockSaveSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey, Seq())(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = await(controller.submit("id")(
@@ -105,7 +105,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
 
       "the user selects 'no'" in withController { controller =>
         enable(SaveAndRetrieve)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(testBusinesses))
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), No)
@@ -120,7 +120,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
     "throw an exception" when {
       "the save and retrieve feature not enabled" in withController { controller =>
         disable(SaveAndRetrieve)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(testBusinesses))
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), No)
@@ -132,7 +132,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
 
       "the user submits invalid data" in withController { controller =>
         enable(SaveAndRetrieve)
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(testBusinesses))
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest

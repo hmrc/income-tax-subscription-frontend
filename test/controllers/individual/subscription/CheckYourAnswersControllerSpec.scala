@@ -78,7 +78,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         incomeSource = Some(testIncomeSourceBusiness)
       )
       mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
-      mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+      mockGetSelfEmploymentsSeq[SelfEmploymentData]("Businesses")(Seq.empty)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
       mockFetchOverseasProperty(None)
@@ -92,7 +92,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         incomeSource = Some(testIncomeSourceProperty)
       )
       mockFetchAllFromSubscriptionDetails(Some(testPropertyCacheMap))
-      mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+      mockGetSelfEmploymentsSeq[SelfEmploymentData]("Businesses")(Seq.empty)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
       mockFetchOverseasProperty(None)
@@ -103,7 +103,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "return ok (200) for both journey" in {
       mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
-      mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+      mockGetSelfEmploymentsSeq[SelfEmploymentData]("Businesses")(Seq.empty)
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(Some(PropertyModel(
         accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
@@ -131,7 +131,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
-        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+        mockGetSelfEmploymentsSeq[SelfEmploymentData]("Businesses")(Seq.empty)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(Some(testFullPropertyModel))
         mockFetchOverseasProperty(Some(testFullOverseasPropertyModel))
@@ -151,7 +151,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "return a internalServer error" in {
         mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
-        mockGetSelfEmployments[Seq[SelfEmploymentData]]("Businesses")(None)
+        mockGetSelfEmploymentsSeq[SelfEmploymentData]("Businesses")(Seq.empty)
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(Some(testFullPropertyModel))
         mockFetchOverseasProperty(Some(testFullOverseasPropertyModel))

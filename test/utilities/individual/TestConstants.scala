@@ -139,8 +139,8 @@ object TestConstants {
 
   val testIndividualSummary: IndividualSummary = IndividualSummary(
     incomeSource = Some(IncomeSourceModel(true, false, false)),
-    selfEmployments = Some(Seq(SelfEmploymentData("1", Some(BusinessStartDate(startDate)), Some(testBusinessName),
-      Some(BusinessTradeNameModel("plumbing")), Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))))),
+    selfEmployments = Seq(SelfEmploymentData("1", Some(BusinessStartDate(startDate)), Some(testBusinessName),
+      Some(BusinessTradeNameModel("plumbing")), Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF")))))),
     accountingMethod = Some(AccountingMethodModel(Cash)),
     selectedTaxYear = Some(AccountingYearModel(Current))
   )

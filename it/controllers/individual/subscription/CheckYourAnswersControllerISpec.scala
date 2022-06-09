@@ -80,7 +80,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           request = BusinessSubscriptionDetailsModel(
             nino = testNino,
             accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-            selfEmploymentsData = Some(testBusinesses),
+            selfEmploymentsData = testBusinesses,
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
             propertyStartDate = None,
@@ -130,7 +130,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             request = BusinessSubscriptionDetailsModel(
               nino = testNino,
               accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-              selfEmploymentsData = Some(testBusinesses),
+              selfEmploymentsData = testBusinesses,
               accountingMethod = Some(testAccountingMethod.accountingMethod),
               incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
               propertyStartDate = None,
@@ -177,7 +177,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             request = BusinessSubscriptionDetailsModel(
               nino = testNino,
               accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-              selfEmploymentsData = Some(testBusinesses),
+              selfEmploymentsData = testBusinesses,
               accountingMethod = Some(testAccountingMethod.accountingMethod),
               incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false),
               propertyStartDate = None,
@@ -433,7 +433,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           request = BusinessSubscriptionDetailsModel(
             nino = testNino,
             accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-            selfEmploymentsData = Some(testBusinesses),
+            selfEmploymentsData = testBusinesses,
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
             propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),
@@ -483,7 +483,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           request = BusinessSubscriptionDetailsModel(
             nino = testNino,
             accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-            selfEmploymentsData = Some(testBusinesses),
+            selfEmploymentsData = testBusinesses,
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
             propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),
@@ -531,7 +531,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           request = BusinessSubscriptionDetailsModel(
             nino = testNino,
             accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-            selfEmploymentsData = Some(testBusinesses),
+            selfEmploymentsData = testBusinesses,
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
             propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),
@@ -579,7 +579,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           request = BusinessSubscriptionDetailsModel(
             nino = testNino,
             accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-            selfEmploymentsData = Some(testBusinesses),
+            selfEmploymentsData = testBusinesses,
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
             propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),
@@ -627,7 +627,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           request = BusinessSubscriptionDetailsModel(
             nino = testNino,
             accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-            selfEmploymentsData = Some(testBusinesses),
+            selfEmploymentsData = testBusinesses,
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
             propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),
@@ -702,7 +702,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         request = BusinessSubscriptionDetailsModel(
           nino = testNino,
           accountingPeriod = AccountingPeriodUtil.getNextTaxYear,
-          selfEmploymentsData = Some(testBusinesses),
+          selfEmploymentsData = testBusinesses,
           accountingMethod = Some(testAccountingMethod.accountingMethod),
           incomeSource = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true),
           propertyStartDate = testFullPropertyModel.startDate.map(PropertyStartDateModel.apply),

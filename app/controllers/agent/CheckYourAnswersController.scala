@@ -68,9 +68,9 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
     }
 
   private def getSelfEmploymentsData(reference: String)
-                                    (implicit request: Request[AnyContent]): Future[(Option[Seq[SelfEmploymentData]], Option[AccountingMethodModel])] = {
+                                    (implicit request: Request[AnyContent]): Future[(Seq[SelfEmploymentData], Option[AccountingMethodModel])] = {
     for {
-      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
     } yield (businesses, businessAccountingMethod)
   }

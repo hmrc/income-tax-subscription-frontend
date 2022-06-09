@@ -86,7 +86,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         selectedTaxYear = Some(AccountingYearModel(Next))
       )
       mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
-      mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(Some(Seq(
+      mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq(
         SelfEmploymentData(
           id = "id",
           businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -94,7 +94,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
           businessTradeName = Some(BusinessTradeNameModel("business trade")),
           businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
         )
-      )))
+      ))
       mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(Some(AccountingMethodModel(Cash)))
       mockFetchProperty(Some(PropertyModel(
         accountingMethod = Some(Cash),
@@ -132,7 +132,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
           enable(SaveAndRetrieve)
           setupMockSubscriptionDetailsSaveFunctions()
           mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
-          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -160,7 +160,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         "return an internalServer error" in {
           enable(SaveAndRetrieve)
           mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
-          mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+          mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethod.accountingMethod),
@@ -186,7 +186,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     "save and retrieve feature switch is disabled" should {
       "throw NotFoundException" in {
         mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(None)
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
 
         intercept[NotFoundException](await(TestTaskListController.submit()(subscriptionRequestWithName)))

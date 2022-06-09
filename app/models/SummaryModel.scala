@@ -45,7 +45,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
                              businessName: Option[BusinessNameModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
-                             selfEmployments: Option[Seq[SelfEmploymentData]] = None,
+                             selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                              propertyStartDate: Option[PropertyStartDateModel] = None,
                              accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                              overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
@@ -58,7 +58,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
 
   def ukPropertyComplete: Boolean = propertyStartDate.isDefined && accountingMethodProperty.isDefined
 
-  def selfEmploymentComplete: Boolean = selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+  def selfEmploymentComplete: Boolean = selfEmployments.exists(_.isComplete) && accountingMethod.isDefined
 
   def toBusinessSubscriptionDetailsModel(nino: String): BusinessSubscriptionDetailsModel = {
     val useSelfEmployments = incomeSource.exists(_.selfEmployment)
@@ -69,7 +69,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
 
     val hasValidForeignProperty: Boolean = if (useForeignProperty) overseasPropertyStartDate.isDefined && overseasAccountingMethodProperty.isDefined else true
 
-    val hasValidSelfEmployments: Boolean = if (useSelfEmployments) selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined else true
+    val hasValidSelfEmployments: Boolean = if (useSelfEmployments) selfEmployments.exists(_.isComplete) && accountingMethod.isDefined else true
 
     if (!hasValidProperty) throw new Exception("Missing data items for valid property submission")
     if (!hasValidForeignProperty) throw new Exception("Missing data items for valid foreign property submission")
@@ -85,7 +85,7 @@ case class IndividualSummary(incomeSource: Option[IncomeSourceModel] = None,
     BusinessSubscriptionDetailsModel(
       nino,
       accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),
-      if (useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
+      if (useSelfEmployments) Some(selfEmployments.filter(_.isComplete)) else None,
       if (useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
       incomeSource.getOrElse(throw new Exception("IncomeSource model not defined for BusinessSubscriptionDetailsModel")),
       if (useUkProperty) propertyStartDate else None,
@@ -105,7 +105,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                         overseasPropertyStartDate: Option[OverseasPropertyStartDateModel] = None,
                         overseasAccountingMethodProperty: Option[OverseasAccountingMethodPropertyModel] = None,
-                        selfEmployments: Option[Seq[SelfEmploymentData]] = None
+                        selfEmployments: Seq[SelfEmploymentData] = Seq.empty
                        ) extends SummaryModel {
 
   lazy val foreignPropertyComplete: Boolean = {
@@ -114,7 +114,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
 
   def ukPropertyComplete: Boolean = propertyStartDate.isDefined && accountingMethodProperty.isDefined
 
-  def selfEmploymentComplete: Boolean = selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined
+  def selfEmploymentComplete: Boolean = selfEmployments.exists(_.isComplete) && accountingMethod.isDefined
 
   def toBusinessSubscriptionDetailsModel(nino: String): BusinessSubscriptionDetailsModel = {
 
@@ -126,7 +126,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
 
     val hasValidForeignProperty: Boolean = if (useForeignProperty) overseasPropertyStartDate.isDefined && overseasAccountingMethodProperty.isDefined else true
 
-    val hasValidSelfEmployments: Boolean = if (useSelfEmployments) selfEmployments.exists(_.exists(_.isComplete)) && accountingMethod.isDefined else true
+    val hasValidSelfEmployments: Boolean = if (useSelfEmployments) selfEmployments.exists(_.isComplete) && accountingMethod.isDefined else true
 
     if (!hasValidProperty) throw new Exception("Missing data items for valid property submission")
     if (!hasValidForeignProperty) throw new Exception("Missing data items for valid foreign property submission")
@@ -141,7 +141,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceModel] = None,
     BusinessSubscriptionDetailsModel(
       nino,
       accountingPeriodVal.getOrElse(throw new Exception("Accounting period not defined for BusinessSubscriptionDetailsModel")),
-      if (useSelfEmployments) selfEmployments.map(_.filter(_.isComplete)) else None,
+      if (useSelfEmployments) Some(selfEmployments.filter(_.isComplete)) else None,
       if (useSelfEmployments) accountingMethod.map(_.accountingMethod) else None,
       incomeSource.getOrElse(throw new Exception("IncomeSource model not defined for BusinessSubscriptionDetailsModel")),
       if (useUkProperty) propertyStartDate else None,

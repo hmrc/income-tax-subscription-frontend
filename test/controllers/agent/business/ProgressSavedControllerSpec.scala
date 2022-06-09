@@ -72,7 +72,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
 
   private val currentYear = 2023
   private val selectedTaxYear = Some(AccountingYearModel(Next))
-  private val selfEmployments = Some(Seq(
+  private val selfEmployments = Seq(
     SelfEmploymentData(
       id = "id",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -80,7 +80,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
       businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
-  ))
+  )
   private val selfEmploymentAccountingMethod = Some(AccountingMethodModel(Cash))
   private val property = Some(PropertyModel(
     accountingMethod = Some(Cash),
@@ -93,7 +93,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
     confirmed = true
   ))
 
-  "Show" should {
+  "show" should {
     "return OK with progress saved page" when {
       "the location parameter is not provided" in withController { (controller, mockedView) =>
         enable(SaveAndRetrieve)
@@ -118,7 +118,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
           selectedTaxYear = selectedTaxYear
         )
         mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
-        mockGetSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey)(selfEmployments)
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(selfEmployments)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(selfEmploymentAccountingMethod)
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
@@ -145,7 +145,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
           saveAndRetrieveLocation = "test-location",
           currentTaxYear = currentYear,
           selectedTaxYear = selectedTaxYear,
-          maybeSelfEmployments = selfEmployments,
+          selfEmployments = selfEmployments,
           maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
           maybePropertyModel = property,
           maybeOverseasPropertyModel = overseasProperty

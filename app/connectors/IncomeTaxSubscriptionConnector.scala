@@ -63,6 +63,10 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
     http.GET[Option[T]](subscriptionURL(reference, id))
   }
 
+  def getSubscriptionDetailsSeq[T](reference: String, id: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
+    getSubscriptionDetails[Seq[T]](reference: String, id: String).map(_.getOrElse(Seq.empty))
+  }
+
   def retrieveReference(utr: String)(implicit hc: HeaderCarrier): Future[RetrieveReferenceResponse] = {
     http.POST[JsObject, RetrieveReferenceResponse](retrieveReferenceUrl, Json.obj("utr" -> utr))
   }

@@ -89,7 +89,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
   private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
     for {
       cacheMap <- subscriptionDetailsService.fetchAll(reference)
-      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
@@ -125,7 +125,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
           withAgentReference { reference =>
             val model = for {
               cacheMap <- subscriptionDetailsService.fetchAll(reference)
-              selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+              selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
               selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
               property <- subscriptionDetailsService.fetchProperty(reference)
               overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)

@@ -20,7 +20,6 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import controllers.utils.ReferenceRetrieval
 import forms.agent.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
@@ -30,7 +29,7 @@ import play.api.mvc._
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
-import utilities.SubscriptionDataKeys.BusinessesKey
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import views.html.agent.business.RemoveBusiness
 
 import javax.inject.{Inject, Singleton}
@@ -72,7 +71,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
             },
             {
               case Yes => for {
-                businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+                businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
                 _ = deleteBusiness(reference, businessId, businesses)
               } yield Redirect(controllers.agent.routes.TaskListController.show())
               case No => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
@@ -85,13 +84,15 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
     }
   }
 
-  private def deleteBusiness(reference: String, businessId: String, maybeBusinesses: Option[Seq[SelfEmploymentData]])(
+  private def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData])(
     implicit hc: HeaderCarrier
-  ): Option[Future[PostSubscriptionDetailsResponse]] = {
-    maybeBusinesses map { businesses =>
+  ): Unit = {
+    val remainingBusinesses = businesses.filterNot(_.id == businessId)
+    incomeTaxSubscriptionConnector
+      .saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, remainingBusinesses)
+    if (remainingBusinesses.isEmpty)
       incomeTaxSubscriptionConnector
-        .saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, businesses.filterNot(_.id == businessId))
-    }
+        .deleteSubscriptionDetails(reference, BusinessAccountingMethod)
   }
 
   private def withBusinessData(
@@ -108,10 +109,8 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   }
 
   private def fetchBusinessData(reference: String, id: String)(implicit hc: HeaderCarrier): Future[Option[SelfEmploymentData]] = {
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey).map {
-      case Some(businesses) =>
-        businesses.find(_.id == id)
-      case None => None
+    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey).map {
+      _.find(_.id == id)
     }
   }
 

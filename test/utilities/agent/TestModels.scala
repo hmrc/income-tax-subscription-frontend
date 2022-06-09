@@ -47,8 +47,8 @@ object TestModels {
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testSelectedTaxYearCurrent = AccountingYearModel(Current)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
-  val testSelfEmployments = Some(Seq(SelfEmploymentData("1", Some(BusinessStartDate(testStartDate)), Some(testBusinessName),
-    Some(BusinessTradeNameModel("plumbing")), confirmed = true)))
+  val testSelfEmployments = Seq(SelfEmploymentData("1", Some(BusinessStartDate(testStartDate)), Some(testBusinessName),
+    Some(BusinessTradeNameModel("plumbing")), confirmed = true))
 
   val emptyCacheMap = CacheMap("", Map())
 

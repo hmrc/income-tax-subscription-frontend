@@ -215,7 +215,7 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     if (incomeSourcesStatus.selfEmploymentAvailable) {
       mockFetchAllSelfEmployments()
     } else {
-      mockFetchAllSelfEmployments(Some(Seq.fill(appConfig.maxSelfEmployments)(SelfEmploymentData("testId"))))
+      mockFetchAllSelfEmployments(Seq.fill(appConfig.maxSelfEmployments)(SelfEmploymentData("testId")))
     }
     if (incomeSourcesStatus.ukPropertyAvailable) {
       mockFetchProperty(None)

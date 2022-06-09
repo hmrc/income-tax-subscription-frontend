@@ -85,7 +85,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
                        )(implicit hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
     for {
       cacheMap <- subscriptionDetailsService.fetchAll(reference)
-      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey)
+      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
@@ -98,7 +98,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
         nino = maybeNino.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve nino from session")),
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = cacheMap.getSelectedTaxYear,
-        maybeSelfEmployments = businesses,
+        selfEmployments = businesses,
         maybeSelfEmploymentAccountingMethod = businessAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty

@@ -61,7 +61,7 @@ class SummaryModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
       "provided with a valid set of data for SE" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-          selfEmployments = Some(Seq(completeSeModel)),
+          selfEmployments = Seq(completeSeModel),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           selectedTaxYear = Some(AccountingYearModel(Next))
         )
@@ -80,7 +80,7 @@ class SummaryModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
       "provided with a valid set of data for SE filtering out incomplete sets" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-          selfEmployments = Some(Seq(completeSeModel, SelfEmploymentData("badData"))),
+          selfEmployments = (Seq(completeSeModel, SelfEmploymentData("badData"))),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           selectedTaxYear = Some(AccountingYearModel(Next))
         )
@@ -137,7 +137,7 @@ class SummaryModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
       "provided with a valid set of all data" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-          selfEmployments = Some(Seq(completeSeModel)),
+          selfEmployments = Seq(completeSeModel),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           selectedTaxYear = Some(AccountingYearModel(Current)),
           propertyStartDate = Some(PropertyStartDateModel(date)),
@@ -164,7 +164,7 @@ class SummaryModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
       "provided with valid data including data not selected as an income source" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = false)),
-          selfEmployments = Some(Seq(completeSeModel)),
+          selfEmployments = Seq(completeSeModel),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           propertyStartDate = Some(PropertyStartDateModel(date)),
           accountingMethodProperty = Some(AccountingMethodPropertyModel(Cash)),
@@ -211,7 +211,7 @@ class SummaryModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
       "accounting year selection is missing when se employments are the only income" in {
         val summary = IndividualSummary(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-          selfEmployments = Some(Seq(completeSeModel)),
+          selfEmployments = Seq(completeSeModel),
           accountingMethod = Some(AccountingMethodModel(Cash))
         )
 
@@ -220,7 +220,7 @@ class SummaryModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
       "income source model is missing on any submission" in {
         val summary = IndividualSummary(
-          selfEmployments = Some(Seq(completeSeModel)),
+          selfEmployments = Seq(completeSeModel),
           accountingMethod = Some(AccountingMethodModel(Cash)),
           selectedTaxYear = Some(AccountingYearModel(Next))
         )
