@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import org.jsoup.Jsoup
@@ -25,11 +24,6 @@ import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.{OK, SEE_OTHER}
 
 class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
-
-  override def beforeEach(): Unit = {
-    disable(RemoveCovidPages)
-    super.beforeEach()
-  }
 
   trait Setup {
     AuthStub.stubAuthSuccess()
@@ -42,7 +36,8 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
   object NoClientRelationshipMessages {
     val title: String = "You’re not authorised for this client"
     val heading: String = "You’re not authorised for this client"
-    val para1: String = "To authorise you as their agent, your client needs to sign into this service (opens in new tab) using their own Government Gateway details. Once they have done this, you can come back to sign up your client."
+    val para1: String = "To authorise you as their agent, your client needs to sign into this service (opens in new tab) " +
+      "using their own Government Gateway details. Once they have done this, you can come back to sign up your client."
     val link: String = "sign into this service (opens in new tab)"
     val button: String = "Sign up another client"
     val signOut: String = "Sign out"
@@ -65,18 +60,18 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
     }
 
     "have a paragraph explaining why they are not authorised" in new Setup {
-      val content = doc.body().getElementById("main-content")
+      private val content = doc.body().getElementById("main-content")
       content.getNthParagraph(1).text mustBe NoClientRelationshipMessages.para1
     }
 
     "have a Sign up another client button" in new Setup {
-      val content = doc.body().getElementById("main-content")
+      private val content = doc.body().getElementById("main-content")
       val submitButton: Element = content.getForm.getGovUkSubmitButton
       submitButton.text mustBe NoClientRelationshipMessages.button
     }
 
     "have a Sign Out link" in new Setup {
-      val content = doc.body().getElementById("main-content")
+      private val content = doc.body().getElementById("main-content")
       val signOutLink: Element = content.getLink("sign-out-button")
       signOutLink.attr("href") mustBe controllers.SignOutController.signOut.url
       signOutLink.text mustBe NoClientRelationshipMessages.signOut
@@ -90,20 +85,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
 
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup {
 
-      val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
-      val expectedRedirect: String = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/covid-19"
-
-      res must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(expectedRedirect)
-      )
-
-    }
-
-    "return SEE_OTHER when selecting clicking sign up another client - RemoveCovidPages FS enabled" in new Setup {
-
-      enable(RemoveCovidPages)
-      val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
+      private val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
       val expectedRedirect: String = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/income-sources"
 
       res must have(

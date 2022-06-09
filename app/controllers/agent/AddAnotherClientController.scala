@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.{AuthPredicates, IncomeTaxAgentUser, StatelessController}
 import auth.individual.AuthPredicate.AuthPredicate
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
@@ -39,19 +38,11 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
 
   def addAnother(): Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      if (isEnabled(RemoveCovidPages)) {
-        Redirect(eligibility.routes.OtherSourcesOfIncomeController.show)
-          .removingFromSession(ITSASessionKeys.JourneyStateKey)
-          .removingFromSession(ITSASessionKeys.clientData: _*)
-          .removingFromSession(ITSASessionKeys.REFERENCE)
-          .clearUserName
-      } else {
-        Redirect(eligibility.routes.Covid19ClaimCheckController.show)
-          .removingFromSession(ITSASessionKeys.JourneyStateKey)
-          .removingFromSession(ITSASessionKeys.clientData: _*)
-          .removingFromSession(ITSASessionKeys.REFERENCE)
-          .clearUserName
-      }
+      Redirect(eligibility.routes.OtherSourcesOfIncomeController.show)
+        .removingFromSession(ITSASessionKeys.JourneyStateKey)
+        .removingFromSession(ITSASessionKeys.clientData: _*)
+        .removingFromSession(ITSASessionKeys.REFERENCE)
+        .clearUserName
   }
 
 }

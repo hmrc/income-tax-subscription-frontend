@@ -137,7 +137,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
       "has the correct form with button" in new Setup {
         val form: Element = pageContent.getForm
         form.attr("method") mustBe "GET"
-        form.attr("action") mustBe controllers.agent.eligibility.routes.Covid19ClaimCheckController.show.url
+        form.attr("action") mustBe controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url
 
         form.firstOf("button").text mustBe CannotTakePartMessages.signUpAnother
       }

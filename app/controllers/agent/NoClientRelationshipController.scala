@@ -18,7 +18,6 @@ package controllers.agent
 
 import auth.agent.UserMatchingController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.RemoveCovidPages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import views.html.agent.NoClientRelationship
@@ -42,10 +41,6 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
 
   val submit: Action[AnyContent] = Authenticated.async { _ =>
     _ =>
-      if (isEnabled(RemoveCovidPages)) {
-        Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show))
-      } else {
-        Future.successful(Redirect(controllers.agent.eligibility.routes.Covid19ClaimCheckController.show))
-      }
+      Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show))
   }
 }

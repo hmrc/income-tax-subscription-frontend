@@ -192,14 +192,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
 
-    def showCovid19ClaimCheck(): WSResponse = get("/eligibility/covid-19", withUTR = false)
-
-    def submitCovid19ClaimCheck(request: Option[YesNo]): WSResponse = post("/eligibility/covid-19")(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => Covid19ClaimCheckForm.covid19ClaimCheckForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
-
     def showSoleTrader(): WSResponse = get("/eligibility/sole-trader-start-date")
 
     def submitSoleTraderForm(request: Option[YesNo]): WSResponse = post("/eligibility/sole-trader-start-date")(
@@ -207,9 +199,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         model => SoleTraderForm.soleTraderForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
-
-
-    def showCovidCannotSignUp(): WSResponse = get("/error/covid-cannot-sign-up")
 
     def showAccountingPeriodCheck: WSResponse = get("/eligibility/accounting-period-check")
 

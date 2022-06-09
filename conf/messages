@@ -970,26 +970,6 @@ not_eligible_for_income_tax.title                               = You cannot use
 not_eligible_for_income_tax.heading                             = You cannot use this service yet
 not_eligible_for_income_tax.para1                               = This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service in the future.
 
-# Agent Covid-19 page
-agent.covid_19_claim_check.title                                = Has your client ever claimed a coronavirus (COVID-19) grant or will they in the future?
-agent.covid_19_claim_check.heading                              = Has your client ever claimed a coronavirus (COVID-19) grant or will they in the future?
-agent.covid_19_claim_check.open_new_tab                         = (Opens in new tab)
-agent.covid_19_claim_check.join_pilot                           = Your client cannot currently join the pilot if they have claimed one or more of these grants (the following links open in a new tab):
-agent.covid_19_claim_check.join_pilot_support_scheme_point.link = Self-Employment Support Scheme
-agent.covid_19_claim_check.join_pilot_retention_scheme.link     = Coronavirus Job Retention Scheme
-agent.covid_19_claim_check.still_sign_your_client               = You can still sign your client up if they’ve only claimed a rebate through the:
-agent.covid_19_claim_check.claim_sick_pay.link                  = Coronavirus Statutory Sick Pay Rebate Scheme
-agent.covid_19_claim_check.test_and_trace_support_pay.link      = Test and Trace Support Payment Scheme
-agent.covid_19_claim_check.error                                = Select yes if your client has ever claimed or intends to claim a coronavirus (COVID‑19) grant
-agent.covid_19_claim_check.local_authority_grants.link          = Local Authority grants
-
-# Covid Cannot Sign Up page
-agent.covid_cannot_sign_up.title                                = Your client cannot take part in this pilot
-agent.covid_cannot_sign_up.heading                              = Your client cannot take part in this pilot
-agent.covid_cannot_sign_up.line1                                = You will not be able to take part in this pilot on your client’s behalf if they have ever claimed a coronavirus (COVID-19) grant, or intended to do so in future.
-agent.covid_cannot_sign_up.line2                                = You will need to send a {0} instead and you may be able to sign your client up in future.
-agent.covid_cannot_sign_up.line2.link                           = Self Assessment tax return
-
 # Agent Overseas Property Start Date Page errors
 agent.error.overseas.property.day_month_year.empty              = Enter the date your client’s overseas property business started trading
 agent.error.overseas.property.month_year.empty                  = The date must include a month and a year
