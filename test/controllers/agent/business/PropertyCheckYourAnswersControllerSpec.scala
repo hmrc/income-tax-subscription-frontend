@@ -21,20 +21,22 @@ import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.agent.AgentControllerBaseSpec
 import models.common.PropertyModel
 import models.{Cash, DateModel}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import utilities.SubscriptionDataKeys
 import views.html.agent.business.PropertyCheckYourAnswers
 
 import scala.concurrent.Future
 
 class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector  {
+  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector {
 
   override val controllerName: String = "PropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -80,16 +82,33 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   }
 
   "submit" should {
-    "redirect to the task list when the submission is successful" in withController { controller =>
-      enable(SaveAndRetrieve)
-      mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-      setupMockSubscriptionDetailsSaveFunctions()
+    "redirect to the task list when the submission is successful" when {
+      "the user submits valid full data" in withController { controller =>
+        enable(SaveAndRetrieve)
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+        setupMockSubscriptionDetailsSaveFunctions()
 
-      val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-      verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+      }
+
+      "the user submits valid partial data" in withController { controller =>
+        enable(SaveAndRetrieve)
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
+
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+        verify(mockConnector, never).saveSubscriptionDetails[PropertyModel](
+          any(),
+          ArgumentMatchers.eq(SubscriptionDataKeys.Property),
+          any()
+        )(any(), any())
+      }
     }
 
     "throw an exception if cannot retrieve property details" in withController { controller =>

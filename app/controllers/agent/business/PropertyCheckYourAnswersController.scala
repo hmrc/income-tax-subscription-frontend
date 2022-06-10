@@ -61,9 +61,13 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
       withAgentReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
           withProperty(reference) { property =>
-            subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map(_ => {
-              Redirect(controllers.agent.routes.TaskListController.show())
-            })
+            if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+              subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map{_ =>
+                Redirect(controllers.agent.routes.TaskListController.show())
+              }
+            } else {
+              Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
+            }
           }
         } else {
           Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))

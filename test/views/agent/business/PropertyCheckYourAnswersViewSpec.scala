@@ -158,9 +158,9 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           changeLink = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
 
-        "contains a disabled confirm and continue button" in {
+        "the confirm and continue button is not disabled" in {
           val buttonLink: Element = doc.selectHead(".govuk-button")
-          buttonLink.hasAttr("disabled") mustBe true
+          buttonLink.hasAttr("disabled") mustBe false
         }
       }
 
@@ -184,9 +184,9 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           changeLink = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
 
-        "contains a disabled confirm and continue button" in {
+        "the confirm and continue button is not disabled" in {
           val buttonLink: Element = doc.selectHead(".govuk-button")
-          buttonLink.hasAttr("disabled") mustBe true
+          buttonLink.hasAttr("disabled") mustBe false
         }
       }
 
@@ -210,9 +210,9 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           changeLink = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
 
-        "contains a disabled confirm and continue button" in {
+        "the confirm and continue button is not disabled" in {
           val buttonLink: Element = doc.selectHead(".govuk-button")
-          buttonLink.hasAttr("disabled") mustBe true
+          buttonLink.hasAttr("disabled") mustBe false
         }
       }
     }
