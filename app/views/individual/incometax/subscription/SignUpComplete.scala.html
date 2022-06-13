@@ -17,6 +17,8 @@
 @import config.AppConfig
 @import views.html.helpers.injected.{ButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.ImplicitDateFormatterImpl
 @import services.AccountingPeriodService
 @import views.html.helpers.injected.UpdateDeadlineTable
@@ -24,6 +26,7 @@
 @this(
         principalMainTemplate: PrincipalMainTemplate,
         buttonHelper: ButtonHelper,
+        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
         form: FormWithCSRF,
         govukPanel: GovukPanel,
         implicitDateFormatter: ImplicitDateFormatterImpl,
@@ -77,8 +80,8 @@
     <ol class="govuk-list govuk-list--number govuk-!-margin-2">
         <li>
             @Html(messages(
-            key = "sign-up-complete.what-now.find-software",
-            args = <a class="govuk-link" id="compatibleSoftware" href={appConfig.softwareUrl} rel="noreferrer noopener" target="_blank">{messages("sign-up-complete.what-now.find-software.link")}</a>
+                key = "sign-up-complete.what-now.find-software",
+                args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-complete.what-now.find-software.link"), Some(appConfig.softwareUrl)))
             ))
         </li>
         @if(taxYearSelection.contains(Next)) {
@@ -100,8 +103,8 @@
 
     <p class="govuk-body">
         @Html(messages(
-            "sign-up-complete.what-now.para",
-            <a class="govuk-link" id="btaLink" href={appConfig.btaUrl} rel="noreferrer noopener" target="_blank">{messages("sign-up-complete.what-now.para.link")}</a>
+            key = "sign-up-complete.what-now.para",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-complete.what-now.para.link"), Some(appConfig.btaUrl)))
         ))
     </p>
 

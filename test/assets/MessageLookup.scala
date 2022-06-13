@@ -260,7 +260,7 @@ object MessageLookup {
   object ClaimEnrollmentConfirmation {
     val title = "You have added Making Tax Digital for Income Tax to your account"
     val heading = "What happens now"
-    val bullet1 = "Find software that’s compatible (opens in new tab) and allow it to interact with HMRC, if you have not already done so."
+    val bullet1 = "Find software that’s compatible (opens in a new tab) and allow it to interact with HMRC, if you have not already done so."
     val bullet2 = "Send next quarterly updates using your software when required throughout the tax year."
     val bullet3 = "Submit your annual updates and declare for the tax year."
   }
@@ -574,8 +574,8 @@ object MessageLookup {
     val title = "Add Making Tax Digital for Income Tax to your business tax account"
     val heading: String = title
     val subHeading = "Your responsibilities"
-    val insetText = "You need to use your current Government Gateway ID for Self Assessment. You can check your existing account details on your business tax account (opens in new tab)."
-    val paragraph1 = "Your agent has signed you up for Making Tax Digital for Income Tax (opens in new tab)."
+    val insetText = "You need to use your current Government Gateway ID for Self Assessment. You can check your existing account details on your business tax account (opens in a new tab)"
+    val paragraph1 = "Your agent has signed you up for Making Tax Digital for Income Tax (opens in a new tab)"
     val paragraph2 = "Adding this to your business tax account lets you manage it online with your other taxes."
     val paragraph3 = "Making Tax Digital for Income Tax replaces Self Assessment. You can stop this tax at any time and go back to Self Assessment."
     val paragraph4 = "You’ll still need to send HMRC a Self Assessment tax return for the tax year before you signed up for Making Tax Digital for Income Tax."

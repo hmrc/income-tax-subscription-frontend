@@ -17,11 +17,14 @@
 @import views.html.templates.AgentMainTemplate
 @import config.AppConfig
 @import views.html.helpers.injected.{ContinueButton, SignOutLink}
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
     mainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
     continueButton: ContinueButton,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     signOutLink: SignOutLink
 )
 
@@ -30,10 +33,11 @@
 @mainTemplate(title = Messages("agent.no-client-relationship.title")) {
 
     <h1 class="govuk-heading-l">@Messages("agent.no-client-relationship.heading")</h1>
+
     <p class="govuk-body">
         @Html(messages(
-        "agent.no-client-relationship.para1",
-        <a class="govuk-link" id="get-agent-authorisation" target= " " href="https://www.gov.uk/guidance/client-authorisation-an-overview">{messages("agent.no-client-relationship.link")}</a>
+        key = "agent.no-client-relationship.para1",
+        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.no-client-relationship.link"), Some("https://www.gov.uk/guidance/client-authorisation-an-overview")))
         ))
     </p>
 

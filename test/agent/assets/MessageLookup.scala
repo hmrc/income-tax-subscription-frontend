@@ -249,9 +249,6 @@ object MessageLookup {
 
     object whatNext {
       val heading = "What you need to do next"
-      val para1 = "Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other."
-      val para1linkText = "find software that’s compatible with Making Tax Digital for Income Tax (opens in new tab)"
-      val number1 = s"If you have not already, $para1linkText and allow it interact with HMRC."
       val nextTaxYearNumber2 = "Send quarterly updates by:"
       val nextTaxYearUpdate1 = "5 August 2021"
       val nextTaxYearUpdate2 = "5 November 2021"

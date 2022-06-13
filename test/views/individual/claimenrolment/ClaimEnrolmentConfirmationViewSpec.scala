@@ -81,11 +81,6 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpecTrait {
         point3.text() mustBe MessageLookup.ClaimEnrollmentConfirmation.bullet3
       }
 
-      "Have a link to MTD account" in {
-        val a = document.select("a[id=btaLink]")
-        a attr "href" mustBe (appConfig.incomeTaxViewChangeUrl)
-      }
-
       "have a sign out link" in {
         val actionSignOut = document.getElementById("sign-out-button")
         actionSignOut.text() mustBe MessageLookup.Base.signOut

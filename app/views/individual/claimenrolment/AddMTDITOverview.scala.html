@@ -17,10 +17,13 @@
 @import config.AppConfig
 @import views.html.helpers.injected.ContinueButton
 @import views.html.templates.PrincipalMainTemplate
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     continueButton: ContinueButton
 )
 
@@ -32,16 +35,21 @@
 
 <h1 class="govuk-heading-l">@messages("mtdit-overview.heading")</h1>
 
-<p class="govuk-body"> @messages("mtdit-overview.paragraph1")
-    <a class="govuk-link" href="https://www.gov.uk/government/collections/making-tax-digital-for-income-tax" rel="noreferrer noopener" target="_blank">@messages("mtdit-overview.link_text")</a>
+<p class="govuk-body">
+    @Html(messages(
+    key = "mtdit-overview.paragraph1",
+    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("mtdit-overview.link_text"), Some("https://www.gov.uk/government/collections/making-tax-digital-for-income-tax")))
+    ))
 </p>
 
 <p class="govuk-body"> @messages("mtdit-overview.paragraph2")</p>
 
-<div class="govuk-inset-text" id="inset-text"> @messages("mtdit-overview.inset")
-    <a class="govuk-link" href="https://www.tax.service.gov.uk/business-account" rel="noreferrer noopener" target="_blank">
-        @messages("mtdit-overview.link_text2")
-    </a>
+<div class="govuk-inset-text" id="inset-text">
+    @Html(messages(
+    key = "mtdit-overview.inset",
+    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("mtdit-overview.link_text2"), Some("https://www.tax.service.gov.uk/business-account")))
+    ))
+
 </div>
 
 <h2 class="govuk-heading-m">@messages("mtdit-overview.heading2")</h2>

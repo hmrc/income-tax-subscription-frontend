@@ -17,10 +17,13 @@
 @import config.AppConfig
 @import views.html.helpers.injected.{ButtonHelper, SignOutLink}
 @import views.html.templates.PrincipalMainTemplate
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
         principalMainTemplate: PrincipalMainTemplate,
         buttonHelper: ButtonHelper,
+        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
         signOutLink: SignOutLink,
         form: FormWithCSRF
 )
@@ -40,10 +43,10 @@
 
             <ol id="actionList" class="govuk-list govuk-list--number govuk-!-margin-2">
                 <li>
-                    <a class="govuk-link" id="compatibleSoftware" href="@appConfig.softwareUrl" rel="noreferrer noopener" target="_blank">
-                        @messages("claimConfirm.content.checklist.item1.link")
-                        @messages("claimConfirm.opens_in_a_new_tab")
-                    </a>
+                    @Html(messages(
+                        key = "base.new_tab_key",
+                        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claimConfirm.content.checklist.item1.link"), Some(appConfig.softwareUrl)))
+                    ))
                     @messages(
                         key = "claimConfirm.content.checklist.item1.suffix"
                     )
@@ -56,10 +59,11 @@
                 </li>
             </ol>
 
-            <p class="govuk-body">@Html(messages("claimConfirm.content.line2",
-                    <a class="govuk-link" id="btaLink" href={appConfig.incomeTaxViewChangeUrl} rel="noreferrer noopener" target="_blank">
-                        {messages("claimConfirm.content.line2.link")}{messages("claimConfirm.opens_in_a_new_tab")}
-                    </a>))
+            <p class="govuk-body">
+                @Html(messages(
+                    key = "claimConfirm.content.line2",
+                    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claimConfirm.content.line2.link"), Some(appConfig.incomeTaxViewChangeUrl)))
+                ))
             </p>
 
             <p class="govuk-body govuk-!-margin-bottom-6">@messages("claimConfirm.content.line3")</p>
