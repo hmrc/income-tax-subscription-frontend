@@ -34,9 +34,9 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
                                       val ec: ExecutionContext,
                                       mcc: MessagesControllerComponents) extends SignUpController {
 
-  def callback: Action[AnyContent] = Authenticated { implicit request =>
+  def callback(entityId: Option[String]): Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      request.queryString.get("entityId").flatMap(_.headOption) match {
+      entityId match {
         case Some(entityId) => {
           val result = if (isEnabled(SaveAndRetrieve))
             Redirect(controllers.individual.business.routes.TaskListController.show())

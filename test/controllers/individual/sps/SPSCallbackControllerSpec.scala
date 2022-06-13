@@ -39,7 +39,7 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
 
   override val controllerName: String = "PreferencesController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "callback" -> TestSPSCallbackController.callback
+    "callback" -> TestSPSCallbackController.callback(None)
   )
 
   def request(hasEntityId: Boolean): Request[_] = {
@@ -48,7 +48,7 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
     } else {
       ""
     }
-    FakeRequest("GET", controllers.individual.sps.routes.SPSCallbackController.callback.url + entityIdParam).withSession(
+    FakeRequest("GET", controllers.individual.sps.routes.SPSCallbackController.callback(None).url + entityIdParam).withSession(
       ITSASessionKeys.JourneyStateKey -> SignUp.name,
       ITSASessionKeys.NINO -> TestConstants.testNino,
       ITSASessionKeys.UTR -> TestConstants.testUtr
@@ -61,7 +61,7 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
         "save the entityId in session and redirect to the tax year selection page" in {
           enable(SaveAndRetrieve)
 
-          val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = true)).run()
+          val result: Future[Result] = TestSPSCallbackController.callback(Some("testEntityId"))(request(hasEntityId = true)).run()
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
@@ -74,7 +74,7 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
         "save the entityId in session and redirect to the tax year selection page" in {
           disable(SaveAndRetrieve)
 
-          val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = true)).run()
+          val result: Future[Result] = TestSPSCallbackController.callback(Some("testEntityId"))(request(hasEntityId = true)).run()
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
@@ -83,7 +83,7 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
       "no entityId is present in the url" should {
         "throw an InternalServerException" in {
 
-          val result: Future[Result] = TestSPSCallbackController.callback(request(hasEntityId = false)).run()
+          val result: Future[Result] = TestSPSCallbackController.callback(None)(request(hasEntityId = false)).run()
 
           intercept[InternalServerException](await(result)).message mustBe "[SPSCallbackController][callback] - Entity Id was not found"
         }

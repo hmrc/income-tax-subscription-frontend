@@ -18,8 +18,7 @@ POST        /paperless-error                                     controllers.ind
 
 # SPS routes
 GET         /sps-handoff                                         controllers.individual.sps.SPSHandoffController.redirectToSPS
-GET         /sps-callback                                        controllers.individual.sps.SPSCallbackController.callback
-
+GET         /sps-callback                                        controllers.individual.sps.SPSCallbackController.callback(entityId: Option[String] ?= None)
 
 # Income Source Routes
 GET         /details/income-receive                              controllers.individual.incomesource.IncomeSourceController.show(editMode: Boolean ?= false)

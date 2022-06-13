@@ -28,6 +28,7 @@ import play.api.mvc._
 import services._
 import services.individual._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys._
 
 import javax.inject.{Inject, Singleton}
@@ -53,25 +54,33 @@ class HomeController @Inject()(val auditingService: AuditingService,
   def index: Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        val timestamp: String = java.time.LocalDateTime.now().toString
-        val nino: String = user.nino.getOrElse(throw new InternalServerException("[HomeController][index] - Could not retrieve nino from user"))
-        val lookupUtr: Future[Option[String]] = user.utr match {
-          case Some(value) => Future.successful(Some(value))
-          case None => citizenDetailsService.lookupUtr(nino)
-        }
-        lookupUtr flatMap {
-          case Some(utr) =>
-            getSubscription(nino) flatMap {
-              case Some(SubscriptionSuccess(mtditId)) =>
-                claimSubscription(mtditId, nino, utr)
-              case None =>
-                handleNoSubscriptionFound(utr, timestamp, nino)
-            }
-          case None =>
-            Future.successful(Redirect(routes.NoSAController.show)
-              .removingFromSession(JourneyStateKey))
+        getUserIdentifiers(user) flatMap {
+          // No NINO, should never happen
+          case (None, _, _) => throw new InternalServerException("[HomeController][index] - Could not retrieve nino from user")
+          // No UTR for NINO. Not registered for self assessment
+          case (_, None, _) => Future.successful(Redirect(routes.NoSAController.show).removingFromSession(JourneyStateKey))
+          // Already seen this session, must have pressed back.
+          case (_, Some(_), entityIdMaybe@Some(_)) if request.session.isInState(SignUp) =>
+            Future.successful(Redirect(controllers.individual.sps.routes.SPSCallbackController.callback(entityIdMaybe)))
+          // New user, with relevant information, try to subscribe them
+          case (Some(nino), Some(utr), _) => getSubscription(nino) flatMap {
+            // Subscription available, will be throttled
+            case Some(SubscriptionSuccess(mtditId)) =>
+              claimSubscription(mtditId, nino, utr)
+            // New phone, who dis?
+            case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
+          }
         }
     }
+
+  private def getUserIdentifiers(user: IncomeTaxSAUser)(implicit request: Request[AnyContent]): Future[(Option[String], Option[String], Option[String])] = {
+    val maybeEntityId = request.session.data.get(ITSASessionKeys.SPSEntityId)
+    (user.nino, user.utr, maybeEntityId) match {
+      case (None, _, _) => Future.successful((None, None, None))
+      case (Some(nino), Some(utr), _) => Future.successful((Some(nino), Some(utr), maybeEntityId))
+      case (Some(nino), None, _) => citizenDetailsService.lookupUtr(nino).map(utrMaybe => (Some(nino), utrMaybe, maybeEntityId))
+    }
+  }
 
   private def handleNoSubscriptionFound(utr: String, timestamp: String, nino: String)
                                        (implicit hc: HeaderCarrier, user: IncomeTaxSAUser, request: Request[AnyContent]) = {
@@ -91,9 +100,6 @@ class HomeController @Inject()(val auditingService: AuditingService,
     }
   }
 
-  lazy val goToPreferences: Result = Redirect(controllers.individual.routes.PreferencesController.checkPreferences)
-  lazy val goToSPSHandoff: Result = Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
-
   private def getSubscription(nino: String)(implicit request: Request[AnyContent]): Future[Option[SubscriptionSuccess]] =
     subscriptionService.getSubscription(nino) map {
       case Right(optionalSubscription) => optionalSubscription
@@ -101,7 +107,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
     }
 
   private def goToSignUp(utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result =
-    goToSPSHandoff
+    Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
       .addingToSession(StartTime -> timestamp)
       .withJourneyState(SignUp)
       .addingToSession(UTR -> utr)
