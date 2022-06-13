@@ -17,7 +17,6 @@
 package auth.individual
 
 import auth.individual.AuthPredicate._
-import auth.individual.JourneyState.{RequestFunctions, SessionFunctions}
 import config.featureswitch.FeatureSwitching
 
 import javax.inject.Inject
@@ -69,8 +68,5 @@ abstract class BaseFrontendController @Inject()(implicit val mcc: MessagesContro
   implicit class FormUtil[T](form: Form[T]) {
     def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
   }
-
-  implicit val cacheSessionFunctions: Session => SessionFunctions = JourneyState.SessionFunctions
-  implicit val cacheRequestFunctions: Request[_] => RequestFunctions = JourneyState.RequestFunctions
 
 }

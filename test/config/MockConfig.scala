@@ -17,6 +17,8 @@
 package config
 
 import models.common.subscription.EnrolmentKey
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Configuration
 import utilities.UnitTestTrait
@@ -144,5 +146,6 @@ trait MockConfig extends UnitTestTrait with AppConfig {
 object MockConfig extends MockConfig {
 
   override val configuration: Configuration = mock[Configuration]
+  when(configuration.getOptional(any())(any())).thenReturn(None)
 
 }

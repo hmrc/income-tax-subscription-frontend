@@ -20,6 +20,7 @@ import agent.audit.mocks.MockAuditingService
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitchingUtil
 import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -28,7 +29,7 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class HomeControllerSpec extends AgentControllerBaseSpec  with MockAuditingService {
+class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingService with FeatureSwitchingUtil {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -103,6 +104,43 @@ class HomeControllerSpec extends AgentControllerBaseSpec  with MockAuditingServi
 
 
           lazy val request = userMatchedRequest
+
+          def result: Future[Result] = testHomeController().index()(request)
+
+          s"redirect user to ${controllers.agent.routes.TaskListController.show().url}" in {
+            enable(SaveAndRetrieve)
+            status(result) must be(Status.SEE_OTHER)
+
+            redirectLocation(result).get mustBe controllers.agent.routes.TaskListController.show().url
+
+            await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+        }
+
+        "save and retrieve is disabled" should {
+
+          lazy val request = userMatchedRequest
+
+          def result: Future[Result] = testHomeController().index()(request)
+
+          s"redirect user to ${controllers.agent.routes.WhatYearToSignUpController.show().url}" in {
+            disable(SaveAndRetrieve)
+            status(result) must be(Status.SEE_OTHER)
+
+            redirectLocation(result).get mustBe controllers.agent.routes.WhatYearToSignUpController.show().url
+
+            await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+        }
+      }
+    }
+
+    "journey state is agent sign up" when {
+      "the user has a UTR" when {
+        "save and retrieve is enabled" should {
+
+
+          lazy val request = agentSignUpRequest
 
           def result: Future[Result] = testHomeController().index()(request)
 
