@@ -58,7 +58,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     val startDateQuestion = "UK property business trading start date"
     val accountMethodQuestion = "UK property business accounting method"
     val confirmedAndContinue = "Confirm and continue"
-    val continue = "Continue"
     val saveAndComeBack = "Save and come back later"
     val change = "Change"
     val add = "Add"
@@ -112,9 +111,12 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           changeLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
 
-        "have a confirm and continue button" in {
-          val buttonLink: Element = document(viewModel = completeAccrualsProperty).selectHead(".govuk-button")
-          buttonLink.text mustBe PropertyCheckYourAnswers.confirmedAndContinue
+        "have an enabled confirm and continue button" when {
+          "all questions have been answered" in {
+            val buttonLink: Element = document(viewModel = completeAccrualsProperty).selectHead(".govuk-button")
+            buttonLink.text mustBe PropertyCheckYourAnswers.confirmedAndContinue
+            buttonLink.hasAttr("disabled") mustBe false
+          }
         }
 
         "have a save and come back later button" in {
@@ -124,10 +126,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
             controllers.individual.business.routes.ProgressSavedController.show().url + "?location=uk-property-check-your-answers"
         }
 
-        "have a continue button if confirmed" in {
-          val buttonLink: Element = document(viewModel = confirmedAccrualsProperty).selectHead(".govuk-button")
-          buttonLink.text mustBe PropertyCheckYourAnswers.continue
-        }
 
         "not have a save and come back later button if confirmed" in {
           val buttonLink: Option[Element] = document(viewModel = confirmedAccrualsProperty).selectOptionally(".govuk-button--secondary")
@@ -156,10 +154,14 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           changeLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
 
-        "the confirm and continue button is not disabled" in {
-          val buttonLink: Element = doc.selectHead(".govuk-button")
-          buttonLink.hasAttr("disabled") mustBe false
+        "have an enabled confirm and continue button" when {
+          "the start day has not been answered" in {
+            val buttonLink: Element = document(viewModel = propertyWithMissingStartDate).selectHead(".govuk-button")
+            buttonLink.text mustBe PropertyCheckYourAnswers.confirmedAndContinue
+            buttonLink.hasAttr("disabled") mustBe false
+          }
         }
+
       }
 
       "the accounting method is incomplete" which {
@@ -182,10 +184,14 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           changeLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
 
-        "the confirm and continue button is not disabled" in {
-          val buttonLink: Element = doc.selectHead(".govuk-button")
-          buttonLink.hasAttr("disabled") mustBe false
+        "have an enabled confirm and continue button" when {
+          "the accounting method has not been answered" in {
+            val buttonLink: Element = document(viewModel = propertyWithMissingAccountingMethod).selectHead(".govuk-button")
+            buttonLink.text mustBe PropertyCheckYourAnswers.confirmedAndContinue
+            buttonLink.hasAttr("disabled") mustBe false
+          }
         }
+
       }
 
       "no answer has been completed" which {
@@ -208,9 +214,12 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           changeLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
 
-        "the confirm and continue button is not disabled" in {
-          val buttonLink: Element = doc.selectHead(".govuk-button")
-          buttonLink.hasAttr("disabled") mustBe false
+        "have an enabled confirm and continue button" when {
+          "the accounting method has not been answered" in {
+            val buttonLink: Element = document(viewModel = incompleteProperty).selectHead(".govuk-button")
+            buttonLink.text mustBe PropertyCheckYourAnswers.confirmedAndContinue
+            buttonLink.hasAttr("disabled") mustBe false
+          }
         }
       }
     }

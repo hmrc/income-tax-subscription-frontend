@@ -18,12 +18,14 @@ package controllers.individual.business
 
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub.postUri
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.taskListURI
 import helpers.IntegrationTestModels.subscriptionData
+import helpers.agent.WiremockHelper.verifyPost
 import helpers.servicemocks.AuthStub
-import models.Cash
 import models.common.OverseasPropertyModel
+import models.{Cash, DateModel}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
@@ -43,7 +45,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers()
 
         Then("Should return OK with the overseas property CYA page")
-        res must have (
+        res must have(
           httpStatus(OK),
           pageTitle(
             s"${messages("business.check-your-answers.content.overseas-property.title")} - Use software to send Income Tax updates - GOV.UK"
@@ -91,25 +93,54 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/overseas-property-check-your-answers" should {
     "redirect to the task list page" when {
-      "save and retrieve is enabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
-        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash), confirmed = true))
+      "save and retrieve is enabled" when {
+        "the user has answered all the questions for uk property" should {
+          "save the property answers" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
 
-        And("save & retrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK,
+              Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
 
-        When("POST business/overseas-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash), confirmed = true, startDate = Some(DateModel("10", "11", "2021"))))
 
-        Then("Should return a SEE_OTHER with a redirect location of task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
-        )
+            And("save & retrieve feature switch is enabled")
+            enable(SaveAndRetrieve)
 
-        IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash), confirmed = true), Some(1))
+            When("POST business/overseas-property-check-your-answers is called")
+            val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+
+            Then("Should return a SEE_OTHER with a redirect location of task list page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(taskListURI)
+            )
+
+            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash), confirmed = true, startDate = Some(DateModel("10", "11", "2021"))), Some(1))
+          }
+        }
+
+        "the user has answered partial questions for uk property" should {
+          "not save the property answers" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
+
+            And("save & retrieve feature switch is enabled")
+            enable(SaveAndRetrieve)
+
+            When("POST business/overseas-property-check-your-answers is called")
+            val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+
+            Then("Should return a SEE_OTHER with a redirect location of task list page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(taskListURI)
+            )
+
+            verifyPost(postUri(OverseasProperty), count = Some(0))
+          }
+        }
       }
     }
 

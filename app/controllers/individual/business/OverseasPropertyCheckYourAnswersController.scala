@@ -61,10 +61,15 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val view: OverseasPro
       withReference { reference =>
         if (isEnabled(SaveAndRetrieve)) {
           withProperty(reference) { property =>
-            subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map { _ =>
-              Redirect(routes.TaskListController.show())
+            if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+              subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map { _ =>
+                Redirect(routes.TaskListController.show())
+              }
+            } else {
+              Future.successful(Redirect(routes.TaskListController.show()))
             }
           }
+
         } else {
           Future.failed(new NotFoundException("[OverseasPropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
         }
