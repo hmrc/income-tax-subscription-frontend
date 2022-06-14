@@ -101,6 +101,22 @@ class HomeControllerSpec extends ControllerBaseSpec
           verifySubscriptionDetailsSave(MtditId, 1)
         }
       }
+      "the user already has an MTDIT subscription on ETMP and the session is in SignUp state" should {
+        "redirect to the claim subscription page" in {
+          mockNinoAndUtrRetrieval()
+          mockLookupUserWithUtr(testNino)(testUtr)
+          setupMockGetSubscriptionFound(testNino)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockRetrieveReferenceSuccess(testUtr)(testReference)
+
+          val result = testHomeController().index(subscriptionRequest)
+
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSCallbackController.callback(Some(TestConstants.testSpsEntityId)).url
+
+          verifySubscriptionDetailsSave(MtditId, 0)
+        }
+      }
       "the user does not already have an MTDIT subscription on ETMP" when {
         "the user is eligible " when {
           "the user does not have a current unauthorised subscription journey" when {

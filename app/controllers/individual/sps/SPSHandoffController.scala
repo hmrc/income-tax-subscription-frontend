@@ -43,7 +43,7 @@ class SPSHandoffController @Inject()(
     Authenticated {
       _ =>
         _ =>
-          goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback.url,
+          goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback(None).url,
             returnLinkText = "I have verified",
             regime = "itsa"
           )

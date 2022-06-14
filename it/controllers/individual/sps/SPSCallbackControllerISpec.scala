@@ -24,7 +24,7 @@ import play.api.http.Status._
 
 class SPSCallbackControllerISpec extends ComponentSpecBase {
 
-  s"GET ${controllers.individual.sps.routes.SPSCallbackController.callback.url}" when {
+  s"GET ${controllers.individual.sps.routes.SPSCallbackController.callback(None).url}" when {
 
     "the user is not authorised" should {
       "redirect the user to login" in {
