@@ -31,7 +31,7 @@ base.deadline_heading                                           = Dyddiad cau
 base.to                                                         = i
 base.caption                                                    = Mae'r adran hon yn
 base.submit_and_continue                                        = Cyflwyno ac yn eich blaen
-base.opens_in_a_new_tab                                         = (yn agor tab newydd)
+base.new_tab_key                                                = {0}
 
 error-notification.prefix                                       = Gwall:
 
@@ -239,11 +239,11 @@ error.property.year.length                                      = Mae’n rhaid 
 ##ADD MTDIT Overview
 
 mtdit-overview.heading                                          = Ychwanegwch Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif treth busnes
-mtdit-overview.paragraph1                                       = Mae’ch asiant wedi’ch cofrestru ar gyfer
-mtdit-overview.link_text                                        = Troi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor tab newydd)
+mtdit-overview.paragraph1                                       = Mae’ch asiant wedi’ch cofrestru ar gyfer {0}
+mtdit-overview.link_text                                        = Troi Treth yn Ddigidol ar gyfer Treth Incwm
 mtdit-overview.paragraph2                                       = Mae ychwanegu hyn at eich cyfrif treth busnes yn eich galluogi i’w reoli ar-lein gyda’ch trethi eraill.
-mtdit-overview.inset                                            = Mae angen i chi ddefnyddio’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth. Gallwch wirio manylion eich cyfrif presennol ar eich
-mtdit-overview.link_text2                                       = cyfrif treth busnes (yn agor tab newydd).
+mtdit-overview.inset                                            = Mae angen i chi ddefnyddio’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth. Gallwch wirio manylion eich cyfrif presennol ar eich {0}
+mtdit-overview.link_text2                                       = cyfrif treth busnes
 mtdit-overview.heading2                                         = Eich cyfrifoldebau
 mtdit-overview.paragraph3                                       = Mae Troi Treth yn Ddigidol ar gyfer Treth Incwm yn disodli Hunanasesiad. Gallwch atal y dreth hon ar unrhyw adeg a mynd yn ôl i Hunanasesiad.
 mtdit-overview.paragraph4                                       = Bydd yn dal i fod yn rhaid i chi anfon Ffurflen Dreth Hunanasesiad i CThEM ar gyfer y flwyddyn dreth cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
@@ -418,7 +418,7 @@ sign-up-complete.heading                                        = Rydych wedi’
 sign-up-complete.can-use-software                               = Gallwch nawr ddefnyddio meddalwedd er mwyn anfon diweddariadau ynghylch Treth Incwm
 sign-up-complete.what-now.heading                               = Yr hyn sy’n digwydd nawr
 sign-up-complete.what-now.find-software                         = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEM.
-sign-up-complete.what-now.find-software.link                    = dewch o hyd i feddalwedd sy’n cydweddu (yn agor tab newydd)
+sign-up-complete.what-now.find-software.link                    = dewch o hyd i feddalwedd sy’n cydweddu
 sign-up-complete.what-now.sendPreviousUpdates                   = Mae’n rhaid i chi ychwanegu’r holl incwm a threuliau ar gyfer y diweddariadau blaenorol gan ddefnyddio’ch meddalwedd ar gyfer:
 sign-up-complete.what-now.sendQuarterly                         = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd erbyn:
 sign-up-complete.whatHappensNext.sendQuarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
@@ -428,7 +428,7 @@ sign-up.complete.octoberUpdate                                  = 5 Hydref {0}
 sign-up.complete.januaryUpdate                                  = 5 Ionawr {0}
 sign-up.complete.aprilUpdate                                    = 5 Ebrill {0}
 sign-up-complete.what-now.para                                  = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm ar gyfer y flwyddyn hyd yn hyn. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch {0}.
-sign-up-complete.what-now.para.link                             = cyfrif Treth Busnes (yn agor tab newydd).
+sign-up-complete.what-now.para.link                             = cyfrif Treth Busnes
 sign-up-complete.what-now.para2                                 = Gall gymryd rhai oriau cyn i wybodaeth newydd ymddangos.
 sign-up-complete.what-now.signOut                               = Gorffen ac allgofnodi
 sign-up-complete.what-now.previous-updates                      = Mae angen i chi gyflwyno diweddariadau chwarterol gan ddefnyddio’ch meddalwedd:
@@ -813,7 +813,7 @@ agent.client-already-subscribed.para1                           = Mae manylion y
 agent.no-client-relationship.title                              = Nid ydych wedi’ch awdurdodi ar gyfer y cleient hwn
 agent.no-client-relationship.heading                            = Nid ydych wedi’ch awdurdodi ar gyfer y cleient hwn
 agent.no-client-relationship.para1                              = Er mwyn eich awdurdodi fel ei asiant, mae angen i’ch cleient {0} gan ddefnyddio ei fanylion Porth Llywodraeth ei hun. Ar ôl iddo wneud hyn, gallwch ddod yn ôl i gofrestru’ch cleient.
-agent.no-client-relationship.link                               = fewngofnodi i’r gwasanaeth hwn (yn agor tab newydd)
+agent.no-client-relationship.link                               = fewngofnodi i’r gwasanaeth hwn
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd
@@ -1052,7 +1052,7 @@ language-selector.nav-label                                     = Cyfnewidydd ia
 
 ## Claim Confirm
 claimConfirm.title                                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
-claimConfirm.heading                                            = Yr hyn sy’n digwydd nawr
+claimConfirm.heading                                            = Yr hyn sy’n digwydd nawr {0}
 claimConfirm.content.line1                                      = Os nad ydych yn defnyddio asiant i reoli’ch materion treth, bydd angen i chi wneud y canlynol:
 claimConfirm.content.checklist.item1.link                       = Dewch o hyd i feddalwedd sy’n cydweddu
 claimConfirm.content.checklist.item1.suffix                     = a chaniatáu iddi ryngweithio â CThEM, os nad ydych eisoes wedi gwneud hynny.
@@ -1062,7 +1062,6 @@ claimConfirm.content.line2                                      = Ar ôl i chi a
 claimConfirm.content.line2.link                                 = cyfrif Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 claimConfirm.content.line3                                      = Gall gymryd ychydig oriau cyn i wybodaeth newydd ymddangos.
 claimConfirm.continueButton                                     = Yn eich blaen i’ch cyfrif treth busnes
-claimConfirm.opens_in_a_new_tab                                 = (yn agor tab newydd)
 
 
 # Claim enrolment not subscribed

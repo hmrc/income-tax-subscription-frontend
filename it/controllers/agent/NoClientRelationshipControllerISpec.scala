@@ -36,9 +36,8 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
   object NoClientRelationshipMessages {
     val title: String = "You’re not authorised for this client"
     val heading: String = "You’re not authorised for this client"
-    val para1: String = "To authorise you as their agent, your client needs to sign into this service (opens in new tab) " +
+    val para1: String = "To authorise you as their agent, your client needs to sign into this service (opens in a new tab) " +
       "using their own Government Gateway details. Once they have done this, you can come back to sign up your client."
-    val link: String = "sign into this service (opens in new tab)"
     val button: String = "Sign up another client"
     val signOut: String = "Sign out"
   }
@@ -78,9 +77,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
     }
 
     "have a view with a link" in new Setup {
-      val link: Element = doc.getLink("get-agent-authorisation")
-      link.attr("href") mustBe "https://www.gov.uk/guidance/client-authorisation-an-overview"
-      link.text mustBe NoClientRelationshipMessages.link
+      doc.mainContent.firstOf("a").attr("href") mustBe "https://www.gov.uk/guidance/client-authorisation-an-overview"
     }
 
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup {
