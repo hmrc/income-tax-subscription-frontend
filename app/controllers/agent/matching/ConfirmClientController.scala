@@ -56,8 +56,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     checkYourClientDetails(
       userDetailsModel,
-      routes.ConfirmClientController.submit,
-      backUrl
+      routes.ConfirmClientController.submit
     )
 
   private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
@@ -179,6 +178,4 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching))
   }
-
-  lazy val backUrl: String = routes.ClientDetailsController.show().url
 }

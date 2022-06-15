@@ -401,17 +401,11 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "The back url" should {
-    s"point to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in withController { controller =>
-      controller.backUrl mustBe controllers.agent.matching.routes.ClientDetailsController.show().url
-    }
-  }
-
   authorisationTests()
 
   private def withController(testCode: ConfirmClientController => Any): Unit = {
     val checkYourClientDetailsView = mock[CheckYourClientDetails]
-    when(checkYourClientDetailsView(any(), any(), any())(any(), any(), any()))
+    when(checkYourClientDetailsView(any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
     val controller = createTestConfirmClientController(checkYourClientDetailsView)
     testCode(controller)
