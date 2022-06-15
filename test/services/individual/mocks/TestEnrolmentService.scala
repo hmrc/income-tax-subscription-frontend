@@ -27,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import services.individual.EnrolmentService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
-import utilities.individual.Constants.GovernmentGateway.{ggServiceName, _}
+import common.Constants.GovernmentGateway.{ggServiceName, _}
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future

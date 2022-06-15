@@ -23,7 +23,7 @@ import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, PreferencesStub, PreferencesTokenStub}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.libs.json.JsString
-import utilities.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 import utilities.SubscriptionDataKeys._
 
 class PreferencesControllerISpec extends ComponentSpecBase  {

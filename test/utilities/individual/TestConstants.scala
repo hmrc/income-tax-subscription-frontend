@@ -26,8 +26,8 @@ import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.AccountingPeriodUtil
 import utilities.TestModels.{testAccountMethod, testAccountingPeriod, testBusinessName, testBusinessTradeName, testValidStartDate}
-import utilities.individual.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
-import utilities.individual.Constants.mtdItsaEnrolmentName
+import common.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
+import common.Constants.mtdItsaEnrolmentName
 
 import java.net.URLEncoder
 import java.time.OffsetDateTime

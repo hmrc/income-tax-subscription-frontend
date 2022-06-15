@@ -17,6 +17,7 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
+import common.Constants
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.ControllerBaseSpec
 import models.audits.SaveAndComebackAuditing
@@ -37,7 +38,6 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.testCacheMap
-import utilities.individual.Constants
 import utilities.individual.TestConstants.testCredId
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.incometax.business.ProgressSaved

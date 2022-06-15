@@ -26,7 +26,7 @@ import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 import utilities.HttpResult._
-import utilities.individual.Constants._
+import common.Constants._
 
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}

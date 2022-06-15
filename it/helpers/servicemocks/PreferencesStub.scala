@@ -22,7 +22,7 @@ import connectors.PaperlessPreferenceHttpParser._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
-import utilities.individual.Constants._
+import common.Constants._
 
 
 object PreferencesStub extends WireMockMethods {

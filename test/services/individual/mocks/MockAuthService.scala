@@ -16,6 +16,7 @@
 
 package services.individual.mocks
 
+import common.Constants
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
@@ -25,7 +26,7 @@ import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.individual.TestConstants.testCredId
-import utilities.individual.{Constants, TestConstants}
+import utilities.individual.TestConstants
 
 import scala.concurrent.{ExecutionContext, Future}
 

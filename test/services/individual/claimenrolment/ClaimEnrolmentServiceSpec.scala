@@ -17,6 +17,7 @@
 package services.individual.claimenrolment
 
 import auth.individual.IncomeTaxSAUser
+import common.Constants
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
@@ -29,7 +30,6 @@ import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
 import services.mocks.{MockCheckEnrolmentAllocationService, MockSubscriptionService}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core._
-import utilities.individual.Constants
 import utilities.individual.TestConstants.{testEnrolmentKey, testGroupId, testMTDID, testNino}
 
 import scala.concurrent.Future

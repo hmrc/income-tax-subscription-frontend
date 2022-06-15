@@ -18,6 +18,7 @@ package controllers.individual
 
 import auth.individual.AuthPredicate.AuthPredicate
 import auth.individual.{IncomeTaxSAUser, StatelessController}
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
@@ -26,7 +27,6 @@ import play.api.mvc._
 import play.twirl.api.Html
 import services._
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 import views.html.individual.ContinueRegistration
 
 import javax.inject.{Inject, Singleton}

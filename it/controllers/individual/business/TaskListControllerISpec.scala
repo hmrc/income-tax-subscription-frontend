@@ -29,7 +29,7 @@ import models.common.subscription.CreateIncomeSourcesModel
 import models.sps.SPSPayload
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.ITSASessionKeys.SPSEntityId
+import _root_.common.Constants.ITSASessionKeys.SPSEntityId
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, OverseasProperty, Property}
 
 class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {

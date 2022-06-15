@@ -19,6 +19,8 @@ package auth.individual
 import auth.individual.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import auth.individual.JourneyState._
 import cats.implicits._
+import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import models.audits.IVHandoffAuditing.IVHandoffAuditModel
 import play.api.Logging
@@ -29,8 +31,6 @@ import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import utilities.ITSASessionKeys
-import utilities.ITSASessionKeys.JourneyStateKey
 
 import scala.concurrent.Future
 

@@ -16,14 +16,14 @@
 
 package auth.individual
 
+import common.Constants
+import common.Constants.ITSASessionKeys
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
-import utilities.ITSASessionKeys
-import utilities.individual.Constants
 import utilities.individual.TestConstants.{testCredId, testNino, testUtr}
 
 class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {

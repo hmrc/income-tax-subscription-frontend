@@ -18,6 +18,7 @@ package controllers.agent
 
 import akka.actor.ActorSystem
 import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
+import common.Constants.ITSASessionKeys
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}

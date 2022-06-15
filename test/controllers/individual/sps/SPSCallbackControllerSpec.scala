@@ -18,6 +18,7 @@ package controllers.individual.sps
 
 import agent.audit.mocks.MockAuditingService
 import auth.individual.SignUp
+import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.ControllerBaseSpec
 import play.api.http.Status.SEE_OTHER
@@ -25,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 import utilities.individual.TestConstants
 
 import scala.concurrent.Future

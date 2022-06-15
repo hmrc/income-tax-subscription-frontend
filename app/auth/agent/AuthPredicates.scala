@@ -19,11 +19,11 @@ package auth.agent
 import auth.agent.AgentJourneyState._
 import auth.individual.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import cats.implicits._
-import controllers.agent.ITSASessionKeys
+import common.Constants
+import common.Constants.ITSASessionKeys
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
-import utilities.agent.Constants.agentServiceEnrolmentName
 
 import scala.concurrent.Future
 
@@ -64,7 +64,7 @@ object AuthPredicates extends Results {
     else Left(Future.successful(homeRoute))
 
   val arnPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
-    if (user.enrolments.getEnrolment(agentServiceEnrolmentName).nonEmpty) Right(AuthPredicateSuccess)
+    if (user.enrolments.getEnrolment(Constants.hmrcAsAgent).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(noArnRoute))
 
   val defaultPredicates = timeoutPredicate |+| arnPredicate

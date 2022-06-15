@@ -19,7 +19,7 @@ package controllers.agent.business
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.postUri
-import controllers.agent.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 import helpers.IntegrationTestModels.subscriptionData
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.{taskListURI, testUtr}

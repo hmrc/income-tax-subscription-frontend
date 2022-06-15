@@ -16,14 +16,14 @@
 
 package services.individual
 
+import common.Constants
 import config.{AppConfig, MockConfig}
 import config.featureswitch.FeatureSwitchingImpl
 import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import services.individual.mocks.TestKnownFactsService
 import utilities.UnitTestTrait
-import utilities.individual.Constants
-import utilities.individual.Constants.GovernmentGateway._
+import Constants.GovernmentGateway._
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future

@@ -21,7 +21,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{baseURI, claimEnrolmentResolverURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
-import utilities.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 
 class IVSuccessControllerISpec extends ComponentSpecBase {
 

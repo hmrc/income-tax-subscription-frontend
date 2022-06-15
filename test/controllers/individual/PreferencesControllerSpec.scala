@@ -17,6 +17,7 @@
 package controllers.individual
 
 import agent.audit.mocks.MockAuditingService
+import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers.any
@@ -27,7 +28,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService, MockSubscriptionDetailsService}
-import utilities.ITSASessionKeys
 import utilities.individual.TestConstants._
 import views.html.individual.ContinueRegistration
 
@@ -37,8 +37,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   with MockPreferencesService
   with MockSubscriptionDetailsService
   with MockPaperlessPreferenceTokenService
-  with MockAuditingService
-   {
+  with MockAuditingService {
 
   override val controllerName: String = "PreferencesController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

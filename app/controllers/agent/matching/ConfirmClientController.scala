@@ -18,10 +18,10 @@ package controllers.agent.matching
 
 import auth.agent.AgentJourneyState._
 import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
+import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
-import controllers.agent.ITSASessionKeys
-import controllers.agent.ITSASessionKeys.FailedClientMatching
 import controllers.utils.ReferenceRetrieval
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel

@@ -18,9 +18,9 @@ package controllers.utils
 
 import auth.agent.IncomeTaxAgentUser
 import auth.individual.IncomeTaxSAUser
+import common.Constants.ITSASessionKeys
 import connectors.httpparser.RetrieveReferenceHttpParser
 import connectors.httpparser.RetrieveReferenceHttpParser.{Existing, InvalidJsonFailure, UnexpectedStatusFailure}
-import controllers.agent.ITSASessionKeys
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
