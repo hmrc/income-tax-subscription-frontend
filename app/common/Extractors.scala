@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.agent
+package common
 
-object ITSASessionKeys {
+import common.Constants.hmrcAsAgent
+import uk.gov.hmrc.auth.core.Enrolments
 
-  val ArnKey = "ARN"
-  val MTDITID = "MTDIT-ID"
-  val RequestURI = "Request-URI"
-  val FailedClientMatching = "Failed-Client-Matching"
-  val JourneyStateKey = "Journey-State"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val REFERENCE = "reference"
+trait Extractors {
 
-  val sessionId = "sessionId"
-
-  val clientData: Seq[String] = Seq(MTDITID, NINO, UTR)
+  def getArnFromEnrolments(enrolments: Enrolments, key: String = hmrcAsAgent): Option[String] = enrolments.getEnrolment(key).flatMap
+    { enrolment => enrolment.identifiers.headOption map { identifier => identifier.value } }
 
 }

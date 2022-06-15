@@ -17,8 +17,9 @@
 package controllers.agent.matching
 
 import auth.agent.AgentUserMatched
+import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.PrePopulate
-import controllers.agent.{AgentControllerBaseSpec, ITSASessionKeys}
+import controllers.agent.AgentControllerBaseSpec
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.{EligibilityStatus, PrePopData}

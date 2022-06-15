@@ -17,6 +17,7 @@
 package controllers.agent
 
 import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
+import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub

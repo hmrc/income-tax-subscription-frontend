@@ -41,8 +41,8 @@ import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
-import utilities.ITSASessionKeys
-import utilities.ITSASessionKeys._
+import _root_.common.Constants.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys._
 
 import java.time.LocalDate
 import java.util.UUID

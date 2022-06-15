@@ -17,6 +17,7 @@
 package controllers.individual.iv
 
 import agent.audit.mocks.MockAuditingService
+import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import org.mockito.ArgumentMatchers.{any, eq => matches}
@@ -27,12 +28,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentType, defaultAwaitTimeout, session, status}
 import play.twirl.api.HtmlFormat
 import services.AuditModel
-import utilities.ITSASessionKeys
 import views.html.individual.iv.IVFailure
 
 import scala.concurrent.Future
 
-class IVFailureControllerSpec extends ControllerBaseSpec with MockAuditingService  {
+class IVFailureControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
   val controllerName: String = "IVFailureController"
   val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

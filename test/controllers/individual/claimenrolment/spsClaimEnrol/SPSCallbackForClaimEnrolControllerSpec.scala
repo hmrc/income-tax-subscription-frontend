@@ -18,6 +18,7 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
+import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -26,7 +27,6 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, stat
 import services.individual.claimenrolment.ClaimEnrolmentService.ClaimEnrolmentError
 import services.mocks.{MockClaimEnrolmentService, MockSpsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 import utilities.individual.TestConstants
 
 import scala.concurrent.Future
@@ -61,38 +61,38 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
   }
 
 
-      "an entityId is passed through to the url" when {
-        "mtditid successfully retrieves from claimEnrolmentService" should {
-          "link preference with mtditid to sps, save the entityId in session and redirect to the claim enrolment confirmation page" in {
-            mockGetMtditidFromSubscription(Right("mtditid"))
+  "an entityId is passed through to the url" when {
+    "mtditid successfully retrieves from claimEnrolmentService" should {
+      "link preference with mtditid to sps, save the entityId in session and redirect to the claim enrolment confirmation page" in {
+        mockGetMtditidFromSubscription(Right("mtditid"))
 
-            val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
+        val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
 
-            verifyConfirmPreferencesPostSpsConfirm("mtditid", "testId", Some(1))
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show().url)
-          }
-        }
-        "mtditid failed to retrieve from claimEnrolmentService" should {
-          "throw an InternalServerException" in {
-            mockGetMtditidFromSubscription(Left(ClaimEnrolmentError(msg = "failed to retrieve mtditid from claimEnrolmentService")))
-
-            val result = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
-
-            intercept[InternalServerException](await(result))
-              .message mustBe "[SPSCallbackForClaimEnrolController][callback] - failed to retrieve mtditid from claimEnrolmentService"
-          }
-        }
+        verifyConfirmPreferencesPostSpsConfirm("mtditid", "testId", Some(1))
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show().url)
       }
-      "no entityId is present in the url" should {
-        "redirect the user to the claim enrolment confirmation page " in {
+    }
+    "mtditid failed to retrieve from claimEnrolmentService" should {
+      "throw an InternalServerException" in {
+        mockGetMtditidFromSubscription(Left(ClaimEnrolmentError(msg = "failed to retrieve mtditid from claimEnrolmentService")))
 
-          val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = false)).run()
+        val result = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run()
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show().url)
-        }
+        intercept[InternalServerException](await(result))
+          .message mustBe "[SPSCallbackForClaimEnrolController][callback] - failed to retrieve mtditid from claimEnrolmentService"
       }
+    }
+  }
+  "no entityId is present in the url" should {
+    "redirect the user to the claim enrolment confirmation page " in {
+
+      val result: Future[Result] = TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = false)).run()
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show().url)
+    }
+  }
 
   authorisationTests()
 

@@ -17,12 +17,12 @@
 package controllers.individual.sps
 
 import auth.individual.SignUpController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

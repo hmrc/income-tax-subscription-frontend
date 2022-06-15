@@ -25,8 +25,8 @@ import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
-import utilities.individual.Constants
-import utilities.individual.Constants.GovernmentGateway._
+import _root_.common.Constants._
+import _root_.common.Constants.ITSASessionKeys.MTDITID
 
 import java.time.LocalDate
 
@@ -195,8 +195,8 @@ object IntegrationTestModels {
 
   lazy val testUserDetails: UserDetailsModel = UserDetailsModel(testFirstName, testLastName, testNino, testOneDayAgo)
 
-  lazy val testMTDITEnrolmentKey: EnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMtdId)
-  lazy val testIRSAEnrolmentKey: EnrolmentKey = EnrolmentKey(Constants.utrEnrolmentName, Constants.utrEnrolmentIdentifierKey -> testUtr)
+  lazy val testMTDITEnrolmentKey: EnrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMtdId)
+  lazy val testIRSAEnrolmentKey: EnrolmentKey = EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr)
 
   lazy val testSummaryDataSelfEmploymentData =
     Seq(SelfEmploymentData(

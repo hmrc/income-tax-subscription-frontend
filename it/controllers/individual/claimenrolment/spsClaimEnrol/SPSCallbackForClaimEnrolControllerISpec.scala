@@ -22,7 +22,7 @@ import helpers.IntegrationTestConstants.{basGatewaySignIn, claimEnrolmentConfirm
 import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.{AuthStub, SubscriptionStub}
 import play.api.http.Status._
-import utilities.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 
 class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 

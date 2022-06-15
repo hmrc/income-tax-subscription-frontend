@@ -16,16 +16,17 @@
 
 package controllers.agent
 
+import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.SEE_OTHER
 
 
-class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  {
+class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   "GET /add-another" when {
-    s"clear the Subscription Details  and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
+    s"clear the Subscription Details and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()

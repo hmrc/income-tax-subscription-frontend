@@ -17,6 +17,7 @@
 package auth.individual
 
 import auth.individual.AuthPredicate.AuthPredicateSuccess
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import org.mockito.Mockito.reset
 import org.scalatest.EitherValues
@@ -29,8 +30,8 @@ import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
+import utilities.UnitTestTrait
 import utilities.individual.TestConstants.testCredId
-import utilities.{ITSASessionKeys, UnitTestTrait}
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
 

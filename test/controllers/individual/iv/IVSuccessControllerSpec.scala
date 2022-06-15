@@ -18,6 +18,7 @@ package controllers.individual.iv
 
 import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
+import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
 import org.mockito.ArgumentMatchers.{any, eq => matches}
@@ -27,7 +28,6 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, session, status}
 import services.AuditModel
-import utilities.ITSASessionKeys
 import utilities.individual.TestConstants.testNino
 
 import scala.concurrent.Future

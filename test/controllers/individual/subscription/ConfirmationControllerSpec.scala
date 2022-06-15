@@ -17,6 +17,7 @@
 package controllers.individual.subscription
 
 import agent.audit.mocks.MockAuditingService
+import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
@@ -26,7 +27,6 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
-import utilities.ITSASessionKeys
 import utilities.TestModels.{testCacheMap, testSelectedTaxYearNext}
 import views.html.individual.incometax.subscription.SignUpComplete
 

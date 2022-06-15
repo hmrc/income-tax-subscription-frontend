@@ -16,7 +16,7 @@
 
 package auth.agent
 
-import controllers.agent.ITSASessionKeys
+import common.Constants.ITSASessionKeys
 import play.api.mvc._
 
 sealed trait AgentJourneyState {

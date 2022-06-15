@@ -17,6 +17,8 @@
 package controllers.individual.business
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
+import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
@@ -29,8 +31,6 @@ import play.api.mvc._
 import services._
 import services.individual.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
-import utilities.ITSASessionKeys
-import utilities.ITSASessionKeys.SPSEntityId
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
 import views.html.individual.incometax.business.TaskList

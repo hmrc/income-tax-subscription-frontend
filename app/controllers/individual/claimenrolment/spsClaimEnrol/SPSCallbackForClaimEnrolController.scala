@@ -17,12 +17,12 @@
 package controllers.individual.claimenrolment.spsClaimEnrol
 
 import auth.individual.BaseClaimEnrolmentController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.{AuditingService, AuthService, SPSService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
