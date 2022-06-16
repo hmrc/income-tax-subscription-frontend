@@ -848,7 +848,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         redirectURI(confirmationURI)
       )
 
-      val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtr, testMtdId)
+      val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
       verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
       val cookieMap = getSessionMap(res)
