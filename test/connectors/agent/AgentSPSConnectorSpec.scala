@@ -35,7 +35,7 @@ class AgentSPSConnectorSpec extends UnitTestTrait with MockitoSugar {
       when(appConfig.channelPreferencesUrl).thenReturn("microserviceurl")
 
       val connector = new AgentSPSConnector(appConfig, mockHttp)
-      val expected = Json.toJson(AgentSPSPayload("testArn", "testNino", "testUtr", "testItsaid"))
+      val expected = Json.toJson(AgentSPSPayload("testArn", "testNino", "IR-SA~UTR~testUtr", "HMRC-MTD-IT~MTDITID~testItsaid"))
 
       connector.postSpsConfirm("testArn", "testNino", "testUtr", "testItsaid")
 

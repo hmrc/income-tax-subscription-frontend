@@ -20,8 +20,8 @@ import config.AppConfig
 import models.sps.AgentSPSPayload
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,14 @@ class AgentSPSConnector @Inject()(appConfig: AppConfig,
                                  (implicit ec: ExecutionContext) {
 
   def postSpsConfirm(arn: String, nino: String, sautr: String, itsaId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](appConfig.channelPreferencesUrl + s"/channel-preferences/enrolment", Json.toJson(AgentSPSPayload(arn, nino, sautr, itsaId)))
+
+    val enrolmentIRSA = s"IR-SA~UTR~$sautr"
+    val enrolmentMTDITID = s"HMRC-MTD-IT~MTDITID~$itsaId"
+
+    http.POST[JsValue, HttpResponse](
+      url = appConfig.channelPreferencesUrl + s"/channel-preferences/enrolment",
+      body = Json.toJson(AgentSPSPayload(arn, nino, enrolmentIRSA, enrolmentMTDITID))
+    )
   }
 
 }

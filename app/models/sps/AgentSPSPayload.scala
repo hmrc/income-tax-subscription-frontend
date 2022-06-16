@@ -16,10 +16,10 @@
 
 package models.sps
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class AgentSPSPayload(arn: String, nino: String, sautr: String, itsaId: String)
 
 object AgentSPSPayload {
-  implicit val writes = Json.format[AgentSPSPayload]
+  implicit val writes: OFormat[AgentSPSPayload] = Json.format[AgentSPSPayload]
 }

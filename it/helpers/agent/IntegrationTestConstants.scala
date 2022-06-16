@@ -11,7 +11,9 @@ import java.util.UUID
 object IntegrationTestConstants {
   lazy val testNino: String = helpers.IntegrationTestConstants.testNino
   lazy val testUtr: String = helpers.IntegrationTestConstants.testUtr
+  lazy val testUtrEnrolmentKey: String = s"IR-SA~UTR~$testUtr"
   lazy val testMTDID: String = helpers.IntegrationTestConstants.testMtdId
+  lazy val testMTDIDEnrolmentKey: String = s"HMRC-MTD-IT~MTDITID~$testMTDID"
   lazy val testSubscriptionID: String = helpers.IntegrationTestConstants.testSubscriptionId
   lazy val startDate: DateModel = helpers.IntegrationTestConstants.startDate
   lazy val endDate: DateModel = helpers.IntegrationTestConstants.endDate
