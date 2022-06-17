@@ -26,8 +26,8 @@ import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.Logging
 import play.api.mvc._
+import services._
 import services.individual.SubscriptionOrchestrationService
-import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
 import utilities.ITSASessionKeys
 import utilities.ITSASessionKeys.SPSEntityId
@@ -45,8 +45,8 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val subscriptionService: SubscriptionOrchestrationService,
                                    val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-
-                                   val authService: AuthService)
+                                   val authService: AuthService,
+                                   throttlingService: ThrottlingService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with Logging {
@@ -102,28 +102,31 @@ class TaskListController @Inject()(val taskListView: TaskList,
               error("Successful response not received from submission: \n" + failure.toString)
           }
         }
+
   }
 
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        if (isEnabled(SaveAndRetrieve)) {
-          withReference { reference =>
-            val model = for {
-              cacheMap <- subscriptionDetailsService.fetchAll(reference)
-              selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-              selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
-              property <- subscriptionDetailsService.fetchProperty(reference)
-              overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-            } yield {
-              cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
+        throttlingService.throttled(IndividualEndOfJourneyThrottle) {
+          if (isEnabled(SaveAndRetrieve)) {
+            withReference { reference =>
+              val model = for {
+                cacheMap <- subscriptionDetailsService.fetchAll(reference)
+                selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+                selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+                property <- subscriptionDetailsService.fetchProperty(reference)
+                overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+              } yield {
+                cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
+              }
+              model.flatMap { model =>
+                processFunc(user)(request)(model)
+              }
             }
-            model.flatMap { model =>
-              processFunc(user)(request)(model)
-            }
+          } else {
+            throw new NotFoundException("[TaskListController][submit] - The save and retrieve feature switch is disabled")
           }
-        } else {
-          throw new NotFoundException("[TaskListController][submit] - The save and retrieve feature switch is disabled")
         }
     }
 

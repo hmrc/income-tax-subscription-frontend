@@ -16,7 +16,7 @@
 
 package controllers.individual.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ThrottlingFeature}
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{testBusinessName => _, _}
@@ -29,13 +29,15 @@ import models.common.subscription.CreateIncomeSourcesModel
 import models.sps.SPSPayload
 import play.api.http.Status._
 import play.api.libs.json.Json
+import services.IndividualEndOfJourneyThrottle
 import utilities.ITSASessionKeys.SPSEntityId
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, OverseasProperty, Property}
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, OverseasProperty, Property, subscriptionId}
 
 class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     disable(SaveAndRetrieve)
+    disable(ThrottlingFeature)
     super.beforeEach()
   }
 
@@ -136,10 +138,338 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/task-list" when {
-    "the save and retrieve feature switch is enabled" when {
-      "the subscription successfully" when {
-        "the income source is only self employment" should {
-          "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
+    "throttling is enabled and the user is throttled" should {
+      s"redirect the user to ${controllers.individual.routes.ThrottlingController.show.url} without calling any sign up APIs" in {
+        Given("I set the required feature switches")
+        enable(ThrottlingFeature)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        ThrottlingStub.stubThrottle(IndividualEndOfJourneyThrottle.throttleId)(throttled = true)
+
+        val testEntityId: String = "testEntityId"
+        val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(endOfJourneyThrottleURI)
+        )
+
+        IncomeTaxSubscriptionConnectorStub.verifyGet(BusinessesKey)(count = 0)
+        IncomeTaxSubscriptionConnectorStub.verifyGet(BusinessAccountingMethod)(count = 0)
+        IncomeTaxSubscriptionConnectorStub.verifyGet(Property)(count = 0)
+        IncomeTaxSubscriptionConnectorStub.verifyGet(OverseasProperty)(count = 0)
+        IncomeTaxSubscriptionConnectorStub.verifyGet(subscriptionId)(count = 0)
+
+        MultipleIncomeSourcesSubscriptionAPIStub.verifyPostSignUpCount(testNino)(count = 0)
+        MultipleIncomeSourcesSubscriptionAPIStub.verifyPostSubscriptionCount(testMtdId)(count = 0)
+
+        ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)()
+      }
+    }
+    "throttling is enabled and the user is not throttled" should {
+      "allow the user to sign up successfully" in {
+        Given("I set the required feature switches")
+        enable(SaveAndRetrieve)
+        enable(ThrottlingFeature)
+
+        And("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        ThrottlingStub.stubThrottle(IndividualEndOfJourneyThrottle.throttleId)(throttled = false)
+
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+          selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
+          businessName = Some(testBusinessName),
+          accountingMethod = Some(testAccountingMethod)
+        ))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+
+        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+          mtdbsa = testMtdId,
+          request = CreateIncomeSourcesModel(
+            nino = testNino,
+            soleTraderBusinesses = Some(testSoleTraderBusinesses)
+          )
+        )(NO_CONTENT)
+
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(selfEmploymentSubscriptionData)
+
+        ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+        When("POST /business/task-list is called")
+        val testEntityId: String = "testEntityId"
+        val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+        Then("Should return a SEE_OTHER with a redirect location of confirmation")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(confirmationURI)
+        )
+
+        val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+        verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+        ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)()
+      }
+    }
+    "throttling is disabled" should {
+      "the save and retrieve feature switch is enabled" when {
+        "the subscription successfully" when {
+          "the income source is only self employment" should {
+            "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
+              Given("I set the required feature switches")
+              enable(SaveAndRetrieve)
+
+              And("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+                selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
+                businessName = Some(testBusinessName),
+                accountingMethod = Some(testAccountingMethod)
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+                mtdbsa = testMtdId,
+                request = CreateIncomeSourcesModel(
+                  nino = testNino,
+                  soleTraderBusinesses = Some(testSoleTraderBusinesses)
+                )
+              )(NO_CONTENT)
+
+              TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+              TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(selfEmploymentSubscriptionData)
+
+              ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+              When("POST /business/task-list is called")
+              val testEntityId: String = "testEntityId"
+              val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+              Then("Should return a SEE_OTHER with a redirect location of confirmation")
+              res must have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+              verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+              ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
+            }
+          }
+
+          "the income source is only uk property" should {
+            "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
+
+              Given("I set the required feature switches")
+              enable(SaveAndRetrieve)
+
+              And("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
+                selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
+                businessName = None,
+                accountingMethod = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+                Property,
+                OK,
+                Json.toJson(testFullPropertyModel.copy(
+                  accountingMethod = Some(testUkProperty.accountingMethod),
+                  startDate = Some(testUkProperty.tradingStartDate)
+                ))
+              )
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+                mtdbsa = testMtdId,
+                request = CreateIncomeSourcesModel(
+                  nino = testNino,
+                  soleTraderBusinesses = None,
+                  ukProperty = Some(testUkProperty),
+                  overseasProperty = None
+                )
+              )(NO_CONTENT)
+
+              TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+              TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(ukPropertySubscriptionData)
+
+              ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+              When("POST /business/task-list is called")
+              val testEntityId: String = "testEntityId"
+              val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+              Then("Should return a SEE_OTHER with a redirect location of confirmation")
+              res must have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+              verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+              ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
+            }
+          }
+
+          "the income source is only overseas property" should {
+            "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
+              Given("I set the required feature switches")
+              enable(SaveAndRetrieve)
+
+              And("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
+                selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
+                businessName = None,
+                accountingMethod = None
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+                OverseasProperty,
+                OK,
+                Json.toJson(testFullOverseasPropertyModel.copy(
+                  accountingMethod = Some(testOverseasProperty.accountingMethod),
+                  startDate = Some(testOverseasProperty.tradingStartDate)
+                ))
+              )
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+                mtdbsa = testMtdId,
+                request = CreateIncomeSourcesModel(
+                  nino = testNino,
+                  soleTraderBusinesses = None,
+                  overseasProperty = Some(testOverseasProperty)
+                )
+              )(NO_CONTENT)
+
+              TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+              TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(overseasPropertySubscriptionData)
+
+              ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+              When("POST /business/task-list is called")
+              val testEntityId: String = "testEntityId"
+              val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+              Then("Should return a SEE_OTHER with a redirect location of confirmation")
+              res must have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+              verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+              ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
+            }
+          }
+
+          "the income source contains self-employments, uk property and overseas property" should {
+            "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
+
+              Given("I set the required feature switches")
+              enable(SaveAndRetrieve)
+
+              And("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+
+              IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
+                selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
+                businessName = Some(testBusinessName),
+                accountingMethod = Some(testAccountingMethod)
+              ))
+
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+                Property,
+                OK,
+                Json.toJson(testFullPropertyModel.copy(
+                  accountingMethod = Some(testUkProperty.accountingMethod),
+                  startDate = Some(testUkProperty.tradingStartDate)
+                ))
+              )
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+                OverseasProperty,
+                OK,
+                Json.toJson(testFullOverseasPropertyModel.copy(
+                  accountingMethod = Some(testOverseasProperty.accountingMethod),
+                  startDate = Some(testOverseasProperty.tradingStartDate)
+                ))
+              )
+
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+              MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+                mtdbsa = testMtdId,
+                request = CreateIncomeSourcesModel(
+                  nino = testNino,
+                  soleTraderBusinesses = Some(testSoleTraderBusinesses),
+                  ukProperty = Some(testUkProperty),
+                  overseasProperty = Some(testOverseasProperty)
+                )
+              )(NO_CONTENT)
+
+              TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+              TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+              IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(AllSubscriptionData)
+
+              ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+              When("POST /business/task-list is called")
+              val testEntityId: String = "testEntityId"
+              val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+              Then("Should return a SEE_OTHER with a redirect location of confirmation")
+              res must have(
+                httpStatus(SEE_OTHER),
+                redirectURI(confirmationURI)
+              )
+
+              val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+              verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+              ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
+            }
+          }
+        }
+
+        "the subscription failed" should {
+          "return a internalServer error and will not call sps" in {
+
             Given("I set the required feature switches")
             enable(SaveAndRetrieve)
 
@@ -148,9 +478,9 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
+              selectedTaxYear = Some(AccountingYearModel(Current, confirmed = true)),
               businessName = Some(testBusinessName),
-              accountingMethod = Some(testAccountingMethod)
+              accountingMethod = None
             ))
 
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -165,284 +495,52 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
                 nino = testNino,
                 soleTraderBusinesses = Some(testSoleTraderBusinesses)
               )
-            )(NO_CONTENT)
-
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
-            IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(selfEmploymentSubscriptionData)
-
-            ChannelPreferencesStub.stubChannelPreferenceConfirm()
+            )(INTERNAL_SERVER_ERROR)
 
             When("POST /business/task-list is called")
-            val testEntityId: String = "testEntityId"
-            val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+            val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-            Then("Should return a SEE_OTHER with a redirect location of confirmation")
+            Then("Should return a INTERNAL SERVER ERROR status")
             res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              httpStatus(INTERNAL_SERVER_ERROR)
             )
 
-            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
-            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            verifyPost("/channel-preferences/confirm", count = Some(0))
+
+            ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
           }
         }
 
-        "the income source is only uk property" should {
-          "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
+        "save and retrieve feature switch is disabled" should {
+          "throw NotFoundException and will not call sps" in {
 
-            Given("I set the required feature switches")
-            enable(SaveAndRetrieve)
-
-            And("I setup the Wiremock stubs")
+            Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
+              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+              selectedTaxYear = Some(AccountingYearModel(Next, confirmed = true)),
               businessName = None,
               accountingMethod = None
-            ))
-
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
-                accountingMethod = Some(testUkProperty.accountingMethod),
-                startDate = Some(testUkProperty.tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
-              mtdbsa = testMtdId,
-              request = CreateIncomeSourcesModel(
-                nino = testNino,
-                soleTraderBusinesses = None,
-                ukProperty = Some(testUkProperty),
-                overseasProperty = None
-              )
-            )(NO_CONTENT)
-
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
-            IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(ukPropertySubscriptionData)
-
-            ChannelPreferencesStub.stubChannelPreferenceConfirm()
-
-            When("POST /business/task-list is called")
-            val testEntityId: String = "testEntityId"
-            val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
-
-            Then("Should return a SEE_OTHER with a redirect location of confirmation")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
-            )
-
-            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
-            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
-          }
-        }
-
-        "the income source is only overseas property" should {
-          "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
-            Given("I set the required feature switches")
-            enable(SaveAndRetrieve)
-
-            And("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-
-            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
-              businessName = None,
-              accountingMethod = None
-            ))
-
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
-                accountingMethod = Some(testOverseasProperty.accountingMethod),
-                startDate = Some(testOverseasProperty.tradingStartDate)
-              ))
-            )
-
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
-              mtdbsa = testMtdId,
-              request = CreateIncomeSourcesModel(
-                nino = testNino,
-                soleTraderBusinesses = None,
-                overseasProperty = Some(testOverseasProperty)
-              )
-            )(NO_CONTENT)
-
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
-            IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(overseasPropertySubscriptionData)
-
-            ChannelPreferencesStub.stubChannelPreferenceConfirm()
-
-            When("POST /business/task-list is called")
-            val testEntityId: String = "testEntityId"
-            val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
-
-            Then("Should return a SEE_OTHER with a redirect location of confirmation")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
-            )
-
-            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
-            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
-          }
-        }
-
-        "the income source contains self-employments, uk property and overseas property" should {
-          "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
-
-            Given("I set the required feature switches")
-            enable(SaveAndRetrieve)
-
-            And("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-
-            IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
-              businessName = Some(testBusinessName),
-              accountingMethod = Some(testAccountingMethod)
             ))
 
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
-                accountingMethod = Some(testUkProperty.accountingMethod),
-                startDate = Some(testUkProperty.tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
-                accountingMethod = Some(testOverseasProperty.accountingMethod),
-                startDate = Some(testOverseasProperty.tradingStartDate)
-              ))
-            )
-
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
-              mtdbsa = testMtdId,
-              request = CreateIncomeSourcesModel(
-                nino = testNino,
-                soleTraderBusinesses = Some(testSoleTraderBusinesses),
-                ukProperty = Some(testUkProperty),
-                overseasProperty = Some(testOverseasProperty)
-              )
-            )(NO_CONTENT)
-
-            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
-            IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(AllSubscriptionData)
-
-            ChannelPreferencesStub.stubChannelPreferenceConfirm()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
             When("POST /business/task-list is called")
-            val testEntityId: String = "testEntityId"
-            val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+            val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-            Then("Should return a SEE_OTHER with a redirect location of confirmation")
+            Then("Should return a Not Found Exception status")
             res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              httpStatus(NOT_FOUND)
             )
 
-            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
-            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            verifyPost("/channel-preferences/confirm", count = Some(0))
+
+            ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
           }
-        }
-      }
-
-      "the subscription failed" should {
-        "return a internalServer error and will not call sps" in {
-
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
-          And("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Current, confirmed = true)),
-            businessName = Some(testBusinessName),
-            accountingMethod = None
-          ))
-
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
-            mtdbsa = testMtdId,
-            request = CreateIncomeSourcesModel(
-              nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses)
-            )
-          )(INTERNAL_SERVER_ERROR)
-
-          When("POST /business/task-list is called")
-          val res = IncomeTaxSubscriptionFrontend.submitTaskList()
-
-          Then("Should return a INTERNAL SERVER ERROR status")
-          res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
-          )
-
-          verifyPost("/channel-preferences/confirm", count = Some(0))
-        }
-      }
-
-      "save and retrieve feature switch is disabled" should {
-        "throw NotFoundException and will not call sps" in {
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Next, confirmed = true)),
-            businessName = None,
-            accountingMethod = None
-          ))
-
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-
-          When("POST /business/task-list is called")
-          val res = IncomeTaxSubscriptionFrontend.submitTaskList()
-
-          Then("Should return a Not Found Exception status")
-          res must have(
-            httpStatus(NOT_FOUND)
-          )
-
-          verifyPost("/channel-preferences/confirm", count = Some(0))
         }
       }
     }

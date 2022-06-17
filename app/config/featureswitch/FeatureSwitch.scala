@@ -28,7 +28,7 @@ object FeatureSwitch {
     ForeignProperty,
     SaveAndRetrieve,
     PrePopulate,
-    Throttle
+    ThrottlingFeature
   )
 
   def apply(str: String): FeatureSwitch =
@@ -54,7 +54,7 @@ object FeatureSwitch {
     override val displayText = "Prepopulate"
   }
 
-  case object Throttle extends FeatureSwitch {
+  case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
   }

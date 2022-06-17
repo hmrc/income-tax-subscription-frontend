@@ -3,6 +3,7 @@ package connectors.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import helpers.IntegrationTestConstants.testMtdId
+import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
 import models.common.business.BusinessSubscriptionDetailsModel
 import models.common.subscription.CreateIncomeSourcesModel
@@ -12,6 +13,14 @@ object MultipleIncomeSourcesSubscriptionAPIStub extends WireMockMethods {
 
   private def signUpUri(nino: String): String = s"/income-tax-subscription/mis/sign-up/$nino"
   private def createIncomeSourcesUri(mtdbsa: String): String = s"/income-tax-subscription/mis/create/$mtdbsa"
+
+  def verifyPostSignUpCount(nino: String)(count: Int = 1): Unit = {
+    WiremockHelper.verifyPost(signUpUri(nino), count = Some(count))
+  }
+
+  def verifyPostSubscriptionCount(mtdbsa: String)(count: Int = 1): Unit = {
+    WiremockHelper.verifyPost(createIncomeSourcesUri(mtdbsa), count = Some(count))
+  }
 
   def stubPostSignUp(nino: String)(responseCode: Int, response: JsValue = Json.obj("mtdbsa" -> testMtdId)): StubMapping = {
     when (
