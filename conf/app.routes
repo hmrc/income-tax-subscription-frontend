@@ -9,11 +9,6 @@ GET         /index                                               controllers.use
 # SignOut Controller
 GET         /logout                                              controllers.SignOutController.signOut
 
-# Preferences routes
-GET         /preferences                                         controllers.individual.PreferencesController.checkPreferences
-GET         /callback                                            controllers.individual.PreferencesController.callback
-GET         /paperless-error                                     controllers.individual.PreferencesController.show
-POST        /paperless-error                                     controllers.individual.PreferencesController.submit
 
 
 # SPS routes

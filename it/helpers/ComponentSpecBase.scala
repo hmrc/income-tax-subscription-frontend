@@ -152,8 +152,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def startPage(): WSResponse = get("/")
 
-    def preferences(): WSResponse = get("/preferences")
-
     def paperlessError(): WSResponse = get("/paperless-error")
 
     def callback(): WSResponse = get("/callback")
