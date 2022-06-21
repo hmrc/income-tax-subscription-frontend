@@ -23,9 +23,12 @@ import java.time.{LocalDateTime, ZoneOffset}
 case class TimestampModel(dateTime: LocalDateTime)
 
 object TimestampModel {
-  private val reads: Reads[TimestampModel] =
-    (JsPath \ "$date").read[Long]
+  private val reads: Reads[TimestampModel] = {
+    val value1 = (JsPath \ "$date").read[Long]
+    val value2 = (JsPath \ "$date" \ "$numberLong").read[String].map(_.toLong)
+    (value1 orElse value2)
       .map[TimestampModel](timestamp => TimestampModel(LocalDateTime.ofEpochSecond(timestamp/1000, 0, ZoneOffset.UTC)))
+  }
 
   private val writes: Writes[TimestampModel] = new Writes[TimestampModel] {
     def writes(model: TimestampModel): JsValue = JsString(model.dateTime.toString())

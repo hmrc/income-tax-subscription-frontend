@@ -32,6 +32,16 @@ class TimestampModelSpec extends AnyWordSpecLike with Matchers with OptionValues
         LocalDateTime.of(2022, 1, 13, 12, 0, 0, 0)
       )
 
+      actual.isSuccess mustBe (true)
+      actual.get mustBe expected
+    }
+    "deserialize the new, stupid, MongoDB response" in {
+      val actual: JsResult[TimestampModel] = Json.fromJson[TimestampModel](Json.parse("""{"$date":{"$numberLong":"1642075200000"}}"""))
+      val expected = TimestampModel(
+        LocalDateTime.of(2022, 1, 13, 12, 0, 0, 0)
+      )
+
+      actual.isSuccess mustBe (true)
       actual.get mustBe expected
     }
   }
