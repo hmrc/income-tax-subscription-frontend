@@ -43,4 +43,5 @@ trait MockThrottlingConnector extends UnitTestTrait with MockitoSugar with Befor
   def throttleFail(): OngoingStubbing[Future[Boolean]] = set(Future.failed(new RuntimeException("testing throttle connector failure")))
 
   private def set(b: Future[Boolean]) = when(mockThrottlingConnector.getThrottleStatus(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(b)
+
 }

@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ThrottlingFeature}
 import controllers.ControllerBaseSpec
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
@@ -30,9 +30,9 @@ import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.{AccountingPeriodService, ThrottlingService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
 import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testValidStartDate}
@@ -45,8 +45,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockIncomeTaxSubscriptionConnector
-   {
+  with MockIncomeTaxSubscriptionConnector {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: TaskList = mock[TaskList]
@@ -59,6 +58,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     disable(SaveAndRetrieve)
+    disable(ThrottlingFeature)
     reset(taskList)
     super.beforeEach()
   }
@@ -75,7 +75,8 @@ class TaskListControllerSpec extends ControllerBaseSpec
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
     mockIncomeTaxSubscriptionConnector,
-    mockAuthService
+    mockAuthService,
+    app.injector.instanceOf[ThrottlingService]
   )
 
   "show" should {

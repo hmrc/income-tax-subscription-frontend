@@ -16,6 +16,9 @@
 
 package services
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import config.featureswitch.FeatureSwitching
 import connectors.ThrottlingConnector
 import play.api.Logging
 import play.api.mvc.Results.Redirect
@@ -25,20 +28,29 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector) extends Logging {
+class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
+                                  val appConfig: AppConfig) extends Logging with FeatureSwitching {
 
   def throttled(throttle: Throttle)(success: => Future[Result])
                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
-    throttlingConnector.getThrottleStatus(throttle.throttleId)
-      .recoverWith { case _ =>
-        logger.warn(s"Throttle ${throttle.throttleId} has failed, recovering with open=${throttle.failOpen}")
-        Future.successful(throttle.failOpen)
+
+    val throttleResult: Future[Boolean] = {
+      if (isEnabled(ThrottlingFeature)) {
+        throttlingConnector.getThrottleStatus(throttle.throttleId)
+          .recoverWith { case _ =>
+            logger.warn(s"Throttle ${throttle.throttleId} has failed, recovering with open=${throttle.failOpen}")
+            Future.successful(throttle.failOpen)
+          }
+      } else {
+        Future.successful(true)
       }
-      .map {
-        case true => success
-        case false => Future.successful(Redirect(throttle.callOnFail))
-      }
-      .flatten
+    }
+
+    throttleResult flatMap {
+      case true => success
+      case false => Future.successful(Redirect(throttle.callOnFail))
+    }
+
   }
 }
 
@@ -51,3 +63,8 @@ trait Throttle {
   def callOnFail: Call
 }
 
+object IndividualEndOfJourneyThrottle extends Throttle {
+  override val throttleId: String = "end-of-journey"
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.individual.routes.ThrottlingController.show
+}

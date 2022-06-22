@@ -7,7 +7,7 @@ import helpers.IntegrationTestConstants.testMtdId
 import helpers.IntegrationTestModels._
 import helpers.agent.IntegrationTestConstants.SessionId
 import helpers.agent.IntegrationTestModels.{fullSubscriptionData, subscriptionData}
-import helpers.agent.WiremockHelper
+import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
 import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.http.Status
@@ -22,6 +22,10 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   private def subscriptionUri(id: String) = s"/income-tax-subscription/subscription-data/test-reference/id/$id"
 
   private def subscriptionDeleteUri = s"/income-tax-subscription/subscription-data/all"
+
+  def verifyGet(id: String)(count: Int = 1): Unit = {
+    WiremockHelper.verifyGet(subscriptionUri(id), count = Some(count))
+  }
 
   def stubGetSubscriptionDetails(id: String, responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
     when(
