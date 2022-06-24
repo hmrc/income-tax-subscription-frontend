@@ -27,7 +27,6 @@ GET         /report-quarterly/income-and-expenses/sign-up/test-only/feature-swit
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch                         testonly.controllers.FeatureSwitchController.submit
 
 + nocsrf
-POST        /report-quarterly/income-and-expenses/sign-up/test-only/preferences-token                      testonly.controllers.individual.PreferenceTokenController.addToken()
 
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-user                      testonly.controllers.agent.ResetUserController.resetUser
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-lockout                   testonly.controllers.agent.ResetAgentLockoutController.resetLockout
