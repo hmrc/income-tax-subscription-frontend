@@ -8,7 +8,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import controllers.agent.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 import forms.agent._
 import forms.individual.business.RemoveBusinessForm
 import helpers.IntegrationTestConstants.{testFirstName, testId, testLastName}

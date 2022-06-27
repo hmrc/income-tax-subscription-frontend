@@ -18,9 +18,10 @@ package controllers.agent
 
 import auth.agent.AgentJourneyState._
 import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching, StatelessController}
+import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.ArnKey
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import controllers.agent.ITSASessionKeys._
 import play.api.mvc._
 import services.{AuditingService, AuthService}
 

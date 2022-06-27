@@ -17,13 +17,14 @@
 package auth.agent
 
 import auth.individual.IncomeTaxUser
-import controllers.agent.ITSASessionKeys
+import common.Constants.ITSASessionKeys
+import common.Extractors
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
-import utilities.agent.Constants
 
-case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel) extends IncomeTaxUser {
-  lazy val arn: Option[String] = getEnrolment(Constants.agentServiceEnrolmentName)
+case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel)
+  extends IncomeTaxUser with Extractors {
+  lazy val arn: Option[String] = getArnFromEnrolments(enrolments)
 
   def clientNino(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.NINO)
@@ -33,12 +34,4 @@ case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[Affi
 
   def clientReference(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.REFERENCE)
-
-  private def getEnrolment(key: String) = {
-    enrolments.getEnrolment(key).flatMap { enrolment =>
-      enrolment.identifiers.headOption map { identifier =>
-        identifier.value
-      }
-    }
-  }
 }

@@ -23,7 +23,7 @@ import helpers.IntegrationTestConstants._
 import play.api.libs.crypto.CookieSigner
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
 import uk.gov.hmrc.http.SessionKeys
-import utilities.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 
 trait SessionCookieBaker {
   private val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="

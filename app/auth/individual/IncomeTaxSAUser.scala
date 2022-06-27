@@ -16,10 +16,10 @@
 
 package auth.individual
 
+import common.Constants
+import common.Constants.ITSASessionKeys
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
-import utilities.ITSASessionKeys
-import utilities.individual.Constants
 
 trait IncomeTaxUser {
   val enrolments: Enrolments

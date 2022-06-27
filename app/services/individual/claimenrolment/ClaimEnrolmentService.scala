@@ -27,7 +27,7 @@ import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated
 import services.individual.claimenrolment.ClaimEnrolmentService._
 import services.individual.{EnrolmentService, KnownFactsService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
+import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

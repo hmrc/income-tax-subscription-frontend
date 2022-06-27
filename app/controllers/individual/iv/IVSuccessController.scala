@@ -16,14 +16,14 @@
 
 package controllers.individual.iv
 
-import auth.individual.{JourneyState, StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
-import config.AppConfig
 import auth.individual.JourneyState.{RequestFunctions, SessionFunctions}
+import auth.individual.{JourneyState, StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
+import common.Constants.ITSASessionKeys
+import config.AppConfig
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Session}
+import play.api.mvc._
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,7 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
                                     val authService: AuthService,
                                     val auditingService: AuditingService)
                                    (implicit val ec: ExecutionContext,
-                                    mcc: MessagesControllerComponents) extends StatelessController  {
+                                    mcc: MessagesControllerComponents) extends StatelessController {
 
   def success: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
@@ -40,17 +40,17 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
         val nino: String = user.nino.getOrElse(throw new InternalServerException("[IVSuccessController][success] - Could not retrieve nino after iv success"))
         auditingService.audit(IVOutcomeSuccessAuditModel(nino))
       }
-        if (request.session.isInState(ClaimEnrolmentJourney)) {
-          Future.successful(
-            Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
-              .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
-          )
-        } else {
-          Future.successful(
-            Redirect(controllers.usermatching.routes.HomeController.home)
-              .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
-          )
-        }
+      if (request.session.isInState(ClaimEnrolmentJourney)) {
+        Future.successful(
+          Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
+            .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
+        )
+      } else {
+        Future.successful(
+          Redirect(controllers.usermatching.routes.HomeController.home)
+            .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
+        )
+      }
   }
 
   implicit val cacheSessionFunctions: Session => SessionFunctions = JourneyState.SessionFunctions

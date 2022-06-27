@@ -17,12 +17,12 @@
 package controllers.individual.iv
 
 import auth.individual.StatelessController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService}
-import utilities.ITSASessionKeys
 import views.html.individual.iv.IVFailure
 
 import javax.inject.Inject

@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.agent.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 import helpers.IntegrationTestConstants.{testNino, testUtr}
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, CustomMatchers, SessionCookieCrumbler}

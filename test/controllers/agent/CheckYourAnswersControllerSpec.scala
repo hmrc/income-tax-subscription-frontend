@@ -17,6 +17,7 @@
 package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
+import common.Constants.ITSASessionKeys
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.{IncomeSourceModel, OverseasPropertyModel, PropertyModel}
 import org.mockito.ArgumentMatchers
@@ -44,8 +45,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockClientRelationshipService
   with MockSubscriptionOrchestrationService
   with MockIncomeTaxSubscriptionConnector
-  with MockAuditingService
-   {
+  with MockAuditingService {
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = new ImplicitDateFormatterImpl(mockLanguageUtils)
   val mockCheckYourAnswers: CheckYourAnswers = mock[CheckYourAnswers]
 
@@ -110,7 +110,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.any()
         )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(HtmlFormat.empty)
+          .thenReturn(HtmlFormat.empty)
 
         status(call()) must be(Status.OK)
       }

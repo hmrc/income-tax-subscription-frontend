@@ -18,7 +18,7 @@ package controllers.agent.matching
 
 import auth.agent.AgentUserMatched
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import controllers.agent.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._

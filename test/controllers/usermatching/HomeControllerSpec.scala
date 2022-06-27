@@ -27,9 +27,9 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 import utilities.SubscriptionDataKeys._
 import utilities.individual.TestConstants
+import _root_.common.Constants.ITSASessionKeys
 
 import scala.concurrent.Future
 

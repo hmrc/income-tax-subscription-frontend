@@ -18,6 +18,7 @@ package controllers.usermatching
 
 import auth.individual.JourneyState._
 import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController}
+import common.Constants.ITSASessionKeys._
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
@@ -28,8 +29,6 @@ import play.api.mvc._
 import services._
 import services.individual._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.ITSASessionKeys
-import utilities.ITSASessionKeys._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -74,7 +73,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
     }
 
   private def getUserIdentifiers(user: IncomeTaxSAUser)(implicit request: Request[AnyContent]): Future[(Option[String], Option[String], Option[String])] = {
-    val maybeEntityId = request.session.data.get(ITSASessionKeys.SPSEntityId)
+    val maybeEntityId = request.session.data.get(SPSEntityId)
     (user.nino, user.utr, maybeEntityId) match {
       case (None, _, _) => Future.successful((None, None, None))
       case (Some(nino), Some(utr), _) => Future.successful((Some(nino), Some(utr), maybeEntityId))

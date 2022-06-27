@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package utilities.individual
+package common
 
 import models.DateModel
 
 object Constants {
-
   val mtdItsaEnrolmentName = "HMRC-MTD-IT"
+  val hmrcAsAgent = "HMRC-AS-AGENT"
   val mtdItsaEnrolmentIdentifierKey = "MTDITID"
+
+  val agentServiceIdentifierKey = "AgentReferenceNumber"
+  val ninoIdentifierKey = "NINO"
+
   val ninoEnrolmentName = "HMRC-NI"
   val ninoEnrolmentIdentifierKey = "NINO"
   val utrEnrolmentName = "IR-SA"
@@ -35,6 +39,33 @@ object Constants {
     val ggServiceName = "HMRC-MTD-IT"
     val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
   }
+
+  object ITSASessionKeys {
+
+    val ArnKey = "ARN"
+    val MTDITID = mtdItsaEnrolmentIdentifierKey
+    val RequestURI = "Request-URI"
+    val FailedClientMatching = "Failed-Client-Matching"
+    val JourneyStateKey = "Journey-State"
+    val NINO = "NINO"
+    val UTR = "UTR"
+    val REFERENCE = "reference"
+
+    val sessionId = "sessionId"
+
+    val clientData: Seq[String] = Seq(MTDITID, NINO, UTR)
+
+    val StartTime = "StartTime"
+    val FailedUserMatching = "Failed-User-Matching"
+    val PreferencesRedirectUrl = "Preferences-Redirect-Url"
+    val AgentReferenceNumber = "Agent-Reference-Number"
+    val ConfirmedAgent = "Confirmed-Agent"
+    val IdentityVerificationFlag = "ITSA-Identity-Verification-Flag"
+
+    val SPSEntityId: String = "SPS-Entity-ID"
+
+  }
+
 
   val preferencesServiceKey = "mtdfbit"
 

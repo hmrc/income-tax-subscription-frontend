@@ -27,7 +27,7 @@ import services.agent.{AssignEnrolmentToUserService, AutoEnrolmentService, Check
 import services.mocks.{MockAssignEnrolmentToUserService, MockCheckEnrolmentAllocationService}
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
+import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global

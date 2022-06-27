@@ -18,6 +18,7 @@ package controllers
 
 import akka.actor.ActorSystem
 import auth.individual.{ClaimEnrolment, SignUp}
+import common.Constants.ITSASessionKeys
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -26,7 +27,7 @@ import play.api.test.Helpers.{await, _}
 import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 import utilities.individual.TestConstants
-import utilities.{ITSASessionKeys, UnitTestTrait, UserMatchingSessionUtil}
+import utilities.{UnitTestTrait, UserMatchingSessionUtil}
 
 trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
 
