@@ -18,6 +18,7 @@ package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.RemoveBusinessForm
@@ -31,7 +32,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockIncomeTaxSubscriptionConnector, MockRemoveBusinessService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.agent.business.RemoveBusiness
 
@@ -40,9 +41,12 @@ import scala.concurrent.Future
 class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockIncomeTaxSubscriptionConnector {
+  with MockIncomeTaxSubscriptionConnector
+  with MockRemoveBusinessService {
+
   override val controllerName: String = "RemoveBusinessController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+  override val mockIncomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
 
   private val testBusinesses = Seq(
     SelfEmploymentData(
@@ -92,7 +96,6 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
       "the user selects 'yes'" in withController { controller =>
         enable(SaveAndRetrieve)
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
-        mockSaveSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey, Seq())(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), Yes)
@@ -100,7 +103,7 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-        verifySelfEmploymentsSave[Seq[SelfEmploymentData]](BusinessesKey, Some(Seq()))
+        verifyDeleteBusiness(businessId = "id", testBusinesses)
       }
 
       "the user selects 'no'" in withController { controller =>
@@ -155,6 +158,7 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
       mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
+      mockRemoveBusinessService,
       mockIncomeTaxSubscriptionConnector
     )
 
