@@ -17,6 +17,7 @@
 package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -57,6 +58,18 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
     when(mockIncomeTaxSubscriptionConnector.saveSubscriptionDetails[T](
       ArgumentMatchers.any(), ArgumentMatchers.eq(id), ArgumentMatchers.eq(value)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(response))
+  }
+
+  def mockDeleteSubscriptionDetails(id: String)
+                                   (response: DeleteSubscriptionDetailsResponse): OngoingStubbing[Future[DeleteSubscriptionDetailsResponse]] = {
+    when(mockIncomeTaxSubscriptionConnector.deleteSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.eq(id))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(response))
+  }
+
+  def verifyDeleteSubscriptionDetails(id: String, count: Int): Unit = {
+    verify(mockIncomeTaxSubscriptionConnector, times(count))
+      .deleteSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.eq(id))(ArgumentMatchers.any())
+
   }
 
   def verifySelfEmploymentsSave[T](id: String, value: Option[T]): Unit = {
