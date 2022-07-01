@@ -55,14 +55,16 @@ class TaskListController @Inject()(val taskListView: TaskList,
     implicit user => {
       if (isEnabled(SaveAndRetrieve)) {
         withReference { reference =>
-          getTaskListModel(reference) map {
-            viewModel =>
-              Ok(taskListView(
-                postAction = controllers.individual.business.routes.TaskListController.submit(),
-                viewModel = viewModel,
-                accountingPeriodService = accountingPeriodService,
-                individualUserNino = user.nino.get
-              ))
+          throttlingService.throttled(IndividualStartOfJourneyThrottle) {
+            getTaskListModel(reference) map {
+              viewModel =>
+                Ok(taskListView(
+                  postAction = controllers.individual.business.routes.TaskListController.submit(),
+                  viewModel = viewModel,
+                  accountingPeriodService = accountingPeriodService,
+                  individualUserNino = user.nino.get
+                ))
+            }
           }
         }
       } else {
