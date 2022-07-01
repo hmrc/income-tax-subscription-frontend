@@ -18,10 +18,6 @@ package services.mocks
 
 import connectors.ThrottlingConnector
 import org.mockito.ArgumentMatchers
-<<<<<<< HEAD
-=======
-import org.mockito.ArgumentMatchers.any
->>>>>>> fe5c4b45... [ITSASU-1379] Add throttle to individual start of journey; refactor some elements of throttle
 import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.mockito.verification.VerificationMode

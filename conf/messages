@@ -1175,4 +1175,4 @@ throttle.heading                                               = We are currentl
 throttle.line_1                                                = You can not sign up to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again shortly or sign out and come back later.
 agent.throttle.title                                           = We are currently experiencing high levels of demand for this service
 agent.throttle.heading                                         = We are currently experiencing high levels of demand for this service
-agent.throttle.line_1                                          = You can not sign up to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again later.
+agent.throttle.line_1                                          = You can not sign up your client to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again shortly or sign out and come back later.

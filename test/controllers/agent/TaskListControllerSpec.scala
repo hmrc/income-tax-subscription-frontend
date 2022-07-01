@@ -29,9 +29,9 @@ import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService, MockThrottlingConnector}
+import services.{AccountingPeriodService, ThrottlingService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
 import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testValidStartDate}
@@ -45,7 +45,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
   with MockIncomeTaxSubscriptionConnector
-   {
+  with MockThrottlingConnector {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: AgentTaskList = mock[AgentTaskList]
@@ -67,6 +67,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
   }
 
+  when(mockThrottlingConnector.getThrottleStatus(any())(any())).thenReturn(Future.successful(true))
   object TestTaskListController extends TaskListController(
     taskList,
     accountingPeriodService,
@@ -74,7 +75,8 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
     mockIncomeTaxSubscriptionConnector,
-    mockAuthService
+    mockAuthService,
+    new ThrottlingService(mockThrottlingConnector, appConfig)
   )
 
   "show" should {
