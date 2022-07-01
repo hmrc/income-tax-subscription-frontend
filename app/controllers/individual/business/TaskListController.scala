@@ -51,6 +51,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with Logging {
 
+  println("here and throttling service is " + throttlingService)
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       if (isEnabled(SaveAndRetrieve)) {

@@ -76,3 +76,13 @@ case object IndividualEndOfJourneyThrottle extends Throttle {
   override val failOpen: Boolean = false
   override val callOnFail: Call = controllers.individual.routes.ThrottlingController.end
 }
+case object AgentStartOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = StartOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.agent.routes.ThrottlingController.start
+}
+case object AgentEndOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = EndOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.agent.routes.ThrottlingController.end
+}
