@@ -18,6 +18,7 @@ package connectors
 
 import config.AppConfig
 import play.api.http.Status.OK
+import services.ThrottleId
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
@@ -30,7 +31,7 @@ class ThrottlingConnector @Inject()(appConfig: AppConfig, http: HttpClient)
 
   def throttlingUrl: String = appConfig.throttlingUrl
 
-  def getThrottleStatus(throttleId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def getThrottleStatus(throttleId: ThrottleId)(implicit hc: HeaderCarrier): Future[Boolean] = {
     http.POSTEmpty[HttpResponse](s"$throttlingUrl?throttleId=$throttleId")
       .map(result => result.status == OK)
   }

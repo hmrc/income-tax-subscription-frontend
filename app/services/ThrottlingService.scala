@@ -32,30 +32,26 @@ class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
                                   val appConfig: AppConfig) extends Logging with FeatureSwitching {
 
   def throttled(throttle: Throttle)(success: => Future[Result])
-               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
-
-    val throttleResult: Future[Boolean] = {
-      if (isEnabled(ThrottlingFeature)) {
-        throttlingConnector.getThrottleStatus(throttle.throttleId)
-          .recoverWith { case _ =>
-            logger.warn(s"Throttle ${throttle.throttleId} has failed, recovering with open=${throttle.failOpen}")
-            Future.successful(throttle.failOpen)
-          }
-      } else {
-        Future.successful(true)
-      }
-    }
-
-    throttleResult flatMap {
+               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] =
+    throttleResult(throttle).getOrElse(Future.successful(true)) flatMap {
       case true => success
       case false => Future.successful(Redirect(throttle.callOnFail))
     }
 
+  private[services] def throttleResult(throttle: Throttle)(implicit hc: HeaderCarrier, ec: ExecutionContext): Option[Future[Boolean]] = {
+    if (!isEnabled(ThrottlingFeature)) None
+    else Some(
+      throttlingConnector.getThrottleStatus(throttle.throttleId)
+        .recoverWith { case _ =>
+          logger.warn(s"Throttle ${throttle.throttleId} has failed, recovering with open=${throttle.failOpen}")
+          Future.successful(throttle.failOpen)
+        }
+    )
   }
 }
 
-trait Throttle {
-  def throttleId: String
+sealed trait Throttle {
+  def throttleId: ThrottleId
 
   /** Allow the request if the back end throttle service fails */
   def failOpen: Boolean
@@ -63,8 +59,20 @@ trait Throttle {
   def callOnFail: Call
 }
 
-object IndividualEndOfJourneyThrottle extends Throttle {
-  override val throttleId: String = "end-of-journey"
+sealed abstract class ThrottleId(val name:String) {
+  override def toString: String = name
+}
+case object StartOfJourneyThrottleId extends ThrottleId("start-of-journey")
+case object EndOfJourneyThrottleId extends ThrottleId("end-of-journey")
+
+
+case object IndividualStartOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = StartOfJourneyThrottleId
   override val failOpen: Boolean = false
-  override val callOnFail: Call = controllers.individual.routes.ThrottlingController.show
+  override val callOnFail: Call = controllers.individual.routes.ThrottlingController.start
+}
+case object IndividualEndOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = EndOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.individual.routes.ThrottlingController.end
 }

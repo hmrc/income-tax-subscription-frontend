@@ -142,4 +142,5 @@ GET         /business/remove-uk-property-business                controllers.ind
 POST        /business/remove-uk-property-business                controllers.individual.business.RemoveUkPropertyController.submit
 
 # Throttle
-GET         /throttle                                            controllers.individual.ThrottlingController.show
+GET         /throttleStart                                       controllers.individual.ThrottlingController.start
+GET         /throttleEnd                                         controllers.individual.ThrottlingController.end

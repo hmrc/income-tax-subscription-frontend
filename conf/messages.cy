@@ -32,6 +32,7 @@ base.to                                                         = i
 base.caption                                                    = Mae'r adran hon yn
 base.submit_and_continue                                        = Cyflwyno ac yn eich blaen
 base.new_tab_key                                                = {0}
+base.try_again                                                  = Rhowch gynnig arall arni
 
 error-notification.prefix                                       = Gwall:
 

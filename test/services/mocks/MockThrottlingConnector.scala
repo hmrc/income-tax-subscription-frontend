@@ -18,23 +18,37 @@ package services.mocks
 
 import connectors.ThrottlingConnector
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.stubbing.OngoingStubbing
+import org.mockito.verification.VerificationMode
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.Call
+import services.{Throttle, ThrottleId}
 import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
 trait MockThrottlingConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
+
   val mockThrottlingConnector: ThrottlingConnector = mock[ThrottlingConnector]
+  val failFuzzyUrl = Math.random().toString
+
+  def failClosed():Unit = permitRequestOnFailure(false)
+  def failOpen():Unit = permitRequestOnFailure(true)
+  private def permitRequestOnFailure(v:Boolean) = when(mockThrottle.failOpen).thenReturn(v)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockThrottlingConnector)
-    notThrottled() // by default.  Call throttled() to test redirection.
+    when(mockThrottle.throttleId).thenReturn(mockThrottleId)
+    when(mockThrottle.callOnFail).thenReturn(Call("test", failFuzzyUrl))
   }
+
+  val mockThrottle = mock[Throttle]
+  val mockThrottleId = mock[ThrottleId]
+  when(mockThrottleId.name).thenReturn("TestThrottle")
 
   def throttled(): OngoingStubbing[Future[Boolean]] = set(Future.successful(false))
 
@@ -44,4 +58,5 @@ trait MockThrottlingConnector extends UnitTestTrait with MockitoSugar with Befor
 
   private def set(b: Future[Boolean]) = when(mockThrottlingConnector.getThrottleStatus(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(b)
 
+  def verifyGetThrottleStatusCalls(mode: VerificationMode) = verify(mockThrottlingConnector, mode).getThrottleStatus(ArgumentMatchers.any())(ArgumentMatchers.any())
 }

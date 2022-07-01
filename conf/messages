@@ -32,6 +32,7 @@ base.to                                                         = to
 base.caption                                                    = This section is
 base.submit_and_continue                                        = Submit and continue
 base.new_tab_key                                                = {0}
+base.try_again                                                  = Try again
 
 error-notification.prefix                                       = Error:
 
@@ -1171,7 +1172,7 @@ agent.error.remove-overseas-property-business.invalid          = Select yes if y
 # Throttling
 throttle.title                                                 = We are currently experiencing high levels of demand for this service
 throttle.heading                                               = We are currently experiencing high levels of demand for this service
-throttle.line_1                                                = You can not sign up to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again later.
+throttle.line_1                                                = You can not sign up to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again shortly or sign out and come back later.
 agent.throttle.title                                           = We are currently experiencing high levels of demand for this service
 agent.throttle.heading                                         = We are currently experiencing high levels of demand for this service
 agent.throttle.line_1                                          = You can not sign up to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again later.

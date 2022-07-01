@@ -40,7 +40,8 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                getEligibilityStatusService: GetEligibilityStatusService,
                                val subscriptionDetailsService: SubscriptionDetailsService,
                                val prePopulationService: PrePopulationService,
-                               subscriptionService: SubscriptionService)
+                               subscriptionService: SubscriptionService,
+                               throttlingService: ThrottlingService)
                               (implicit val ec: ExecutionContext,
                                val appConfig: AppConfig,
                                mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
@@ -65,7 +66,9 @@ class HomeController @Inject()(val auditingService: AuditingService,
           case (Some(nino), Some(utr), _) => getSubscription(nino) flatMap {
             // Subscription available, will be throttled
             case Some(SubscriptionSuccess(mtditId)) =>
-              claimSubscription(mtditId, nino, utr)
+              throttlingService.throttled(IndividualStartOfJourneyThrottle) {
+                claimSubscription(mtditId, nino, utr)
+              }
             // New phone, who dis?
             case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
           }
