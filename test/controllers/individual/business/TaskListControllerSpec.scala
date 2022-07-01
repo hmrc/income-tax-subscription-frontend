@@ -23,7 +23,7 @@ import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.http.Status.OK
@@ -58,10 +58,12 @@ class TaskListControllerSpec extends ControllerBaseSpec
   )
 
   override def beforeEach(): Unit = {
+    super.beforeEach()
     disable(SaveAndRetrieve)
     disable(ThrottlingFeature)
     reset(taskList)
-    super.beforeEach()
+    enable(ThrottlingFeature)
+    notThrottled()
   }
 
   def mockTaskList(): Unit = {
@@ -115,6 +117,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
+      verifyGetThrottleStatusCalls(times(1))
     }
 
     "throw an exception" when {
@@ -154,6 +157,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
           status(result) must be(Status.SEE_OTHER)
           await(result)
           verifySubscriptionDetailsSave(MtditId, 1)
+          verifyGetThrottleStatusCalls(times(1))
 
           redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
         }
@@ -181,6 +185,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
           val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
           intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
           verifySubscriptionDetailsSave(MtditId, 0)
+          verifyGetThrottleStatusCalls(times(1))
         }
       }
     }

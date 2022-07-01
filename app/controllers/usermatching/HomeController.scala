@@ -63,15 +63,16 @@ class HomeController @Inject()(val auditingService: AuditingService,
           case (_, Some(_), entityIdMaybe@Some(_)) if request.session.isInState(SignUp) =>
             Future.successful(Redirect(controllers.individual.sps.routes.SPSCallbackController.callback(entityIdMaybe)))
           // New user, with relevant information, try to subscribe them
-          case (Some(nino), Some(utr), _) => getSubscription(nino) flatMap {
-            // Subscription available, will be throttled
-            case Some(SubscriptionSuccess(mtditId)) =>
-              throttlingService.throttled(IndividualStartOfJourneyThrottle) {
-                claimSubscription(mtditId, nino, utr)
+          case (Some(nino), Some(utr), _) =>
+            throttlingService.throttled(IndividualStartOfJourneyThrottle) {
+              getSubscription(nino) flatMap {
+                // Subscription available, will be throttled
+                case Some(SubscriptionSuccess(mtditId)) =>
+                  claimSubscription(mtditId, nino, utr)
+                // New phone, who dis?
+                case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
               }
-            // New phone, who dis?
-            case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
-          }
+            }.map{r => r.addingToSession(UTR -> utr)}  // Add UTR, mainly for failure case so we don't look it up again.
         }
     }
 

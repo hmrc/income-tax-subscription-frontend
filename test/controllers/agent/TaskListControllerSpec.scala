@@ -17,6 +17,7 @@
 package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel, Next}
@@ -54,8 +55,10 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   )
 
   override def beforeEach(): Unit = {
-    reset(taskList)
     super.beforeEach()
+    reset(taskList)
+    enable(ThrottlingFeature)
+    notThrottled()
   }
 
   def mockTaskList(): Unit = {
