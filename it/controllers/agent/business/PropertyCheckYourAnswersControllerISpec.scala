@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.postUri
 import helpers.IntegrationTestModels.subscriptionData
@@ -30,103 +29,73 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
-class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase  {
+class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/uk-property-check-your-answers" should {
-    "return OK" when {
-      "the save and retrieve feature switch is enabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(ukProperty = Some(PropertyModel(accountingMethod = Some(Cash)))))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
-        And("save & retrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
+    "return OK" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(ukProperty = Some(PropertyModel(accountingMethod = Some(Cash)))))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
 
-        When("GET business/uk-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.getPropertyCheckYourAnswers()
+      When("GET business/uk-property-check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.getPropertyCheckYourAnswers()
 
-        Then("Should return OK with the property CYA page")
-        res must have (
-          httpStatus(OK),
-          pageTitle(
-            s"${messages("agent.business.check-your-answers.content.uk-property.title")} - Use software to report your client’s Income Tax - GOV.UK"
-          )
+      Then("Should return OK with the property CYA page")
+      res must have(
+        httpStatus(OK),
+        pageTitle(
+          s"${messages("agent.business.check-your-answers.content.uk-property.title")} - Use software to report your client’s Income Tax - GOV.UK"
         )
-      }
-    }
-
-    "return NOT_FOUND" when {
-      "the save and retrieve feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-        And("save & retrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
-
-        When("GET business/uk-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.getPropertyCheckYourAnswers()
-
-        Then("Should return INTERNAL_SERVER_ERROR")
-        res must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
+      )
     }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/uk-property-check-your-answers" should {
     "redirect to the agent task list page" when {
-      "the save and retrieve feature switch is enabled" when {
-        "the client has answered all the questions for uk property" should {
-          "redirect to the agent tasks list page and save property answers" in {
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
-              PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)
-            )
-            And("save & retrieve feature switch is enabled")
-            enable(SaveAndRetrieve)
+      "the client has answered all the questions for uk property" should {
+        "redirect to the agent tasks list page and save property answers" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+            PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)
+          )
 
-            When("POST business/uk-property-check-your-answers is called")
-            val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-            Then("Should return a SEE_OTHER with a redirect location of task list page")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(taskListURI)
-            )
+          Then("Should return a SEE_OTHER with a redirect location of task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(taskListURI)
+          )
 
-            IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
-          }
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
         }
+      }
 
-        "the client has answered partial questions for uk property" should {
-          "redirect to the agent tasks list page and do not save property answers" in {
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(PropertyModel(accountingMethod = Some(Cash)))
-            )
+      "the client has answered partial questions for uk property" should {
+        "redirect to the agent tasks list page and do not save property answers" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(PropertyModel(accountingMethod = Some(Cash)))
+          )
 
-            And("save & retrieve feature switch is enabled")
-            enable(SaveAndRetrieve)
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-            When("POST business/uk-property-check-your-answers is called")
-            val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+          Then("Should return a SEE_OTHER with a redirect location of task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(taskListURI)
+          )
+          verifyPost(postUri(Property), count = Some(0))
 
-            Then("Should return a SEE_OTHER with a redirect location of task list page")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(taskListURI)
-            )
-            verifyPost(postUri(Property), count= Some(0))
-
-          }
         }
       }
     }
@@ -137,8 +106,6 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase  {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-        And("save & retrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
 
         When("POST business/uk-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
@@ -146,23 +113,6 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase  {
         Then("Should return a INTERNAL_SERVER_ERROR")
         res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
-
-    "return NOT_FOUND" when {
-      "the save and retrieve feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        And("save & retrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
-
-        When("POST business/uk-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
-
-        Then("Should return NOT_FOUND")
-        res must have(
-          httpStatus(NOT_FOUND)
         )
       }
     }

@@ -16,7 +16,6 @@
 
 package views.agent.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import forms.agent.PropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
@@ -110,18 +109,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       document().mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.hint)
     }
 
-    "have a continue button when not in edit mode" in {
-      disable(SaveAndRetrieve)
-      document().getGovukSubmitButton.text mustBe PropertyStartDateMessages.continue
-    }
-
-    "have update button when in edit mode" in {
-      disable(SaveAndRetrieve)
-      document(isEditMode = true).getGovukSubmitButton.text mustBe PropertyStartDateMessages.update
-    }
-
-    "have a save & continue button when save & retrieve feature is enabled" in {
-      enable(SaveAndRetrieve)
+    "have a save & continue button" in {
       document().getGovukSubmitButton.text mustBe PropertyStartDateMessages.saveAndContinue
     }
 

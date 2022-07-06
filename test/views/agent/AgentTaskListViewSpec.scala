@@ -208,7 +208,7 @@ class AgentTaskListViewSpec extends ViewSpec {
             val ukPropertyRemoveLink = ukPropertyIncomeSection.selectNth("span", 3).selectHead("a")
             ukPropertyRemoveLink.selectHead("span[aria-hidden='true']").text mustBe "Remove"
             ukPropertyRemoveLink.selectHead("span.govuk-visually-hidden").text mustBe "Remove UK property business"
-            ukPropertyRemoveLink.attr("href") mustBe controllers.agent.business.routes.ClientRemoveUkPropertyController.show.url
+            ukPropertyRemoveLink.attr("href") mustBe controllers.agent.business.routes.RemoveUkPropertyController.show.url
           }
         }
 
@@ -230,7 +230,7 @@ class AgentTaskListViewSpec extends ViewSpec {
             val overseasPropertyRemoveLink = overseasPropertySection.selectNth("span", 3).selectHead("a")
             overseasPropertyRemoveLink.selectHead("span[aria-hidden='true']").text mustBe "Remove"
             overseasPropertyRemoveLink.selectHead("span.govuk-visually-hidden").text mustBe "Remove overseas property business"
-            overseasPropertyRemoveLink.attr("href") mustBe controllers.agent.business.routes.RemoveClientOverseasPropertyController.show.url
+            overseasPropertyRemoveLink.attr("href") mustBe controllers.agent.business.routes.RemoveOverseasPropertyController.show.url
           }
         }
 

@@ -15,19 +15,16 @@
  *@
 
 @import config.AppConfig
-@import views.html.templates.AgentMainTemplate
-@import views.html.helpers.injected._
 @import forms.agent.OverseasPropertyStartDateForm._
-@import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-@import config.featureswitch.FeatureSwitchingImpl
+@import views.html.helpers.injected._
+@import views.html.templates.AgentMainTemplate
 
 @this(
     mainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
     dateHelper: DateHelper,
     continueButton: ContinueButton,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    featureSwitchingImpl: FeatureSwitchingImpl
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )(
     implicit appConfig: AppConfig
 )
@@ -51,11 +48,7 @@
             isLegendVisible = false
         )
 
-        @if(featureSwitchingImpl.isEnabled(SaveAndRetrieve)) {
-            @saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = None)
-        } else {
-            @continueButton(isEditMode = isEditMode)
-        }
+        @saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = None)
     }
 
 }

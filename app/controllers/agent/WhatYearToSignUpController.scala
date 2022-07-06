@@ -18,7 +18,6 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingYearForm
 import models.AccountingYear
@@ -41,18 +40,11 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                            val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval  {
 
-  def backUrl(isEditMode: Boolean): Option[String] = if (isEnabled(SaveAndRetrieve)) {
+  def backUrl(isEditMode: Boolean): Option[String] =
     if(isEditMode)
       Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
     else
       Some(controllers.agent.routes.TaskListController.show().url)
-  } else {
-    if(isEditMode) {
-      Some(controllers.agent.routes.CheckYourAnswersController.show.url)
-    } else {
-      None
-    }
-  }
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -82,13 +74,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
           accountingYear => {
             subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map { _ =>
-              if (isEnabled(SaveAndRetrieve)) {
-                Redirect(controllers.agent.routes.TaxYearCheckYourAnswersController.show())
-              } else if (isEditMode) {
-                Redirect(controllers.agent.routes.CheckYourAnswersController.show)
-              } else {
-                Redirect(controllers.agent.routes.IncomeSourceController.show())
-              }
+              Redirect(controllers.agent.routes.TaxYearCheckYourAnswersController.show())
             }
           }
         )

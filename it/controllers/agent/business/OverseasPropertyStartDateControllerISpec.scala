@@ -16,32 +16,23 @@
 
 package controllers.agent.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestModels
-import helpers.IntegrationTestModels.{subscriptionData, testInvalidStartDate, testPropertyStartDate}
+import helpers.IntegrationTestModels.{testInvalidStartDate, testPropertyStartDate}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
-import models.common.{IncomeSourceModel, OverseasPropertyModel}
+import models.common.OverseasPropertyModel
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    disable(SaveAndRetrieve)
-    super.beforeEach()
-  }
-
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-start-date" when {
-
     "Subscription Details returns all data" should {
       "show the Overseas property Start date page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionGet()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           OverseasProperty,
           OK,
@@ -64,10 +55,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
     "Subscription Details returns no data" should {
       "show the Overseas property Start date page" in {
         Given("I setup the Wiremock stubs")
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
-          foreignProperty = true)
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("GET /overseas-property-start-date is called")
@@ -80,7 +68,6 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         )
       }
     }
-
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-start-date" when {
@@ -111,10 +98,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
       "do not enter start date" should {
         "return BAD_REQUEST" in {
           Given("I setup the Wiremock stubs")
-          val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
-            foreignProperty = false)
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
 
           When("POST /overseas-property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, None)
@@ -130,12 +114,9 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
       "select start date within 12 months" should {
         "return BAD_REQUEST" in {
           val userInput = testInvalidStartDate
-          val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false,
-            foreignProperty = true)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
 
           When("POST /overseas-property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
@@ -151,63 +132,30 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
 
     "in edit mode" when {
       "enter the same start date" should {
-        "save and retrieve enabled" when {
-          "redirect to the agent overseas property check your answers page" in {
+        "redirect to the agent overseas property check your answers page" in {
+          val userInput = IntegrationTestModels.testValidStartDate
+          val expected = OverseasPropertyModel(startDate = Some(userInput))
 
-            enable(SaveAndRetrieve)
-            val userInput = IntegrationTestModels.testValidStartDate
-            val expected = OverseasPropertyModel(startDate = Some(userInput))
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            OverseasProperty,
+            OK,
+            Json.toJson(expected)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
 
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(expected)
-            )
-            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+          When("POST /overseas-property-start-date is called")
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
 
-            When("POST /overseas-property-start-date is called")
-            val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(overseasPropertyCheckYourAnswersURI)
+          )
 
-            Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(overseasPropertyCheckYourAnswersURI)
-            )
-
-            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
-          }
+          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
         }
-
-        "save and retrieve disabled" when {
-          "redirect to the agent check your answers page" in {
-
-            val userInput = IntegrationTestModels.testValidStartDate
-            val expected = OverseasPropertyModel(startDate = Some(userInput))
-
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(expected)
-            )
-            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
-
-            When("POST /overseas-property-start-date is called")
-            val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
-
-            Then("Should return a SEE_OTHER with a redirect location of check your answers")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(checkYourAnswersURI)
-            )
-
-            IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
-          }
-        }
-
       }
 
       "enter a new start date" should {
@@ -230,7 +178,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
+            redirectURI(overseasPropertyCheckYourAnswersURI)
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))

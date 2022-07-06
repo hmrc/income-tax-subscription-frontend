@@ -16,11 +16,10 @@
 
 package controllers.agent.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestModels.testFullOverseasPropertyModel
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{checkYourAnswersURI, overseasPropertyCheckYourAnswersURI}
+import helpers.agent.IntegrationTestConstants.overseasPropertyCheckYourAnswersURI
 import helpers.agent.servicemocks.AuthStub
 import models.Cash
 import models.common.OverseasPropertyModel
@@ -29,14 +28,7 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    disable(SaveAndRetrieve)
-    super.beforeEach()
-  }
-
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-accounting-method" when {
-
     "Subscription details returns pre-populated data" should {
       "show the foreign property accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
@@ -82,54 +74,26 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
   }
 
   "POST /business/accounting-method-property" when {
-    "save and retrieve is enabled" when {
-      "select the Cash radio button on the Overseas Property Accounting Method page" should {
-        "redirect to agent overseas property check your answers" in {
-          val userInput = Cash
-          val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
+    "select the Cash radio button on the Overseas Property Accounting Method page" should {
+      "redirect to agent overseas property check your answers" in {
+        val userInput = Cash
+        val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
 
-          enable(SaveAndRetrieve)
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
 
-          When("POST /business/overseas-property-accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyAccountingMethod(inEditMode = false, Some(userInput))
+        When("POST /business/overseas-property-accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(overseasPropertyCheckYourAnswersURI)
-          )
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(overseasPropertyCheckYourAnswersURI)
+        )
 
-          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
-        }
-      }
-    }
-
-    "save and retrieve is disabled" when {
-      "select the Cash radio button on the Overseas Property Accounting Method page" should {
-        "redirect to agent check your answers" in {
-          val userInput = Cash
-          val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
-
-          When("POST /business/overseas-property-accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyAccountingMethod(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-
-          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
-        }
+        IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
       }
     }
 

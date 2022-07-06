@@ -16,12 +16,9 @@
 
 package views.agent.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitchingUtil
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
-import org.junit.Before
 import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -31,18 +28,11 @@ import views.html.agent.business.OverseasPropertyStartDate
 
 import java.time.LocalDate
 
-class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingUtil {
-
-  @Before
-  override def beforeEach(): Unit = {
-    disable(SaveAndRetrieve)
-  }
-
+class OverseasPropertyStartDateViewSpec extends ViewSpec {
   object OverseasPropertyStartDateMessages {
     val heading = "When did your client’s overseas property business start trading?"
     val para = "This is the date that letting or renting out any overseas property first started."
     val hint = "For example, 17 8 2014."
-    val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
     val maxDate = "The date the overseas property business started trading must be on or before 11 April 2021"
@@ -121,14 +111,8 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec  with FeatureSwitchingU
         OverseasPropertyStartDateMessages.hint)
     }
 
-    "have a continue button when not in edit mode and not in save and retrieve mode" in {
-      document().getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.continue
-    }
-
-    "have a save and continue button when not in edit mode and in save and retrieve mode" in {
-      withFeatureSwitch(SaveAndRetrieve) {
-        document().getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
-      }
+    "have a save and continue button when not in edit mode" in {
+      document().getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
     }
 
     "have a backlink " in {

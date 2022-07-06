@@ -17,8 +17,6 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-import config.featureswitch.FeatureSwitchingConfig
 import controllers.agent.AgentControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
@@ -37,7 +35,7 @@ import views.html.agent.business.OverseasPropertyCheckYourAnswers
 import scala.concurrent.Future
 
 class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector with FeatureSwitchingConfig {
+  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector {
 
   override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -45,15 +43,8 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
     "submit" -> TestOverseasPropertyCheckYourAnswersController.submit()
   )
 
-  object TestOverseasPropertyCheckYourAnswersController extends OverseasPropertyCheckYourAnswersController(
-    mock[OverseasPropertyCheckYourAnswers],
-    mockAuditingService,
-    mockAuthService,
-    MockSubscriptionDetailsService
-  )
-
   "show" should {
-    "return an OK status with the property CYA page" in withFeatureSwitch(SaveAndRetrieve) {
+    "return an OK status with the property CYA page" in {
       withController { controller =>
         mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
@@ -65,7 +56,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
       }
     }
 
-    "throw an exception if cannot retrieve property details" in withFeatureSwitch(SaveAndRetrieve) {
+    "throw an exception if cannot retrieve property details" in {
       withController { controller =>
         mockFetchOverseasProperty(None)
 
@@ -74,55 +65,46 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
-
-    "throw an exception if feature not enabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
-    }
   }
 
   "submit" should {
     "redirect to the task list" when {
-      "Feature Switch(SaveAndRetrieve) is enabled" when {
-        "the user answer all the answers for the overseas property" should {
-          "save the overseas property answers" in withFeatureSwitch(SaveAndRetrieve) {
-            withController { controller =>
-              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-              setupMockSubscriptionDetailsSaveFunctions()
+      "the user answer all the answers for the overseas property" should {
+        "save the overseas property answers" in {
+          withController { controller =>
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+            setupMockSubscriptionDetailsSaveFunctions()
 
-              val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+            val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-              verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
-            }
-          }
-        }
-
-        "the user answer partial answers for the overseas property" should {
-          "not save the overseas property answers" in withFeatureSwitch(SaveAndRetrieve) {
-            withController { controller =>
-              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
-
-              val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-              verify(mockConnector, never).saveSubscriptionDetails[OverseasPropertyModel](
-                any(),
-                ArgumentMatchers.eq(SubscriptionDataKeys.Property),
-                any()
-              )(any(), any())
-            }
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+            verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
           }
         }
       }
+
+      "the user answer partial answers for the overseas property" should {
+        "not save the overseas property answers" in {
+          withController { controller =>
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+
+            val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+            verify(mockConnector, never).saveSubscriptionDetails[OverseasPropertyModel](
+              any(),
+              ArgumentMatchers.eq(SubscriptionDataKeys.Property),
+              any()
+            )(any(), any())
+          }
+        }
+      }
+
     }
 
-    "throw an exception if cannot retrieve property details" in withFeatureSwitch(SaveAndRetrieve) {
+    "throw an exception if cannot retrieve property details" in {
       withController { controller =>
         mockFetchOverseasProperty(None)
 
@@ -130,14 +112,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
-    }
-
-    "throw an exception if feature not enabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
     }
   }
 
@@ -154,6 +128,13 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
       }
     }
   }
+
+  object TestOverseasPropertyCheckYourAnswersController extends OverseasPropertyCheckYourAnswersController(
+    mock[OverseasPropertyCheckYourAnswers],
+    mockAuditingService,
+    mockAuthService,
+    MockSubscriptionDetailsService
+  )
 
   private def withController(testCode: OverseasPropertyCheckYourAnswersController => Any): Unit = {
     val mockView = mock[OverseasPropertyCheckYourAnswers]
