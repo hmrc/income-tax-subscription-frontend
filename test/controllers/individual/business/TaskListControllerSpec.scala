@@ -31,7 +31,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService, MockThrottlingConnector}
 import services.{AccountingPeriodService, ThrottlingService}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
@@ -45,7 +45,8 @@ class TaskListControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockIncomeTaxSubscriptionConnector {
+  with MockIncomeTaxSubscriptionConnector
+  with MockThrottlingConnector {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: TaskList = mock[TaskList]
@@ -76,7 +77,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
     mockSubscriptionOrchestrationService,
     mockIncomeTaxSubscriptionConnector,
     mockAuthService,
-    app.injector.instanceOf[ThrottlingService]
+    new ThrottlingService(mockThrottlingConnector, appConfig)
   )
 
   "show" should {
@@ -122,7 +123,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
 
         val result: Future[Result] = await(TestTaskListController.show()(subscriptionRequest))
 
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
+        result.failed.futureValue mustBe an[NotFoundException]
       }
     }
   }

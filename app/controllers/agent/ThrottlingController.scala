@@ -20,19 +20,24 @@ import auth.individual.BaseFrontendController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import views.html.agent.Throttle
+import views.html.agent.{Throttle, ThrottleStartOfJourney}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ThrottlingController @Inject()(val auditingService: AuditingService,
                                      val authService: AuthService,
+                                     throttleStart: ThrottleStartOfJourney,
                                      throttle: Throttle)
                                     (implicit mcc: MessagesControllerComponents,
                                      val ec: ExecutionContext,
                                      val appConfig: AppConfig) extends BaseFrontendController {
 
-  def show(): Action[AnyContent] = Action.async { implicit request => Future.successful(Ok(throttle(backLink()))) }
+  def start(): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(throttleStart(backLink(), controllers.agent.routes.TaskListController.show())))
+  }
+
+  def end(): Action[AnyContent] = Action.async { implicit request => Future.successful(Ok(throttle(backLink()))) }
 
   private def backLink() = Some(controllers.agent.routes.HomeController.index.url)
 

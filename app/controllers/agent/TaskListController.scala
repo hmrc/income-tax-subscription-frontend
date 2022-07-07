@@ -28,7 +28,7 @@ import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess
 import play.api.Logging
 import play.api.mvc._
 import services.agent.SubscriptionOrchestrationService
-import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
+import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
@@ -46,7 +46,8 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val subscriptionService: SubscriptionOrchestrationService,
                                    val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                   val authService: AuthService)
+                                   val authService: AuthService,
+                                   throttlingService: ThrottlingService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval with Logging {
@@ -67,18 +68,20 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
     implicit user => {
       if (isEnabled(SaveAndRetrieve)) {
         withAgentReference { reference =>
-          getTaskListModel(reference) map {
-            viewModel =>
-              Ok(taskListView(
-                postAction = controllers.agent.routes.TaskListController.submit(),
-                viewModel = viewModel,
-                clientName = request.fetchClientName.getOrElse(
-                  throw new InternalServerException("[TaskListController][show] - could not retrieve client name from session")
-                ),
-                clientNino = formatNino(user.clientNino.getOrElse(
-                  throw new InternalServerException("[TaskListController][show] - could not retrieve client nino from session")
+          throttlingService.throttled(AgentStartOfJourneyThrottle) {
+            getTaskListModel(reference) map {
+              viewModel =>
+                Ok(taskListView(
+                  postAction = controllers.agent.routes.TaskListController.submit(),
+                  viewModel = viewModel,
+                  clientName = request.fetchClientName.getOrElse(
+                    throw new InternalServerException("[TaskListController][show] - could not retrieve client name from session")
+                  ),
+                  clientNino = formatNino(user.clientNino.getOrElse(
+                    throw new InternalServerException("[TaskListController][show] - could not retrieve client nino from session")
+                  ))
                 ))
-              ))
+            }
           }
         }
       } else {
@@ -123,18 +126,20 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
     Authenticated.async { implicit request =>
       implicit user =>
         if (isEnabled(SaveAndRetrieve)) {
-          withAgentReference { reference =>
-            val model = for {
-              cacheMap <- subscriptionDetailsService.fetchAll(reference)
-              selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-              selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
-              property <- subscriptionDetailsService.fetchProperty(reference)
-              overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-            } yield {
-              cacheMap.createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
-            }
-            model.flatMap { model =>
-              processFunc(user)(request)(model)
+          throttlingService.throttled(AgentEndOfJourneyThrottle) {
+            withAgentReference { reference =>
+              val model = for {
+                cacheMap <- subscriptionDetailsService.fetchAll(reference)
+                selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+                selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+                property <- subscriptionDetailsService.fetchProperty(reference)
+                overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+              } yield {
+                cacheMap.createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
+              }
+              model.flatMap { model =>
+                processFunc(user)(request)(model)
+              }
             }
           }
         } else {

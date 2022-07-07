@@ -139,7 +139,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/task-list" when {
     "throttling is enabled and the user is throttled" should {
-      s"redirect the user to ${controllers.individual.routes.ThrottlingController.show.url} without calling any sign up APIs" in {
+      s"redirect the user to ${controllers.individual.routes.ThrottlingController.end.url} without calling any sign up APIs" in {
         Given("I set the required feature switches")
         enable(ThrottlingFeature)
 

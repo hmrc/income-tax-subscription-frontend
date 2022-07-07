@@ -3,14 +3,15 @@ package helpers.servicemocks
 
 import helpers.WiremockHelper
 import play.api.http.Status._
+import services.ThrottleId
 
 object ThrottlingStub extends WireMockMethods {
 
-  private def throttleURI(throttleId: String): String = {
+  private def throttleURI(throttleId: ThrottleId): String = {
     s"/income-tax-subscription/throttled?throttleId=$throttleId"
   }
 
-  def stubThrottle(throttleId: String)(throttled: Boolean): Unit = {
+  def stubThrottle(throttleId: ThrottleId)(throttled: Boolean): Unit = {
     val status: Int = if (throttled) SERVICE_UNAVAILABLE else OK
     when(
       method = POST,
@@ -18,7 +19,7 @@ object ThrottlingStub extends WireMockMethods {
     ).thenReturn(status = status)
   }
 
-  def verifyThrottle(throttleId: String)(count: Int = 1): Unit = {
+  def verifyThrottle(throttleId: ThrottleId)(count: Int = 1): Unit = {
     WiremockHelper.verifyPost(uri = throttleURI(throttleId), count = Some(count))
   }
 

@@ -20,17 +20,22 @@ import agent.audit.mocks.MockAuditingService
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitch.{PrePopulate, SaveAndRetrieve, ThrottlingFeature}
 import config.featureswitch.FeatureSwitchingUtil
 import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.ThrottlingService
+import services.mocks.MockThrottlingConnector
 
 import scala.concurrent.Future
 
-class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingService with FeatureSwitchingUtil {
+class HomeControllerSpec extends AgentControllerBaseSpec
+  with MockAuditingService
+  with MockThrottlingConnector
+  with FeatureSwitchingUtil {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -41,8 +46,14 @@ class HomeControllerSpec extends AgentControllerBaseSpec with MockAuditingServic
   private def testHomeController() = new HomeController(
     mockAuditingService,
     mockAuthService,
-    MockConfig
+    MockConfig,
+    new ThrottlingService(mockThrottlingConnector, appConfig)
   )(executionContext, mockMessagesControllerComponents)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(ThrottlingFeature)
+  }
 
   "Calling the home action of the Home controller with an authorised user" should {
     lazy val result = testHomeController().home()(FakeRequest())

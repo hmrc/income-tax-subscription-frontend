@@ -30,6 +30,7 @@ import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys._
 import utilities.individual.TestConstants
 import _root_.common.Constants.ITSASessionKeys
+import services.ThrottlingService
 
 import scala.concurrent.Future
 
@@ -39,7 +40,8 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockCitizenDetailsService
   with MockGetEligibilityStatusService
   with MockPrePopulationService
-  with MockAuditingService {
+  with MockAuditingService
+  with MockThrottlingConnector {
 
   private val eligibleWithoutPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
@@ -65,7 +67,8 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockGetEligibilityStatusService,
     MockSubscriptionDetailsService,
     mockPrePopulationService,
-    mockSubscriptionService
+    mockSubscriptionService,
+    new ThrottlingService(mockThrottlingConnector, appConfig)
   )(implicitly, MockConfig, mockMessagesControllerComponents)
 
   import TestConstants.{testNino, testReference, testUtr}

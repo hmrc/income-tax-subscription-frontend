@@ -133,4 +133,5 @@ GET         /business/remove-overseas-property-business          controllers.age
 POST        /business/remove-overseas-property-business          controllers.agent.business.RemoveClientOverseasPropertyController.submit
 
 # Throttle
-GET         /throttle                                            controllers.agent.ThrottlingController.show
+GET         /throttleStart                                       controllers.agent.ThrottlingController.start
+GET         /throttleEnd                                         controllers.agent.ThrottlingController.end

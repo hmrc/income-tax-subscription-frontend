@@ -29,7 +29,7 @@ import play.api.mvc._
 import services.{AuditingService, AuthService, RemoveBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.agent.business.RemoveBusiness
 
 import javax.inject.{Inject, Singleton}
