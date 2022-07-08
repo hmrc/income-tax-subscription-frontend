@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.audits.SaveAndComebackAuditing
@@ -27,7 +26,7 @@ import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
@@ -54,24 +53,20 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
     implicit request =>
       implicit user =>
         withAgentReference { reference =>
-          if (isEnabled(SaveAndRetrieve)) {
-            subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
-              case Some(timestamp) => {
-                location.fold(
-                  Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
-                )(location => {
-                  for {
-                    saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, user.clientUtr, user.clientNino, location)
-                    _ = auditingService.audit(saveAndComebackAuditData)
-                  } yield (
-                      Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
-                    )
-                })
-              }
-              case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
+          subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
+            case Some(timestamp) => {
+              location.fold(
+                Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
+              )(location => {
+                for {
+                  saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, user.clientUtr, user.clientNino, location)
+                  _ = auditingService.audit(saveAndComebackAuditData)
+                } yield (
+                  Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+                  )
+              })
             }
-          } else {
-            Future.failed(new NotFoundException("[ProgressSavedController][show] - The save and retrieve feature switch is disabled"))
+            case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
           }
         }
   }

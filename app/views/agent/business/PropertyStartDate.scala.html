@@ -15,20 +15,16 @@
  *@
 
 @import config.AppConfig
-@import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-@import config.featureswitch.FeatureSwitchingImpl
 @import forms.agent.PropertyStartDateForm._
-@import views.html.helpers.injected.{ContinueButton, DateHelper}
+@import views.html.helpers.injected.{ContinueButton, DateHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.injected.SaveAndContinueButtonHelper
 
 @this(
     agentMainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
     dateHelper: DateHelper,
     continueButton: ContinueButton,
-    saveAndContinueButton: SaveAndContinueButtonHelper,
-    featureSwitches: FeatureSwitchingImpl,
+    saveAndContinueButton: SaveAndContinueButtonHelper
 )(
     implicit appConfig: AppConfig
 )
@@ -50,10 +46,6 @@
       hintText = Some(messages("agent.property.start_date.hint"))
     )
 
-    @if(featureSwitches.isEnabled(SaveAndRetrieve)) {
-      @saveAndContinueButton(isIndividual = false, saveAndReturnReference = None)
-    } else {
-      @continueButton(isEditMode = isEditMode)
-    }
+    @saveAndContinueButton(isIndividual = false, saveAndReturnReference = None)
   }
 }

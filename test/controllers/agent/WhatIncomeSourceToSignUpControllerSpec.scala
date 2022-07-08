@@ -17,7 +17,7 @@
 package controllers.agent
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
+import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import forms.agent.BusinessIncomeSourceForm
 import models.common._
@@ -32,7 +32,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
-import uk.gov.hmrc.http.NotFoundException
 import views.agent.mocks.MockIncomeSource
 import views.html.agent.WhatIncomeSourceToSignUp
 
@@ -62,7 +61,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
           s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and" +
           s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
           enable(ForeignPropertyFeature)
-          enable(SaveAndRetrieve)
 
           mockIncomeSourcesStatus(incomeSourcesStatus)
 
@@ -80,7 +78,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
           s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and" +
           s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
           disable(ForeignPropertyFeature)
-          enable(SaveAndRetrieve)
 
           mockIncomeSourcesStatus(incomeSourcesStatus)
 
@@ -96,7 +93,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
           s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and" +
           s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
           enable(ForeignPropertyFeature)
-          enable(SaveAndRetrieve)
 
           mockIncomeSourcesStatus(incomeSourcesStatus)
 
@@ -106,12 +102,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
           redirectLocation(result).get mustBe controllers.agent.routes.TaskListController.show().url
         }
       }
-    }
-
-    "throw a not found exception if Save & Retrieve is disabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-      intercept[NotFoundException](controller.show()(subscriptionRequest)).message mustBe
-        "[WhatIncomeSourceToSignUpController][show] - The save and retrieve feature switch is disabled"
     }
   }
 
@@ -131,8 +121,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     }
 
     "redirect to the start of the self employment journey" in withController { controller =>
-      enable(SaveAndRetrieve)
-
       setupMockSubscriptionDetailsSaveFunctions()
       mockIncomeSourcesStatus()
 
@@ -143,8 +131,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     }
 
     "redirect to the PropertyStartDate page" in withController { controller =>
-      enable(SaveAndRetrieve)
-
       setupMockSubscriptionDetailsSaveFunctions()
       mockIncomeSourcesStatus()
 
@@ -155,7 +141,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     }
 
     "redirect to the overseas property start date page" in withController { controller =>
-      enable(SaveAndRetrieve)
       enable(ForeignPropertyFeature)
 
       setupMockSubscriptionDetailsSaveFunctions()
@@ -169,7 +154,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
     "return a BAD_REQUEST (400)" when {
       "no option was selected" in withController { controller =>
-        enable(SaveAndRetrieve)
         enable(ForeignPropertyFeature)
 
         mockIncomeSourcesStatus()
@@ -179,12 +163,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         status(result) mustBe Status.BAD_REQUEST
         contentType(result) mustBe Some(HTML)
       }
-    }
-
-    "throw a not found exception if Save & Retrieve is disabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-      intercept[NotFoundException](submit(controller, SelfEmployed)).message mustBe
-        "[WhatIncomeSourceToSignUpController][submit] - The save and retrieve feature switch is disabled"
     }
   }
 

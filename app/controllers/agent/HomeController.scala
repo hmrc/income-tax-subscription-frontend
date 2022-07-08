@@ -21,7 +21,6 @@ import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching, StatelessC
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.ArnKey
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import play.api.mvc._
 import services.{AgentStartOfJourneyThrottle, AuditingService, AuthService, ThrottlingService}
 
@@ -43,35 +42,27 @@ class HomeController @Inject()(val auditingService: AuditingService,
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       val alreadyInSignUp = request.session.isInState(AgentSignUp)
-      val saveAndRetrieve = isEnabled(SaveAndRetrieve)
       val ninoPresent = user.clientNino.isDefined
       val utrPresent = user.clientUtr.isDefined
       val arnMaybe = user.arn
-      (alreadyInSignUp, saveAndRetrieve, ninoPresent, utrPresent, arnMaybe) match {
-        // this session has already passed through the throttle, and we are in S&R
-        case (true, true, _, _, _) => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
-        // this session has already passed through the throttle and we are not in S&R
-        case (true, _, _, _, _) => Future.successful(Redirect(controllers.agent.routes.WhatYearToSignUpController.show()))
-        // this session is new, has full data, and we are in S&R
-        case (_, true, true, true, _) =>
+      (alreadyInSignUp, ninoPresent, utrPresent, arnMaybe) match {
+        // this session has already passed through the throttle
+        case (true, _, _, _) => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
+        // this session is new, has full data
+        case (_, true, true, _) =>
           throttlingService.throttled(AgentStartOfJourneyThrottle) {
             Future.successful(Redirect(controllers.agent.routes.TaskListController.show()).withJourneyState(AgentSignUp))
           }
-        // this session is new, has full data, and we are not in S&R
-        case (_, _, true, true, _) =>
-          throttlingService.throttled(AgentStartOfJourneyThrottle) {
-            Future.successful(Redirect(controllers.agent.routes.WhatYearToSignUpController.show()).withJourneyState(AgentSignUp))
-          }
         // this session has missing data
-        case (_, _, true, _, _) =>
+        case (_, true, _, _) =>
           Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show).removingFromSession(ITSASessionKeys.JourneyStateKey))
         // Got an agent enrolment only - no user data at all
-        case (_, _, _, _, Some(arn)) =>
+        case (_, _, _, Some(arn)) =>
           Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
             .addingToSession(ArnKey -> arn)
             .withJourneyState(AgentUserMatching))
         // Got nothing. Are you even enrolled?
-        case (_, _, _, _, _) => Future.successful(Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show))
+        case (_, _, _, _) => Future.successful(Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show))
       }
   }
 

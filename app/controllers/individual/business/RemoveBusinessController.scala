@@ -20,7 +20,6 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
@@ -29,7 +28,7 @@ import play.api.data.Form
 import play.api.mvc._
 import services.{AuditingService, AuthService, RemoveBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.individual.incometax.business.RemoveBusiness
 
 import javax.inject.{Inject, Singleton}

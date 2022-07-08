@@ -125,12 +125,12 @@ GET         /business/remove-sole-trader-business                controllers.age
 POST        /business/remove-sole-trader-business                controllers.agent.business.RemoveBusinessController.submit(id: String)
 
 # remove UK property buisness confirmation page
-GET         /business/remove-uk-property-business                controllers.agent.business.ClientRemoveUkPropertyController.show
-POST        /business/remove-uk-property-business                controllers.agent.business.ClientRemoveUkPropertyController.submit
+GET         /business/remove-uk-property-business                controllers.agent.business.RemoveUkPropertyController.show
+POST        /business/remove-uk-property-business                controllers.agent.business.RemoveUkPropertyController.submit
 
 # Remove overseas property buisness confirmation page
-GET         /business/remove-overseas-property-business          controllers.agent.business.RemoveClientOverseasPropertyController.show
-POST        /business/remove-overseas-property-business          controllers.agent.business.RemoveClientOverseasPropertyController.submit
+GET         /business/remove-overseas-property-business          controllers.agent.business.RemoveOverseasPropertyController.show
+POST        /business/remove-overseas-property-business          controllers.agent.business.RemoveOverseasPropertyController.submit
 
 # Throttle
 GET         /throttleStart                                       controllers.agent.ThrottlingController.start

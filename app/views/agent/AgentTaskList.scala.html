@@ -139,7 +139,7 @@
        {if(viewModel.ukPropertyComplete ) {messages("agent.business.task-list.status.completed")} else {messages("agent.business.task-list.status.incomplete")}}
       </span>
       <span class="govuk-remove-business-link" id="uk_property_remove">
-        <a class="govuk-link" href={controllers.agent.business.routes.ClientRemoveUkPropertyController.show.url}>
+        <a class="govuk-link" href={controllers.agent.business.routes.RemoveUkPropertyController.show.url}>
           <span aria-hidden="true">{messages("base.remove")}</span>
           <span aria-hidden="false" class="govuk-visually-hidden">{messages("business.task-list.content.section2.remove-uk-property")}</span>
         </a>
@@ -156,7 +156,7 @@
           {if(viewModel.overseasPropertyComplete) {messages("agent.business.task-list.status.completed")} else {messages("agent.business.task-list.status.incomplete")}}
       </span>
       <span class="govuk-remove-business-link" id="overseas_property_remove">
-        <a class="govuk-link" href={controllers.agent.business.routes.RemoveClientOverseasPropertyController.show.url}>
+        <a class="govuk-link" href={controllers.agent.business.routes.RemoveOverseasPropertyController.show.url}>
           <span aria-hidden="true">{messages("base.remove")}</span>
           <span class="govuk-visually-hidden">{messages("agent.business.task-list.content.section2.remove-overseas-property")}</span>
         </a>

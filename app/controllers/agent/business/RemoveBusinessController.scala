@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.agent.RemoveBusinessForm
@@ -27,7 +26,7 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
 import services.{AuditingService, AuthService, RemoveBusinessService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.agent.business.RemoveBusiness
@@ -49,12 +48,8 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withAgentReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-            Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-          }
-        } else {
-          Future.failed(new NotFoundException("[RemoveBusinessController][show] - The save and retrieve feature switch is disabled"))
+        withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+          Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
         }
       }
     }
@@ -63,24 +58,21 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withAgentReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          form.bindFromRequest.fold(
-            formWithErrors => {
-              withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-                Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-              }
-            },
-            {
-              case Yes => for {
-                businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-                _ = removeBusinessService.deleteBusiness(reference, businessId, businesses)
-              } yield Redirect(controllers.agent.routes.TaskListController.show())
-              case No => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
+        form.bindFromRequest.fold(
+          formWithErrors => {
+            withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+              Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
             }
-          )
-        } else {
-          Future.failed(new NotFoundException("[RemoveBusinessController][submit] - The save and retrieve feature switch is disabled"))
-        }
+          },
+          {
+            case Yes => for {
+              businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+              _ = removeBusinessService.deleteBusiness(reference, businessId, businesses)
+            } yield Redirect(controllers.agent.routes.TaskListController.show())
+            case No => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
+          }
+        )
+
       }
     }
   }

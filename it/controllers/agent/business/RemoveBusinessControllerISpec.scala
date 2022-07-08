@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestModels.testBusinesses
 import helpers.agent.ComponentSpecBase
@@ -30,25 +29,21 @@ import utilities.SubscriptionDataKeys.BusinessesKey
 
 class RemoveBusinessControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-business" should {
-    "return OK" when {
-      "save and retrieve is enabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-        And("save & retrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
+    "return OK" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
 
-        When("GET business/remove-business is called")
-        val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness()
+      When("GET business/remove-business is called")
+      val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness()
 
-        Then("Should return OK with the remove business page")
-        res must have (
-          httpStatus(OK),
-          pageTitle(
-            "Are you sure you want to delete test business - test trade? - Use software to report your client’s Income Tax - GOV.UK"
-          )
+      Then("Should return OK with the remove business page")
+      res must have(
+        httpStatus(OK),
+        pageTitle(
+          "Are you sure you want to delete test business - test trade? - Use software to report your client’s Income Tax - GOV.UK"
         )
-      }
+      )
     }
 
     "return INTERNAL_SERVER_ERROR" when {
@@ -56,8 +51,6 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-        And("save & retrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
 
         When("GET business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness(id = "unknown")
@@ -68,88 +61,45 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         )
       }
     }
-
-    "return NOT_FOUND" when {
-      "save and retrieve is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-        And("save & retrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
-
-        When("GET business/remove-business is called")
-        val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness()
-
-        Then("Should return NOT_FOUND")
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/remove-business" should {
     "redirect to the task list page" when {
-      "save and retrieve is enabled" when {
-        "the user submits the 'yes' answer" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq())
-          And("save & retrieve feature switch is enabled")
-          enable(SaveAndRetrieve)
-
-          When("POST business/remove-business is called")
-          val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(Yes))
-
-          Then("Should return a SEE_OTHER with a redirect location of task list page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(taskListURI)
-          )
-
-          IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(1))
-        }
-
-        "the user submits the 'no' answer" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          And("save & retrieve feature switch is enabled")
-          enable(SaveAndRetrieve)
-
-          When("POST business/remove-business is called")
-          val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(No))
-
-          Then("Should return a SEE_OTHER with a redirect location of task list page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(taskListURI)
-          )
-
-          IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(0))
-        }
-      }
-    }
-
-    "return NOT_FOUND" when {
-      "save and retrieve is disabled" in {
+      "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-        And("save & retrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq())
+
+        When("POST business/remove-business is called")
+        val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(Yes))
+
+        Then("Should return a SEE_OTHER with a redirect location of task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+
+        IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(1))
+      }
+
+      "the user submits the 'no' answer" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(No))
 
-        Then("Should return NOT_FOUND")
+        Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
-          httpStatus(NOT_FOUND)
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(0))
       }
+
     }
 
     "return BAD_REQUEST" when {
@@ -157,8 +107,6 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-        And("save & retrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(request = None)

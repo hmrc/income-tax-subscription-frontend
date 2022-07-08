@@ -51,6 +51,7 @@ object IntegrationTestConstants {
   val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
   val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
   val whatYearToSignUpURI = s"$baseURI/business/what-year-to-sign-up"
+  val taxYearCheckYourAnswersURI = s"$baseURI/business/tax-year-check-your-answers"
   val taskListURI = s"$baseURI/business/task-list"
 
   object Auth {

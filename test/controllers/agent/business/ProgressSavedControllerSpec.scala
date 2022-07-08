@@ -20,7 +20,6 @@ import agent.audit.mocks.MockAuditingService
 import auth.agent.AgentSignUp
 import common.Constants
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.agent.AgentControllerBaseSpec
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
@@ -97,7 +96,6 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
   "show" should {
     "return OK with progress saved page" when {
       "the location parameter is not provided" in withController { (controller, mockedView) =>
-        enable(SaveAndRetrieve)
 
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
 
@@ -111,7 +109,6 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
       }
 
       "the saveAndRetrieveLocation parameter is provided" in withController { (controller, mockedView) =>
-        enable(SaveAndRetrieve)
         mockAgent()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
@@ -155,20 +152,11 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
     }
 
     "throw an exception if the last updated timestamp cannot be retrieve" in withController { (controller, _) =>
-      enable(SaveAndRetrieve)
       mockFetchLastUpdatedTimestamp(None)
 
       val result: Future[Result] = await(controller.show()(subscriptionRequest))
 
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-    }
-
-    "throw an exception if feature not enabled" in withController { (controller, _) =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.show()(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
     }
   }
 

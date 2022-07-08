@@ -18,12 +18,11 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.business.OverseasPropertyCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -40,18 +39,14 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          withOverseasProperty(reference) { property =>
-            Future.successful(Ok(
-              overseasPropertyCheckYourAnswersView(
-                viewModel = property,
-                routes.OverseasPropertyCheckYourAnswersController.submit(),
-                backUrl(isEditMode)
-              )
-            ))
-          }
-        } else {
-          Future.failed(new NotFoundException("[OverseasPropertyCheckYourAnswersController][show] - The save and retrieve feature switch is disabled"))
+        withOverseasProperty(reference) { property =>
+          Future.successful(Ok(
+            overseasPropertyCheckYourAnswersView(
+              viewModel = property,
+              routes.OverseasPropertyCheckYourAnswersController.submit(),
+              backUrl(isEditMode)
+            )
+          ))
         }
       }
   }
@@ -59,18 +54,14 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          withOverseasProperty(reference) { property =>
-            if (property.accountingMethod.isDefined && property.startDate.isDefined) {
-              subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map{_ =>
-                Redirect(controllers.agent.routes.TaskListController.show())
-              }
-            } else {
-              Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
+        withOverseasProperty(reference) { property =>
+          if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+            subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map { _ =>
+              Redirect(controllers.agent.routes.TaskListController.show())
             }
+          } else {
+            Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
           }
-        } else {
-          Future.failed(new NotFoundException("[OverseasPropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
         }
       }
   }

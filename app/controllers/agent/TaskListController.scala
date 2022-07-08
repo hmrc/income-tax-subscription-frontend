@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -29,7 +28,7 @@ import play.api.Logging
 import play.api.mvc._
 import services.agent.SubscriptionOrchestrationService
 import services._
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
@@ -60,32 +59,27 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
         s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
       case other => other
     }
-
   }
 
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      if (isEnabled(SaveAndRetrieve)) {
-        withAgentReference { reference =>
-          throttlingService.throttled(AgentStartOfJourneyThrottle) {
-            getTaskListModel(reference) map {
-              viewModel =>
-                Ok(taskListView(
-                  postAction = controllers.agent.routes.TaskListController.submit(),
-                  viewModel = viewModel,
-                  clientName = request.fetchClientName.getOrElse(
-                    throw new InternalServerException("[TaskListController][show] - could not retrieve client name from session")
-                  ),
-                  clientNino = formatNino(user.clientNino.getOrElse(
-                    throw new InternalServerException("[TaskListController][show] - could not retrieve client nino from session")
-                  ))
+      withAgentReference { reference =>
+        throttlingService.throttled(AgentStartOfJourneyThrottle) {
+          getTaskListModel(reference) map {
+            viewModel =>
+              Ok(taskListView(
+                postAction = controllers.agent.routes.TaskListController.submit(),
+                viewModel = viewModel,
+                clientName = request.fetchClientName.getOrElse(
+                  throw new InternalServerException("[TaskListController][show] - could not retrieve client name from session")
+                ),
+                clientNino = formatNino(user.clientNino.getOrElse(
+                  throw new InternalServerException("[TaskListController][show] - could not retrieve client nino from session")
                 ))
-            }
+              ))
           }
         }
-      } else {
-        Future.failed(new NotFoundException("[TaskListController][show] - The save and retrieve feature switch is disabled"))
       }
     }
   }
@@ -125,25 +119,21 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
   private def journeySafeGuard(processFunc: IncomeTaxAgentUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        if (isEnabled(SaveAndRetrieve)) {
-          throttlingService.throttled(AgentEndOfJourneyThrottle) {
-            withAgentReference { reference =>
-              val model = for {
-                cacheMap <- subscriptionDetailsService.fetchAll(reference)
-                selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-                selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
-                property <- subscriptionDetailsService.fetchProperty(reference)
-                overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-              } yield {
-                cacheMap.createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
-              }
-              model.flatMap { model =>
-                processFunc(user)(request)(model)
-              }
+        throttlingService.throttled(AgentEndOfJourneyThrottle) {
+          withAgentReference { reference =>
+            val model = for {
+              cacheMap <- subscriptionDetailsService.fetchAll(reference)
+              selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+              selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+              property <- subscriptionDetailsService.fetchProperty(reference)
+              overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+            } yield {
+              cacheMap.createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
+            }
+            model.flatMap { model =>
+              processFunc(user)(request)(model)
             }
           }
-        } else {
-          throw new NotFoundException("[TaskListController][submit] - The save and retrieve feature switch is disabled")
         }
     }
 
