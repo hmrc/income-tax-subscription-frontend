@@ -30,7 +30,7 @@ import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import services.agent.SubscriptionOrchestrationService
 import services._
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
