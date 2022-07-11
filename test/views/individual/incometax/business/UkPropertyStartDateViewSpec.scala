@@ -16,7 +16,6 @@
 
 package views.individual.incometax.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
@@ -93,19 +92,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       )
     }
 
-    "have a continue button when not in edit mode" in {
-      disable(SaveAndRetrieve)
-      document().selectHead("#continue-button").text mustBe PropertyStartDateMessages.continue
-    }
-
     "have a save & continue button when save & retrieve feature is enabled" in {
-      enable(SaveAndRetrieve)
-      document().selectHead("#continue-button").text mustBe PropertyStartDateMessages.saveAndContinue
-    }
-
-    "have update button when in edit mode" in {
-      disable(SaveAndRetrieve)
-      document(isEditMode = true).selectHead("#continue-button").text mustBe PropertyStartDateMessages.update
+      document().mainContent.selectHead("div.govuk-button-group").selectHead("button").text mustBe PropertyStartDateMessages.saveAndContinue
     }
 
     "must display max date error on page" in {

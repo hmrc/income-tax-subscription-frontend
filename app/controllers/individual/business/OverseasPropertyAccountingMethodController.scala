@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business._
 import models.AccountingMethod
@@ -38,16 +37,12 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                           (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
-
-  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
-
   def view(overseasPropertyAccountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
     overseasPropertyAccountingMethod(
       overseasPropertyAccountingMethodForm = overseasPropertyAccountingMethodForm,
       postAction = controllers.individual.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      isSaveAndRetrieve = isEnabled(SaveAndRetrieve),
       backUrl = backUrl(isEditMode)
     )
   }
@@ -71,21 +66,17 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
             Future.successful(BadRequest(view(overseasPropertyAccountingMethodForm = formWithErrors, isEditMode = isEditMode))),
           overseasPropertyAccountingMethod =>
             subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map { _ =>
-              if (isSaveAndRetrieve) {
                 Redirect(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
-              } else {
-                Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show)
-              }
             }
         )
       }
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    (isEditMode, isSaveAndRetrieve) match {
-      case (true, true) => controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
-      case (false, _) => controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
-      case (true, false) => controllers.individual.subscription.routes.CheckYourAnswersController.show.url
+    if (isEditMode) {
+      controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+    } else {
+      controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
     }
   }
 }

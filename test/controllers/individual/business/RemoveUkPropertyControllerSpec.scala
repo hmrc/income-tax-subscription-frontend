@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
@@ -28,7 +27,6 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.MockSubscriptionDetailsService
-import uk.gov.hmrc.http.NotFoundException
 import utilities.SubscriptionDataKeys
 import views.individual.mocks.MockRemoveUkProperty
 
@@ -38,83 +36,55 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
   with MockRemoveUkProperty
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockIncomeTaxSubscriptionConnector
-   {
+  with MockIncomeTaxSubscriptionConnector {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(SaveAndRetrieve)
-  }
+  "show" should {
+    "return OK and display the remove Uk property page" in {
+      mockRemoveUkProperty()
 
-  "show" when {
-    "the save & retrieve feature switch is enabled" must {
-      "return OK and display the remove Uk property page" in {
-        enable(SaveAndRetrieve)
+      val result: Future[Result] = TestRemoveUkPropertyController.show(subscriptionRequest)
 
-        mockRemoveUkProperty()
-
-        val result: Future[Result] = TestRemoveUkPropertyController.show(subscriptionRequest)
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
-    }
-    "the save & retrieve feature switch is disabled" must {
-      "return a not found exception" in {
-        val exception = intercept[NotFoundException](TestRemoveUkPropertyController.show(subscriptionRequest).futureValue)
-        exception.message mustBe "[RemoveUkPropertyController][show] - S&R feature switch is disabled"
-      }
+      status(result) mustBe OK
+      contentType(result) mustBe Some(HTML)
     }
   }
 
   "submit" when {
-    "the save & retrieve feature switch is enabled" when {
-      "the user does not select an option" must {
-        "return BAD_REQUEST and display the Uk property page" in {
-          enable(SaveAndRetrieve)
+    "the user does not select an option" must {
+      "return BAD_REQUEST and display the Uk property page" in {
+        mockRemoveUkProperty()
 
-          mockRemoveUkProperty()
+        val result: Future[Result] = TestRemoveUkPropertyController.submit(subscriptionRequest)
 
-          val result: Future[Result] = TestRemoveUkPropertyController.submit(subscriptionRequest)
-
-          status(result) mustBe BAD_REQUEST
-          contentType(result) mustBe Some(HTML)
-
-          verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
-        }
-      }
-      "the user selects to remove the business" in {
-        enable(SaveAndRetrieve)
-
-        mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
-
-        val result: Result = TestRemoveUkPropertyController.submit(
-          subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
-        ).futureValue
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
-
-        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 1)
-      }
-      "the user selects to not remove the business" in {
-        enable(SaveAndRetrieve)
-
-        val result: Result = TestRemoveUkPropertyController.submit(
-          subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_no)
-        ).futureValue
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+        status(result) mustBe BAD_REQUEST
+        contentType(result) mustBe Some(HTML)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
       }
     }
-    "the save & retrieve feature switch is disabled" must {
-      "return a not found exception" in {
-        val exception = intercept[NotFoundException](TestRemoveUkPropertyController.submit(subscriptionRequest).futureValue)
-        exception.message mustBe "[RemoveUkPropertyController][submit] - S&R feature switch is disabled"
-      }
+
+    "the user selects to remove the business" in {
+      mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+      val result: Result = TestRemoveUkPropertyController.submit(
+        subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
+      ).futureValue
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+
+      verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 1)
+    }
+
+    "the user selects to not remove the business" in {
+      val result: Result = TestRemoveUkPropertyController.submit(
+        subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_no)
+      ).futureValue
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+
+      verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
     }
   }
 
@@ -131,5 +101,4 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
     mockIncomeTaxSubscriptionConnector,
     removeUkProperty
   )
-
 }

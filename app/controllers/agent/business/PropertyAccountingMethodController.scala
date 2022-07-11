@@ -69,10 +69,9 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
             accountingMethodForm = formWithErrors,
             isEditMode = isEditMode
           ))),
-
           accountingMethodProperty => {
             subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) flatMap { _ =>
-              Future(Redirect(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
+              Future.successful(Redirect(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
             }
           }
         )

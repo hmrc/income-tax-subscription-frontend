@@ -18,7 +18,7 @@ package controllers.individual.incomesource
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{SaveAndRetrieve, ForeignProperty => ForeignPropertyFeature}
+import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import controllers.utils.ReferenceRetrieval
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import models.IncomeSourcesStatus
@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.incometax.incomesource.WhatIncomeSourceToSignUp
 
 import javax.inject.{Inject, Singleton}
@@ -44,37 +44,29 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        withReference { reference =>
-          withIncomeSourceStatuses(reference) {
-            case IncomeSourcesStatus(false, false, false) => Redirect(controllers.individual.business.routes.TaskListController.show())
-            case incomeSourcesStatus => Ok(view(businessIncomeSourceForm(incomeSourcesStatus), incomeSourcesStatus))
-          }
+      withReference { reference =>
+        withIncomeSourceStatuses(reference) {
+          case IncomeSourcesStatus(false, false, false) => Redirect(controllers.individual.business.routes.TaskListController.show())
+          case incomeSourcesStatus => Ok(view(businessIncomeSourceForm(incomeSourcesStatus), incomeSourcesStatus))
         }
-      } else {
-        throw new NotFoundException("[WhatIncomeSourceToSignUpController][show] - The save and retrieve feature switch is disabled")
       }
   }
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        withReference { reference =>
-          withIncomeSourceStatuses(reference) { incomeSourcesStatus =>
-            businessIncomeSourceForm(incomeSourcesStatus).bindFromRequest.fold(
-              formWithErrors => BadRequest(view(form = formWithErrors, incomeSourcesStatus)),
-              {
-                case SelfEmployed => Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
-                case UkProperty => Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
-                case OverseasProperty if isEnabled(ForeignPropertyFeature) =>
-                  Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
-                case _ => throw new InternalServerException("[WhatIncomeSourceToSignUpController][submit] - The foreign property feature switch is disabled")
-              }
-            )
-          }
+      withReference { reference =>
+        withIncomeSourceStatuses(reference) { incomeSourcesStatus =>
+          businessIncomeSourceForm(incomeSourcesStatus).bindFromRequest.fold(
+            formWithErrors => BadRequest(view(form = formWithErrors, incomeSourcesStatus)),
+            {
+              case SelfEmployed => Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
+              case UkProperty => Redirect(controllers.individual.business.routes.PropertyStartDateController.show())
+              case OverseasProperty if isEnabled(ForeignPropertyFeature) =>
+                Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
+              case _ => throw new InternalServerException("[WhatIncomeSourceToSignUpController][submit] - The foreign property feature switch is disabled")
+            }
+          )
         }
-      } else {
-        throw new NotFoundException("[WhatIncomeSourceToSignUpController][submit] - The save and retrieve feature switch is disabled")
       }
   }
 

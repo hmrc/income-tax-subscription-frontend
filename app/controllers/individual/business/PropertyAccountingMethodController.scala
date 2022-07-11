@@ -34,11 +34,9 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty, SaveAndRetrieve}
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingMethodPropertyForm
 import models.AccountingMethod
-import models.common.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -56,32 +54,24 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                                                   (implicit val ec: ExecutionContext,
                                                    val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval {
-
-  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
-
-  def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean, isSaveAndRetrieve: Boolean)
-          (implicit request: Request[_]): Future[Html] = {
-    for {
-      back <- backUrl(isEditMode)
-    } yield
+  def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
+          (implicit request: Request[_]): Html = {
       propertyAccountingMethod(
         accountingMethodForm = accountingMethodPropertyForm,
         postAction = controllers.individual.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
         isEditMode,
-        backUrl = back,
-        isSaveAndRetrieve
+        backUrl = backUrl(isEditMode)
       )
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        subscriptionDetailsService.fetchAccountingMethodProperty(reference) flatMap { accountingMethodProperty =>
-          view(
+        subscriptionDetailsService.fetchAccountingMethodProperty(reference).map { accountingMethodProperty =>
+          Ok(view(
             accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethodProperty),
-            isEditMode = isEditMode,
-            isSaveAndRetrieve = isEnabled(SaveAndRetrieve)
-          ).map(view => Ok(view))
+            isEditMode = isEditMode
+          ))
         }
       }
   }
@@ -91,30 +81,21 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
       withReference { reference =>
         AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
           formWithErrors =>
-            view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode, isEnabled(SaveAndRetrieve)).map(view => BadRequest(view)),
+            Future.successful(BadRequest(view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode))),
           accountingMethodProperty => {
             subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) flatMap { _ =>
-              (isEditMode, isSaveAndRetrieve) match {
-                case (_, true) => Future(Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
-                case (_, false) => subscriptionDetailsService.fetchIncomeSource(reference) map {
-                  case Some(IncomeSourceModel(_, _, true)) if isEnabled(ForeignProperty) =>
-                    Redirect(controllers.individual.business.routes.OverseasPropertyStartDateController.show())
-                  case _ =>
-                    Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show)
-                }
-              }
+              Future.successful(Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
             }
           }
         )
       }
   }
 
-  def backUrl(isEditMode: Boolean): Future[String] = {
-    (isEditMode, isSaveAndRetrieve) match {
-      case (true, true) => Future.successful(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url)
-      case (false, _) => Future.successful(controllers.individual.business.routes.PropertyStartDateController.show().url)
-      case (true, false) => Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
+  def backUrl(isEditMode: Boolean): String = {
+    if (isEditMode) {
+      controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+    } else {
+      controllers.individual.business.routes.PropertyStartDateController.show().url
     }
-
   }
 }

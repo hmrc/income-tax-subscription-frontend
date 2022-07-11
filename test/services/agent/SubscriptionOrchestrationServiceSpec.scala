@@ -96,8 +96,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
     }
   }
 
-  "createSubscriptionFromTaskList when saveAndRetrieve is enabled" should {
-
+  "createSubscriptionFromTaskList" should {
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
       TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSources)
     }

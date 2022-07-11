@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveUkPropertyForm
@@ -27,7 +26,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import utilities.SubscriptionDataKeys
 import views.html.individual.incometax.business.RemoveUkProperty
@@ -47,29 +45,21 @@ class RemoveUkPropertyController @Inject()(val auditingService: AuditingService,
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      if (isEnabled(SaveAndRetrieve)) {
-        Future.successful(Ok(view(form)))
-      } else {
-        throw new NotFoundException("[RemoveUkPropertyController][show] - S&R feature switch is disabled")
-      }
+      Future.successful(Ok(view(form)))
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        form.bindFromRequest.fold(
-          hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
-            case Yes => withReference { reference =>
-              incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) map { _ =>
-                Redirect(controllers.individual.business.routes.TaskListController.show())
-              }
+      form.bindFromRequest.fold(
+        hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
+          case Yes => withReference { reference =>
+            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) map { _ =>
+              Redirect(controllers.individual.business.routes.TaskListController.show())
             }
-            case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
           }
-        )
-      } else {
-        throw new NotFoundException("[RemoveUkPropertyController][submit] - S&R feature switch is disabled")
-      }
+          case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
+        }
+      )
   }
 
   private def view(form: Form[YesNo])(implicit request: Request[_]): Html = removeUkProperty(
@@ -79,5 +69,4 @@ class RemoveUkPropertyController @Inject()(val auditingService: AuditingService,
   )
 
   private val form: Form[YesNo] = RemoveUkPropertyForm.removeUkPropertyForm
-
 }

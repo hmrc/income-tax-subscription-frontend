@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingYearForm
 import models.AccountingYear
@@ -69,13 +68,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
           accountingYear => {
             subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map { _ =>
-              if (isEnabled(SaveAndRetrieve)) {
-                Redirect(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show())
-              } else if (isEditMode) {
-                Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show)
-              } else {
-                Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show())
-              }
+              Redirect(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show())
             }
           }
         )
@@ -83,18 +76,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   }
 
   def backUrl(isEditMode: Boolean): Option[String] = {
-    if (isEnabled(SaveAndRetrieve)) {
-      if (isEditMode) {
-        Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
-      } else {
-        Some(controllers.individual.business.routes.TaskListController.show.url)
-      }
+    if (isEditMode) {
+      Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
     } else {
-      if (isEditMode) {
-        Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
-      } else {
-        None
-      }
+      Some(controllers.individual.business.routes.TaskListController.show.url)
     }
   }
 }

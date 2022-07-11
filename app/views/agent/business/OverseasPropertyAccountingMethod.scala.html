@@ -18,14 +18,13 @@
 @import forms.agent.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
 @import play.api.data.Form
-@import views.html.helpers.injected.{ContinueButton, RadioHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.injected.{RadioHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
 
 @this(
         mainTemplate: AgentMainTemplate,
         form: FormWithCSRF,
         radioHelper: RadioHelper,
-        continueButton: ContinueButton,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )(
         implicit appConfig: AppConfig

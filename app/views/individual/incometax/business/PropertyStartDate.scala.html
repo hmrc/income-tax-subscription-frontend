@@ -15,40 +15,27 @@
  *@
 
 @import config.AppConfig
-@import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-@import config.featureswitch.FeatureSwitchingImpl
 @import forms.individual.business.PropertyStartDateForm._
-@import views.html.helpers.injected.{ContinueButton, DateHelper}
+@import views.html.helpers.injected.{DateHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
         mainTemplate: PrincipalMainTemplate,
         form: FormWithCSRF,
         dateHelper: DateHelper,
-        continueButton: ContinueButton,
-        featureSwitches: FeatureSwitchingImpl,
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )(
         implicit appConfig: AppConfig
 )
 
 @(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@continueButtonContent = @{
-  if(featureSwitches.isEnabled(SaveAndRetrieve)) {
-    Some(messages("base.save-and-continue"))
-  } else {
-    None
-  }
-}
-
 @mainTemplate(title = messages("business.property.name.title"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
-
     <h1 class="govuk-heading-l">@messages("business.property.name.heading")</h1>
 
     <p class="govuk-body">@messages("business.property.line_1")</p>
 
     @form(action = postAction) {
-
         @dateHelper(
             field = propertyStartDateForm(startDate),
             legendContent = messages("business.property.name.heading"),
@@ -58,8 +45,9 @@
             hintText = Some(messages("business.property.start_date.hint"))
         )
 
-        @continueButton(alternateText = continueButtonContent, isEditMode = isEditMode)
-
+      @saveAndContinueButtonHelper(
+        isIndividual = true,
+        saveAndReturnReference = None
+      )
     }
-
 }

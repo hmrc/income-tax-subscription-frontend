@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
@@ -31,7 +30,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
-import uk.gov.hmrc.http.NotFoundException
 import utilities.SubscriptionDataKeys
 import views.html.individual.incometax.business.RemoveOverseasProperty
 
@@ -40,79 +38,57 @@ import scala.concurrent.Future
 class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockIncomeTaxSubscriptionConnector
-   {
+  with MockIncomeTaxSubscriptionConnector {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(SaveAndRetrieve)
-  }
+  override val controllerName: String = "RemoveOverseasPropertyController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "show" -> TestRemoveOverseasPropertyController.show,
+    "submit" -> TestRemoveOverseasPropertyController.submit
+  )
+  val mockRemoveOverseasProperty: RemoveOverseasProperty = mock[RemoveOverseasProperty]
 
-  "show" when {
-    "the save & retrieve feature switch is enabled" must {
-      "return OK and display the remove overseas property page" in withController { controller =>
-        enable(SaveAndRetrieve)
-
-        val result: Future[Result] = controller.show(subscriptionRequest)
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
-    }
-    "the save & retrieve feature switch is disabled" must {
-      "return a not found exception" in withController { controller =>
-        val exception = intercept[NotFoundException](controller.show(subscriptionRequest).futureValue)
-        exception.message mustBe "[RemoveOverseasPropertyController][show] - S&R feature switch is disabled"
-      }
+  "show" should {
+    "return OK and display the remove overseas property page" in withController { controller =>
+      val result: Future[Result] = controller.show(subscriptionRequest)
+      status(result) mustBe OK
+      contentType(result) mustBe Some(HTML)
     }
   }
 
   "submit" when {
-    "the save & retrieve feature switch is enabled" when {
-      "the user does not select an option" must {
-        "return BAD_REQUEST and display the overseas property page" in withController { controller =>
-          enable(SaveAndRetrieve)
+    "the user does not select an option" must {
+      "return BAD_REQUEST and display the overseas property page" in withController { controller =>
+        val result: Future[Result] = controller.submit(subscriptionRequest)
 
-          val result: Future[Result] = controller.submit(subscriptionRequest)
-
-          status(result) mustBe BAD_REQUEST
-          contentType(result) mustBe Some(HTML)
-
-          verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 0)
-        }
-      }
-      "the user selects to remove the business" in withController { controller =>
-        enable(SaveAndRetrieve)
-
-        mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Right(DeleteSubscriptionDetailsSuccessResponse))
-
-        val result: Result = controller.submit(
-          subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
-        ).futureValue
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
-
-        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 1)
-      }
-      "the user selects to not remove the business" in withController { controller =>
-        enable(SaveAndRetrieve)
-
-        val result: Result = controller.submit(
-          subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_no)
-        ).futureValue
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+        status(result) mustBe BAD_REQUEST
+        contentType(result) mustBe Some(HTML)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 0)
       }
     }
-    "the save & retrieve feature switch is disabled" must {
-      "return a not found exception" in withController { controller =>
-        val exception = intercept[NotFoundException](controller.submit(subscriptionRequest).futureValue)
-        exception.message mustBe "[RemoveOverseasPropertyController][submit] - S&R feature switch is disabled"
-      }
+
+    "the user selects to remove the business" in withController { controller =>
+      mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+      val result: Result = controller.submit(
+        subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
+      ).futureValue
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+
+      verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 1)
+    }
+
+    "the user selects to not remove the business" in withController { controller =>
+      val result: Result = controller.submit(
+        subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_no)
+      ).futureValue
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+
+      verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 0)
     }
   }
 
@@ -133,14 +109,6 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
     testCode(controller)
   }
 
-  override val controllerName: String = "RemoveOverseasPropertyController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestRemoveOverseasPropertyController.show,
-    "submit" -> TestRemoveOverseasPropertyController.submit
-  )
-
-  val mockRemoveOverseasProperty: RemoveOverseasProperty = mock[RemoveOverseasProperty]
-
   object TestRemoveOverseasPropertyController extends RemoveOverseasPropertyController(
     mockAuditingService,
     mockAuthService,
@@ -148,5 +116,4 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
     mockIncomeTaxSubscriptionConnector,
     mockRemoveOverseasProperty
   )
-
 }

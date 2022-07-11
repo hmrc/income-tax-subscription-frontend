@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.subscriptionData
@@ -81,50 +80,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
   "POST /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
     "not in edit mode" should {
-
-      "select the Current Year radio button on the What Year To Sign Up page" in {
-        val userInput = Current
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
-
-        And("SaveAndRetrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
-
-        When("POST /business/what-year-to-sign-up is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(incomeReceivedURI)
-        )
-      }
-
-      "select the Next radio button on the What Year To Sign Up page" in {
-        val userInput = Next
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
-
-        And("SaveAndRetrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
-
-        When("POST /business/what-year-to-sign-up is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of Business Accounting Period Method page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(incomeReceivedURI)
-        )
-      }
-
-      "Save & Retrieve is enabled" in {
+      "select the Current radio button on the What Year To Sign Up page" in {
         val userInput = Current
 
         Given("I setup the Wiremock stubs")
@@ -132,9 +88,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
-
-        And("SaveAndRetrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
@@ -145,32 +98,27 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
           redirectURI(taxYearCyaURI)
         )
       }
-    }
 
-    "not select an option on the accounting year page" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, "")
+      "not select an option on the accounting year page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, "")
 
-      And("SaveAndRetrieve feature switch is disabled")
-      disable(SaveAndRetrieve)
+        When("POST /business/what-year-to-sign-up is called")
 
-      When("POST /business/what-year-to-sign-up is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, None)
 
-      val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, None)
-
-      Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-      res must have(
-        httpStatus(BAD_REQUEST),
-        errorDisplayed()
-      )
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res must have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
     }
 
     "in edit mode" should {
 
       "changing from the Current radio button to Next on the accounting method page" in {
-
-
         val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
         val userInput = Next
 
@@ -181,22 +129,17 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         )
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
-        And("SaveAndRetrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
-
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of CYA")
+        Then("Should return a SEE_OTHER with a redirect location of Task List page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
+          redirectURI(taxYearCyaURI)
         )
       }
 
       "simulate not changing accounting year when calling page from Check Your Answers" in {
-
-
         val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
         val userInput = Current
 
@@ -208,33 +151,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
           )
         )
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
-
-        And("SaveAndRetrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
-
-        When("POST /business/what-year-to-sign-up is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
-
-      "Save & Retrieve is enabled" in {
-        val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-        val userInput = Next
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent))
-        )
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
-
-        And("SaveAndRetrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))

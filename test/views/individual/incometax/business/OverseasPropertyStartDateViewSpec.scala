@@ -51,19 +51,16 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
 
   class Setup(isEditMode: Boolean = false,
-              form: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
-              isSaveAndRetrieveEnabled: Boolean = false) {
+              form: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)) {
 
     val page: Html = overseasPropertyStartDate(
       form,
       testCall,
       isEditMode,
-      testBackUrl,
-      isSaveAndRetrieveEnabled
+      testBackUrl
     )
 
     val document: Document = Jsoup.parse(page.body)
-
   }
 
   "overseas property start date page" must {
@@ -130,18 +127,9 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
       }
     }
 
-    "have a continue button when not in edit mode" in new Setup {
-      document.selectHead("#continue-button").text mustBe OverseasPropertyStartDateMessages.continue
+    "have a Save and Continue button when not in edit mode" in new Setup() {
+      document.mainContent.selectHead("div.govuk-button-group").selectHead("button").text mustBe OverseasPropertyStartDateMessages.saveAndContinue
     }
-
-    "have a Save and Continue button when not in edit mode and feature SaveAndRetrieve is enabled" in new Setup( isSaveAndRetrieveEnabled = true ) {
-      document.selectHead("#continue-button").text mustBe OverseasPropertyStartDateMessages.saveAndContinue
-    }
-
-    "have update button when in edit mode" in new Setup(true) {
-      document.selectHead("#continue-button").text mustBe OverseasPropertyStartDateMessages.update
-    }
-
   }
 
 }
