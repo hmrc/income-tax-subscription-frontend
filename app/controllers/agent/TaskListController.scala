@@ -26,9 +26,10 @@ import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.Logging
 import play.api.mvc._
-import services.agent.SubscriptionOrchestrationService
 import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import services.agent.SubscriptionOrchestrationService
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
