@@ -16,15 +16,26 @@
 
 @import config.AppConfig
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.helpers.injected.{ContinueButton, SignOutLink}
 
 @this(
-mainTemplate: PrincipalMainTemplate
+mainTemplate: PrincipalMainTemplate,
+form: FormWithCSRF,
+signOutLink: SignOutLink,
+continueButton: ContinueButton
 )
 
-@(backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(backLink: Option[String], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainTemplate(title = messages("throttle.title"), backLink = backLink, showSignOutLink = false) {
-<h1 class="govuk-heading-l">@messages("throttle.heading")</h1>
+   <h1 class="govuk-heading-l">@messages("throttle.heading")</h1>
 
-<p class="govuk-body">@messages("throttle.line_1")</p>
+   <p class="govuk-body">@messages("throttle.line_1")</p>
+
+   <div class="form-group">
+      @form(action = postAction) {
+         @continueButton(Some(messages("base.try_again")))
+         @signOutLink()
+      }
+   </div>
 }

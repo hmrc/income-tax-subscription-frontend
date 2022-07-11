@@ -20,8 +20,7 @@ import auth.individual.BaseFrontendController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import views.html.agent.ThrottleStartOfJourney
-import views.html.agent.ThrottleEndOfJourney
+import views.html.agent.{ThrottleEndOfJourney, ThrottleStartOfJourney}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
