@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.ControllerBaseSpec
 import models.common.PropertyModel
 import models.{Cash, DateModel}
@@ -46,7 +45,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "show" should {
     "return an OK status with the property CYA page" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
@@ -57,27 +55,17 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
 
     "throw an exception if cannot retrieve property details" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchProperty(None)
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
     }
-
-    "throw an exception if feature not enabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
-    }
   }
 
   "submit" should {
     "redirect to the task list" when {
       "the user submits valid full data" in withController { controller =>
-        enable(SaveAndRetrieve)
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
         setupMockSubscriptionDetailsSaveFunctions()
 
@@ -89,7 +77,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
 
       "the user submits valid partial data" in withController { controller =>
-        enable(SaveAndRetrieve)
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
         setupMockSubscriptionDetailsSaveFunctions()
 
@@ -106,20 +93,11 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
 
     "throw an exception if cannot retrieve property details" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchProperty(None)
 
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-    }
-
-    "throw an exception if feature not enabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
     }
   }
 

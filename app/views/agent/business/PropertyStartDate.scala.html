@@ -16,14 +16,13 @@
 
 @import config.AppConfig
 @import forms.agent.PropertyStartDateForm._
-@import views.html.helpers.injected.{ContinueButton, DateHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.injected.{DateHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
 
 @this(
     agentMainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
     dateHelper: DateHelper,
-    continueButton: ContinueButton,
     saveAndContinueButton: SaveAndContinueButtonHelper
 )(
     implicit appConfig: AppConfig

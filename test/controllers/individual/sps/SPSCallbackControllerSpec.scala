@@ -19,7 +19,6 @@ package controllers.individual.sps
 import agent.audit.mocks.MockAuditingService
 import auth.individual.SignUp
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.ControllerBaseSpec
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -55,42 +54,24 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
     )
   }
 
-  "callback" when {
-    "the save and retrieve feature switch is enabled" should {
-      "an entityId is passed through to the url" should {
-        "save the entityId in session and redirect to the tax year selection page" in {
-          enable(SaveAndRetrieve)
+  "callback" should {
+    "save the entityId in session and redirect to the task list page" when {
+      "an entityId is passed through to the url" in {
+        val result: Future[Result] = TestSPSCallbackController.callback(Some("testEntityId"))(request(hasEntityId = true)).run()
 
-          val result: Future[Result] = TestSPSCallbackController.callback(Some("testEntityId"))(request(hasEntityId = true)).run()
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
       }
     }
 
-    "the save and retrieve feature switch is disabled" should {
-      "an entityId is passed through to the url" should {
-        "save the entityId in session and redirect to the tax year selection page" in {
-          disable(SaveAndRetrieve)
+    "throw an InternalServerException" when {
+      "no entityId is present in the url" in {
+        val result: Future[Result] = TestSPSCallbackController.callback(None)(request(hasEntityId = false)).run()
 
-          val result: Future[Result] = TestSPSCallbackController.callback(Some("testEntityId"))(request(hasEntityId = true)).run()
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
-        }
-      }
-      "no entityId is present in the url" should {
-        "throw an InternalServerException" in {
-
-          val result: Future[Result] = TestSPSCallbackController.callback(None)(request(hasEntityId = false)).run()
-
-          intercept[InternalServerException](await(result)).message mustBe "[SPSCallbackController][callback] - Entity Id was not found"
-        }
+        intercept[InternalServerException](await(result)).message mustBe "[SPSCallbackController][callback] - Entity Id was not found"
       }
     }
   }
 
   authorisationTests()
-
 }

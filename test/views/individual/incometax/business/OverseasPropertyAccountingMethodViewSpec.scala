@@ -36,12 +36,11 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
 
   val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
 
-  class Setup(isEditMode: Boolean = false, isSaveAndRetrieve: Boolean = false) {
+  class Setup(isEditMode: Boolean = false) {
     val page: HtmlFormat.Appendable = overseasPropertyAccountingMethod(
       overseasPropertyAccountingMethodForm = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm,
       postAction = action,
       isEditMode,
-      isSaveAndRetrieve,
       backUrl = backUrl
     )(FakeRequest(), implicitly, appConfig)
 
@@ -95,23 +94,15 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
         document.select("#accountingMethodOverseasProperty-2-item-hint").text mustBe radioAccrualsDetail
       }
 
-      "has a continue button" that {
-        s"displays ${common.continue} when not in edit mode" in new Setup {
-          document.select(".govuk-button").text mustBe common.continue
-        }
-        s"displays ${common.update} when in edit mode" in new Setup(isEditMode = true) {
-          document.select(".govuk-button").text mustBe common.update
-        }
-      }
 
       "has a save and continue button" that {
-        s"displays ${common.saveAndContinue} when save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+        s"displays ${common.saveAndContinue} when save and retrieve feature switch is enabled" in new Setup() {
           document.mainContent.selectHead("div.govuk-button-group").selectHead("button").text mustBe common.saveAndContinue
         }
       }
 
       "has a save and come back later button" that {
-        s"displays ${common.saveAndComeBackLater} when save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+        s"displays ${common.saveAndComeBackLater} when save and retrieve feature switch is enabled" in new Setup() {
           val saveAndComeBackButton: Element = document.mainContent.selectHead("div.govuk-button-group").selectHead("a")
           saveAndComeBackButton.text mustBe common.saveAndComeBackLater
           saveAndComeBackButton.attr("href") mustBe
@@ -119,8 +110,5 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
         }
       }
     }
-
   }
-
-
 }

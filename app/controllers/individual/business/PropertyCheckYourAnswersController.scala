@@ -19,12 +19,11 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import com.google.inject.Inject
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.incometax.business.PropertyCheckYourAnswers
 
 import javax.inject.Singleton
@@ -42,18 +41,14 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          withProperty(reference) { property =>
-            Future.successful(Ok(
-              propertyCheckYourAnswersView(
-                viewModel = property,
-                controllers.individual.business.routes.PropertyCheckYourAnswersController.submit(),
-                backUrl(isEditMode)
-              )
-            ))
-          }
-        } else {
-          Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][show] - The save and retrieve feature switch is disabled"))
+        withProperty(reference) { property =>
+          Future.successful(Ok(
+            propertyCheckYourAnswersView(
+              viewModel = property,
+              controllers.individual.business.routes.PropertyCheckYourAnswersController.submit(),
+              backUrl(isEditMode)
+            )
+          ))
         }
       }
   }
@@ -61,18 +56,14 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          withProperty(reference) { property =>
-            if(property.accountingMethod.isDefined && property.startDate.isDefined) {
-              subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map{_ =>
-                Redirect(routes.TaskListController.show())
-              }
-            } else {
-              Future.successful(Redirect(routes.TaskListController.show()))
+        withProperty(reference) { property =>
+          if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+            subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map { _ =>
+              Redirect(routes.TaskListController.show())
             }
+          } else {
+            Future.successful(Redirect(routes.TaskListController.show()))
           }
-        } else {
-          Future.failed(new NotFoundException("[PropertyCheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
         }
       }
   }

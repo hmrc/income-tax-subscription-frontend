@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveOverseasPropertyForm
@@ -27,7 +26,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.NotFoundException
 import utilities.SubscriptionDataKeys
 import views.html.individual.incometax.business.RemoveOverseasProperty
 
@@ -46,29 +44,21 @@ class RemoveOverseasPropertyController @Inject()(val auditingService: AuditingSe
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      if (isEnabled(SaveAndRetrieve)) {
-        Future.successful(Ok(view(form)))
-      } else {
-        throw new NotFoundException("[RemoveOverseasPropertyController][show] - S&R feature switch is disabled")
-      }
+      Future.successful(Ok(view(form)))
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(SaveAndRetrieve)) {
-        form.bindFromRequest.fold(
-          hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
-            case Yes => withReference { reference =>
-              incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) map { _ =>
-                Redirect(controllers.individual.business.routes.TaskListController.show())
-              }
+      form.bindFromRequest.fold(
+        hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
+          case Yes => withReference { reference =>
+            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) map { _ =>
+              Redirect(controllers.individual.business.routes.TaskListController.show())
             }
-            case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
           }
-        )
-      } else {
-        throw new NotFoundException("[RemoveOverseasPropertyController][submit] - S&R feature switch is disabled")
-      }
+          case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
+        }
+      )
   }
 
   private def view(form: Form[YesNo])(implicit request: Request[_]): Html = removeOverseasProperty(
@@ -78,5 +68,4 @@ class RemoveOverseasPropertyController @Inject()(val auditingService: AuditingSe
   )
 
   private val form: Form[YesNo] = RemoveOverseasPropertyForm.removeOverseasPropertyForm
-
 }

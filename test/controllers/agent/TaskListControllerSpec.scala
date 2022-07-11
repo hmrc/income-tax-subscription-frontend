@@ -43,7 +43,8 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockIncomeTaxSubscriptionConnector with MockThrottlingConnector {
+  with MockIncomeTaxSubscriptionConnector
+  with MockThrottlingConnector {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: AgentTaskList = mock[AgentTaskList]

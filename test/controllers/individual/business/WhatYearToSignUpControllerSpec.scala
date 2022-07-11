@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingYearForm
 import models.Current
@@ -42,11 +41,6 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     "show" -> TestWhatYearToSignUpController.show(isEditMode = false),
     "submit" -> TestWhatYearToSignUpController.submit(isEditMode = false)
   )
-
-  override def beforeEach(): Unit = {
-    disable(SaveAndRetrieve)
-    super.beforeEach()
-  }
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
     whatYearToSignUp,
@@ -98,20 +92,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     )
 
     "not in edit mode" should {
-      "redirect to the income source page" in {
-        mockIncomeSource()
-        setupMockSubscriptionDetailsSaveFunctions()
-        val goodRequest = callSubmit(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-      }
-
-      "redirect to taxYearCYA page when Save & Retrieve is enabled" in {
-        enable(SaveAndRetrieve)
+      "redirect to taxYearCYA page" in {
         mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
         val goodRequest = callSubmit(isEditMode = false)
@@ -125,21 +106,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     }
 
     "it is in edit mode" should {
-      "redirect to the check your answers page" in {
-        mockIncomeSource()
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val goodRequest = callSubmit(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
-
-        await(goodRequest)
-        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-      }
-
-      "redirect to the task list page when Save & Retrieve is enabled" in {
-        enable(SaveAndRetrieve)
+      "redirect to the task list page" in {
         mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
 
@@ -162,19 +129,12 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     }
 
     "The back url" should {
-      "return the user to the check your answers page" in {
-        mockIncomeSource()
-        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show.url)
-      }
-
-      "return the user to the task list page when Save & Retrieve is enabled" in {
-        enable(SaveAndRetrieve)
+      "return the user to the task list page" in {
         mockIncomeSource()
         TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
       }
 
-      "return the user to the taxYearCYA page when Save & Retrieve is enabled and is in editMode" in {
-        enable(SaveAndRetrieve)
+      "return the user to the taxYearCYA page when is in editMode" in {
         mockIncomeSource()
         TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
       }

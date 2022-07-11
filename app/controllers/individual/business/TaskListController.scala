@@ -20,7 +20,6 @@ import auth.individual.{IncomeTaxSAUser, SignUpController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -30,7 +29,7 @@ import play.api.Logging
 import play.api.mvc._
 import services._
 import services.individual.SubscriptionOrchestrationService
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
 import views.html.individual.incometax.business.TaskList
@@ -53,22 +52,18 @@ class TaskListController @Inject()(val taskListView: TaskList,
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      if (isEnabled(SaveAndRetrieve)) {
-        withReference { reference =>
-          throttlingService.throttled(IndividualStartOfJourneyThrottle) {
-            getTaskListModel(reference) map {
-              viewModel =>
-                Ok(taskListView(
-                  postAction = controllers.individual.business.routes.TaskListController.submit(),
-                  viewModel = viewModel,
-                  accountingPeriodService = accountingPeriodService,
-                  individualUserNino = user.nino.get
-                ))
-            }
+      withReference { reference =>
+        throttlingService.throttled(IndividualStartOfJourneyThrottle) {
+          getTaskListModel(reference) map {
+            viewModel =>
+              Ok(taskListView(
+                postAction = controllers.individual.business.routes.TaskListController.submit(),
+                viewModel = viewModel,
+                accountingPeriodService = accountingPeriodService,
+                individualUserNino = user.nino.get
+              ))
           }
         }
-      } else {
-        Future.failed(new NotFoundException("[TaskListController][show] - The save and retrieve feature switch is disabled"))
       }
     }
   }
@@ -104,30 +99,25 @@ class TaskListController @Inject()(val taskListView: TaskList,
               error("Successful response not received from submission: \n" + failure.toString)
           }
         }
-
   }
 
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
         throttlingService.throttled(IndividualEndOfJourneyThrottle) {
-          if (isEnabled(SaveAndRetrieve)) {
-            withReference { reference =>
-              val model = for {
-                cacheMap <- subscriptionDetailsService.fetchAll(reference)
-                selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-                selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
-                property <- subscriptionDetailsService.fetchProperty(reference)
-                overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-              } yield {
-                cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
-              }
-              model.flatMap { model =>
-                processFunc(user)(request)(model)
-              }
+          withReference { reference =>
+            val model = for {
+              cacheMap <- subscriptionDetailsService.fetchAll(reference)
+              selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+              selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+              property <- subscriptionDetailsService.fetchProperty(reference)
+              overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+            } yield {
+              cacheMap.createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
             }
-          } else {
-            throw new NotFoundException("[TaskListController][submit] - The save and retrieve feature switch is disabled")
+            model.flatMap { model =>
+              processFunc(user)(request)(model)
+            }
           }
         }
     }

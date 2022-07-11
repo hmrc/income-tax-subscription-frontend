@@ -17,9 +17,7 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.ControllerBaseSpec
 import forms.individual.business.RemoveBusinessForm
 import models.common.business._
@@ -59,9 +57,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
   )
 
   "show" should {
-    "return OK status" when {
-      "the save and retrieve feature enabled" in withController { controller =>
-        enable(SaveAndRetrieve)
+    "return OK status" in withController { controller =>
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.show("id")(subscriptionRequest))
@@ -70,19 +66,9 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)
       }
-    }
 
     "throw an exception" when {
-      "the save and retrieve feature disabled" in withController { controller =>
-        disable(SaveAndRetrieve)
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
-
-        val result: Future[Result] = await(controller.show("id")(subscriptionRequest))
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
-      }
-
       "the Sole trader business cannot be retrieved" in withController { controller =>
-        enable(SaveAndRetrieve)
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.show("unknown")(subscriptionRequest))
@@ -94,7 +80,6 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
   "submit" should {
     "redirect to the task list page" when {
       "the user selects 'yes'" in withController { controller =>
-        enable(SaveAndRetrieve)
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
@@ -107,7 +92,6 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
       }
 
       "the user selects 'no'" in withController { controller =>
-        enable(SaveAndRetrieve)
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
@@ -121,20 +105,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
     }
 
     "throw an exception" when {
-      "the save and retrieve feature not enabled" in withController { controller =>
-        disable(SaveAndRetrieve)
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
-
-        val result: Future[Result] = await(controller.submit("id")(
-          subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), No)
-        ))
-
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
-        verifySelfEmploymentsSave[Seq[SelfEmploymentData]](BusinessesKey, None)
-      }
-
       "the user submits invalid data" in withController { controller =>
-        enable(SaveAndRetrieve)
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(

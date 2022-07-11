@@ -16,16 +16,13 @@
 
 package controllers.individual.sps
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{accountingYearURI, basGatewaySignIn, taskListURI}
+import helpers.IntegrationTestConstants.{basGatewaySignIn, taskListURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
 class SPSCallbackControllerISpec extends ComponentSpecBase {
-
   s"GET ${controllers.individual.sps.routes.SPSCallbackController.callback(None).url}" when {
-
     "the user is not authorised" should {
       "redirect the user to login" in {
         AuthStub.stubUnauthorised()
@@ -39,44 +36,30 @@ class SPSCallbackControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "the save and retrieve feature switch is enabled" should {
-      "redirect the user to the tax year selection page when entity id is present" in {
-        enable(SaveAndRetrieve)
-        AuthStub.stubAuthSuccess()
+    "the user is authorised" should {
+      "redirect the user to the task list page" when {
+        "entity id is present" in {
+          AuthStub.stubAuthSuccess()
 
-        val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
+          val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
 
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
-        )
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(taskListURI)
+          )
+        }
+      }
+
+      "return an internal server error" when {
+        "entity id is not present" in {
+          AuthStub.stubAuthSuccess()
+
+          val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = false)
+          res must have(
+            httpStatus(INTERNAL_SERVER_ERROR)
+          )
+        }
       }
     }
-
-    "the save and retrieve feature switch is disabled" when {
-
-      "redirect the user to the tax year selection page when entity id is present" in {
-        disable(SaveAndRetrieve)
-        AuthStub.stubAuthSuccess()
-
-        val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = true)
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(accountingYearURI)
-        )
-      }
-
-      "return an internal server error when entity id is not present" in {
-        AuthStub.stubAuthSuccess()
-
-        val res = IncomeTaxSubscriptionFrontend.spsCallback(hasEntityId = false)
-        res must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
-
   }
-
 }
