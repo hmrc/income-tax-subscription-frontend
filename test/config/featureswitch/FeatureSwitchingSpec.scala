@@ -72,32 +72,6 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "SaveAndRetrieve" should {
-    "return true if SaveAndRetrieve feature switch is enabled in sys.props" in {
-      enable(SaveAndRetrieve)
-      isEnabled(SaveAndRetrieve) mustBe true
-    }
-    "return false if SaveAndRetrieve feature switch is disabled in sys.props" in {
-      disable(SaveAndRetrieve)
-      isEnabled(SaveAndRetrieve) mustBe false
-    }
-
-    "return false if SaveAndRetrieve feature switch does not exist" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(None)
-      isEnabled(SaveAndRetrieve) mustBe false
-    }
-
-    "return false if SaveAndRetrieve feature switch is not in sys.props but is set to off in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      isEnabled(SaveAndRetrieve) mustBe false
-    }
-
-    "return true if SaveAndRetrieve feature switch is not in sys.props but is set to on in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(Some(FEATURE_SWITCH_ON))
-      isEnabled(SaveAndRetrieve) mustBe true
-    }
-  }
-
   "PrePopulate" should {
     "return true if PrePopulate feature switch is enabled in sys.props" in {
       enable(PrePopulate)
