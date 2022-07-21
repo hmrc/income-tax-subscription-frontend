@@ -16,21 +16,19 @@
 
 @import config.AppConfig
 @import forms.individual.business.OverseasPropertyStartDateForm._
-@import views.html.helpers.injected.{ContinueButton, DateHelper}
+@import views.html.helpers.injected.{DateHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
         mainTemplate: PrincipalMainTemplate,
         form: FormWithCSRF,
         dateHelper: DateHelper,
-        continueButton: ContinueButton
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )(
         implicit appConfig: AppConfig
 )
 
-@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String, isSaveAndRetrieve: Boolean = false)(implicit request: Request[_], messages: Messages)
-
-@maybeAlternativeButtonText = @{if (isSaveAndRetrieve) Some(messages("base.save-and-continue")) else None}
+@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("overseas.property.name.title"), optForm = Some(overseasPropertyStartDateForm), backLink = Some(backUrl)) {
 
@@ -49,8 +47,10 @@
             isLegendVisible = false
         )
 
-        @continueButton(isEditMode = isEditMode, alternateText = maybeAlternativeButtonText)
-
+      @saveAndContinueButtonHelper(
+        isIndividual = true,
+        saveAndReturnReference = None
+      )
     }
 
 }

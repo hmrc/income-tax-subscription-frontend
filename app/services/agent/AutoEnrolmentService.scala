@@ -27,7 +27,7 @@ import play.api.Logging
 import services.agent.AutoEnrolmentService._
 import uk.gov.hmrc.auth.core.User
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
+import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

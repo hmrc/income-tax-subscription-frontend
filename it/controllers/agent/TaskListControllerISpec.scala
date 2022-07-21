@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import common.Constants.ITSASessionKeys
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs._
 import helpers.IntegrationTestConstants.{confirmationURI => _, _}
@@ -37,15 +37,12 @@ import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, 
 class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
-    disable(SaveAndRetrieve)
     super.beforeEach()
   }
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/task-list" should {
     "return OK" when {
       "there is no user data setup" in {
-        enable(SaveAndRetrieve)
-
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -68,8 +65,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         )
       }
       "there is partial user data setup" in {
-        enable(SaveAndRetrieve)
-
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -94,8 +89,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         )
       }
       "there is full user data setup" in {
-        enable(SaveAndRetrieve)
-
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -120,30 +113,12 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         )
       }
     }
-
-    "return NOT_FOUND" when {
-      "the save & retrieve feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /business/task-list is called")
-        val res = IncomeTaxSubscriptionFrontend.getTaskList()
-
-        Then("Should return NOT FOUND")
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/task-list" when {
     "the save and retrieve feature switch is enabled" should {
       "sign up the client successfully" when {
         "they only have self employment income" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -191,10 +166,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
 
         }
-        "they only have uk property income" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
 
+        "they only have uk property income" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -250,9 +223,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
         }
         "they only have overseas property income" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -308,9 +278,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
         }
         "they have both self employment and uk property income" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -368,9 +335,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
         }
         "they have both self employment and overseas property income" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -427,9 +391,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
         }
         "they have both uk property and overseas property income" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -493,9 +454,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         }
 
         "they have self employment, uk property and overseas property income" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -560,9 +518,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
       }
       "fail to sign up the client" when {
         "the user has not selected their tax year" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -604,9 +559,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
         }
         "the user has not got any business income sources" in {
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -648,28 +600,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
         }
       }
-    }
-    "the save and retrieve feature switch is disabled" should {
-      "Return a NOT_FOUND page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
-
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-
-        When("GET /business/task-list is called")
-        val res = IncomeTaxSubscriptionFrontend.getTaskList()
-
-        Then("Should return NOT_FOUND with the task list page")
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
-
     }
   }
 }

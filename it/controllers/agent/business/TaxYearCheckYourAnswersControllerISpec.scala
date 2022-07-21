@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave
 import helpers.agent.ComponentSpecBase
@@ -33,44 +32,22 @@ import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/tax-year-check-your-answers" should {
-    "return OK" when {
-      "the save & retrieve feature switch is enabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+    "return OK" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
-        And("save & retrieve feature switch is enabled")
-        enable(SaveAndRetrieve)
+      When("GET /business/tax-year-check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
 
-        When("GET /business/tax-year-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
-
-        Then("Should return OK with tax year CYA page")
-        res must have(
-          httpStatus(OK),
-          pageTitle(
-            s"${messages("agent.business.check-your-answers.content.tax-year.title")} - Use software to report your client’s Income Tax - GOV.UK"
-          )
+      Then("Should return OK with tax year CYA page")
+      res must have(
+        httpStatus(OK),
+        pageTitle(
+          s"${messages("agent.business.check-your-answers.content.tax-year.title")} - Use software to report your client’s Income Tax - GOV.UK"
         )
-      }
-    }
-
-    "return NOT_FOUND" when {
-      "the save & retrieve feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        And("save & retrieve feature switch is disabled")
-        disable(SaveAndRetrieve)
-
-        When("GET /business/tax-year-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
-
-        Then("Should return NOT FOUND")
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
+      )
     }
   }
 

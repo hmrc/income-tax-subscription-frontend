@@ -18,7 +18,7 @@
 @import forms.individual.business.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
 @import play.api.data.Form
-@import views.html.helpers.injected.{ContinueButton, DetailsHelper, RadioHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.injected.{DetailsHelper, RadioHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
@@ -26,11 +26,10 @@
         form: FormWithCSRF,
         detailsHelper: DetailsHelper,
         radioHelper: RadioHelper,
-        continueButton: ContinueButton,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
-@(overseasPropertyAccountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, isSaveAndRetrieve: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(overseasPropertyAccountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     messages("overseas.property.accounting_method.heading")
@@ -76,13 +75,10 @@
             )
         )
 
-        @if(isSaveAndRetrieve) {
-            @saveAndContinueButtonHelper(
-                isIndividual = true,
-                saveAndReturnReference = Some("overseas-property-accounting-type")
-            )
-        } else {
-            @continueButton(isEditMode = isEditMode)
-        }
+
+        @saveAndContinueButtonHelper(
+            isIndividual = true,
+            saveAndReturnReference = Some("overseas-property-accounting-type")
+        )
     }
 }

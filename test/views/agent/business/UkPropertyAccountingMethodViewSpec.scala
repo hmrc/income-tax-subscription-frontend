@@ -17,7 +17,6 @@
 package views.agent.business
 
 import agent.assets.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import forms.agent.AccountingMethodPropertyForm
 import models.AccountingMethod
 import org.jsoup.Jsoup
@@ -30,21 +29,10 @@ import views.html.agent.business.PropertyAccountingMethod
 class UkPropertyAccountingMethodViewSpec extends ViewSpec {
 
   val testError: FormError = FormError("startDate", "testError")
-
   val propertyAccountingMethod: PropertyAccountingMethod = app.injector.instanceOf[PropertyAccountingMethod]
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(SaveAndRetrieve)
-  }
-
   class Setup(isEditMode: Boolean = false,
-              form: Form[AccountingMethod] = AccountingMethodPropertyForm.accountingMethodPropertyForm,
-              enableSaveAndRetrieve: Boolean = false) {
-
-    if (enableSaveAndRetrieve) {
-      enable(SaveAndRetrieve)
-    }
+              form: Form[AccountingMethod] = AccountingMethodPropertyForm.accountingMethodPropertyForm) {
 
     val page: Html = propertyAccountingMethod(
       form,
@@ -95,22 +83,9 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
         document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe messages.accruals
       }
 
-      "has a save and continue + save and come back later buttons" when {
-        "the save and retrieve feature switch is enabled" in new Setup(enableSaveAndRetrieve = true) {
-          document.mainContent.selectHead(".govuk-button").text mustBe common.saveAndContinue
-          document.mainContent.selectHead(".govuk-button--secondary").text mustBe common.saveAndComeBackLater
-        }
-      }
-
-      "has a continue button" when {
-        "the save and retrieve feature switch is disabled" that {
-          s"displays ${common.continue} when not in edit mode" in new Setup {
-            document.select(".govuk-button").text mustBe common.continue
-          }
-          s"displays ${common.update} when in edit mode" in new Setup(isEditMode = true) {
-            document.select(".govuk-button").text mustBe common.update
-          }
-        }
+      "has a save and continue + save and come back later buttons" in new Setup() {
+        document.mainContent.selectHead(".govuk-button").text mustBe common.saveAndContinue
+        document.mainContent.selectHead(".govuk-button--secondary").text mustBe common.saveAndComeBackLater
       }
 
     }

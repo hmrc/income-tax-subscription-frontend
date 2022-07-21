@@ -28,11 +28,10 @@
 
 @(
         userDetailsModel: UserDetailsModel,
-        postAction: Call,
-        backUrl: String
+        postAction: Call
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agentMainTemplate(title = messages("agent.client-details.summary.title"), backLink = Some(backUrl)) {
+@agentMainTemplate(title = messages("agent.client-details.summary.title")) {
     @checkYourAnswers(
         heading = messages("agent.client-details.summary.heading"),
         caption = messages("agent.client-details.summary.caption"),

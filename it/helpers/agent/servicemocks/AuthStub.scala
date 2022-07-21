@@ -2,12 +2,12 @@
 package helpers.agent.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import common.Constants.{GovernmentGateway, agentServiceIdentifierKey, hmrcAsAgent}
 import helpers.agent.IntegrationTestConstants._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
-import utilities.agent.Constants._
 
 object AuthStub extends WireMockMethods {
   private val authoriseUri = "/auth/authorise"
@@ -26,7 +26,7 @@ object AuthStub extends WireMockMethods {
   val previouslyLoggedInAt: Some[DateTime] = Some(new DateTime(2014, 8, 3, 9, 25, 44, 342, DateTimeZone.UTC))
 
   private val arnEnrolment = Json.obj(
-    "key" -> agentServiceEnrolmentName,
+    "key" -> hmrcAsAgent,
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> agentServiceIdentifierKey,
@@ -44,5 +44,5 @@ object AuthStub extends WireMockMethods {
       "optionalCredentials" -> Json.obj(
         "providerId" -> "",
         "providerType" -> GovernmentGateway.GGProviderId
-    ))
+      ))
 }

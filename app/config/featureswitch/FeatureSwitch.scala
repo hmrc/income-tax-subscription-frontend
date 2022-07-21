@@ -26,9 +26,8 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch] = Set(
     ForeignProperty,
-    SaveAndRetrieve,
     PrePopulate,
-    Throttle
+    ThrottlingFeature
   )
 
   def apply(str: String): FeatureSwitch =
@@ -44,17 +43,12 @@ object FeatureSwitch {
     override val displayText = "Foreign property"
   }
 
-  case object SaveAndRetrieve extends FeatureSwitch {
-    override val name = s"$prefix.enable-save-and-retrieve"
-    override val displayText = "Save & Retrieve"
-  }
-
   case object PrePopulate extends FeatureSwitch {
     override val name = s"$prefix.prepopulate"
     override val displayText = "Prepopulate"
   }
 
-  case object Throttle extends FeatureSwitch {
+  case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
   }

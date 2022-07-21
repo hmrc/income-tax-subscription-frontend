@@ -45,8 +45,12 @@ object WiremockHelper extends Eventually with IntegrationPatience {
     verify(countCondition, postRequest)
   }
 
-  def verifyGet(uri: String): Unit = {
-    verify(getRequestedFor(urlEqualTo(uri)))
+  def verifyGet(uri: String, count: Option[Int] = None): Unit = {
+    val countCondition = count match {
+      case Some(expectedCount) => exactly(expectedCount)
+      case _ => moreThanOrExactly(1)
+    }
+    verify(countCondition, getRequestedFor(urlEqualTo(uri)))
   }
 
   def verifyDelete(uri: String, count: Option[Int] = None): Unit = {

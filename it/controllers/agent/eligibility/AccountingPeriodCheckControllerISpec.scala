@@ -16,8 +16,8 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
   object AccountingPeriodCheckMessages {
     val back: String = "Back"
 
-    val title: String = "Are all of your client’s business accounting periods from 6 April to 5 April?"
-    val heading: String = "Are all of your client’s business accounting periods from 6 April to 5 April?"
+    val title: String = "Do your client’s business accounting periods all run from 6 April to 5 April?"
+    val heading: String = "Do your client’s business accounting periods all run from 6 April to 5 April?"
     val hint: String = "The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service."
     val invalidError: String = "Select yes if all of your client’s business accounting periods are from 6 April to 5 April"
 

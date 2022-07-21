@@ -18,7 +18,6 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.AccountingMethod
@@ -39,19 +38,6 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                                                           (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
                                                            mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
-
-  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
-
-  def view(accountingMethodOverseasPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
-          (implicit request: Request[_]): Html = {
-    overseasPropertyAccountingMethod(
-      accountingMethodOverseasPropertyForm = accountingMethodOverseasPropertyForm,
-      postAction = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
-      isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode)
-    )
-  }
-
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
@@ -71,23 +57,28 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
             Future.successful(BadRequest(view(accountingMethodOverseasPropertyForm = formWithErrors, isEditMode = isEditMode))),
           overseasPropertyAccountingMethod => {
             subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map { _ =>
-              if (isSaveAndRetrieve) {
-                Redirect(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
-              } else {
-                Redirect(controllers.agent.routes.CheckYourAnswersController.show)
-              }
+              Redirect(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
             }
           }
         )
       }
   }
 
-  def backUrl(isEditMode: Boolean): String = {
+  private def view(accountingMethodOverseasPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
+                  (implicit request: Request[_]): Html = {
+    overseasPropertyAccountingMethod(
+      accountingMethodOverseasPropertyForm = accountingMethodOverseasPropertyForm,
+      postAction = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
+      isEditMode = isEditMode,
+      backUrl = backUrl(isEditMode)
+    )
+  }
 
-    (isEditMode, isSaveAndRetrieve) match {
-      case (true, true) => controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
-      case (false, _) => controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
-      case (true, false) => controllers.agent.routes.CheckYourAnswersController.show.url
+  def backUrl(isEditMode: Boolean): String = {
+    if (isEditMode) {
+      controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
+    } else {
+      controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
     }
   }
 }

@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 import services.agent.CheckEnrolmentAllocationService
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
+import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global

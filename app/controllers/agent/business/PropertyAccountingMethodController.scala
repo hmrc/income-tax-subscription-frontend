@@ -18,11 +18,9 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodPropertyForm
 import models.AccountingMethod
-import models.common.IncomeSourceModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -41,11 +39,8 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
                                                    mcc: MessagesControllerComponents,
                                                    val appConfig: AppConfig) extends AuthenticatedController  with ReferenceRetrieval {
 
-  private def isSaveAndRetrieve: Boolean = isEnabled(SaveAndRetrieve)
-
   def view(accountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
-
     propertyAccountingMethod(
       accountingMethodForm = accountingMethodForm,
       postAction = controllers.agent.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
@@ -74,19 +69,9 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
             accountingMethodForm = formWithErrors,
             isEditMode = isEditMode
           ))),
-
           accountingMethodProperty => {
             subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) flatMap { _ =>
-              if (isSaveAndRetrieve) {
-                Future(Redirect(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
-              } else {
-                subscriptionDetailsService.fetchIncomeSource(reference) map {
-                  case Some(IncomeSourceModel(_, _, true)) =>
-                    Redirect(controllers.agent.business.routes.OverseasPropertyStartDateController.show())
-                  case _ =>
-                    Redirect(controllers.agent.routes.CheckYourAnswersController.show)
-                }
-              }
+              Future.successful(Redirect(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
             }
           }
         )
@@ -94,12 +79,11 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    (isEditMode, isSaveAndRetrieve) match {
-      case (true, true) => controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
-      case (false, _) => controllers.agent.business.routes.PropertyStartDateController.show().url
-      case (true, false) => controllers.agent.routes.CheckYourAnswersController.show.url
+    if(isEditMode) {
+      controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
+    } else {
+      controllers.agent.business.routes.PropertyStartDateController.show().url
     }
-
   }
 
 }

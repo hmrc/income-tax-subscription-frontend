@@ -17,6 +17,8 @@
 package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
+import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
@@ -30,10 +32,9 @@ import services.individual.SubscriptionOrchestrationService
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.ITSASessionKeys.SPSEntityId
+import utilities.ImplicitDateFormatterImpl
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil._
-import utilities.{ITSASessionKeys, ImplicitDateFormatterImpl}
 import views.html.individual.incometax.subscription.CheckYourAnswers
 
 import javax.inject.{Inject, Singleton}

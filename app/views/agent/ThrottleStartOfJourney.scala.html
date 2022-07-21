@@ -16,16 +16,25 @@
 
 @import config.AppConfig
 @import views.html.templates.AgentMainTemplate
+@import views.html.helpers.injected.ContinueButton
 
 @this(
-agentMainTemplate: AgentMainTemplate
+mainTemplate: AgentMainTemplate,
+form: FormWithCSRF,
+continueButton: ContinueButton
 )
 
-@(backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(backLink: Option[String], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agentMainTemplate(title = messages("agent.throttle.title"), backLink = backLink, showSignOutLink = false) {
-<h1 class="govuk-heading-l">@messages("agent.throttle.heading")</h1>
+@mainTemplate(title = messages("agent.throttle.title"), backLink = backLink, showSignOutLink = true) {
+   <h1 class="govuk-heading-l">@messages("agent.throttle.heading")</h1>
 
-<p class="govuk-body">@messages("agent.throttle.line_1")</p>
+   <p class="govuk-body">@messages("agent.throttle.line_1")</p>
+
+   <div class="form-group">
+      @form(action = postAction) {
+         @continueButton(Some(messages("base.try_again")))
+      }
+   </div>
+
 }
-

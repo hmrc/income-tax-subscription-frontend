@@ -18,18 +18,18 @@ package controllers.individual.claimenrolment
 
 import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
+import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockClaimEnrolmentService
-import utilities.ITSASessionKeys
 import views.individual.mocks.MockAddMTDITOverview
 
 import scala.concurrent.Future
 
 class AddMTDITOverviewControllerSpec extends ControllerBaseSpec
-  
+
   with MockClaimEnrolmentService
   with MockAuditingService
   with MockAddMTDITOverview {
@@ -63,13 +63,13 @@ class AddMTDITOverviewControllerSpec extends ControllerBaseSpec
   }
 
   "submit" should {
-      "redirect the user to the claim enrolment resolver" in {
+    "redirect the user to the claim enrolment resolver" in {
 
-        val result: Future[Result] = TestAddMTDITOverviewController.submit()(claimEnrolmentRequest)
+      val result: Future[Result] = TestAddMTDITOverviewController.submit()(claimEnrolmentRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.ClaimEnrolmentResolverController.resolve.url)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.ClaimEnrolmentResolverController.resolve.url)
+    }
   }
 
 }

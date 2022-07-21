@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.ControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
@@ -46,7 +45,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "show" should {
     "return an OK status with the property CYA page" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
@@ -57,20 +55,11 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
 
     "throw an exception if cannot retrieve overseas property details" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchOverseasProperty(None)
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-    }
-
-    "throw an exception if feature not enabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
     }
   }
 
@@ -78,7 +67,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     "redirect to the task list" when {
       "the user submits valid full data" should {
         "save the overseas property answers" in withController { controller =>
-          enable(SaveAndRetrieve)
           mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
           setupMockSubscriptionDetailsSaveFunctions()
 
@@ -92,7 +80,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "the user submits valid partial data" should {
         "not save the overseas property answers" in withController { controller =>
-          enable(SaveAndRetrieve)
           mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
           val result: Future[Result] = await(controller.submit()(subscriptionRequest))
@@ -109,20 +96,11 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
 
     "throw an exception if cannot retrieve property details" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchOverseasProperty(None)
 
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-    }
-
-    "throw an exception if feature not enabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
     }
   }
 

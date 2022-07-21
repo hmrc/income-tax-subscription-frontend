@@ -72,32 +72,6 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "SaveAndRetrieve" should {
-    "return true if SaveAndRetrieve feature switch is enabled in sys.props" in {
-      enable(SaveAndRetrieve)
-      isEnabled(SaveAndRetrieve) mustBe true
-    }
-    "return false if SaveAndRetrieve feature switch is disabled in sys.props" in {
-      disable(SaveAndRetrieve)
-      isEnabled(SaveAndRetrieve) mustBe false
-    }
-
-    "return false if SaveAndRetrieve feature switch does not exist" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(None)
-      isEnabled(SaveAndRetrieve) mustBe false
-    }
-
-    "return false if SaveAndRetrieve feature switch is not in sys.props but is set to off in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      isEnabled(SaveAndRetrieve) mustBe false
-    }
-
-    "return true if SaveAndRetrieve feature switch is not in sys.props but is set to on in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-save-and-retrieve")).thenReturn(Some(FEATURE_SWITCH_ON))
-      isEnabled(SaveAndRetrieve) mustBe true
-    }
-  }
-
   "PrePopulate" should {
     "return true if PrePopulate feature switch is enabled in sys.props" in {
       enable(PrePopulate)
@@ -127,27 +101,27 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
   "Throttle" should {
     "return true if Throttle feature switch is enabled in sys.props" in {
-      enable(Throttle)
-      isEnabled(Throttle) mustBe true
+      enable(ThrottlingFeature)
+      isEnabled(ThrottlingFeature) mustBe true
     }
     "return false if Throttle feature switch is disabled in sys.props" in {
-      disable(Throttle)
-      isEnabled(Throttle) mustBe false
+      disable(ThrottlingFeature)
+      isEnabled(ThrottlingFeature) mustBe false
     }
 
     "return false if Throttle feature switch does not exist" in {
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(None)
-      isEnabled(Throttle) mustBe false
+      isEnabled(ThrottlingFeature) mustBe false
     }
 
     "return false if Throttle feature switch is not in sys.props but is set to off in config" in {
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      isEnabled(Throttle) mustBe false
+      isEnabled(ThrottlingFeature) mustBe false
     }
 
     "return true if Throttle feature switch is not in sys.props but is set to on in config" in {
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_ON))
-      isEnabled(Throttle) mustBe true
+      isEnabled(ThrottlingFeature) mustBe true
     }
   }
 

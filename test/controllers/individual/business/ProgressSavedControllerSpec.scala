@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import common.Constants
 import controllers.ControllerBaseSpec
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
@@ -37,7 +37,6 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.testCacheMap
-import utilities.individual.Constants
 import utilities.individual.TestConstants.testCredId
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.incometax.business.ProgressSaved
@@ -109,7 +108,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   "Show" should {
     "return status OK and render the correct expiry date" when {
       "the location parameter is not provided" in withController { (controller, mockedView) =>
-        enable(SaveAndRetrieve)
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
 
         val result: Future[Result] = await(controller.show()(subscriptionRequest))
@@ -123,7 +121,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       }
 
       "the location parameter is provided" in withController { (controller, mockedView) =>
-        enable(SaveAndRetrieve)
         mockNinoAndUtrRetrieval()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
         val testBusinessCacheMap = testCacheMap(
@@ -160,20 +157,11 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
     }
 
     "throw an exception if the last updated timestamp cannot be retrieve" in withController { (controller, _) =>
-      enable(SaveAndRetrieve)
       mockFetchLastUpdatedTimestamp(None)
 
       val result: Future[Result] = await(controller.show()(subscriptionRequest))
 
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-    }
-
-    "throw an exception if feature not enabled" in withController { (controller, _) =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.show()(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
     }
   }
 

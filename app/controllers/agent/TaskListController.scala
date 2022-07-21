@@ -17,8 +17,8 @@
 package controllers.agent
 
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
+import common.Constants.ITSASessionKeys
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -26,12 +26,14 @@ import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.Logging
 import play.api.mvc._
+import services._
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import services.agent.SubscriptionOrchestrationService
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
-import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import services._
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.AgentTaskList
 
 import javax.inject.{Inject, Singleton}
@@ -45,10 +47,11 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val subscriptionService: SubscriptionOrchestrationService,
                                    val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                   val authService: AuthService)
+                                   val authService: AuthService,
+                                   throttlingService: ThrottlingService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends AuthenticatedController  with ReferenceRetrieval with Logging {
+                                   mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval with Logging {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -58,14 +61,13 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
         s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
       case other => other
     }
-
   }
 
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      if (isEnabled(SaveAndRetrieve)) {
-        withAgentReference { reference =>
+      withAgentReference { reference =>
+        throttlingService.throttled(AgentStartOfJourneyThrottle) {
           getTaskListModel(reference) map {
             viewModel =>
               Ok(taskListView(
@@ -80,8 +82,6 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
               ))
           }
         }
-      } else {
-        Future.failed(new NotFoundException("[TaskListController][show] - The save and retrieve feature switch is disabled"))
       }
     }
   }
@@ -121,7 +121,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
   private def journeySafeGuard(processFunc: IncomeTaxAgentUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        if (isEnabled(SaveAndRetrieve)) {
+        throttlingService.throttled(AgentEndOfJourneyThrottle) {
           withAgentReference { reference =>
             val model = for {
               cacheMap <- subscriptionDetailsService.fetchAll(reference)
@@ -136,8 +136,6 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
               processFunc(user)(request)(model)
             }
           }
-        } else {
-          throw new NotFoundException("[TaskListController][submit] - The save and retrieve feature switch is disabled")
         }
     }
 

@@ -21,7 +21,7 @@ import helpers.IntegrationTestConstants.claimEnrolmentResolverURI
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.{OK, SEE_OTHER}
-import utilities.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys
 
 class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCookieCrumbler {
 

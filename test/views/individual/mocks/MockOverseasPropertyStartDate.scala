@@ -34,7 +34,7 @@ trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with Befo
   }
 
   def mockOverseasPropertyStartDateView(): Unit = {
-    when(overseasPropertyStartDate(any(), any(), any(), any(), any())(any(), any()))
+    when(overseasPropertyStartDate(any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

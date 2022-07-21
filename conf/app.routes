@@ -9,11 +9,6 @@ GET         /index                                               controllers.use
 # SignOut Controller
 GET         /logout                                              controllers.SignOutController.signOut
 
-# Preferences routes
-GET         /preferences                                         controllers.individual.PreferencesController.checkPreferences
-GET         /callback                                            controllers.individual.PreferencesController.callback
-GET         /paperless-error                                     controllers.individual.PreferencesController.show
-POST        /paperless-error                                     controllers.individual.PreferencesController.submit
 
 
 # SPS routes
@@ -147,4 +142,5 @@ GET         /business/remove-uk-property-business                controllers.ind
 POST        /business/remove-uk-property-business                controllers.individual.business.RemoveUkPropertyController.submit
 
 # Throttle
-GET         /throttle                                            controllers.individual.ThrottlingController.show
+GET         /throttle-start                                      controllers.individual.ThrottlingController.start
+GET         /throttle-end                                        controllers.individual.ThrottlingController.end

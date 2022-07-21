@@ -18,16 +18,15 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.utils.ReferenceRetrieval
 import models.common.AccountingYearModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.incometax.business.TaxYearCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxYearCheckYourAnswers,
@@ -42,17 +41,13 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { maybeAccountingYearModel =>
-            Ok(checkYourAnswersView(
-              postAction = controllers.individual.business.routes.TaxYearCheckYourAnswersController.submit(),
-              viewModel = maybeAccountingYearModel,
-              accountingPeriodService = accountingPeriodService,
-              backUrl = backUrl(isEditMode)
-            ))
-          }
-        } else {
-          Future.failed(new NotFoundException("[CheckYourAnswersController][submit] - The save and retrieve feature switch is disabled"))
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { maybeAccountingYearModel =>
+          Ok(checkYourAnswersView(
+            postAction = controllers.individual.business.routes.TaxYearCheckYourAnswersController.submit(),
+            viewModel = maybeAccountingYearModel,
+            accountingPeriodService = accountingPeriodService,
+            backUrl = backUrl(isEditMode)
+          ))
         }
       }
   }

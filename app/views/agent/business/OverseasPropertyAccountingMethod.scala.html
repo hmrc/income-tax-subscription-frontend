@@ -15,21 +15,17 @@
  *@
 
 @import config.AppConfig
-@import config.featureswitch.FeatureSwitch.SaveAndRetrieve
-@import config.featureswitch.FeatureSwitchingImpl
 @import forms.agent.AccountingMethodOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
 @import play.api.data.Form
-@import views.html.helpers.injected.{ContinueButton, RadioHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.injected.{RadioHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
 
 @this(
         mainTemplate: AgentMainTemplate,
         form: FormWithCSRF,
         radioHelper: RadioHelper,
-        continueButton: ContinueButton,
-        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-        featureSwitchingImpl: FeatureSwitchingImpl
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )(
         implicit appConfig: AppConfig
 )
@@ -50,10 +46,6 @@
       )
     )
 
-    @if(featureSwitchingImpl.isEnabled(SaveAndRetrieve)) {
-      @saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = Some("overseas-property-accounting-type"))
-    } else {
-      @continueButton(isEditMode = isEditMode)
-    }
+    @saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = Some("overseas-property-accounting-type"))
   }
 }

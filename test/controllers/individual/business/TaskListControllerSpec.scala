@@ -17,23 +17,22 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import controllers.ControllerBaseSpec
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
+import org.mockito.Mockito.{reset, times, when}
 import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService, MockThrottlingConnector}
+import services.{AccountingPeriodService, ThrottlingService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
 import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testValidStartDate}
 import utilities.individual.TestConstants.{testCreateIncomeSources, testNino}
@@ -46,7 +45,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
   with MockIncomeTaxSubscriptionConnector
-   {
+  with MockThrottlingConnector {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: TaskList = mock[TaskList]
@@ -58,9 +57,11 @@ class TaskListControllerSpec extends ControllerBaseSpec
   )
 
   override def beforeEach(): Unit = {
-    disable(SaveAndRetrieve)
-    reset(taskList)
     super.beforeEach()
+    disable(ThrottlingFeature)
+    reset(taskList)
+    enable(ThrottlingFeature)
+    notThrottled()
   }
 
   def mockTaskList(): Unit = {
@@ -75,12 +76,12 @@ class TaskListControllerSpec extends ControllerBaseSpec
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
     mockIncomeTaxSubscriptionConnector,
-    mockAuthService
+    mockAuthService,
+    new ThrottlingService(mockThrottlingConnector, appConfig)
   )
 
   "show" should {
     "return an OK status with the task list page" in {
-      enable(SaveAndRetrieve)
       mockTaskList()
 
       val testBusinessCacheMap = testCacheMap(
@@ -113,85 +114,62 @@ class TaskListControllerSpec extends ControllerBaseSpec
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
-    }
-
-    "throw an exception" when {
-      "save and retrieve is disabled" in {
-        disable(SaveAndRetrieve)
-
-        val result: Future[Result] = await(TestTaskListController.show()(subscriptionRequest))
-
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
-      }
+      verifyGetThrottleStatusCalls(times(1))
     }
   }
 
   "submit" when {
-    "save and retrieve feature switch is enabled" when {
-      "sign up income source is successful" should {
-        "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
-          enable(SaveAndRetrieve)
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
-          mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
-          mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
-          mockFetchProperty(Some(PropertyModel(
-            accountingMethod = Some(testAccountingMethod.accountingMethod),
-            startDate = Some(testValidStartDate),
-            confirmed = true
-          )))
-          mockFetchOverseasProperty(Some(OverseasPropertyModel(
-            accountingMethod = Some(testAccountingMethod.accountingMethod),
-            startDate = Some(testValidStartDate),
-            confirmed = true
-          )))
-          val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
-          mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(testNino, testIncomeSourceModel)
-
-          val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
-          status(result) must be(Status.SEE_OTHER)
-          await(result)
-          verifySubscriptionDetailsSave(MtditId, 1)
-
-          redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
-        }
-      }
-
-      "sign up income source fails" should {
-        "return an internalServer error" in {
-          enable(SaveAndRetrieve)
-          mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
-          mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
-          mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
-          mockFetchProperty(Some(PropertyModel(
-            accountingMethod = Some(testAccountingMethod.accountingMethod),
-            startDate = Some(testValidStartDate),
-            confirmed = true
-          )))
-          mockFetchOverseasProperty(Some(OverseasPropertyModel(
-            accountingMethod = Some(testAccountingMethod.accountingMethod),
-            startDate = Some(testValidStartDate),
-            confirmed = true
-          )))
-          val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
-          mockSignUpAndCreateIncomeSourcesFromTaskListFailure(testNino, testIncomeSourceModel)
-
-          val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
-          intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
-          verifySubscriptionDetailsSave(MtditId, 0)
-        }
-      }
-    }
-
-    "save and retrieve feature switch is disabled" should {
-      "throw NotFoundException" in {
+    "sign up income source is successful" should {
+      "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
+        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
+        mockFetchProperty(Some(PropertyModel(
+          accountingMethod = Some(testAccountingMethod.accountingMethod),
+          startDate = Some(testValidStartDate),
+          confirmed = true
+        )))
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(
+          accountingMethod = Some(testAccountingMethod.accountingMethod),
+          startDate = Some(testValidStartDate),
+          confirmed = true
+        )))
+        val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
+        mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(testNino, testIncomeSourceModel)
 
-        intercept[NotFoundException](await(TestTaskListController.submit()(subscriptionRequest)))
-          .getMessage mustBe "[TaskListController][submit] - The save and retrieve feature switch is disabled"
+        val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
+        status(result) must be(Status.SEE_OTHER)
+        await(result)
+        verifySubscriptionDetailsSave(MtditId, 1)
+        verifyGetThrottleStatusCalls(times(1))
 
+        redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
+      }
+    }
+
+    "sign up income source fails" should {
+      "return an internalServer error" in {
+        mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
+        mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
+        mockFetchProperty(Some(PropertyModel(
+          accountingMethod = Some(testAccountingMethod.accountingMethod),
+          startDate = Some(testValidStartDate),
+          confirmed = true
+        )))
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(
+          accountingMethod = Some(testAccountingMethod.accountingMethod),
+          startDate = Some(testValidStartDate),
+          confirmed = true
+        )))
+        val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
+        mockSignUpAndCreateIncomeSourcesFromTaskListFailure(testNino, testIncomeSourceModel)
+
+        val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
+        intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
+        verifySubscriptionDetailsSave(MtditId, 0)
+        verifyGetThrottleStatusCalls(times(1))
       }
     }
   }

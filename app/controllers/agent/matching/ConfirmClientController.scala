@@ -18,10 +18,10 @@ package controllers.agent.matching
 
 import auth.agent.AgentJourneyState._
 import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
+import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
-import controllers.agent.ITSASessionKeys
-import controllers.agent.ITSASessionKeys.FailedClientMatching
 import controllers.utils.ReferenceRetrieval
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
@@ -56,8 +56,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     checkYourClientDetails(
       userDetailsModel,
-      routes.ConfirmClientController.submit,
-      backUrl
+      routes.ConfirmClientController.submit
     )
 
   private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
@@ -179,6 +178,4 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching))
   }
-
-  lazy val backUrl: String = routes.ClientDetailsController.show().url
 }

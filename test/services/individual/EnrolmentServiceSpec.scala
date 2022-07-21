@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.UnitTestTrait
-import utilities.individual.Constants.GovernmentGateway._
+import common.Constants.GovernmentGateway._
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future

@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.agent.{AgentControllerBaseSpec, TaxYearCheckYourAnswersController}
 import models.Current
 import models.common.AccountingYearModel
@@ -54,9 +53,9 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         controllers.agent.routes.WhatYearToSignUpController.show().url
     }
   }
+
   "show" should {
     "return an OK status with the check your answers page" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
@@ -67,19 +66,10 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
       verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
     }
-
-    "throw an exception if feature not enabled" in withController { controller =>
-      disable(SaveAndRetrieve)
-
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
-
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.NotFoundException]
-    }
   }
 
   "submit" should {
     "redirect to the task list when the submission is successful" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
       setupMockSubscriptionDetailsSaveFunctions()
 
@@ -92,7 +82,6 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     }
 
     "throw an exception if cannot retrieve accounting year" in withController { controller =>
-      enable(SaveAndRetrieve)
       mockFetchSelectedTaxYearFromSubscriptionDetails(None)
 
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))

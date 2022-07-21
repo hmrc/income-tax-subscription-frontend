@@ -43,14 +43,12 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
     testDob)
 
   lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit
-  lazy val backUrl: String = "testBackUrl"
 
   private val checkYourClientDetails = app.injector.instanceOf[CheckYourClientDetails]
 
   def page(): HtmlFormat.Appendable = checkYourClientDetails(
     userDetailsModel = testClientDetails,
-    postAction = postAction,
-    backUrl = backUrl
+    postAction = postAction
   )(FakeRequest(), implicitly, appConfig)
 
   def document(): Document = page().doc
@@ -72,12 +70,6 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
   }
 
   "Confirm Client page view" should {
-
-    s"have a back buttong pointed to $backUrl" in {
-      val backLink = document().select(".govuk-back-link")
-      backLink.isEmpty mustBe false
-      backLink.attr("href") mustBe backUrl
-    }
 
     s"have the title '${ConfirmClient.title}'" in {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"

@@ -18,6 +18,7 @@ package controllers.usermatching
 
 import auth.individual.JourneyState._
 import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController}
+import common.Constants.ITSASessionKeys._
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
@@ -28,8 +29,6 @@ import play.api.mvc._
 import services._
 import services.individual._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.ITSASessionKeys
-import utilities.ITSASessionKeys._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +40,8 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                getEligibilityStatusService: GetEligibilityStatusService,
                                val subscriptionDetailsService: SubscriptionDetailsService,
                                val prePopulationService: PrePopulationService,
-                               subscriptionService: SubscriptionService)
+                               subscriptionService: SubscriptionService,
+                               throttlingService: ThrottlingService)
                               (implicit val ec: ExecutionContext,
                                val appConfig: AppConfig,
                                mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
@@ -63,18 +63,21 @@ class HomeController @Inject()(val auditingService: AuditingService,
           case (_, Some(_), entityIdMaybe@Some(_)) if request.session.isInState(SignUp) =>
             Future.successful(Redirect(controllers.individual.sps.routes.SPSCallbackController.callback(entityIdMaybe)))
           // New user, with relevant information, try to subscribe them
-          case (Some(nino), Some(utr), _) => getSubscription(nino) flatMap {
-            // Subscription available, will be throttled
-            case Some(SubscriptionSuccess(mtditId)) =>
-              claimSubscription(mtditId, nino, utr)
-            // New phone, who dis?
-            case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
-          }
+          case (Some(nino), Some(utr), _) =>
+            throttlingService.throttled(IndividualStartOfJourneyThrottle) {
+              getSubscription(nino) flatMap {
+                // Subscription available, will be throttled
+                case Some(SubscriptionSuccess(mtditId)) =>
+                  claimSubscription(mtditId, nino, utr)
+                // New phone, who dis?
+                case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
+              }
+            }.map{r => r.addingToSession(UTR -> utr)}  // Add UTR, mainly for failure case so we don't look it up again.
         }
     }
 
   private def getUserIdentifiers(user: IncomeTaxSAUser)(implicit request: Request[AnyContent]): Future[(Option[String], Option[String], Option[String])] = {
-    val maybeEntityId = request.session.data.get(ITSASessionKeys.SPSEntityId)
+    val maybeEntityId = request.session.data.get(SPSEntityId)
     (user.nino, user.utr, maybeEntityId) match {
       case (None, _, _) => Future.successful((None, None, None))
       case (Some(nino), Some(utr), _) => Future.successful((Some(nino), Some(utr), maybeEntityId))

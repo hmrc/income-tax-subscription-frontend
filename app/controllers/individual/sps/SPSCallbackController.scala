@@ -17,12 +17,11 @@
 package controllers.individual.sps
 
 import auth.individual.SignUpController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -38,11 +37,7 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
     _ =>
       entityId match {
         case Some(entityId) => {
-          val result = if (isEnabled(SaveAndRetrieve))
-            Redirect(controllers.individual.business.routes.TaskListController.show())
-          else
-            Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
-
+          val result = Redirect(controllers.individual.business.routes.TaskListController.show())
           result.addingToSession(
             ITSASessionKeys.SPSEntityId -> entityId
           )

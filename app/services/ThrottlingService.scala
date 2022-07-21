@@ -16,6 +16,9 @@
 
 package services
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import config.featureswitch.FeatureSwitching
 import connectors.ThrottlingConnector
 import play.api.Logging
 import play.api.mvc.Results.Redirect
@@ -25,25 +28,30 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector) extends Logging {
+class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
+                                  val appConfig: AppConfig) extends Logging with FeatureSwitching {
 
   def throttled(throttle: Throttle)(success: => Future[Result])
-               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
-    throttlingConnector.getThrottleStatus(throttle.throttleId)
-      .recoverWith { case _ =>
-        logger.warn(s"Throttle ${throttle.throttleId} has failed, recovering with open=${throttle.failOpen}")
-        Future.successful(throttle.failOpen)
-      }
-      .map {
-        case true => success
-        case false => Future.successful(Redirect(throttle.callOnFail))
-      }
-      .flatten
+               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] =
+    throttleResult(throttle).getOrElse(Future.successful(true)) flatMap {
+      case true => success
+      case false => Future.successful(Redirect(throttle.callOnFail))
+    }
+
+  private[services] def throttleResult(throttle: Throttle)(implicit hc: HeaderCarrier, ec: ExecutionContext): Option[Future[Boolean]] = {
+    if (!isEnabled(ThrottlingFeature)) None
+    else Some(
+      throttlingConnector.getThrottleStatus(throttle.throttleId)
+        .recoverWith { case _ =>
+          logger.warn(s"Throttle ${throttle.throttleId} has failed, recovering with open=${throttle.failOpen}")
+          Future.successful(throttle.failOpen)
+        }
+    )
   }
 }
 
-trait Throttle {
-  def throttleId: String
+sealed trait Throttle {
+  def throttleId: ThrottleId
 
   /** Allow the request if the back end throttle service fails */
   def failOpen: Boolean
@@ -51,3 +59,30 @@ trait Throttle {
   def callOnFail: Call
 }
 
+sealed abstract class ThrottleId(val name:String) {
+  override def toString: String = name
+}
+case object StartOfJourneyThrottleId extends ThrottleId("start-of-journey")
+case object EndOfJourneyThrottleId extends ThrottleId("end-of-journey")
+
+
+case object IndividualStartOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = StartOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.individual.routes.ThrottlingController.start
+}
+case object IndividualEndOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = EndOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.individual.routes.ThrottlingController.end
+}
+case object AgentStartOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = StartOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.agent.routes.ThrottlingController.start
+}
+case object AgentEndOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = EndOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.agent.routes.ThrottlingController.end
+}

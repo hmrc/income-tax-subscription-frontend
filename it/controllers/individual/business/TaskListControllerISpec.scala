@@ -16,7 +16,8 @@
 
 package controllers.individual.business
 
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
+import _root_.common.Constants.ITSASessionKeys.SPSEntityId
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{testBusinessName => _, _}
@@ -29,21 +30,19 @@ import models.common.subscription.CreateIncomeSourcesModel
 import models.sps.SPSPayload
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.ITSASessionKeys.SPSEntityId
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, OverseasProperty, Property}
+import services.IndividualEndOfJourneyThrottle
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, OverseasProperty, Property, subscriptionId}
 
 class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
-    disable(SaveAndRetrieve)
+    disable(ThrottlingFeature)
     super.beforeEach()
   }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/task-list" should {
     "return OK" when {
       "there is no user data setup" in {
-        enable(SaveAndRetrieve)
-
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -65,9 +64,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           pageTitle(messages("business.task-list.title") + serviceNameGovUk)
         )
       }
-      "there is partial user data setup" in {
-        enable(SaveAndRetrieve)
 
+      "there is partial user data setup" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -91,9 +89,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           pageTitle(messages("business.task-list.title") + serviceNameGovUk)
         )
       }
-      "there is full user data setup" in {
-        enable(SaveAndRetrieve)
 
+      "there is full user data setup" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -118,32 +115,97 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         )
       }
     }
-
-    "return NOT_FOUND" when {
-      "the save & retrieve feature switch is disabled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /business/task-list is called")
-        val res = IncomeTaxSubscriptionFrontend.getTaskList()
-
-        Then("Should return NOT FOUND")
-        res must have(
-          httpStatus(NOT_FOUND)
-        )
-      }
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/task-list" when {
-    "the save and retrieve feature switch is enabled" when {
+    "throttling is enabled and the user is throttled" should {
+      s"redirect the user to ${controllers.individual.routes.ThrottlingController.end.url} without calling any sign up APIs" in {
+        Given("I set the required feature switches")
+        enable(ThrottlingFeature)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        ThrottlingStub.stubThrottle(IndividualEndOfJourneyThrottle.throttleId)(throttled = true)
+
+        val testEntityId: String = "testEntityId"
+        val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(endOfJourneyThrottleURI)
+        )
+
+        IncomeTaxSubscriptionConnectorStub.verifyGet(BusinessesKey)(count = 0)
+        IncomeTaxSubscriptionConnectorStub.verifyGet(BusinessAccountingMethod)(count = 0)
+        IncomeTaxSubscriptionConnectorStub.verifyGet(Property)(count = 0)
+        IncomeTaxSubscriptionConnectorStub.verifyGet(OverseasProperty)(count = 0)
+        IncomeTaxSubscriptionConnectorStub.verifyGet(subscriptionId)(count = 0)
+
+        MultipleIncomeSourcesSubscriptionAPIStub.verifyPostSignUpCount(testNino)(count = 0)
+        MultipleIncomeSourcesSubscriptionAPIStub.verifyPostSubscriptionCount(testMtdId)(count = 0)
+
+        ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)()
+      }
+    }
+
+    "throttling is enabled and the user is not throttled" should {
+      "allow the user to sign up successfully" in {
+        Given("I set the required feature switches")
+        enable(ThrottlingFeature)
+
+        And("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        ThrottlingStub.stubThrottle(IndividualEndOfJourneyThrottle.throttleId)(throttled = false)
+
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
+          incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
+          selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
+          businessName = Some(testBusinessName),
+          accountingMethod = Some(testAccountingMethod)
+        ))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+
+        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+        MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+          mtdbsa = testMtdId,
+          request = CreateIncomeSourcesModel(
+            nino = testNino,
+            soleTraderBusinesses = Some(testSoleTraderBusinesses)
+          )
+        )(NO_CONTENT)
+
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+        IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId(selfEmploymentSubscriptionData)
+
+        ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+        When("POST /business/task-list is called")
+        val testEntityId: String = "testEntityId"
+        val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+        Then("Should return a SEE_OTHER with a redirect location of confirmation")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(confirmationURI)
+        )
+
+        val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+        verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+        ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)()
+      }
+    }
+
+    "throttling is disabled" should {
       "the subscription successfully" when {
         "the income source is only self employment" should {
           "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
-            Given("I set the required feature switches")
-            enable(SaveAndRetrieve)
-
-            And("I setup the Wiremock stubs")
+            Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -185,16 +247,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+            ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
           }
         }
 
         "the income source is only uk property" should {
           "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
-
-            Given("I set the required feature switches")
-            enable(SaveAndRetrieve)
-
-            And("I setup the Wiremock stubs")
+            Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -245,15 +305,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+            ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
           }
         }
 
         "the income source is only overseas property" should {
           "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
-            Given("I set the required feature switches")
-            enable(SaveAndRetrieve)
-
-            And("I setup the Wiremock stubs")
+            Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -303,16 +362,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+            ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
           }
         }
 
         "the income source contains self-employments, uk property and overseas property" should {
           "send the correct details to the backend, call sps with the users details and redirect to the confirmation page" in {
-
-            Given("I set the required feature switches")
-            enable(SaveAndRetrieve)
-
-            And("I setup the Wiremock stubs")
+            Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
@@ -370,16 +427,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+            ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
           }
         }
       }
 
       "the subscription failed" should {
         "return a internalServer error and will not call sps" in {
-
-          Given("I set the required feature switches")
-          enable(SaveAndRetrieve)
-
           And("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -413,36 +468,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           )
 
           verifyPost("/channel-preferences/confirm", count = Some(0))
-        }
-      }
 
-      "save and retrieve feature switch is disabled" should {
-        "throw NotFoundException and will not call sps" in {
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-            incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Next, confirmed = true)),
-            businessName = None,
-            accountingMethod = None
-          ))
-
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-
-          When("POST /business/task-list is called")
-          val res = IncomeTaxSubscriptionFrontend.submitTaskList()
-
-          Then("Should return a Not Found Exception status")
-          res must have(
-            httpStatus(NOT_FOUND)
-          )
-
-          verifyPost("/channel-preferences/confirm", count = Some(0))
+          ThrottlingStub.verifyThrottle(IndividualEndOfJourneyThrottle.throttleId)(count = 0)
         }
       }
     }

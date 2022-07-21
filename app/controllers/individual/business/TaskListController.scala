@@ -17,8 +17,9 @@
 package controllers.individual.business
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
+import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -26,11 +27,9 @@ import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.Logging
 import play.api.mvc._
+import services._
 import services.individual.SubscriptionOrchestrationService
-import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
-import utilities.ITSASessionKeys
-import utilities.ITSASessionKeys.SPSEntityId
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.SubscriptionDataUtil.CacheMapUtil
 import views.html.individual.incometax.business.TaskList
@@ -45,16 +44,16 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val subscriptionService: SubscriptionOrchestrationService,
                                    val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-
-                                   val authService: AuthService)
+                                   val authService: AuthService,
+                                   throttlingService: ThrottlingService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with Logging {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      if (isEnabled(SaveAndRetrieve)) {
-        withReference { reference =>
+      withReference { reference =>
+        throttlingService.throttled(IndividualStartOfJourneyThrottle) {
           getTaskListModel(reference) map {
             viewModel =>
               Ok(taskListView(
@@ -65,8 +64,6 @@ class TaskListController @Inject()(val taskListView: TaskList,
               ))
           }
         }
-      } else {
-        Future.failed(new NotFoundException("[TaskListController][show] - The save and retrieve feature switch is disabled"))
       }
     }
   }
@@ -107,7 +104,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        if (isEnabled(SaveAndRetrieve)) {
+        throttlingService.throttled(IndividualEndOfJourneyThrottle) {
           withReference { reference =>
             val model = for {
               cacheMap <- subscriptionDetailsService.fetchAll(reference)
@@ -122,8 +119,6 @@ class TaskListController @Inject()(val taskListView: TaskList,
               processFunc(user)(request)(model)
             }
           }
-        } else {
-          throw new NotFoundException("[TaskListController][submit] - The save and retrieve feature switch is disabled")
         }
     }
 

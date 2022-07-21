@@ -17,12 +17,12 @@
 package testonly.controllers.agent
 
 import auth.agent.StatelessController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
-import controllers.agent.ITSASessionKeys
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

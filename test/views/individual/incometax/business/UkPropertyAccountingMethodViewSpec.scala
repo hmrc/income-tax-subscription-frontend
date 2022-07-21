@@ -36,13 +36,12 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait  {
   implicit val request: Request[_] = FakeRequest()
   val propertyAccountingMethod: PropertyAccountingMethod = app.injector.instanceOf[PropertyAccountingMethod]
 
-  class Setup(isEditMode: Boolean = false, isSaveAndRetrieve: Boolean = false) {
+  class Setup(isEditMode: Boolean = false) {
     val page: HtmlFormat.Appendable = propertyAccountingMethod(
       accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm,
       postAction = action,
       isEditMode,
-      backUrl = backUrl,
-      isSaveAndRetrieve
+      backUrl = backUrl
     )(FakeRequest(), implicitly, appConfig)
 
     val document: Document = Jsoup.parse(page.body)
@@ -95,32 +94,20 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait  {
         document.select("#accountingMethodProperty-2-item-hint").text mustBe radioAccrualsDetail
       }
 
-      "has a continue button" that {
-        s"displays ${common.continue} when not in edit mode" in new Setup {
-          document.select(".govuk-button").text mustBe common.continue
-        }
-        s"displays ${common.update} when in edit mode" in new Setup(isEditMode = true) {
-          document.select(".govuk-button").text mustBe common.update
-        }
-      }
-
       "has a save and continue button" that {
-        s"displays ${common.saveAndContinue} when the save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+        s"displays ${common.saveAndContinue} when the save and retrieve feature switch is enabled" in new Setup() {
           document.select("#main-content > div > div > form > div.govuk-button-group > button:nth-child(1)").text mustBe common.saveAndContinue
         }
       }
 
       "has a save and come back later button and with a link that redirect to save and retrieve page" that {
-        s"displays ${common.saveAndComeBackLater} save and retrieve feature switch is enabled" in new Setup(isSaveAndRetrieve = true) {
+        s"displays ${common.saveAndComeBackLater} save and retrieve feature switch is enabled" in new Setup() {
           val saveAndComeBackButton: Elements = document.select("#main-content > div > div > form > div.govuk-button-group > a")
           saveAndComeBackButton.text mustBe common.saveAndComeBackLater
           saveAndComeBackButton.attr("href") mustBe
             controllers.individual.business.routes.ProgressSavedController.show().url + "?location=uk-property-accounting-type"
         }
       }
-
     }
-
   }
-
 }

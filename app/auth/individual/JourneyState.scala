@@ -19,8 +19,8 @@ package auth.individual
 import auth.individual.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import auth.individual.AuthPredicates._
 import auth.individual.JourneyState._
+import common.Constants.ITSASessionKeys
 import play.api.mvc._
-import utilities.ITSASessionKeys
 
 import scala.concurrent.Future
 

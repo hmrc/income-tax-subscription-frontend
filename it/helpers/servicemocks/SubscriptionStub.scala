@@ -16,14 +16,15 @@
 
 package helpers.servicemocks
 
+import common.Constants.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
 import models.common.AccountingPeriodModel
 import models.common.subscription.SubscriptionSuccess
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
+import utilities.AccountingPeriodUtil
 import utilities.JsonUtils._
-import utilities.{AccountingPeriodUtil, ITSASessionKeys}
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"

@@ -18,17 +18,15 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, NotFoundException}
+import services.{AuditingService, AuthService, RemoveBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.individual.incometax.business.RemoveBusiness
 
@@ -40,6 +38,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
                                          val auditingService: AuditingService,
                                          val authService: AuthService,
                                          val subscriptionDetailsService: SubscriptionDetailsService,
+                                         val removeBusinessService: RemoveBusinessService,
                                          val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector
                                         )(implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
@@ -48,12 +47,8 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-            Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-          }
-        } else {
-          Future.failed(new NotFoundException("[RemoveBusinessController][show] - The save and retrieve feature switch is disabled"))
+        withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+          Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
         }
       }
     }
@@ -62,34 +57,23 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withReference { reference =>
-        if (isEnabled(SaveAndRetrieve)) {
-          form.bindFromRequest.fold(
-            formWithErrors => {
-              withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-                Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-              }
-            },
-            {
-              case Yes => for {
-                businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-                _ = deleteBusiness(reference, businessId, businesses)
-              } yield Redirect(controllers.individual.business.routes.TaskListController.show())
-              case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
+        form.bindFromRequest.fold(
+          formWithErrors => {
+            withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+              Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
             }
-          )
-        } else {
-          Future.failed(new NotFoundException("[RemoveBusinessController][submit] - The save and retrieve feature switch is disabled"))
-        }
+          },
+          {
+            case Yes => for {
+              businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+              _ = removeBusinessService.deleteBusiness(reference, businessId, businesses)
+            } yield Redirect(controllers.individual.business.routes.TaskListController.show())
+            case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
+          }
+        )
       }
     }
   }
-
-  private def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData])(
-    implicit hc: HeaderCarrier
-  ): Future[PostSubscriptionDetailsResponse] = {
-      incomeTaxSubscriptionConnector
-        .saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, businesses.filterNot(_.id == businessId))
-    }
 
   private def withBusinessData(
                                 reference: String,

@@ -18,18 +18,19 @@ package controllers.usermatching
 
 import agent.audit.mocks.MockAuditingService
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
 import controllers.ControllerBaseSpec
 import models._
-import org.mockito.Mockito.reset
+import org.mockito.Mockito.{never, reset, times}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ITSASessionKeys
 import utilities.SubscriptionDataKeys._
 import utilities.individual.TestConstants
+import _root_.common.Constants.ITSASessionKeys
+import services.ThrottlingService
 
 import scala.concurrent.Future
 
@@ -39,7 +40,8 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockCitizenDetailsService
   with MockGetEligibilityStatusService
   with MockPrePopulationService
-  with MockAuditingService {
+  with MockAuditingService
+  with MockThrottlingConnector {
 
   private val eligibleWithoutPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
@@ -55,6 +57,8 @@ class HomeControllerSpec extends ControllerBaseSpec
     super.beforeEach()
     reset(mockAuthService)
     disable(PrePopulate)
+    enable(ThrottlingFeature)
+    notThrottled()
     mockNinoRetrieval()
   }
 
@@ -65,7 +69,8 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockGetEligibilityStatusService,
     MockSubscriptionDetailsService,
     mockPrePopulationService,
-    mockSubscriptionService
+    mockSubscriptionService,
+    new ThrottlingService(mockThrottlingConnector, appConfig)
   )(implicitly, MockConfig, mockMessagesControllerComponents)
 
   import TestConstants.{testNino, testReference, testUtr}
@@ -99,6 +104,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim.url
 
           verifySubscriptionDetailsSave(MtditId, 1)
+          verifyGetThrottleStatusCalls(times(1))
         }
       }
       "the user already has an MTDIT subscription on ETMP and the session is in SignUp state" should {
@@ -115,6 +121,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSCallbackController.callback(Some(TestConstants.testSpsEntityId)).url
 
           verifySubscriptionDetailsSave(MtditId, 0)
+          verifyGetThrottleStatusCalls(never())
         }
       }
       "the user does not already have an MTDIT subscription on ETMP" when {
@@ -136,6 +143,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
                     verifyPrePopulationSave(0, testReference)
+                    verifyGetThrottleStatusCalls(times(1))
                   }
                 }
                 "feature switch PrePopulate is enabled and there is PrePop" when {
@@ -155,6 +163,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
                     verifyPrePopulationSave(1, testReference)
+                    verifyGetThrottleStatusCalls(times(1))
                   }
                 }
                 "feature switch PrePopulate is disabled" when {
@@ -173,6 +182,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     verifySubscriptionDetailsSaveWithField(0, BusinessesKey)
                     verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
                     verifySubscriptionDetailsSaveWithField(0, subscriptionId)
+                    verifyGetThrottleStatusCalls(times(1))
                   }
                 }
               }
@@ -192,6 +202,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
                   session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+                  verifyGetThrottleStatusCalls(times(1))
                 }
               }
 
@@ -208,6 +219,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show.url
 
                   session(result).get(ITSASessionKeys.UTR) mustBe None
+                  verifyGetThrottleStatusCalls(never())
                 }
               }
             }
@@ -223,6 +235,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             val result = await(testHomeController().index(fakeRequest))
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
+            verifyGetThrottleStatusCalls(times(1))
           }
         }
       }
@@ -233,6 +246,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           setupMockGetSubscriptionFailure(testNino)
 
           intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
+          verifyGetThrottleStatusCalls(times(1))
         }
       }
     }
@@ -242,6 +256,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
           .message mustBe "[HomeController][index] - Could not retrieve nino from user"
+        verifyGetThrottleStatusCalls(never())
       }
     }
   }

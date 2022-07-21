@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockAuditingService
-import config.featureswitch.FeatureSwitch.SaveAndRetrieve
 import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
 import forms.agent.AccountingYearForm
 import models.Current
@@ -35,8 +34,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockWhatYearToSignUp
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
-  with MockAuditingService
-   {
+  with MockAuditingService {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -52,15 +50,9 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     whatYearToSignUp
   )
 
-  override def beforeEach(): Unit = {
-    disable(SaveAndRetrieve)
-    super.beforeEach()
-  }
-
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
       "there is a pre-saved tax year option in Subscription Details " in {
-
         mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
@@ -97,80 +89,38 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       subscriptionRequest
     )
 
-    "save and retrieve is enabled" should {
-      "not in edit mode" should {
-        "redirect to tax year check your answers page" in {
-          enable(SaveAndRetrieve)
+    "not in edit mode" should {
+      "redirect to tax year check your answers page" in {
+        mockIncomeSource()
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
+        val goodRequest = callShow(isEditMode = false)
 
-          mockIncomeSource()
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
-          val goodRequest = callShow(isEditMode = false)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-        }
-      }
-
-      "in edit mode" should {
-        "redirect to tax year check your answers page" in {
-          enable(SaveAndRetrieve)
-
-          mockIncomeSource()
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
-          val goodRequest = callShow(isEditMode = true)
-
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-        }
+        await(goodRequest)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
     }
 
-    "save and retrieve is disabled" when {
-      "not in edit mode" should {
-        "redirect to Income Sources page" in {
-          disable(SaveAndRetrieve)
+    "in edit mode" should {
+      "redirect to tax year check your answers page" in {
+        mockIncomeSource()
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
+        val goodRequest = callShow(isEditMode = true)
 
-          mockIncomeSource()
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
-          val goodRequest = callShow(isEditMode = false)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.IncomeSourceController.show().url)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-        }
-      }
-
-      "in edit mode" should {
-        "redirect to checkYourAnswer page" in {
-          disable(SaveAndRetrieve)
-
-          mockIncomeSource()
-          setupMockSubscriptionDetailsSaveFunctions()
-
-          val goodRequest = callShow(isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
-
-          await(goodRequest)
-          verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-        }
+        await(goodRequest)
+        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
       }
     }
+
 
     "there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
@@ -184,32 +134,15 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   }
 
   "backUrl" when {
-    "the save and retrieve feature switch is enabled" when {
-      "in edit mode" must {
-        s"return ${controllers.agent.routes.TaxYearCheckYourAnswersController.show().url}" in {
-          enable(SaveAndRetrieve)
-          TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
-        }
-      }
-      "not in edit mode" must {
-        s"return ${controllers.agent.routes.TaskListController.show().url}" in {
-          enable(SaveAndRetrieve)
-          TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-        }
+    "in edit mode" must {
+      s"return ${controllers.agent.routes.TaxYearCheckYourAnswersController.show().url}" in {
+        TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
       }
     }
-    "the save and retrieve feature switch is disabled" when {
-      "in edit mode" must {
-        s"return ${controllers.agent.routes.CheckYourAnswersController.show.url}" in {
-          TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show.url)
-        }
-      }
-      "not in edit mode" must {
-        s"return None" in {
-          TestWhatYearToSignUpController.backUrl(false) mustBe None
-        }
+    "not in edit mode" must {
+      s"return ${controllers.agent.routes.TaskListController.show().url}" in {
+        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.TaskListController.show().url)
       }
     }
   }
-
 }
