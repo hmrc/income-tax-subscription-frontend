@@ -50,8 +50,10 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     testData = CacheMap("", Map.empty)
   }
 
-  def mockFetchPrePopFlag(reference: String, result: Option[Boolean]) =
-    mockFetchFromSubscriptionDetails(reference, PrePopFlag, result)
+  protected final def mockFetchPrePopFlag(reference: String, flag: Option[Boolean]): Unit = {
+    when(mockConnector.getSubscriptionDetails[Boolean](ArgumentMatchers.eq(reference), ArgumentMatchers.eq(SubscriptionDataKeys.PrePopFlag))
+      (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(flag))
+  }
 
   def mockSaveOverseasProperty(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.OverseasProperty)
@@ -91,8 +93,12 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def verifySaveSelfEmploymentsAccountingMethod(count: Int, reference: String, accountingMethodModel: AccountingMethodModel) =
     verifySubscriptionDetailsSaveWithField[AccountingMethodModel](reference, count, BusinessAccountingMethod, accountingMethodModel)
 
-  def verifySavePrePopFlag(count: Int, reference: String) =
-    verifySubscriptionDetailsSaveWithField[AccountingMethodModel](reference, count, subscriptionId)
+  def verifySavePrePopFlag(count: Int, reference: String, value: Boolean) =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[Boolean](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(PrePopFlag),
+      ArgumentMatchers.eq(value)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
   def verifyFetchPrePopFlag(reference: String) =
     verify(mockConnector, atLeastOnce())
@@ -120,15 +126,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       case _ => testData
     }
     when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId))(
-      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Some(testData)))
-  }
-
-  private final def mockFetchFromSubscriptionDetails[T](reference: String, key: String, config: Option[T])(implicit writes: Writes[T]): Unit = {
-    testData = config match {
-      case Some(data) => CacheMap("", testData.data.updated(key, Json.toJson(data)))
-      case _ => testData
-    }
-    when(mockConnector.getSubscriptionDetails[CacheMap](ArgumentMatchers.eq(reference), ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId))(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Some(testData)))
   }
 
