@@ -91,7 +91,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
   }
 
-  "Calling the submit action of the IncomeSource controller with an authorised user and valid submission" should {
+  "Calling the submit action of the IncomeSource controller with an authorised user and valid submission" when {
 
     def callSubmit(incomeSourceModel: IncomeSourceModel,
                    isEditMode: Boolean
@@ -101,8 +101,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       )
     }
 
-    "When it is not edit mode" should {
-      "self-employed is checked and rent UK property and foreign property are NOT checked" when {
+    "it is not in edit mode" when {
+      "self-employed is checked and rent UK property and foreign property are NOT checked" should {
         "redirect to the start of the self employment journey" in {
           setupMockSubscriptionDetailsSaveFunctions()
 
@@ -116,7 +116,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "self-employed is checked and rent UK property is checked but foreign property is NOT checked" when {
+      "self-employed is checked and rent UK property is checked but foreign property is NOT checked" should {
         "redirect to self-employments start date page" in {
           setupMockSubscriptionDetailsSaveFunctions()
 
@@ -143,8 +143,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           verifySubscriptionDetailsSave(IncomeSource, 1)
         }
       }
-      "Foreign property is checked and self-employed, UK property are NOT checked" should {
-        "Foreign property feature switch is enabled" when {
+      "Foreign property is checked and self-employed, UK property are NOT checked" when {
+        "Foreign property feature switch is enabled" should {
           "redirect to the overseas property start date page" in {
             enable(ForeignProperty)
             setupMockSubscriptionDetailsSaveFunctions()
@@ -161,7 +161,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "All self-employed, rent UK property and foreign property are checked" when {
+      "All self-employed, rent UK property and foreign property are checked" should {
         "redirect to self employment journey" in {
           setupMockSubscriptionDetailsSaveFunctions()
 
@@ -177,8 +177,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "When it is in edit mode" should {
-      "the user selects self-employment and self-employment journey has not been completed before" when {
+    "it is in edit mode" when {
+      "the user selects self-employment and self-employment journey has not been completed before" should {
         s"redirect to ${appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl}" in {
           setupMockSubscriptionDetailsSaveFunctions()
           mockGetSubscriptionDetailsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
@@ -189,6 +189,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
             selectedTaxYear = Some(AccountingYearModel(Current))
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 
@@ -212,6 +213,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
             selectedTaxYear = Some(AccountingYearModel(Current)),
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = true)
 
@@ -236,6 +238,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
             selectedTaxYear = Some(testSelectedTaxYearCurrent)
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = true)
 
@@ -259,6 +262,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
             selectedTaxYear = Some(testSelectedTaxYearCurrent)
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 
@@ -284,6 +288,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = true)
 
@@ -306,6 +311,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false), isEditMode = true)
 
@@ -333,6 +339,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true)),
             selectedTaxYear = Some(AccountingYearModel(Current))
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = true), isEditMode = true)
 
@@ -362,6 +369,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
             selectedTaxYear = Some(AccountingYearModel(Current))
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true), isEditMode = true)
 
@@ -387,6 +395,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false))
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false), isEditMode = true)
 
@@ -412,6 +421,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true))
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true), isEditMode = true)
 
@@ -440,6 +450,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true))
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = true), isEditMode = true)
 
@@ -462,9 +473,9 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
           mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
             selectedTaxYear = Some(testSelectedTaxYearCurrent),
-            businessName = Some(testBusinessName),
             accountingMethod = Some(testAccountingMethod)
           )))
+          mockFetchBusinessName(None)
 
           val goodRequest = callSubmit(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false), isEditMode = true)
 

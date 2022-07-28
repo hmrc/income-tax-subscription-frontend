@@ -5,15 +5,16 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import helpers.IntegrationTestConstants.testMtdId
 import helpers.IntegrationTestModels._
+import helpers.WiremockHelper
 import helpers.agent.IntegrationTestConstants.SessionId
 import helpers.agent.IntegrationTestModels.{fullSubscriptionData, subscriptionData}
-import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
 import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.http.Status
+import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.{BusinessesKey, OverseasProperty, Property, subscriptionId}
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessName, BusinessesKey, OverseasProperty, Property, subscriptionId}
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 

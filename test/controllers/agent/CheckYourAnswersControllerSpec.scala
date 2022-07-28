@@ -35,7 +35,7 @@ import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, 
 import utilities.SubscriptionDataUtil._
 import utilities.agent.TestConstants._
 import utilities.agent.TestModels
-import utilities.agent.TestModels.testAccountingMethodProperty
+import utilities.agent.TestModels.{testAccountingMethodProperty, testBusinessName}
 import views.html.agent.CheckYourAnswers
 
 import scala.concurrent.Future
@@ -103,6 +103,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
         mockFetchProperty(None)
         mockFetchOverseasProperty(None)
+        mockFetchBusinessName(Some(testBusinessName))
 
         when(mockCheckYourAnswers(
           ArgumentMatchers.any(),
@@ -165,12 +166,13 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(testPropertyModel))
           mockFetchOverseasProperty(Some(testOverseasPropertyModel))
+          mockFetchBusinessName(Some(testBusinessName))
 
           mockCreateSubscriptionSuccess(
             testARN,
             newTestNino,
             testUtr,
-            testSummary.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel))
+            testSummary.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel), businessName = Some(testBusinessName))
           )
 
           status(result) must be(Status.SEE_OTHER)
@@ -195,11 +197,12 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
           mockFetchProperty(Some(testPropertyModel))
           mockFetchOverseasProperty(Some(testOverseasPropertyModel))
+          mockFetchBusinessName(Some(testBusinessName))
           mockCreateSubscriptionFailure(
             testARN,
             testNino,
             testUtr,
-            TestModels.testCacheMap.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel))
+            TestModels.testCacheMap.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel), businessName = Some(testBusinessName))
           )
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))

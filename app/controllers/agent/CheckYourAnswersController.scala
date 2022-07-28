@@ -50,7 +50,7 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends AuthenticatedController
-  
+
   with RequireAnswer
   with ReferenceRetrieval
   with Logging {
@@ -85,9 +85,10 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
               (businesses, businessAccountingMethod) <- getSelfEmploymentsData(reference)
               property <- subscriptionDetailsService.fetchProperty(reference)
               overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+              businessName <- subscriptionDetailsService.fetchBusinessName(reference)
             } yield {
               Ok(checkYourAnswers(
-                cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty),
+                cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, businessName),
                 controllers.agent.routes.CheckYourAnswersController.submit,
                 backUrl = backUrl(incomeSource),
                 implicitDateFormatter
@@ -105,11 +106,12 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       (businesses, businessAccountingMethod) <- getSelfEmploymentsData(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+      businessName <- subscriptionDetailsService.fetchBusinessName(reference)
       mtditid <- subscriptionService.createSubscription(
         arn = arn,
         nino = nino,
         utr = utr,
-        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty)
+        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, businessName)
       )(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }

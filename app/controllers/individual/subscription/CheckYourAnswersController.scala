@@ -106,8 +106,9 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+      businessName <- subscriptionDetailsService.fetchBusinessName(reference)
     } yield {
-        cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty)
+        cacheMap.getSummary(businesses, businessAccountingMethod, property, overseasProperty, businessName)
     }
   }
 

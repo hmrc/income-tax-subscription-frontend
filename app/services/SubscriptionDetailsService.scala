@@ -78,10 +78,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     save[IncomeSourceModel](reference, IncomeSource, incomeSource)
 
   def fetchBusinessName(reference: String)(implicit hc: HeaderCarrier): Future[Option[BusinessNameModel]] =
-    fetch[BusinessNameModel](reference, BusinessName)
-
-  def saveBusinessName(reference: String, businessName: BusinessNameModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
-    save[BusinessNameModel](reference, BusinessName, businessName)
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[BusinessNameModel](reference, SubscriptionDataKeys.BusinessName)
 
   def fetchSelectedTaxYear(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] =
     fetch[AccountingYearModel](reference, SelectedTaxYear)

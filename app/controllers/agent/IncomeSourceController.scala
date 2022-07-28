@@ -118,8 +118,9 @@ class IncomeSourceController @Inject()(incomeSource: IncomeSource,
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+      businessName <- subscriptionDetailsService.fetchBusinessName(reference)
     } yield {
-      cacheMap.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty)
+      cacheMap.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, businessName)
     }
   }
 

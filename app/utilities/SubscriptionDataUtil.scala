@@ -32,8 +32,6 @@ object SubscriptionDataUtil{
 
     def getIncomeSource: Option[IncomeSourceModel] = cacheMap.getEntry[IncomeSourceModel](IncomeSource)
 
-    def getBusinessName: Option[BusinessNameModel] = cacheMap.getEntry[BusinessNameModel](BusinessName)
-
     def getSelectedTaxYear: Option[AccountingYearModel] = cacheMap.getEntry[AccountingYearModel](SelectedTaxYear)
 
     def getAccountingMethod: Option[AccountingMethodModel] = cacheMap.getEntry[AccountingMethodModel](AccountingMethod)
@@ -143,12 +141,13 @@ object SubscriptionDataUtil{
     def getSummary(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                    selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                    property: Option[PropertyModel] = None,
-                   overseasProperty: Option[OverseasPropertyModel] = None): IndividualSummary = {
+                   overseasProperty: Option[OverseasPropertyModel] = None,
+                   businessName: Option[BusinessNameModel] = None): IndividualSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
             applyPropertyData(
-              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment).asInstanceOf[IndividualSummary],
+              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, businessName = businessName).asInstanceOf[IndividualSummary],
               property,
               hasProperty
             ).asInstanceOf[IndividualSummary],
@@ -162,12 +161,13 @@ object SubscriptionDataUtil{
     def getAgentSummary(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                         selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                         property: Option[PropertyModel] = None,
-                        overseasProperty: Option[OverseasPropertyModel] = None): AgentSummary = {
+                        overseasProperty: Option[OverseasPropertyModel] = None,
+                        businessName: Option[BusinessNameModel] = None): AgentSummary = {
       getIncomeSource match {
         case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
           applyForeignPropertyData(
             applyPropertyData(
-              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, isAgent = true).asInstanceOf[AgentSummary],
+              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, isAgent = true, businessName).asInstanceOf[AgentSummary],
               property,
               hasProperty,
               isAgent = true
@@ -183,13 +183,14 @@ object SubscriptionDataUtil{
     private def applySelfEmploymentsData(selfEmployments: Seq[SelfEmploymentData],
                                          selfEmploymentsAccountingMethod: Option[AccountingMethodModel],
                                          hasSelfEmployments: Boolean,
-                                         isAgent: Boolean = false): SummaryModel = {
+                                         isAgent: Boolean = false,
+                                         businessName: Option[BusinessNameModel]): SummaryModel = {
       if (hasSelfEmployments) {
         if (selfEmploymentsAccountingMethod.isDefined) {
           if (isAgent) {
             AgentSummary(
               selectedTaxYear = getSelectedTaxYear,
-              businessName = getBusinessName,
+              businessName = businessName,
               incomeSource = getIncomeSource,
               selfEmployments = selfEmployments,
               accountingMethod = selfEmploymentsAccountingMethod
@@ -197,7 +198,7 @@ object SubscriptionDataUtil{
           } else {
             IndividualSummary(
               incomeSource = getIncomeSource,
-              businessName = getBusinessName,
+              businessName = businessName,
               selectedTaxYear = getSelectedTaxYear,
               accountingMethod = selfEmploymentsAccountingMethod,
               selfEmployments = selfEmployments
@@ -207,7 +208,7 @@ object SubscriptionDataUtil{
           if (isAgent) {
             AgentSummary(
               selectedTaxYear = getSelectedTaxYear,
-              businessName = getBusinessName,
+              businessName = businessName,
               incomeSource = getIncomeSource,
               selfEmployments = selfEmployments,
               accountingMethod = getAccountingMethod
@@ -215,7 +216,7 @@ object SubscriptionDataUtil{
           } else {
             IndividualSummary(
               incomeSource = getIncomeSource,
-              businessName = getBusinessName,
+              businessName = businessName,
               selectedTaxYear = getSelectedTaxYear,
               accountingMethod = getAccountingMethod,
               selfEmployments = selfEmployments

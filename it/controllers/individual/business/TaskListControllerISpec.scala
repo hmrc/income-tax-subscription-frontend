@@ -31,7 +31,7 @@ import models.sps.SPSPayload
 import play.api.http.Status._
 import play.api.libs.json.Json
 import services.IndividualEndOfJourneyThrottle
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, OverseasProperty, Property, subscriptionId}
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessName, BusinessesKey, OverseasProperty, Property, subscriptionId}
 
 class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -160,7 +160,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
           selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
-          businessName = Some(testBusinessName),
           accountingMethod = Some(testAccountingMethod)
         ))
 
@@ -211,11 +210,11 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
               selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
-              businessName = Some(testBusinessName),
               accountingMethod = Some(testAccountingMethod)
             ))
 
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessName, OK, Json.toJson(testBusinessName))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
@@ -260,11 +259,11 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
               selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
-              businessName = None,
               accountingMethod = None
             ))
 
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessName, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
               Property,
@@ -318,11 +317,11 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
               selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
-              businessName = None,
               accountingMethod = None
             ))
 
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessName, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
@@ -375,11 +374,11 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
               selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
-              businessName = Some(testBusinessName),
               accountingMethod = Some(testAccountingMethod)
             ))
 
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessName, OK, Json.toJson(testBusinessName))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
               Property,
@@ -441,11 +440,11 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
             selectedTaxYear = Some(AccountingYearModel(Current, confirmed = true)),
-            businessName = Some(testBusinessName),
             accountingMethod = None
           ))
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessName, OK, Json.toJson(testBusinessName))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
