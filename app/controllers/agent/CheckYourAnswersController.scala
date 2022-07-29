@@ -107,11 +107,12 @@ class CheckYourAnswersController @Inject()(val auditingService: AuditingService,
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       businessName <- subscriptionDetailsService.fetchBusinessName(reference)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       mtditid <- subscriptionService.createSubscription(
         arn = arn,
         nino = nino,
         utr = utr,
-        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, businessName)
+        summaryModel = cache.getAgentSummary(businesses, businessAccountingMethod, property, overseasProperty, businessName, selectedTaxYear)
       )(headerCarrier)
         .collect { case Right(SubscriptionSuccess(id)) => id }
         .recoverWith { case _ => error("Successful response not received from submission") }

@@ -112,14 +112,13 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
         mockAgent()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        val testBusinessCacheMap = testCacheMap(
-          selectedTaxYear = selectedTaxYear
-        )
+        val testBusinessCacheMap = testCacheMap()
         mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(selfEmployments)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(selfEmploymentAccountingMethod)
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
+        mockFetchSelectedTaxYear(selectedTaxYear)
 
         val testRequest = FakeRequest().withSession(
           ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,

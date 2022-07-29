@@ -16,6 +16,7 @@
 
 package controllers.individual.subscription
 
+import _root_.common.Constants.ITSASessionKeys.SPSEntityId
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{testBusinessName, _}
@@ -23,14 +24,13 @@ import helpers.WiremockHelper.verifyPost
 import helpers._
 import helpers.servicemocks._
 import models._
-import models.common._
+import models.common.{AccountingMethodPropertyModel, AccountingYearModel, IncomeSourceModel, OverseasAccountingMethodPropertyModel, OverseasPropertyStartDateModel, PropertyStartDateModel}
 import models.common.business.BusinessSubscriptionDetailsModel
 import models.sps.SPSPayload
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.AccountingPeriodUtil
-import _root_.common.Constants.ITSASessionKeys.SPSEntityId
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessName, BusinessesKey, OverseasProperty, Property}
+import utilities.SubscriptionDataKeys._
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -44,6 +44,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
       When("GET /check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
@@ -65,7 +66,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-          selectedTaxYear = Some(AccountingYearModel(Next)),
           accountingMethod = None
         ))
 
@@ -74,6 +74,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -115,7 +116,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Next)),
             accountingMethod = None
           ))
 
@@ -124,6 +124,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -162,7 +163,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Next)),
             accountingMethod = None
           ))
 
@@ -171,6 +171,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -212,7 +213,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Current)),
             accountingMethod = None
           ))
 
@@ -221,6 +221,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Current)))
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -259,7 +260,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Next)),
             accountingMethod = None
           ))
 
@@ -268,6 +268,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -309,7 +310,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-            selectedTaxYear = Some(AccountingYearModel(Current)),
             accountingMethod = None
           ))
 
@@ -322,6 +322,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(startDate = Some(DateModel("21", "03", "2010"))))
           )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Current)))
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -361,7 +362,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-            selectedTaxYear = Some(AccountingYearModel(Next)),
             accountingMethod = None
           ))
 
@@ -374,6 +374,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(startDate = Some(DateModel("21", "03", "2010"))))
           )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -414,7 +415,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-          selectedTaxYear = Some(AccountingYearModel(Next)),
           accountingMethod = None
         ))
 
@@ -427,6 +427,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
           OK,
           Json.toJson(testFullOverseasPropertyModel.copy(startDate = Some(DateModel("21", "03", "2010"))))
         )
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -468,7 +469,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-          selectedTaxYear = Some(AccountingYearModel(Next)),
           accountingMethod = None
         ))
 
@@ -477,6 +477,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -516,7 +517,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-          selectedTaxYear = Some(AccountingYearModel(Next)),
           accountingMethod = None
         ))
 
@@ -525,6 +525,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -564,7 +565,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-          selectedTaxYear = Some(AccountingYearModel(Next)),
           accountingMethod = None
         ))
 
@@ -573,6 +573,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -612,7 +613,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-          selectedTaxYear = Some(AccountingYearModel(Next)),
           accountingMethod = None
         ))
 
@@ -621,6 +621,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(
@@ -659,16 +660,15 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
 
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
         incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-        selectedTaxYear = Some(AccountingYearModel(Next)),
         accountingMethod = None
       ))
 
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessName, NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
-
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
       MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(INTERNAL_SERVER_ERROR)
 
@@ -688,7 +688,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
         incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-        selectedTaxYear = Some(AccountingYearModel(Next)),
         accountingMethod = None
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
@@ -696,6 +695,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCook
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Next)))
 
       MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
       MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscription(

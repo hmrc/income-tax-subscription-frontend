@@ -33,7 +33,7 @@ import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetai
 import services.{AccountingPeriodService, ThrottlingService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
-import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testValidStartDate}
+import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.agent.TestConstants.{testARN, testCreateIncomeSources, testNino, testUtr}
 import views.html.agent.AgentTaskList
 
@@ -68,6 +68,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   }
 
   when(mockThrottlingConnector.getThrottleStatus(any())(any())).thenReturn(Future.successful(true))
+
   object TestTaskListController extends TaskListController(
     taskList,
     accountingPeriodService,
@@ -83,9 +84,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     "return an OK status with the task list page" in {
       mockTaskList()
 
-      val testBusinessCacheMap = testCacheMap(
-        selectedTaxYear = Some(AccountingYearModel(Next))
-      )
+      val testBusinessCacheMap = testCacheMap()
       mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
       mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq(
         SelfEmploymentData(
@@ -107,6 +106,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         startDate = Some(DateModel("1", "1", "1980")),
         confirmed = true
       )))
+      mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
 
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequestWithName)
 
@@ -133,6 +133,8 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
           startDate = Some(testValidStartDate),
           confirmed = true
         )))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+
         val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
         mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
 
@@ -160,6 +162,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
           startDate = Some(testValidStartDate),
           confirmed = true
         )))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
         val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
         mockCreateSubscriptionFromTaskListFailure(testARN, testNino, testUtr, testIncomeSourceModel)

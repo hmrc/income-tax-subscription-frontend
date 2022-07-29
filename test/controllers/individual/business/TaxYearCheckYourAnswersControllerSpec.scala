@@ -58,7 +58,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
   }
   "show" should {
     "return an OK status with the check your answers page" in withController { controller =>
-      mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
+      mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
@@ -66,25 +66,25 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
 
-      verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
+      verifyFetchSelectedTaxYear(1, "test-reference")
     }
   }
 
   "submit" should {
     "redirect to the task list when the submission is successful" in withController { controller =>
-      mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
+      mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
       setupMockSubscriptionDetailsSaveFunctions()
 
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
-      verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-      verifySubscriptionDetailsFetch(SelectedTaxYear, Some(2))
+      verifySaveSelectedTaxYear(1, "test-reference")
+      verifyFetchSelectedTaxYear(1, "test-reference")
     }
 
     "throw an exception if cannot retrieve accounting year" in withController { controller =>
-      mockFetchSelectedTaxYearFromSubscriptionDetails(None)
+      mockFetchSelectedTaxYear(None)
 
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 

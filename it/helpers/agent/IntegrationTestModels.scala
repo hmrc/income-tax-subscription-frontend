@@ -64,32 +64,27 @@ object IntegrationTestModels {
   val fullSubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceAll),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = Some(testAccountingMethod)
     )
 
   val ukPropertySubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceProperty),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = None
     )
 
   val overseasPropertySubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceProperty),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = None
     )
 
   def subscriptionData(
                         incomeSource: Option[IncomeSourceModel] = None,
-                        selectedTaxYear: Option[AccountingYearModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None)
   : Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceModel.format.writes(model)) ++
-      selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model))
   }
 

@@ -56,11 +56,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
+        verifyFetchSelectedTaxYear(1, "test-reference")
       }
     }
 
@@ -69,11 +69,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromSubscriptionDetails(None)
+        mockFetchSelectedTaxYear(None)
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
+        verifyFetchSelectedTaxYear(1, "test-reference")
       }
     }
   }
@@ -101,7 +101,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+        verifySaveSelectedTaxYear(1, "test-reference")
       }
     }
 
@@ -117,7 +117,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+        verifySaveSelectedTaxYear(1, "test-reference")
       }
     }
 

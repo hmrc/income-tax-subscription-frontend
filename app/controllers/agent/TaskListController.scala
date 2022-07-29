@@ -93,8 +93,9 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
     } yield {
-      cacheMap.getTaskListModel(businesses, businessAccountingMethod, property, overseasProperty)
+      cacheMap.getTaskListModel(businesses, businessAccountingMethod, property, overseasProperty, selectedTaxYear)
     }
   }
 
@@ -129,8 +130,9 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
               selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
               property <- subscriptionDetailsService.fetchProperty(reference)
               overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+              selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
             } yield {
-              cacheMap.createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty)
+              cacheMap.createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, accountingYear = selectedTaxYear)
             }
             model.flatMap { model =>
               processFunc(user)(request)(model)

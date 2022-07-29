@@ -32,7 +32,7 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys._
 
-class IncomeSourceControllerISpec extends ComponentSpecBase  {
+class IncomeSourceControllerISpec extends ComponentSpecBase {
 
   override def beforeEach(): Unit = {
     disable(ForeignProperty)
@@ -125,12 +125,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
             Given("I setup the wiremock stubs")
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-              subscriptionData(
-                incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-                selectedTaxYear = Some(testAccountingYearNext)
-              )
+              subscriptionData(incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
             )
 
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(testAccountingYearNext)))
             IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
             stubGetAllSubscriptionDetails(None, None, None, None, None)
 
@@ -229,12 +227,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-            subscriptionData(
-              incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-              selectedTaxYear = Some(testAccountingYearCurrent)
-            )
+            subscriptionData(incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
           )
 
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(testAccountingYearCurrent)))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
           stubGetAllSubscriptionDetails(Some(testSummaryDataSelfEmploymentData), None, Some(testAccountingMethod), None, None)
 
@@ -408,11 +404,11 @@ class IncomeSourceControllerISpec extends ComponentSpecBase  {
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
             subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-              selectedTaxYear = Some(testAccountingYearNext),
               accountingMethod = Some(testAccountingMethod)
             )
           )
 
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(testAccountingYearNext)))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[IncomeSourceModel](subscriptionId, userInput)
           stubGetAllSubscriptionDetails(Some(testSummaryDataSelfEmploymentData), Some(testBusinessName), Some(testAccountingMethod), None, None)
 

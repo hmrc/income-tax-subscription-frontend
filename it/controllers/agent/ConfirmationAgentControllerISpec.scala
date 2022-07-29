@@ -21,8 +21,9 @@ import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.testSubscriptionID
 import helpers.agent.servicemocks.AuthStub
-import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.Json
+import utilities.SubscriptionDataKeys._
 
 class ConfirmationAgentControllerISpec extends ComponentSpecBase {
 
@@ -33,6 +34,7 @@ class ConfirmationAgentControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(Map("MtditId" -> Json.toJson(testSubscriptionID)))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
 
         When("I call GET /confirmation")

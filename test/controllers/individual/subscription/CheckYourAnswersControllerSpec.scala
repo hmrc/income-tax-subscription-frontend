@@ -50,6 +50,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     reset(mockCheckYourAnswers)
+    reset(mockSubscriptionOrchestrationService)
     super.beforeEach()
   }
 
@@ -83,6 +84,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockFetchProperty(None)
       mockFetchOverseasProperty(None)
       mockFetchBusinessName(None)
+      mockFetchSelectedTaxYear(None)
       when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -98,6 +100,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockFetchProperty(None)
       mockFetchOverseasProperty(None)
       mockFetchBusinessName(None)
+      mockFetchSelectedTaxYear(None)
       when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -116,19 +119,20 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         startDate = Some(testPropertyStartDateModel.startDate)
       )))
       mockFetchBusinessName(None)
+      mockFetchSelectedTaxYear(None)
       when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
     }
   }
 
-  "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
+  "Calling the submit action of the CheckYourAnswersController with an authorised user" when {
 
     lazy val request = subscriptionRequest
 
     def call: Future[Result] = TestCheckYourAnswersController.submit(request)
 
-    "When the submission is successful" should {
+    "the submission is successful" should {
       lazy val result = call
 
       "return a redirect status (SEE_OTHER - 303)" in {
@@ -138,8 +142,9 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(Some(testFullPropertyModel))
         mockFetchOverseasProperty(Some(testFullOverseasPropertyModel))
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel), businessName = Some(testBusinessName)))
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel), businessName = Some(testBusinessName), accountingYear = Some(testSelectedTaxYearNext)))
         mockFetchBusinessName(Some(testBusinessName))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -150,7 +155,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "When the submission is unsuccessful" should {
+    "the submission is unsuccessful" should {
       lazy val result = call
 
       "return a internalServer error" in {
@@ -159,8 +164,9 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(Some(testFullPropertyModel))
         mockFetchOverseasProperty(Some(testFullOverseasPropertyModel))
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel), businessName = Some(testBusinessName)))
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel), businessName = Some(testBusinessName), accountingYear = Some(testSelectedTaxYearNext)))
         mockFetchBusinessName(Some(testBusinessName))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifySubscriptionDetailsSave(MtditId, 0)
       }

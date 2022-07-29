@@ -35,6 +35,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         IncomeSource -> Json.toJson(testIncomeSourceIndivProperty),
         MtditId -> JsString(testSubscriptionId)
       ))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
       When("GET /confirmation is called")
       val res = IncomeTaxSubscriptionFrontend.confirmation()

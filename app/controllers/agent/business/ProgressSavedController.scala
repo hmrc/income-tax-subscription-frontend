@@ -29,7 +29,6 @@ import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
-import utilities.SubscriptionDataUtil.CacheMapUtil
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.agent.business.ProgressSaved
 
@@ -54,18 +53,16 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
       implicit user =>
         withAgentReference { reference =>
           subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
-            case Some(timestamp) => {
+            case Some(timestamp) =>
               location.fold(
                 Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
               )(location => {
                 for {
                   saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, user.clientUtr, user.clientNino, location)
                   _ = auditingService.audit(saveAndComebackAuditData)
-                } yield (
+                } yield
                   Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
-                  )
               })
-            }
             case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
           }
         }
@@ -79,11 +76,11 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
                          location: String
                        )(implicit hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
     for {
-      cacheMap <- subscriptionDetailsService.fetchAll(reference)
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.agentUserType,
@@ -92,7 +89,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
         saveAndRetrieveLocation = location,
         nino = maybeNino.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve nino from session")),
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
-        selectedTaxYear = cacheMap.getSelectedTaxYear,
+        selectedTaxYear = selectedTaxYear,
         selfEmployments = businesses,
         maybeSelfEmploymentAccountingMethod = businessAccountingMethod,
         maybePropertyModel = property,

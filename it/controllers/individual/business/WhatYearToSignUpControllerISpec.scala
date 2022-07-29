@@ -17,18 +17,21 @@
 package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.subscriptionData
+import helpers.IntegrationTestModels.{subscriptionData, testAccountingYearCurrent}
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.common.AccountingYearModel
 import models.{AccountingYear, Current, Next}
 import play.api.http.Status._
+import play.api.libs.json.Json
+import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 import java.time.LocalDate
 
-class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
+class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
@@ -37,6 +40,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson((testAccountingYearCurrent)))
 
         When("GET /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -60,7 +64,9 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
       "show the What Year To Sign Up page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+        stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+
 
         When("GET /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -86,7 +92,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         Given("I setup the Wiremock stubs")
 
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+        stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")
@@ -125,8 +132,9 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent))
+          subscriptionData()
         )
+        stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(SubscriptionDetailsAccountingYearCurrent))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")
@@ -145,11 +153,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase  {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(
-            selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent)
-          )
-        )
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+        stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(SubscriptionDetailsAccountingYearCurrent))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
         When("POST /business/what-year-to-sign-up is called")

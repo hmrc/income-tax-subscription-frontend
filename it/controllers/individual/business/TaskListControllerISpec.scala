@@ -25,13 +25,13 @@ import helpers.WiremockHelper.verifyPost
 import helpers._
 import helpers.servicemocks._
 import models._
-import models.common._
+import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.common.subscription.CreateIncomeSourcesModel
 import models.sps.SPSPayload
 import play.api.http.Status._
 import play.api.libs.json.Json
 import services.IndividualEndOfJourneyThrottle
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessName, BusinessesKey, OverseasProperty, Property, subscriptionId}
+import utilities.SubscriptionDataKeys._
 
 class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -52,6 +52,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
@@ -69,14 +70,13 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-          selectedTaxYear = Some(testAccountingYearCurrent)
-        ))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = None, confirmed = false)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel.copy(accountingMethod = None, confirmed = false)))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
@@ -94,14 +94,13 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
-          selectedTaxYear = Some(testAccountingYearCurrent)
-        ))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
@@ -159,7 +158,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
           incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-          selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
           accountingMethod = Some(testAccountingMethod)
         ))
 
@@ -168,6 +166,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
         MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
@@ -210,7 +209,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
               accountingMethod = Some(testAccountingMethod)
             ))
 
@@ -219,6 +217,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
@@ -259,7 +258,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)),
-              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
               accountingMethod = None
             ))
 
@@ -275,6 +273,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               ))
             )
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
@@ -317,7 +316,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)),
-              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
               accountingMethod = None
             ))
 
@@ -333,6 +331,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
                 startDate = Some(testOverseasProperty.tradingStartDate)
               ))
             )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
@@ -374,7 +373,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
             IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
               incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-              selectedTaxYear = Some(testAccountingYearCurrentConfirmed),
               accountingMethod = Some(testAccountingMethod)
             ))
 
@@ -397,6 +395,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
                 startDate = Some(testOverseasProperty.tradingStartDate)
               ))
             )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
@@ -440,7 +439,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(
             incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)),
-            selectedTaxYear = Some(AccountingYearModel(Current, confirmed = true)),
             accountingMethod = None
           ))
 
@@ -449,6 +447,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Current, confirmed = true)))
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(

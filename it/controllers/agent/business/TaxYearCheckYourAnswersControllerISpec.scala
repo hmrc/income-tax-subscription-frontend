@@ -26,8 +26,6 @@ import models.Current
 import models.common.AccountingYearModel
 import play.api.http.Status._
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
@@ -56,10 +54,10 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "the select tax has been confirmed" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(selectedTaxYear = Some(AccountingYearModel(Current)))
-        )
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
+        val unconfirmedTaxYear = AccountingYearModel(Current)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(unconfirmedTaxYear))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails("subscriptionId")
 
         When("GET /business/tax-year-check-your-answers is called")
@@ -71,14 +69,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
           redirectURI(taskListURI)
         )
 
-        val expectedCacheMap = CacheMap(
-          "",
-          Map(
-            SubscriptionDataKeys.SelectedTaxYear -> Json.toJson(AccountingYearModel(Current, confirmed = true))
-          )
-        )
-
-        verifySubscriptionSave("subscriptionId", expectedCacheMap, Some(1))
+        verifySubscriptionSave(SelectedTaxYear, Json.toJson(unconfirmedTaxYear.copy(confirmed = true)), Some(1))
       }
     }
 
@@ -86,9 +77,8 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "the select tax could not be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData(selectedTaxYear = None)
-        )
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
         When("GET /business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()

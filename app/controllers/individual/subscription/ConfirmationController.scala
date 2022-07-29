@@ -21,7 +21,6 @@ import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import utilities.SubscriptionDataUtil._
 import views.html.individual.incometax.subscription.SignUpComplete
 
 import javax.inject.{Inject, Singleton}
@@ -34,14 +33,14 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        signUpComplete: SignUpComplete)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends PostSubmissionController  with ReferenceRetrieval {
+                                       mcc: MessagesControllerComponents) extends PostSubmissionController with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        subscriptionDetailsService.fetchAll(reference) map { cacheMap =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { selectedTaxYear =>
           Ok(signUpComplete(
-            taxYearSelection = cacheMap.getSelectedTaxYear.map(_.accountingYear),
+            taxYearSelection = selectedTaxYear.map(_.accountingYear),
             postAction = routes.ConfirmationController.submit
           ))
         }

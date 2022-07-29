@@ -34,7 +34,7 @@ import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetai
 import services.{AccountingPeriodService, ThrottlingService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
-import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testValidStartDate}
+import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.individual.TestConstants.{testCreateIncomeSources, testNino}
 import views.html.individual.incometax.business.TaskList
 
@@ -84,9 +84,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
     "return an OK status with the task list page" in {
       mockTaskList()
 
-      val testBusinessCacheMap = testCacheMap(
-        selectedTaxYear = Some(AccountingYearModel(Next))
-      )
+      val testBusinessCacheMap = testCacheMap()
       mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
       mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq(
         SelfEmploymentData(
@@ -108,6 +106,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
         startDate = Some(DateModel("1", "1", "1980")),
         confirmed = true
       )))
+      mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
 
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequest)
 
@@ -135,6 +134,8 @@ class TaskListControllerSpec extends ControllerBaseSpec
           startDate = Some(testValidStartDate),
           confirmed = true
         )))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+
         val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
         mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(testNino, testIncomeSourceModel)
 
@@ -165,6 +166,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
         )))
         val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
         mockSignUpAndCreateIncomeSourcesFromTaskListFailure(testNino, testIncomeSourceModel)
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
         val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")

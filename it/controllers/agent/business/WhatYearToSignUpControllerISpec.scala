@@ -19,12 +19,14 @@ package controllers.agent.business
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.IntegrationTestConstants._
-import helpers.agent.IntegrationTestModels.subscriptionData
+import helpers.agent.IntegrationTestModels.{subscriptionData, testAccountingYearCurrent}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.common.{AccountingYearModel, IncomeSourceModel}
 import models.{AccountingYear, Current, Next}
-import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
+import play.api.http.Status.{BAD_REQUEST, NO_CONTENT, OK, SEE_OTHER}
+import play.api.libs.json.Json
+import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 import java.time.LocalDate
@@ -42,6 +44,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(testAccountingYearCurrent)))
 
         When("GET /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -65,7 +68,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       "show the What Year To Sign Up page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
+        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
         When("GET /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -89,7 +93,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
           When("POST /client/business/what-year-to-sign-up is called")
@@ -107,7 +112,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(selectedTaxYear = None))
+          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
           When("POST /client/business/what-year-to-sign-up is called")
@@ -126,6 +132,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, true))))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, "")
 
           When("POST /client/business/what-year-to-sign-up is called")
@@ -150,8 +157,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-            subscriptionData(selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent),
-              incomeSource = Some(IncomeSourceModel(true, false, true))))
+            subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, true))))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(SubscriptionDetailsAccountingYearCurrent)))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
           When("POST /client/business/what-year-to-sign-up is called")
@@ -171,11 +178,9 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-            subscriptionData(
-              selectedTaxYear = Some(SubscriptionDetailsAccountingYearCurrent),
-              incomeSource = Some(IncomeSourceModel(true, false, true))
-            )
+            subscriptionData(incomeSource = Some(IncomeSourceModel(true, false, true)))
           )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(SubscriptionDetailsAccountingYearCurrent)))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
 
           When("POST /client/business/what-year-to-sign-up is called")

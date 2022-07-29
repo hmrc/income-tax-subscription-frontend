@@ -35,7 +35,7 @@ import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, 
 import utilities.SubscriptionDataUtil._
 import utilities.agent.TestConstants._
 import utilities.agent.TestModels
-import utilities.agent.TestModels.{testAccountingMethodProperty, testBusinessName}
+import utilities.agent.TestModels.{testAccountingMethodProperty, testBusinessName, testSelectedTaxYearNext}
 import views.html.agent.CheckYourAnswers
 
 import scala.concurrent.Future
@@ -146,8 +146,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "The agent is authorised and" should {
-      "There is a matched nino and utr in Subscription Details and the submission is successful" should {
+    "The agent is authorised" when {
+      "there is a matched nino and utr in Subscription Details and the submission is successful" should {
         // generate a new nino specifically for this test,
         // since the default value in test constant may be used by accident
         lazy val newTestNino = new Generator().nextNino.nino
@@ -167,12 +167,13 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           mockFetchProperty(Some(testPropertyModel))
           mockFetchOverseasProperty(Some(testOverseasPropertyModel))
           mockFetchBusinessName(Some(testBusinessName))
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
 
           mockCreateSubscriptionSuccess(
             testARN,
             newTestNino,
             testUtr,
-            testSummary.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel), businessName = Some(testBusinessName))
+            testSummary.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel), businessName = Some(testBusinessName), accountingYear = Some(testSelectedTaxYearNext))
           )
 
           status(result) must be(Status.SEE_OTHER)
@@ -184,7 +185,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "When the submission is unsuccessful" should {
+      "the submission is unsuccessful" should {
         lazy val authorisedAgentRequest = subscriptionRequest.addingToSession(
           ITSASessionKeys.ArnKey -> testARN,
           ITSASessionKeys.NINO -> testNino,
@@ -198,12 +199,14 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           mockFetchProperty(Some(testPropertyModel))
           mockFetchOverseasProperty(Some(testOverseasPropertyModel))
           mockFetchBusinessName(Some(testBusinessName))
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
           mockCreateSubscriptionFailure(
             testARN,
             testNino,
             testUtr,
-            TestModels.testCacheMap.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel), businessName = Some(testBusinessName))
+            TestModels.testCacheMap.getAgentSummary(property = Some(testPropertyModel), overseasProperty = Some(testOverseasPropertyModel), businessName = Some(testBusinessName), accountingYear = Some(testSelectedTaxYearNext))
           )
+//          mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
 
           val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
           ex.message mustBe "Successful response not received from submission"

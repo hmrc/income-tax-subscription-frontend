@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.{MtditId, SelectedTaxYear}
+import utilities.SubscriptionDataKeys.MtditId
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.agent.business.TaxYearCheckYourAnswers
 
@@ -38,8 +38,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockWhatYearToSignUp
   with MockAuditingService
   with MockAccountingPeriodService
-  with MockSubscriptionDetailsService
-   {
+  with MockSubscriptionDetailsService {
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -56,7 +55,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   "show" should {
     "return an OK status with the check your answers page" in withController { controller =>
-      mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
+      mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
@@ -64,25 +63,25 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
 
-      verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
+      verifyFetchSelectedTaxYear(1, "test-reference")
     }
   }
 
   "submit" should {
     "redirect to the task list when the submission is successful" in withController { controller =>
-      mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
+      mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
       setupMockSubscriptionDetailsSaveFunctions()
 
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-      verifySubscriptionDetailsSave(SelectedTaxYear, 1)
-      verifySubscriptionDetailsFetch(SelectedTaxYear, Some(2))
+      verifySaveSelectedTaxYear(1, "test-reference")
+      verifyFetchSelectedTaxYear(1, "test-reference")
     }
 
     "throw an exception if cannot retrieve accounting year" in withController { controller =>
-      mockFetchSelectedTaxYearFromSubscriptionDetails(None)
+      mockFetchSelectedTaxYear(None)
 
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 

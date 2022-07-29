@@ -101,6 +101,19 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       ArgumentMatchers.eq(BusinessName)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
+  def verifyFetchSelectedTaxYear(count: Int, reference: String) =
+    verify(mockConnector, times(count)).getSubscriptionDetails[AccountingYearModel](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(SelectedTaxYear)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
+  def verifySaveSelectedTaxYear(count: Int, reference: String) =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[AccountingYearModel](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(SelectedTaxYear),
+      ArgumentMatchers.any()
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
   def verifySaveSelfEmploymentsAccountingMethod(count: Int, reference: String, accountingMethodModel: AccountingMethodModel) =
     verifySubscriptionDetailsSaveWithField[AccountingMethodModel](reference, count, BusinessAccountingMethod, accountingMethodModel)
 
@@ -244,8 +257,9 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     mockFetchFromSubscriptionDetails[String](SubscriptionDataKeys.MtditId, fetchSubscriptionId)
   }
 
-  protected final def mockFetchSelectedTaxYearFromSubscriptionDetails(fetchSelectedTaxYear: Option[AccountingYearModel]): Unit = {
-    mockFetchFromSubscriptionDetails[AccountingYearModel](SubscriptionDataKeys.SelectedTaxYear, fetchSelectedTaxYear)
+  protected final def mockFetchSelectedTaxYear(fetchSelectedTaxYear: Option[AccountingYearModel]): Unit = {
+    when(mockConnector.getSubscriptionDetails[AccountingYearModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.SelectedTaxYear))
+      (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchSelectedTaxYear))
   }
 
   protected final def mockFetchPaperlessPreferenceToken(fetchPaperlessPreferenceToken: Option[String]): Unit = {
