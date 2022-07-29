@@ -36,16 +36,10 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
       setupMockSubscriptionDetailsSaveFunctions()
       mockFetchBusinessName(Some(testBusinessName))
 
-      val businessName = await(
-        for {
-          businessName <- TestSubscriptionDetails.subscriptionDetailsService.fetchBusinessName(testReference)
-          _ <- TestSubscriptionDetails.subscriptionDetailsService.saveBusinessName(testReference, testBusinessName)
-        } yield businessName
-      )
+      val businessName = await(TestSubscriptionDetails.subscriptionDetailsService.fetchBusinessName(testReference))
 
       businessName shouldBe Some(testBusinessName)
 
-      verifySaveBusinessName(1, testReference, testBusinessName)
       verifyFetchBusinessName(1, testReference)
     }
 
