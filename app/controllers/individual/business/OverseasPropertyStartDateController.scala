@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import controllers.utils.{ReferenceRetrieval, RequireAnswer}
+import controllers.utils.ReferenceRetrieval
 import forms.individual.business.OverseasPropertyStartDateForm
 import forms.individual.business.OverseasPropertyStartDateForm._
 import models.DateModel
@@ -42,7 +42,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
                                                    (implicit val ec: ExecutionContext,
                                                     val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents)
-  extends SignUpController with ImplicitDateFormatter with RequireAnswer  with ReferenceRetrieval {
+  extends SignUpController with ImplicitDateFormatter with ReferenceRetrieval {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
@@ -62,7 +62,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
       withReference { reference =>
         form.bindFromRequest.fold(
           formWithErrors =>
-              Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode))),
+            Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode))),
           startDate =>
             subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) flatMap { _ =>
               val redirectUrl = if (isEditMode) {
@@ -86,7 +86,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   }
 
   private def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean)
-                    (implicit request: Request[_]): Html = {
+                  (implicit request: Request[_]): Html = {
     overseasPropertyStartDateView(
       overseasPropertyStartDateForm = overseasPropertyStartDateForm,
       postAction = controllers.individual.business.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),

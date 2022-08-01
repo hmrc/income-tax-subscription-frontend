@@ -30,10 +30,6 @@ object SubscriptionDataUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 
-    def getBusinessName: Option[BusinessNameModel] = cacheMap.getEntry[BusinessNameModel](BusinessName)
-
-    def getSelectedTaxYear: Option[AccountingYearModel] = cacheMap.getEntry[AccountingYearModel](SelectedTaxYear)
-
     def getAccountingMethod: Option[AccountingMethodModel] = cacheMap.getEntry[AccountingMethodModel](AccountingMethod)
 
     def getTaskListModel(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,

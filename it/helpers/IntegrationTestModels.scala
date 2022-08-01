@@ -159,7 +159,6 @@ object IntegrationTestModels {
                        overseasProperty: Option[OverseasPropertyModel] = None,
                       ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       ukProperty.map(model => Property -> PropertyModel.format.writes(model)) ++
       overseasProperty.map(model => Property -> OverseasPropertyModel.format.writes(model))

@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
 import services.mocks.MockSubscriptionDetailsService
-import utilities.TestModels.testIncomeSourceOverseasProperty
 import views.individual.mocks.MockOverseasPropertyStartDate
 
 import java.time.LocalDate
@@ -105,7 +104,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in withController { controller =>
         mockOverseasPropertyStartDateView()
-        mockFetchIndividualIncomeSourceFromSubscriptionDetails(Some(testIncomeSourceOverseasProperty))
 
         val badRequest = callPostWithErrorForm(controller, isEditMode = false)
 

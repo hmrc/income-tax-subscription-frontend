@@ -20,7 +20,7 @@ import agent.audit.mocks.MockAuditingService
 import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
 import forms.agent.AccountingYearForm
 import models.Current
-import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.common.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -92,7 +92,6 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "redirect to tax year check your answers page" in {
         mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
@@ -108,7 +107,6 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "redirect to tax year check your answers page" in {
         mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
         val goodRequest = callShow(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)

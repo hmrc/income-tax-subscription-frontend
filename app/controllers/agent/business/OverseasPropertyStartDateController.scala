@@ -18,7 +18,7 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import controllers.utils.{ReferenceRetrieval, RequireAnswer}
+import controllers.utils.ReferenceRetrieval
 import forms.agent.OverseasPropertyStartDateForm
 import forms.agent.OverseasPropertyStartDateForm._
 import models.DateModel
@@ -42,7 +42,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
                                                    (implicit val ec: ExecutionContext,
                                                     val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents)
-  extends AuthenticatedController with ImplicitDateFormatter with RequireAnswer with ReferenceRetrieval {
+  extends AuthenticatedController with ImplicitDateFormatter with ReferenceRetrieval {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -77,7 +77,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    if(isEditMode) {
+    if (isEditMode) {
       controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
     } else {
       controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
@@ -85,7 +85,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   }
 
   private def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean)
-          (implicit request: Request[_]): Html = {
+                  (implicit request: Request[_]): Html = {
     overseasPropertyStartDate(
       overseasPropertyStartDateForm = overseasPropertyStartDateForm,
       routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),

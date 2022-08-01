@@ -84,7 +84,6 @@ object IntegrationTestModels {
                         accountingMethod: Option[AccountingMethodModel] = None)
   : Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model))
   }
 

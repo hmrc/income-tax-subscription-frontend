@@ -88,13 +88,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       argThat(new BusinessSequenceMatcher(businesses)),
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-  def verifySaveBusinessName(count: Int, reference: String, businessName: BusinessNameModel) =
-    verify(mockConnector, times(count)).saveSubscriptionDetails[BusinessNameModel](
-      ArgumentMatchers.eq(reference),
-      ArgumentMatchers.eq(BusinessName),
-      ArgumentMatchers.eq(businessName)
-    )(ArgumentMatchers.any(), ArgumentMatchers.any())
-
   def verifyFetchBusinessName(count: Int, reference: String) =
     verify(mockConnector, times(count)).getSubscriptionDetails[BusinessNameModel](
       ArgumentMatchers.eq(reference),
@@ -234,14 +227,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   protected final def setupMockSubscriptionDetailsSaveFunctions(reference: String, id: String): Unit = {
     when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.eq(reference), ArgumentMatchers.any(), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
-  }
-
-  protected final def mockFetchIncomeSourceFromSubscriptionDetails(fetchIncomeSource: Option[IncomeSourceModel]): Unit = {
-    mockFetchFromSubscriptionDetails[IncomeSourceModel](SubscriptionDataKeys.IncomeSource, fetchIncomeSource)
-  }
-
-  protected final def mockFetchIndividualIncomeSourceFromSubscriptionDetails(fetchIndividualIncomeSource: Option[IncomeSourceModel]): Unit = {
-    mockFetchFromSubscriptionDetails[IncomeSourceModel](SubscriptionDataKeys.IncomeSource, fetchIndividualIncomeSource)
   }
 
   protected final def mockFetchBusinessName(fetchBusinessName: Option[BusinessNameModel]): Unit = {
