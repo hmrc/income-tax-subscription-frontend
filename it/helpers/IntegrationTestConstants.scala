@@ -45,7 +45,6 @@ object IntegrationTestConstants {
   val testFirstName = "Test"
   val testLastName = "Name"
   val dateOfBirth: DateModel = DateModel("01", "01", "1980")
-  val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
   val testId = "12345"
   val testGroupId: String = UUID.randomUUID.toString
   val testCredId: String = UUID.randomUUID.toString
@@ -109,8 +108,6 @@ object IntegrationTestConstants {
   val claimEnrolSpsHandoffRouteURI = s"$baseURI/claim-enrolment/sps-handoff"
   val spsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BDcR9uIsDgZ5Bi3z4iYCJe0%3D&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
   val claimEnrolSpsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BFw14Es%2Fzqc6h9U3UpZg18WfhJXb4iUz3Y5ttgFaoTjs&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
-  val choosePaperlessURI = s"/paperless/choose?returnUrl"
-  val errorPreferencesURI = s"$baseURI/paperless-error"
   val accountingYearURI = s"$baseURI/business/what-year-to-sign-up"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val ukPropertyCYAURI = s"$baseURI/business/uk-property-check-your-answers"

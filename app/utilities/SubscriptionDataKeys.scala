@@ -29,7 +29,6 @@ object SubscriptionDataKeys {
   val PropertyAccountingMethod = "PropertyAccountingMethod"
   val OverseasPropertyAccountingMethod = "OverseasPropertyAccountingMethod"
   val MtditId = "MtditId"
-  val PaperlessPreferenceToken = "PaperlessPreferenceKey"
   val PropertyStartDate = "PropertyStartDate"
   val BusinessAccountingMethod = "BusinessAccountingMethod"
   val OverseasPropertyStartDate = "OverseasPropertyStartDate"

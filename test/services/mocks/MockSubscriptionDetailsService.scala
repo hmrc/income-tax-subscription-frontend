@@ -244,10 +244,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchSelectedTaxYear))
   }
 
-  protected final def mockFetchPaperlessPreferenceToken(fetchPaperlessPreferenceToken: Option[String]): Unit = {
-    mockFetchFromSubscriptionDetails[String](SubscriptionDataKeys.PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
-  }
-
   protected final def mockFetchLastUpdatedTimestamp(fetchLastUpdatedTimestamp: Option[TimestampModel]): Unit = {
     when(mockConnector.getSubscriptionDetails[TimestampModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.lastUpdatedTimestamp))(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchLastUpdatedTimestamp))
