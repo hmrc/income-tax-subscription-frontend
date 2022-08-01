@@ -38,15 +38,9 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     val add = "Add"
   }
 
-  private val confirmedProperty = OverseasPropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("8", "11", "2021")),
-    confirmed = true
-  )
-
   private val completeCashProperty = OverseasPropertyModel(
     accountingMethod = Some(Cash),
-    startDate = Some(DateModel("8", "11", "2021"))
+    startDate = Some(DateModel("8", "11", "2021")),
   )
 
   private val completeAccrualsProperty = OverseasPropertyModel(

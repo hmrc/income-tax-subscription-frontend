@@ -16,15 +16,14 @@
 
 package utilities
 
+import models.Current
+import models.common.AccountingYearModel
 import models.common.subscription.CreateIncomeSourcesModel
-import models.common.{AccountingYearModel, IncomeSourceModel}
-import models.{AgentSummary, Current, IndividualSummary, Next}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataUtil._
 import utilities.TestModels._
-import utilities.agent.TestModels.testSelfEmployments
 import utilities.individual.TestConstants._
 
 class SubscriptionDataUtilSpec extends UnitTestTrait
@@ -34,13 +33,10 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
   "SubscriptionDataUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
-      emptyCacheMap.getIncomeSource shouldBe None
-      emptyCacheMap.getIncomeSource shouldBe None
       emptyCacheMap.getAccountingMethod shouldBe None
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getIncomeSource shouldBe Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false))
       testCacheMap.getAccountingMethod shouldBe Some(testAccountingMethod)
     }
 
@@ -264,183 +260,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
         }
 
       }
-    }
-  }
-
-  "The getSummary should populate the Summary model correctly" when {
-    "income source is just uk property" in {
-      testCacheMapCustom(incomeSource = Some(testIncomeSourceProperty)).getSummary(property = Some(testFullPropertyModel.copy(startDate = None)), accountingYear = Some(testSelectedTaxYearNext)) shouldBe
-        IndividualSummary(
-          incomeSource = Some(testIncomeSourceProperty),
-          accountingMethodProperty = Some(testAccountingMethodProperty),
-          selectedTaxYear = Some(testSelectedTaxYearNext)
-        )
-    }
-
-    "income source is just business" in {
-      testCacheMapCustom(incomeSource = Some(testIncomeSourceBusiness)).getSummary(businessName = Some(testBusinessName), accountingYear = Some(testSelectedTaxYearNext)) shouldBe
-        IndividualSummary(
-          incomeSource = Some(testIncomeSourceBusiness),
-          businessName = Some(testBusinessName),
-          selectedTaxYear = Some(testSelectedTaxYearNext),
-          accountingMethod = Some(testAccountingMethod)
-        )
-    }
-
-    "income source is only foreign property" in {
-      testCacheMapCustom(
-        incomeSource = Some(testIncomeSourceOverseasProperty)
-      ).getSummary(overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None)), accountingYear = Some(testSelectedTaxYearNext)) shouldBe
-        IndividualSummary(
-          incomeSource = Some(testIncomeSourceOverseasProperty),
-          selectedTaxYear = Some(testSelectedTaxYearNext),
-          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
-        )
-    }
-
-    "income source is all property and business" in {
-      testCacheMapCustom(incomeSource = Some(testIncomeSourceAll)).getSummary(
-        selfEmployments = testSelfEmploymentData,
-        selfEmploymentsAccountingMethod = Some(testAccountingMethod),
-        property = Some(testFullPropertyModel),
-        overseasProperty = Some(testFullOverseasPropertyModel),
-        businessName = Some(testBusinessName),
-        accountingYear = Some(testSelectedTaxYearNext),
-      ) shouldBe
-        IndividualSummary(
-          incomeSource = Some(testIncomeSourceAll),
-          businessName = Some(testBusinessName),
-          accountingMethod = Some(testAccountingMethod),
-          accountingMethodProperty = Some(testAccountingMethodProperty),
-          propertyStartDate = Some(testPropertyStartDateModel),
-          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty),
-          overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel),
-          selectedTaxYear = Some(testSelectedTaxYearNext),
-          selfEmployments = testSelfEmploymentData
-        )
-    }
-    "income source is neither property or business" in {
-      emptyCacheMap.getSummary() shouldBe IndividualSummary()
-    }
-  }
-
-  "The getAgentSummary should populate the Summary model correctly" when {
-    "the income type is property" in {
-      testCacheMapCustom(
-        incomeSource = Some(testAgentIncomeSourceProperty)
-      ).getAgentSummary(
-        selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
-        property = Some(testFullPropertyModel),
-        businessName = Some(testBusinessName),
-        accountingYear = Some(AccountingYearModel(Next))
-      ) shouldBe AgentSummary(
-        incomeSource = Some(testAgentIncomeSourceProperty),
-        selectedTaxYear = Some(AccountingYearModel(Next)),
-        businessName = None,
-        accountingMethod = None,
-        accountingMethodProperty = Some(testAccountingMethodProperty),
-        propertyStartDate = Some(testPropertyStartDateModel)
-      )
-    }
-
-    "the income type is business" in {
-      testCacheMapCustom(
-        incomeSource = Some(testAgentIncomeSourceBusiness)
-      ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
-        businessName = Some(testBusinessName),
-        accountingYear = Some(testSelectedTaxYearNext)
-      ) shouldBe AgentSummary(
-        incomeSource = Some(testAgentIncomeSourceBusiness),
-        selectedTaxYear = Some(testSelectedTaxYearNext),
-        businessName = Some(testBusinessName),
-        accountingMethod = Some(testAccountingMethodAccrual),
-        accountingMethodProperty = None,
-        selfEmployments = testSelfEmployments
-      )
-    }
-
-    "the income type is foreign property" in {
-      testCacheMapCustom(
-        incomeSource = Some(testAgentIncomeSourceForeignProperty),
-      ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
-        overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None)),
-        businessName = Some(testBusinessName),
-        accountingYear = Some(testSelectedTaxYearNext)
-      ) shouldBe AgentSummary(
-        incomeSource = Some(testAgentIncomeSourceForeignProperty),
-        selectedTaxYear = Some(testSelectedTaxYearNext),
-        businessName = None,
-        accountingMethod = None,
-        accountingMethodProperty = None,
-        overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
-      )
-    }
-
-    "the income type is both business and property" in {
-      testCacheMapCustom(
-        incomeSource = Some(testAgentIncomeSourceBusinessProperty)
-      ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
-        property = Some(testFullPropertyModel),
-        businessName = Some(testBusinessName),
-        accountingYear = Some(testSelectedTaxYearNext),
-      ) shouldBe
-        AgentSummary(
-          incomeSource = Some(testAgentIncomeSourceBusinessProperty),
-          selectedTaxYear = Some(testSelectedTaxYearNext),
-          businessName = Some(testBusinessName),
-          accountingMethod = Some(testAccountingMethodAccrual),
-          accountingMethodProperty = Some(testAccountingMethodProperty),
-          propertyStartDate = Some(testPropertyStartDateModel),
-          selfEmployments = testSelfEmployments
-        )
-    }
-
-    "the income type is both business and overseas property" in {
-      testCacheMapCustom(
-        incomeSource = Some(testAgentIncomeSourceBusinessOverseasProperty)
-      ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
-        overseasProperty = Some(testFullOverseasPropertyModel.copy(startDate = None)),
-        businessName = Some(testBusinessName),
-        accountingYear = Some(testSelectedTaxYearNext),
-      ) shouldBe
-        AgentSummary(
-          incomeSource = Some(testAgentIncomeSourceBusinessOverseasProperty),
-          businessName = Some(testBusinessName),
-          selectedTaxYear = Some(testSelectedTaxYearNext),
-          accountingMethod = Some(testAccountingMethodAccrual),
-          overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty),
-          selfEmployments = testSelfEmployments
-        )
-    }
-
-    "the income type is both UK property and overseas property" in {
-      testCacheMapCustom(
-        incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty)
-      ).getAgentSummary(selfEmployments = testSelfEmployments,
-        selfEmploymentsAccountingMethod = Some(testAccountingMethodAccrual),
-        property = Some(testFullPropertyModel),
-        overseasProperty = Some(testFullOverseasPropertyModel),
-        businessName = Some(testBusinessName),
-        accountingYear = Some(testSelectedTaxYearNext),
-      ) shouldBe AgentSummary(
-        incomeSource = Some(testAgentIncomeSourceUkPropertyOverseasProperty),
-        selectedTaxYear = Some(testSelectedTaxYearNext),
-        businessName = None,
-        accountingMethod = None,
-        accountingMethodProperty = Some(testAccountingMethodProperty),
-        propertyStartDate = Some(testPropertyStartDateModel),
-        overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty),
-        overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel)
-      )
-    }
-
-    "the income type is not set" in {
-      emptyCacheMap.getAgentSummary() shouldBe AgentSummary()
     }
   }
 }

@@ -16,11 +16,13 @@
 
 package helpers
 
+import _root_.common.Constants.ITSASessionKeys
+import _root_.common.Constants.ITSASessionKeys._
 import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
-import forms.individual.incomesource.{BusinessIncomeSourceForm, IncomeSourceForm}
+import forms.individual.incomesource.BusinessIncomeSourceForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
@@ -41,8 +43,6 @@ import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
-import _root_.common.Constants.ITSASessionKeys
-import _root_.common.Constants.ITSASessionKeys._
 
 import java.time.LocalDate
 import java.util.UUID
@@ -344,16 +344,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def claimSubscription(): WSResponse = {
       val uri = s"/claim-subscription"
       get(uri)
-    }
-
-    def submitIncomeSource(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
-      val uri = s"/details/income-receive?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            IncomeSourceForm.incomeSourceForm(true).fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
     }
 
     def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],

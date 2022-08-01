@@ -25,7 +25,6 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.SelectedTaxYear
 import views.agent.mocks.MockWhatYearToSignUp
 
 import scala.concurrent.Future

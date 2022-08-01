@@ -30,20 +30,6 @@ class RoutesSpec extends PlaySpec with GuiceOneAppPerTest {
     }
   }
 
-  "The URL for the SummaryController.show action" should {
-    s"be equal to $contextRoute/check-your-answers" in {
-      controllers.individual.subscription.routes.CheckYourAnswersController.show.url must be(s"$contextRoute/check-your-answers")
-    }
-  }
-
-
-  // Summary routes
-  "The URL for the SummaryController.submit action" should {
-    s"be equal to $contextRoute/check-your-answers" in {
-      controllers.individual.subscription.routes.CheckYourAnswersController.submit.url must be(s"$contextRoute/check-your-answers")
-    }
-  }
-
   "The URL for the ConfirmationController.show action" should {
     s"be equal to $contextRoute/confirmation" in {
       controllers.individual.subscription.routes.ConfirmationController.show.url must be(s"$contextRoute/confirmation")

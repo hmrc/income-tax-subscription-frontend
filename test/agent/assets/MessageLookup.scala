@@ -78,17 +78,6 @@ object MessageLookup {
     val no: String = "Sign out"
   }
 
-  object IncomeSource {
-    val title = "How does your client receive their income?"
-    val heading: String = title
-    val business = "Sole trader with one or more businesses"
-    val ukProperty = "Rent out UK properties"
-    val foreignProperty = "Rent out overseas properties"
-    val errorHeading = "There is a problem"
-    val errorSummary = "Select if your client receives income from self employment or UK property"
-    val errorSummaryForeignProperty = "Select if your client receives income from self employment, UK property or overseas property"
-  }
-
   object Property {
 
     object Income {
@@ -161,12 +150,6 @@ object MessageLookup {
     val heading: String = "Check your answers"
     val heading_hidden = "before signing up"
     val income_source = "Income received from"
-
-    object IncomeSource {
-      val business = "Sole trader business"
-      val property = "UK property"
-      val overseas_property = "Overseas property"
-    }
 
     val accounting_period = s"Your client’s accounting period dates"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
@@ -319,11 +302,6 @@ object MessageLookup {
     object NotEligible {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
-    }
-
-    object IncomeSource {
-      val empty = "Select an income type"
-      val invalid = "Select an income type"
     }
 
     object ClientDetails {

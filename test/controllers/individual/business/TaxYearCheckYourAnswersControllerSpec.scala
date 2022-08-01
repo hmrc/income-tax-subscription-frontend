@@ -17,19 +17,19 @@
 package controllers.individual.business
 
 import agent.audit.mocks.MockAuditingService
-import play.api.http.Status.{OK, SEE_OTHER}
 import controllers.ControllerBaseSpec
 import models.Current
 import models.common.AccountingYearModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.{MtditId, SelectedTaxYear}
+import utilities.SubscriptionDataKeys.MtditId
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.individual.incometax.business.TaxYearCheckYourAnswers
 

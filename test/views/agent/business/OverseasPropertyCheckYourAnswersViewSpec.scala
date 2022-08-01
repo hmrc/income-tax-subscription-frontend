@@ -25,6 +25,19 @@ import views.html.agent.business.OverseasPropertyCheckYourAnswers
 
 class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   private val overseasPropertyCheckYourAnswersView = app.injector.instanceOf[OverseasPropertyCheckYourAnswers]
+
+  object OverseasPropertyCheckYourAnswers {
+    val title = "Check your answers - overseas property business"
+    val heading = "Check your answers"
+    val caption = "This section is Overseas property business you entered"
+    val startDateQuestion = "Overseas property business trading start date"
+    val accountMethodQuestion = "Overseas property business accounting method"
+    val confirmedAndContinue = "Confirm and continue"
+    val saveAndComeBack = "Save and come back later"
+    val change = "Change"
+    val add = "Add"
+  }
+
   private val completeCashProperty = OverseasPropertyModel(
     accountingMethod = Some(Cash),
     startDate = Some(DateModel("8", "11", "2021")),
@@ -49,18 +62,6 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   private val incompleteProperty = OverseasPropertyModel()
 
-  object OverseasPropertyCheckYourAnswers {
-    val title = "Check your answers - overseas property business"
-    val heading = "Check your answers"
-    val caption = "This section is Overseas property business you entered"
-    val startDateQuestion = "Overseas property business trading start date"
-    val accountMethodQuestion = "Overseas property business accounting method"
-    val confirmedAndContinue = "Confirm and continue"
-    val saveAndComeBack = "Save and come back later"
-    val change = "Change"
-    val add = "Add"
-  }
-
   "Property CYA page" must {
     "have no error" in new TemplateViewTest(
       view = overseasPropertyCheckYourAnswersView(
@@ -74,13 +75,13 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     )
 
     "have a heading" in {
-      document()
+      document(viewModel = completeCashProperty)
         .select("h1")
         .text() mustBe OverseasPropertyCheckYourAnswers.heading
     }
 
     "have a caption" in {
-      document()
+      document(viewModel = completeCashProperty)
         .select(".hmrc-page-heading p")
         .text() mustBe OverseasPropertyCheckYourAnswers.caption
     }
@@ -266,5 +267,5 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     backUrl = "test-back-url"
   )
 
-  private def document(viewModel: OverseasPropertyModel = completeCashProperty) = Jsoup.parse(page(viewModel).body)
+  private def document(viewModel: OverseasPropertyModel) = Jsoup.parse(page(viewModel).body)
 }

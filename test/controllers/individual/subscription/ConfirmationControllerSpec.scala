@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
-import utilities.TestModels.{testCacheMap, testSelectedTaxYearCurrent, testSelectedTaxYearNext}
+import utilities.TestModels.testSelectedTaxYearNext
 import views.html.individual.incometax.subscription.SignUpComplete
 
 import java.time.LocalDateTime
@@ -37,8 +37,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with MockUserMatchingService
-  with MockAuditingService
-   {
+  with MockAuditingService {
 
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
 

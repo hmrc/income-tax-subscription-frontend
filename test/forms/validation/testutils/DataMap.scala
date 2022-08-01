@@ -44,11 +44,6 @@ object DataMap {
 
     def accountingYear(iType: String): DataMap = Map(AccountingYearForm.accountingYear -> iType)
 
-    def incomeSource(business: String, ukProperty: String, overseasProperty: String): DataMap =
-      Map(forms.individual.incomesource.IncomeSourceForm.selfEmployedKey -> business,
-        forms.individual.incomesource.IncomeSourceForm.ukPropertyKey -> ukProperty,
-        forms.individual.incomesource.IncomeSourceForm.overseasPropertyKey -> overseasProperty)
-
     val alwaysFailInvalid: Invalid = Invalid("always fail")
 
     def alwaysFail[T]: Constraint[T] = constraint[T]((t: T) => alwaysFailInvalid)

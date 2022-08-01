@@ -17,11 +17,9 @@
 package controllers.utils
 
 
-import models.common._
 import models.common.business.AccountingMethodModel
 import play.api.libs.functional.~
 import play.api.mvc.Result
-import play.api.mvc.Results.Redirect
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -48,28 +46,6 @@ trait Answer[A] {
   def apply(cacheMap: CacheMap): Either[Result, A]
 
   def and[B](other: Answer[B]): Answer[A ~ B] = CompositeAnswer(this, other)
-}
-
-object AgentAnswers {
-
-  import utilities.SubscriptionDataUtil._
-
-  val incomeSourceModelAnswer: Answer[IncomeSourceModel] = SingleAnswer[IncomeSourceModel](
-    retrieveAnswer = _.getIncomeSource,
-    ifEmpty = Redirect(controllers.agent.routes.IncomeSourceController.show().url)
-  )
-
-}
-
-object IndividualAnswers {
-
-  import utilities.SubscriptionDataUtil._
-
-  val incomeSourceModelAnswer: Answer[IncomeSourceModel] = SingleAnswer[IncomeSourceModel](
-    retrieveAnswer = _.getIncomeSource,
-    ifEmpty = Redirect(controllers.individual.incomesource.routes.IncomeSourceController.show().url)
-  )
-
 }
 
 object OptionalAnswers {

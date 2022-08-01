@@ -15,16 +15,8 @@ GET         /logout                                              controllers.Sig
 GET         /sps-handoff                                         controllers.individual.sps.SPSHandoffController.redirectToSPS
 GET         /sps-callback                                        controllers.individual.sps.SPSCallbackController.callback(entityId: Option[String] ?= None)
 
-# Income Source Routes
-GET         /details/income-receive                              controllers.individual.incomesource.IncomeSourceController.show(editMode: Boolean ?= false)
-POST        /details/income-receive                              controllers.individual.incomesource.IncomeSourceController.submit(editMode: Boolean ?= false)
-
 GET         /details/income-source                              controllers.individual.incomesource.WhatIncomeSourceToSignUpController.show()
 POST        /details/income-source                              controllers.individual.incomesource.WhatIncomeSourceToSignUpController.submit()
-
-# Summary Routes
-GET         /check-your-answers                                  controllers.individual.subscription.CheckYourAnswersController.show
-POST        /check-your-answers                                  controllers.individual.subscription.CheckYourAnswersController.submit
 
 # Confirmation Routes
 GET         /confirmation                                        controllers.individual.subscription.ConfirmationController.show
@@ -80,9 +72,6 @@ POST        /business/property-commencement-date                 controllers.ind
 #Foreign Property Start Date Routes
 GET         /business/overseas-property-start-date               controllers.individual.business.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-start-date               controllers.individual.business.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)
-
-#Routing controller
-GET         /business/routing                                    controllers.individual.business.RoutingController.show
 
 # Identity Verification return routes
 GET         /iv-success                                          controllers.individual.iv.IVSuccessController.success
