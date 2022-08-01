@@ -26,23 +26,20 @@ import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 import utilities.SubscriptionDataKeys._
 
 //scalastyle:off
-object SubscriptionDataUtil{
+object SubscriptionDataUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
-
-    def getIncomeSource: Option[IncomeSourceModel] = cacheMap.getEntry[IncomeSourceModel](IncomeSource)
-
-    def getSelectedTaxYear: Option[AccountingYearModel] = cacheMap.getEntry[AccountingYearModel](SelectedTaxYear)
 
     def getAccountingMethod: Option[AccountingMethodModel] = cacheMap.getEntry[AccountingMethodModel](AccountingMethod)
 
     def getTaskListModel(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                          selfEmploymentAccountingMethod: Option[AccountingMethodModel] = None,
                          property: Option[PropertyModel],
-                         overseasProperty: Option[OverseasPropertyModel]
+                         overseasProperty: Option[OverseasPropertyModel],
+                         accountingYear: Option[AccountingYearModel]
                         ): TaskListModel = {
       TaskListModel(
-        taxYearSelection = getSelectedTaxYear,
+        taxYearSelection = accountingYear,
         selfEmployments,
         ukProperty = property,
         overseasProperty = overseasProperty,
@@ -55,16 +52,18 @@ object SubscriptionDataUtil{
                             selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                             selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                             property: Option[PropertyModel] = None,
-                            overseasProperty: Option[OverseasPropertyModel] = None
+                            overseasProperty: Option[OverseasPropertyModel] = None,
+                            accountingYear: Option[AccountingYearModel] = None
                            ): CreateIncomeSourcesModel = {
 
       val accountingPeriod: AccountingPeriodModel = {
-        getSelectedTaxYear.getOrElse(
-          throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - Could not create the create income sources model due to missing selected tax year")
-        ) match {
-          case AccountingYearModel(_, false) => throw new InternalServerException("[SubscriptionDataUtil][createIncomeSources] - Could not create the create income sources model as the user has not confirmed their selected tax year")
-          case AccountingYearModel(Next, _) => getNextTaxYear
-          case AccountingYearModel(Current, _) => getCurrentTaxYear
+        accountingYear match {
+          case None =>
+            throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - Could not create the create income sources model due to missing selected tax year")
+          case Some(AccountingYearModel(_, false)) =>
+            throw new InternalServerException("[SubscriptionDataUtil][createIncomeSources] - Could not create the create income sources model as the user has not confirmed their selected tax year")
+          case Some(AccountingYearModel(Next, _)) => getNextTaxYear
+          case Some(AccountingYearModel(Current, _)) => getCurrentTaxYear
         }
       }
 
@@ -137,147 +136,5 @@ object SubscriptionDataUtil{
         overseasProperty = overseas
       )
     }
-
-    def getSummary(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
-                   selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
-                   property: Option[PropertyModel] = None,
-                   overseasProperty: Option[OverseasPropertyModel] = None,
-                   businessName: Option[BusinessNameModel] = None): IndividualSummary = {
-      getIncomeSource match {
-        case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
-          applyForeignPropertyData(
-            applyPropertyData(
-              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, businessName = businessName).asInstanceOf[IndividualSummary],
-              property,
-              hasProperty
-            ).asInstanceOf[IndividualSummary],
-            overseasProperty,
-            hasForeignProperty
-          ).asInstanceOf[IndividualSummary]
-        case _ => IndividualSummary()
-      }
-    }
-
-    def getAgentSummary(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
-                        selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
-                        property: Option[PropertyModel] = None,
-                        overseasProperty: Option[OverseasPropertyModel] = None,
-                        businessName: Option[BusinessNameModel] = None): AgentSummary = {
-      getIncomeSource match {
-        case Some(IncomeSourceModel(hasSelfEmployment, hasProperty, hasForeignProperty)) =>
-          applyForeignPropertyData(
-            applyPropertyData(
-              applySelfEmploymentsData(selfEmployments, selfEmploymentsAccountingMethod, hasSelfEmployment, isAgent = true, businessName).asInstanceOf[AgentSummary],
-              property,
-              hasProperty,
-              isAgent = true
-            ).asInstanceOf[AgentSummary],
-            overseasProperty,
-            hasForeignProperty,
-            isAgent = true
-          ).asInstanceOf[AgentSummary]
-        case _ => AgentSummary()
-      }
-    }
-
-    private def applySelfEmploymentsData(selfEmployments: Seq[SelfEmploymentData],
-                                         selfEmploymentsAccountingMethod: Option[AccountingMethodModel],
-                                         hasSelfEmployments: Boolean,
-                                         isAgent: Boolean = false,
-                                         businessName: Option[BusinessNameModel]): SummaryModel = {
-      if (hasSelfEmployments) {
-        if (selfEmploymentsAccountingMethod.isDefined) {
-          if (isAgent) {
-            AgentSummary(
-              selectedTaxYear = getSelectedTaxYear,
-              businessName = businessName,
-              incomeSource = getIncomeSource,
-              selfEmployments = selfEmployments,
-              accountingMethod = selfEmploymentsAccountingMethod
-            )
-          } else {
-            IndividualSummary(
-              incomeSource = getIncomeSource,
-              businessName = businessName,
-              selectedTaxYear = getSelectedTaxYear,
-              accountingMethod = selfEmploymentsAccountingMethod,
-              selfEmployments = selfEmployments
-            )
-          }
-        } else {
-          if (isAgent) {
-            AgentSummary(
-              selectedTaxYear = getSelectedTaxYear,
-              businessName = businessName,
-              incomeSource = getIncomeSource,
-              selfEmployments = selfEmployments,
-              accountingMethod = getAccountingMethod
-            )
-          } else {
-            IndividualSummary(
-              incomeSource = getIncomeSource,
-              businessName = businessName,
-              selectedTaxYear = getSelectedTaxYear,
-              accountingMethod = getAccountingMethod,
-              selfEmployments = selfEmployments
-            )
-          }
-        }
-      } else {
-        if (isAgent) {
-          AgentSummary(
-            incomeSource = getIncomeSource,
-            selectedTaxYear = getSelectedTaxYear
-          )
-        } else {
-          IndividualSummary(
-            incomeSource = getIncomeSource
-          )
-        }
-      }
-    }
-
-    private def applyPropertyData(summaryModel: SummaryModel,
-                                  property: Option[PropertyModel],
-                                  hasProperty: Boolean,
-                                  isAgent: Boolean = false): SummaryModel = {
-      if (hasProperty) {
-        if (isAgent) {
-          summaryModel.asInstanceOf[AgentSummary].copy(
-            propertyStartDate = property.flatMap(_.startDate.map(PropertyStartDateModel.apply)),
-            accountingMethodProperty = property.flatMap(_.accountingMethod.map(AccountingMethodPropertyModel.apply)),
-            selectedTaxYear = summaryModel.selectedTaxYear
-          )
-        } else {
-          summaryModel.asInstanceOf[IndividualSummary].copy(
-            propertyStartDate = property.flatMap(_.startDate.map(PropertyStartDateModel.apply)),
-            accountingMethodProperty = property.flatMap(_.accountingMethod.map(AccountingMethodPropertyModel.apply)),
-            selectedTaxYear = getSelectedTaxYear
-          )
-        }
-      } else summaryModel
-    }
-
-    private def applyForeignPropertyData(summaryModel: SummaryModel,
-                                         overseasProperty: Option[OverseasPropertyModel],
-                                         hasForeignProperty: Boolean,
-                                         isAgent: Boolean = false): SummaryModel = {
-      if (hasForeignProperty) {
-        if (isAgent) {
-          summaryModel.asInstanceOf[AgentSummary].copy(
-            overseasPropertyStartDate = overseasProperty.flatMap(_.startDate.map(OverseasPropertyStartDateModel.apply)),
-            overseasAccountingMethodProperty = overseasProperty.flatMap(_.accountingMethod.map(OverseasAccountingMethodPropertyModel.apply)),
-            selectedTaxYear = summaryModel.selectedTaxYear
-          )
-        } else {
-          summaryModel.asInstanceOf[IndividualSummary].copy(
-            overseasPropertyStartDate = overseasProperty.flatMap(_.startDate.map(OverseasPropertyStartDateModel.apply)),
-            overseasAccountingMethodProperty = overseasProperty.flatMap(_.accountingMethod.map(OverseasAccountingMethodPropertyModel.apply)),
-            selectedTaxYear = getSelectedTaxYear
-          )
-        }
-      } else summaryModel
-    }
   }
-
 }

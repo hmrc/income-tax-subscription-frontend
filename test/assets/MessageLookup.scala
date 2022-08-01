@@ -76,15 +76,6 @@ object MessageLookup {
     val signOut: String = "Sign out"
   }
 
-  object IncomeSource {
-    val title = "Where does your income come from?"
-    val heading: String = title
-    val business = "Your sole trader business"
-    val property = "Renting out a UK property"
-    val both = "Your sole trader business and renting out a UK property"
-    val other = "Other"
-  }
-
   object IndividualIncomeSource {
     val title = "What are your sources of income?"
     val heading: String = title
@@ -220,12 +211,6 @@ object MessageLookup {
     val business_accountingmethod = "Accounting method for your self-employment income"
     val contact_email = "Do you want to receive electronic communications from HMRC?"
     val confirm_and_sign_up = "Confirm and sign up"
-
-    object IncomeSource {
-      val business = "Sole trader business"
-      val property = "Property"
-      val both = "Sole trader business and property"
-    }
 
     object AccountingMethod {
       val cash = "Cash accounting"
@@ -494,12 +479,6 @@ object MessageLookup {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
     }
-
-    object IncomeSource {
-      val empty = "You must select an option to continue"
-      val invalid = "You must select an option to continue"
-    }
-
 
     object UnauthroisedAgent {
 

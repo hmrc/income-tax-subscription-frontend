@@ -55,14 +55,12 @@ object TestModels {
   val testCacheMap: CacheMap =
     testCacheMap(
       incomeSource = Some(testIncomeSourceBusinessAndUkProperty),
-      selectedTaxYear = Some(testSelectedTaxYearNext),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod))
 
   val testCurrentCacheMap: CacheMap =
     testCacheMap(
       incomeSource = Some(testIncomeSourceBusinessAndUkProperty),
-      selectedTaxYear = Some(testSelectedTaxYearCurrent),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod))
 
@@ -73,18 +71,14 @@ object TestModels {
                           accountingMethod: Option[AccountingMethodModel] = Some(testAccountingMethod)): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
-      selectedTaxYear = selectedTaxYear,
       businessName = businessName,
       accountingMethod = accountingMethod)
 
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
-                   selectedTaxYear: Option[AccountingYearModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
-      incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
-      selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model)))
     CacheMap("", map)

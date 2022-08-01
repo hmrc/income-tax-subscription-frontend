@@ -20,12 +20,11 @@ import agent.audit.mocks.MockAuditingService
 import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
 import forms.agent.AccountingYearForm
 import models.Current
-import models.common.{AccountingYearModel, IncomeSourceModel}
+import models.common.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.SelectedTaxYear
 import views.agent.mocks.MockWhatYearToSignUp
 
 import scala.concurrent.Future
@@ -56,11 +55,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
+        verifyFetchSelectedTaxYear(1, "test-reference")
       }
     }
 
@@ -69,11 +68,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromSubscriptionDetails(None)
+        mockFetchSelectedTaxYear(None)
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
+        verifyFetchSelectedTaxYear(1, "test-reference")
       }
     }
   }
@@ -93,7 +92,6 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "redirect to tax year check your answers page" in {
         mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
@@ -101,7 +99,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+        verifySaveSelectedTaxYear(1, "test-reference")
       }
     }
 
@@ -109,7 +107,6 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "redirect to tax year check your answers page" in {
         mockIncomeSource()
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchIncomeSourceFromSubscriptionDetails(Some(IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)))
         val goodRequest = callShow(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
@@ -117,7 +114,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+        verifySaveSelectedTaxYear(1, "test-reference")
       }
     }
 

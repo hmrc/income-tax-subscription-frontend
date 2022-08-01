@@ -17,7 +17,7 @@
 package views.agent
 
 import forms.agent.BusinessIncomeSourceForm
-import forms.agent.IncomeSourceForm.incomeSourceKey
+import forms.agent.BusinessIncomeSourceForm.incomeSourceKey
 import models.IncomeSourcesStatus
 import models.common.{OverseasProperty, SelfEmployed, UkProperty}
 import org.jsoup.Jsoup
@@ -34,7 +34,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     val paragraph1 = "Your client can have up to 50 sole trader businesses. " +
       "However, they can have only one UK property business and one overseas property."
     val paragraph2 = "Renting out a property includes using a letting agency."
-    val soleTrader= "Sole trader business"
+    val soleTrader = "Sole trader business"
     val ukProperty = "UK property rental"
     val foreignProperty = "Overseas property rental"
     val errorHeading = "There is a problem"

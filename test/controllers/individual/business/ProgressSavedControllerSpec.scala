@@ -123,14 +123,13 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       "the location parameter is provided" in withController { (controller, mockedView) =>
         mockNinoAndUtrRetrieval()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        val testBusinessCacheMap = testCacheMap(
-          selectedTaxYear = selectedTaxYear
-        )
+        val testBusinessCacheMap = testCacheMap()
         mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(selfEmployments)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(selfEmploymentAccountingMethod)
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
+        mockFetchSelectedTaxYear(selectedTaxYear)
 
         val result: Future[Result] = await(controller.show(location = Some("test-location"))(subscriptionRequest))
 

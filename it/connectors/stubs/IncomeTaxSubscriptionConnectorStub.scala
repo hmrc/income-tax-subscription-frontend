@@ -11,10 +11,9 @@ import helpers.agent.IntegrationTestModels.{fullSubscriptionData, subscriptionDa
 import helpers.servicemocks.WireMockMethods
 import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.http.Status
-import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessName, BusinessesKey, OverseasProperty, Property, subscriptionId}
+import utilities.SubscriptionDataKeys.{BusinessesKey, OverseasProperty, Property, subscriptionId}
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
@@ -110,7 +109,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
   def verifySubscriptionSave[T](id: String, body: T, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
     import helpers.ImplicitConversions._
-    WiremockHelper.verifyPost(subscriptionUri(subscriptionId), Some((body: JsValue).toString()), count)
+    WiremockHelper.verifyPost(subscriptionUri(id), Some((body: JsValue).toString()), count)
   }
 
   def stubSubscriptionFailure(): Unit = {

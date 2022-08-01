@@ -114,14 +114,12 @@ object IntegrationTestModels {
   lazy val fullSubscriptionDataBothPost: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = Some(testAccountingMethod)
     )
 
   lazy val fullSubscriptionDataAllPost: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = Some(testAccountingMethod)
     )
 
@@ -133,41 +131,34 @@ object IntegrationTestModels {
   val selfEmploymentSubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceBusiness),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = Some(testAccountingMethod)
     )
 
   val ukPropertySubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceProperty),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = None
     )
 
   val overseasPropertySubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceOverseas),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = None
     )
 
   val AllSubscriptionData: Map[String, JsValue] =
     subscriptionData(
       incomeSource = Some(testIncomeSourceAll),
-      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingMethod = Some(testAccountingMethod)
     )
 
 
   def subscriptionData(incomeSource: Option[IncomeSourceModel] = None,
-                       selectedTaxYear: Option[AccountingYearModel] = None,
                        accountingMethod: Option[AccountingMethodModel] = None,
                        ukProperty: Option[PropertyModel] = None,
                        overseasProperty: Option[OverseasPropertyModel] = None,
                       ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
-      selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       ukProperty.map(model => Property -> PropertyModel.format.writes(model)) ++
       overseasProperty.map(model => Property -> OverseasPropertyModel.format.writes(model))

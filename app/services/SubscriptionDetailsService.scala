@@ -71,20 +71,14 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def savePrePopFlag(reference: String, prepop: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] =
     save[Boolean](reference, PrePopFlag, prepop)
 
-  def fetchIncomeSource(reference: String)(implicit hc: HeaderCarrier): Future[Option[IncomeSourceModel]] =
-    fetch[IncomeSourceModel](reference, IncomeSource)
-
-  def saveIncomeSource(reference: String, incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
-    save[IncomeSourceModel](reference, IncomeSource, incomeSource)
-
   def fetchBusinessName(reference: String)(implicit hc: HeaderCarrier): Future[Option[BusinessNameModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[BusinessNameModel](reference, SubscriptionDataKeys.BusinessName)
 
   def fetchSelectedTaxYear(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] =
-    fetch[AccountingYearModel](reference, SelectedTaxYear)
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingYearModel](reference, SubscriptionDataKeys.SelectedTaxYear)
 
-  def saveSelectedTaxYear(reference: String, selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier): Future[CacheMap] =
-    save[AccountingYearModel](reference, SelectedTaxYear, selectedTaxYear)
+  def saveSelectedTaxYear(reference: String, selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingYearModel](reference, SelectedTaxYear, selectedTaxYear)
 
   def fetchSubscriptionId(reference: String)(implicit hc: HeaderCarrier): Future[Option[String]] = fetch[String](reference, MtditId)
 

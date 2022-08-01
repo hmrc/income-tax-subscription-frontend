@@ -32,13 +32,11 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
-import views.agent.mocks.MockIncomeSource
 import views.html.agent.WhatIncomeSourceToSignUp
 
 import scala.concurrent.Future
 
 class WhatIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
-  with MockIncomeSource
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
   with MockAuditingService {

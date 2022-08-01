@@ -1,6 +1,7 @@
 
 package helpers.agent
 
+import _root_.common.Constants.ITSASessionKeys
 import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -8,7 +9,6 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import _root_.common.Constants.ITSASessionKeys
 import forms.agent._
 import forms.individual.business.RemoveBusinessForm
 import helpers.IntegrationTestConstants.{testFirstName, testId, testLastName}
@@ -215,16 +215,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def income(): WSResponse = get("/income")
 
-    def submitIncomeSource(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
-      val uri = s"/income?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            IncomeSourceForm.incomeSourceForm(true).fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
     def mainIncomeError(): WSResponse = get("/error/main-income")
 
     def sessionTimeout(): WSResponse = get("/session-timeout")
@@ -416,16 +406,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID))
       else
         get("/add-another")
-
-    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
-      val uri = s"/income?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            IncomeSourceForm.incomeSourceForm(true).fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def confirmation(): WSResponse = get("/confirmation")
 

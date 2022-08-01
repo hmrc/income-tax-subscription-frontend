@@ -21,16 +21,8 @@ POST        /eligibility/property-start-date        controllers.agent.eligibilit
 GET         /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.show
 POST        /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.submit
 
-# Income Source Routes
-GET         /income                                 controllers.agent.IncomeSourceController.show(editMode: Boolean ?= false)
-POST        /income                                 controllers.agent.IncomeSourceController.submit(editMode: Boolean ?= false)
-
 GET         /income-source                          controllers.agent.WhatIncomeSourceToSignUpController.show()
 POST        /income-source                          controllers.agent.WhatIncomeSourceToSignUpController.submit()
-
-# Summary Routes
-GET         /check-your-answers                     controllers.agent.CheckYourAnswersController.show
-POST        /check-your-answers                     controllers.agent.CheckYourAnswersController.submit
 
 # Confirmation Routes
 GET         /confirmation                           controllers.agent.ConfirmationAgentController.show
@@ -95,9 +87,6 @@ POST        /business/overseas-commencement-date                controllers.agen
 #Foreign Property Accounting Method Routes
 GET         /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
-
-#Routing controller
-GET         /business/routing                                    controllers.agent.business.RoutingController.show(editMode: Boolean ?= false)
 
 GET         /keep-alive                                         controllers.agent.SessionTimeoutController.keepAlive
 GET         /timeout                                            controllers.agent.SessionTimeoutController.timeout

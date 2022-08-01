@@ -84,40 +84,31 @@ object TestModels {
   lazy val testCacheMap: CacheMap =
     testCacheMap(
       incomeSource = Some(testAgentIncomeSourceBusinessProperty),
-      selectedTaxYear = Some(testSelectedTaxYearNext),
       accountingMethod = Some(testAccountingMethod)
     )
 
   lazy val testCacheMapIndiv: CacheMap =
     testCacheMap(
       incomeSource = Some(testIncomeSourceBoth),
-      selectedTaxYear = Some(testSelectedTaxYearCurrent),
       accountingMethod = Some(testAccountingMethod)
     )
 
   def testCacheMapCustom(incomeSource: Option[IncomeSourceModel] = Some(testAgentIncomeSourceBusinessProperty),
-                         selectedTaxYear: Option[AccountingYearModel] = Some(testSelectedTaxYearNext),
                          accountingMethod: Option[AccountingMethodModel] = Some(testAccountingMethod)): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
-      selectedTaxYear = selectedTaxYear,
       accountingMethod = accountingMethod)
 
-    def testCacheMap(incomeSource: IncomeSourceModel,
-                     selectedTaxYear: AccountingYearModel,
-                     accountingMethod: AccountingMethodModel): CacheMap = testCacheMap(
-      Some(incomeSource),
-      Some(selectedTaxYear),
-      Some(accountingMethod)
-    )
+  def testCacheMap(incomeSource: IncomeSourceModel,
+                   accountingMethod: AccountingMethodModel): CacheMap = testCacheMap(
+    Some(incomeSource),
+    Some(accountingMethod)
+  )
 
-    def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
-                     selectedTaxYear: Option[AccountingYearModel] = None,
-                     accountingMethod: Option[AccountingMethodModel] = None): CacheMap = {
+  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
+                   accountingMethod: Option[AccountingMethodModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
-      incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
-      selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model)))
     CacheMap("", map)
   }

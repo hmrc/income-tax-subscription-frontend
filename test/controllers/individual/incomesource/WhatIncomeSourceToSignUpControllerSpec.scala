@@ -34,16 +34,13 @@ import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, red
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
 import views.html.individual.incometax.incomesource.WhatIncomeSourceToSignUp
-import views.individual.mocks.MockIncomeSource
 
 import scala.concurrent.Future
 
 class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
-  with MockIncomeSource
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector
-  with MockAuditingService
-   {
+  with MockAuditingService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

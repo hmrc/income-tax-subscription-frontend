@@ -25,7 +25,6 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService, MockWhatYearToSignUp}
-import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 import scala.concurrent.Future
 
@@ -33,8 +32,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockWhatYearToSignUp
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
-  with MockAuditingService
-   {
+  with MockAuditingService {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -56,11 +54,11 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromSubscriptionDetails(Some(AccountingYearModel(Current)))
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
+        verifyFetchSelectedTaxYear(1, "test-reference")
 
       }
     }
@@ -70,11 +68,11 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         mockIncomeSource()
         lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchSelectedTaxYearFromSubscriptionDetails(None)
+        mockFetchSelectedTaxYear(None)
 
         status(result) must be(Status.OK)
 
-        verifySubscriptionDetailsFetch(SelectedTaxYear, Some(1))
+        verifyFetchSelectedTaxYear(1, "test-reference")
 
       }
     }
@@ -101,7 +99,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+        verifySaveSelectedTaxYear(1, "test-reference")
       }
     }
 
@@ -116,7 +114,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifySubscriptionDetailsSave(SelectedTaxYear, 1)
+        verifySaveSelectedTaxYear(1, "test-reference")
       }
     }
 
