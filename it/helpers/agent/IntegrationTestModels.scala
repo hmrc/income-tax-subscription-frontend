@@ -65,7 +65,6 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(testIncomeSourceAll),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod)
     )
 
@@ -73,7 +72,6 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(testIncomeSourceProperty),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = None,
       accountingMethod = None
     )
 
@@ -81,20 +79,17 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(testIncomeSourceProperty),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = None,
       accountingMethod = None
     )
 
   def subscriptionData(
                         incomeSource: Option[IncomeSourceModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
-                        businessName: Option[BusinessNameModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None)
   : Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => SubscriptionDataKeys.IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       selectedTaxYear.map(model => SubscriptionDataKeys.SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
-      businessName.map(model => SubscriptionDataKeys.BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model))
   }
 

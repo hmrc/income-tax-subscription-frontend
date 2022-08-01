@@ -69,7 +69,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     mockCheckYourAnswers
   )
 
-  "Calling the show action of the CheckYourAnswersController with an authorised user" when {
+  "Calling the show action of the CheckYourAnswersController with an authorised user" should {
 
     def result: Future[Result] = TestCheckYourAnswersController.show(subscriptionRequest)
 
@@ -82,6 +82,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
       mockFetchOverseasProperty(None)
+      mockFetchBusinessName(None)
       when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -96,6 +97,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
       mockFetchProperty(None)
       mockFetchOverseasProperty(None)
+      mockFetchBusinessName(None)
       when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -113,6 +115,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
         startDate = Some(testPropertyStartDateModel.startDate)
       )))
+      mockFetchBusinessName(None)
       when(mockCheckYourAnswers(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(HtmlFormat.empty)
       status(result) must be(Status.OK)
@@ -135,7 +138,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(Some(testFullPropertyModel))
         mockFetchOverseasProperty(Some(testFullOverseasPropertyModel))
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel)))
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel), businessName = Some(testBusinessName)))
+        mockFetchBusinessName(Some(testBusinessName))
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifySubscriptionDetailsSave(MtditId, 1)
@@ -155,7 +159,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockGetSelfEmployments[AccountingMethodModel]("BusinessAccountingMethod")(None)
         mockFetchProperty(Some(testFullPropertyModel))
         mockFetchOverseasProperty(Some(testFullOverseasPropertyModel))
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel)))
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(property = Some(testFullPropertyModel), businessName = Some(testBusinessName)))
+        mockFetchBusinessName(Some(testBusinessName))
         intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifySubscriptionDetailsSave(MtditId, 0)
       }

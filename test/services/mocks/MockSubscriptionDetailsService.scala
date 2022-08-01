@@ -88,6 +88,19 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       argThat(new BusinessSequenceMatcher(businesses)),
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
+  def verifySaveBusinessName(count: Int, reference: String, businessName: BusinessNameModel) =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[BusinessNameModel](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(BusinessName),
+      ArgumentMatchers.eq(businessName)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
+  def verifyFetchBusinessName(count: Int, reference: String) =
+    verify(mockConnector, times(count)).getSubscriptionDetails[BusinessNameModel](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(BusinessName)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
+
   def verifySaveSelfEmploymentsAccountingMethod(count: Int, reference: String, accountingMethodModel: AccountingMethodModel) =
     verifySubscriptionDetailsSaveWithField[AccountingMethodModel](reference, count, BusinessAccountingMethod, accountingMethodModel)
 
@@ -218,8 +231,9 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     mockFetchFromSubscriptionDetails[IncomeSourceModel](SubscriptionDataKeys.IncomeSource, fetchIndividualIncomeSource)
   }
 
-  protected final def mockFetchBusinessNameFromSubscriptionDetails(fetchBusinessName: Option[BusinessNameModel]): Unit = {
-    mockFetchFromSubscriptionDetails[BusinessNameModel](SubscriptionDataKeys.BusinessName, fetchBusinessName)
+  protected final def mockFetchBusinessName(fetchBusinessName: Option[BusinessNameModel]): Unit = {
+    when(mockConnector.getSubscriptionDetails[BusinessNameModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessName))
+      (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchBusinessName))
   }
 
   protected final def mockFetchAccountingMethodFromSubscriptionDetails(fetchAccountingMethod: Option[AccountingMethodModel]): Unit = {

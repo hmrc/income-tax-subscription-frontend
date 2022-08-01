@@ -115,7 +115,6 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod)
     )
 
@@ -123,7 +122,6 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod)
     )
 
@@ -136,7 +134,6 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(testIncomeSourceBusiness),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod)
     )
 
@@ -144,7 +141,6 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(testIncomeSourceProperty),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = None,
       accountingMethod = None
     )
 
@@ -152,7 +148,6 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(testIncomeSourceOverseas),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = None,
       accountingMethod = None
     )
 
@@ -160,14 +155,12 @@ object IntegrationTestModels {
     subscriptionData(
       incomeSource = Some(testIncomeSourceAll),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod)
     )
 
 
   def subscriptionData(incomeSource: Option[IncomeSourceModel] = None,
                        selectedTaxYear: Option[AccountingYearModel] = None,
-                       businessName: Option[BusinessNameModel] = None,
                        accountingMethod: Option[AccountingMethodModel] = None,
                        ukProperty: Option[PropertyModel] = None,
                        overseasProperty: Option[OverseasPropertyModel] = None,
@@ -175,7 +168,6 @@ object IntegrationTestModels {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
-      businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       ukProperty.map(model => Property -> PropertyModel.format.writes(model)) ++
       overseasProperty.map(model => Property -> OverseasPropertyModel.format.writes(model))

@@ -20,7 +20,6 @@ import models.common.business.BusinessNameModel
 import org.scalatest.matchers.should.Matchers._
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import utilities.SubscriptionDataKeys.BusinessName
 import utilities.{TestModels, UnitTestTrait}
 
 class SubscriptionDetailsServiceSpec extends UnitTestTrait
@@ -31,29 +30,24 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
       val subscriptionDetailsService: SubscriptionDetailsService = MockSubscriptionDetailsService
     }
 
+    val testReference = "test-reference"
     "configure and verify fetch and save business name as specified" in {
       val testBusinessName = BusinessNameModel("my business name")
       setupMockSubscriptionDetailsSaveFunctions()
-      mockFetchBusinessNameFromSubscriptionDetails(Some(testBusinessName))
+      mockFetchBusinessName(Some(testBusinessName))
 
-      val businessName = await(
-        for {
-          businessName <- TestSubscriptionDetails.subscriptionDetailsService.fetchBusinessName("test-reference")
-          _ <- TestSubscriptionDetails.subscriptionDetailsService.saveBusinessName("test-reference", testBusinessName)
-        } yield businessName
-      )
+      val businessName = await(TestSubscriptionDetails.subscriptionDetailsService.fetchBusinessName(testReference))
 
       businessName shouldBe Some(testBusinessName)
 
-      verifySubscriptionDetailsFetch(BusinessName, Some(2))
-      verifySubscriptionDetailsSave(BusinessName, 1)
+      verifyFetchBusinessName(1, testReference)
     }
 
     "configure and verify fetch all as specified" in {
       val testFetchAll = TestModels.emptyCacheMap
       mockFetchAllFromSubscriptionDetails(Some(testFetchAll))
 
-      val fetched = await(TestSubscriptionDetails.subscriptionDetailsService.fetchAll("test-reference"))
+      val fetched = await(TestSubscriptionDetails.subscriptionDetailsService.fetchAll(testReference))
       fetched shouldBe testFetchAll
 
       verifySubscriptionDetailsFetchAll(Some(1))
