@@ -20,7 +20,6 @@ import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.taskListURI
-import helpers.agent.IntegrationTestModels.subscriptionData
 import helpers.agent.servicemocks.AuthStub
 import models.Current
 import models.common.AccountingYearModel
@@ -33,7 +32,6 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
       When("GET /business/tax-year-check-your-answers is called")
@@ -54,11 +52,9 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "the select tax has been confirmed" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
         val unconfirmedTaxYear = AccountingYearModel(Current)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(unconfirmedTaxYear))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails("subscriptionId")
 
         When("GET /business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
@@ -77,7 +73,6 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "the select tax could not be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
         When("GET /business/tax-year-check-your-answers is called")

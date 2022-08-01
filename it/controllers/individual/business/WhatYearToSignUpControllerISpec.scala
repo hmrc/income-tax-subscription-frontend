@@ -19,15 +19,15 @@ package controllers.individual.business
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{subscriptionData, testAccountingYearCurrent}
+import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.common.AccountingYearModel
-import models.{AccountingYear, Current, Next}
+import models.{Current, Next}
 import play.api.http.Status._
 import play.api.libs.json.Json
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.SelectedTaxYear
-import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 import java.time.LocalDate
 
@@ -39,7 +39,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       "show the What Tax Year To Sign Up with an option current tax year selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
         When("GET /business/what-year-to-sign-up is called")
@@ -64,7 +63,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       "show the What Year To Sign Up page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
 
@@ -92,9 +90,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
 
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
@@ -109,7 +106,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       "not select an option on the accounting year page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, "")
 
         When("POST /business/what-year-to-sign-up is called")
 
@@ -131,11 +127,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(
-          subscriptionData()
-        )
         stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(SubscriptionDetailsAccountingYearCurrent))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
@@ -153,9 +146,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(SubscriptionDetailsAccountingYearCurrent))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYear](SubscriptionDataKeys.SelectedTaxYear, userInput)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))

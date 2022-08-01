@@ -39,7 +39,6 @@ import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetai
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
-import utilities.TestModels.testCacheMap
 import utilities.agent.TestConstants.testCredId
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.agent.business.ProgressSaved
@@ -112,8 +111,6 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
         mockAgent()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        val testBusinessCacheMap = testCacheMap()
-        mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(selfEmployments)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(selfEmploymentAccountingMethod)
         mockFetchProperty(property)

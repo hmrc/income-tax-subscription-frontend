@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
-import utilities.TestModels.{testCacheMap, testFullPropertyModel}
+import utilities.TestModels.testFullPropertyModel
 import views.html.agent.business.PropertyStartDate
 
 import java.time.LocalDate
@@ -55,9 +55,6 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     "display the property start date view and return OK (200)" in withController { controller =>
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-      mockFetchAllFromSubscriptionDetails(Some(testCacheMap(
-        incomeSource = None
-      )))
       mockFetchProperty(None)
 
       status(result) must be(Status.OK)

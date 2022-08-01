@@ -36,7 +36,6 @@ import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetai
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
-import utilities.TestModels.testCacheMap
 import utilities.individual.TestConstants.testCredId
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.incometax.business.ProgressSaved
@@ -123,8 +122,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       "the location parameter is provided" in withController { (controller, mockedView) =>
         mockNinoAndUtrRetrieval()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        val testBusinessCacheMap = testCacheMap()
-        mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(selfEmployments)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(selfEmploymentAccountingMethod)
         mockFetchProperty(property)

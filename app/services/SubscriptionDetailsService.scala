@@ -22,8 +22,6 @@ import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceRespon
 import models.common._
 import models.common.business._
 import models.{AccountingMethod, DateModel}
-import play.api.libs.json._
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys._
@@ -36,30 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
                                           (implicit ec: ExecutionContext) {
-
-  private[services] def fetch[T](reference: String, location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](reference, subscriptionId).map(_.flatMap(cache => cache.getEntry(location)))
-
-  private[services] def save[T](reference: String, location: String, obj: T)
-                               (implicit hc: HeaderCarrier, reads: Writes[T]): Future[CacheMap] = {
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](reference, subscriptionId).flatMap { optCache =>
-      val newCache = optCache match {
-        case None => CacheMap("", Map(location -> Json.toJson(obj)))
-        case Some(cache) => CacheMap("", cache.data.updated(location, Json.toJson(obj)))
-      }
-      incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, subscriptionId, newCache) map {
-        case Right(_) => newCache
-        case Left(_) => CacheMap("", Map.empty[String, JsValue])
-      }
-    }
-  }
-
-  def fetchAll(reference: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[CacheMap](reference, subscriptionId) map {
-      case Some(cacheMap) => cacheMap
-      case None => CacheMap("", Map.empty)
-    }
-  }
 
   def deleteAll(reference: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     incomeTaxSubscriptionConnector.deleteAll(reference)
@@ -80,9 +54,11 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def saveSelectedTaxYear(reference: String, selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingYearModel](reference, SelectedTaxYear, selectedTaxYear)
 
-  def fetchSubscriptionId(reference: String)(implicit hc: HeaderCarrier): Future[Option[String]] = fetch[String](reference, MtditId)
+  def fetchSubscriptionId(reference: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[String](reference, MtditId)
 
-  def saveSubscriptionId(reference: String, mtditId: String)(implicit hc: HeaderCarrier): Future[CacheMap] = save[String](reference, MtditId, mtditId)
+  def saveSubscriptionId(reference: String, mtditId: String)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[String](reference, MtditId, mtditId)
 
   def fetchLastUpdatedTimestamp(reference: String)(implicit hc: HeaderCarrier): Future[Option[TimestampModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[TimestampModel](reference, lastUpdatedTimestamp)

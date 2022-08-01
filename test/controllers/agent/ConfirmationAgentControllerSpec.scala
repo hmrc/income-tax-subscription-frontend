@@ -77,7 +77,6 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session" should {
       "return OK" in {
-        mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
 
         mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
@@ -91,8 +90,6 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
 
     "no client details in session" should {
       "return an exception" in {
-        mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
-
         mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
         mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
         mockCall()
@@ -105,7 +102,6 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session and new Confirmation content applies" should {
       "return OK" in {
-        mockFetchAllFromSubscriptionDetails(Some(testCacheMap))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
 
         mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))

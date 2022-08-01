@@ -21,10 +21,7 @@ import models.common._
 import models.common.business._
 import models.usermatching.UserDetailsModel
 import models.{AccountingMethod => _, _}
-import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.SubscriptionDataKeys._
 
 object TestModels {
 
@@ -49,40 +46,6 @@ object TestModels {
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testSelfEmployments = Seq(SelfEmploymentData("1", Some(BusinessStartDate(testStartDate)), Some(testBusinessName),
     Some(BusinessTradeNameModel("plumbing")), confirmed = true))
-
-  val emptyCacheMap = CacheMap("", Map())
-
-  val testCacheMap: CacheMap =
-    testCacheMap(
-      incomeSource = Some(testIncomeSourceBusinessAndUkProperty),
-      businessName = Some(testBusinessName),
-      accountingMethod = Some(testAccountingMethod))
-
-  val testCurrentCacheMap: CacheMap =
-    testCacheMap(
-      incomeSource = Some(testIncomeSourceBusinessAndUkProperty),
-      businessName = Some(testBusinessName),
-      accountingMethod = Some(testAccountingMethod))
-
-  def testCacheMapCustom(
-                          incomeSource: Option[IncomeSourceModel] = Some(testIncomeSourceBusinessAndUkProperty),
-                          selectedTaxYear: Option[AccountingYearModel] = Some(testSelectedTaxYearNext),
-                          businessName: Option[BusinessNameModel] = Some(testBusinessName),
-                          accountingMethod: Option[AccountingMethodModel] = Some(testAccountingMethod)): CacheMap =
-    testCacheMap(
-      incomeSource = incomeSource,
-      businessName = businessName,
-      accountingMethod = accountingMethod)
-
-  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
-                   businessName: Option[BusinessNameModel] = None,
-                   accountingMethod: Option[AccountingMethodModel] = None): CacheMap = {
-    val emptyMap = Map[String, JsValue]()
-    val map: Map[String, JsValue] = Map[String, JsValue]() ++
-      businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
-      accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model)))
-    CacheMap("", map)
-  }
 
   lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
 

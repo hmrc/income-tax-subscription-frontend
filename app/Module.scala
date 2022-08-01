@@ -16,12 +16,10 @@
 
 import com.google.inject.AbstractModule
 import config.{AppConfig, FrontendAppConfig}
-import uk.gov.hmrc.http.cache.client.SessionCache
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
-    bind(classOf[SessionCache]).to(classOf[config.SessionCache]).asEagerSingleton()
     bind(classOf[AppConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
   }
 

@@ -16,12 +16,12 @@
 
 package controllers.usermatching
 
+import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
-import _root_.common.Constants.ITSASessionKeys
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -43,10 +43,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         "redirect to the claim subscription page" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
           CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
           SubscriptionStub.stubGetSubscriptionFound()
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionId()
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()

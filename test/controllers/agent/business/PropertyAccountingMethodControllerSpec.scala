@@ -20,7 +20,7 @@ import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodPropertyForm
 import models.Cash
-import models.common.{IncomeSourceModel, PropertyModel}
+import models.common.PropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
@@ -28,14 +28,12 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utilities.agent.TestModels._
 import views.html.agent.business.PropertyAccountingMethod
 
 import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector  {
+  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector {
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -56,22 +54,11 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     testCode(controller)
   }
 
-  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceProperty))
-
-  def bothPropertyAndBusinessIncomeSource: CacheMap = testCacheMap(
-    incomeSource = Some(testIncomeSourceBusinessAndUkProperty)
-  )
-
-  def cacheMap(incomeSource: Option[IncomeSourceModel] = None): CacheMap = testCacheMap(
-    incomeSource = incomeSource
-  )
-
   "show" when {
     "there is no previous selected answer" should {
       "display the property accounting method view and return OK (200)" in withController { controller =>
         lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchAllFromSubscriptionDetails(Some(cacheMap(incomeSource = Some(testIncomeSourceProperty))))
         mockFetchProperty(None)
 
         status(result) must be(Status.OK)
@@ -82,9 +69,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "display the property accounting method view with the previous selected answer CASH and return OK (200)" in withController { controller =>
         lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
-        mockFetchAllFromSubscriptionDetails(Some(cacheMap(
-          incomeSource = Some(testIncomeSourceProperty)
-        )))
         mockFetchProperty(Some(PropertyModel(Some(Cash))))
 
         status(result) must be(Status.OK)
@@ -104,13 +88,12 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "redirect to agent uk property check your answers page" in {
       setupMockSubscriptionDetailsSaveFunctions()
-      mockFetchAllFromSubscriptionDetails(Some(cacheMap(incomeSource = Some(testIncomeSourceProperty))))
       mockFetchProperty(None)
 
       val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 
       status(goodRequest) mustBe Status.SEE_OTHER
-      redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(false).url)
+      redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyCheckYourAnswersController.show().url)
 
       await(goodRequest)
       verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash))))
@@ -118,8 +101,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
-        mockFetchAllFromSubscriptionDetails(Some(cacheMap(incomeSource = Some(testIncomeSourceProperty.copy(foreignProperty = true)))))
-
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)

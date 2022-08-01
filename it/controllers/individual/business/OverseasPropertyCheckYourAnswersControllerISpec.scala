@@ -17,10 +17,9 @@
 package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub.postUri
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.taskListURI
-import helpers.IntegrationTestModels.subscriptionData
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
@@ -105,7 +104,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
               redirectURI(taskListURI)
             )
 
-            verifyPost(postUri(OverseasProperty), count = Some(0))
+            verifyPost(subscriptionUri(OverseasProperty), count = Some(0))
           }
         }
     }
@@ -114,7 +113,6 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       "overseas property data cannot be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST business/overseas-property-check-your-answers is called")

@@ -16,23 +16,20 @@
 
 package helpers
 
+import _root_.common.Constants.ITSASessionKeys.MTDITID
+import _root_.common.Constants._
 import helpers.IntegrationTestConstants._
 import models._
 import models.common._
 import models.common.business._
 import models.common.subscription.EnrolmentKey
 import models.usermatching.UserDetailsModel
-import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
-import _root_.common.Constants._
-import _root_.common.Constants.ITSASessionKeys.MTDITID
 
 import java.time.LocalDate
 
 object IntegrationTestModels {
-
-  import utilities.SubscriptionDataKeys._
 
   /*
    * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
@@ -110,71 +107,6 @@ object IntegrationTestModels {
   val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
   val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
   val testId = "testId"
-
-  lazy val fullSubscriptionDataBothPost: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-      accountingMethod = Some(testAccountingMethod)
-    )
-
-  lazy val fullSubscriptionDataAllPost: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)),
-      accountingMethod = Some(testAccountingMethod)
-    )
-
-  lazy val fullSubscriptionDataPropertyPost: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false))
-    )
-
-  val selfEmploymentSubscriptionData: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(testIncomeSourceBusiness),
-      accountingMethod = Some(testAccountingMethod)
-    )
-
-  val ukPropertySubscriptionData: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(testIncomeSourceProperty),
-      accountingMethod = None
-    )
-
-  val overseasPropertySubscriptionData: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(testIncomeSourceOverseas),
-      accountingMethod = None
-    )
-
-  val AllSubscriptionData: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(testIncomeSourceAll),
-      accountingMethod = Some(testAccountingMethod)
-    )
-
-
-  def subscriptionData(incomeSource: Option[IncomeSourceModel] = None,
-                       accountingMethod: Option[AccountingMethodModel] = None,
-                       ukProperty: Option[PropertyModel] = None,
-                       overseasProperty: Option[OverseasPropertyModel] = None,
-                      ): Map[String, JsValue] = {
-    Map.empty[String, JsValue] ++
-      accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      ukProperty.map(model => Property -> PropertyModel.format.writes(model)) ++
-      overseasProperty.map(model => Property -> OverseasPropertyModel.format.writes(model))
-  }
-
-  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
-
-  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
-
-  lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
-
-  lazy val testIncomeSourceOverseas: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = false, foreignProperty = true)
-
-  lazy val testIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
-
-  lazy val testIncomeSourceIndivProperty: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
 
   lazy val testUserDetails: UserDetailsModel = UserDetailsModel(testFirstName, testLastName, testNino, testOneDayAgo)
 

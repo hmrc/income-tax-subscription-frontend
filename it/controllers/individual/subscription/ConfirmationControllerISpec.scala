@@ -18,10 +18,9 @@ package controllers.individual.subscription
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{signOutURI, testSubscriptionId}
+import helpers.IntegrationTestConstants.signOutURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
-import play.api.libs.json.JsString
 import utilities.SubscriptionDataKeys._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
@@ -30,9 +29,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
     "return the confirmation page when the user is enrolled and confirm SPS preferences" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubEnrolled()
-      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(Map(
-        MtditId -> JsString(testSubscriptionId)
-      ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
       When("GET /confirmation is called")
