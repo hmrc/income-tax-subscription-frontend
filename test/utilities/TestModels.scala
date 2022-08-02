@@ -20,17 +20,13 @@ import models._
 import models.common._
 import models.common.business._
 import models.usermatching.{UserDetailsModel, UserMatchSuccessResponseModel}
-import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants.{testFirstName, testLastName, testNino, testUtr}
 
 import java.time.LocalDate
 
 object TestModels {
-
-  import SubscriptionDataKeys._
 
   /*
    * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
@@ -67,8 +63,6 @@ object TestModels {
   val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
   val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidStartDate)
 
-  val emptyCacheMap = CacheMap("", Map())
-
   val testFullPropertyModel: PropertyModel = PropertyModel(
     accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
     startDate = Some(testPropertyStartDateModel.startDate),
@@ -80,38 +74,6 @@ object TestModels {
     startDate = Some(testPropertyStartDateModel.startDate),
     confirmed = true
   )
-
-  lazy val testCacheMap: CacheMap =
-    testCacheMap(
-      incomeSource = Some(testAgentIncomeSourceBusinessProperty),
-      accountingMethod = Some(testAccountingMethod)
-    )
-
-  lazy val testCacheMapIndiv: CacheMap =
-    testCacheMap(
-      incomeSource = Some(testIncomeSourceBoth),
-      accountingMethod = Some(testAccountingMethod)
-    )
-
-  def testCacheMapCustom(incomeSource: Option[IncomeSourceModel] = Some(testAgentIncomeSourceBusinessProperty),
-                         accountingMethod: Option[AccountingMethodModel] = Some(testAccountingMethod)): CacheMap =
-    testCacheMap(
-      incomeSource = incomeSource,
-      accountingMethod = accountingMethod)
-
-  def testCacheMap(incomeSource: IncomeSourceModel,
-                   accountingMethod: AccountingMethodModel): CacheMap = testCacheMap(
-    Some(incomeSource),
-    Some(accountingMethod)
-  )
-
-  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
-                   accountingMethod: Option[AccountingMethodModel] = None): CacheMap = {
-    val emptyMap = Map[String, JsValue]()
-    val map: Map[String, JsValue] = Map[String, JsValue]() ++
-      accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model)))
-    CacheMap("", map)
-  }
 
   // individual
   lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)

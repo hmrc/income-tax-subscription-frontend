@@ -20,7 +20,6 @@ import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.{stubGetSubscriptionDetails, verifySubscriptionSave}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.taskListURI
-import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuthStub
 import models.Current
 import models.common.AccountingYearModel
@@ -33,7 +32,6 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
       When("GET /business/tax-year-check-your-answers is called")
@@ -55,10 +53,8 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "the select tax has been confirmed" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails("subscriptionId")
         val unconfirmedTaxYear = AccountingYearModel(Current)
         stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(unconfirmedTaxYear))
 
@@ -79,7 +75,6 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "the select tax could not be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
         When("GET /business/tax-year-check-your-answers is called")

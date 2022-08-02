@@ -19,7 +19,7 @@ package controllers.individual.business
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{subscriptionData, testFullPropertyModel}
+import helpers.IntegrationTestModels.testFullPropertyModel
 import helpers.servicemocks.AuthStub
 import models.{Accruals, Cash}
 import play.api.http.Status._
@@ -34,7 +34,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
       "show the accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
         When("GET /business/accounting-method-property is called")
@@ -55,7 +54,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
       "show the property accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("GET /business/accounting-method-property is called")
@@ -79,7 +77,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = None)))
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
 
@@ -98,7 +95,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = None)))
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
 
@@ -117,7 +113,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         "not selecting an option on the property accounting method page" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
           When("POST /business/accounting-method-property is called")
@@ -140,7 +135,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = Some(Accruals))))
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
 

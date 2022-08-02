@@ -34,7 +34,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     def fixture(agentLocked: Boolean): WSResponse = {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
 
       if (agentLocked) AgentLockoutStub.stubAgentIsLocked(testARN)
       else AgentLockoutStub.stubAgentIsNotLocked(testARN)
@@ -95,7 +94,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     "the agent is locked out" should {
       "show the agent lock out page" in {
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionData()
         AgentLockoutStub.stubAgentIsLocked(testARN)
 
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
@@ -112,7 +110,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
       "show the client details page with validation errors" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
 
         When("I call POST /client-details")
@@ -134,7 +131,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
-        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = None)

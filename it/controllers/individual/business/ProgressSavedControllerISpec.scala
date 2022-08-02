@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestModels.subscriptionData
 import helpers.servicemocks.AuditStub.verifyAudit
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{NO_CONTENT, OK}
@@ -50,7 +49,6 @@ class ProgressSavedControllerISpec  extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)

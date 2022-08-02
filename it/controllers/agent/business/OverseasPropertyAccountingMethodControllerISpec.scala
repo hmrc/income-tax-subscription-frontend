@@ -101,7 +101,6 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
       "return a BAD_REQUEST and display an error box on screen without redirecting" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubEmptySubscriptionData()
 
         When("POST /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyAccountingMethod(inEditMode = false, None)

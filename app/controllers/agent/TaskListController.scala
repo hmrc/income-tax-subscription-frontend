@@ -27,12 +27,10 @@ import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess
 import play.api.Logging
 import play.api.mvc._
 import services._
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import services.agent.SubscriptionOrchestrationService
-import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
-import utilities.SubscriptionDataUtil.CacheMapUtil
+import CreateIncomeSourcesModel.createIncomeSources
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.AgentTaskList
 
@@ -88,14 +86,19 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
 
   private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
     for {
-      cacheMap <- subscriptionDetailsService.fetchAll(reference)
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
     } yield {
-      cacheMap.getTaskListModel(businesses, businessAccountingMethod, property, overseasProperty, selectedTaxYear)
+      TaskListModel(
+        selectedTaxYear,
+        businesses,
+        businessAccountingMethod.map(_.accountingMethod),
+        property,
+        overseasProperty
+      )
     }
   }
 
@@ -125,14 +128,13 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
         throttlingService.throttled(AgentEndOfJourneyThrottle) {
           withAgentReference { reference =>
             val model = for {
-              cacheMap <- subscriptionDetailsService.fetchAll(reference)
               selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
               selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
               property <- subscriptionDetailsService.fetchProperty(reference)
               overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
               selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
             } yield {
-              cacheMap.createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, accountingYear = selectedTaxYear)
+              createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, accountingYear = selectedTaxYear)
             }
             model.flatMap { model =>
               processFunc(user)(request)(model)

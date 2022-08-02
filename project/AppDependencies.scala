@@ -13,7 +13,6 @@ object AppDependencies {
   private val playPartialsVersion      = "8.3.0-play-28"
   private val playHmrcFrontendVersion  = "3.8.0-play-28"
   private val playLanguageVersion      = "5.2.0-play-28"
-  private val httpCachingClientVersion = "9.6.0-play-28"
   private val domainVersion            = "8.0.0-play-28"
   private val catsVersion              = "0.9.0"
 
@@ -30,7 +29,6 @@ object AppDependencies {
     "uk.gov.hmrc"   %% "play-partials"              % playPartialsVersion,
     "uk.gov.hmrc"   %% "play-frontend-hmrc"         % playHmrcFrontendVersion,
     "uk.gov.hmrc"   %% "play-language"              % playLanguageVersion,
-    "uk.gov.hmrc"   %% "http-caching-client"        % httpCachingClientVersion,
     "uk.gov.hmrc"   %% "domain"                     % domainVersion,
     "org.typelevel" %% "cats"                       % catsVersion,
     "uk.gov.hmrc"   %% "logback-json-logger"        % "4.9.0"

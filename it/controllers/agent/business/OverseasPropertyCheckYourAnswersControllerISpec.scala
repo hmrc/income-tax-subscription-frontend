@@ -18,8 +18,7 @@ package controllers.agent.business
 
 import _root_.common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub.postUri
-import helpers.IntegrationTestModels.subscriptionData
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.{taskListURI, testUtr}
 import helpers.agent.WiremockHelper.verifyPost
@@ -35,7 +34,6 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash)))))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
       When("GET business/overseas-property-check-your-answers is called")
@@ -88,7 +86,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
             redirectURI(taskListURI)
           )
 
-          verifyPost(postUri(OverseasProperty), count = Some(0))
+          verifyPost(subscriptionUri(OverseasProperty), count = Some(0))
         }
       }
     }
@@ -97,7 +95,6 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       "the property details could not be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST business/overseas-property-check-your-answers is called")

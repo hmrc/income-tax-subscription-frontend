@@ -17,8 +17,7 @@
 package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub.postUri
-import helpers.IntegrationTestModels.subscriptionData
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.taskListURI
 import helpers.agent.WiremockHelper.verifyPost
@@ -34,7 +33,6 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(ukProperty = Some(PropertyModel(accountingMethod = Some(Cash)))))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
 
       When("GET business/uk-property-check-your-answers is called")
@@ -94,7 +92,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(taskListURI)
           )
-          verifyPost(postUri(Property), count = Some(0))
+          verifyPost(subscriptionUri(Property), count = Some(0))
 
         }
       }
@@ -104,7 +102,6 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "the property details could not be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
 
         When("POST business/uk-property-check-your-answers is called")

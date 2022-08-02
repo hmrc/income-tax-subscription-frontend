@@ -46,7 +46,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
@@ -69,8 +68,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
-
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = None, confirmed = false)))
@@ -92,7 +89,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
@@ -121,7 +117,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
@@ -137,7 +132,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               soleTraderBusinesses = Some(testSoleTraderBusinesses)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
@@ -169,7 +163,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
@@ -192,7 +185,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               ukProperty = Some(testUkProperty)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
@@ -223,7 +215,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
@@ -245,7 +236,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               overseasProperty = Some(testOverseasProperty)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
@@ -277,7 +267,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
@@ -301,7 +290,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               ukProperty = Some(testUkProperty)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
@@ -333,7 +321,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
@@ -356,7 +343,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               overseasProperty = Some(testOverseasProperty)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
@@ -388,7 +374,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
@@ -417,7 +402,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               overseasProperty = Some(testOverseasProperty)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
@@ -450,7 +434,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
@@ -480,7 +463,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               overseasProperty = Some(testOverseasProperty)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
@@ -513,7 +495,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
@@ -529,7 +510,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               soleTraderBusinesses = Some(testSoleTraderBusinesses)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
@@ -553,7 +533,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
@@ -569,7 +548,6 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               soleTraderBusinesses = Some(testSoleTraderBusinesses)
             )
           )(NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubPostSubscriptionId()
 
           And("The wiremock stubs for auto enrolment")
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)

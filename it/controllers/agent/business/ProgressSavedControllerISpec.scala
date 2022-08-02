@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestModels.subscriptionData
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
@@ -51,7 +50,6 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData())
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)

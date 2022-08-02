@@ -22,7 +22,7 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import models.DateModel
-import models.common.{IncomeSourceModel, OverseasPropertyModel}
+import models.common.OverseasPropertyModel
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
@@ -35,7 +35,6 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
       "show the overseas property start date page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubFullSubscriptionBothPost()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           OverseasProperty,
           OK,
@@ -58,10 +57,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
     "Subscription Details returns no data" should {
       "show the overseas property start date page" in {
         Given("I setup the Wiremock stubs")
-        val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
-          foreignProperty = true)
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("GET /overseas-property-start-date is called")
@@ -104,10 +100,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
       "do not enter commencement date" should {
         "return BAD_REQUEST" in {
           Given("I setup the Wiremock stubs")
-          val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true,
-            foreignProperty = false)
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
 
           When("POST /overseas-property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, None)
@@ -123,12 +116,9 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
       "select commencement date within 12 months" should {
         "return BAD_REQUEST" in {
           val userInput = testInvalidStartDate
-          val incomeSourceModel: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false,
-            foreignProperty = true)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(subscriptionData(incomeSource = Some(incomeSourceModel)))
 
           When("POST /overseas-property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))

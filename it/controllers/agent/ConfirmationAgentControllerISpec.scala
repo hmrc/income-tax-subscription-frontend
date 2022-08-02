@@ -19,10 +19,8 @@ package controllers.agent
 import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.testSubscriptionID
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
-import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys._
 
 class ConfirmationAgentControllerISpec extends ComponentSpecBase {
@@ -33,7 +31,6 @@ class ConfirmationAgentControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSubscriptionData(Map("MtditId" -> Json.toJson(testSubscriptionID)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
 

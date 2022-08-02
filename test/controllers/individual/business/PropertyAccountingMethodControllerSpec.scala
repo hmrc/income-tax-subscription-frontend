@@ -28,7 +28,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.TestModels._
 import views.html.individual.incometax.business.PropertyAccountingMethod
 
@@ -56,16 +55,9 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     testCode(controller)
   }
 
-  def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceProperty))
-
-  def allThreeIncomeSourcesType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceAll))
-
-  def bothIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceBoth))
-
   "show" should {
     "display the property accounting method view and return OK (200)" in withController { controller =>
       mockFetchProperty(None)
-      mockFetchAllFromSubscriptionDetails(Some(propertyOnlyIncomeSourceType))
 
       lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
@@ -119,7 +111,6 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "when there is an invalid submission with an error form" should {
       "return bad request status (400)" in {
-        mockFetchAllFromSubscriptionDetails(Some(propertyOnlyIncomeSourceType))
 
         val badRequest = callShowWithErrorForm(isEditMode = false)
 
@@ -133,7 +124,6 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     "The back url" when {
       "is not in edit mode" should {
         "redirect back to uk property start date page" in withController { controller =>
-          mockFetchAllFromSubscriptionDetails(Some(propertyOnlyIncomeSourceType))
           controller.backUrl(isEditMode = false) mustBe
             controllers.individual.business.routes.PropertyStartDateController.show().url
         }

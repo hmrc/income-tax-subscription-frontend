@@ -25,9 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
-import utilities.agent.TestModels._
 import views.agent.mocks.MockOverseasPropertyAccountingMethod
 
 import scala.concurrent.Future
@@ -41,8 +39,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
     "submit" -> TestOverseasPropertyAccountingMethodController.submit(isEditMode = false)
   )
 
-  def overseasPropertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceOverseasProperty))
-
   object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
     mockAuditingService,
     mockAuthService,
@@ -55,7 +51,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       "display the overseas property accounting method view and return OK (200)" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
         mockFetchOverseasProperty(None)
-        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
         mockOverseasPropertyAccountingMethod()
 
         status(result) must be(Status.OK)
@@ -70,7 +65,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         mockFetchOverseasProperty(Some(OverseasPropertyModel(
           accountingMethod = Some(Cash)
         )))
-        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
         mockOverseasPropertyAccountingMethod()
 
         status(result) must be(Status.OK)
@@ -104,7 +98,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
     "return bad request status (400)" when {
       "there is an invalid submission with an error form" in {
-        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
         mockOverseasPropertyAccountingMethod()
 
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
@@ -119,7 +112,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
     "The back url is not in edit mode" should {
       "redirect to the Overseas Property Start Date page" in {
-        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
         TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
           controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
       }
@@ -127,7 +119,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
     "The back url is in edit mode" should {
       "redirect to the agent overseas property check your answers page" in {
-        mockFetchAllFromSubscriptionDetails(Some(overseasPropertyOnlyIncomeSourceType))
         TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
           controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
       }

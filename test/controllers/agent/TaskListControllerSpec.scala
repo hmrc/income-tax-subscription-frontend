@@ -33,7 +33,7 @@ import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetai
 import services.{AccountingPeriodService, ThrottlingService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
-import utilities.TestModels.{testAccountingMethod, testCacheMap, testCacheMapIndiv, testSelectedTaxYearCurrent, testValidStartDate}
+import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.agent.TestConstants.{testARN, testCreateIncomeSources, testNino, testUtr}
 import views.html.agent.AgentTaskList
 
@@ -84,8 +84,6 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     "return an OK status with the task list page" in {
       mockTaskList()
 
-      val testBusinessCacheMap = testCacheMap()
-      mockFetchAllFromSubscriptionDetails(Some(testBusinessCacheMap))
       mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq(
         SelfEmploymentData(
           id = "id",
@@ -120,7 +118,6 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     "sign up income source is successful" should {
       "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
         mockFetchProperty(Some(PropertyModel(
@@ -149,7 +146,6 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
 
     "sign up income source fails" should {
       "return an internalServer error" in {
-        mockFetchAllFromSubscriptionDetails(Some(testCacheMapIndiv))
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
         mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
         mockFetchProperty(Some(PropertyModel(

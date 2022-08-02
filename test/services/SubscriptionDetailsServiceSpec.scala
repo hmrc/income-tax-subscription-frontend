@@ -20,7 +20,7 @@ import models.common.business.BusinessNameModel
 import org.scalatest.matchers.should.Matchers._
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import utilities.{TestModels, UnitTestTrait}
+import utilities.UnitTestTrait
 
 class SubscriptionDetailsServiceSpec extends UnitTestTrait
   with MockSubscriptionDetailsService {
@@ -42,17 +42,6 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
 
       verifyFetchBusinessName(1, testReference)
     }
-
-    "configure and verify fetch all as specified" in {
-      val testFetchAll = TestModels.emptyCacheMap
-      mockFetchAllFromSubscriptionDetails(Some(testFetchAll))
-
-      val fetched = await(TestSubscriptionDetails.subscriptionDetailsService.fetchAll(testReference))
-      fetched shouldBe testFetchAll
-
-      verifySubscriptionDetailsFetchAll(Some(1))
-    }
-
 
   }
 

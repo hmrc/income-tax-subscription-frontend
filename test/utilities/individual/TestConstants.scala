@@ -16,6 +16,8 @@
 
 package utilities.individual
 
+import common.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
+import common.Constants.mtdItsaEnrolmentName
 import models.common.business._
 import models.common.subscription._
 import models.common.{AccountingYearModel, IncomeSourceModel, OverseasPropertyStartDateModel, PropertyStartDateModel}
@@ -23,11 +25,8 @@ import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchS
 import models.{Cash, Current, DateModel, IndividualSummary}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utilities.AccountingPeriodUtil
-import utilities.TestModels.{testAccountMethod, testAccountingPeriod, testBusinessName, testBusinessTradeName, testValidStartDate}
-import common.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
-import common.Constants.mtdItsaEnrolmentName
+import utilities.TestModels._
 
 import java.net.URLEncoder
 import java.time.OffsetDateTime
@@ -39,7 +38,6 @@ object TestConstants {
   */
   lazy val testNino: String = new Generator().nextNino.nino
   lazy val testId: String = "testId"
-  lazy val testEmptyCacheMap = CacheMap("", Map())
   lazy val testUtr: String = UUID.randomUUID().toString
   lazy val testReference: String = "test-reference"
   //Not an actual UTRTestAuthenticatorConnector
