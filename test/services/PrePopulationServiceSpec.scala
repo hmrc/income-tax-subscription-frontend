@@ -77,7 +77,7 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
         verifySaveUkProperty(1, testReference, testUkProperty)
         verifyOverseasPropertySave(Some(testOverseasProperty), Some(testReference))
         verifySaveSelfEmploymentsAccountingMethod(1, testReference, testBusinessAccountingMethod)
-        verifySavePrePopFlag(1, testReference)
+        verifySavePrePopFlag(1, testReference, true)
       }
     }
     "given a user which has been seen before" should {
@@ -92,7 +92,7 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
         verifySaveUkProperty(0, testReference, testUkProperty)
         verifyOverseasPropertySave(None)
         verifySaveSelfEmploymentsAccountingMethod(0, testReference, testBusinessAccountingMethod)
-        verifySavePrePopFlag(0, testReference)
+        verifySavePrePopFlag(0, testReference, true)
       }
     }
   }

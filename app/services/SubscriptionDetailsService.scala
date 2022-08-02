@@ -66,10 +66,10 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   }
 
   def fetchPrePopFlag(reference: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] =
-    fetch[Boolean](reference, PrePopFlag)
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[Boolean](reference, PrePopFlag)
 
-  def savePrePopFlag(reference: String, prepop: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] =
-    save[Boolean](reference, PrePopFlag, prepop)
+  def savePrePopFlag(reference: String, prepop: Boolean)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[Boolean](reference, PrePopFlag, prepop)
 
   def fetchBusinessName(reference: String)(implicit hc: HeaderCarrier): Future[Option[BusinessNameModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[BusinessNameModel](reference, SubscriptionDataKeys.BusinessName)

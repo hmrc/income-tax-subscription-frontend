@@ -33,9 +33,8 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
                                                http: HttpClient)
                                               (implicit ec: ExecutionContext) {
 
-  def subscriptionURL(reference: String, id: String): String = {
-    appConfig.microServiceUrl + s"/income-tax-subscription/subscription-data/$reference/id/$id"
-  }
+  def subscriptionURL(reference: String, id: String): String =
+    s"${appConfig.microServiceUrl}/income-tax-subscription/subscription-data/$reference/id/$id"
 
   def retrieveReferenceUrl: String = {
     appConfig.microServiceUrl + "/income-tax-subscription/subscription-data"
