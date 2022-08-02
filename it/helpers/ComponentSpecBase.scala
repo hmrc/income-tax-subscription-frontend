@@ -152,8 +152,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def startPage(): WSResponse = get("/")
 
-    def paperlessError(): WSResponse = get("/paperless-error")
-
     def callback(): WSResponse = get("/callback")
 
     def indexPage(): WSResponse = get("/index")
@@ -293,11 +291,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     }
 
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
-
-    def submitPaperlessError(sessionKeys: Map[String, String] = Map.empty): WSResponse = post(
-      uri = "/paperless-error",
-      additionalCookies = sessionKeys
-    )(Map.empty)
 
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 

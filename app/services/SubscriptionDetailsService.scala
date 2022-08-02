@@ -84,12 +84,6 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
 
   def saveSubscriptionId(reference: String, mtditId: String)(implicit hc: HeaderCarrier): Future[CacheMap] = save[String](reference, MtditId, mtditId)
 
-  def fetchPaperlessPreferenceToken(reference: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
-    fetch[String](reference, PaperlessPreferenceToken)
-
-  def savePaperlessPreferenceToken(reference: String, token: String)(implicit hc: HeaderCarrier): Future[CacheMap] =
-    save[String](reference, PaperlessPreferenceToken, token)
-
   def fetchLastUpdatedTimestamp(reference: String)(implicit hc: HeaderCarrier): Future[Option[TimestampModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[TimestampModel](reference, lastUpdatedTimestamp)
 
