@@ -19,8 +19,8 @@ package services.agent
 import cats.data.EitherT
 import cats.implicits._
 import connectors.agent.AgentSPSConnector
+import models.ConnectorError
 import models.common.subscription.{CreateIncomeSourcesModel, CreateIncomeSourcesSuccess, SubscriptionSuccess}
-import models.{AgentSummary, ConnectorError, SummaryModel}
 import services.SubscriptionService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -61,33 +61,6 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
       mtdbsa = signUpResponse.mtdbsa
       _ <- EitherT[Future, ConnectorError, CreateIncomeSourcesSuccess](subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel))
-    } yield SubscriptionSuccess(mtdbsa)
-
-    res.value
-  }
-
-  def createSubscription(arn: String, nino: String, utr: String, summaryModel: SummaryModel)
-                        (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
-    signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[AgentSummary]) flatMap {
-      case right@Right(subscriptionSuccess) => {
-        autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
-          case Right(_) =>
-            confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
-            right
-          case Left(_) =>
-            right
-        }
-      }
-      case left => Future.successful(left)
-    }
-
-  private[services] def signUpAndCreateIncomeSources(nino: String, agentSummary: AgentSummary)
-                                                    (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
-
-    val res = for {
-      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
-      mtdbsa = signUpResponse.mtdbsa
-      _ <- EitherT[Future, ConnectorError, CreateIncomeSourcesSuccess](subscriptionService.createIncomeSources(nino, mtdbsa, agentSummary))
     } yield SubscriptionSuccess(mtdbsa)
 
     res.value

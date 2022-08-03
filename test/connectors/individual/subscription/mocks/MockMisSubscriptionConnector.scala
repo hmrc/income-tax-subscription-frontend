@@ -19,7 +19,6 @@ package connectors.individual.subscription.mocks
 import connectors.individual.subscription.MultipleIncomeSourcesSubscriptionConnector
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
-import models.common.business.BusinessSubscriptionDetailsModel
 import models.common.subscription._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -50,30 +49,11 @@ trait MockMisSubscriptionConnector extends UnitTestTrait with MockitoSugar {
   def setupMockSignUpIncomeSourcesException(nino: String): Unit =
     setupMockMisSignUp(nino)(Future.failed(testException))
 
-
-  private def setupMockCreateIncomeSources(mtdbsa: String, businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel)
-                                          (result: Future[PostCreateIncomeSourceResponse]): Unit =
-    when(mockMisSubscriptionConnector.createIncomeSources(ArgumentMatchers.eq(mtdbsa),
-      ArgumentMatchers.eq(businessSubscriptionDetailsModel))(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(result)
-
   private def setupMockCreateIncomeSourcesFromTaskList(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
                                                       (result: Future[PostCreateIncomeSourceResponse]): Unit =
     when(mockMisSubscriptionConnector.createIncomeSourcesFromTaskList(ArgumentMatchers.eq(mtdbsa),
       ArgumentMatchers.eq(createIncomeSourcesModel))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
-
-  def setupMockCreateIncomeSourcesSuccess(mtdbsa: String, model: BusinessSubscriptionDetailsModel): Unit =
-    setupMockCreateIncomeSources(mtdbsa, model)(Future.successful(testCreateIncomeSourcesSuccess))
-
-  def setupMockCreateIncomeSourcesFailure(mtdbsa: String, model: BusinessSubscriptionDetailsModel): Unit =
-    setupMockCreateIncomeSources(mtdbsa, model)(Future.successful(Left(CreateIncomeSourcesFailureResponse(BAD_REQUEST))))
-
-  def setupMockCreateIncomeSourcesBadFormatting(mtdbsa: String, model: BusinessSubscriptionDetailsModel): Unit =
-    setupMockCreateIncomeSources(mtdbsa, model)(Future.successful(Left(BadlyFormattedCreateIncomeSourcesResponse)))
-
-  def setupMockCreateIncomeSourcesException(mtdbsa: String, model: BusinessSubscriptionDetailsModel): Unit =
-    setupMockCreateIncomeSources(mtdbsa, model)(Future.failed(testException))
 
   def setupMockCreateIncomeSourcesFromTaskListSuccess(mtdbsa: String, model: CreateIncomeSourcesModel): Unit =
     setupMockCreateIncomeSourcesFromTaskList(mtdbsa, model)(Future.successful(testCreateIncomeSourcesFromTaskListSuccess))

@@ -75,47 +75,12 @@ object TestModels {
     confirmed = true
   )
 
-  // individual
-  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
-  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
-  lazy val testIncomeSourceOverseasProperty: IncomeSourceModel = IncomeSourceModel(false, false, true)
-  lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(true, true, false)
-  lazy val testIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(true, true, true)
-
-  //agent
-  lazy val testAgentIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
-  lazy val testAgentIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
-  lazy val testAgentIncomeSourceBusinessProperty: IncomeSourceModel = IncomeSourceModel(true, true, false)
-  lazy val testAgentIncomeSourceBusinessOverseasProperty: IncomeSourceModel = IncomeSourceModel(true, false, true)
-  lazy val testAgentIncomeSourceUkPropertyOverseasProperty: IncomeSourceModel = IncomeSourceModel(false, true, true)
-  lazy val testAgentIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(true, true, true)
-  lazy val testAgentIncomeSourceForeignProperty: IncomeSourceModel = IncomeSourceModel(false, false, true)
-
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDate)
 
   lazy val testMatchSuccessModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, Some(testUtr))
 
   lazy val testMatchNoUtrModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
-
-  lazy val testSummaryDataProperty = IndividualSummary(
-    incomeSource = Some(testIncomeSourceProperty),
-    accountingMethodProperty = Some(testAccountingMethodProperty)
-  )
-
-  lazy val testSummaryDataBusinessNextTaxYear = IndividualSummary(
-    incomeSource = Some(testIncomeSourceBusiness),
-    businessName = Some(testBusinessName),
-    selectedTaxYear = Some(testSelectedTaxYearNext),
-    accountingMethod = Some(testAccountingMethod)
-  )
-
-  lazy val testSummaryDataBusiness = IndividualSummary(
-    incomeSource = Some(testIncomeSourceBusiness),
-    businessName = Some(testBusinessName),
-    selectedTaxYear = None,
-    accountingMethod = Some(testAccountingMethod)
-  )
 
   lazy val testSummaryDataSelfEmploymentData =
     Seq(SelfEmploymentData
@@ -127,47 +92,4 @@ object TestModels {
       businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
     )
     )
-
-  lazy val testSummaryData = IndividualSummary(
-    Some(testIncomeSourceBoth),
-    businessName = Some(testBusinessName),
-    accountingMethod = Some(testAccountingMethod),
-    accountingMethodProperty = Some(testAccountingMethodProperty)
-  )
-
-  lazy val testAgentSummaryData = AgentSummary(
-    incomeSource = Some(testAgentIncomeSourceAll),
-    businessName = Some(testBusinessName),
-    accountingMethod = Some(testAccountingMethod),
-    accountingMethodProperty = Some(testAccountingMethodProperty),
-    propertyStartDate = Some(testPropertyStartDateModel),
-    overseasPropertyStartDate = Some(testOverseasPropertyStartDateModel),
-    overseasAccountingMethodProperty = Some(testOverseasAccountingMethodProperty)
-  )
-
-  lazy val testAgentSummaryDataBusiness = AgentSummary(
-    incomeSource = Some(testAgentIncomeSourceBusiness),
-    businessName = Some(testBusinessName),
-    accountingMethod = Some(testAccountingMethod)
-  )
-
-  lazy val testAgentSummaryDataProperty = AgentSummary(
-    incomeSource = Some(testAgentIncomeSourceProperty),
-    accountingMethodProperty = Some(testAccountingMethodProperty)
-  )
-
-  lazy val testAgentSummaryDataBoth = AgentSummary(
-    incomeSource = Some(testAgentIncomeSourceBusinessProperty),
-    businessName = Some(testBusinessName),
-    accountingMethod = Some(testAccountingMethod),
-    accountingMethodProperty = Some(testAccountingMethodProperty)
-  )
-
-  lazy val testAgentSummaryDataNextTaxYear = AgentSummary(
-    incomeSource = Some(testAgentIncomeSourceBusiness),
-    businessName = Some(testBusinessName),
-    selectedTaxYear = Some(testSelectedTaxYearNext),
-    accountingMethod = Some(testAccountingMethod)
-  )
-
 }

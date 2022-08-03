@@ -19,10 +19,8 @@ package controllers.agent.business
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
-import helpers.agent.IntegrationTestModels.ukPropertySubscriptionData
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status._
-import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
@@ -30,7 +28,6 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
     "return OK" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(ukPropertySubscriptionData))
 
         When("GET client/business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.getClientRemoveUkProperty
@@ -48,7 +45,6 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(ukPropertySubscriptionData))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(Property)
 
         When("POST client/business/remove-uk-property-business is called")
@@ -66,7 +62,6 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(ukPropertySubscriptionData))
 
         When("POST client/business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("No")))
@@ -85,7 +80,6 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "no option was selected on the client remove Uk property page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(ukPropertySubscriptionData))
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("")))

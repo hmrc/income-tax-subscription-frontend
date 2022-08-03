@@ -2,11 +2,10 @@
 package helpers.agent
 
 import models._
-import models.common.business._
 import models.common._
+import models.common.business._
 import models.usermatching.UserDetailsModel
-import play.api.libs.json.JsValue
-import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
@@ -59,41 +58,6 @@ object IntegrationTestModels {
   val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
   val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
   val testId = "testId"
-
-
-  val fullSubscriptionData: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(testIncomeSourceAll),
-      accountingMethod = Some(testAccountingMethod)
-    )
-
-  val ukPropertySubscriptionData: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(testIncomeSourceProperty),
-      accountingMethod = None
-    )
-
-  val overseasPropertySubscriptionData: Map[String, JsValue] =
-    subscriptionData(
-      incomeSource = Some(testIncomeSourceProperty),
-      accountingMethod = None
-    )
-
-  def subscriptionData(
-                        incomeSource: Option[IncomeSourceModel] = None,
-                        accountingMethod: Option[AccountingMethodModel] = None)
-  : Map[String, JsValue] = {
-    Map.empty[String, JsValue] ++
-      accountingMethod.map(model => SubscriptionDataKeys.AccountingMethod -> AccountingMethodModel.format.writes(model))
-  }
-
-  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = false, foreignProperty = false)
-
-  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(selfEmployment = false, ukProperty = true, foreignProperty = false)
-
-  lazy val testIncomeSourceBoth: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = false)
-
-  lazy val testIncomeSourceAll: IncomeSourceModel = IncomeSourceModel(selfEmployment = true, ukProperty = true, foreignProperty = true)
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   lazy val testClientDetails: UserDetailsModel = helpers.IntegrationTestModels.testUserDetails

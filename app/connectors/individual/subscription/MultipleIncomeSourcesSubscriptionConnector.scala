@@ -19,10 +19,8 @@ package connectors.individual.subscription
 import config.AppConfig
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser._
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser._
-import models.common.business.BusinessSubscriptionDetailsModel
 import models.common.subscription.CreateIncomeSourcesModel
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,17 +30,13 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
                                                            val http: HttpClient)
                                                           (implicit ec: ExecutionContext) {
 
-  def signUpUrl(nino: String): String = appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino)
+  private def signUpUrl(nino: String): String = appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino)
 
-  def createIncomeSourcesUrl(mtdbsa: String): String = appConfig.createIncomeSourcesUrl +
+  private def createIncomeSourcesUrl(mtdbsa: String): String = appConfig.createIncomeSourcesUrl +
     MultipleIncomeSourcesSubscriptionConnector.createIncomeSourcesUri(mtdbsa)
 
   def signUp(nino: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] =
     http.POSTEmpty[PostSignUpIncomeSourcesResponse](signUpUrl(nino))
-
-  def createIncomeSources(mtdbsa: String, request: BusinessSubscriptionDetailsModel)
-                         (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] =
-    http.POST[BusinessSubscriptionDetailsModel, PostCreateIncomeSourceResponse](createIncomeSourcesUrl(mtdbsa), request)
 
   def createIncomeSourcesFromTaskList(mtdbsa: String, request: CreateIncomeSourcesModel)
                                      (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] =

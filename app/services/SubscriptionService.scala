@@ -19,15 +19,10 @@ package services
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
-import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.individual.subscription.{MultipleIncomeSourcesSubscriptionConnector, SubscriptionConnector}
-import models.common.business.BusinessSubscriptionDetailsModel
-import models.common.subscription.{BusinessIncomeModel, CreateIncomeSourcesModel, PropertyIncomeModel, SubscriptionRequest}
-import models.common.{AccountingPeriodModel, AccountingYearModel, IncomeSourceModel, subscription}
-import models.{AgentSummary, IndividualSummary, Next, SummaryModel}
+import models.common.subscription.CreateIncomeSourcesModel
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
@@ -37,72 +32,6 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
                                     subscriptionConnector: SubscriptionConnector
                                    ) extends Logging {
 
-
-  private[services] def getAccountingPeriod(summaryData: SummaryModel): Option[AccountingPeriodModel] = {
-    (summaryData.incomeSource.get, summaryData.selectedTaxYear) match {
-      case (IncomeSourceModel(true, false, _), Some(AccountingYearModel(Next, _))) => Some(getNextTaxYear)
-      case (IncomeSourceModel(true, _, _), _) => Some(getCurrentTaxYear)
-      case _ => None
-    }
-
-  }
-
-  private[services] def buildRequestPost(nino: String, model: SummaryModel, arn: Option[String]): SubscriptionRequest = {
-    if (arn.isDefined) {
-      val businessSection = model.incomeSource.flatMap {
-        case IncomeSourceModel(true, _, _) =>
-          for {
-            accountingPeriod <- getAccountingPeriod(model)
-            accountingMethod <- model.accountingMethod map (_.accountingMethod)
-            businessName = model.businessName map (_.businessName)
-          } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)
-        case _ => None
-      }
-
-      val propertySection = model.incomeSource flatMap {
-        case IncomeSourceModel(_, true, _) =>
-          Some(PropertyIncomeModel(model.accountingMethodProperty.map(_.propertyAccountingMethod)))
-        case _ => None
-      }
-
-
-      subscription.SubscriptionRequest(nino, arn, businessSection, propertySection)
-    }
-    else {
-
-      val businessSection = model.incomeSource.flatMap {
-        case IncomeSourceModel(true, _, _) =>
-          for {
-            accountingPeriod <- getAccountingPeriod(model)
-            accountingMethod <- model.accountingMethod map (_.accountingMethod)
-            businessName = model.businessName map (_.businessName)
-          } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)
-        case _ => None
-      }
-
-      val propertySection = model.incomeSource flatMap {
-        case IncomeSourceModel(_, true, _) =>
-          Some(PropertyIncomeModel(model.accountingMethodProperty.map(_.propertyAccountingMethod)))
-        case _ => None
-      }
-
-
-      subscription.SubscriptionRequest(nino, arn, businessSection, propertySection)
-    }
-
-  }
-
-
-  def submitSubscription(nino: String,
-                         summaryData: SummaryModel,
-                         arn: Option[String]
-                        )(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
-
-    val requestPost = buildRequestPost(nino, summaryData, arn)
-    logger.debug(s"Submitting subscription with request: $requestPost")
-    subscriptionConnector.subscribe(requestPost)
-  }
-
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
     logger.debug(s"Getting subscription for nino=$nino")
     subscriptionConnector.getSubscription(nino)
@@ -111,21 +40,6 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
   def signUpIncomeSources(nino: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] = {
     logger.debug(s"SignUp IncomeSources request for nino:$nino")
     multipleIncomeSourcesSubscriptionConnector.signUp(nino)
-  }
-
-
-  def createIncomeSources(nino: String, mtdbsa: String, summaryModel: SummaryModel)
-                         (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
-    logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa")
-    val businessSubscriptionDetailsModel: BusinessSubscriptionDetailsModel = summaryModel match {
-      case summary: IndividualSummary =>
-        summary.toBusinessSubscriptionDetailsModel(nino)
-      case summary: AgentSummary =>
-        summary.toBusinessSubscriptionDetailsModel(nino)
-    }
-
-
-    multipleIncomeSourcesSubscriptionConnector.createIncomeSources(mtdbsa, businessSubscriptionDetailsModel)
   }
 
   def createIncomeSourcesFromTaskList(mtdbsa: String,

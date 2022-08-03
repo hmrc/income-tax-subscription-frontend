@@ -18,8 +18,8 @@ package services.individual
 
 import cats.data.EitherT
 import cats.implicits._
+import models.ConnectorError
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
-import models.{ConnectorError, IndividualSummary, SummaryModel}
 import services.{SPSService, SubscriptionService}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -33,42 +33,10 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                  spsService: SPSService
                                                 )(implicit ec: ExecutionContext) {
 
-  def createSubscription(nino: String, summaryModel: SummaryModel, maybeSpsEntityId: Option[String] = None)
-                        (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
-    signUpAndCreateIncomeSources(nino, summaryModel.asInstanceOf[IndividualSummary], maybeSpsEntityId)
-
-  private[services] def createSubscriptionCore(nino: String, summaryModel: SummaryModel)
-                                              (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
-    val res = for {
-      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel, arn = None))
-      mtditId = subscriptionResponse.mtditId
-      _ <- EitherT(knownFactsService.addKnownFacts(mtditId, nino))
-      _ <- EitherT(enrolAndRefresh(mtditId, nino))
-    } yield subscriptionResponse
-
-    res.value
-  }
-
   def enrolAndRefresh(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
     val res = for {
       _ <- EitherT(enrolmentService.enrol(mtditId, nino))
     } yield mtditId
-
-    res.value
-  }
-
-  private[services] def signUpAndCreateIncomeSources(nino: String, individualSummary: IndividualSummary, maybeSpsEntityId: Option[String])
-                                                    (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
-    val res = for {
-      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
-      mtdbsa = signUpResponse.mtdbsa
-      _ <- EitherT(subscriptionService.createIncomeSources(nino, mtdbsa, individualSummary))
-      _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))
-      _ <- EitherT(enrolAndRefresh(mtdbsa, nino))
-      _ = spsService.confirmPreferences(mtdbsa, maybeSpsEntityId)
-    } yield {
-      SubscriptionSuccess(mtdbsa)
-    }
 
     res.value
   }

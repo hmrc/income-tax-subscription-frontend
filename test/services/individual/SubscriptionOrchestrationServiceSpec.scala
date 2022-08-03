@@ -29,67 +29,6 @@ import scala.concurrent.Future
 class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutures
   with TestSubscriptionOrchestrationService {
 
-  "createSubscription" should {
-    def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
-      TestSubscriptionOrchestrationService.createSubscription(
-        testNino,
-        testIndividualSummary
-      )
-
-    "return a success when all incometax.business.services succeed" in {
-      mockSignUpIncomeSourcesSuccess(testNino)
-      mockCreateIncomeSourcesSuccess(testNino, testMTDID, testIndividualSummary)
-      mockAddKnownFactsSuccess(testMTDID, testNino)
-      mockEnrolSuccess(testMTDID, testNino)
-
-      await(res) mustBe testSubscriptionSuccess
-    }
-
-    "return a failure" when {
-      "create income sources returns an error when sign up income sources request fail" in {
-        mockSignUpIncomeSourcesFailure(testNino)
-
-        await(res) mustBe testSignUpIncomeSourcesFailure
-      }
-
-      "create income sources returns an error when create income sources request fail" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesFailure(testNino, testMTDID, testIndividualSummary)
-
-        await(res) mustBe testCreateIncomeSourcesFailure
-      }
-
-      "create income sources returns an exception when sign up income sources throws an exception" in {
-        mockSignUpIncomeSourcesException(testNino)
-
-        await(res.failed) mustBe testException
-      }
-
-      "create income sources returns an exception when create income sources throws an exception" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesException(testNino, testMTDID, testIndividualSummary)
-
-        await(res.failed) mustBe testException
-      }
-
-      "add known facts returns an error" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testIndividualSummary)
-        mockAddKnownFactsFailure(testMTDID, testNino)
-
-        await(res) mustBe testKnownFactsFailure
-      }
-
-      "add known facts returns an exception" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testIndividualSummary)
-        mockAddKnownFactsException(testMTDID, testNino)
-
-        await(res.failed) mustBe testException
-      }
-    }
-  }
-
   "signUpAndCreateIncomeSourcesFromTaskList" should {
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
       TestSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(

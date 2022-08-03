@@ -47,16 +47,6 @@ object TestModels {
   val testSelfEmployments = Seq(SelfEmploymentData("1", Some(BusinessStartDate(testStartDate)), Some(testBusinessName),
     Some(BusinessTradeNameModel("plumbing")), confirmed = true))
 
-  lazy val testIncomeSourceBusiness: IncomeSourceModel = IncomeSourceModel(true, false, false)
-
-  lazy val testIncomeSourceProperty: IncomeSourceModel = IncomeSourceModel(false, true, false)
-
-  lazy val testIncomeSourceOverseasProperty: IncomeSourceModel = IncomeSourceModel(false, false, true)
-
-  lazy val testIncomeSourceBusinessAndUkProperty: IncomeSourceModel = IncomeSourceModel(true, true, false)
-
-  lazy val testIncomeSourceNone: IncomeSourceModel = IncomeSourceModel(false, false, false)
-
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   // TODO change when consolidating models
   lazy val testClientDetails = UserDetailsModel("Test", "User", TestConstants.testNino, DateModel("01", "04", "2017"))
