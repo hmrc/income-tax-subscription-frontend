@@ -19,10 +19,8 @@ package controllers.agent.business
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
-import helpers.agent.IntegrationTestModels.overseasPropertySubscriptionData
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status._
-import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
@@ -30,7 +28,6 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(overseasPropertySubscriptionData))
 
       When("GET client/business/remove-overseas-property-business is called")
       val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty
@@ -48,7 +45,6 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(overseasPropertySubscriptionData))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(OverseasProperty)
 
         When("POST client/business/remove-overseas-property-business is called")
@@ -66,7 +62,6 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(overseasPropertySubscriptionData))
 
         When("POST client/business/remove-overseas-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("No")))
@@ -85,7 +80,6 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       "no option was selected on the client remove Overseas property page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(overseasPropertySubscriptionData))
 
         When("POST /business/remove-overseas-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("")))

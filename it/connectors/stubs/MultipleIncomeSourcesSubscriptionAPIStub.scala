@@ -5,7 +5,6 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import helpers.IntegrationTestConstants.testMtdId
 import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
-import models.common.business.BusinessSubscriptionDetailsModel
 import models.common.subscription.CreateIncomeSourcesModel
 import play.api.libs.json.{JsValue, Json}
 
@@ -26,19 +25,6 @@ object MultipleIncomeSourcesSubscriptionAPIStub extends WireMockMethods {
     when (
       method = POST,
       uri = signUpUri(nino)
-    ) thenReturn (
-      status = responseCode,
-      body = response
-    )
-  }
-
-  def stubPostSubscription(mtdbsa: String, request: BusinessSubscriptionDetailsModel)
-                          (responseCode: Int,
-                           response: JsValue = Json.obj()): StubMapping = {
-    when (
-      method = POST,
-      uri = createIncomeSourcesUri(mtdbsa),
-      body = Json.toJson(request)
     ) thenReturn (
       status = responseCode,
       body = response

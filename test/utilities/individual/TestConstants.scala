@@ -20,9 +20,9 @@ import common.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPort
 import common.Constants.mtdItsaEnrolmentName
 import models.common.business._
 import models.common.subscription._
-import models.common.{AccountingYearModel, IncomeSourceModel, OverseasPropertyStartDateModel, PropertyStartDateModel}
+import models.common.{OverseasPropertyStartDateModel, PropertyStartDateModel}
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
-import models.{Cash, Current, DateModel, IndividualSummary}
+import models.{Cash, DateModel}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
@@ -134,14 +134,6 @@ object TestConstants {
   val testCreateIncomeSourcesFromTaskListSuccess = Right(CreateIncomeSourcesSuccess())
 
   val testCreateIncomeSourcesFromTaskListFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
-
-  val testIndividualSummary: IndividualSummary = IndividualSummary(
-    incomeSource = Some(IncomeSourceModel(true, false, false)),
-    selfEmployments = Seq(SelfEmploymentData("1", Some(BusinessStartDate(startDate)), Some(testBusinessName),
-      Some(BusinessTradeNameModel("plumbing")), Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF")))))),
-    accountingMethod = Some(AccountingMethodModel(Cash)),
-    selectedTaxYear = Some(AccountingYearModel(Current))
-  )
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
     Seq(SelfEmploymentData

@@ -22,7 +22,6 @@ import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentSPSConnector
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
-import utilities.TestModels.testAgentSummaryData
 import utilities.agent.TestConstants._
 
 import scala.concurrent.Future
@@ -34,67 +33,6 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
     mockAutoEnrolmentService,
     mockAgentSpsConnector
   )
-
-  "createSubscription" should {
-
-    def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
-      TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testUtr, testAgentSummaryData)
-    }
-
-    "return a success" when {
-      "all services succeed" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
-        mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
-        val res = TestSubscriptionOrchestrationService.createSubscription(
-          testARN, testNino, testUtr, testAgentSummaryData)
-
-        await(res) mustBe testSubscriptionSuccess
-        verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
-      }
-
-      "all services except the SPSconnector succeed" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
-        mockAgentSpsConnectorFailure(testARN, testUtr, testNino, testMTDID)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
-        val res = TestSubscriptionOrchestrationService.createSubscription(
-          testARN, testNino, testUtr, testAgentSummaryData)
-
-        await(res) mustBe testSubscriptionSuccess
-        verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
-      }
-    }
-
-    "return a failure" when {
-      "create income sources returns an error when sign up income sources request fail" in {
-        mockSignUpIncomeSourcesFailure(testNino)
-
-        await(res) mustBe testSignUpIncomeSourcesFailure
-
-      }
-
-      "create income sources returns an error when create income sources request fail" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesFailure(testNino, testMTDID, testAgentSummaryData)
-        await(res) mustBe testCreateIncomeSourcesFailure
-      }
-
-      "the auto enrolment service returns a failure response" in {
-
-        mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesSuccess(testNino, testMTDID, testAgentSummaryData)
-        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Left(AutoEnrolmentService.NoUsersFound))
-
-        await(res) mustBe Right(SubscriptionSuccess(testMTDID))
-        verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 0)
-
-      }
-
-
-    }
-  }
 
   "createSubscriptionFromTaskList" should {
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
