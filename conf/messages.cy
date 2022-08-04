@@ -1029,6 +1029,7 @@ agent.business.task-list.content.section2.property.overseas           = Busnes e
 agent.business.task-list.content.section2.remove-sole-trader-business = Tynnu {0}
 agent.business.task-list.content.section2.remove-uk-property          = Tynnu busnes eiddo yn y DU
 agent.business.task-list.content.section2.remove-overseas-property    = Tynnu busnes eiddo tramor
+agent.business.task-list.content.section2.para                        = Mae’n rhaid i chi ychwanegu bob un o fusnesau unig fasnachwr eich cleient, hyd at uchafswm o {0}. Nid oes angen i chi ychwanegu ei enillion TWE. Ond, mae’n rhaid i chi ychwanegu unrhyw fusnes eiddo sydd gan eich cleient. Mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU ac un busnes eiddo dramor.
 agent.business.task-list.content.section3                             = Cofrestru
 agent.business.task-list.content.action-needed                        = Mae’n rhaid i chi gwblhau pob adran uchod cyn i chi allu cadarnhau a chofrestru’ch cleient.
 agent.business.task-list.status.completed                             = Wedi’i gwblhau

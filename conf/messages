@@ -958,6 +958,7 @@ agent.business.task-list.content.section2.property.overseas           = Overseas
 agent.business.task-list.content.section2.remove-sole-trader-business = Remove {0}
 agent.business.task-list.content.section2.remove-uk-property          = Remove UK property business
 agent.business.task-list.content.section2.remove-overseas-property    = Remove overseas property business
+agent.business.task-list.content.section2.para                        = You must add all your client’s sole trader businesses, up to a maximum of {0}. You do not need to add their PAYE earnings. But you must add any property businesses they have, which is limited to one UK property business and one overseas property business.
 agent.business.task-list.content.section3                             = Sign up
 agent.business.task-list.content.action-needed                        = You need to complete all sections above before you can confirm and sign up your client.
 agent.business.task-list.status.completed                             = Complete

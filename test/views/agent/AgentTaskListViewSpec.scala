@@ -31,6 +31,10 @@ import views.html.agent.AgentTaskList
 
 class AgentTaskListViewSpec extends ViewSpec {
 
+  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(2)"
+  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
+  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(3) > ul"
+
   val taskListView: AgentTaskList = app.injector.instanceOf[AgentTaskList]
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
@@ -121,6 +125,13 @@ class AgentTaskListViewSpec extends ViewSpec {
           document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
         }
 
+        "in the business section: display the information para" should {
+          "display the sign up incomplete text" in {
+            val infoPara = document().mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("span")
+            infoPara.text mustBe agentItem2Para
+          }
+        }
+
         "in the select tax year section: display the select tax year link with status incomplete" when {
           "the user has not selected any tax year to sign up" in {
             val selectTaxYearSection = document().mainContent.selectNth("ul", 1)
@@ -139,7 +150,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document().mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectHead("span")
+          val incompleteText = document().mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("span")
           incompleteText.text mustBe agentSignUpIncompleteText
         }
 
@@ -169,7 +180,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display an incomplete self employment with just the business name" in {
-          val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
+          val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 1)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
           selfEmploymentLink.text mustBe "Name1"
           selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id1&isEditMode=true"""
@@ -177,7 +188,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display an incomplete self employment" which {
-          val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
+          val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 2)
 
           "contains a change link with a business name and a trade name" in {
             val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
@@ -195,7 +206,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display an incomplete UK property business" which {
-          val ukPropertyIncomeSection = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
+          val ukPropertyIncomeSection = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 3)
 
           "contains a change link" in {
             val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
@@ -216,7 +227,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           val overseasPropertySection =
             document(partialTaskListComplete)
               .mainContent
-              .selectHead("ol > li:nth-of-type(2) > ul")
+              .selectHead(selectorForFirstBusiness)
               .selectNth("li", 4)
 
           "contains a change link" in {
@@ -244,7 +255,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document(partialTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectHead("span")
+          val incompleteText = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("span")
           incompleteText.text mustBe agentSignUpIncompleteText
         }
 
@@ -273,7 +284,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display a complete self employment" in {
-          val selfEmploymentSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 1)
+          val selfEmploymentSection = document(completedTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 1)
           val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
           selfEmploymentLink.text mustBe "Name1 TradeName"
           selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id1&isEditMode=true"""
@@ -281,7 +292,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display a complete uk property income" in {
-          val ukPropertyIncomeSection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 2)
+          val ukPropertyIncomeSection = document(completedTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 2)
           val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
           ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
           ukPropertyIncomeLink.attr("href") mustBe controllers.agent.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
@@ -289,7 +300,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display a complete overseas property income" in {
-          val overseasPropertySection = document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(2) > ul").selectNth("li", 3)
+          val overseasPropertySection = document(completedTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 3)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
           overseasPropertyLink.text mustBe overseasPropertyBusiness
           overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
@@ -307,7 +318,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "do not display the sign up incomplete text" in {
-          document(completedTaskListComplete).mainContent.selectHead("ol > li:nth-of-type(3) > ul").selectOptionally("span") mustBe None
+          document(completedTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectOptionally("span") mustBe None
         }
       }
     }
