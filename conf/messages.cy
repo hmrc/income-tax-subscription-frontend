@@ -1095,6 +1095,7 @@ business.task-list.content.section2.property.overseas           = Busnes eiddo t
 business.task-list.content.section2.remove-sole-trader-business = Tynnu {0}
 business.task-list.content.section2.remove-uk-property          = Tynnu busnes eiddo yn y DU
 business.task-list.content.section2.remove-overseas-property    = Tynnu busnes eiddo tramor
+business.task-list.content.section2.para                        = Mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr, hyd at uchafswm o {0}. Nid oes angen i chi ychwanegu eich enillion TWE. Ond, mae’n rhaid i chi ychwanegu unrhyw fusnes eiddo sydd gennych. Mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU ac un busnes eiddo dramor.
 business.task-list.content.section3                             = Cofrestru
 business.task-list.content.action-needed                        = Mae’n rhaid i chi gwblhau pob adran uchod cyn i chi allu cadarnhau a chofrestru.
 business.task-list.status.completed                             = Wedi’i gwblhau
