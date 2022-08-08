@@ -21,7 +21,10 @@ import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import models.status.MandationStatus.Voluntary
+import models.status.{MandationStatusModel, MandationStatusRequest}
 import play.api.http.Status._
+import play.api.libs.json.Json
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -37,6 +40,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       )
     }
   }
+
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
     "the user both nino and utr enrolments" when {
       "the user has a subscription" should {
@@ -57,6 +61,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           )
         }
       }
+
       "the user does not have a subscription" when {
         "the user is eligible" when {
 
@@ -66,6 +71,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
             SubscriptionStub.stubGetNoSubscription()
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
+            MandationStatusStub.stubGetMandationStatus(
+              Json.toJson(MandationStatusRequest(testNino, testUtr))
+            )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)))
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -77,6 +85,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             )
           }
         }
+
         "the user is ineligible" should {
           "redirect to the Not eligible page" in {
             Given("I setup the Wiremock stubs")
@@ -96,6 +105,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           }
         }
       }
+
       "the subscription call fails" should {
         "return an internal server error" in {
           Given("I setup the Wiremock stubs")
@@ -113,6 +123,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         }
       }
     }
+
     "the user only has a nino in enrolment" when {
       "CID returned a record with UTR" when {
         "the user is eligible" should {
@@ -122,6 +133,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             SubscriptionStub.stubGetNoSubscription()
             CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
+            MandationStatusStub.stubGetMandationStatus(
+              Json.toJson(MandationStatusRequest(testNino, testUtr))
+            )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)))
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -138,6 +152,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           }
         }
       }
+
       "CID returned a record with out a UTR" should {
         "continue normally" in {
           Given("I setup the Wiremock stubs")
@@ -159,6 +174,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           cookie.keys must not contain ITSASessionKeys.UTR
         }
       }
+
       "CID could not find the user" should {
         "display error page" in {
           Given("I setup the Wiremock stubs")

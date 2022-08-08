@@ -16,21 +16,21 @@
 
 package controllers.usermatching
 
+import _root_.common.Constants.ITSASessionKeys
 import agent.audit.mocks.MockAuditingService
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
 import controllers.ControllerBaseSpec
-import models._
+import models.{EligibilityStatus, PrePopData}
 import org.mockito.Mockito.{never, reset, times}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
+import services.ThrottlingService
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys._
 import utilities.individual.TestConstants
-import _root_.common.Constants.ITSASessionKeys
-import services.ThrottlingService
 
 import scala.concurrent.Future
 
@@ -41,7 +41,8 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockGetEligibilityStatusService
   with MockPrePopulationService
   with MockAuditingService
-  with MockThrottlingConnector {
+  with MockThrottlingConnector
+  with MockMandationStatusService {
 
   private val eligibleWithoutPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
@@ -70,18 +71,20 @@ class HomeControllerSpec extends ControllerBaseSpec
     MockSubscriptionDetailsService,
     mockPrePopulationService,
     mockSubscriptionService,
-    new ThrottlingService(mockThrottlingConnector, appConfig)
+    new ThrottlingService(mockThrottlingConnector, appConfig),
+    mockMandationStatusService
   )(implicitly, MockConfig, mockMessagesControllerComponents)
 
   import TestConstants.{testNino, testReference, testUtr}
 
-  "Calling the home action of the Home controller with an authorised user" when {
+  "home" when {
     "there is no start page" should {
       lazy val result = testHomeController(showStartPage = false).home()(subscriptionRequest)
 
       "Return status SEE_OTHER (303) redirect" in {
         status(result) must be(Status.SEE_OTHER)
       }
+
       "Redirect to the 'Index' page" in {
         redirectLocation(result).get mustBe controllers.usermatching.routes.HomeController.index.url
       }
@@ -107,6 +110,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           verifyGetThrottleStatusCalls(times(1))
         }
       }
+
       "the user already has an MTDIT subscription on ETMP and the session is in SignUp state" should {
         "redirect to the claim subscription page" in {
           mockNinoAndUtrRetrieval()
@@ -124,107 +128,117 @@ class HomeControllerSpec extends ControllerBaseSpec
           verifyGetThrottleStatusCalls(never())
         }
       }
+
       "the user does not already have an MTDIT subscription on ETMP" when {
         "the user is eligible " when {
-          "the user does not have a current unauthorised subscription journey" when {
-            "the user has a UTR" should {
-              "redirect to the sign up journey" when {
-                "feature switch PrePopulate is enabled but there is no PrePop" when {
-                  "redirect to SPSHandoff controller" in {
-                    mockNinoAndUtrRetrieval()
-                    mockLookupUserWithUtr(testNino)(testUtr)
-                    setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
-
-                    enable(PrePopulate)
-
-                    val result = await(testHomeController().index(fakeRequest))
-                    status(result) must be(Status.SEE_OTHER)
-                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-
-                    verifyPrePopulationSave(0, testReference)
-                    verifyGetThrottleStatusCalls(times(1))
-                  }
-                }
-                "feature switch PrePopulate is enabled and there is PrePop" when {
-                  "redirect to SPSHandoff controller after saving prepop informtion" in {
-                    mockNinoAndUtrRetrieval()
-                    mockLookupUserWithUtr(testNino)(testUtr)
-                    setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
-                    mockRetrieveReferenceSuccess(testUtr)(testReference)
-                    setupMockSubscriptionDetailsSaveFunctions()
-                    setupMockPrePopulateSave(testReference)
-
-                    enable(PrePopulate)
-
-                    val result = await(testHomeController().index(fakeRequest))
-                    status(result) must be(Status.SEE_OTHER)
-                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-
-                    verifyPrePopulationSave(1, testReference)
-                    verifyGetThrottleStatusCalls(times(1))
-                  }
-                }
-                "feature switch PrePopulate is disabled" when {
-                  "redirect to SPSHandoff controller" in {
-                    mockNinoAndUtrRetrieval()
-                    mockLookupUserWithUtr(testNino)(testUtr)
-                    setupMockGetSubscriptionNotFound(testNino)
-                    mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
-
-                    val result = await(testHomeController().index(fakeRequest))
-                    status(result) must be(Status.SEE_OTHER)
-                    redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-
-                    verifySubscriptionDetailsSaveWithField(0, OverseasProperty)
-                    verifySubscriptionDetailsSaveWithField(0, Property)
-                    verifySubscriptionDetailsSaveWithField(0, BusinessesKey)
-                    verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
-                    verifySubscriptionDetailsSaveWithField(0, subscriptionId)
-                    verifyGetThrottleStatusCalls(times(1))
-                  }
-                }
-              }
-            }
-
-            "the user does not have a utr" when {
-              "the user has a matching utr in CID against their NINO" when {
+          "the user has a UTR" should {
+            "redirect to the sign up journey" when {
+              "feature switch PrePopulate is enabled but there is no PrePop" when {
                 "redirect to SPSHandoff controller" in {
-                  mockNinoRetrieval()
+                  mockNinoAndUtrRetrieval()
                   mockLookupUserWithUtr(testNino)(testUtr)
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
+                  mockRetrieveReferenceSuccess(testUtr)(testReference)
+                  mockRetrieveMandationStatus()
+
+                  enable(PrePopulate)
 
                   val result = await(testHomeController().index(fakeRequest))
-
-                  status(result) mustBe SEE_OTHER
+                  status(result) must be(Status.SEE_OTHER)
                   redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                  session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+                  verifyPrePopulationSave(0, testReference)
                   verifyGetThrottleStatusCalls(times(1))
                 }
               }
 
-              "the user does not have a matching utr in CID" should {
-                "redirect to the no SA page" in {
-                  mockNinoRetrieval()
-                  mockLookupUserWithoutUtr(testNino)
+              "feature switch PrePopulate is enabled and there is PrePop" when {
+                "redirect to SPSHandoff controller after saving prepop informtion" in {
+                  mockNinoAndUtrRetrieval()
+                  mockLookupUserWithUtr(testNino)(testUtr)
                   setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
+                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
+                  mockRetrieveReferenceSuccess(testUtr)(testReference)
+                  setupMockSubscriptionDetailsSaveFunctions()
+                  setupMockPrePopulateSave(testReference)
+                  mockRetrieveMandationStatus()
 
-                  val result = testHomeController().index()(fakeRequest)
+                  enable(PrePopulate)
 
-                  status(result) mustBe SEE_OTHER
-                  redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show.url
+                  val result = await(testHomeController().index(fakeRequest))
+                  status(result) must be(Status.SEE_OTHER)
+                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                  session(result).get(ITSASessionKeys.UTR) mustBe None
-                  verifyGetThrottleStatusCalls(never())
+                  verifyPrePopulationSave(1, testReference)
+                  verifyGetThrottleStatusCalls(times(1))
+                }
+              }
+
+              "feature switch PrePopulate is disabled" when {
+                "redirect to SPSHandoff controller" in {
+                  mockNinoAndUtrRetrieval()
+                  mockLookupUserWithUtr(testNino)(testUtr)
+                  setupMockGetSubscriptionNotFound(testNino)
+                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
+                  mockRetrieveReferenceSuccess(testUtr)(testReference)
+                  mockRetrieveMandationStatus()
+
+                  val result = await(testHomeController().index(fakeRequest))
+                  status(result) must be(Status.SEE_OTHER)
+                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+
+                  verifySubscriptionDetailsSaveWithField(0, OverseasProperty)
+                  verifySubscriptionDetailsSaveWithField(0, Property)
+                  verifySubscriptionDetailsSaveWithField(0, BusinessesKey)
+                  verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
+                  verifySubscriptionDetailsSaveWithField(0, subscriptionId)
+                  verifyGetThrottleStatusCalls(times(1))
                 }
               }
             }
           }
+
+          "the user does not have a utr" when {
+            "the user has a matching utr in CID against their NINO" when {
+              "redirect to SPSHandoff controller" in {
+                mockNinoRetrieval()
+                mockLookupUserWithUtr(testNino)(testUtr)
+                setupMockGetSubscriptionNotFound(testNino)
+                mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
+                mockRetrieveReferenceSuccess(testUtr)(testReference)
+                mockRetrieveMandationStatus()
+
+                val result = await(testHomeController().index(fakeRequest))
+
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+
+                session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+                verifyGetThrottleStatusCalls(times(1))
+              }
+            }
+
+            "the user does not have a matching utr in CID" should {
+              "redirect to the no SA page" in {
+                mockNinoRetrieval()
+                mockLookupUserWithoutUtr(testNino)
+                setupMockGetSubscriptionNotFound(testNino)
+                mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
+
+                val result = testHomeController().index()(fakeRequest)
+
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show.url
+
+                session(result).get(ITSASessionKeys.UTR) mustBe None
+                verifyGetThrottleStatusCalls(never())
+              }
+            }
+          }
+
         }
+
         "the user is not eligible" should {
           "redirect to the Not eligible page" in {
             mockNinoAndUtrRetrieval()
@@ -239,6 +253,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           }
         }
       }
+
       "the call to check the user's subscription status fails" should {
         "return an error page" in {
           mockNinoAndUtrRetrieval()
@@ -250,6 +265,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         }
       }
     }
+
     "the user does not have a nino" should {
       "throw an InternalServerException describing the issue" in {
         mockIndividualWithNoEnrolments()

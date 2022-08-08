@@ -22,6 +22,7 @@ import connectors.httpparser.RetrieveReferenceHttpParser
 import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, RetrieveReferenceResponse}
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
+import models.status.MandationStatusModel
 import org.mockito.ArgumentMatchers.{any, argThat}
 import org.mockito.Mockito._
 import org.mockito.{ArgumentMatcher, ArgumentMatchers}
@@ -134,6 +135,16 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def mockRetrieveReference(utr: String)(response: RetrieveReferenceResponse): Unit = {
     when(mockConnector.retrieveReference(ArgumentMatchers.eq(utr))(ArgumentMatchers.any())) thenReturn Future.successful(response)
   }
+
+  def mockSaveMandationStatus(reference: String) =
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.MandationStatus)
+
+  def verifySaveMandationStatus(count: Int, reference: String) =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[MandationStatusModel](
+      ArgumentMatchers.eq(reference),
+      ArgumentMatchers.eq(SubscriptionDataKeys.MandationStatus),
+      ArgumentMatchers.any()
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
   protected final def verifySubscriptionDetailsFetch[T](key: String, someCount: Option[Int]): Unit =
     someCount map (count => verify(mockConnector, times(count))
