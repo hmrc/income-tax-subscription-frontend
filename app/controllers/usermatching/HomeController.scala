@@ -20,7 +20,7 @@ import auth.individual.JourneyState._
 import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController}
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
@@ -94,12 +94,12 @@ class HomeController @Inject()(val auditingService: AuditingService,
         withReference(utr) { reference =>
           for {
             _ <- prePopulationService.prePopulate(reference, prepop)
-            _ <- mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+            _ <- handleMandationStatus(reference, nino, utr)
           } yield(goToSignUp(utr, timestamp, nino))
         }
       case Right(EligibilityStatus(true, _, _)) =>
         withReference(utr) { reference =>
-          mandationStatusService.retrieveMandationStatus(reference, nino, utr).map { _ =>
+          handleMandationStatus(reference, nino, utr).map { _ =>
             goToSignUp(utr, timestamp, nino)
           }
         }
@@ -135,4 +135,12 @@ class HomeController @Inject()(val auditingService: AuditingService,
               .addingToSession(UTR -> utr)
         }
     }
+
+  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request:Request[AnyContent]): Future[Unit] = {
+    if(isEnabled(ItsaMandationStatus)) {
+      mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+    } else {
+      Future.successful(())
+    }
+  }
 }

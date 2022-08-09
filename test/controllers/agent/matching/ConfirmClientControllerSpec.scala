@@ -18,7 +18,7 @@ package controllers.agent.matching
 
 import auth.agent.AgentUserMatched
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
 import controllers.agent.AgentControllerBaseSpec
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
@@ -70,6 +70,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     super.beforeEach()
     reset(mockAgentQualificationService)
     disable(PrePopulate)
+    disable(ItsaMandationStatus)
   }
 
   def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: Option[String], preExistingRelationship: Boolean = true): Unit =
@@ -210,81 +211,110 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
       "AgentQualificationService returned ApprovedAgent" when {
         "the user has a utr" when {
-          "the client is eligible and has no prepop and prepop is turned on" should {
-            s"redirect user to ${controllers.agent.routes.HomeController.index.url}" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-              mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
-              mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-              mockRetrieveMandationStatus()
-              setupMockNotLockedOut(arn)
+          "the client is eligible" when {
+            "the client has no prepop data, prepop and ITSA mandation status are on" should {
+              s"redirect user to ${controllers.agent.routes.HomeController.index.url}" in withController { controller =>
+                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
+                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                mockRetrieveMandationStatus()
+                setupMockNotLockedOut(arn)
 
-              enable(PrePopulate)
+                enable(PrePopulate)
+                enable(ItsaMandationStatus)
 
-              val result = await(callSubmit(controller))
+                val result = await(callSubmit(controller))
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
 
-              val session = result.session(request)
+                val session = result.session(request)
 
-              session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-              session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-              session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
 
-              verifyPrePopulationSave(0, testReference)
-              verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                verifyPrePopulationSave(0, testReference)
+                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+              }
             }
-          }
 
-          "the client is eligible and has prepop and the feature switch is on" should {
-            s"redirect user to ${controllers.agent.routes.HomeController.index.url} after saving prepop data" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-              mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
-              mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-              setupMockPrePopulateSave(testReference)
-              mockRetrieveMandationStatus()
-              setupMockNotLockedOut(arn)
+            "the client has prepop data, prepop and ITSA mandation status are on" should {
+              s"redirect user to ${controllers.agent.routes.HomeController.index.url} after saving prepop data" in withController { controller =>
+                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
+                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                setupMockPrePopulateSave(testReference)
+                mockRetrieveMandationStatus()
+                setupMockNotLockedOut(arn)
 
-              enable(PrePopulate)
+                enable(PrePopulate)
+                enable(ItsaMandationStatus)
 
-              val result = await(callSubmit(controller))
+                val result = await(callSubmit(controller))
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
 
-              val session = result.session(request)
+                val session = result.session(request)
 
-              session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-              session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-              session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
 
-              verifyPrePopulationSave(1, testReference)
-              verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                verifyPrePopulationSave(1, testReference)
+                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+              }
             }
-          }
 
-          "the client is eligible and has prepop and the feature switch is off" should {
-            s"redirect user to ${controllers.agent.routes.HomeController.index.url} after saving prepop data" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-              mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
-              mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-              setupMockPrePopulateSave(testReference)
-              mockRetrieveMandationStatus()
-              setupMockNotLockedOut(arn)
+            "the client has prepop data, prepop is on and ITSA mandation status is off" should {
+              s"redirect user to ${controllers.agent.routes.HomeController.index.url} after saving prepop data" in withController { controller =>
+                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
+                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                setupMockPrePopulateSave(testReference)
+                setupMockNotLockedOut(arn)
 
-              val result = await(callSubmit(controller))
+                enable(PrePopulate)
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
+                val result = await(callSubmit(controller))
 
-              val session = result.session(request)
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
 
-              session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-              session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-              session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                val session = result.session(request)
 
-              verifyPrePopulationSave(0, testReference)
-              verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+
+                verifyPrePopulationSave(1, testReference)
+                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+              }
+            }
+
+            "the client has prepop data, prepop and ITSA mandation status are off" should {
+              s"redirect user to ${controllers.agent.routes.HomeController.index.url} after saving prepop data" in withController { controller =>
+                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
+                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                setupMockPrePopulateSave(testReference)
+                setupMockNotLockedOut(arn)
+
+                val result = await(callSubmit(controller))
+
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
+
+                val session = result.session(request)
+
+                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+
+                verifyPrePopulationSave(0, testReference)
+                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+              }
             }
           }
 
@@ -392,7 +422,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       s"have the ${ITSASessionKeys.FailedClientMatching} removed from session" in withController { controller =>
         mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
         mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-        mockRetrieveMandationStatus()
         mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
         setupMockNotLockedOut(arn)
 

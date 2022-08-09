@@ -19,7 +19,7 @@ package controllers.usermatching
 import _root_.common.Constants.ITSASessionKeys
 import agent.audit.mocks.MockAuditingService
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
+import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate, ThrottlingFeature}
 import controllers.ControllerBaseSpec
 import models.{EligibilityStatus, PrePopData}
 import org.mockito.Mockito.{never, reset, times}
@@ -58,6 +58,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     super.beforeEach()
     reset(mockAuthService)
     disable(PrePopulate)
+    disable(ItsaMandationStatus)
     enable(ThrottlingFeature)
     notThrottled()
     mockNinoRetrieval()
@@ -133,7 +134,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         "the user is eligible " when {
           "the user has a UTR" should {
             "redirect to the sign up journey" when {
-              "feature switch PrePopulate is enabled but there is no PrePop" when {
+              "PrePopulate and ITSA mandation status are on but there is no PrePop data" when {
                 "redirect to SPSHandoff controller" in {
                   mockNinoAndUtrRetrieval()
                   mockLookupUserWithUtr(testNino)(testUtr)
@@ -143,6 +144,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockRetrieveMandationStatus()
 
                   enable(PrePopulate)
+                  enable(ItsaMandationStatus)
 
                   val result = await(testHomeController().index(fakeRequest))
                   status(result) must be(Status.SEE_OTHER)
@@ -153,7 +155,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 }
               }
 
-              "feature switch PrePopulate is enabled and there is PrePop" when {
+              "PrePopulate and ITSA mandation status are on and there is PrePop data" when {
                 "redirect to SPSHandoff controller after saving prepop informtion" in {
                   mockNinoAndUtrRetrieval()
                   mockLookupUserWithUtr(testNino)(testUtr)
@@ -163,6 +165,28 @@ class HomeControllerSpec extends ControllerBaseSpec
                   setupMockSubscriptionDetailsSaveFunctions()
                   setupMockPrePopulateSave(testReference)
                   mockRetrieveMandationStatus()
+
+                  enable(PrePopulate)
+                  enable(ItsaMandationStatus)
+
+                  val result = await(testHomeController().index(fakeRequest))
+                  status(result) must be(Status.SEE_OTHER)
+                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+
+                  verifyPrePopulationSave(1, testReference)
+                  verifyGetThrottleStatusCalls(times(1))
+                }
+              }
+
+              "PrePopulate is on, ITSA mandation status is off and there is PrePop data" when {
+                "redirect to SPSHandoff controller after saving prepop informtion" in {
+                  mockNinoAndUtrRetrieval()
+                  mockLookupUserWithUtr(testNino)(testUtr)
+                  setupMockGetSubscriptionNotFound(testNino)
+                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
+                  mockRetrieveReferenceSuccess(testUtr)(testReference)
+                  setupMockSubscriptionDetailsSaveFunctions()
+                  setupMockPrePopulateSave(testReference)
 
                   enable(PrePopulate)
 
@@ -175,14 +199,13 @@ class HomeControllerSpec extends ControllerBaseSpec
                 }
               }
 
-              "feature switch PrePopulate is disabled" when {
+              "PrePopulate and ITSA mandation status are off" when {
                 "redirect to SPSHandoff controller" in {
                   mockNinoAndUtrRetrieval()
                   mockLookupUserWithUtr(testNino)(testUtr)
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
-                  mockRetrieveMandationStatus()
 
                   val result = await(testHomeController().index(fakeRequest))
                   status(result) must be(Status.SEE_OTHER)
