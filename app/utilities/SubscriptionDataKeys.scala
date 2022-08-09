@@ -35,6 +35,8 @@ object SubscriptionDataKeys {
   val Property = "Property"
   val OverseasProperty = "OverseasProperty"
 
+  val MandationStatus = "MandationStatus"
+
   val subscriptionId = "subscriptionId"
   val lastUpdatedTimestamp = "lastUpdatedTimestamp"
 

@@ -23,10 +23,10 @@ import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
+import models.EligibilityStatus
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
-import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import play.twirl.api.Html
 import services._
@@ -46,6 +46,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
                                         val authService: AuthService,
                                         val agentQualificationService: AgentQualificationService,
                                         val getEligibilityStatusService: GetEligibilityStatusService,
+                                        val mandationStatusService: MandationStatusService,
                                         val lockOutService: UserLockoutService,
                                         val prePopulationService: PrePopulationService,
                                         val subscriptionDetailsService: SubscriptionDetailsService)
@@ -77,21 +78,6 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
       }
   }
 
-  private def handleFailedMatch(userDetails: UserDetailsModel, arn: String)(implicit request: Request[AnyContent]) = {
-    val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
-    lockOutService.incrementLockout(arn, currentCount).flatMap {
-      case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
-        auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), userDetails, newCount, lockedOut = false))
-        successful(Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
-          .addingToSession(FailedClientMatching -> newCount.toString))
-      case Right(LockoutUpdate(_: LockedOut, None)) =>
-        auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), userDetails, 0, lockedOut = true))
-        successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show)
-          .removingFromSession(FailedClientMatching).clearAllUserDetails)
-      case _ => failed(new InternalServerException("ConfirmClientController.lockUser failure"))
-    }
-  }
-
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withLockOutCheck {
@@ -115,6 +101,21 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
       }
   }
 
+  private def handleFailedMatch(userDetails: UserDetailsModel, arn: String)(implicit request: Request[AnyContent]) = {
+    val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
+    lockOutService.incrementLockout(arn, currentCount).flatMap {
+      case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
+        auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), userDetails, newCount, lockedOut = false))
+        successful(Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
+          .addingToSession(FailedClientMatching -> newCount.toString))
+      case Right(LockoutUpdate(_: LockedOut, None)) =>
+        auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), userDetails, 0, lockedOut = true))
+        successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show)
+          .removingFromSession(FailedClientMatching).clearAllUserDetails)
+      case _ => failed(new InternalServerException("ConfirmClientController.lockUser failure"))
+    }
+  }
+
   private def handleUnapproved(arn: String, currentCount: Int, clientDetails: UserDetailsModel)
                               (implicit request:Request[AnyContent]) = {
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
@@ -135,8 +136,19 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
                                          (implicit request:Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
-      case Right(EligibilityStatus(true, _, Some(prepop))) if isEnabled(PrePopulate) => handlePrePopulation(nino, utr, prepop)
-      case Right(EligibilityStatus(true, _, _)) => Future.successful(goToHome(nino, utr))
+      case Right(EligibilityStatus(true, _, Some(prepop))) if isEnabled(PrePopulate) =>
+        withAgentReference(utr) { reference =>
+          for {
+            _ <- prePopulationService.prePopulate(reference, prepop)
+            _ <- mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+          } yield(goToHome(nino, utr))
+        }
+      case Right(EligibilityStatus(true, _, _)) =>
+        withAgentReference(utr) { reference =>
+          mandationStatusService.retrieveMandationStatus(reference, nino, utr).map { _ =>
+            goToHome(nino, utr)
+          }
+        }
       case Right(EligibilityStatus(false, _, _)) => Future.successful(goToCannotTakePart)
 
       case Left(error: HttpConnectorError) =>
@@ -156,15 +168,6 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
       .addingToSession(ITSASessionKeys.UTR -> utr)
       .removingFromSession(FailedClientMatching)
       .clearUserDetailsExceptName
-  }
-
-  private def handlePrePopulation(nino:String, utr:String, prepop: PrePopData)
-                                 (implicit request:Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
-    withAgentReference(utr) { reference =>
-      prePopulationService.prePopulate(reference, prepop).map { _ =>
-        goToHome(nino, utr)
-      }
-    }
   }
 
   private def handleFailure(arn: String, currentCount: Int, clientDetails: UserDetailsModel)

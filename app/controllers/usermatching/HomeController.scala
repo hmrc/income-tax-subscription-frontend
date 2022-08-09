@@ -41,7 +41,8 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                val subscriptionDetailsService: SubscriptionDetailsService,
                                val prePopulationService: PrePopulationService,
                                subscriptionService: SubscriptionService,
-                               throttlingService: ThrottlingService)
+                               throttlingService: ThrottlingService,
+                               val mandationStatusService: MandationStatusService)
                               (implicit val ec: ExecutionContext,
                                val appConfig: AppConfig,
                                mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
@@ -91,11 +92,17 @@ class HomeController @Inject()(val auditingService: AuditingService,
       // Check eligibility (this is complete, and gives us the control list response including pre-pop information)
       case Right(EligibilityStatus(true, _, Some(prepop))) if isEnabled(PrePopulate) =>
         withReference(utr) { reference =>
-          prePopulationService.prePopulate(reference, prepop).map { _ =>
+          for {
+            _ <- prePopulationService.prePopulate(reference, prepop)
+            _ <- mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+          } yield(goToSignUp(utr, timestamp, nino))
+        }
+      case Right(EligibilityStatus(true, _, _)) =>
+        withReference(utr) { reference =>
+          mandationStatusService.retrieveMandationStatus(reference, nino, utr).map { _ =>
             goToSignUp(utr, timestamp, nino)
           }
         }
-      case Right(EligibilityStatus(true, _, _)) => Future.successful(goToSignUp(utr, timestamp, nino))
       case Right(EligibilityStatus(false, _, _)) =>
         Future.successful(Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show()))
       case Left(_) =>

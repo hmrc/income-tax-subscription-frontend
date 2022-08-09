@@ -21,6 +21,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business._
+import models.status.MandationStatusModel
 import models.{AccountingMethod, DateModel}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
@@ -140,6 +141,9 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
 
   def saveSelfEmploymentsAccountingMethod(reference: String, accountingMethodModel: AccountingMethodModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod, accountingMethodModel)
+
+  def saveMandationStatus(reference: String, mandationStatus: MandationStatusModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[MandationStatusModel](reference, MandationStatus, mandationStatus)
 
 }
 
