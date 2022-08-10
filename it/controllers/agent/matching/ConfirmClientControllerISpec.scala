@@ -24,10 +24,7 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.{AuthStub => _, _}
-import models.status.MandationStatus.Voluntary
-import models.status.{MandationStatusModel, MandationStatusRequest}
 import play.api.http.Status._
-import play.api.libs.json.Json
 
 
 class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
@@ -201,9 +198,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
           EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
           UserLockoutStub.stubUserIsNotLocked(testARN)
-          MandationStatusStub.stubGetMandationStatus(
-            Json.toJson(MandationStatusRequest(testNino, testUtr))
-          )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()

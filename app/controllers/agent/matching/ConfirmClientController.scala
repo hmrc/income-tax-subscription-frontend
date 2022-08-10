@@ -21,7 +21,7 @@ import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
 import models.audits.EnterDetailsAuditing
@@ -140,12 +140,12 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
         withAgentReference(utr) { reference =>
           for {
             _ <- prePopulationService.prePopulate(reference, prepop)
-            _ <- mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+            _ <- handleMandationStatus(reference, nino, utr)
           } yield(goToHome(nino, utr))
         }
       case Right(EligibilityStatus(true, _, _)) =>
         withAgentReference(utr) { reference =>
-          mandationStatusService.retrieveMandationStatus(reference, nino, utr).map { _ =>
+          handleMandationStatus(reference, nino, utr).map { _ =>
             goToHome(nino, utr)
           }
         }
@@ -180,5 +180,13 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
                                      (implicit request:Request[AnyContent]): Future[Result]= {
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching))
+  }
+
+  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request:Request[AnyContent]): Future[Unit] = {
+    if(isEnabled(ItsaMandationStatus)) {
+      mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+    } else {
+      Future.successful(())
+    }
   }
 }
