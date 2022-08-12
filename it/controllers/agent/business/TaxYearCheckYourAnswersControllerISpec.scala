@@ -55,11 +55,12 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
 
         val unconfirmedTaxYear = AccountingYearModel(Current)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(unconfirmedTaxYear))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, unconfirmedTaxYear.copy(confirmed = true))
 
         When("GET /business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
 
-        Then("Should return a SEE_OTHER with a redirect location of confirmation")
+        Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
@@ -78,7 +79,21 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         When("GET /business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
 
-        Then("Should return a SEE_OTHER with a redirect location of confirmation")
+        Then("Should return an INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+
+      "the select tax could not be confirmed" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Current)))
+
+        When("GET /business/tax-year-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
+
+        Then("Should return an INTERNAL_SERVER_ERROR")
         res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )

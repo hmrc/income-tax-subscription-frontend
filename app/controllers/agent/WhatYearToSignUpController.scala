@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.business.WhatYearToSignUp
 
 import javax.inject.{Inject, Singleton}
@@ -73,8 +74,9 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
           formWithErrors =>
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
           accountingYear => {
-            subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map { _ =>
-              Redirect(controllers.agent.routes.TaxYearCheckYourAnswersController.show())
+            subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
+              case Right(_) => Redirect(controllers.agent.routes.TaxYearCheckYourAnswersController.show())
+              case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
             }
           }
         )

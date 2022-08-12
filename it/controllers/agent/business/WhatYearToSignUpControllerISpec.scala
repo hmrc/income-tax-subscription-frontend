@@ -24,7 +24,7 @@ import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.common.AccountingYearModel
 import models.{Current, Next}
-import play.api.http.Status.{BAD_REQUEST, NO_CONTENT, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.SelectedTaxYear
@@ -38,7 +38,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     super.beforeEach()
   }
 
-  "GET /report-quarterly/income-and-expenses/sign-up//client/business/what-year-to-sign-up" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/client/business/what-year-to-sign-up" when {
     "the Subscription Details Connector returns some data" should {
       "show the What Tax Year To Sign Up with an option current tax year selected" in {
         Given("I setup the Wiremock stubs")
@@ -83,33 +83,14 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up//client/business/what-year-to-sign-up" when {
-    "not in edit mode" should {
-      "redirect to the Tax Year CYA page" when {
-        "select the Current Year radio button on the What Year To Sign Up page" in {
+  "POST /report-quarterly/income-and-expenses/sign-up//client/business/what-year-to-sign-up" should {
+    "redirect to the Tax Year CYA page" when {
+      "not in edit mode" when {
+        "selecting the Current Year radio button" in {
           val userInput = Current
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
-
-          When("POST /client/business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(taxYearCheckYourAnswersURI)
-          )
-        }
-
-        "select the Next radio button on the What Year To Sign Up page" in {
-          val userInput = Next
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
           When("POST /client/business/what-year-to-sign-up is called")
@@ -123,64 +104,57 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         }
       }
 
-      "return BAD_REQUEST" when {
-        "no option has been selected" in {
+      "in edit mode" when {
+        "selecting the Next radio button" in {
+          val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
+          val userInput = Next
+
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
           When("POST /client/business/what-year-to-sign-up is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, None)
-
-          Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+          Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
           res must have(
-            httpStatus(BAD_REQUEST),
-            errorDisplayed()
+            httpStatus(SEE_OTHER),
+            redirectURI(taxYearCheckYourAnswersURI)
           )
         }
       }
     }
 
-    "in edit mode" should {
-      "redirect to the Tax Year CYA page" when {
-        "changing from the Current radio button to Next on the accounting method page" in {
-          val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-          val userInput = Next
+    "return BAD_REQUEST" when {
+      "no option has been selected" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(SubscriptionDetailsAccountingYearCurrent)))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
+        When("POST /client/business/what-year-to-sign-up is called")
 
-          When("POST /client/business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, None)
 
-          Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(taxYearCheckYourAnswersURI)
-          )
-        }
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res must have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+    }
 
-        "simulate not changing accounting year when calling page from Check Your Answers" in {
-          val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
-          val userInput = Current
+    "return INTERNAL_SERVER_ERROR" when {
+      "there is a failure while saving the tax year" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(SubscriptionDetailsAccountingYearCurrent)))
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
+        When("POST /client/business/what-year-to-sign-up is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(Current))
 
-          When("POST /client/business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(taxYearCheckYourAnswersURI)
-          )
-        }
+        Then("Should return an INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
       }
     }
   }

@@ -33,7 +33,7 @@ trait MockWhatYearToSignUp extends PlaySpec with MockitoSugar with BeforeAndAfte
     reset(whatYearToSignUp)
   }
 
-  def mockIncomeSource(): Unit = {
+  def mockView(): Unit = {
     when(whatYearToSignUp(any(), any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
