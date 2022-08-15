@@ -36,6 +36,11 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK)
   }
 
+  def stubSaveSubscriptionDetailsFailure(id: String): Unit = {
+    when(method = POST, uri = subscriptionUri(id))
+      .thenReturn(Status.INTERNAL_SERVER_ERROR)
+  }
+
   def verifySaveSubscriptionDetails[T](id: String, body: T, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
     WiremockHelper.verifyPost(subscriptionUri(id), Some(Json.toJson(body).toString()), count)
   }

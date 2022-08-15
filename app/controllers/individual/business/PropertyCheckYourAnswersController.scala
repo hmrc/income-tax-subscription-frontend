@@ -58,8 +58,9 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
       withReference { reference =>
         withProperty(reference) { property =>
           if (property.accountingMethod.isDefined && property.startDate.isDefined) {
-            subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map { _ =>
-              Redirect(routes.TaskListController.show())
+            subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {
+              case Right(_) => Redirect(routes.TaskListController.show())
+              case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
             }
           } else {
             Future.successful(Redirect(routes.TaskListController.show()))

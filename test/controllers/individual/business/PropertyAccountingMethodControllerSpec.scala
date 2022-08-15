@@ -23,6 +23,7 @@ import models.common.PropertyModel
 import models.{AccountingMethod, Accruals, Cash}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -67,21 +68,21 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "submit" should withController { controller =>
 
-    def callShow(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
+    def callSubmit(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Cash)
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
+    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
     val testAccountingMethod: AccountingMethod = Cash
 
-    "When it is not in edit mode" when {
-      "redirect to uk property check your answers page" in {
+    "redirect to uk property check your answers page" when {
+      "not in edit mode" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(None)
-        val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callSubmit(isEditMode = false)
 
         await(goodRequest)
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
@@ -89,11 +90,8 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
         verifyPropertySave(Some(PropertyModel(accountingMethod = Some(testAccountingMethod))))
       }
-    }
 
-
-    "When it is in edit mode" should {
-      "redirect to uk property check your answers page " in {
+      "in edit mode" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(Some(testFullPropertyModel))
 
@@ -108,16 +106,25 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
     }
 
-
-    "when there is an invalid submission with an error form" should {
-      "return bad request status (400)" in {
-
-        val badRequest = callShowWithErrorForm(isEditMode = false)
+    "return bad request status (400)" when {
+      "there is an invalid submission with an error form" in {
+        val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
         verifyPropertySave(None)
+      }
+    }
+
+    "throw an exception" when {
+      "cannot save the accounting method" in {
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockFetchProperty(None)
+
+        val goodRequest: Future[Result] = callSubmit(isEditMode = false)
+
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
 

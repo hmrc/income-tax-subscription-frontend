@@ -89,6 +89,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Current)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(SelectedTaxYear)
 
         When("GET /business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()

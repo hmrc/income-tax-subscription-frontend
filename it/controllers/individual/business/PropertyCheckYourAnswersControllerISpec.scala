@@ -132,6 +132,25 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
+
+      "the property details could not be confirmed" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+          Property,
+          OK,
+          Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
+        )
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+
+        When("POST business/uk-property-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+
+        Then("Should return a INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
     }
   }
 }

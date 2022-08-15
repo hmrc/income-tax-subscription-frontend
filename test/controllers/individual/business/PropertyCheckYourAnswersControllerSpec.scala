@@ -92,12 +92,23 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "throw an exception if cannot retrieve property details" in withController { controller =>
-      mockFetchProperty(None)
+    "throw an exception" when {
+      "cannot retrieve property details" in withController { controller =>
+        mockFetchProperty(None)
 
-      val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      }
+
+      "cannot confirm property details" in withController { controller =>
+        mockFetchProperty(None)
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      }
     }
   }
 

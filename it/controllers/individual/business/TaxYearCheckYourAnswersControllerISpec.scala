@@ -92,6 +92,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
 
         val unconfirmedTaxYear = AccountingYearModel(Current)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(unconfirmedTaxYear))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(SelectedTaxYear)
 
         When("GET /business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
