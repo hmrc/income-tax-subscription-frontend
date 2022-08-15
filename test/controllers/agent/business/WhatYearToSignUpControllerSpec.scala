@@ -21,6 +21,7 @@ import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
 import forms.agent.AccountingYearForm
 import models.Current
 import models.common.AccountingYearModel
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -52,47 +53,57 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
       "there is a pre-saved tax year option in Subscription Details " in {
-        mockIncomeSource()
-        lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
-
+        mockView()
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
-        status(result) must be(Status.OK)
+        val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
+        status(result) must be(Status.OK)
         verifyFetchSelectedTaxYear(1, "test-reference")
       }
     }
 
     "display the What Year To Sign Up view with empty form and return OK (200)" when {
       "there is a no pre-saved tax year option in Subscription Details " in {
-        mockIncomeSource()
-        lazy val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
-
+        mockView()
         mockFetchSelectedTaxYear(None)
 
-        status(result) must be(Status.OK)
+        val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
 
+        status(result) must be(Status.OK)
         verifyFetchSelectedTaxYear(1, "test-reference")
       }
     }
   }
 
 
-  "submit" when {
-
-    def callShow(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+  "submit" should {
+    def callSubmit(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingYearForm.accountingYearForm, Current)
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
-    "not in edit mode" should {
-      "redirect to tax year check your answers page" in {
-        mockIncomeSource()
+    "redirect to tax year check your answers page" when {
+      "not in edit mode" in {
+        mockView()
         setupMockSubscriptionDetailsSaveFunctions()
-        val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callSubmit(isEditMode = false)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+
+        await(goodRequest)
+        verifySaveSelectedTaxYear(1, "test-reference")
+      }
+
+      "in edit mode" in {
+        mockView()
+        setupMockSubscriptionDetailsSaveFunctions()
+        val goodRequest = callSubmit(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
 
@@ -103,29 +114,24 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "in edit mode" should {
-      "redirect to tax year check your answers page" in {
-        mockIncomeSource()
-        setupMockSubscriptionDetailsSaveFunctions()
-        val goodRequest = callShow(isEditMode = true)
+    "return bad request status (400)" when {
+      "there is an invalid submission with an error form" in {
+        mockView()
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySaveSelectedTaxYear(1, "test-reference")
-      }
-    }
-
-
-    "there is an invalid submission with an error form" should {
-      "return bad request status (400)" in {
-        mockIncomeSource()
-        val badRequest = callShowWithErrorForm(isEditMode = false)
+        val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
+      }
+    }
 
+    "throw an exception" when {
+      "there is a failure while saving the tax year" in {
+        mockView()
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+
+        val goodRequest = callSubmit(isEditMode = false)
+
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
   }

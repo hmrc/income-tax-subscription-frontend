@@ -80,13 +80,24 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       verifyFetchSelectedTaxYear(1, "test-reference")
     }
 
-    "throw an exception if cannot retrieve accounting year" in withController { controller =>
-      mockFetchSelectedTaxYear(None)
+    "throw an exception" when {
+      "the accounting year cannot be retrieved" in withController { controller =>
+        mockFetchSelectedTaxYear(None)
 
-      val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-      verifySubscriptionDetailsSave(MtditId, 0)
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        verifySubscriptionDetailsSave(MtditId, 0)
+      }
+
+      "the accounting year cannot be confirmed" in withController { controller =>
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      }
     }
   }
 

@@ -17,7 +17,7 @@
 package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import connectors.httpparser.RetrieveReferenceHttpParser
 import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, RetrieveReferenceResponse}
 import models.common._
@@ -213,6 +213,12 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
 
     when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
+  }
+
+  protected final def setupMockSubscriptionDetailsSaveFunctionsFailure(): Unit = {
+
+    when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Left(UnexpectedStatusFailure(500))))
   }
 
   protected final def setupMockSubscriptionDetailsSaveFunctions(reference: String, id: String): Unit = {

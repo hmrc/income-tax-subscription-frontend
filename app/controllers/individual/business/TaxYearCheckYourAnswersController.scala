@@ -59,8 +59,9 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
           val accountingYearModel: AccountingYearModel = maybeAccountingYearModel.getOrElse(
             throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
           )
-          subscriptionDetailsService.saveSelectedTaxYear(reference, accountingYearModel.copy(confirmed = true)) map { _ =>
-            Redirect(routes.TaskListController.show())
+          subscriptionDetailsService.saveSelectedTaxYear(reference, accountingYearModel.copy(confirmed = true)) map {
+            case Right(_) => Redirect(routes.TaskListController.show())
+            case Left(_) => throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not confirm accounting year")
           }
         }
       }
