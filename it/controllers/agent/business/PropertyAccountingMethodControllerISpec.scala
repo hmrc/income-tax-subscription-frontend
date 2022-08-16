@@ -71,9 +71,9 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST client/business/accounting-method-property" when {
-    "select an option of the accounting method on the agent Property Accounting Method page" should {
-      "redirect to agent uk property Check Your Answers" in {
+  "POST client/business/accounting-method-property" should {
+    "redirect to agent uk property Check Your Answers" when {
+      "selecting the cash accounting method" in {
         val userInput = Cash
 
         Given("I setup the Wiremock stubs")
@@ -92,18 +92,39 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "not select an option on the Property Accounting Method page" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
+    "return a BAD_REQUEST" when {
+      "not selecting an option" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-      When("POST /business/accounting-method-property is called")
-      val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, None)
+        When("POST /business/accounting-method-property is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, None)
 
-      Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-      res must have(
-        httpStatus(BAD_REQUEST),
-        errorDisplayed()
-      )
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res must have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+    }
+
+    "return INTERNAL_SERVER_ERROR" when {
+      "the account method cannot be saved" in {
+        val userInput = Cash
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+
+        When("POST /business/accounting-method-property is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+
+        Then("Should return an INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
     }
   }
 }

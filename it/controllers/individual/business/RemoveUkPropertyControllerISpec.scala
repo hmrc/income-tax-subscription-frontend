@@ -19,10 +19,8 @@ package controllers.individual.business
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.testFullPropertyModel
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
-import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
@@ -30,7 +28,6 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
       When("GET /business/remove-uk-property-business is called")
       val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty
@@ -48,7 +45,6 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(Property)
 
         When("POST /business/remove-uk-property-business is called")
@@ -66,7 +62,6 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("No")))
@@ -85,7 +80,6 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "no option was selected on the remove Uk property page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("")))
@@ -96,6 +90,22 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
           errorDisplayed()
         )
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(0))
+      }
+    }
+
+    "return INTERNAL_SERVER_ERROR" when {
+      "the UK property cannot be removed" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+
+        When("POST /business/remove-uk-property-business is called")
+        val res = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("Yes")))
+
+        Then("Should return INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
       }
     }
   }

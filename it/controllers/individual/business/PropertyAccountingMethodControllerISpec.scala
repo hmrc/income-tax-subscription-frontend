@@ -21,6 +21,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.testFullPropertyModel
 import helpers.servicemocks.AuthStub
+import models.common.PropertyModel
 import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -69,16 +70,16 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-method-property" when {
-    "not in edit mode" should {
-      "redirect to the property CYA page" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-method-property" should {
+    "redirect to the property CYA page" when {
+      "not in edit mode" when {
         "selecting the Cash radio button on the property accounting method page" in {
           val userInput = Cash
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = None)))
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(accountingMethod = Some(userInput)))
 
           When("POST /business/accounting-method-property is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -95,8 +96,11 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = None)))
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
+          val testProperty = PropertyModel(
+            accountingMethod = Some(Accruals)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty)
 
           When("POST /business/accounting-method-property is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -109,34 +113,17 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         }
       }
 
-      "return BAD_REQUEST" when {
-        "not selecting an option on the property accounting method page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-
-          When("POST /business/accounting-method-property is called")
-
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, None)
-
-          Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-          res must have(
-            httpStatus(BAD_REQUEST),
-            errorDisplayed()
-          )
-        }
-      }
-    }
-
-    "in edit mode" should {
-      "redirect to property CYA page" when {
+      "in edit mode" when {
         "selecting the Cash radio button on the property accounting method page" in {
           val userInput = Cash
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(accountingMethod = Some(Accruals))))
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel.copy(accountingMethod = Some(userInput)))
+          val testProperty = PropertyModel(
+            accountingMethod = Some(Accruals)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(accountingMethod = Some(userInput)))
 
           When("POST /business/accounting-method-property is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))
@@ -147,6 +134,43 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
             redirectURI(ukPropertyCYAURI)
           )
         }
+      }
+    }
+
+    "return BAD_REQUEST" when {
+      "not selecting an option on the property accounting method page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+
+        When("POST /business/accounting-method-property is called")
+
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, None)
+
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res must have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+    }
+
+    "return INTERNAL_SERVER_ERROR" when {
+      "the account method cannot be saved" in {
+        val userInput = Accruals
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+
+        When("POST /business/accounting-method-property is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+
+        Then("Should return a INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
       }
     }
   }

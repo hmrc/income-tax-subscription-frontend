@@ -23,18 +23,16 @@ import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
 import models.common.PropertyModel
-import play.api.http.Status.{BAD_REQUEST, NO_CONTENT, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
-import java.time.LocalDate
+class PropertyStartDateControllerISpec extends ComponentSpecBase {
 
-class UkPropertyStartDateISpec extends ComponentSpecBase {
+  "GET /report-quarterly/income-and-expenses/sign-up/business/property-start-date" should {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/business/property-start-date" when {
-
-    "the Subscription Details Connector returns all data" should {
-      "show the property start date page" in {
+    "show the property start date page" when {
+      "the Subscription Details Connector returns all data" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
@@ -49,10 +47,8 @@ class UkPropertyStartDateISpec extends ComponentSpecBase {
           govukDateField("startDate", testPropertyStartDate.startDate)
         )
       }
-    }
 
-    "the Subscription Details Connector returns no data" should {
-      "show the property start date page" in {
+      "the Subscription Details Connector returns no data" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
@@ -70,10 +66,10 @@ class UkPropertyStartDateISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/property-start-date" when {
-    "not in edit mode" when {
-      "enter start date" should {
-        "redirect to the uk property accounting method page" in {
+  "POST /report-quarterly/income-and-expenses/sign-up/property-start-date" should {
+    "redirect to the uk property accounting method page" when {
+      "not in edit mode" when {
+        "enter start date" in {
           val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
 
           Given("I setup the Wiremock stubs")
@@ -91,8 +87,55 @@ class UkPropertyStartDateISpec extends ComponentSpecBase {
           )
         }
       }
+    }
 
-      "do not enter start date" in {
+    "redirect to uk property check your answers page" when {
+      "in edit mode" when {
+        "not changing the start date" in {
+          val userInput: DateModel = IntegrationTestModels.testValidStartDate
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          val testProperty = PropertyModel(
+            startDate = Some(IntegrationTestModels.testValidStartDate)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty)
+
+          When("POST /property-start-date is called")
+          val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(ukPropertyCYAURI)
+          )
+        }
+
+        "changing the start date" in {
+          val userInput: DateModel = IntegrationTestModels.testValidStartDate2
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          val testProperty = PropertyModel(
+            startDate = Some(IntegrationTestModels.testValidStartDate)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(startDate = Some(IntegrationTestModels.testValidStartDate2)))
+
+          When("POST /property-start-date is called")
+          val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(ukPropertyCYAURI)
+          )
+        }
+      }
+    }
+
+    "return BAD_REQUEST" when {
+      "not entering start date" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -106,7 +149,7 @@ class UkPropertyStartDateISpec extends ComponentSpecBase {
         )
       }
 
-      "select start date within 12 months" in {
+      "selecting start date within 12 months" in {
         val userInput: DateModel = IntegrationTestModels.testInvalidPropertyStartDate.startDate
 
         Given("I setup the Wiremock stubs")
@@ -124,45 +167,22 @@ class UkPropertyStartDateISpec extends ComponentSpecBase {
       }
     }
 
-    "in edit mode" when {
-      "simulate not changing the start date" should {
-        "redirect to uk property check your answers page" in {
-          val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel)
+    "return INTERNAL_SERVER_ERROR" when {
+      "the start date cannot be saved" in {
+        val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
 
-          When("POST /property-start-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
 
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
-          )
-        }
-      }
+        When("POST /property-start-date is called")
+        val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = false, Some(userInput))
 
-      "simulate changing the start date" should {
-        "redirect to uk property check your answers page" in {
-          val SubscriptionDetailsStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
-          val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(startDate = Some(SubscriptionDetailsStartDate))))
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testFullPropertyModel)
-
-          When("POST /property-start-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitpropertyStartDate(inEditMode = true, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
-          )
-        }
+        Then("Should return a INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
       }
     }
   }

@@ -216,7 +216,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   }
 
   protected final def setupMockSubscriptionDetailsSaveFunctionsFailure(): Unit = {
-
     when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Left(UnexpectedStatusFailure(500))))
   }

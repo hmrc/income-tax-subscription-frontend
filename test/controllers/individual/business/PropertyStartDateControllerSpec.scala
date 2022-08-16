@@ -21,6 +21,7 @@ import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
 import models.common.PropertyModel
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -82,20 +83,20 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
     val testPropertyStartDateModel: DateModel = testValidMaxDate
 
-    def callShow(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
+    def callSubmit(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(minDate, maxDate, d => d.toString), testPropertyStartDateModel)
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
+    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
-    "When it is not in edit mode" should {
-      "redirect to uk property accounting method page" in {
+    "redirect to uk property accounting method page" when {
+      "not in edit mode" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(None)
 
-        val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callSubmit(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         await(goodRequest)
@@ -106,11 +107,11 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "When it is in edit mode" should {
-      "redirect to uk property check your answers page" in {
+    "redirect to uk property check your answers page" when {
+      "in edit mode" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(Some(testFullPropertyModel))
-        val goodRequest = callShow(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = true)
         await(goodRequest)
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url)
 
@@ -122,13 +123,24 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "there is an invalid submission with an error form" in {
         mockPropertyStartDate()
 
-        val badRequest = callShowWithErrorForm(isEditMode = false)
+        val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
         verifyPropertySave(None)
         verifySubscriptionDetailsFetchAll(Some(0))
+      }
+    }
+
+    "throw an exception" when {
+      "cannot save the start date" in {
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockFetchProperty(None)
+
+        val goodRequest: Future[Result] = callSubmit(isEditMode = false)
+
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
 

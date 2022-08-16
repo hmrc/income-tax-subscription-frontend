@@ -18,10 +18,10 @@ package controllers.agent.business
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.testAccountingYearCurrent
 import helpers.agent.servicemocks.AuthStub
-import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.common.AccountingYearModel
 import models.{Current, Next}
 import play.api.http.Status._
@@ -106,7 +106,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
       "in edit mode" when {
         "selecting the Next radio button" in {
-          val SubscriptionDetailsAccountingYearCurrent: AccountingYearModel = IntegrationTestModels.testAccountingYearCurrent
           val userInput = Next
 
           Given("I setup the Wiremock stubs")
@@ -147,6 +146,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       "there is a failure while saving the tax year" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(SelectedTaxYear)
 
         When("POST /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(Current))

@@ -23,6 +23,7 @@ import models.DateModel
 import models.common.PropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
@@ -79,8 +80,8 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
         subscriptionRequest
       )
 
-    "When it is not in edit mode" should {
-      "redirect to agent uk property accounting method page" in withController { controller =>
+    "redirect to agent uk property accounting method page" when {
+      "not in edit mode" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(None)
 
@@ -94,8 +95,8 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "When it is in edit mode" should {
-      "redirect to agent uk property check your answers page" in withController { controller =>
+    "redirect to agent uk property check your answers page" when {
+      "in edit mode" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(Some(testFullPropertyModel))
         val goodRequest = callSubmit(controller, isEditMode = true)
@@ -106,21 +107,24 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "when there is an invalid submission with an error form" should {
-      "return bad request status (400) when save and retrieve is enabled" in withController { controller =>
+    "return bad request status (400)" when {
+      "there is an invalid submission with an error form" in withController { controller =>
         val badRequest = callSubmitWithErrorForm(controller, isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
       }
+    }
 
-      "return bad request status (400)" in withController { controller =>
-        val badRequest = callSubmitWithErrorForm(controller, isEditMode = false)
+    "throw an exception" when {
+      "cannot save the start date" in withController { controller =>
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockFetchProperty(None)
 
-        status(badRequest) must be(Status.BAD_REQUEST)
+        val goodRequest: Future[Result] = callSubmit(controller, isEditMode = false)
 
-        await(badRequest)
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
 

@@ -92,5 +92,21 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(0))
       }
     }
+
+    "return INTERNAL_SERVER_ERROR" when {
+      "the UK property cannot be removed" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+
+        When("POST /business/remove-uk-property-business is called")
+        val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("Yes")))
+
+        Then("Should return INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
   }
 }

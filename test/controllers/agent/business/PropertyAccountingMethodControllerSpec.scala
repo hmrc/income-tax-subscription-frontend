@@ -23,6 +23,7 @@ import models.Cash
 import models.common.PropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -57,9 +58,9 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   "show" when {
     "there is no previous selected answer" should {
       "display the property accounting method view and return OK (200)" in withController { controller =>
-        lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
-
         mockFetchProperty(None)
+
+        val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
         status(result) must be(Status.OK)
       }
@@ -67,9 +68,9 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "there is a previous selected answer CASH" should {
       "display the property accounting method view with the previous selected answer CASH and return OK (200)" in withController { controller =>
-        lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
-
         mockFetchProperty(Some(PropertyModel(Some(Cash))))
+
+        val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
         status(result) must be(Status.OK)
       }
@@ -99,15 +100,25 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash))))
     }
 
-    "when there is an invalid submission with an error form" should {
-      "return bad request status (400)" in {
+    "return bad request status (400)" when {
+      "there is an invalid submission with an error form" in {
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-
         verifyPropertySave(None)
+      }
+    }
+
+    "throw an exception" when {
+      "cannot save the accounting method" in {
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockFetchProperty(None)
+
+        val goodRequest: Future[Result] = callSubmit(isEditMode = false)
+
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
   }

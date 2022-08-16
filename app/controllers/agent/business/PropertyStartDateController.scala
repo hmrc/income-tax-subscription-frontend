@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.agent.business.PropertyStartDate
@@ -46,11 +47,11 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        subscriptionDetailsService.fetchPropertyStartDate(reference) flatMap { propertyStartDate =>
-          Future.successful(Ok(view(
+        subscriptionDetailsService.fetchPropertyStartDate(reference) map { propertyStartDate =>
+          Ok(view(
             propertyStartDateForm = form.fill(propertyStartDate),
             isEditMode = isEditMode
-          )))
+          ))
         }
       }
   }
@@ -64,13 +65,14 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
               propertyStartDateForm = formWithErrors, isEditMode = isEditMode
             ))),
           startDate =>
-            subscriptionDetailsService.savePropertyStartDate(reference, startDate) flatMap { _ =>
-              val redirectUrl: Call = if (isEditMode) {
-                controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode)
-              } else {
-                controllers.agent.business.routes.PropertyAccountingMethodController.show()
-              }
-              Future.successful(Redirect(redirectUrl))
+            subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
+              case Right(_) =>
+                if (isEditMode) {
+                  Redirect(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode))
+                } else {
+                  Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+                }
+              case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
             }
         )
       }

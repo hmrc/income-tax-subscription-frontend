@@ -17,7 +17,7 @@
 package connectors.subscriptiondata.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.{DeleteSubscriptionDetailsResponse, UnexpectedStatusFailure}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -60,6 +60,12 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
     when(mockIncomeTaxSubscriptionConnector.deleteSubscriptionDetails(
       ArgumentMatchers.any(), ArgumentMatchers.eq(id)
     )(ArgumentMatchers.any())) thenReturn Future.successful(response)
+  }
+
+  def mockDeleteSubscriptionDetailsFailure(id: String): Unit = {
+    when(mockIncomeTaxSubscriptionConnector.deleteSubscriptionDetails(
+      ArgumentMatchers.any(), ArgumentMatchers.eq(id)
+    )(ArgumentMatchers.any())) thenReturn Future.successful(Left(UnexpectedStatusFailure(500)))
   }
 
   def verifyDeleteSubscriptionDetails(id: String, count: Int): Unit = {

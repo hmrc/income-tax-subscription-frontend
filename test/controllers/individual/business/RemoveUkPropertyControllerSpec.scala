@@ -49,9 +49,9 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "submit" when {
-    "the user does not select an option" must {
-      "return BAD_REQUEST and display the Uk property page" in {
+  "submit" should {
+    "return BAD_REQUEST and display the Uk property page" when {
+      "the user does not select an option" in {
         mockRemoveUkProperty()
 
         val result: Future[Result] = TestRemoveUkPropertyController.submit(subscriptionRequest)
@@ -63,28 +63,42 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "the user selects to remove the business" in {
-      mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
+    "redirect to the task list page" when {
+      "the user selects to remove the business" in {
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
-      val result: Result = TestRemoveUkPropertyController.submit(
-        subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
-      ).futureValue
+        val result: Result = TestRemoveUkPropertyController.submit(
+          subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
+        ).futureValue
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
 
-      verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 1)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 1)
+      }
+
+      "the user selects to not remove the business" in {
+        val result: Result = TestRemoveUkPropertyController.submit(
+          subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_no)
+        ).futureValue
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
+      }
     }
 
-    "the user selects to not remove the business" in {
-      val result: Result = TestRemoveUkPropertyController.submit(
-        subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_no)
-      ).futureValue
+    "throw an exception" when {
+      "cannot remove the UK property" in {
+        mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.Property)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+        val result = TestRemoveUkPropertyController.submit(
+          subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
+        )
 
-      verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      }
     }
   }
 

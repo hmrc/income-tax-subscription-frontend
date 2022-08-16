@@ -41,6 +41,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.incometax.business.PropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
@@ -83,8 +84,9 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
           formWithErrors =>
             Future.successful(BadRequest(view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode))),
           accountingMethodProperty => {
-            subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) flatMap { _ =>
-              Future.successful(Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode)))
+            subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) map {
+              case Right(_) => Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode))
+              case Left(_) => throw new InternalServerException("[PropertyAccountingMethodController][submit] - Could not save accounting method")
             }
           }
         )

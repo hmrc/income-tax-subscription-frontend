@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import utilities.SubscriptionDataKeys
 import views.html.agent.business.ClientRemoveUkProperty
@@ -55,8 +56,9 @@ class RemoveUkPropertyController @Inject()(val auditingService: AuditingService,
       form.bindFromRequest.fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
           case Yes => withAgentReference { reference =>
-            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) map { _ =>
-              Redirect(controllers.agent.routes.TaskListController.show())
+            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) map {
+              case Right(_) => Redirect(controllers.agent.routes.TaskListController.show())
+              case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Could not remove UK property")
             }
           }
           case No => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
