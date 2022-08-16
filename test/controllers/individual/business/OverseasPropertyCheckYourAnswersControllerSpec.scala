@@ -67,14 +67,16 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     "redirect to the task list" when {
       "the user submits valid full data" should {
         "save the overseas property answers" in withController { controller =>
-          mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+          val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
+
+          mockFetchOverseasProperty(Some(testProperty))
           setupMockSubscriptionDetailsSaveFunctions()
 
           val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
-          verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+          verifyOverseasPropertySave(Some(testProperty.copy(confirmed = true)))
         }
       }
 
@@ -95,12 +97,23 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "throw an exception if cannot retrieve property details" in withController { controller =>
-      mockFetchOverseasProperty(None)
+    "throw an exception" when {
+      "cannot retrieve property details" in withController { controller =>
+        mockFetchOverseasProperty(None)
 
-      val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      }
+
+      "cannot confirm overseas property details" in withController { controller =>
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      }
     }
   }
 

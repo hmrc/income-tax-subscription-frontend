@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.agent.business.OverseasPropertyStartDate
@@ -47,10 +48,10 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) flatMap { overseasPropertyStartDate =>
-          Future.successful(Ok(view(
+        subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) map { overseasPropertyStartDate =>
+          Ok(view(
             overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate), isEditMode
-          )))
+          ))
         }
       }
   }
@@ -64,13 +65,14 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
               BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode))
             ),
           startDate =>
-            subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) flatMap { _ =>
-              val redirectUrl = if (isEditMode) {
-                controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode)
-              } else {
-                controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show()
-              }
-              Future.successful(Redirect(redirectUrl))
+            subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) map {
+              case Right(_) =>
+                if (isEditMode) {
+                  Redirect(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+                } else {
+                  Redirect(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show())
+                }
+              case Left(_) => throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
             }
         )
       }

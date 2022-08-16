@@ -53,11 +53,15 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
     "redirect to the agent task list page" when {
       "the user answered all the overseas property questions" should {
         "save the property answers" in {
+          val testProperty = OverseasPropertyModel(
+            accountingMethod = Some(Cash),
+            startDate = Some(DateModel("10", "11", "2021"))
+          )
+          val expectedProperty = testProperty.copy(confirmed = true)
+
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash),
-            startDate = Some(DateModel("10", "11", "2021")))))
-          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash), confirmed = true,
-            startDate = Some(DateModel("10", "11", "2021"))))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testProperty))
+          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expectedProperty)
 
           When("POST business/overseas-property-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
@@ -68,8 +72,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
             redirectURI(taskListURI)
           )
 
-          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash),
-            confirmed = true, startDate = Some(DateModel("10", "11", "2021"))), Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expectedProperty, Some(1))
         }
       }
 
@@ -92,10 +95,26 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
     }
 
     "return INTERNAL_SERVER_ERROR" when {
-      "the property details could not be retrieved" in {
+      "overseas property details could not be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+
+        When("POST business/overseas-property-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+
+        Then("Should return a INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+
+      "overseas property details cannot be confirmed" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK,
+          Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(OverseasProperty)
 
         When("POST business/overseas-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()

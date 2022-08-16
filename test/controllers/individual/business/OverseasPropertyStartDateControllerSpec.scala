@@ -21,6 +21,7 @@ import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
 import models.common.OverseasPropertyModel
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -77,7 +78,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     "When it is not in edit mode" should {
       "redirect to foreign property accounting method page" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
         val goodRequest = callPost(controller, isEditMode = false)
 
@@ -101,8 +102,8 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "when there is an invalid submission with an error form" should {
-      "return bad request status (400)" in withController { controller =>
+    "return bad request status (400)" when {
+      "there is an invalid submission with an error form" in withController { controller =>
         mockOverseasPropertyStartDateView()
 
         val badRequest = callPostWithErrorForm(controller, isEditMode = false)
@@ -111,6 +112,16 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
         await(badRequest)
         verifyOverseasPropertySave(None)
+      }
+    }
+
+    "throw an exception" when {
+      "cannot save the start date" in withController { controller =>
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+
+        val goodRequest = callPost(controller, isEditMode = false)
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
 

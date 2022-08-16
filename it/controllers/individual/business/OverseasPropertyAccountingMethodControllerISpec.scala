@@ -63,7 +63,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
 
           When("POST /business/overseas-property-accounting-method is called")
@@ -114,6 +114,25 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         res must have(
           httpStatus(BAD_REQUEST),
           errorDisplayed()
+        )
+      }
+    }
+
+    "return INTERNAL_SERVER_ERROR" when {
+      "there is a failure while saving the accounting method" in {
+        val userInput = Cash
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(OverseasProperty)
+
+        When("POST /business/overseas-property-accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitForeignPropertyAccountingMethod(inEditMode = false, Some(userInput))
+
+        Then("Should return an INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }

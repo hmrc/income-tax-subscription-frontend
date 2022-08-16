@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.individual.incometax.business.RemoveOverseasProperty
 
@@ -52,8 +53,9 @@ class RemoveOverseasPropertyController @Inject()(val auditingService: AuditingSe
       form.bindFromRequest.fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
           case Yes => withReference { reference =>
-            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) map { _ =>
-              Redirect(controllers.individual.business.routes.TaskListController.show())
+            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) map {
+              case Right(_) => Redirect(controllers.individual.business.routes.TaskListController.show())
+              case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Could not remove overseas property")
             }
           }
           case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))

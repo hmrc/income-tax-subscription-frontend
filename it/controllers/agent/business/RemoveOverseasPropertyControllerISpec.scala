@@ -40,7 +40,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/client/business/remove-overseas-property-business" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/client/business/remove-overseas-property-business" should {
     "redirect to the client task list page" when {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
@@ -90,6 +90,22 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
           errorDisplayed()
         )
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(OverseasProperty, Some(0))
+      }
+    }
+
+    "return INTERNAL_SERVER_ERROR" when {
+      "cannot remove overseas property" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(OverseasProperty)
+
+        When("POST /business/remove-uk-property-business is called")
+        val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("Yes")))
+
+        Then("Should return INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
       }
     }
   }

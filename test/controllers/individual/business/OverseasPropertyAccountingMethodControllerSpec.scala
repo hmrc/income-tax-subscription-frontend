@@ -23,6 +23,7 @@ import models.Cash
 import models.common.OverseasPropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -77,10 +78,10 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       subscriptionRequest
     )
 
-    "When it is not in edit mode" when {
-      "redirect to overseas property check your answer page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
+    "redirect to overseas property check your answer page" when {
+      "not in edit mode" in {
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        setupMockSubscriptionDetailsSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = false)
 
@@ -90,10 +91,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
       }
 
-    }
-
-    "When it is in edit mode" should {
-      "redirect to overseas check your answer page" in {
+      "in edit mode" in {
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
         setupMockSubscriptionDetailsSaveFunctions()
 
@@ -106,8 +104,8 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "when there is an invalid submission with an error form" should {
-      "return bad request status (400)" in {
+    "return bad request status (400)" when {
+      "there is an invalid submission with an error form" in {
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
@@ -115,6 +113,16 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         await(badRequest)
         verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 0)
         verifySubscriptionDetailsFetchAll(Some(0))
+      }
+    }
+
+    "throw an exception" when {
+      "cannot save the accounting method" in {
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+
+        val goodRequest = callSubmit(isEditMode = false)
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
 

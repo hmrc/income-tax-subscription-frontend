@@ -97,7 +97,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "the UK property cannot be removed" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(Property)
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("Yes")))
