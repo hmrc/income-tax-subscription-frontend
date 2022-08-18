@@ -67,6 +67,10 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     when(method = DELETE, uri = subscriptionUri(id)).thenReturn(Status.OK)
   }
 
+  def stubDeleteSubscriptionDetailsFailure(id: String): Unit = {
+    when(method = DELETE, uri = subscriptionUri(id)).thenReturn(Status.INTERNAL_SERVER_ERROR)
+  }
+
   def verifyDeleteSubscriptionDetails(id: String, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyDelete(subscriptionUri(id), count)
   }

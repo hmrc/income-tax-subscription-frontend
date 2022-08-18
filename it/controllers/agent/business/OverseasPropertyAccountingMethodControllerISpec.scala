@@ -73,9 +73,9 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
     }
   }
 
-  "POST /business/accounting-method-property" when {
-    "select the Cash radio button on the Overseas Property Accounting Method page" should {
-      "redirect to agent overseas property check your answers" in {
+  "POST /business/accounting-method-property" should {
+    "redirect to agent overseas property check your answers" when {
+      "select the Cash radio button on the Overseas Property Accounting Method page" in {
         val userInput = Cash
         val expected = OverseasPropertyModel(accountingMethod = Some(userInput))
 
@@ -97,8 +97,8 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
       }
     }
 
-    "not select a radio button on the Overseas Property Accounting Method page" should {
-      "return a BAD_REQUEST and display an error box on screen without redirecting" in {
+    "return a BAD_REQUEST and display an error box on screen without redirecting" when {
+      "not select a radio button on the Overseas Property Accounting Method page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -109,6 +109,25 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         res must have(
           httpStatus(BAD_REQUEST),
           errorDisplayed()
+        )
+      }
+    }
+
+    "return INTERNAL_SERVER_ERROR" when {
+      "there is a failure while saving the accounting method" in {
+        val userInput = Cash
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(OverseasProperty)
+
+        When("POST /business/overseas-property-accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyAccountingMethod(inEditMode = false, Some(userInput))
+
+        Then("Should return an INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }

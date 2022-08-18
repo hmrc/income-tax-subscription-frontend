@@ -21,6 +21,7 @@ import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.Cash
 import models.common.OverseasPropertyModel
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -47,8 +48,8 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
   )
 
   "show" when {
-    "there is no previously selected accounting method" should {
-      "display the overseas property accounting method view and return OK (200)" in {
+    "display the overseas property accounting method view and return OK (200)" when {
+      "there is no previously selected accounting method" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
         mockFetchOverseasProperty(None)
         mockOverseasPropertyAccountingMethod()
@@ -56,10 +57,8 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         status(result) must be(Status.OK)
         verifyOverseasPropertySave(None)
       }
-    }
 
-    "there is a previously selected answer of CASH" should {
-      "display the overseas property accounting method view and return OK (200)" in {
+      "there is a previously selected answer of CASH" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
 
         mockFetchOverseasProperty(Some(OverseasPropertyModel(
@@ -107,6 +106,16 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         await(badRequest)
         verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 0)
         verifySubscriptionDetailsFetchAll(Some(0))
+      }
+    }
+
+    "throw an exception" when {
+      "cannot save the accounting method" in {
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+
+        val goodRequest = callSubmit(isEditMode = false)
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
 

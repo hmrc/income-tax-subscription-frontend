@@ -56,8 +56,9 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
       withAgentReference { reference =>
         withOverseasProperty(reference) { property =>
           if (property.accountingMethod.isDefined && property.startDate.isDefined) {
-            subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)).map { _ =>
-              Redirect(controllers.agent.routes.TaskListController.show())
+            subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
+              case Right(_) => Redirect(controllers.agent.routes.TaskListController.show())
+              case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
             }
           } else {
             Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))

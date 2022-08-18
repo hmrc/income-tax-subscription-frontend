@@ -21,6 +21,7 @@ import controllers.agent.AgentControllerBaseSpec
 import forms.agent.OverseasPropertyStartDateForm
 import models.DateModel
 import models.common.OverseasPropertyModel
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -125,6 +126,16 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
         await(badRequest)
         verifySubscriptionDetailsSave(OverseasPropertyStartDate, 0)
+      }
+    }
+
+    "throw an exception" when {
+      "cannot save the start date" in {
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        setupMockSubscriptionDetailsSaveFunctionsFailure()
+
+        val goodRequest = callSubmit(isEditMode = false)
+        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
     }
 

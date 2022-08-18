@@ -39,7 +39,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         When(s"GET ${routes.RemoveOverseasPropertyController.submit.url}")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(Some(Yes))
 
-        Then("Should return a NOT_FOUND page")
+        Then("Should return a SEE_OTHER status")
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
@@ -47,6 +47,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(OverseasProperty, Some(1))
       }
+
       "the user selects to not delete their overseas property" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -54,7 +55,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         When(s"GET ${routes.RemoveOverseasPropertyController.submit.url}")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(Some(No))
 
-        Then("Should return a NOT_FOUND page")
+        Then("Should return a SEE_OTHER status")
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI(taskListURI)
@@ -72,10 +73,26 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         When(s"GET ${routes.RemoveOverseasPropertyController.submit.url}")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(None)
 
-        Then("Should return a NOT_FOUND page")
+        Then("Should return a BAD_REQUEST status")
         res must have(
           httpStatus(BAD_REQUEST),
           pageTitle("Error: " + messages("remove-overseas-property-business.heading") + serviceNameGovUk)
+        )
+      }
+    }
+
+    s"return $INTERNAL_SERVER_ERROR" when {
+      "cannot remove the overseas property" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(OverseasProperty)
+
+        When(s"GET ${routes.RemoveOverseasPropertyController.submit.url}")
+        val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(Some(Yes))
+
+        Then("Should return an INTERNAL_SERVER_ERROR status")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }

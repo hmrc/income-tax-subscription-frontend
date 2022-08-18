@@ -55,9 +55,35 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "submit" when {
-    "the user does not select an option" must {
-      "return BAD_REQUEST and display the overseas property page" in withController { controller =>
+  "submit" should {
+    "redirect to the task list page" when {
+      "the user selects to remove the business" in withController { controller =>
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+        val result: Result = controller.submit(
+          subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
+        ).futureValue
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 1)
+      }
+
+      "the user selects to not remove the business" in withController { controller =>
+        val result: Result = controller.submit(
+          subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_no)
+        ).futureValue
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
+
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 0)
+      }
+    }
+
+    "return BAD_REQUEST and display the overseas property page" when {
+      "the user does not select an option" in withController { controller =>
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe BAD_REQUEST
@@ -67,28 +93,16 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "the user selects to remove the business" in withController { controller =>
-      mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Right(DeleteSubscriptionDetailsSuccessResponse))
+    "throw an exception" when {
+      "cannot remove the overseas property" in withController { controller =>
+        mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.OverseasProperty)
 
-      val result: Result = controller.submit(
-        subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
-      ).futureValue
+        val result= controller.submit(
+          subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
+        )
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
-
-      verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 1)
-    }
-
-    "the user selects to not remove the business" in withController { controller =>
-      val result: Result = controller.submit(
-        subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_no)
-      ).futureValue
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
-
-      verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 0)
+        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      }
     }
   }
 

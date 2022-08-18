@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 
 import javax.inject.Inject
@@ -50,10 +51,10 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        subscriptionDetailsService.fetchOverseasPropertyAccountingMethod(reference) flatMap { accountingMethodOverseasProperty =>
-          Future.successful(Ok(view(overseasPropertyAccountingMethodForm =
+        subscriptionDetailsService.fetchOverseasPropertyAccountingMethod(reference) map { accountingMethodOverseasProperty =>
+          Ok(view(overseasPropertyAccountingMethodForm =
             AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(accountingMethodOverseasProperty),
-            isEditMode = isEditMode)))
+            isEditMode = isEditMode))
         }
       }
   }
@@ -65,8 +66,9 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
           formWithErrors =>
             Future.successful(BadRequest(view(overseasPropertyAccountingMethodForm = formWithErrors, isEditMode = isEditMode))),
           overseasPropertyAccountingMethod =>
-            subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map { _ =>
-                Redirect(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+            subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map {
+              case Right(_) => Redirect(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+              case Left(_) => throw new InternalServerException("[OverseasPropertyAccountingMethodController][submit] - Could not save accounting method")
             }
         )
       }
