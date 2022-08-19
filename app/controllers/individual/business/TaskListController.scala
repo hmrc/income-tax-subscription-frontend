@@ -24,14 +24,14 @@ import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
-import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
+import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import play.api.Logging
 import play.api.mvc._
 import services._
 import services.individual.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
-import CreateIncomeSourcesModel.createIncomeSources
 import views.html.individual.incometax.business.TaskList
 
 import javax.inject.{Inject, Singleton}
@@ -89,21 +89,17 @@ class TaskListController @Inject()(val taskListView: TaskList,
   def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       incomeSourcesModel =>
-        withReference { reference =>
-          val nino = user.nino.get
-          val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
-          val session = request.session
+        val nino = user.nino.get
+        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+        val session = request.session
 
-          subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
-            nino, incomeSourcesModel, maybeSpsEntityId = session.get(SPSEntityId)
-          )(headerCarrier).flatMap {
-            case Right(SubscriptionSuccess(id)) =>
-              subscriptionDetailsService.saveSubscriptionId(reference, id).map { _ =>
-                Redirect(controllers.individual.subscription.routes.ConfirmationController.show)
-              }
-            case Left(failure) =>
-              error("Successful response not received from submission: \n" + failure.toString)
-          }
+        subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
+          nino, incomeSourcesModel, maybeSpsEntityId = session.get(SPSEntityId)
+        )(headerCarrier) map {
+          case Right(_) =>
+            Redirect(controllers.individual.subscription.routes.ConfirmationController.show)
+          case Left(failure) =>
+            throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
         }
   }
 
@@ -127,9 +123,4 @@ class TaskListController @Inject()(val taskListView: TaskList,
           }
         }
     }
-
-  def error(message: String): Future[Nothing] = {
-    logger.warn(message)
-    Future.failed(new InternalServerException(message))
-  }
 }

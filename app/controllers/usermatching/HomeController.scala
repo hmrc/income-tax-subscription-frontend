@@ -73,7 +73,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                 // New phone, who dis?
                 case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
               }
-            }.map{r => r.addingToSession(UTR -> utr)}  // Add UTR, mainly for failure case so we don't look it up again.
+            }.map { r => r.addingToSession(UTR -> utr) } // Add UTR, mainly for failure case so we don't look it up again.
         }
     }
 
@@ -95,7 +95,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
           for {
             _ <- prePopulationService.prePopulate(reference, prepop)
             _ <- handleMandationStatus(reference, nino, utr)
-          } yield(goToSignUp(utr, timestamp, nino))
+          } yield (goToSignUp(utr, timestamp, nino))
         }
       case Right(EligibilityStatus(true, _, _)) =>
         withReference(utr) { reference =>
@@ -128,16 +128,18 @@ class HomeController @Inject()(val auditingService: AuditingService,
     withReference(utr) {
       reference =>
         subscriptionDetailsService.saveSubscriptionId(reference, mtditId) map {
-          _ =>
+          case Right(_) =>
             Redirect(controllers.individual.subscription.routes.ClaimSubscriptionController.claim)
               .withJourneyState(SignUp)
               .addingToSession(NINO -> nino)
               .addingToSession(UTR -> utr)
+          case Left(_) =>
+            throw new InternalServerException("[HomeController][claimSubscription] - Could not save subscription id")
         }
     }
 
-  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request:Request[AnyContent]): Future[Unit] = {
-    if(isEnabled(ItsaMandationStatus)) {
+  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
+    if (isEnabled(ItsaMandationStatus)) {
       mandationStatusService.retrieveMandationStatus(reference, nino, utr)
     } else {
       Future.successful(())
