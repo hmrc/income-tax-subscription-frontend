@@ -23,6 +23,7 @@ import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.Logging
 import play.api.mvc._
@@ -30,7 +31,6 @@ import services._
 import services.agent.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
-import CreateIncomeSourcesModel.createIncomeSources
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.AgentTaskList
 
@@ -105,20 +105,16 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
   def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       incomeSourceModel =>
-        withAgentReference { reference =>
-          val nino = user.clientNino.get
-          val arn = user.arn.get
-          val utr = user.clientUtr.get
-          val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+        val nino = user.clientNino.get
+        val arn = user.arn.get
+        val utr = user.clientUtr.get
+        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
-          subscriptionService.createSubscriptionFromTaskList(arn, nino, utr, incomeSourceModel)(headerCarrier).flatMap {
-            case Right(SubscriptionSuccess(id)) =>
-              subscriptionDetailsService.saveSubscriptionId(reference, id).map { _ =>
-                Redirect(controllers.agent.routes.ConfirmationAgentController.show).addingToSession(ITSASessionKeys.MTDITID -> id)
-              }
-            case Left(failure) =>
-              error("Successful response not received from submission: \n" + failure.toString)
-          }
+        subscriptionService.createSubscriptionFromTaskList(arn, nino, utr, incomeSourceModel)(headerCarrier) map {
+          case Right(SubscriptionSuccess(id)) =>
+            Redirect(controllers.agent.routes.ConfirmationAgentController.show).addingToSession(ITSASessionKeys.MTDITID -> id)
+          case Left(failure) =>
+            throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
         }
   }
 
@@ -142,10 +138,5 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
           }
         }
     }
-
-  def error(message: String): Future[Nothing] = {
-    logger.warn(message)
-    Future.failed(new InternalServerException(message))
-  }
 
 }

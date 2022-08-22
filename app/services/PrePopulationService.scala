@@ -27,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PrePopulationService @Inject()( val subscriptionDetailsService: SubscriptionDetailsService
+class PrePopulationService @Inject()(val subscriptionDetailsService: SubscriptionDetailsService
                                     ) extends Logging {
 
   def prePopulate(reference: String, prepop: PrePopData)

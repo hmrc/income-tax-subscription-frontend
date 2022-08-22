@@ -94,21 +94,38 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "index" when {
     "the user has a nino" when {
-      "the user already has an MTDIT subscription on ETMP" should {
-        "redirect to the claim subscription page" in {
-          mockNinoAndUtrRetrieval()
-          mockLookupUserWithUtr(testNino)(testUtr)
-          setupMockGetSubscriptionFound(testNino)
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockRetrieveReferenceSuccess(testUtr)(testReference)
+      "the user already has an MTDIT subscription on ETMP" when {
+        "the saving of the mtd id is successful" should {
+          "redirect to the claim subscription page" in {
+            mockNinoAndUtrRetrieval()
+            mockLookupUserWithUtr(testNino)(testUtr)
+            setupMockGetSubscriptionFound(testNino)
+            setupMockSubscriptionDetailsSaveFunctions()
+            mockRetrieveReferenceSuccess(testUtr)(testReference)
 
-          val result = testHomeController().index(fakeRequest)
+            val result = testHomeController().index(fakeRequest)
 
-          status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim.url
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim.url
 
-          verifySubscriptionDetailsSave(MtditId, 1)
-          verifyGetThrottleStatusCalls(times(1))
+            verifySubscriptionDetailsSave(MtditId, 1)
+            verifyGetThrottleStatusCalls(times(1))
+          }
+        }
+        "the saving of the mtd id failed" should {
+          "throw an internal server exeception" in {
+            mockNinoAndUtrRetrieval()
+            mockLookupUserWithUtr(testNino)(testUtr)
+            setupMockGetSubscriptionFound(testNino)
+            setupMockSubscriptionDetailsSaveFunctionsFailure()
+            mockRetrieveReferenceSuccess(testUtr)(testReference)
+
+            intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
+              .message mustBe "[HomeController][claimSubscription] - Could not save subscription id"
+
+            verifySubscriptionDetailsSave(MtditId, 1)
+            verifyGetThrottleStatusCalls(times(1))
+          }
         }
       }
 

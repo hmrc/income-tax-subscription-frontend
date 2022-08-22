@@ -20,12 +20,13 @@ import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import controllers.ControllerBaseSpec
 import models.common.business._
+import models.common.subscription.SubscriptionFailureResponse
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, when}
 import play.api.http.Status
-import play.api.http.Status.OK
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
@@ -137,11 +138,10 @@ class TaskListControllerSpec extends ControllerBaseSpec
         mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(testNino, testIncomeSourceModel)
 
         val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
-        status(result) must be(Status.SEE_OTHER)
         await(result)
-        verifySubscriptionDetailsSave(MtditId, 1)
-        verifyGetThrottleStatusCalls(times(1))
 
+        status(result) must be(Status.SEE_OTHER)
+        verifyGetThrottleStatusCalls(times(1))
         redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
       }
     }
@@ -165,8 +165,9 @@ class TaskListControllerSpec extends ControllerBaseSpec
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
         val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
-        intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
-        verifySubscriptionDetailsSave(MtditId, 0)
+        intercept[InternalServerException](await(result)).message must include(
+          s"[TaskListController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
+        )
         verifyGetThrottleStatusCalls(times(1))
       }
     }

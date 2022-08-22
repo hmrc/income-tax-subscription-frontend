@@ -24,7 +24,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MandationStatusService @Inject()(val mandationStatusConnector: MandationStatusConnector, val subscriptionDetailsService: SubscriptionDetailsService) {
+class MandationStatusService @Inject()(mandationStatusConnector: MandationStatusConnector,
+                                       subscriptionDetailsService: SubscriptionDetailsService) {
+
   def retrieveMandationStatus(reference: String, nino: String, utr: String)
                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     for {
@@ -33,7 +35,7 @@ class MandationStatusService @Inject()(val mandationStatusConnector: MandationSt
     } yield ()
   }
 
-  private def saveMandationStatus(reference:String, mandationStatusResponse: PostMandationStatusResponse)
+  private def saveMandationStatus(reference: String, mandationStatusResponse: PostMandationStatusResponse)
                                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     mandationStatusResponse match {
       case Right(mandationStatus) => subscriptionDetailsService.saveMandationStatus(reference, mandationStatus).map(_ => ())

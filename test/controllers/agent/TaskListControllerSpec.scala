@@ -19,12 +19,13 @@ package controllers.agent
 import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import models.common.business._
+import models.common.subscription.SubscriptionFailureResponse
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
-import play.api.http.Status.OK
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
@@ -32,7 +33,7 @@ import services.agent.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService, MockThrottlingConnector}
 import services.{AccountingPeriodService, ThrottlingService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey, MtditId}
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.agent.TestConstants.{testARN, testCreateIncomeSources, testNino, testUtr}
 import views.html.agent.AgentTaskList
@@ -136,10 +137,8 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
 
         val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
-        status(result) must be(Status.SEE_OTHER)
-        await(result)
-        verifySubscriptionDetailsSave(MtditId, 1)
 
+        status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show.url)
       }
     }
@@ -164,8 +163,9 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         mockCreateSubscriptionFromTaskListFailure(testARN, testNino, testUtr, testIncomeSourceModel)
 
         val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
-        intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
-        verifySubscriptionDetailsSave(MtditId, 0)
+        intercept[InternalServerException](await(result)).message must include(
+          s"[TaskListController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
+        )
       }
     }
   }
