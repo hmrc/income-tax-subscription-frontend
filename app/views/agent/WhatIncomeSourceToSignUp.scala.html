@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.ForeignProperty
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.injected.RadioHelper
 @import views.html.helpers.injected.ContinueButton
@@ -25,78 +27,85 @@
 @import forms.agent.BusinessIncomeSourceForm
 
 @this(
-        agentMainTemplate: AgentMainTemplate,
-        form: FormWithCSRF,
-        radioHelper: RadioHelper,
-        continueButton: ContinueButton
+  agentMainTemplate: AgentMainTemplate,
+  form: FormWithCSRF,
+  radioHelper: RadioHelper,
+  continueButton: ContinueButton,
+  featureSwitching: FeatureSwitchingImpl
 )
 
 @(
-        incomeSourceForm: Form[BusinessIncomeSource],
-        incomeSourcesStatus: IncomeSourcesStatus,
-        postAction: Call,
-        backUrl: String
+  incomeSourceForm: Form[BusinessIncomeSource],
+  incomeSourcesStatus: IncomeSourcesStatus,
+  postAction: Call,
+  backUrl: String
 )(
-        implicit request: Request[_], messages: Messages, appConfig: AppConfig
+  implicit request: Request[_], messages: Messages, appConfig: AppConfig
 )
 
 @optionalSelfEmploymentRadio = @{
- if(incomeSourcesStatus.selfEmploymentAvailable) {
-  Some(RadioItem(
-   content = Text(messages("agent.what_income_source_to_sign_up.selfEmployed")),
-   value = Some(SELF_EMPLOYED)
-  ))
- } else {
-  None
- }
+  if(incomeSourcesStatus.selfEmploymentAvailable) {
+    Some(RadioItem(
+      content = Text(messages("agent.what_income_source_to_sign_up.selfEmployed")),
+      value = Some(SELF_EMPLOYED)
+    ))
+  } else {
+    None
+  }
 }
 
 @optionalUkPropertyRadio = @{
- if(incomeSourcesStatus.ukPropertyAvailable) {
-  Some(RadioItem(
-   content = Text(messages("agent.what_income_source_to_sign_up.ukProperty")),
-   value = Some(UK_PROPERTY)
-  ))
- } else {
-  None
- }
+  if(incomeSourcesStatus.ukPropertyAvailable) {
+    Some(RadioItem(
+      content = Text(messages("agent.what_income_source_to_sign_up.ukProperty")),
+      value = Some(UK_PROPERTY)
+    ))
+  } else {
+    None
+  }
 }
 
 @optionalOverseasPropertyRadio = @{
- if(incomeSourcesStatus.overseasPropertyAvailable) {
-  Some(RadioItem(
-   content = Text(messages("agent.what_income_source_to_sign_up.foreignProperty")),
-   value = Some(OVERSEAS_PROPERTY)
-  ))
- } else {
-  None
- }
+  if(incomeSourcesStatus.overseasPropertyAvailable) {
+    Some(RadioItem(
+      content = Text(messages("agent.what_income_source_to_sign_up.foreignProperty")),
+      value = Some(OVERSEAS_PROPERTY)
+    ))
+  } else {
+    None
+  }
 }
 
 @agentMainTemplate(
- title = messages("agent.what_income_source_to_sign_up.heading"),
- optForm = Some(incomeSourceForm),
- backLink = Some(backUrl)
+  title = messages("agent.what_income_source_to_sign_up.heading"),
+  optForm = Some(incomeSourceForm),
+  backLink = Some(backUrl)
 ) {
- <h1 class="govuk-heading-l">@messages("agent.what_income_source_to_sign_up.heading")</h1>
+  <h1 class="govuk-heading-l">@messages("agent.what_income_source_to_sign_up.heading")</h1>
 
- <div class="govuk-inset-text">
-  <p class="govuk-body govuk-!-margin-bottom-6">@messages("agent.what_income_source_to_sign_up.paragraph1", appConfig.maxSelfEmployments)</p>
-  <p class="govuk-body">@messages("agent.what_income_source_to_sign_up.paragraph2")</p>
- </div>
+  <div class="govuk-inset-text">
+    <p class="govuk-body govuk-!-margin-bottom-6">
+      @if(featureSwitching.isEnabled(ForeignProperty)) {
+        @messages("agent.what_income_source_to_sign_up.paragraph1-overseas", appConfig.maxSelfEmployments)
+      } else {
+        @messages("agent.what_income_source_to_sign_up.paragraph1")
+      }
+    </p>
+    <p class="govuk-body">@messages("agent.what_income_source_to_sign_up.paragraph2")</p>
+  </div>
 
- @form(action = postAction) {
-  @radioHelper(
-   field = incomeSourceForm(BusinessIncomeSourceForm.incomeSourceKey),
-   legend = messages("agent.what_income_source_to_sign_up.heading"),
-   isPageHeading = false,
-   radioItems = Seq(
-    optionalSelfEmploymentRadio,
-    optionalUkPropertyRadio,
-    optionalOverseasPropertyRadio
-   ).flatten
-  )
+  @form(action = postAction) {
+    @radioHelper(
+      field = incomeSourceForm(BusinessIncomeSourceForm.incomeSourceKey),
+      legend = messages("agent.what_income_source_to_sign_up.heading"),
+      isPageHeading = false,
+      radioItems = Seq(
+        optionalSelfEmploymentRadio,
+        optionalUkPropertyRadio,
+        optionalOverseasPropertyRadio
+      ).flatten
+    )
 
-  @continueButton()
- }
+    @continueButton()
+  }
 }
