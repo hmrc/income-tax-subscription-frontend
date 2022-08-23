@@ -16,6 +16,7 @@
 
 package views.agent
 
+import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.agent.BusinessIncomeSourceForm
 import forms.agent.BusinessIncomeSourceForm.incomeSourceKey
 import models.IncomeSourcesStatus
@@ -29,14 +30,22 @@ import views.ViewSpecTrait
 import views.html.agent.WhatIncomeSourceToSignUp
 
 class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(ForeignProperty)
+  }
+
   object AgentIncomeSource {
     val heading = "What source of income do you want to sign up?"
-    val paragraph1 = "Your client can have up to 50 sole trader businesses. " +
+    val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
+      "If they have income from property you must add it, but this is limited to one UK property business."
+    val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +
       "However, they can have only one UK property business and one overseas property."
     val paragraph2 = "Renting out a property includes using a letting agency."
     val soleTrader = "Sole trader business"
-    val ukProperty = "UK property rental"
-    val foreignProperty = "Overseas property rental"
+    val ukProperty = "UK property business"
+    val foreignProperty = "Overseas property business"
     val errorHeading = "There is a problem"
     val errorSummary = "Select Sole trader business, UK property rental or Overseas property rental"
   }
@@ -79,8 +88,14 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
       document().selectHead("h1").text mustBe AgentIncomeSource.heading
     }
 
-    "have paragraph 1" in {
-      document().selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1
+    "have paragraph 1" which {
+      "mentions overseas property when enabled" in {
+        enable(ForeignProperty)
+        document().selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1Overseas
+      }
+      "does not mention overseas property when not enabled" in {
+        document().selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1
+      }
     }
 
     "have paragraph 2" in {

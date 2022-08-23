@@ -15,6 +15,8 @@
  *@
 
 @import config.AppConfig
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.ForeignProperty
 @import forms.individual.incomesource.BusinessIncomeSourceForm
 @import models.common.BusinessIncomeSource
 @import models.common.OverseasProperty.OVERSEAS_PROPERTY
@@ -28,8 +30,10 @@
         mainTemplate: PrincipalMainTemplate,
         form: FormWithCSRF,
         radioHelper: RadioHelper,
-        continueButton: ContinueButton
+        continueButton: ContinueButton,
+        featureSwitching: FeatureSwitchingImpl
 )
+
 @(incomeSourceForm: Form[BusinessIncomeSource], postAction: Call, backUrl: String, incomeSourcesStatus: IncomeSourcesStatus)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @optionalSelfEmploymentRadio = @{
@@ -74,7 +78,13 @@
     <h1 class="govuk-heading-l">@messages("what_income_source_to_sign_up.heading")</h1>
 
     <div class="govuk-inset-text">
-        <p class="govuk-body govuk-!-margin-bottom-6">@messages("what_income_source_to_sign_up.para1", appConfig.maxSelfEmployments)</p>
+        <p class="govuk-body govuk-!-margin-bottom-6">
+          @if(featureSwitching.isEnabled(ForeignProperty)) {
+            @messages("what_income_source_to_sign_up.para1-overseas", appConfig.maxSelfEmployments)
+          } else {
+            @messages("what_income_source_to_sign_up.para1")
+          }
+        </p>
         <p class="govuk-body">@messages("what_income_source_to_sign_up.para2")</p>
     </div>
 

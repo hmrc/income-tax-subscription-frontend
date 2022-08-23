@@ -123,11 +123,12 @@ income_source.checkbox.hint                                     = Dewiswch bob u
 ## Individual what income source to sign up page
 what_income_source_to_sign_up.title                             = Pa ffynhonnell incwm ydych chi am ei chofrestru?
 what_income_source_to_sign_up.heading                           = Pa ffynhonnell incwm ydych chi am ei chofrestru?
-what_income_source_to_sign_up.para1                             = Gallwch gael hyd at {0} o fusnesau unig fasnachwr. Fodd bynnag, dim ond un eiddo rhent yn y DU ac un eiddo rhent tramor y gallwch eu hychwanegu.
+what_income_source_to_sign_up.para1                             = Os ydych yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr os oes gennych fwy nag un. Os oes gennych incwm o eiddo mae’n rhaid i chi ei ychwanegu, ond mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU.
+what_income_source_to_sign_up.para1-overseas                    = Os ydych yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr os oes gennych fwy nag un. Os oes gennych incwm o eiddo mae’n rhaid i chi ei ychwanegu. Mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU ac un busnes eiddo tramor y gallwch ei gael.
 what_income_source_to_sign_up.para2                             = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
 what_income_source_to_sign_up.selfEmployed                      = Busnes unig fasnachwr
-what_income_source_to_sign_up.ukProperty                        = Eiddo rhent yn y DU
-what_income_source_to_sign_up.foreignProperty                   = Eiddo rhent tramor
+what_income_source_to_sign_up.ukProperty                        = Busnes eiddo yn y DU
+what_income_source_to_sign_up.foreignProperty                   = Busnes eiddo tramor
 
 error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
 error.business-income-source.self-employed-uk-property          = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent yn y DU
@@ -743,7 +744,8 @@ agent.error.income_source_foreignProperty.invalid               = Dewiswch a yw�
 
 ## agent what income source to sign up page
 agent.what_income_source_to_sign_up.heading                     = Pa ffynhonnell incwm ydych chi am ei chofrestru?
-agent.what_income_source_to_sign_up.paragraph1                  = Gall eich cleient gael hyd at {0} o fusnesau unig fasnachwr. Fodd bynnag, dim ond un busnes eiddo yn y DU ac un eiddo ar osod dramor y gellir ei gael.
+agent.what_income_source_to_sign_up.paragraph1                  = Os yw’ch cleient yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’i fusnesau unig fasnachwr os oes ganddo fwy nag un. Os oes ganddo incwm o eiddo mae’n rhaid i chi ei ychwanegu, ond mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU.
+agent.what_income_source_to_sign_up.paragraph1-overseas         = Gall eich cleient gael hyd at {0} o fusnesau unig fasnachwr. Fodd bynnag, dim ond un busnes eiddo yn y DU ac un eiddo ar osod dramor y gellir ei gael.
 agent.what_income_source_to_sign_up.paragraph2                  = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
 agent.what_income_source_to_sign_up.selfEmployed                = Busnes unig fasnachwr
 agent.what_income_source_to_sign_up.ukProperty                  = Busnes eiddo yn y DU

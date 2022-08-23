@@ -16,6 +16,7 @@
 
 package views.individual.incometax.incomesource
 
+import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import forms.individual.incomesource.BusinessIncomeSourceForm.incomeSourceKey
 import models.IncomeSourcesStatus
@@ -31,15 +32,22 @@ import views.html.individual.incometax.incomesource.WhatIncomeSourceToSignUp
 
 class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(ForeignProperty)
+  }
+
   object IndividualIncomeSource {
     val title = "What source of income do you want to sign up?"
     val heading: String = title
-    val paragraph_1: String = s"You can have up to ${appConfig.maxSelfEmployments} sole trader businesses. " +
-      s"However, you can only add one UK rental property and one Overseas rental property."
-    val paragraph_2: String = "Renting out a property includes using a letting agency."
+    val paragraph1: String = "If you are self-employed, you must add all of your sole trader businesses if you have more than one. " +
+      "If you have income from property you must add it, but this is limited to one UK property business."
+    val paragraph1Overseas: String = "If you are self-employed, you must add all of your sole trader businesses if you have more than one. " +
+      "If you have income from property you must add it. This is limited to one UK property business and one overseas property business."
+    val paragraph2: String = "Renting out a property includes using a letting agency."
     val business = "Sole trader business"
-    val ukProperty = "UK property rental"
-    val foreignProperty = "Overseas property rental"
+    val ukProperty = "UK property business"
+    val foreignProperty = "Overseas property business"
     val errorHeading = "There is a problem"
     val errorSummary = "Select Sole trader business, UK property rental or Overseas property rental"
   }
@@ -71,8 +79,11 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
                     ukPropertyAvailable = true,
                     overseasPropertyAvailable = true
                   ),
-                  hasError: Boolean = false
+                  hasError: Boolean = false,
+                  overseasEnabled: Boolean = false
                 ) {
+
+    if (overseasEnabled) enable(ForeignProperty)
 
     val document: Document = Jsoup.parse(view(
       incomeSourcesStatus = incomeSourcesStatus,
@@ -108,12 +119,17 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
       document.selectHead("h1").text mustBe IndividualIncomeSource.heading
     }
 
-    "have paragraph 1 in an inset text block" in new ViewTest {
-      document.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe IndividualIncomeSource.paragraph_1
+    "have paragraph 1 in an inset text block" which {
+      "mentions overseas property when enabled" in new ViewTest(overseasEnabled = true) {
+        document.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe IndividualIncomeSource.paragraph1Overseas
+      }
+      "does not mention overseas property when disabled" in new ViewTest(overseasEnabled = false) {
+        document.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe IndividualIncomeSource.paragraph1
+      }
     }
 
     "have paragraph 2" in new ViewTest {
-      document.selectHead(".govuk-inset-text").selectNth("p", 2).text mustBe IndividualIncomeSource.paragraph_2
+      document.selectHead(".govuk-inset-text").selectNth("p", 2).text mustBe IndividualIncomeSource.paragraph2
     }
 
     "have a form to submit the checkboxes" in new ViewTest {

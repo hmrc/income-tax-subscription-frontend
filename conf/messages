@@ -123,11 +123,12 @@ income_source.checkbox.hint                                     = Select all tha
 ## Individual what income source to sign up page
 what_income_source_to_sign_up.title                             = What source of income do you want to sign up?
 what_income_source_to_sign_up.heading                           = What source of income do you want to sign up?
-what_income_source_to_sign_up.para1                             = You can have up to {0} sole trader businesses. However, you can only add one UK rental property and one Overseas rental property.
+what_income_source_to_sign_up.para1                             = If you are self-employed, you must add all of your sole trader businesses if you have more than one. If you have income from property you must add it, but this is limited to one UK property business.
+what_income_source_to_sign_up.para1-overseas                    = If you are self-employed, you must add all of your sole trader businesses if you have more than one. If you have income from property you must add it. This is limited to one UK property business and one overseas property business.
 what_income_source_to_sign_up.para2                             = Renting out a property includes using a letting agency.
 what_income_source_to_sign_up.selfEmployed                      = Sole trader business
-what_income_source_to_sign_up.ukProperty                        = UK property rental
-what_income_source_to_sign_up.foreignProperty                   = Overseas property rental
+what_income_source_to_sign_up.ukProperty                        = UK property business
+what_income_source_to_sign_up.foreignProperty                   = Overseas property business
 
 error.business-income-source.all-sources                        = Select Sole trader business, UK property rental or Overseas property rental
 error.business-income-source.self-employed-uk-property          = You need to select Sole trader business or UK property rental
@@ -694,11 +695,12 @@ agent.error.income_source_foreignProperty.invalid               = Select if your
 
 ## agent what income source to sign up page
 agent.what_income_source_to_sign_up.heading                     = What source of income do you want to sign up?
-agent.what_income_source_to_sign_up.paragraph1                  = Your client can have up to {0} sole trader businesses. However, they can have only one UK property business and one overseas property.
+agent.what_income_source_to_sign_up.paragraph1                  = If your client is self-employed, you must add all of their sole trader businesses if they have more than one. If they have income from property you must add it, but this is limited to one UK property business.
+agent.what_income_source_to_sign_up.paragraph1-overseas         = Your client can have up to {0} sole trader businesses. However, they can have only one UK property business and one overseas property.
 agent.what_income_source_to_sign_up.paragraph2                  = Renting out a property includes using a letting agency.
 agent.what_income_source_to_sign_up.selfEmployed                = Sole trader business
-agent.what_income_source_to_sign_up.ukProperty                  = UK property rental
-agent.what_income_source_to_sign_up.foreignProperty             = Overseas property rental
+agent.what_income_source_to_sign_up.ukProperty                  = UK property business
+agent.what_income_source_to_sign_up.foreignProperty             = Overseas property business
 agent.what_income_source_to_sign_up.error                       = Select your client’s source of income
 
 # Property income page
