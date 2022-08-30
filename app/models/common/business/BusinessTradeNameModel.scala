@@ -22,4 +22,8 @@ case class BusinessTradeNameModel(businessTradeName: String)
 
 object BusinessTradeNameModel {
   implicit val format: OFormat[BusinessTradeNameModel] = Json.format[BusinessTradeNameModel]
+  val MaximumLengthOfBusinessTradeName = 35
+  def getBusinessTradeNameModelMaybe(businessTradeName: String): Option[BusinessTradeNameModel] = {
+    if (businessTradeName.length > MaximumLengthOfBusinessTradeName) None else Some(BusinessTradeNameModel(businessTradeName))
+  }
 }
