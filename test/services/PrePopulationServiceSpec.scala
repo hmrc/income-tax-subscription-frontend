@@ -29,7 +29,7 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
 
   private val selfEmploymentsWithAccountingMethod = Some(List(
     PrePopSelfEmployment(
-      Some("testBusinessName1"), "testBusinessTradeName1", None, None, None, Some(Accruals)),
+      Some("testBusines$Name1"), "testBusinessTradeName1" * 35, None, None, None, Some(Accruals)),
     PrePopSelfEmployment(
       Some("testBusinessName2"), "testBusinessTradeName2", None, None, None, Some(Cash))
   ))
@@ -37,13 +37,14 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
     SelfEmploymentData(
       "",
       None,
-      Some(BusinessNameModel("testBusinessName1")),
-      Some(BusinessTradeNameModel("testBusinessTradeName1"))),
+      Some(BusinessNameModel("testBusines Name1")),
+    ),
     SelfEmploymentData(
       "",
       None,
       Some(BusinessNameModel("testBusinessName2")),
-      Some(BusinessTradeNameModel("testBusinessTradeName2")))
+      Some(BusinessTradeNameModel("testBusinessTradeName2"))
+    )
   )
 
   private val ukProperty = Some(PrePopUkProperty(Some(DateModel("1", "1", "2001")), Some(Cash)))
@@ -61,7 +62,7 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
 
   "PrePopulationService" when {
     "given a user which has not been seen before" should {
-      "save all their information" in {
+      "clean and save all their information" in {
         val data = PrePopData(selfEmploymentsWithAccountingMethod, ukProperty, overseasProperty)
         mockFetchPrePopFlag(testReference, None)
         mockSaveBusinesses(testReference)
