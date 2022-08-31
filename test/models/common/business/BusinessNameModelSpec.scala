@@ -16,17 +16,16 @@
 
 package models.common.business
 
-import play.api.libs.json.{Json, OFormat}
+import org.scalatestplus.play.PlaySpec
 
-import scala.language.postfixOps
+class BusinessNameModelSpec extends PlaySpec {
+  "BusinessNameModel" should {
+    "not remove wanted characters" in {
+      BusinessNameModel("Test business name").businessName mustBe "Test business name"
+    }
 
-case class BusinessNameModel(businessName: String)
-
-object BusinessNameModel {
-  implicit val format: OFormat[BusinessNameModel] = Json.format[BusinessNameModel]
-  private val businessNameRegex = """[A-Za-z0-9 ,.&'\\/-]+"""r
-
-  def apply(businessName: String): BusinessNameModel = {
-    new BusinessNameModel(businessNameRegex.findAllIn(businessName).matchData.mkString(" "))
+    "remove unwanted characters" in {
+      BusinessNameModel("Test busine$$ name").businessName mustBe "Test busine  name"
+    }
   }
 }
