@@ -99,3 +99,33 @@
     )),
   ))
 ))
+
+<script>
+  const dayField = '@{s"${field.name}-dateDay"}';
+  const monthField = '@{s"${field.name}-dateMonth"}';
+  const yearField = '@{s"${field.name}-dateYear"}';
+
+  document.getElementById(dayField).addEventListener('paste', pasteEventHandler);
+  document.getElementById(monthField).addEventListener('paste', pasteEventHandler);
+  document.getElementById(yearField).addEventListener('paste', pasteEventHandler);
+
+  /*
+   * Handle paste events on the day field:
+   *
+   * It splits the pasted date into day, month and year, and fills the date input fields.
+   *
+   * Accepted formats: 01/02/2022 or 01-02-2022
+   */
+  function pasteEventHandler(e) {
+    const pastedText = e.clipboardData.getData('Text')
+    const groups = pastedText.match(/([0-9]+)[\/-]([0-9]+)[\/-]([0-9]+)/)
+
+    if (groups.length === 4) {
+      e.preventDefault()
+      document.getElementById(dayField).value = groups[1]
+      document.getElementById(monthField).value = groups[2]
+      document.getElementById(yearField).value = groups[3]
+      return false;
+    }
+  }
+</script>
