@@ -24,8 +24,8 @@ sealed trait MandationStatus {
 
 object MandationStatus {
 
-  private val mandated: String = "mtd mandated"
-  private val voluntary: String = "mtd voluntary"
+  private val mandated: String = "MTD Mandated"
+  private val voluntary: String = "MTD Voluntary"
 
   case object Mandated extends MandationStatus {
     override val value: String = mandated
