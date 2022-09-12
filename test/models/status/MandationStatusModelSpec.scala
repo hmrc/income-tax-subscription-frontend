@@ -28,8 +28,8 @@ class MandationStatusModelSpec extends PlaySpec {
   )
 
   val fullJson: JsObject = Json.obj(
-    "currentYearStatus" -> "mtd voluntary",
-    "nextYearStatus" -> "mtd mandated"
+    "currentYearStatus" -> "MTD Voluntary",
+    "nextYearStatus" -> "MTD Mandated"
   )
 
   "read" must {
