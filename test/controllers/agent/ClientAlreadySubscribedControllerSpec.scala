@@ -17,11 +17,11 @@
 package controllers.agent
 
 import agent.assets.MessageLookup.{ClientAlreadySubscribed => messages}
-import agent.audit.mocks.MockAuditingService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.mocks.MockAuditingService
 import views.html.agent.ClientAlreadySubscribed
 
 class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec with MockAuditingService {

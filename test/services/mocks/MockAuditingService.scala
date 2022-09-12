@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package agent.audit.mocks
+package services.mocks
 
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, verify}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request

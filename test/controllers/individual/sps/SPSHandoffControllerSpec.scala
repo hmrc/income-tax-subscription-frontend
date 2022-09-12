@@ -16,13 +16,13 @@
 
 package controllers.individual.sps
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.individual.mocks.MockApplicationCrypto
+import services.mocks.MockAuditingService
 
 import scala.concurrent.Future
 

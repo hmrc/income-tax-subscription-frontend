@@ -16,14 +16,13 @@
 
 package controllers.individual.claimenrolment
 
-import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.MockClaimEnrolmentService
+import services.mocks.{MockAuditingService, MockClaimEnrolmentService}
 import views.individual.mocks.MockAddMTDITOverview
 
 import scala.concurrent.Future

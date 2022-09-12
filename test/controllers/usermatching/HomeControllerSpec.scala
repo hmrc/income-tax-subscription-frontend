@@ -17,7 +17,6 @@
 package controllers.usermatching
 
 import _root_.common.Constants.ITSASessionKeys
-import agent.audit.mocks.MockAuditingService
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate, ThrottlingFeature}
 import controllers.ControllerBaseSpec

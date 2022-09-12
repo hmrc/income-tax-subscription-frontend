@@ -16,7 +16,6 @@
 
 package controllers.individual.iv
 
-import agent.audit.mocks.MockAuditingService
 import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
@@ -28,6 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentType, defaultAwaitTimeout, session, status}
 import play.twirl.api.HtmlFormat
 import services.AuditModel
+import services.mocks.MockAuditingService
 import views.html.individual.iv.IVFailure
 
 import scala.concurrent.Future

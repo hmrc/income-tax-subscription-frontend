@@ -16,7 +16,6 @@
 
 package controllers.individual.claimenrolment.spsClaimEnrol
 
-import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
@@ -25,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import services.individual.claimenrolment.ClaimEnrolmentService.ClaimEnrolmentError
-import services.mocks.{MockClaimEnrolmentService, MockSpsService}
+import services.mocks.{MockAuditingService, MockClaimEnrolmentService, MockSpsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants
 

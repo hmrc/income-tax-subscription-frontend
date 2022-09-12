@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -25,7 +24,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import views.agent.mocks.MockOverseasPropertyAccountingMethod
 

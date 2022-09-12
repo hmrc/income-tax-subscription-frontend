@@ -16,10 +16,10 @@
 
 package controllers.individual.claimenrolment
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers._
+import services.mocks.MockAuditingService
 import views.individual.mocks.MockNotSubscribed
 
 import scala.concurrent.Future

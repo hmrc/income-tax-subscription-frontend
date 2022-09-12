@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import agent.audit.mocks.MockAuditingService
 import common.Constants.ITSASessionKeys
 import models.usermatching.UserDetailsModel
 import org.mockito.ArgumentMatchers
@@ -25,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAccountingPeriodService, MockSpsService, MockSubscriptionDetailsService, MockUserMatchingService}
+import services.mocks._
 import utilities.TestModels
 import utilities.agent.TestModels._
 import views.html.agent.SignUpComplete

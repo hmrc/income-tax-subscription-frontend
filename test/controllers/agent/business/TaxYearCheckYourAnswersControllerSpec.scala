@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import agent.audit.mocks.MockAuditingService
 import controllers.agent.{AgentControllerBaseSpec, TaxYearCheckYourAnswersController}
 import models.Current
 import models.common.AccountingYearModel
@@ -27,7 +26,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
+import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.MtditId
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.agent.business.TaxYearCheckYourAnswers

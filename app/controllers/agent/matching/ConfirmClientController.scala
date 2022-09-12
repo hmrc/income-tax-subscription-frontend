@@ -140,12 +140,12 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
         withAgentReference(utr) { reference =>
           for {
             _ <- prePopulationService.prePopulate(reference, prepop)
-            _ <- handleMandationStatus(reference, nino, utr)
+            _ <- handleMandationStatus(reference, arn, nino, utr)
           } yield(goToHome(nino, utr))
         }
       case Right(EligibilityStatus(true, _, _)) =>
         withAgentReference(utr) { reference =>
-          handleMandationStatus(reference, nino, utr).map { _ =>
+          handleMandationStatus(reference, arn, nino, utr).map { _ =>
             goToHome(nino, utr)
           }
         }
@@ -182,9 +182,9 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching))
   }
 
-  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request:Request[AnyContent]): Future[Unit] = {
+  private def handleMandationStatus(reference: String, arn: String, nino: String, utr: String)(implicit request:Request[AnyContent]): Future[Unit] = {
     if(isEnabled(ItsaMandationStatus)) {
-      mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+      mandationStatusService.retrieveMandationStatus(reference, userType = "agent", nino, utr, Some(arn))
     } else {
       Future.successful(())
     }

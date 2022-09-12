@@ -16,7 +16,6 @@
 
 package controllers.agent.matching
 
-import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -24,6 +23,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentType, _}
 import play.twirl.api.HtmlFormat
+import services.mocks.MockAuditingService
 import views.html.agent.ClientDetailsError
 
 class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with MockAuditingService {

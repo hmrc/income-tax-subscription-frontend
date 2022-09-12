@@ -17,14 +17,13 @@
 package controllers.agent.matching
 
 import agent.assets.MessageLookup.{ClientDetailsLockout => messages}
-import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Cookie, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
-import services.mocks.MockUserLockoutService
+import services.mocks.{MockAuditingService, MockUserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.agent.TestConstants.testARN
 import views.html.agent.ClientDetailsLockout

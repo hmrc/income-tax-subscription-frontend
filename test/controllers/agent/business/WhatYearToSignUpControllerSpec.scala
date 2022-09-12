@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import agent.audit.mocks.MockAuditingService
 import controllers.agent.{AgentControllerBaseSpec, WhatYearToSignUpController}
 import forms.agent.AccountingYearForm
 import models.Current
@@ -25,7 +24,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
+import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService}
 import views.agent.mocks.MockWhatYearToSignUp
 
 import scala.concurrent.Future

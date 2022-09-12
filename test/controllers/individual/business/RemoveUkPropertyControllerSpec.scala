@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import agent.audit.mocks.MockAuditingService
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
@@ -26,7 +25,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys
 import views.individual.mocks.MockRemoveUkProperty
 

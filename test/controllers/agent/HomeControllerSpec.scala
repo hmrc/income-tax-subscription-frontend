@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import agent.audit.mocks.MockAuditingService
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import config.MockConfig
@@ -28,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ThrottlingService
-import services.mocks.MockThrottlingConnector
+import services.mocks.{MockAuditingService, MockThrottlingConnector}
 
 import scala.concurrent.Future
 

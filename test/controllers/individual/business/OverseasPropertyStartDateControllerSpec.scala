@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
@@ -26,7 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import views.individual.mocks.MockOverseasPropertyStartDate
 
 import java.time.LocalDate

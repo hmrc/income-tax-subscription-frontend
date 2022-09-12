@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -28,7 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 
