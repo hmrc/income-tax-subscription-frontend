@@ -1014,7 +1014,8 @@ agent.error.overseas.property.month.invalid                     = Rhaid i’r dy
 agent.error.overseas.property.year.length                       = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 # Agent Task List
-agent.business.task-list.title                                        = Gwirio a llenwi manylion busnes eich cleient
+agent.business.task-list.title                                        = Manylion eich cleient
+agent.business.task-list.client                                       = Cleient:
 agent.business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 agent.business.task-list.heading.complete                             = Cais wedi’i gwblhau
 agent.business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi'i gadarnhau: 6 Ebrill i 5 Ebrill

@@ -24,3 +24,7 @@ body:not(.js-enabled) {
     display: none;
   }
 }
+
+.client-details {
+  background-color: govuk-colour("light-grey");
+}

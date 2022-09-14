@@ -286,9 +286,9 @@ object MessageLookup {
 
   object TaskList {
     val title = "Check and complete your business details - Use software to send Income Tax updates - GOV.UK"
-    val agentTitle = "Check and complete your client’s business details - Use software to report your client’s Income Tax - GOV.UK"
+    val agentTitle = "Your client’s details - Use software to report your client’s Income Tax - GOV.UK"
     val heading = "Check and complete your business details"
-    val agentHeading = "Check and complete your client’s business details"
+    val agentHeading = "Your client’s details"
     val subHeadingComplete = "Application complete"
     val subHeadingIncomplete = "Application incomplete"
 
