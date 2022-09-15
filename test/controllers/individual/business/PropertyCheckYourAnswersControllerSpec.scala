@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import models.common.PropertyModel
 import models.{Cash, DateModel}
@@ -28,7 +27,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAccountingPeriodService, MockSubscriptionDetailsService}
+import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.individual.incometax.business.PropertyCheckYourAnswers

@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
@@ -25,7 +24,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.PropertyStartDate
 import utilities.TestModels.testFullPropertyModel
 import views.individual.mocks.MockPropertyStartDate

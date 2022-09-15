@@ -16,9 +16,8 @@
 
 package services.agent.mocks
 
-import agent.audit.mocks.MockAuditingService
 import services.agent._
-import services.mocks.{MockSubscriptionService, MockUserMatchingService}
+import services.mocks.{MockAuditingService, MockSubscriptionService, MockUserMatchingService}
 import utilities.agent.TestConstants
 import utilities.agent.TestConstants.testNino
 import utilities.agent.TestModels.testClientDetails

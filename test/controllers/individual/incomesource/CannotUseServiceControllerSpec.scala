@@ -16,7 +16,6 @@
 
 package controllers.individual.incomesource
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -24,6 +23,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.mocks.MockAuditingService
 import views.html.individual.incometax.incomesource.CannotUseService
 
 import scala.concurrent.Future

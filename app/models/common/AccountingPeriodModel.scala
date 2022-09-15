@@ -30,6 +30,7 @@ case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
       AccountingPeriodModel(DateModel.dateConvert(nextStartDate), DateModel.dateConvert(nextEndDate))
     }
     else this
+  val toShortTaxYear: String = s"${startDate.year.takeRight(2)}-${endDate.year.takeRight(2)}"
 }
 
 object AccountingPeriodModel {

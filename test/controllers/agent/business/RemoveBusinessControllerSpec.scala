@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import agent.audit.mocks.MockAuditingService
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.RemoveBusinessForm
@@ -30,7 +29,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockIncomeTaxSubscriptionConnector, MockRemoveBusinessService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockRemoveBusinessService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.agent.business.RemoveBusiness
 

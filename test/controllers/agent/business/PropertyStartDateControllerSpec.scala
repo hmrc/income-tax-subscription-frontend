@@ -16,7 +16,6 @@
 
 package controllers.agent.business
 
-import agent.audit.mocks.MockAuditingService
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.PropertyStartDateForm
 import models.DateModel
@@ -28,7 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import utilities.TestModels.testFullPropertyModel
 import views.html.agent.business.PropertyStartDate
 

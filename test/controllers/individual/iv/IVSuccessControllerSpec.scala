@@ -16,7 +16,6 @@
 
 package controllers.individual.iv
 
-import agent.audit.mocks.MockAuditingService
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
@@ -28,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, session, status}
 import services.AuditModel
+import services.mocks.MockAuditingService
 import utilities.individual.TestConstants.testNino
 
 import scala.concurrent.Future

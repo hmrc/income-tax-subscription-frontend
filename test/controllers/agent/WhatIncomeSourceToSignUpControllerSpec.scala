@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import agent.audit.mocks.MockAuditingService
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import forms.agent.BusinessIncomeSourceForm
@@ -31,7 +30,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import views.html.agent.WhatIncomeSourceToSignUp
 
 import scala.concurrent.Future

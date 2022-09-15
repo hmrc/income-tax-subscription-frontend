@@ -16,11 +16,10 @@
 
 package controllers.agent
 
-import agent.audit.mocks.MockAuditingService
 import common.Constants.ITSASessionKeys
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockSubscriptionDetailsService, MockUserLockoutService}
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService, MockUserLockoutService}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future

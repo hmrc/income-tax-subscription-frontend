@@ -38,11 +38,14 @@ trait MockMandationStatusService extends UnitTestTrait with MockitoSugar with Be
     when(mockMandationStatusService.retrieveMandationStatus(
       ArgumentMatchers.any(),
       ArgumentMatchers.any(),
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any(),
       ArgumentMatchers.any()
     )(
       ArgumentMatchers.any(),
-      ArgumentMatchers.any())
-    ).thenReturn(result)
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any()
+    )).thenReturn(result)
   }
 
 }

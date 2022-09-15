@@ -16,13 +16,12 @@
 
 package controllers.individual.claimenrolment
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, ClaimEnrolmentSuccess, NotSubscribed}
-import services.mocks.MockClaimEnrolmentService
+import services.mocks.{MockAuditingService, MockClaimEnrolmentService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.agent.TestConstants
 

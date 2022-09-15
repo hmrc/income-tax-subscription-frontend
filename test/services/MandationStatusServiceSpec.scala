@@ -16,12 +16,19 @@
 
 package services
 
+import models.audits.MandationStatusAuditing.MandationStatusAuditModel
+import models.status.MandationStatus.Voluntary
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import services.mocks.{MockMandationStatusConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockMandationStatusConnector, MockSubscriptionDetailsService}
+import utilities.AccountingPeriodUtil
 
-class MandationStatusServiceSpec extends MockSubscriptionDetailsService with MockMandationStatusConnector {
+class MandationStatusServiceSpec extends MockSubscriptionDetailsService with MockMandationStatusConnector with MockAuditingService {
 
-  object TestMandationStatusService extends MandationStatusService(mockMandationStatusConnector, MockSubscriptionDetailsService)
+  implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+
+  object TestMandationStatusService extends MandationStatusService(mockMandationStatusConnector, MockSubscriptionDetailsService, mockAuditingService)
 
   "retrieveMandationStatus" should {
     "retrieve and save the mandation status" when {
@@ -29,9 +36,19 @@ class MandationStatusServiceSpec extends MockSubscriptionDetailsService with Moc
         mockGetMandationStatus()
         mockSaveMandationStatus("test-reference")
 
-        await(TestMandationStatusService.retrieveMandationStatus("test-reference", "test-nino", "test-utr"))
+        await(TestMandationStatusService.retrieveMandationStatus("test-reference", "test-user-type", "test-nino", "test-utr"))
 
         verifySaveMandationStatus(1, "test-reference")
+        verifyAudit(MandationStatusAuditModel(
+          userType = "test-user-type",
+          agentReferenceNumber = None,
+          utr = "test-utr",
+          nino = "test-nino",
+          currentYear = AccountingPeriodUtil.getCurrentTaxYear.toShortTaxYear,
+          currentYearStatus = Voluntary.value,
+          nextYear = AccountingPeriodUtil.getNextTaxYear.toShortTaxYear,
+          nextYearStatus = Voluntary.value
+        ))
       }
     }
 
@@ -39,7 +56,7 @@ class MandationStatusServiceSpec extends MockSubscriptionDetailsService with Moc
       "the backend returns a failure" in {
         mockFailedGetMandationStatus()
 
-        await(TestMandationStatusService.retrieveMandationStatus("test-reference", "test-nino", "test-utr"))
+        await(TestMandationStatusService.retrieveMandationStatus("test-reference", "test-user-type", "test-nino", "test-utr"))
 
         verifySaveMandationStatus(0, "test-reference")
       }

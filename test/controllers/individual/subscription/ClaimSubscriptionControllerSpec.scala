@@ -16,7 +16,6 @@
 
 package controllers.individual.subscription
 
-import agent.audit.mocks.MockAuditingService
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -25,7 +24,7 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.MockSubscriptionDetailsService
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants._
 import views.html.individual.incometax.subscription.enrolled.ClaimSubscription
