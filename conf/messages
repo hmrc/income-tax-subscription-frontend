@@ -1081,7 +1081,7 @@ claim-enrolment.claimAlreadySignedUp.content.link2              = Retrieve sign 
 
 
 ## Task List
-business.task-list.title                                        = Check and complete your business details
+business.task-list.title                                        = Your details
 business.task-list.heading.incomplete                           = Application incomplete
 business.task-list.heading.complete                             = Application complete
 business.task-list.content.summary                              = You have completed {0} of {1} sections.

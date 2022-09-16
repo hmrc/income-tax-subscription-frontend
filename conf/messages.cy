@@ -1082,7 +1082,7 @@ claim-enrolment.claimAlreadySignedUp.content.link1              = Gwiriwch a yw�
 claim-enrolment.claimAlreadySignedUp.content.link2              = Adfer manylion mewngofnodi ar gyfer eich cyfrif arall
 
 ## Task List
-business.task-list.title                                        = Gwirio a llenwi’ch manylion busnes
+business.task-list.title                                        = Eich manylion
 business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 business.task-list.heading.complete                             = Cais wedi’i gwblhau
 business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.
