@@ -29,6 +29,8 @@ import services.AccountingPeriodService
 import utilities.ViewSpec
 import views.html.agent.AgentTaskList
 
+import scala.util.Random
+
 class AgentTaskListViewSpec extends ViewSpec {
 
   val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(2)"
@@ -81,12 +83,16 @@ class AgentTaskListViewSpec extends ViewSpec {
   )
 
 
-  def page(taskList: TaskListModel = customTaskListModel()): Html = taskListView(
-    postAction = postAction,
-    viewModel = taskList,
-    clientName = "clientName",
-    clientNino = "clientNino"
-  )(request, implicitly, appConfig)
+  val clientName = Random.alphanumeric.take(10).mkString
+  val clientNino = Random.alphanumeric.take(10).mkString
+  def page(taskList: TaskListModel = customTaskListModel()): Html = {
+    taskListView(
+      postAction = postAction,
+      viewModel = taskList,
+      clientName = clientName,
+      clientNino = clientNino
+    )(request, implicitly, appConfig)
+  }
 
 
   def document(taskList: TaskListModel = customTaskListModel()): Document = Jsoup.parse(page(taskList).body)
@@ -101,11 +107,7 @@ class AgentTaskListViewSpec extends ViewSpec {
     }
 
     "have a client name and client nino" in {
-      document().mainContent.getElementById("userNameNino").text mustBe "clientName"+" "+"|"+" "+"clientNino"
-    }
-
-    "have a paragraph for accounting period confirm" in {
-      document().mainContent.getElementById("accountingPeriodConfirm").text mustBe "Accounting period confirmed: 6 April to 5 April"
+      document().mainContent.getElementById("userNameNino").text mustBe s"Client: $clientName | $clientNino"
     }
 
     "have a contents list" in {

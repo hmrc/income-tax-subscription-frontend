@@ -178,18 +178,14 @@
 @mainTemplate(title = messages(s"${messagePrefix}.title")) {
   <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
 
-<ol class = "app-task-list">
-  <li>
-    <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="userNameNino">
-      @clientName | @clientNino
-    </h2>
-    <p class="app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="accountingPeriodConfirm">@messages(s"${messagePrefix}.accounting-period-confirm")</p>
-  </li>
-  <li>
-    <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="taskListStatus" >@applicationStatus</h2>
-    <p class=" app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="taskListCompletedSummary">@messages(s"${messagePrefix}.content.summary", viewModel.sectionsComplete, viewModel.sectionsTotal)</p>
-  </li>
-</ol>
+  <p class="govuk-body client-details govuk-!-padding-5 govuk-!-border-0" id ="userNameNino">
+    @{messages(s"${messagePrefix}.client")} @clientName | @clientNino
+  </p>
+
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id ="taskListStatus" >@applicationStatus</h2>
+
+  <p class=" app-task-list__item govuk-body govuk-!-padding-bottom-7" id ="taskListCompletedSummary">@messages(s"${messagePrefix}.content.summary", viewModel.sectionsComplete, viewModel.sectionsTotal)</p>
+
   <div class="govuk-form-group govuk-!-padding-top-7">
     @form(action = postAction) {
       <ol class="app-task-list">

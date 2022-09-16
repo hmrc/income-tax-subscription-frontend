@@ -943,7 +943,8 @@ agent.no-sa.heading                                             = Your client is
 agent.no-sa.line_1                                              = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 # Agent Task List
-agent.business.task-list.title                                        = Check and complete your client’s business details
+agent.business.task-list.title                                        = Your client’s details
+agent.business.task-list.client                                       = Client:
 agent.business.task-list.heading.incomplete                           = Application incomplete
 agent.business.task-list.heading.complete                             = Application complete
 agent.business.task-list.accounting-period-confirm                    = Accounting period confirmed: 6 April to 5 April
