@@ -140,7 +140,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
 
   private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
     if (isEnabled(ItsaMandationStatus)) {
-      mandationStatusService.retrieveMandationStatus(reference, userType = "individual", nino, utr)
+      mandationStatusService.retrieveMandationStatus(reference, nino, utr)
     } else {
       Future.successful(())
     }

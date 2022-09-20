@@ -18,48 +18,31 @@ package services
 
 import connectors.MandationStatusConnector
 import connectors.httpparser.PostMandationStatusParser.PostMandationStatusResponse
-import models.audits.MandationStatusAuditing.MandationStatusAuditModel
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.AccountingPeriodUtil
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MandationStatusService @Inject()(val mandationStatusConnector: MandationStatusConnector,
-                                       val subscriptionDetailsService: SubscriptionDetailsService,
-                                       val auditingService: AuditingService) {
+                                       val subscriptionDetailsService: SubscriptionDetailsService) {
 
-  def retrieveMandationStatus(reference: String, userType: String, nino: String, utr: String, arn: Option[String] = None)
+  def retrieveMandationStatus(reference: String, nino: String, utr: String)
                              (implicit hc: HeaderCarrier, ec: ExecutionContext, request:Request[AnyContent]): Future[Unit] = {
     for {
       mandationStatus <- mandationStatusConnector.getMandationStatus(nino, utr)
-      _ = saveMandationStatus(reference, mandationStatus, userType, nino, utr, arn)
+      _ = saveMandationStatus(reference, mandationStatus)
     } yield ()
   }
 
   private def saveMandationStatus(
                                    reference: String,
                                    mandationStatusResponse:
-                                   PostMandationStatusResponse,
-                                   userType: String,
-                                   nino: String,
-                                   utr: String,
-                                   arn: Option[String] = None
+                                   PostMandationStatusResponse
                                  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request:Request[AnyContent]): Future[Unit] = {
     mandationStatusResponse match {
       case Right(mandationStatus) => {
-        auditingService.audit(MandationStatusAuditModel(
-          userType = userType,
-          agentReferenceNumber = arn,
-          utr = utr,
-          nino = nino,
-          currentYear = AccountingPeriodUtil.getCurrentTaxYear.toShortTaxYear,
-          currentYearStatus = mandationStatus.currentYearStatus.value,
-          nextYear = AccountingPeriodUtil.getNextTaxYear.toShortTaxYear,
-          nextYearStatus = mandationStatus.nextYearStatus.value
-        ))
         subscriptionDetailsService.saveMandationStatus(reference, mandationStatus).map(_ => ())
       }
       case Left(_) => Future.successful(())
