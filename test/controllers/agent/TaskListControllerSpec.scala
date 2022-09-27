@@ -28,9 +28,9 @@ import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
+import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService, MockThrottlingConnector}
-import services.{AccountingPeriodService, ThrottlingService}
+import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
@@ -43,8 +43,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockIncomeTaxSubscriptionConnector
-  with MockThrottlingConnector {
+  with MockIncomeTaxSubscriptionConnector {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: AgentTaskList = mock[AgentTaskList]
@@ -59,15 +58,12 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     super.beforeEach()
     reset(taskList)
     enable(ThrottlingFeature)
-    notThrottled()
   }
 
   def mockTaskList(): Unit = {
     when(taskList(any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
-
-  when(mockThrottlingConnector.getThrottleStatus(any())(any())).thenReturn(Future.successful(true))
 
   object TestTaskListController extends TaskListController(
     taskList,
@@ -76,8 +72,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
     mockIncomeTaxSubscriptionConnector,
-    mockAuthService,
-    new ThrottlingService(mockThrottlingConnector, appConfig)
+    mockAuthService
   )
 
   "show" should {

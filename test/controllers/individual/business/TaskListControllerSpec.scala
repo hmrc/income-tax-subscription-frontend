@@ -23,15 +23,15 @@ import models.common.subscription.SubscriptionFailureResponse
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, when}
+import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
+import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService, MockThrottlingConnector}
-import services.{AccountingPeriodService, ThrottlingService}
+import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
@@ -44,8 +44,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockIncomeTaxSubscriptionConnector
-  with MockThrottlingConnector {
+  with MockIncomeTaxSubscriptionConnector {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: TaskList = mock[TaskList]
@@ -61,7 +60,6 @@ class TaskListControllerSpec extends ControllerBaseSpec
     disable(ThrottlingFeature)
     reset(taskList)
     enable(ThrottlingFeature)
-    notThrottled()
   }
 
   def mockTaskList(): Unit = {
@@ -76,8 +74,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
     MockSubscriptionDetailsService,
     mockSubscriptionOrchestrationService,
     mockIncomeTaxSubscriptionConnector,
-    mockAuthService,
-    new ThrottlingService(mockThrottlingConnector, appConfig)
+    mockAuthService
   )
 
   "show" should {
@@ -111,7 +108,6 @@ class TaskListControllerSpec extends ControllerBaseSpec
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
-      verifyGetThrottleStatusCalls(times(1))
     }
   }
 
@@ -140,7 +136,6 @@ class TaskListControllerSpec extends ControllerBaseSpec
         await(result)
 
         status(result) must be(Status.SEE_OTHER)
-        verifyGetThrottleStatusCalls(times(1))
         redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
       }
     }
@@ -167,7 +162,6 @@ class TaskListControllerSpec extends ControllerBaseSpec
         intercept[InternalServerException](await(result)).message must include(
           s"[TaskListController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
         )
-        verifyGetThrottleStatusCalls(times(1))
       }
     }
   }

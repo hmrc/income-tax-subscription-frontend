@@ -15,8 +15,8 @@
  *@
 
 @import config.AppConfig
-@import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.injected.ContinueButton
+@import views.html.templates.PrincipalMainTemplate
 
 @this(
 mainTemplate: PrincipalMainTemplate,
@@ -24,9 +24,9 @@ form: FormWithCSRF,
 continueButton: ContinueButton
 )
 
-@(backLink: Option[String], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(backLink: String, postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@mainTemplate(title = messages("throttle.title"), backLink = backLink, showSignOutLink = true) {
+@mainTemplate(title = messages("throttle.title"), backLink = Some(backLink), showSignOutLink = true) {
    <h1 class="govuk-heading-l">@messages("throttle.heading")</h1>
 
    <p class="govuk-body">@messages("throttle.line_1")</p>

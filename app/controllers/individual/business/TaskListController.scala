@@ -44,8 +44,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val subscriptionService: SubscriptionOrchestrationService,
                                    val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                   val authService: AuthService,
-                                   throttlingService: ThrottlingService)
+                                   val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with Logging {
@@ -53,16 +52,14 @@ class TaskListController @Inject()(val taskListView: TaskList,
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withReference { reference =>
-        throttlingService.throttled(IndividualStartOfJourneyThrottle) {
-          getTaskListModel(reference) map {
-            viewModel =>
-              Ok(taskListView(
-                postAction = controllers.individual.business.routes.TaskListController.submit(),
-                viewModel = viewModel,
-                accountingPeriodService = accountingPeriodService,
-                individualUserNino = user.nino.get
-              ))
-          }
+        getTaskListModel(reference) map {
+          viewModel =>
+            Ok(taskListView(
+              postAction = controllers.individual.business.routes.TaskListController.submit(),
+              viewModel = viewModel,
+              accountingPeriodService = accountingPeriodService,
+              individualUserNino = user.nino.get
+            ))
         }
       }
     }
@@ -106,20 +103,18 @@ class TaskListController @Inject()(val taskListView: TaskList,
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        throttlingService.throttled(IndividualEndOfJourneyThrottle) {
-          withReference { reference =>
-            val model = for {
-              selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-              selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
-              property <- subscriptionDetailsService.fetchProperty(reference)
-              overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-              selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-            } yield {
-              createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, selectedTaxYear)
-            }
-            model.flatMap { model =>
-              processFunc(user)(request)(model)
-            }
+        withReference { reference =>
+          val model = for {
+            selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+            selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+            property <- subscriptionDetailsService.fetchProperty(reference)
+            overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+          } yield {
+            createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, selectedTaxYear)
+          }
+          model.flatMap { model =>
+            processFunc(user)(request)(model)
           }
         }
     }
