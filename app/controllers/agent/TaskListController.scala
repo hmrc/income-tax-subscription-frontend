@@ -45,8 +45,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val subscriptionService: SubscriptionOrchestrationService,
                                    val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                   val authService: AuthService,
-                                   throttlingService: ThrottlingService)
+                                   val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval with Logging {
@@ -65,20 +64,18 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withAgentReference { reference =>
-        throttlingService.throttled(AgentStartOfJourneyThrottle) {
-          getTaskListModel(reference) map {
-            viewModel =>
-              Ok(taskListView(
-                postAction = controllers.agent.routes.TaskListController.submit(),
-                viewModel = viewModel,
-                clientName = request.fetchClientName.getOrElse(
-                  throw new InternalServerException("[TaskListController][show] - could not retrieve client name from session")
-                ),
-                clientNino = formatNino(user.clientNino.getOrElse(
-                  throw new InternalServerException("[TaskListController][show] - could not retrieve client nino from session")
-                ))
+        getTaskListModel(reference) map {
+          viewModel =>
+            Ok(taskListView(
+              postAction = controllers.agent.routes.TaskListController.submit(),
+              viewModel = viewModel,
+              clientName = request.fetchClientName.getOrElse(
+                throw new InternalServerException("[TaskListController][show] - could not retrieve client name from session")
+              ),
+              clientNino = formatNino(user.clientNino.getOrElse(
+                throw new InternalServerException("[TaskListController][show] - could not retrieve client nino from session")
               ))
-          }
+            ))
         }
       }
     }
@@ -121,20 +118,18 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
   private def journeySafeGuard(processFunc: IncomeTaxAgentUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        throttlingService.throttled(AgentEndOfJourneyThrottle) {
-          withAgentReference { reference =>
-            val model = for {
-              selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-              selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
-              property <- subscriptionDetailsService.fetchProperty(reference)
-              overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-              selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-            } yield {
-              createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, accountingYear = selectedTaxYear)
-            }
-            model.flatMap { model =>
-              processFunc(user)(request)(model)
-            }
+        withAgentReference { reference =>
+          val model = for {
+            selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+            selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+            property <- subscriptionDetailsService.fetchProperty(reference)
+            overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+          } yield {
+            createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, accountingYear = selectedTaxYear)
+          }
+          model.flatMap { model =>
+            processFunc(user)(request)(model)
           }
         }
     }

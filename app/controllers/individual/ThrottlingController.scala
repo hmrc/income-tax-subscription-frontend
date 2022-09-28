@@ -34,13 +34,13 @@ class ThrottlingController @Inject()(val auditingService: AuditingService,
                                      val appConfig: AppConfig) extends BaseFrontendController {
 
   def start(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(throttleStart(backLink(), controllers.individual.business.routes.TaskListController.show())))
+    Future.successful(Ok(throttleStart(backLink(), controllers.usermatching.routes.HomeController.index)))
   }
 
   def end(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(throttleEnd(backLink(), controllers.individual.business.routes.TaskListController.show())))
   }
 
-  private def backLink() = Some(controllers.usermatching.routes.HomeController.index.url)
+  private def backLink() = controllers.usermatching.routes.HomeController.index.url
 
 }
