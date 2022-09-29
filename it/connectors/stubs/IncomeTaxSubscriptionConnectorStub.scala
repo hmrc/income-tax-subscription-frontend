@@ -28,7 +28,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     when(
       method = GET,
       uri = subscriptionUri(id)
-    ) thenReturn(responseStatus, responseBody)
+    ).thenReturn(responseStatus, responseBody)
   }
 
   def stubSaveSubscriptionDetails[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {

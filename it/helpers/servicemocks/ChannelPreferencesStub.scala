@@ -29,7 +29,7 @@ object ChannelPreferencesStub extends WireMockMethods {
     when (
       method = POST,
       uri = channelPreferencesUrl
-    ) thenReturn (
+    ).thenReturn (
       status = OK,
       body = Json.obj()
     )
@@ -39,7 +39,7 @@ object ChannelPreferencesStub extends WireMockMethods {
     when(
       method = POST,
       uri = channelPreferencesAgentUrl
-    ) thenReturn (
+    ).thenReturn (
       status = OK,
       body = Json.obj()
     )

@@ -34,7 +34,7 @@ class CannotUseServiceControllerSpec extends ControllerBaseSpec with MockAuditin
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   val mockCannotUseServiceView: CannotUseService = mock[CannotUseService]
-  when(mockCannotUseServiceView(ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
+  when(mockCannotUseServiceView(ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
   object TestCannotUseServiceController extends CannotUseServiceController(

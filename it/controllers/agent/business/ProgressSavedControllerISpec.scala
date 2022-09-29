@@ -19,18 +19,18 @@ package controllers.agent.business
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import helpers.servicemocks.AuditStub.verifyAudit
+import helpers.servicemocks.AuditStub.{stubAuditing, verifyAudit}
 import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsNumber, JsObject}
 import utilities.SubscriptionDataKeys._
 
 class ProgressSavedControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/progress-saved" should {
     "return OK" when {
       "the location is not provided" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
 
         When("GET /business/progress-saved is called")
@@ -43,13 +43,12 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
             s"${messages("business.progress-saved.title")} - Use software to report your client’s Income Tax - GOV.UK"
           )
         )
-        verifyAudit(Some(1))
       }
 
       "the location is provided" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-
+        stubAuditing()
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)

@@ -39,6 +39,8 @@ object LockoutStatusHttpParser {
             case CREATED => parse(response.json)
             case status => Left(LockoutStatusFailureResponse(status))
           }
+        case _ =>
+          Left(LockoutStatusFailureResponse(response.status))
       }
   }
 

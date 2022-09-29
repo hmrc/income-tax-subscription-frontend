@@ -15,11 +15,9 @@
  *@
 
 @import testonly.form.individual.ClearPreferencesForm._
-@import config.AppConfig
-@import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.injected.{ContinueButton, TextInputHelper}
-@import views.individual.helpers._
 @import testonly.models.preferences.ClearPreferencesModel
+@import views.html.helpers.injected.{ContinueButton, TextInputHelper}
+@import views.html.templates.PrincipalMainTemplate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -28,7 +26,7 @@
     form: FormWithCSRF
 )
 
-@(clearPreferencesForm: Form[ClearPreferencesModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(clearPreferencesForm: Form[ClearPreferencesModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = Messages("Clear preferences"), optForm=Some(clearPreferencesForm)) {
 

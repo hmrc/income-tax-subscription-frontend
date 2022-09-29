@@ -26,7 +26,7 @@ class NotEligibleForIncomeTaxSpec extends ViewSpecTrait {
 
   val NotEligibleForIncomeTaxView: NotEligibleForIncomeTax = app.injector.instanceOf[NotEligibleForIncomeTax]
 
-  lazy val page = NotEligibleForIncomeTaxView()(request, implicitly, appConfig)
+  lazy val page = NotEligibleForIncomeTaxView()(request, implicitly)
 
   "The Income Tax Not Eligible view" should {
 

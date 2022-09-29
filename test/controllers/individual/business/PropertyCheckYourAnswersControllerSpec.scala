@@ -128,7 +128,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   private def withController(testCode: PropertyCheckYourAnswersController => Any): Unit = {
     val view = mock[PropertyCheckYourAnswers]
 
-    when(view(any(), any(), any())(any(), any(), any()))
+    when(view(any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyCheckYourAnswersController(

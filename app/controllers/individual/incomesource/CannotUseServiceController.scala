@@ -36,7 +36,7 @@ class CannotUseServiceController @Inject()(val auditingService: AuditingService,
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     _ =>
       Future.successful(Ok(cannotUseServiceView(
-        postAction = controllers.individual.incomesource.routes.CannotUseServiceController.show
+        postAction = controllers.individual.incomesource.routes.CannotUseServiceController.show()
       )))
   }
 

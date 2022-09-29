@@ -36,15 +36,15 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
     flag <- subscriptionDetailsService.fetchPrePopFlag(reference)
     _ <- flag match {
       case None => populateSubscription(reference, prepop)
-      case Some(_) => Future.successful(Unit)
+      case Some(_) => Future.successful(())
     }
-  } yield Unit
+  } yield ()
 
   private def populateSubscription(reference: String, prePopData: PrePopData)
                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     // Set up all futures so that they parallelise.
     val futureSaveSelfEmployments = prePopData.selfEmployments match {
-      case None => Future.successful(Unit)
+      case None => Future.successful(())
       case Some(listPrepopSelfEmployment) =>
         val listSelfEmploymentData = listPrepopSelfEmployment.map(se => SelfEmploymentData(
           UUID.randomUUID().toString,
@@ -52,7 +52,7 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
           se.businessName.map(name => BusinessNameModel(name)),
           getBusinessTradeNameModelMaybe(se.businessTradeName),
           if (se.businessAddressPostCode.isDefined || se.businessAddressFirstLine.isDefined)
-            Some(BusinessAddressModel(UUID.randomUUID().toString, address = Address(se.businessAddressFirstLine.toList.seq, se.businessAddressPostCode)))
+            Some(BusinessAddressModel(UUID.randomUUID().toString, address = Address(se.businessAddressFirstLine.toList, se.businessAddressPostCode)))
           else
             None
         ))
@@ -60,19 +60,19 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
     }
 
     val futureSaveUkPropertyInfo = prePopData.ukProperty match {
-      case None => Future.successful(Unit)
+      case None => Future.successful(())
       case Some(up) => subscriptionDetailsService.saveProperty(reference, PropertyModel(up.ukPropertyAccountingMethod, up.ukPropertyStartDate))
     }
 
     val futureSaveOverseasPropertyInfo = prePopData.overseasProperty match {
-      case None => Future.successful(Unit)
+      case None => Future.successful(())
       case Some(op) =>
         subscriptionDetailsService.saveOverseasProperty(reference, OverseasPropertyModel(op.overseasPropertyAccountingMethod, op.overseasPropertyStartDate))
     }
 
     val maybeAccountingMethod = prePopData.selfEmployments.flatMap(_.flatMap(_.businessAccountingMethod).headOption)
     val futureSaveSelfEmploymentsAccountingMethod = maybeAccountingMethod match {
-      case None => Future.successful(Unit)
+      case None => Future.successful(())
       case Some(accountingMethod) => subscriptionDetailsService.saveSelfEmploymentsAccountingMethod(reference, AccountingMethodModel(accountingMethod))
     }
 
@@ -85,6 +85,6 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
       _ <- futureSaveOverseasPropertyInfo
       _ <- futureSaveSelfEmploymentsAccountingMethod
       _ <- futureSavePrePopFlag
-    } yield Unit
+    } yield ()
   }
 }

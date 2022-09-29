@@ -42,7 +42,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   private def withController(testCode: PropertyAccountingMethodController => Any): Unit = {
     val propertyAccountingMethodView = mock[PropertyAccountingMethod]
 
-    when(propertyAccountingMethodView(any(), any(), any(), any())(any(), any(), any()))
+    when(propertyAccountingMethodView(any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyAccountingMethodController(

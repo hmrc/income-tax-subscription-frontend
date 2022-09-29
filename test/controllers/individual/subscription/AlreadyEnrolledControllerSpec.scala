@@ -31,7 +31,7 @@ import scala.concurrent.Future
 class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
   val mockAlreadyEnrolledView: AlreadyEnrolled = mock[AlreadyEnrolled]
-  when(mockAlreadyEnrolledView()(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
+  when(mockAlreadyEnrolledView()(ArgumentMatchers.any(),ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(

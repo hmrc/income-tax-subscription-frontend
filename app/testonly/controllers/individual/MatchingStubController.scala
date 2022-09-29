@@ -16,7 +16,6 @@
 
 package testonly.controllers.individual
 
-import config.AppConfig
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -38,7 +37,7 @@ class MatchingStubController @Inject()(mcc: MessagesControllerComponents,
                                        matchingStubConnector: MatchingStubConnector,
                                        stubUser: StubUser,
                                        val showStubbedDetails: ShowStubbedDetails)
-                                      (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+                                      (implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
 
   def view(clientToStubForm: Form[UserToStubModel])
@@ -53,7 +52,7 @@ class MatchingStubController @Inject()(mcc: MessagesControllerComponents,
   }
 
   def submit: Action[AnyContent] = Action.async { implicit request =>
-    userDetailsForm.bindFromRequest.fold(
+    userDetailsForm.bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
       userDetails =>
         matchingStubConnector.newUser(userDetails) map {

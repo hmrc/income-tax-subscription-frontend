@@ -44,10 +44,10 @@ object DateModelMapping {
       val ids: HtmlIds = HtmlIds(key)
 
       val result = ((validateDay(data, ids), validateMonth(data, ids))
-        .map2(
+        .mapN(
           (day, month) => DayMonth(day, month)
         ).andThen(validateDayMonth), validateYear(data, ids))
-        .map2(
+        .mapN(
           (dayMonth, year) => ValidDate(dayMonth.day, dayMonth.month, year)
         ).andThen(date => validateDate(date, minDate, maxDate))
 

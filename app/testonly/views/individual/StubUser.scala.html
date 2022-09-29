@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import testonly.form.individual.UserToStubForm._
 @import testonly.models.UserToStubModel
 @import views.html.helpers.injected.{ContinueButton, DateHelper, TextInputHelper}
@@ -29,7 +28,7 @@
 )
 
 
-@(userToStubform: Form[UserToStubModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(userToStubform: Form[UserToStubModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = Messages("stub.user.details.title"),

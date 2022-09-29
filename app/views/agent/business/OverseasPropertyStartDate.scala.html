@@ -24,8 +24,6 @@
     form: FormWithCSRF,
     dateHelper: DateHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper
-)(
-    implicit appConfig: AppConfig
 )
 
 @(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)

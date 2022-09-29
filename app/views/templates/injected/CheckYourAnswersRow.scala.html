@@ -18,7 +18,7 @@
 
 @this(accessibleTextHelper: AccessibleTextHelper)
 
-@(field: String, question: String, answer: String, changeUrl: Option[String] = None, changeText: Option[String] = None, hiddenContent: String)(implicit request: Request[_], messages: Messages)
+@(field: String, question: String, answer: String, changeUrl: Option[String] = None, changeText: Option[String] = None, hiddenContent: String)(implicit messages: Messages)
 
 <div class="govuk-summary-list__row" id="@field-row">
   <dt class="govuk-summary-list__key" id="@field-question">

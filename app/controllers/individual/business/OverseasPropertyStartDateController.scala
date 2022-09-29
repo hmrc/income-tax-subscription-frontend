@@ -61,7 +61,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        form.bindFromRequest.fold(
+        form.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode))),
           startDate =>
@@ -82,7 +82,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
     if (isEditMode) {
       controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
     } else {
-      controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show.url
+      controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
     }
   }
 

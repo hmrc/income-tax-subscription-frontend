@@ -14,21 +14,17 @@
  * limitations under the License.
  *@
 
+@import forms.individual.business.RemoveUkPropertyForm.yesNo
 @import play.api.data.Form
 @import views.html.helpers.injected.{ContinueButton, YesNoRadioHelper}
 @import views.html.templates.PrincipalMainTemplate
-@import forms.individual.business.RemoveUkPropertyForm.yesNo
-@import config.AppConfig
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     yesNoRadioHelper: YesNoRadioHelper,
     continueButton: ContinueButton
-)(
-    implicit appConfig: AppConfig
 )
-
 @(yesNoForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("remove-uk-property-business.heading"), optForm = Some(yesNoForm), backLink = Some(backUrl)) {

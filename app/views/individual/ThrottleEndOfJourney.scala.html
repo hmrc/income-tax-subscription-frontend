@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.helpers.injected.ContinueButton
 @import views.html.templates.PrincipalMainTemplate
 
@@ -24,7 +23,7 @@ form: FormWithCSRF,
 continueButton: ContinueButton
 )
 
-@(backLink: String, postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(backLink: String, postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("throttle.title"), backLink = Some(backLink), showSignOutLink = true) {
    <h1 class="govuk-heading-l">@messages("throttle.heading")</h1>

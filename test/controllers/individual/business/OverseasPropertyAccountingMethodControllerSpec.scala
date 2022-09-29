@@ -42,7 +42,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   private def withController(testCode: OverseasPropertyAccountingMethodController => Any): Unit = {
     val overseasPropertyAccountingMethodView = mock[OverseasPropertyAccountingMethod]
 
-    when(overseasPropertyAccountingMethodView(any(), any(), any(), any())(any(), any(), any()))
+    when(overseasPropertyAccountingMethodView(any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new OverseasPropertyAccountingMethodController(

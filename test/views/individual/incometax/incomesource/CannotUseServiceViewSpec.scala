@@ -32,7 +32,7 @@ class CannotUseServiceViewSpec extends ViewSpecTrait {
 
   val cannotUseServiceView: CannotUseService = app.injector.instanceOf[CannotUseService]
 
-  lazy val page = cannotUseServiceView(action)(request, implicitly, appConfig)
+  lazy val page = cannotUseServiceView(action)(request, implicitly)
   lazy val document = Jsoup.parse(page.body)
 
   "The Cannot Use Service view" should {

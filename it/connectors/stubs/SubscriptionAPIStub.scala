@@ -15,7 +15,7 @@ object SubscriptionAPIStub extends WireMockMethods {
     when (
       method = GET,
       uri = uri(nino)
-    ) thenReturn (
+    ).thenReturn (
       status = responseCode,
       body = response
     )
@@ -26,7 +26,7 @@ object SubscriptionAPIStub extends WireMockMethods {
       method = POST,
       uri = uri(request.nino),
       body = Json.toJson(request)
-    ) thenReturn (
+    ).thenReturn (
       status = responseCode,
       body = response
     )

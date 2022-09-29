@@ -34,7 +34,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with BeforeAndAfterEach with FeatureSwitching {
 
@@ -318,12 +318,15 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     }
 
-    def mustHaveTextField(name: String, label: String): Assertion = {
+    def mustHaveTextField(name: String, label: String, hint: Option[String] = None): Assertion = {
       val eles = element.select(s"input[name=$name]")
       if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
       if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
       val ele = eles.asScala.head
       ele.attr("type") mustBe "text"
+      hint.map { hintValue =>
+        element.selectHead(".govuk-hint").text mustBe hintValue
+      }
       element.select(s"label[for=$name]").text() mustBe label
     }
 

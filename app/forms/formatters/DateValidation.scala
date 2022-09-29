@@ -35,7 +35,7 @@ object DateValidation {
   final case class Month(value: Int)
   final case class Year(value: Int)
 
-  abstract class DateField(name: String) {
+  sealed abstract class DateField(name: String) {
     override def toString: String = s"$name"
   }
   final case object DayField extends DateField(name = "day")

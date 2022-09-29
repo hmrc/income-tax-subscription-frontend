@@ -99,10 +99,10 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
     "have a date input" when {
       "there is no error" in new Setup {
-        document.mustHaveDateInput(
-          name = "startDate",
-          label = OverseasPropertyStartDateMessages.heading,
-          hint = Some(OverseasPropertyStartDateMessages.hint)
+        document.mustHaveGovukDateField(
+          id = "startDate",
+          legend = OverseasPropertyStartDateMessages.heading,
+          exampleDate = OverseasPropertyStartDateMessages.hint
         )
       }
       "there is max date error" in new Setup(

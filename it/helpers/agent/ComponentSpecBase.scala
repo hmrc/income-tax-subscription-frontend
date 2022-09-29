@@ -43,7 +43,7 @@ import utilities.UserMatchingSessionUtil
 
 import java.time.LocalDate
 import java.util.UUID
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   with GivenWhenThen with TestSuite
@@ -76,7 +76,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
-    .build
+    .build()
 
   lazy val mockHost: String = WiremockHelper.wiremockHost
   lazy val mockPort: String = WiremockHelper.wiremockPort.toString

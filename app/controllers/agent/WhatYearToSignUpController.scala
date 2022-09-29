@@ -70,7 +70,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        AccountingYearForm.accountingYearForm.bindFromRequest.fold(
+        AccountingYearForm.accountingYearForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
           accountingYear => {

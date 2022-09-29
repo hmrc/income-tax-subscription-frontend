@@ -85,10 +85,10 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     }
 
     "have a fieldset with dateInputs" in {
-      document().mustHaveDateInput(
-        name = PropertyStartDateForm.startDate,
-        label = PropertyStartDateMessages.heading,
-        hint = Some(PropertyStartDateMessages.hint)
+      document().mustHaveGovukDateField(
+        id = PropertyStartDateForm.startDate,
+        legend = PropertyStartDateMessages.heading,
+        exampleDate = PropertyStartDateMessages.hint
       )
     }
 

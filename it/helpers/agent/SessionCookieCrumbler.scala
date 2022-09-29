@@ -3,7 +3,7 @@ package helpers.agent
 
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.ws.{WSCookie, WSResponse}
-import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted}
+import uk.gov.hmrc.crypto.{Crypted, SymmetricCryptoFactory}
 
 trait SessionCookieCrumbler {
   private val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
@@ -12,7 +12,7 @@ trait SessionCookieCrumbler {
 
   private def crumbleCookie(cookie: WSCookie) = {
     val crypted = Crypted(cookie.value)
-    val decrypted = CompositeSymmetricCrypto.aesGCM(cookieKey, Seq()).decrypt(crypted).value
+    val decrypted = SymmetricCryptoFactory.aesGcmCrypto(cookieKey).decrypt(crypted).value
 
     def decode(data: String): Map[String, String] = {
       // this part is hard coded because we are not certain at this time which hash algorithm is used by default
@@ -25,9 +25,10 @@ trait SessionCookieCrumbler {
         throw new RuntimeException("Cookie MAC didn't match content, this should never happen")
       }
       val Regex = """(.*)=(.*)""".r
-      map.split("&").view.map {
+      map.split("&").map {
         case Regex(k, v) => Map(k -> v)
-      }.view.reduce(_ ++ _)
+        case _ => Map.empty[String, String]
+      }.reduce(_ ++ _)
     }
 
     decode(decrypted)

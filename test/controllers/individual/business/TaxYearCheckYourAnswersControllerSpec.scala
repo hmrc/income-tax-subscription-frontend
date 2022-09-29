@@ -107,7 +107,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
   private def withController(testCode: TaxYearCheckYourAnswersController => Any): Unit = {
     val checkYourAnswersView = mock[TaxYearCheckYourAnswers]
 
-    when(checkYourAnswersView(any(), any(), any(), any())(any(), any(), any()))
+    when(checkYourAnswersView(any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new TaxYearCheckYourAnswersController(

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.helpers.injected.SignOutButton
 @import views.html.templates.PrincipalMainTemplate
 
@@ -23,7 +22,7 @@
         signOutButton: SignOutButton
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = Messages("already-enrolled.title")) {
     <h1 class="govuk-heading-l">@Messages("already-enrolled.heading")</h1>

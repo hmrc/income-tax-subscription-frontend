@@ -20,15 +20,16 @@ import assets.MessageLookup
 import controllers.SignOutController
 import org.jsoup.Jsoup
 import play.twirl.api.Html
+import utilities.ViewSpec
 import views.ViewSpecTrait
 import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
 
 
-class ClaimEnrolmentConfirmationViewSpec extends ViewSpecTrait {
+class ClaimEnrolmentConfirmationViewSpec extends ViewSpec {
 
   val claimEnrolmentConfirmation: ClaimEnrolmentConfirmation = app.injector.instanceOf[ClaimEnrolmentConfirmation]
   val action = ViewSpecTrait.testCall
-  val request = ViewSpecTrait.viewTestRequest
+  override val request = ViewSpecTrait.viewTestRequest
 
   val page: Html = claimEnrolmentConfirmation(action)(request, implicitly, appConfig)
   val document = Jsoup.parse(page.body)
@@ -49,7 +50,7 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpecTrait {
 
     s"has a heading (H2)" which {
 
-      lazy val heading = document.select("H2")
+      lazy val heading = document.mainContent.select("H2")
 
       s"has the text '${MessageLookup.ClaimEnrollmentConfirmation.heading}'" in {
 

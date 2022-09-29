@@ -36,7 +36,7 @@ trait MockAddMTDITOverview extends PlaySpec with MockitoSugar with BeforeAndAfte
   }
 
   def mockAddMTDITOverview(postAction: Call): Unit = {
-    when(addMTDITOverview(ArgumentMatchers.eq(postAction))(any(), any(), any()))
+    when(addMTDITOverview(ArgumentMatchers.eq(postAction))(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

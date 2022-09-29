@@ -50,7 +50,7 @@ class RemoveOverseasPropertyController @Inject()(val auditingService: AuditingSe
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      form.bindFromRequest.fold(
+      form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
           case Yes => withReference { reference =>
             incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) map {

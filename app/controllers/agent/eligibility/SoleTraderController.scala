@@ -16,12 +16,9 @@
 
 package controllers.agent.eligibility
 
-import java.time.LocalDate
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.SoleTraderForm.soleTraderForm
-
-import javax.inject.{Inject, Singleton}
 import models._
 import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
@@ -34,6 +31,8 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.agent.eligibility.AreYouASoleTrader
 
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -67,7 +66,7 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
-      soleTraderForm(startDateLimit.toLongDate).bindFromRequest.fold(
+      soleTraderForm(startDateLimit.toLongDate).bindFromRequest().fold(
         formWithErrors => BadRequest(view(
           form = formWithErrors,
           startDateLimit = startDateLimit

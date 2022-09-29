@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.helpers.injected.{ContinueButton, SignOutLink}
 @import views.html.templates.PrincipalMainTemplate
 
@@ -23,11 +22,9 @@
   form: FormWithCSRF,
   continueButton: ContinueButton,
   signOutLink: SignOutLink
-)(
-  implicit appConfig: AppConfig
 )
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("preferences_callback.title")) {
     <h1 class="govuk-heading-l">@messages("preferences_callback.heading")</h1>

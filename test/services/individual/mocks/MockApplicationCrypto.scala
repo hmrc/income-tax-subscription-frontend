@@ -16,17 +16,15 @@
 
 package services.individual.mocks
 
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted, CryptoWithKeysFromConfig}
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted, Decrypter, Encrypter, PlainBytes, PlainContent, PlainText}
 
 trait MockApplicationCrypto extends BeforeAndAfterEach with MockitoSugar {
   this: Suite =>
 
   val mockApplicationCrypto: ApplicationCrypto = mock[ApplicationCrypto]
-  val mockCryptoWithKeysFromConfig: CryptoWithKeysFromConfig = mock[CryptoWithKeysFromConfig]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -34,13 +32,16 @@ trait MockApplicationCrypto extends BeforeAndAfterEach with MockitoSugar {
   }
 
   def mockEncrypt(): Unit = {
-
     when(mockApplicationCrypto.QueryParameterCrypto) thenReturn {
-      mockCryptoWithKeysFromConfig
+      new Encrypter with Decrypter {
+        override def encrypt(value: PlainContent): Crypted =
+          Crypted("encryptedValue")
+
+        override def decrypt(reversiblyEncrypted: Crypted): PlainText = PlainText("decryptedValue")
+
+        override def decryptAsBytes(reversiblyEncrypted: Crypted): PlainBytes = PlainBytes("decryptedValue".getBytes())
+      }
     }
-
-    when(mockCryptoWithKeysFromConfig.encrypt(any())) thenReturn Crypted("encryptedValue")
-
   }
 
 

@@ -25,7 +25,7 @@ object MultipleIncomeSourcesSubscriptionAPIStub extends WireMockMethods {
     when (
       method = POST,
       uri = signUpUri(nino)
-    ) thenReturn (
+    ).thenReturn (
       status = responseCode,
       body = response
     )
@@ -38,7 +38,7 @@ object MultipleIncomeSourcesSubscriptionAPIStub extends WireMockMethods {
       method = POST,
       uri = createIncomeSourcesUri(mtdbsa),
       body = Json.toJson(request)
-    ) thenReturn (
+    ).thenReturn (
       status = responseCode,
       body = response
     )

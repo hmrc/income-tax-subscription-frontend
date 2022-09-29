@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.helpers.injected.{ContinueButton, TextInputHelper}
 @import views.html.templates.PrincipalMainTemplate
 
@@ -25,7 +24,7 @@
     inputHelper: TextInputHelper
 )
 
-@(updateEnrolmentsForm: Form[String], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(updateEnrolmentsForm: Form[String], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("Which credential ID do you want to update?"),

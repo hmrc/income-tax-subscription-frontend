@@ -16,7 +16,7 @@
 
 @this()
 
-@(alternativeText: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(alternativeText: Option[String] = None)(implicit messages: Messages)
 
 <div>
     <a id="sign-out-button" class="govuk-button" role="button" href="@controllers.routes.SignOutController.signOut.url">

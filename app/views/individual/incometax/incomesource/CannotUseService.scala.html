@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.helpers.injected.SignOutButton
 @import views.html.templates.PrincipalMainTemplate
 
@@ -22,7 +21,7 @@
         mainTemplate: PrincipalMainTemplate,
         signOutButton: SignOutButton
 )
-@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = Messages("cannot-use-service.title")) {
 

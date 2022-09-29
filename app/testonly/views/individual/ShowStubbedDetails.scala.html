@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import testonly.models.UserToStubModel
 @import views.html.helpers.injected.{ContinueButton, DateHelper, TextInputHelper}
 @import views.html.templates.PrincipalMainTemplate
@@ -29,7 +28,7 @@ inputHelper: TextInputHelper,
 dateHelper: DateHelper
 )
 
-@(userToStubModel: UserToStubModel, postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(userToStubModel: UserToStubModel, postAction: Call)(implicit request: Request[_], messages: Messages)
 
 
 @mainTemplate(

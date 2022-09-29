@@ -44,10 +44,11 @@ object BusinessIncomeSource {
   import models.common.SelfEmployed.SELF_EMPLOYED
   import models.common.UkProperty.UK_PROPERTY
 
-  private val reads: Reads[BusinessIncomeSource] = (json: JsValue) => json.validate[String] map {
-    case SELF_EMPLOYED => SelfEmployed
-    case UK_PROPERTY => UkProperty
-    case OVERSEAS_PROPERTY => OverseasProperty
+  private val reads: Reads[BusinessIncomeSource] = Reads[BusinessIncomeSource] {
+    case JsString(SELF_EMPLOYED) => JsSuccess(SelfEmployed)
+    case JsString(UK_PROPERTY) => JsSuccess(UkProperty)
+    case JsString(OVERSEAS_PROPERTY) => JsSuccess(OverseasProperty)
+    case _ => JsError("error.income-source.invalid")
   }
 
   private val writes: Writes[BusinessIncomeSource] = {

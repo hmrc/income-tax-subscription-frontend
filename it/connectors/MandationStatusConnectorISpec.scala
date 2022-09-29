@@ -51,7 +51,7 @@ class MandationStatusConnectorISpec extends ComponentSpecBase {
 
         val result = connector.getMandationStatus("test-nino", "test-utr")
 
-        result.futureValue shouldBe Left(ErrorModel(OK, "Invalid Json for mandationStatusResponseHttpReads: List((,List(JsonValidationError(List(error.expected.jsobject),WrappedArray()))))"))
+        result.futureValue shouldBe Left(ErrorModel(OK, "Invalid Json for mandationStatusResponseHttpReads: List((,List(JsonValidationError(List(error.expected.jsobject),ArraySeq()))))"))
       }
     }
 

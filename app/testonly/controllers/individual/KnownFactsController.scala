@@ -52,7 +52,7 @@ class KnownFactsController @Inject()(val auditingService: AuditingService,
   }
 
   def submit: Action[AnyContent] = Action.async { implicit request =>
-    knownFactsForm.bindFromRequest.fold(
+    knownFactsForm.bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(view(form = formWithErrors))),
       knownFacts => {
 

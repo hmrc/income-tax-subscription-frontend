@@ -31,15 +31,15 @@ class RemoveBusinessService @Inject()(val incomeTaxSubscriptionConnector: Income
 
   def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData])(
     implicit hc: HeaderCarrier
-  ): Future[Unit.type] = {
+  ): Future[Unit] = {
     val remainingBusinesses = businesses.filterNot(_.id == businessId)
     val saveResult = incomeTaxSubscriptionConnector
       .saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, remainingBusinesses)
-      .map(_ => Unit)
+      .map(_ => ())
     if (remainingBusinesses.isEmpty)
       incomeTaxSubscriptionConnector
         .deleteSubscriptionDetails(reference, BusinessAccountingMethod)
-        .map(_ => Unit)
+        .map(_ => ())
     else {
       saveResult
     }

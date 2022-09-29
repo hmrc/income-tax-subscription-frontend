@@ -14,9 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-
-@(endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)])(implicit messages: Messages, appConfig: AppConfig)
+@(endYearOfCurrentTaxPeriod: Int, updatesBefore: List[(String, String)], updatesAfter: List[(String, String)])(implicit messages: Messages)
 
 @if(updatesBefore.nonEmpty){
     <li>

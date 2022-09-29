@@ -41,7 +41,6 @@ trait MockMandationStatusService extends UnitTestTrait with MockitoSugar with Be
       ArgumentMatchers.any()
     )(
       ArgumentMatchers.any(),
-      ArgumentMatchers.any(),
       ArgumentMatchers.any()
     )).thenReturn(result)
   }

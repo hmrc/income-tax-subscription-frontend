@@ -21,7 +21,7 @@
   implicitDateFormatter: ImplicitDateFormatterImpl
 )
 
-@(updateAndDeadlineDates: List[UpdateDeadline])(implicit request: Request[_], messages: Messages)
+@(updateAndDeadlineDates: List[UpdateDeadline])(implicit messages: Messages)
 
 @import implicitDateFormatter.LongDate
 

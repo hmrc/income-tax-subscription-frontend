@@ -23,7 +23,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,13 +30,13 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import services.AccountingPeriodService
-import utilities.{CurrentDateProvider, UnitTestTrait}
+import utilities.{CurrentDateProvider, ViewSpec}
 import views.ViewSpecTrait
 import views.html.agent.SignUpComplete
 
 import java.time.LocalDate
 
-class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach {
+class SignUpCompleteViewSpec extends ViewSpec {
   val mockCurrentDateProvider: CurrentDateProvider = mock[CurrentDateProvider]
 
   override def beforeEach(): Unit = {
@@ -124,7 +123,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach {
 
     "have a 'What you need to do next' section for Next Tax Year" which {
       "has the section heading" in {
-        documentNextTaxYear.selectFirst("h2").text() mustBe SignUpComplete.whatNowHeading
+        documentNextTaxYear.mainContent.selectFirst("h2").text() mustBe SignUpComplete.whatNowHeading
       }
 
       "has the 1st list item" in {
@@ -177,7 +176,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach {
 
     "have a 'What you need to do next' section for Current Tax Year" which {
       "has the section heading" in {
-        documentCurrentTaxYear(q1).selectFirst("h2").text() mustBe SignUpComplete.whatNowHeading
+        documentCurrentTaxYear(q1).mainContent.selectFirst("h2").text() mustBe SignUpComplete.whatNowHeading
       }
 
       s"has the 1st list item" in {
@@ -347,7 +346,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait with BeforeAndAfterEach {
     val whatNowHeading = "What happens now"
     val whatNowHeadingParagraph1 = "After you’ve sent an update, your client will get an Income Tax year-to-date estimate. " +
       "They can see what they owe for the tax year after you’ve sent their final update."
-    val whatNowHeadingParagraph2 = "It may take a few hours before new information is displayed in your agent service account (opens in a new tab) ."
+    val whatNowHeadingParagraph2 = "It may take a few hours before new information is displayed in your agent service account (opens in a new tab)."
 
     val whatNowNumber1LinkText = "find software that’s compatible (opens in a new tab)"
     val whatNowNumber1 = s"If you have not already done so, $whatNowNumber1LinkText and allow it to interact with HMRC."

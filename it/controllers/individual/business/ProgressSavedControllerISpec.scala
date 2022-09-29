@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.servicemocks.AuditStub.verifyAudit
+import helpers.servicemocks.AuditStub.{stubAuditing, verifyAudit}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsNumber, JsObject}
@@ -42,13 +42,12 @@ class ProgressSavedControllerISpec  extends ComponentSpecBase {
             s"${messages("business.progress-saved.title")} - Use software to send Income Tax updates - GOV.UK"
           )
         )
-        verifyAudit(Some(1))
       }
 
       "the location is provided" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-
+        stubAuditing()
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)

@@ -58,14 +58,14 @@ override val controllerName: String = "CheckYourAnswersController"
     when(startOfJourneyView(
       ArgumentMatchers.eq(controllers.usermatching.routes.HomeController.index.url),
       ArgumentMatchers.eq(controllers.usermatching.routes.HomeController.index)
-    )(any(),any(),any())).thenReturn(HtmlFormat.empty)
+    )(any(),any())).thenReturn(HtmlFormat.empty)
 
     val endOfJourneyView = mock[ThrottleEndOfJourney]
 
     when(endOfJourneyView(
       ArgumentMatchers.eq(controllers.usermatching.routes.HomeController.index.url),
       ArgumentMatchers.eq( controllers.individual.business.routes.TaskListController.show())
-    )(any(),any(),any())).thenReturn(HtmlFormat.empty)
+    )(any(),any())).thenReturn(HtmlFormat.empty)
 
     val controller = new ThrottlingController(
       mockAuditingService,

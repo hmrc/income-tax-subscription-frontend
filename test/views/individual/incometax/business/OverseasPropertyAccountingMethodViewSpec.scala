@@ -42,7 +42,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
       postAction = action,
       isEditMode,
       backUrl = backUrl
-    )(FakeRequest(), implicitly, appConfig)
+    )(FakeRequest(), implicitly)
 
     val document: Document = Jsoup.parse(page.body)
   }

@@ -54,7 +54,7 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
         TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")))
         )
 
-        result shouldBe Unit
+        result shouldBe ()
         verifyDeleteSubscriptionDetails(BusinessAccountingMethod, 1)
       }
       "a reference, business id and multiple selfEmploymentsData are passed into the service" in {
@@ -64,7 +64,7 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
           TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id1")))
         )
 
-        result shouldBe Unit
+        result shouldBe ()
         verifyDeleteSubscriptionDetails(BusinessAccountingMethod, 0)
       }
     }

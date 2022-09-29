@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.helpers.injected.SignOutButton
 @import views.html.templates.PrincipalMainTemplate
 
@@ -23,7 +22,7 @@
     signOutButton: SignOutButton
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("not_eligible_for_income_tax.title"), backLink = Some("javascript:history.back()")) {
 

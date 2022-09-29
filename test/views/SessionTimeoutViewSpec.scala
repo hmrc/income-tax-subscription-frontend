@@ -25,7 +25,7 @@ class SessionTimeoutViewSpec extends ViewSpecTrait {
 
   private val timeoutView = app.injector.instanceOf[Timeout]
 
-  private lazy val page = timeoutView()(FakeRequest(), implicitly, appConfig)
+  private lazy val page = timeoutView()(FakeRequest(), implicitly)
 
   implicit val request: Request[_] = FakeRequest()
 

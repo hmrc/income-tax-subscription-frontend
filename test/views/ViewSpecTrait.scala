@@ -29,7 +29,7 @@ import play.twirl.api.Html
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import utilities.UnitTestTrait
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 
 trait ViewSpecTrait extends UnitTestTrait {

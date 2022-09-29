@@ -47,7 +47,7 @@ class GetSubscriptionDetailsHttpParserSpec extends UnitTestTrait {
 
         lazy val res = getSubscriptionDetailsHttpReads[DummyModel].read(testHttpVerb, testUri, httpResponse)
 
-        the[Exception] thrownBy res must have message "Invalid Json for getSubscriptionDetailsHttpReads: List((/body,List(JsonValidationError(List(error.path.missing),WrappedArray()))))"
+        the[Exception] thrownBy res must have message "Invalid Json for getSubscriptionDetailsHttpReads: List((/body,List(JsonValidationError(List(error.path.missing),ArraySeq()))))"
       }
 
       "parse an no content response as None" in {

@@ -126,7 +126,7 @@ object IntegrationTestConstants {
   val endOfJourneyThrottleURI = s"$baseURI/throttle"
 
   def basGatewaySignIn(continueTo: String): String = {
-    val updatedContinue: String = continueTo.replaceAllLiterally("/", "%2F")
+    val updatedContinue: String = continueTo.replace("/", "%2F")
     s"http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
   }
 

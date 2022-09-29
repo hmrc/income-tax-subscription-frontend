@@ -53,7 +53,7 @@ class RemoveUkPropertyController @Inject()(val auditingService: AuditingService,
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      form.bindFromRequest.fold(
+      form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
           case Yes => withAgentReference { reference =>
             incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) map {

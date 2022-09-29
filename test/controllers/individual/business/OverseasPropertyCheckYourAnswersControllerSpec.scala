@@ -133,7 +133,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   private def withController(testCode: OverseasPropertyCheckYourAnswersController => Any): Unit = {
     val view = mock[OverseasPropertyCheckYourAnswers]
 
-    when(view(any(), any(), any())(any(), any(), any()))
+    when(view(any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new OverseasPropertyCheckYourAnswersController(
