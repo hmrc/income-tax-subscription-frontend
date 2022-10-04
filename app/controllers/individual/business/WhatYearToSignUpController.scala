@@ -64,7 +64,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        AccountingYearForm.accountingYearForm.bindFromRequest.fold(
+        AccountingYearForm.accountingYearForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
           accountingYear => {
@@ -81,7 +81,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
     if (isEditMode) {
       Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
     } else {
-      Some(controllers.individual.business.routes.TaskListController.show.url)
+      Some(controllers.individual.business.routes.TaskListController.show().url)
     }
   }
 }

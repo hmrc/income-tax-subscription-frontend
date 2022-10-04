@@ -16,7 +16,6 @@
 
 package testonly.controllers
 
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuthService
 import testonly.connectors.EnrolmentStoreStubConnector
@@ -36,7 +35,7 @@ class UpdateEnrolmentsController @Inject()(mcc: MessagesControllerComponents,
                                            enrolmentStoreStubConnector: EnrolmentStoreStubConnector,
                                            updateEnrolments: UpdateEnrolments
                                           )
-                                          (implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) {
+                                          (implicit ec: ExecutionContext) extends FrontendController(mcc) {
 
   import authService._
 
@@ -52,7 +51,7 @@ class UpdateEnrolmentsController @Inject()(mcc: MessagesControllerComponents,
   )
 
   def submit: Action[AnyContent] = Action.async(implicit req =>
-    UpdateEnrolmentsForm.updateEnrolmentsForm.bindFromRequest.fold(
+    UpdateEnrolmentsForm.updateEnrolmentsForm.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(updateEnrolments(
           formWithErrors,

@@ -33,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class FeedbackController @Inject()(val feedback: Feedback, val feedbackThankYou: FeedbackThankyou, http: HttpClient)
                                   (implicit formPartialRetriever: FormPartialRetriever,
-                                   cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever,
                                    appConfig: AppConfig,
                                    ec: ExecutionContext,
                                    mcc: MessagesControllerComponents,

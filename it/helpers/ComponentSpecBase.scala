@@ -107,7 +107,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
-    .build
+    .build()
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

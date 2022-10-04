@@ -56,7 +56,7 @@ class WhatIncomeSourceToSignUpController @Inject()(val whatIncomeSourceToSignUp:
     implicit user =>
       withAgentReference { reference =>
         withIncomeSourceStatuses(reference) { incomeSourcesStatus =>
-          businessIncomeSourceForm(incomeSourcesStatus).bindFromRequest.fold(
+          businessIncomeSourceForm(incomeSourcesStatus).bindFromRequest().fold(
             formWithErrors => BadRequest(view(form = formWithErrors, incomeSourcesStatus)),
             {
               case SelfEmployed => Redirect(appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl)

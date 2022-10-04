@@ -15,7 +15,6 @@
  *@
 
 @import config.AppConfig
-@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
@@ -35,17 +34,6 @@
 )
 
 @(title: String, serviceName: String, serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
-
-@scripts = {
-    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-    <script>
-        window.GOVUKFrontend.initAll();
-        window.HMRCFrontend.initAll()
-    </script>
-    @hmrcScripts()
-}
-
 
 @content = {
 

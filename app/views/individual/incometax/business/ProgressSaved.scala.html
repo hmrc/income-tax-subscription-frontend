@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
@@ -24,7 +23,7 @@
 @(
   expirationDate: String,
   signInUrl: String
-)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("business.progress-saved.title")) {
   <div class="govuk-panel govuk-panel--confirmation">
@@ -44,7 +43,7 @@
 
   <ul class="govuk-list govuk-list--bullet">
     <li>
-      <a href="@controllers.individual.business.routes.TaskListController.show.url" class="govuk-link sign-up-link">@messages("business.progress-saved.content.sign-up-link")</a>
+      <a href="@controllers.individual.business.routes.TaskListController.show().url" class="govuk-link sign-up-link">@messages("business.progress-saved.content.sign-up-link")</a>
     </li>
     <li>
       <a href="@SignOutController.signOut.url" class="govuk-link sign-out-link">@messages("business.progress-saved.content.sign-out-link")</a>

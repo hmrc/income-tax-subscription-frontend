@@ -139,12 +139,12 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
   private def withController(testCode: FeedbackController => Any): Unit = {
     val feedbackView = mock[Feedback]
 
-    when(feedbackView(any(), any())(any(), any(), any(), any(), any(), any()))
+    when(feedbackView(any(), any())(any(), any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val feedbackThankYouView = mock[FeedbackThankyou]
 
-    when(feedbackThankYouView(any(), any())(any(), any(), any(), any(), any()))
+    when(feedbackThankYouView(any(), any())(any(), any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new FeedbackController(
@@ -153,7 +153,6 @@ class FeedbackControllerSpec extends ControllerBaseSpec with MockHttp {
       mockHttp
     )(
       mockFormPartialRetriever,
-      mockCachedStaticHtmlPartialRetriever,
       appConfig,
       executionContext,
       mockMessagesControllerComponents,

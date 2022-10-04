@@ -29,7 +29,7 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
   private lazy val page = view(
     postAction = action
-  )(request, implicitly, appConfig)
+  )(request, implicitly)
 
   "The Continue Registration view" should {
     val testPage = TestView(

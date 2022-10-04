@@ -18,7 +18,6 @@ package services
 
 import connectors.MandationStatusConnector
 import connectors.httpparser.PostMandationStatusParser.PostMandationStatusResponse
-import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -29,7 +28,7 @@ class MandationStatusService @Inject()(val mandationStatusConnector: MandationSt
                                        val subscriptionDetailsService: SubscriptionDetailsService) {
 
   def retrieveMandationStatus(reference: String, nino: String, utr: String)
-                             (implicit hc: HeaderCarrier, ec: ExecutionContext, request:Request[AnyContent]): Future[Unit] = {
+                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     for {
       mandationStatus <- mandationStatusConnector.getMandationStatus(nino, utr)
       _ = saveMandationStatus(reference, mandationStatus)
@@ -40,7 +39,7 @@ class MandationStatusService @Inject()(val mandationStatusConnector: MandationSt
                                    reference: String,
                                    mandationStatusResponse:
                                    PostMandationStatusResponse
-                                 )(implicit hc: HeaderCarrier, ec: ExecutionContext, request:Request[AnyContent]): Future[Unit] = {
+                                 )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     mandationStatusResponse match {
       case Right(mandationStatus) => {
         subscriptionDetailsService.saveMandationStatus(reference, mandationStatus).map(_ => ())

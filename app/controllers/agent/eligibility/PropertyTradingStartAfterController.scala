@@ -67,7 +67,7 @@ class PropertyTradingStartAfterController @Inject()(val auditingService: Auditin
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
-      propertyTradingStartDateForm(startDateLimit.toLongDate).bindFromRequest.fold(
+      propertyTradingStartDateForm(startDateLimit.toLongDate).bindFromRequest().fold(
         formWithErrors => BadRequest(view(
           form = formWithErrors,
           startDateLimit = startDateLimit

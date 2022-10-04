@@ -167,8 +167,8 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends AnyWordSpecLike wi
         val expectedResultBefore: Seq[(String, String)] = List[(String, String)]()
         val expectedResultAfter: Seq[(String, String)] = List(taxQuarter1, taxQuarter2, taxQuarter3, taxQuarter4)
 
-        TestAccountingPeriodService.updateDatesBefore shouldBe expectedResultBefore
-        TestAccountingPeriodService.updateDatesAfter shouldBe expectedResultAfter
+        TestAccountingPeriodService.updateDatesBefore() shouldBe expectedResultBefore
+        TestAccountingPeriodService.updateDatesAfter() shouldBe expectedResultAfter
       }
 
       "the current date is in Q2" in new SetupUpdateDates(LocalDate.of(2020, 8, 6)) {
@@ -177,8 +177,8 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends AnyWordSpecLike wi
         val expectedResultBefore: Seq[(String, String)] = List(taxQuarter1)
         val expectedResultAfter: Seq[(String, String)] = List(taxQuarter2, taxQuarter3, taxQuarter4)
 
-        TestAccountingPeriodService.updateDatesBefore shouldBe expectedResultBefore
-        TestAccountingPeriodService.updateDatesAfter shouldBe expectedResultAfter
+        TestAccountingPeriodService.updateDatesBefore() shouldBe expectedResultBefore
+        TestAccountingPeriodService.updateDatesAfter() shouldBe expectedResultAfter
       }
 
       "the current date is in Q3" in new SetupUpdateDates(LocalDate.of(2020, 12, 6)) {
@@ -187,8 +187,8 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends AnyWordSpecLike wi
         val expectedResultBefore: Seq[(String, String)] = List(taxQuarter1, taxQuarter2)
         val expectedResultAfter: Seq[(String, String)] = List(taxQuarter3, taxQuarter4)
 
-        TestAccountingPeriodService.updateDatesBefore shouldBe expectedResultBefore
-        TestAccountingPeriodService.updateDatesAfter shouldBe expectedResultAfter
+        TestAccountingPeriodService.updateDatesBefore() shouldBe expectedResultBefore
+        TestAccountingPeriodService.updateDatesAfter() shouldBe expectedResultAfter
       }
 
       "the current date is in Q4" in new SetupUpdateDates(LocalDate.of(2021, 3, 6)) {
@@ -197,8 +197,8 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends AnyWordSpecLike wi
         val expectedResultBefore: Seq[(String, String)] = List(taxQuarter1, taxQuarter2, taxQuarter3)
         val expectedResultAfter: Seq[(String, String)] = List(taxQuarter4)
 
-        TestAccountingPeriodService.updateDatesBefore shouldBe expectedResultBefore
-        TestAccountingPeriodService.updateDatesAfter shouldBe expectedResultAfter
+        TestAccountingPeriodService.updateDatesBefore() shouldBe expectedResultBefore
+        TestAccountingPeriodService.updateDatesAfter() shouldBe expectedResultAfter
       }
     }
   }

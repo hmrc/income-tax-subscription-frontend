@@ -83,7 +83,7 @@ class SignUpCompleteViewSpec extends ViewSpec {
     def submitAnnualBy(year: String): String = s"Submit your annual updates and declare for the tax year by 31 January $year."
 
     val btaLinkText = "Business Tax account (opens in a new tab)"
-    val para1 = s"After you have sent an update you will get an year-to-date Income Tax estimate. You can view your estimates and submission dates in your software or your $btaLinkText ."
+    val para1 = s"After you have sent an update you will get an year-to-date Income Tax estimate. You can view your estimates and submission dates in your software or your $btaLinkText."
     val para2 = "It may take a few hours before new information is displayed."
 
     val finishAndSignOut = "Finish and sign out"

@@ -33,10 +33,10 @@ class SessionTimeoutControllerSpec extends ControllerBaseSpec {
 
   private val sessionTimeoutView = mock[Timeout]
 
-  when(sessionTimeoutView()(any(), any(), any()))
+  when(sessionTimeoutView()(any(), any()))
     .thenReturn(HtmlFormat.empty)
 
-  object TestSessionTimeoutController extends SessionTimeoutController(sessionTimeoutView, mockMessagesControllerComponents, config, env)(appConfig)
+  object TestSessionTimeoutController extends SessionTimeoutController(sessionTimeoutView, mockMessagesControllerComponents, config, env)
 
   "Calling the timeout action of the SessionTimeoutController" should {
 

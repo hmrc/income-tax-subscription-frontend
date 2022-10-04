@@ -14,11 +14,10 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import views.html.helpers.injected.ContinueButton
-@import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import views.html.helpers.injected.ContinueButton
+@import views.html.templates.PrincipalMainTemplate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -27,7 +26,7 @@
     continueButton: ContinueButton
 )
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("mtdit-overview.heading")

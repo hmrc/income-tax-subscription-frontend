@@ -73,9 +73,11 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
 
     "has a caption for the table and it is visually hidden" in {
-      document().tagName("caption").getElementsByClass("govuk-visually-hidden").get(1).text() mustBe WhatYearToSignUp.returnTableCaption
-
+      document()
+        .selectHead(".govuk-table")
+        .selectHead(".govuk-table__caption").text()  mustBe WhatYearToSignUp.returnTableCaption
     }
+
     "have a return quarterly example table filing and deadline dates" which {
       val tableRows = document().select(".govuk-table__row")
 

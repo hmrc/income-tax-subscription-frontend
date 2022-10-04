@@ -115,7 +115,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         charset(result) mustBe Some(Codec.utf_8.charset)
 
 
-        verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any(), any())
+        verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any())
       }
 
       "the location parameter is provided" in withController { (controller, mockedView) =>
@@ -134,7 +134,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         charset(result) mustBe Some(Codec.utf_8.charset)
 
 
-        verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any(), any())
+        verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any())
 
         verifyAudit(SaveAndComeBackAuditModel(
           userType = SaveAndComebackAuditing.individualUserType,
@@ -163,7 +163,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   private def withController(testCode: (ProgressSavedController, ProgressSaved) => Any): Unit = {
     val progressSavedView = mock[ProgressSaved]
 
-    when(progressSavedView(meq("Monday, 20 October 2021"), any())(any(), any(), any()))
+    when(progressSavedView(meq("Monday, 20 October 2021"), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val cacheExpiryDateProvider = mock[CacheExpiryDateProvider]

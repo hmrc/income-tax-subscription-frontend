@@ -80,7 +80,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
+        AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode))),
           accountingMethodProperty => {

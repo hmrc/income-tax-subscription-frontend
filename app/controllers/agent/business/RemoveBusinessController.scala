@@ -58,7 +58,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withAgentReference { reference =>
-        form.bindFromRequest.fold(
+        form.bindFromRequest().fold(
           formWithErrors => {
             withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
               Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))

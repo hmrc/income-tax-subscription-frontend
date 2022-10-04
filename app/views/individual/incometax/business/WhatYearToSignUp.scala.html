@@ -14,13 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.individual.business.AccountingYearForm
 @import play.api.data.Form
 @import services.AccountingPeriodService
-@import views.html.helpers.injected.{ContinueButton, RadioHelper}
+@import views.html.helpers.injected.{ContinueButton, RadioHelper, ReturnDeadlineTable}
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.injected.ReturnDeadlineTable
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -31,7 +29,7 @@
     table: ReturnDeadlineTable
 )
 
-@(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
 

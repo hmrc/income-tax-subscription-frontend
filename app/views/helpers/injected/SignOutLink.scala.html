@@ -18,6 +18,6 @@
 
 @this()
 
-@(alternativeText: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(alternativeText: Option[String] = None)(implicit messages: Messages)
 
 <a id="sign-out-button" class="govuk-body govuk-link" href="@signOut">@alternativeText.getOrElse(messages("base.sign-out"))</a>

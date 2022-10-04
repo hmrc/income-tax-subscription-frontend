@@ -9,12 +9,12 @@ object AppDependencies {
   private val testScope = "test"
   private val integrationTestScope = "it"
 
-  private val bootstrapPlayVersion     = "5.24.0"
+  private val bootstrapPlayVersion     = "7.7.0"
   private val playPartialsVersion      = "8.3.0-play-28"
-  private val playHmrcFrontendVersion  = "3.8.0-play-28"
+  private val playHmrcFrontendVersion  = "3.29.0-play-28"
   private val playLanguageVersion      = "5.2.0-play-28"
-  private val domainVersion            = "8.0.0-play-28"
-  private val catsVersion              = "0.9.0"
+  private val domainVersion            = "8.1.0-play-28"
+  private val catsVersion              = "2.0.0"
 
   private val scalaTestVersion         = "3.2.11"
   private val scalaTestPlusVersion     = "5.1.0"
@@ -30,8 +30,8 @@ object AppDependencies {
     "uk.gov.hmrc"   %% "play-frontend-hmrc"         % playHmrcFrontendVersion,
     "uk.gov.hmrc"   %% "play-language"              % playLanguageVersion,
     "uk.gov.hmrc"   %% "domain"                     % domainVersion,
-    "org.typelevel" %% "cats"                       % catsVersion,
-    "uk.gov.hmrc"   %% "logback-json-logger"        % "4.9.0"
+    "org.typelevel" %% "cats-core"                  % catsVersion,
+    "uk.gov.hmrc"   %% "logback-json-logger"        % "5.2.0"
   )
 
   val test = Seq(

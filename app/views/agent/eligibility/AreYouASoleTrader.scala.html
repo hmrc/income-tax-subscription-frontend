@@ -29,8 +29,6 @@
     form: FormWithCSRF,
     radioHelper: RadioHelper,
     continueButton: ContinueButton
-)(
-implicit appConfig: AppConfig
 )
 
 @(soleTraderForm: Form[YesNo], postAction: Call, startDateLimit: String, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)

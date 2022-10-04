@@ -49,7 +49,7 @@ class IVFailureControllerSpec extends ControllerBaseSpec with MockAuditingServic
   "failure" when {
     "the user has an iv flag in session" must {
       "return the failure page to the user and remove the flag from session" in new Setup {
-        when(ivFailure()(any(), any(), any())) thenReturn HtmlFormat.empty
+        when(ivFailure()(any(), any())) thenReturn HtmlFormat.empty
 
         val requestWithIVSession: Request[AnyContent] = FakeRequest("GET", "/test-url?journeyId=testJourneyId")
           .withSession(ITSASessionKeys.IdentityVerificationFlag -> "true")
@@ -63,7 +63,7 @@ class IVFailureControllerSpec extends ControllerBaseSpec with MockAuditingServic
     }
     "the user does not have an iv flag in session" must {
       "return the failure page to the user" in new Setup {
-        when(ivFailure()(any(), any(), any())) thenReturn HtmlFormat.empty
+        when(ivFailure()(any(), any())) thenReturn HtmlFormat.empty
 
         val requestWithoutIVSession: Request[AnyContent] = FakeRequest()
         val result: Future[Result] = controller.failure(requestWithoutIVSession)

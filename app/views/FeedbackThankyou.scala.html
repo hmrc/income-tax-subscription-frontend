@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.play.partials.FormPartialRetriever
 @import views.html.templates.PrincipalMainTemplate
-@import config.AppConfig
+
 @import scala.concurrent.ExecutionContext
 
 @this(
@@ -24,7 +24,7 @@
 )
 
 @(partialUrl: String, redirectUrl: String)(implicit request: Request[_], formPartialRetriever: FormPartialRetriever,
-        messages: Messages, appConfig: AppConfig, ec: ExecutionContext)
+        messages: Messages, ec: ExecutionContext)
 
 @mainTemplate(title = messages("feedback.thankyou.title")) {
   @formPartialRetriever.getPartialContentAsync(partialUrl)

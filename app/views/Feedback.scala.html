@@ -15,17 +15,16 @@
  *@
 
 @import uk.gov.hmrc.play.partials.FormPartialRetriever
-@import uk.gov.hmrc.play.partials.CachedStaticHtmlPartialRetriever
-@import config.AppConfig
-@import scala.concurrent.ExecutionContext
 @import views.html.templates.PrincipalMainTemplate
+
+@import scala.concurrent.ExecutionContext
 
 @this(
         mainTemplate: PrincipalMainTemplate
 )
 
 @(partialUrl: String, formBody: Option[Html])(implicit request: Request[_], formPartialRetriever: FormPartialRetriever,
-        partialRetriever: CachedStaticHtmlPartialRetriever, messages: Messages, appConfig: AppConfig, ec: ExecutionContext)
+        messages: Messages, ec: ExecutionContext)
 
 @mainTemplate(title = messages("feedback.title")) {
     @formBody.getOrElse(formPartialRetriever.getPartialContentAsync(partialUrl))

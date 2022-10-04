@@ -15,7 +15,7 @@ object UsersGroupsSearchStub extends WireMockMethods {
     when(
       method = GET,
       uri = getUsersForGroupUrl(groupId)
-    ) thenReturn(responseStatus, responseBody)
+    ).thenReturn(responseStatus, responseBody)
   }
 
   val successfulResponseBody: JsArray = Json.arr(

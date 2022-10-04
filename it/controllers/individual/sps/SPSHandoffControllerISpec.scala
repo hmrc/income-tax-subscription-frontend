@@ -29,7 +29,7 @@ class SPSHandoffControllerISpec extends ComponentSpecBase {
       "redirect the user to login" in {
         AuthStub.stubUnauthorised()
 
-        val res = IncomeTaxSubscriptionFrontend.spsHandoff
+        val res = IncomeTaxSubscriptionFrontend.spsHandoff()
 
         res must have(
           httpStatus(SEE_OTHER),

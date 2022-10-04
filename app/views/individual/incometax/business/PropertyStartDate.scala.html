@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.individual.business.PropertyStartDateForm._
 @import views.html.helpers.injected.{DateHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
@@ -24,8 +23,6 @@
         form: FormWithCSRF,
         dateHelper: DateHelper,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
-)(
-        implicit appConfig: AppConfig
 )
 
 @(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)

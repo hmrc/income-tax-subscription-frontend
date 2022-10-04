@@ -19,7 +19,6 @@ package controllers.agent.eligibility
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.OtherSourcesOfIncomeForm.otherSourcesOfIncomeForm
-import javax.inject.{Inject, Singleton}
 import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
@@ -27,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.OtherSourcesOfIncome
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -47,7 +47,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
-      otherSourcesOfIncomeForm.bindFromRequest.fold(
+      otherSourcesOfIncomeForm.bindFromRequest().fold(
         formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, backUrl)),
         {
           case Yes =>

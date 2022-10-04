@@ -65,7 +65,7 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest.fold(
+        AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(
             accountingMethodForm = formWithErrors,
             isEditMode = isEditMode

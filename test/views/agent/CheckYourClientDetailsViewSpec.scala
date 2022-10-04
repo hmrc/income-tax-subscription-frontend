@@ -21,16 +21,17 @@ import agent.assets.MessageLookup.{Base => common}
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import models.usermatching.UserDetailsModel._
+import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.agent.TestConstants
-import utilities.{TestModels, UnitTestTrait}
+import utilities.{TestModels, ViewSpec}
 import views.agent.helpers.ConfirmClientIdConstants._
 import views.html.agent.CheckYourClientDetails
 
-class CheckYourClientDetailsViewSpec extends UnitTestTrait {
+class CheckYourClientDetailsViewSpec extends ViewSpec {
 
   val testFirstName = "Test"
   val testLastName = "User"
@@ -51,7 +52,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
     postAction = postAction
   )(FakeRequest(), implicitly, appConfig)
 
-  def document(): Document = page().doc
+  def document(): Document = Jsoup.parse(page().body)
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -104,15 +105,14 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val expectedQuestion = ConfirmClient.firstName
       val expectedAnswer = testFirstName
       val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + ConfirmClient.firstName
+      val expectedHiddenContent = ConfirmClient.firstNameChangeLink
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = Some(expectedEditLink),
-        rowNo = 2,
-        expectedHiddenContent = Some(expectedHiddenContent)
+        expectedEditLink = expectedEditLink,
+        expectedHiddenContent = expectedHiddenContent
       )
     }
 
@@ -121,14 +121,13 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val expectedQuestion = ConfirmClient.lastName
       val expectedAnswer = testLastName
       val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + ConfirmClient.lastName
+      val expectedHiddenContent = ConfirmClient.lastNameChangeLink
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = Some(expectedEditLink),
-        rowNo = 3,
-        expectedHiddenContent = Some(expectedHiddenContent)
+        expectedEditLink = expectedEditLink,
+        expectedHiddenContent = expectedHiddenContent
       )
     }
 
@@ -137,14 +136,13 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val expectedQuestion = ConfirmClient.nino
       val expectedAnswer = testNino.toNinoDisplayFormat
       val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + ConfirmClient.nino
+      val expectedHiddenContent = ConfirmClient.ninoChangeLink
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = Some(expectedEditLink),
-        rowNo = 4,
-        expectedHiddenContent = Some(expectedHiddenContent)
+        expectedEditLink = expectedEditLink,
+        expectedHiddenContent = expectedHiddenContent
       )
     }
 
@@ -153,14 +151,13 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val expectedQuestion = ConfirmClient.dob
       val expectedAnswer = testDob.toCheckYourAnswersDateFormat
       val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = "Change" + ConfirmClient.dob
+      val expectedHiddenContent = ConfirmClient.dobChangeLink
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = Some(expectedEditLink),
-        rowNo = 5,
-        expectedHiddenContent = Some(expectedHiddenContent)
+        expectedEditLink = expectedEditLink,
+        expectedHiddenContent = expectedHiddenContent
       )
     }
   }
@@ -168,13 +165,11 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
   private def sectionTest(sectionId: String,
                   expectedQuestion: String,
                   expectedAnswer: String,
-                  expectedEditLink: Option[String],
-                  rowNo: Int,
-                  expectedHiddenContent: Option[String]): Unit = {
+                  expectedEditLink: String,
+                  expectedHiddenContent: String): Unit = {
     val question = document().getElementById(questionId(sectionId))
     val answer = document().getElementById(answerId(sectionId))
     val editLink = document().getElementById(editLinkId(sectionId))
-    val hiddenContent = document.getElementsByClass("govuk-visually-hidden").get(rowNo).text()
 
     questionStyleCorrectness(question)
     answerStyleCorrectness(answer)
@@ -182,12 +177,10 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
 
     question.text() mustBe expectedQuestion
     answer.text() mustBe expectedAnswer
-    if (expectedEditLink.nonEmpty) {
-      val link = editLink.select(".govuk-link")
-      link.attr("href") mustBe expectedEditLink.get
-      link.text() must include(MessageLookup.Base.change)
-      link.select(".govuk-visually-hidden").get(0).text() mustBe hiddenContent
-    }
+    val link = editLink.select(".govuk-link")
+    link.attr("href") mustBe expectedEditLink
+    link.text() must include(MessageLookup.Base.change)
+    link.select(".govuk-visually-hidden").get(0).text() mustBe expectedHiddenContent
   }
 
   object ConfirmClient {
@@ -195,8 +188,12 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
     val heading = "Check your answers"
     val caption = "This section is Details you are signing up your client with"
     val firstName = "First name"
+    val firstNameChangeLink = "Change first name"
     val lastName = "Last name"
+    val lastNameChangeLink = "Change last name"
     val nino = "National Insurance number"
+    val ninoChangeLink = "Change National Insurance number"
     val dob = "Date of birth"
+    val dobChangeLink = "Change Date of Birth"
   }
 }

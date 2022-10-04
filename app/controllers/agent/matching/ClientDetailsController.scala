@@ -64,7 +64,7 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        clientDetailsForm.bindFromRequest.fold(
+        clientDetailsForm.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
           clientDetails =>
             Future.successful(Redirect(routes.ConfirmClientController.show).saveUserDetails(clientDetails))

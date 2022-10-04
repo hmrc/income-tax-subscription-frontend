@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import models.common.OverseasPropertyModel
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
@@ -29,7 +28,7 @@
         viewModel: OverseasPropertyModel,
         postAction: Call,
         backUrl: String
-)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+)(implicit request: Request[_], messages: Messages)
 
 @startDate(maybeStartDate: Option[DateModel]) = @{
     maybeStartDate match {

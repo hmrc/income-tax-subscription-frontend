@@ -17,7 +17,6 @@
 package models
 
 import play.api.i18n.Messages
-import play.api.libs.json.Reads._
 import play.api.libs.json._
 
 sealed trait YesNo {
@@ -45,19 +44,15 @@ object YesNo {
   import No.NO
   import Yes.YES
 
-  private val reads: Reads[YesNo] = new Reads[YesNo] {
-    override def reads(json: JsValue): JsResult[YesNo] =
-      json.validate[String] map {
-        case YES => Yes
-        case NO => No
-      }
+  private val reads: Reads[YesNo] = Reads[YesNo] {
+    case JsString(YES) => JsSuccess(Yes)
+    case JsString(NO) => JsSuccess(No)
+    case _ => JsError("error.yes-no.invalid")
   }
 
-  private val writes: Writes[YesNo] = new Writes[YesNo] {
-    override def writes(o: YesNo): JsValue = o match {
-      case Yes => JsString(YES)
-      case No => JsString(NO)
-    }
+  private val writes: Writes[YesNo] = {
+    case Yes => JsString(YES)
+    case No => JsString(NO)
   }
 
   implicit val format: Format[YesNo] = Format[YesNo](reads, writes)

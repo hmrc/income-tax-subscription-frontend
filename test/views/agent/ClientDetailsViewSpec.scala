@@ -16,86 +16,124 @@
 
 package views.agent
 
-import agent.assets.MessageLookup.{Base => common, ClientDetails => messages}
+import agent.assets.MessageLookup.Base
 import forms.agent.ClientDetailsForm
 import models.usermatching.UserDetailsModel
-import play.api.data.Form
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import utilities.ViewSpec
 import views.ViewSpecTrait
 import views.html.agent.ClientDetails
 
-class ClientDetailsViewSpec extends ViewSpecTrait {
+class ClientDetailsViewSpec extends ViewSpec {
 
   val clientDetails: ClientDetails = app.injector.instanceOf[ClientDetails]
   val action: Call = ViewSpecTrait.testCall
 
   val clientDetailsForm: Form[UserDetailsModel] = ClientDetailsForm.clientDetailsForm
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = clientDetails(
-    clientDetailsForm = ClientDetailsForm.clientDetailsForm.addError(addFormErrors),
+  val testError: FormError = FormError("startDate", "testError")
+
+  private def page(isEditMode: Boolean): HtmlFormat.Appendable = clientDetails(
+    clientDetailsForm = ClientDetailsForm.clientDetailsForm,
     postAction = action,
     isEditMode = isEditMode
   )(FakeRequest(), mockMessages, appConfig)
 
-  def documentCore(isEditMode: Boolean): TestView = TestView(
-    name = "Client Details View",
-    title = messages.title,
-    heading = messages.heading,
-    isAgent = true,
-    page = page(isEditMode = isEditMode, addFormErrors = false)
-  )
+  private def document(editMode: Boolean = false): Document =
+    Jsoup.parse(page(isEditMode = editMode).body)
+
+  object ClientDetails {
+    val title = "Enter your client’s details"
+    val heading = "Enter your client’s details"
+    val line1 = "We will try to match these details to information we have about your client."
+    val field1 = "First name"
+    val field2 = "Last name"
+    val field3 = "National Insurance number"
+    val field4 = "Date of birth"
+    val formhint1_line1 = "For example, ‘QQ 12 34 56 C’."
+    val formhint2 = "For example, 17 2 1990."
+  }
 
   "The Client Details view" should {
+    "have the correct page template" when {
+      "there is no error" in new TemplateViewTest(
+        view = clientDetails(
+          ClientDetailsForm.clientDetailsForm,
+          testCall,
+          isEditMode = false
+        ),
+        title = ClientDetails.title,
+        isAgent = true,
+        backLink = None,
+      )
 
-    val testPage = documentCore(isEditMode = false)
+      "there is an error" in new TemplateViewTest(
+        view = clientDetails(
+          ClientDetailsForm.clientDetailsForm.withError(testError),
+          testCall,
+          isEditMode = false,
+        ),
+        title = ClientDetails.title,
+        isAgent = true,
+        backLink = None,
+        error = Some(testError)
+      )
+    }
 
-    testPage.mustHavePara(messages.line1)
+    "have heading" in {
+      document().mainContent.selectHead("h1").text() mustBe ClientDetails.heading
+    }
 
-    val form = testPage.getForm("Client Details form")(actionCall = action)
+    "have paragraph 1" in {
+      document().mainContent.selectHead("p").text() mustBe ClientDetails.line1
+    }
 
-    form.mustHaveTextField(
-      name = ClientDetailsForm.clientFirstName,
-      label = messages.field1
-    )
+    "have a form" in {
+      document().getForm.attr("method") mustBe testCall.method
+      document().getForm.attr("action") mustBe testCall.url
+    }
 
-    form.mustHaveTextField(
-      name = ClientDetailsForm.clientLastName,
-      label = messages.field2
-    )
+    "have a client first name text field" in {
+      document().mainContent.mustHaveTextField(
+        name = ClientDetailsForm.clientFirstName,
+        label = ClientDetails.field1
+      )
+    }
 
-    form.mustHaveTextField(
-      name = ClientDetailsForm.clientNino,
-      label = messages.field3,
-      hint = Some(messages.formhint1_line1)
-    )
+    "have a client last name text field" in {
+      document().mainContent.mustHaveTextField(
+        name = ClientDetailsForm.clientLastName,
+        label = ClientDetails.field2
+      )
+    }
 
-    form.mustHaveDateField(
-      id = "clientDateOfBirth",
-      legend = common.dateOfBirth,
-      exampleDate = messages.formhint2,
-      isPageHeading = false
-    )
+    "have a client nino text field" in {
+      document().mainContent.mustHaveTextField(
+        name = ClientDetailsForm.clientNino,
+        label = ClientDetails.field3,
+        hint = Some(ClientDetails.formhint1_line1)
+      )
+    }
 
-    form.mustHaveContinueButton()
+    "have a DOB field" in {
+      document().mainContent.mustHaveGovukDateField(
+        id = ClientDetailsForm.clientDateOfBirth,
+        legend = ClientDetails.field4,
+        exampleDate = ClientDetails.formhint2
+      )
+    }
 
-  }
+    "have a continue button" in {
+      document().mainContent.selectHead("button").text mustBe Base.continue
+    }
 
-  "The Client Details view in edit mode" should {
-    val editModePage = documentCore(isEditMode = true)
-
-    editModePage.mustHaveUpdateButton()
-  }
-
-  "Append Error to the page title if the form has error" should {
-    TestView(
-      name = "Client Details View",
-      title = titleErrPrefix + messages.title,
-      heading = messages.heading,
-      isAgent = true,
-      page = page(isEditMode = false, addFormErrors = true)
-    )
-    ()
+    "have a update button" in {
+      document(true).mainContent.selectHead("button").text mustBe Base.update
+    }
   }
 }

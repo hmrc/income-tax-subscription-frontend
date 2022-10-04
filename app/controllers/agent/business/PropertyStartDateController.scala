@@ -59,7 +59,7 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        form.bindFromRequest.fold(
+        form.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(
               propertyStartDateForm = formWithErrors, isEditMode = isEditMode

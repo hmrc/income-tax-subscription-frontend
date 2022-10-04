@@ -17,6 +17,7 @@
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+
 import scala.sys.process._
 
 lazy val scoverageSettings = {
@@ -40,10 +41,13 @@ lazy val microservice = Project(AppDependencies.appName, file("."))
   .settings(
     Test / Keys.fork := true,
     Test / javaOptions += "-Dlogger.resource=logback-test.xml",
-    scalaVersion := "2.12.15",
+    scalaVersion := "2.13.8",
     Test / parallelExecution := true
   )
-  .settings(scalacOptions += s"-Wconf:src=${target.value}/.*:s")
+  .settings(
+    scalacOptions += "-Wconf:src=routes/.*:s",
+    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+  )
   .settings(
     libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test ++ AppDependencies.integrationTest),
     retrieveManaged := true,

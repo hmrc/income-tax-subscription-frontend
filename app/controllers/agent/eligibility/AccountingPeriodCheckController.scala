@@ -19,7 +19,6 @@ package controllers.agent.eligibility
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.AccountingPeriodCheckForm.accountingPeriodCheckForm
-import javax.inject.{Inject, Singleton}
 import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
@@ -27,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.AccountingPeriodCheck
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -45,7 +45,7 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       val arn: Option[String] = user.arn
-      accountingPeriodCheckForm.bindFromRequest.fold(
+      accountingPeriodCheckForm.bindFromRequest().fold(
         formWithErrors => BadRequest(accountingPeriodCheck(formWithErrors, routes.AccountingPeriodCheckController.submit, backLink)),
         {
           case Yes =>

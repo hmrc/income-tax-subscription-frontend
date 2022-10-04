@@ -39,9 +39,10 @@ object AccountingMethod {
   import Accruals.ACCRUALS
   import Cash.CASH
 
-  private val reads: Reads[AccountingMethod] = (json: JsValue) => json.validate[String] map {
-    case CASH => Cash
-    case ACCRUALS => Accruals
+  private val reads: Reads[AccountingMethod] =  Reads[AccountingMethod] {
+    case JsString(CASH) => JsSuccess(Cash)
+    case JsString(ACCRUALS) => JsSuccess(Accruals)
+    case _ => JsError("error.accounting-method.invalid")
   }
 
   private val writes: Writes[AccountingMethod] = (o: AccountingMethod) => o match {

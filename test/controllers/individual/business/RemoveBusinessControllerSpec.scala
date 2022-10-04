@@ -120,7 +120,7 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
   private def withController(testCode: RemoveBusinessController => Any): Unit = {
     val view = mock[RemoveBusiness]
 
-    when(view(any(), any(), any(), any(), any())(any(), any(), any()))
+    when(view(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new RemoveBusinessController(

@@ -32,7 +32,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
           "key-dateYear" -> "2001"
         ))
         result.isRight must be (true)
-        result.right.get must be (DateModel("1", "6", "2001"))
+        result.toOption.get must be (DateModel("1", "6", "2001"))
       }
     }
     "day only is numeric but rubbish" should {
@@ -43,7 +43,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
           "key-dateYear" -> "2001"
         ))
         result.isLeft must be (true)
-        val maybeFormError = result.left.get.headOption
+        val maybeFormError = result.swap.toOption.get.headOption
         maybeFormError.isDefined must be (true)
         maybeFormError.get.key must be ("key-dateDay")
       }
@@ -56,7 +56,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
           "key-dateYear" -> "2001"
         ))
         result.isLeft must be (true)
-        val maybeFormError = result.left.get.headOption
+        val maybeFormError = result.swap.toOption.get.headOption
         maybeFormError.isDefined must be (true)
         maybeFormError.get.key must be ("key-dateDay")
       }
@@ -69,7 +69,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
           "key-dateYear" -> "2001"
         ))
         result.isLeft must be (true)
-        val maybeFormError = result.left.get.headOption
+        val maybeFormError = result.swap.toOption.get.headOption
         maybeFormError.isDefined must be (true)
         maybeFormError.get.key must be ("key-dateMonth")
       }
@@ -82,7 +82,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
           "key-dateYear" -> "2001"
         ))
         result.isLeft must be (true)
-        val maybeFormError = result.left.get.headOption
+        val maybeFormError = result.swap.toOption.get.headOption
         maybeFormError.isDefined must be (true)
         maybeFormError.get.key must be ("key-dateMonth")
       }
@@ -95,7 +95,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
           "key-dateYear" -> "1"
         ))
         result.isLeft must be (true)
-        val maybeFormError = result.left.get.headOption
+        val maybeFormError = result.swap.toOption.get.headOption
         maybeFormError.isDefined must be (true)
         maybeFormError.get.key must be ("key-dateYear")
       }
@@ -108,7 +108,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
           "key-dateYear" -> "x"
         ))
         result.isLeft must be (true)
-        val maybeFormError = result.left.get.headOption
+        val maybeFormError = result.swap.toOption.get.headOption
         maybeFormError.isDefined must be (true)
         maybeFormError.get.key must be ("key-dateYear")
       }
@@ -121,7 +121,7 @@ class DateModelMappingTest extends AnyWordSpec with Matchers {
           "key-dateYear" -> "1900"
         ))
         result.isLeft must be (true)
-        val maybeFormError = result.left.get.headOption
+        val maybeFormError = result.swap.toOption.get.headOption
         maybeFormError.isDefined must be (true)
         maybeFormError.get.key must be ("key-dateDay")
       }

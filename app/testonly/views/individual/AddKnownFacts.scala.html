@@ -14,12 +14,10 @@
  * limitations under the License.
  *@
 
-@import testonly.models.KnownFactsModel
 @import testonly.form.individual.KnownFactsForm._
-@import config.AppConfig
+@import testonly.models.KnownFactsModel
+@import views.html.helpers.injected.{ContinueButton, TextInputHelper}
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.injected.{TextInputHelper, ContinueButton}
-@import views.individual.helpers._
 
 @this(
    mainTemplate: PrincipalMainTemplate,
@@ -28,7 +26,7 @@
    form: FormWithCSRF
 )
 
-@(knownFactsForm: Form[KnownFactsModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(knownFactsForm: Form[KnownFactsModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = Messages("Add known facts"), optForm = Some(knownFactsForm) ) {
 
