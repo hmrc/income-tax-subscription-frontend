@@ -117,6 +117,8 @@ trait AppConfig {
 
   def agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String
 
+  def incomeTaxEligibilityClientWhatYouNeedToDoUrl: String
+
   def incomeTaxSelfEmploymentsFrontendInitialiseUrl: String
 
   def incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String
@@ -300,6 +302,9 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/client/details/business-check-your-answers"
   }
 
+  override lazy val incomeTaxEligibilityClientWhatYouNeedToDoUrl: String = {
+    s"$incomeTaxEligibilityFrontendUrl/client/what-you-need-to-do"
+  }
 
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = {
     s"$incomeTaxSelfEmploymentsFrontendUrl/details"

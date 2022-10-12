@@ -37,7 +37,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
                                                mcc: MessagesControllerComponents,
                                                val ec: ExecutionContext) extends StatelessController  {
 
-  def backUrl: String = appConfig.incomeTaxEligibilityFrontendUrl + "/client/terms-of-participation"
+  def backUrl: String = appConfig.incomeTaxEligibilityClientWhatYouNeedToDoUrl
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
