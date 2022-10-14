@@ -1177,9 +1177,10 @@ agent.remove-overseas-property-business.hint                   = Mae angen ychwa
 agent.error.remove-overseas-property-business.invalid          = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 # Throttling
-throttle.title                                                 = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
-throttle.heading                                               = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
-throttle.line_1                                                = Ni allwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar hyn o bryd. Os hoffech gael mynediad at y gwasanaeth hwn o hyd, rhowch gynnig arall arni yn nes ymlaen.
+throttle.title                                                 = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
+throttle.heading                                               = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
+throttle.line_1                                                = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau eich cofrestriad ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
+throttle.line_2                                                = I orffen cofrestru, rhowch gynnig arni neu allgofnodwch a dod yn ôl yn hwyrach.
 agent.throttle.title                                           = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 agent.throttle.heading                                         = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 agent.throttle.line_1                                          = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau cofrestriad eich cleient ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
