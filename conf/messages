@@ -1175,9 +1175,10 @@ agent.remove-overseas-property-business.hint                   = All your client
 agent.error.remove-overseas-property-business.invalid          = Select yes if you want to remove business
 
 # Throttling
-throttle.title                                                 = We are currently experiencing high levels of demand for this service
-throttle.heading                                               = We are currently experiencing high levels of demand for this service
-throttle.line_1                                                = You can not sign up to Making Tax Digital for Income Tax at the moment. If you would still like to access this service, try again shortly or sign out and come back later.
+throttle.title                                                 = Your sign up cannot be completed right now
+throttle.heading                                               = Your sign up cannot be completed right now
+throttle.line_1                                                = We are experiencing high levels of applications for this service and cannot complete your sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
+throttle.line_2                                                = To finish and complete signing up, try again or sign out and come back later.
 agent.throttle.title                                           = Your sign up cannot be completed right now
 agent.throttle.heading                                         = Your sign up cannot be completed right now
 agent.throttle.line_1                                          = We are experiencing high levels of applications for this service and cannot complete your client’s sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
