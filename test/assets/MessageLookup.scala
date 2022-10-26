@@ -314,6 +314,7 @@ object MessageLookup {
     val selfEmploymentsBusinessLink = "selfEmploymentsBusinessLink"
     val ukPropertyBusiness = "UK property business"
     val overseasPropertyBusiness = "Overseas property business"
+    val saveAndComeBackLater = "Save and come back later"
   }
 
   object TaxYearCheckYourAnswers {

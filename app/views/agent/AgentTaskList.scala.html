@@ -38,9 +38,9 @@
   if(viewModel.taskListComplete ) {
     continueButton(Some(messages("base.submit_and_continue")))
   } else {
-    <span class="app-task-list__task-name">
+    <p>
       {messages(s"${messagePrefix}.content.action-needed")}
-    </span>
+    </p>
   }
 }
 
