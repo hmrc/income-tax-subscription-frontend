@@ -16,6 +16,7 @@
 
 package views.agent
 
+import agent.assets.MessageLookup.Base.saveAndComeBackLater
 import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
 import models._
@@ -115,6 +116,10 @@ class AgentTaskListViewSpec extends ViewSpec {
       contentList.text() must include(item1)
       contentList.text() must include(agentItem2)
       contentList.text() must include(item3)
+    }
+
+    "display the save and come back later button" in {
+      document().mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
     }
 
     "display the dynamic content correctly" when {
