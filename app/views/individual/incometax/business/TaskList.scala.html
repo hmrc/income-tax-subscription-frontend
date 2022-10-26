@@ -19,12 +19,14 @@
 @import models.common.business.{BusinessNameModel, BusinessTradeNameModel}
 @import services.AccountingPeriodService
 @import views.html.helpers.injected.ContinueButton
+@import views.html.helpers.injected.ButtonHelper
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
-    continueButton: ContinueButton
+    continueButton: ContinueButton,
+    saveAndContinueButton: ButtonHelper,
 )
 
 @(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -32,13 +34,17 @@
 @messagePrefix = @{"business.task-list"}
 
 @signUpSectionContent = @{
-  if(viewModel.taskListComplete ) {
+  if(viewModel.taskListComplete) {
     continueButton(Some(messages("base.submit_and_continue")))
   } else {
-    <span class="app-task-list__task-name">
+      <span class="app-task-list__task-name">
       {messages(s"${messagePrefix}.content.action-needed")}
-    </span>
+      </span>
   }
+}
+
+@saveAndComeBackButton = @{
+  saveAndContinueButton(messages("base.save-and-come-back-later"), Some("govuk-button--secondary"), Some(controllers.individual.business.routes.ProgressSavedController.show(Some("task-list")).url) )
 }
 
 @applicationStatus = @{
@@ -222,10 +228,13 @@
           <ul class="app-task-list__items">
             <li class="border-none">
               @signUpSectionContent
+              @saveAndComeBackButton
             </li>
+
           </ul>
         </li>
       </ol>
     }
   </div>
+
 }
