@@ -134,7 +134,7 @@ class AgentTaskListViewSpec extends ViewSpec {
 
         "in the business section: display the information para" should {
           "display the sign up incomplete text" in {
-            val infoPara = document().mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("span")
+            val infoPara = document().mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("p")
             infoPara.text mustBe agentItem2Para
           }
         }

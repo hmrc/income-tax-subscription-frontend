@@ -110,9 +110,9 @@
 </div>
 }}
 
-@businesses = @{
-  <ul class="app-task-list__items govuk-!-padding-top-3 govuk-!-margin-bottom-3">
-  {viewModel.selfEmployments.map(se =>
+@businesses = @{if(viewModel.selfEmployments.nonEmpty || viewModel.ukProperty.isDefined || viewModel.overseasProperty.isDefined) {
+  <ul class="app-task-list__items govuk-!-margin-bottom-3">
+    {viewModel.selfEmployments.map(se =>
     <li class="app-task-list__item">
       <span class="app-task-list__task-name">
         <a href={s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${se.id}&isEditMode=true"} aria-describedby={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>
@@ -179,7 +179,7 @@
     </li>
     ).getOrElse({})}
   </ul>
-}
+}}
 
 @mainTemplate(title = messages(s"${messagePrefix}.title")) {
   <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
@@ -207,11 +207,11 @@
               <span class="app-task-list__section-number govuk-heading-m">2.</span>
               @messages(s"${messagePrefix}.content.section2")
           </h2>
-          <ul class="app-task-list__items govuk-!-padding-bottom-7">
+          <ul class="app-task-list__items govuk-!-margin-bottom-6">
             <li class="border-none">
-              <span class="app-task-list__task-name">
+              <p class="govuk-body">
                 @messages(s"${messagePrefix}.content.section2.para", appConfig.maxSelfEmployments)
-              </span>
+              </p>
             </li>
           </ul>
           @businesses
