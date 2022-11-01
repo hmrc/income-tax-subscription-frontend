@@ -157,7 +157,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document().mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("span")
+          val incompleteText = document().mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("p")
           incompleteText.text mustBe agentSignUpIncompleteText
         }
 
@@ -262,7 +262,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("span")
+          val incompleteText = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("p")
           incompleteText.text mustBe agentSignUpIncompleteText
         }
 
