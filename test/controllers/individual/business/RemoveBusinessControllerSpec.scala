@@ -17,6 +17,8 @@
 package controllers.individual.business
 
 import connectors.IncomeTaxSubscriptionConnector
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.ControllerBaseSpec
 import forms.individual.business.RemoveBusinessForm
 import models.common.business._
@@ -30,7 +32,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockRemoveBusinessService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.BusinessesKey
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import views.html.individual.incometax.business.RemoveBusiness
 
 import scala.concurrent.Future
@@ -79,12 +81,14 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
   "submit" should {
     "redirect to the task list page" when {
       "the user selects 'yes'" in withController { controller =>
+        // get the businesses
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
+        // save the businesses with one removed.
+        mockDeleteBusiness(Right("dummy"))
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), Yes)
         ))
-
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
         verifyDeleteBusiness(businessId = "id", testBusinesses)
