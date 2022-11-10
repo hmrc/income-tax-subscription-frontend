@@ -31,6 +31,7 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
 
   private val testReference = "reference"
   private val testBusinessId = "id"
+
   private def testBusiness(id: String) =
     SelfEmploymentData(
       id = id,
@@ -45,26 +46,23 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
 
     object TestRemoveBusiness extends RemoveBusinessService(mockIncomeTaxSubscriptionConnector)
 
-    "delete and save business details" when {
+    "delete and save business details and accounting method" when {
       "a reference, business id and single selfEmploymentsData are passed into the service" in {
         mockSaveSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey, Seq.empty)(Right(PostSubscriptionDetailsSuccessResponse))
         mockDeleteSubscriptionDetails(BusinessAccountingMethod)(Right(DeleteSubscriptionDetailsSuccessResponse))
-        val result = await(
+        val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"))))
 
-        TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")))
-        )
-
-        result shouldBe ()
+        result.isRight shouldBe true
         verifyDeleteSubscriptionDetails(BusinessAccountingMethod, 1)
       }
+    }
+
+    "delete and save business details but not accounting method" when {
       "a reference, business id and multiple selfEmploymentsData are passed into the service" in {
         mockSaveSelfEmployments[Seq[SelfEmploymentData]](BusinessesKey, Seq(testBusiness("id1")))(Right(PostSubscriptionDetailsSuccessResponse))
-        val result = await(
+        val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id1"))))
 
-          TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id1")))
-        )
-
-        result shouldBe ()
+        result.isRight shouldBe true
         verifyDeleteSubscriptionDetails(BusinessAccountingMethod, 0)
       }
     }

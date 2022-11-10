@@ -25,7 +25,7 @@ import models.common.business.SelfEmploymentData
 import models.{No, Yes}
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.SubscriptionDataKeys.BusinessesKey
+import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 
 class RemoveBusinessControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-business" should {
@@ -69,6 +69,8 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq())
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(BusinessAccountingMethod)
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(Yes))

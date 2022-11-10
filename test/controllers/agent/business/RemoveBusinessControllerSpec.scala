@@ -79,7 +79,10 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
   "submit" should {
     "redirect to the task list page" when {
       "the user selects 'yes'" in withController { controller =>
+        // get the businesses
         mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
+        // save the businesses with one removed.
+        mockDeleteBusiness(Right("dummy"))
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), Yes)

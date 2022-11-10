@@ -65,16 +65,21 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
             }
           },
           {
-            case Yes => for {
-              businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-              _ = removeBusinessService.deleteBusiness(reference, businessId, businesses)
-            } yield Redirect(controllers.agent.routes.TaskListController.show())
+            case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
             case No => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
           }
         )
-
       }
     }
+  }
+
+  private def fetchBusinessesAndRemoveThisBusiness(businessId: String, reference: String)(implicit headerCarrier: HeaderCarrier) = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+      .flatMap(businesses => removeBusinessService.deleteBusiness(reference, businessId, businesses))
+      .map {
+        case Right(_) => Redirect(controllers.agent.routes.TaskListController.show())
+        case Left(reason) => throw new RuntimeException(reason.toString)
+      }
   }
 
   private def withBusinessData(

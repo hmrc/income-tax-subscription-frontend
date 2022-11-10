@@ -43,7 +43,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
                                         )(implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
                                           mcc: MessagesControllerComponents
-                                        ) extends SignUpController  with ReferenceRetrieval {
+                                        ) extends SignUpController with ReferenceRetrieval {
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withReference { reference =>
@@ -64,10 +64,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
             }
           },
           {
-            case Yes => for {
-              businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-              _ = removeBusinessService.deleteBusiness(reference, businessId, businesses)
-            } yield Redirect(controllers.individual.business.routes.TaskListController.show())
+            case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
             case No => Future.successful(Redirect(controllers.individual.business.routes.TaskListController.show()))
           }
         )
@@ -75,22 +72,31 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
     }
   }
 
+  private def fetchBusinessesAndRemoveThisBusiness(businessId: String, reference: String)(implicit headerCarrier: HeaderCarrier) = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+      .flatMap(businesses => removeBusinessService.deleteBusiness(reference, businessId, businesses))
+      .map {
+        case Right(_) => Redirect(controllers.individual.business.routes.TaskListController.show())
+        case Left(reason) => throw new RuntimeException(reason.toString)
+      }
+  }
+
   private def withBusinessData(
                                 reference: String,
                                 businessId: String
                               )(f: (Option[BusinessNameModel], Option[BusinessTradeNameModel]) => Future[Result])(
-    implicit hc: HeaderCarrier
-  ): Future[Result] = {
+                                implicit hc: HeaderCarrier
+                              ): Future[Result] = {
     fetchBusinessData(reference, businessId).flatMap {
-        case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
-          f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
-        case _ => Future.failed(new InternalServerException("[RemoveBusinessController] - Could not retrieve business details"))
-      }
+      case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
+        f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
+      case _ => Future.failed(new InternalServerException("[RemoveBusinessController] - Could not retrieve business details"))
+    }
   }
 
   private def fetchBusinessData(reference: String, id: String)(implicit hc: HeaderCarrier): Future[Option[SelfEmploymentData]] = {
     incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey).map {
-        _.find(_.id == id)
+      _.find(_.id == id)
     }
   }
 
