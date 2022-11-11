@@ -184,17 +184,17 @@ business.accounting_method.accordion.line_1                     = You invoiced s
 business.accounting_method.accordion.bullet_1                   = May 2017, then you use ‘cash basis’ accounting
 business.accounting_method.accordion.bullet_2                   = March 2017, then you use ‘accruals basis’
 business.accounting_method.cash                                 = <span class="heading-small">Cash accounting</span><br>You record on the date you receive money or pay a bill. Most sole traders and small businesses use this method.
-business.accounting_method.accruals                             = <span class="heading-small">Standard accounting</span><br>You record on the date you send or receive an invoice, even if you do not receive or pay any money. This is also called ‘accruals’ or ‘traditional accounting’.
+business.accounting_method.accruals                             = <span class="heading-small">Standard accounting</span><br>You record on the date you send or receive an invoice, even if you do not receive or pay any money. This is also called ‘accruals’ or ‘standard accounting’.
 
 # Property Accounting Method Page
 property.accounting_method.title                                = What accounting method do you use for your UK property business?
 property.accounting_method.heading                              = What accounting method do you use for your UK property business?
 property.accounting_method.accordion.summary                    = Show me an example
 property.accounting_method.accordion.content.para               = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
-property.accounting_method.accordion.content.bullet1            = May 2017, you use ‘cash accounting’
-property.accounting_method.accordion.content.bullet2            = March 2017, you use ‘standard accounting’
+property.accounting_method.accordion.content.bullet1            = May 2017, you use ‘cash basis accounting’
+property.accounting_method.accordion.content.bullet2            = March 2017, you use ‘traditional accounting’
 property.accounting_method.cash                                 = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-property.accounting_method.accruals                             = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’.
+property.accounting_method.accruals                             = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
 
 # Overseas Property accounting method Page
 overseas.property.accounting_method.title                        = What accounting method do you use for your overseas property business?
@@ -204,7 +204,7 @@ overseas.property.accounting_method.accordion.content.para       = You created a
 overseas.property.accounting_method.accordion.content.bullet1    = May 2017, you use ‘cash accounting’
 overseas.property.accounting_method.accordion.content.bullet2    = March 2017, you use ‘standard accounting’
 overseas.property.accounting_method.cash                         = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-overseas.property.accounting_method.accruals                     = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘traditional accounting’.
+overseas.property.accounting_method.accruals                     = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
 
 ## Business Name
 business.name.title                                             = Business name
@@ -332,8 +332,8 @@ summary.accounting_period                                       = Your accountin
 summary.accounting_period.registration                          = When’s your current accounting period?
 summary.business_name                                           = Your business name
 summary.income_type                                             = Accounting method for your self-employment income
-summary.income_type.cash                                        = Cash accounting
-summary.income_type.accruals                                    = Standard accounting
+summary.income_type.cash                                        = Cash basis accounting
+summary.income_type.accruals                                    = Traditional accounting
 summary.accounting_method_property                              = Accounting method for UK property income
 summary.selected_year                                           = Tax year to start filing updates
 summary.selected_year.current                                   = Current tax year (6 April {0} to 5 April {1})
@@ -412,9 +412,9 @@ error.contact_email.maxLength                                   = The email is t
 error.contact_email.invalid                                     = The email is invalid
 
 error.accounting-method.empty                                   = Select how you record your income and expenses for your self-employed business
-error.accounting-method-property.empty                          = Select if you use cash accounting or standard accounting
+error.accounting-method-property.empty                          = Select if you use cash basis accounting or traditional accounting
 error.accounting-method.invalid                                 = Select how you record your income and expenses for your self-employed business
-error.accounting-method-property.invalid                        = Select if you use cash accounting or standard accounting
+error.accounting-method-property.invalid                        = Select if you use cash basis accounting or traditional accounting
 
 #Overseas Property accounting method errors
 error.overseas_property_accounting_method.invalid               = Select if you use cash accounting or standard accounting
@@ -734,8 +734,8 @@ agent.business.accounting_method.accruals                       = Standard accou
 
 # Agent Property Accounting Method Page
 agent.property.accounting_method.title                          = What accounting method does your client use for their UK property business?
-agent.property.accounting_method.radio.cash                     = Cash accounting
-agent.property.accounting_method.radio.accruals                 = Standard accounting
+agent.property.accounting_method.radio.cash                     = Cash basis accounting
+agent.property.accounting_method.radio.accruals                 = Traditional accounting
 
 # Agent Overseas Property Accounting Method Page
 agent.overseas.property.accounting_method.title                 = What accounting method does your client use for their overseas property business?
@@ -886,7 +886,7 @@ agent.error.contact_email.invalid                               = The email is i
 agent.error.accounting-method.empty                             = Select how your client records their income and expenses for their self-employed business
 agent.error.accounting-method.invalid                           = Select how your client records their income and expenses for their self-employed business
 
-agent.error.accounting-method-property.invalid                  = Select if your client uses cash accounting or standard accounting
+agent.error.accounting-method-property.invalid                  = Select if your client uses cash basis accounting or Traditional accounting
 
 agent.error.not-eligible.empty                                  = You must select an option to continue
 agent.error.not-eligible.invalid                                = You must select an option to continue
@@ -1119,8 +1119,8 @@ business.check-your-answers.content.tax-year.question           = Tax year you a
 business.check-your-answers.content.tax-year.question.hidden    = Change tax year you are signing up for
 business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
-business.check-your-answers.content.accounting-method.cash      = Cash accounting
-business.check-your-answers.content.accounting-method.accruals  = Standard accounting
+business.check-your-answers.content.accounting-method.cash      = Cash basis accounting
+business.check-your-answers.content.accounting-method.accruals  = Traditional accounting
 
 ## UK property check your answers
 business.check-your-answers.content.uk-property.title = Check your answers - UK property business

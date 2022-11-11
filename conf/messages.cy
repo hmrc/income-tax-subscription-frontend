@@ -186,17 +186,17 @@ business.accounting_method.accordion.line_1                     = Rhoesoch anfon
 business.accounting_method.accordion.bullet_1                   = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ‘sail arian parod’
 business.accounting_method.accordion.bullet_2                   = mis Mawrth 2017, buasech yn defnyddio’r ‘sail croniadau’
 business.accounting_method.cash                                 = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn cael arian neu’n talu bil. Mae’r rhan fwyaf o unig fasnachwyr a busnesau bach yn defnyddio’r dull hwn.
-business.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu’n cael anfoneb, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
+business.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu’n cael anfoneb, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Mae hyn hefyd yn cael ei alw’n gyfrifyddu ‘ar sail croniadau’ neu’n gyfrifyddu ‘safonol’.
 
 # Property Accounting Method Page
 property.accounting_method.title                                = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
 property.accounting_method.heading                              = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
 property.accounting_method.accordion.summary                    = Rhowch enghraifft i mi
 property.accounting_method.accordion.content.para               = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
-property.accounting_method.accordion.content.bullet1            = mis Mai 2017, rydych yn defnyddio ‘cyfrifyddu arian parod’
-property.accounting_method.accordion.content.bullet2            = mis Mawrth 2017, rydych yn defnyddio ‘cyfrifyddu safonol’
+property.accounting_method.accordion.content.bullet1            = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’
+property.accounting_method.accordion.content.bullet2            = mis Mawrth 2017, rydych yn defnyddio ‘Cyfrifyddu traddodiadol’
 property.accounting_method.cash                                 = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
-property.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
+property.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw.  Mae hyn hefyd yn cael ei alw’n gyfrifyddu ‘ar sail croniadau’ neu’n gyfrifyddu ‘safonol’.
 
 #Overseas Property accounting method Page
 overseas.property.accounting_method.title                        = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
@@ -1120,8 +1120,8 @@ business.check-your-answers.content.tax-year.question           = Y flwyddyn dre
 business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu arian parod
-business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu safonol
+business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu ar sail arian parod
+business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu traddodiadol
 
 
 ## UK property check your answers

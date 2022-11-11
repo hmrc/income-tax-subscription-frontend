@@ -101,7 +101,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
           section = "cash accounting method",
           index = 2,
           OverseasPropertyCheckYourAnswers.accountMethodQuestion,
-          answer = Some("Cash accounting"),
+          answer = Some("Cash basis accounting"),
           changeLink = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
         )
         assertRow(
@@ -109,7 +109,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
           section = "accruals accounting method",
           index = 2,
           OverseasPropertyCheckYourAnswers.accountMethodQuestion,
-          answer = Some("Standard accounting"),
+          answer = Some("Traditional accounting"),
           changeLink = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
         )
 
@@ -150,7 +150,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
           section = "accounting method",
           index = 2,
           OverseasPropertyCheckYourAnswers.accountMethodQuestion,
-          answer = Some("Cash accounting"),
+          answer = Some("Cash basis accounting"),
           changeLink = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
         )
 
