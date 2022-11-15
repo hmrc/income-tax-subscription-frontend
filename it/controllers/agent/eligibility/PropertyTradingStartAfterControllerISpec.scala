@@ -87,7 +87,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
     "have a view with a back link" in new GetSetup {
       val backLink: Element = doc.getGovukBackLink
-      backLink.attr("href") mustBe controllers.agent.eligibility.routes.SoleTraderController.show.url
+      backLink.attr("href") mustBe controllers.agent.eligibility.routes.SoleTraderController.show().url
       backLink.text mustBe PropertyStartAfterMessage.back
     }
 
@@ -123,7 +123,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     "have a form" in new GetSetup {
       val form: Element = pageContent.getForm
       form.attr("method") mustBe "POST"
-      form.attr("action") mustBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.submit.url
+      form.attr("action") mustBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.submit().url
     }
   }
 

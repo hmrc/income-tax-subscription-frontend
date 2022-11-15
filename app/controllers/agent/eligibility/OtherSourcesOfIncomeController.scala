@@ -57,7 +57,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "otherIncomeSource", arn))
-            Redirect(controllers.agent.eligibility.routes.SoleTraderController.show)
+            Redirect(controllers.agent.eligibility.routes.SoleTraderController.show())
         }
       )
   }

@@ -147,7 +147,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response must have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.eligibility.routes.SoleTraderController.show.url)
+        redirectURI(controllers.agent.eligibility.routes.SoleTraderController.show().url)
       )
     }
 

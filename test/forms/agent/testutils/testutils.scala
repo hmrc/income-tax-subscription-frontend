@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.data.validation.Invalid
 import play.api.test.FakeRequest
+import scala.language.implicitConversions
 
 package object testutils {
 

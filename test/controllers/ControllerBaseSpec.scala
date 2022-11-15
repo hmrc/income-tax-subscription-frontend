@@ -28,6 +28,7 @@ import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 import utilities.individual.TestConstants
 import utilities.{UnitTestTrait, UserMatchingSessionUtil}
+import scala.language.implicitConversions
 
 trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
 

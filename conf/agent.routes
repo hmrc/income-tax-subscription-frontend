@@ -14,12 +14,12 @@ GET         /eligibility/accounting-period-check    controllers.agent.eligibilit
 POST        /eligibility/accounting-period-check    controllers.agent.eligibility.AccountingPeriodCheckController.submit
 
 # Property business start date after
-GET         /eligibility/property-start-date        controllers.agent.eligibility.PropertyTradingStartAfterController.show
-POST        /eligibility/property-start-date        controllers.agent.eligibility.PropertyTradingStartAfterController.submit
+GET         /eligibility/property-start-date        controllers.agent.eligibility.PropertyTradingStartAfterController.show()
+POST        /eligibility/property-start-date        controllers.agent.eligibility.PropertyTradingStartAfterController.submit()
 
 # Sole Trader Page
-GET         /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.show
-POST        /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.submit
+GET         /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.show()
+POST        /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.submit()
 
 GET         /income-source                          controllers.agent.WhatIncomeSourceToSignUpController.show()
 POST        /income-source                          controllers.agent.WhatIncomeSourceToSignUpController.submit()
@@ -43,8 +43,8 @@ GET         /client-details                         controllers.agent.matching.C
 POST        /client-details                         controllers.agent.matching.ClientDetailsController.submit(editMode: Boolean ?= false)
 
 # Check your client's details
-GET         /confirm-client                         controllers.agent.matching.ConfirmClientController.show
-POST        /confirm-client                         controllers.agent.matching.ConfirmClientController.submit
+GET         /confirm-client                         controllers.agent.matching.ConfirmClientController.show()
+POST        /confirm-client                         controllers.agent.matching.ConfirmClientController.submit()
 
 # Client not matched routes
 GET         /error/client-details                   controllers.agent.matching.ClientDetailsErrorController.show
@@ -122,5 +122,5 @@ GET         /business/remove-overseas-property-business          controllers.age
 POST        /business/remove-overseas-property-business          controllers.agent.business.RemoveOverseasPropertyController.submit
 
 # Throttle
-GET         /throttle-start                                      controllers.agent.ThrottlingController.start
-GET         /throttle-end                                        controllers.agent.ThrottlingController.end
+GET         /throttle-start                                      controllers.agent.ThrottlingController.start()
+GET         /throttle-end                                        controllers.agent.ThrottlingController.end()

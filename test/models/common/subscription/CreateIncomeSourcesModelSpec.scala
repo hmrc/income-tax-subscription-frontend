@@ -23,6 +23,7 @@ import org.scalatest.matchers.must.{Matchers => MustMatchers}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json._
 import utilities.individual.TestConstants.testNino
+import scala.language.implicitConversions
 
 import java.time.LocalDate
 

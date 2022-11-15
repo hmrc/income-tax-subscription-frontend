@@ -17,8 +17,6 @@
 package controllers.individual.business
 
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.ControllerBaseSpec
 import forms.individual.business.RemoveBusinessForm
 import models.common.business._
@@ -32,7 +30,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockRemoveBusinessService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.individual.incometax.business.RemoveBusiness
 
 import scala.concurrent.Future
@@ -59,14 +57,14 @@ class RemoveBusinessControllerSpec extends ControllerBaseSpec
 
   "show" should {
     "return OK status" in withController { controller =>
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
+      mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
 
-        val result: Future[Result] = await(controller.show("id")(subscriptionRequest))
+      val result: Future[Result] = await(controller.show("id")(subscriptionRequest))
 
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-        charset(result) mustBe Some(Codec.utf_8.charset)
-      }
+      status(result) mustBe OK
+      contentType(result) mustBe Some(HTML)
+      charset(result) mustBe Some(Codec.utf_8.charset)
+    }
 
     "throw an exception" when {
       "the Sole trader business cannot be retrieved" in withController { controller =>
