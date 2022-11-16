@@ -44,7 +44,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         "redirect to the claim subscription page" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+          CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
           SubscriptionStub.stubGetSubscriptionFound()
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionId()
 
@@ -65,7 +65,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           "redirect to the SPSHandoff controller" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+            CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
             SubscriptionStub.stubGetNoSubscription()
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
@@ -84,7 +84,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           "redirect to the Not eligible page" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+            CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
             SubscriptionStub.stubGetNoSubscription()
             EligibilityStub.stubEligibilityResponse(testUtr)(response = false)
 
@@ -104,7 +104,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         "return an internal server error" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+          CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
           SubscriptionStub.stubGetSubscriptionFail()
 
           When("GET /index is called")
@@ -120,26 +120,55 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
     "the user only has a nino in enrolment" when {
       "CID returned a record with UTR" when {
-        "the user is eligible" should {
-          "continue normally" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthNoUtr()
-            SubscriptionStub.stubGetNoSubscription()
-            CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
-            EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
+        "the user is eligible" when {
+          "the user has a name" should {
+            "continue normally" in {
+              Given("I setup the Wiremock stubs")
+              AuthStub.stubAuthNoUtr()
+              SubscriptionStub.stubGetNoSubscription()
+              CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
+              EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
-            When("GET /index is called")
-            val res = IncomeTaxSubscriptionFrontend.indexPage()
+              When("GET /index is called")
+              val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-            Then("Should return a SEE OTHER and re-direct to the sps page")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(spsHandoffRouteURI)
-            )
+              Then("Should return a SEE OTHER and re-direct to the sps page")
+              res must have(
+                httpStatus(SEE_OTHER),
+                redirectURI(spsHandoffRouteURI)
+              )
 
-            val cookie = getSessionMap(res)
-            cookie.keys must contain(ITSASessionKeys.UTR)
-            cookie(ITSASessionKeys.UTR) mustBe testUtr
+              val cookie = getSessionMap(res)
+              cookie.keys must contain(ITSASessionKeys.UTR)
+              cookie(ITSASessionKeys.UTR) mustBe testUtr
+
+              cookie.keys must contain(ITSASessionKeys.FULLNAME)
+              cookie(ITSASessionKeys.FULLNAME) mustBe testFullName
+            }
+            "the user has no name" should {
+              "continue normally" in {
+                Given("I setup the Wiremock stubs")
+                AuthStub.stubAuthNoUtr()
+                SubscriptionStub.stubGetNoSubscription()
+                CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndNoName(testNino, testUtr)
+                EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
+
+                When("GET /index is called")
+                val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+                Then("Should return a SEE OTHER and re-direct to the sps page")
+                res must have(
+                  httpStatus(SEE_OTHER),
+                  redirectURI(spsHandoffRouteURI)
+                )
+
+                val cookie = getSessionMap(res)
+                cookie.keys must contain(ITSASessionKeys.UTR)
+                cookie(ITSASessionKeys.UTR) mustBe testUtr
+
+                cookie.keys must not contain ITSASessionKeys.FULLNAME
+              }
+            }
           }
         }
       }
@@ -148,7 +177,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         "continue normally" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthNoUtr()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+          CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
           SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
 
@@ -163,6 +192,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
           val cookie = getSessionMap(res)
           cookie.keys must not contain ITSASessionKeys.UTR
+          cookie.keys must not contain ITSASessionKeys.FULLNAME
         }
       }
 
@@ -184,6 +214,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
           val cookie = getSessionMap(res)
           cookie.keys must not contain ITSASessionKeys.UTR
+          cookie.keys must not contain ITSASessionKeys.FULLNAME
         }
       }
     }

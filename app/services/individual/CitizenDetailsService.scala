@@ -18,7 +18,7 @@ package services.individual
 
 import config.AppConfig
 import connectors.usermatching.CitizenDetailsConnector
-import models.usermatching.CitizenDetailsSuccess
+import models.usermatching.CitizenDetails
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
@@ -29,21 +29,19 @@ class CitizenDetailsService @Inject()(appConfig: AppConfig,
                                       citizenDetailsConnector: CitizenDetailsConnector)(implicit ec: ExecutionContext) {
 
   /* N.B. this is header update is to be used in conjunction with the test only route
-*  MatchingStubController
-*  the True-Client-IP must match the testId in in testonly.core.connectors.Request sent
-*  The hc must not be edited in production
-*/
-  def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
+  *  MatchingStubController
+  *  the True-Client-IP must match the testId in in testonly.core.connectors.Request sent
+  *  The hc must not be edited in production
+  */
+  private def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
     if (appConfig.hasEnabledTestOnlyRoutes) hc.copy(trueClientIp = Some("ITSA"))
     else hc
 
-  def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
-    citizenDetailsConnector.lookupUtr(nino)(amendHCForTest) map {
-      case Right(Some(CitizenDetailsSuccess(utr))) => utr
+  def lookupCitizenDetails(nino: String)(implicit hc: HeaderCarrier): Future[CitizenDetails] = {
+    citizenDetailsConnector.lookupCitizenDetails(nino)(amendHCForTest) map {
+      case Right(Some(c@CitizenDetails(_, _))) => c
       case _ =>
         throw new InternalServerException("unexpected error calling the citizen details service")
     }
+  }
 }
-
-case class OptionalIdentifiers(nino: Option[String], utr: Option[String])
-

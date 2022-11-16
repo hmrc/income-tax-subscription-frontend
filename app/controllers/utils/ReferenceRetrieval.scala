@@ -49,7 +49,7 @@ trait ReferenceRetrieval {
                    (implicit request: Request[AnyContent],
                     hc: HeaderCarrier,
                     user: IncomeTaxSAUser): Future[Result] = {
-    user.reference match {
+    IncomeTaxSAUser.reference match {
       case Some(reference) =>
         f(reference)
       case None =>

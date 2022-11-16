@@ -17,7 +17,7 @@
 package connectors.usermatching.httpparsers
 
 import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsHttpReads
-import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
+import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetails}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -28,14 +28,17 @@ import utilities.individual.TestConstants._
 class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"
   val testUri = "/"
+  val testFirstName = Math.random().toString
+  val testLastName = Math.random().toString
+  val testFullName = Some(testFirstName + " " + testLastName)
 
   def successResponse(hasUtr: Boolean): JsValue = Json.parse(
     s"""
        |{
        |  "name": {
        |    "current": {
-       |      "firstName": "Test",
-       |      "lastName": "User"
+       |      "firstName": "$testFirstName",
+       |      "lastName": "$testLastName"
        |    },
        |    "previous": []
        |  },
@@ -54,7 +57,7 @@ class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValu
 
         val res = GetCitizenDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.value mustBe Some(CitizenDetailsSuccess(Some(testUtr)))
+        res.value mustBe Some(CitizenDetails(Some(testUtr), testFullName))
       }
 
       "parse a correctly formatted OK response as a Some(None) which does not inlude a utr in its response" in {
@@ -62,7 +65,7 @@ class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValu
 
         val res = GetCitizenDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.value mustBe Some(CitizenDetailsSuccess(None))
+        res.value mustBe Some(CitizenDetails(None, testFullName))
       }
 
       "parse a 404 response as None" in {

@@ -23,7 +23,7 @@ class CitizenDetailsConnectorSpec extends TestCitizenDetailsConnector {
 
   "CitizenDetailsConnector.lookupUtrUrl" should {
     "construct the correct url" in {
-      TestCitizenDetailsConnector.lookupUtrUrl(testNino) mustBe "/citizen-details/nino/" + testNino
+      TestCitizenDetailsConnector.lookupCitizenDetailsUrl(testNino) mustBe "/citizen-details/nino/" + testNino
     }
   }
 

@@ -28,16 +28,12 @@ class CitizenDetailsConnector @Inject()(appConfig: AppConfig,
                                         http: HttpClient)
                                        (implicit ec: ExecutionContext) {
 
-  def lookupUtrUrl(nino: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupUtrUri(nino)
+  def lookupCitizenDetailsUrl(nino: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupCitizenDetailsUri(nino)
 
-  def lookupNinoUrl(utr: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupNinoUri(utr)
-
-  def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
-    http.GET[GetCitizenDetailsResponse](lookupUtrUrl(nino))
+  def lookupCitizenDetails(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
+    http.GET[GetCitizenDetailsResponse](lookupCitizenDetailsUrl(nino))
 }
 
 object CitizenDetailsConnector {
-  def lookupUtrUri(nino: String): String = s"/citizen-details/nino/$nino"
-
-  def lookupNinoUri(utr: String): String = s"/citizen-details/sautr/$utr"
+  def lookupCitizenDetailsUri(nino: String): String = s"/citizen-details/nino/$nino"
 }

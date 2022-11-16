@@ -16,6 +16,7 @@
 
 package services
 
+import models.usermatching.CitizenDetails
 import org.scalatest.concurrent.ScalaFutures
 import services.mocks.TestCitizenDetailsService
 import utilities.UnitTestTrait
@@ -26,14 +27,14 @@ import scala.concurrent.Future
 class CitizenDetailsServiceSpec extends UnitTestTrait with TestCitizenDetailsService with ScalaFutures {
 
   "lookupUtr" should {
-    def call: Future[Option[String]] = TestCitizenDetailsService.lookupUtr(testNino)
+    def call: Future[CitizenDetails] = TestCitizenDetailsService.lookupCitizenDetails(testNino)
 
     "return a success from the CitizenDetailsConnector" in {
-      mockLookupUserWithUtr(testNino)(testUtr)
+      mockLookupUserWithUtr(testNino)(testUtr, testFullName)
 
       val result = call
 
-      whenReady(result)(_ mustBe Some(testUtr))
+      whenReady(result)(_ mustBe CitizenDetails(Some(testUtr), Some(testFullName)))
     }
 
     "return a failure from the CitizenDetailsConnector" in {

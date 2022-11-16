@@ -20,17 +20,22 @@ import common.Constants
 import common.Constants.ITSASessionKeys
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
+import IncomeTaxSAUser.fullName
+import IncomeTaxSAUser.spsEntityId
 
 trait IncomeTaxUser {
   val enrolments: Enrolments
   val affinityGroup: Option[AffinityGroup]
 }
 
+case class UserIdentifiers(ninoMaybe: Option[String], utrMaybe: Option[String], nameMaybe: Option[String], entityIdMaybe: Option[String])
+
 case class IncomeTaxSAUser(enrolments: Enrolments,
                            affinityGroup: Option[AffinityGroup],
                            credentialRole: Option[CredentialRole],
                            confidenceLevel: ConfidenceLevel,
                            userId: String) extends IncomeTaxUser {
+
 
   def nino(implicit request: Request[AnyContent]): Option[String] = {
     getEnrolment(Constants.ninoEnrolmentName) match {
@@ -46,12 +51,6 @@ case class IncomeTaxSAUser(enrolments: Enrolments,
     }
   }
 
-  def reference(implicit request: Request[AnyContent]): Option[String] = {
-    request.session.get(ITSASessionKeys.REFERENCE)
-  }
-
-  lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
-
   lazy val isAssistant: Boolean = credentialRole match {
     case Some(Assistant) => true
     case None => throw new IllegalArgumentException("Non GGW credential found")
@@ -65,4 +64,20 @@ case class IncomeTaxSAUser(enrolments: Enrolments,
       }
     }
   }
+
+  def getUserIdentifiersFromSession()(implicit request: Request[AnyContent]): UserIdentifiers =
+    UserIdentifiers(nino, utr, fullName, spsEntityId)
+
+  lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
+}
+
+object IncomeTaxSAUser {
+  def fullName(implicit request: Request[AnyContent]): Option[String] =
+    request.session.get(ITSASessionKeys.FULLNAME)
+
+  def reference(implicit request: Request[AnyContent]): Option[String] =
+    request.session.get(ITSASessionKeys.REFERENCE)
+
+  def spsEntityId(implicit request: Request[AnyContent]): Option[String] =
+    request.session.data.get(ITSASessionKeys.SPSEntityId)
 }
