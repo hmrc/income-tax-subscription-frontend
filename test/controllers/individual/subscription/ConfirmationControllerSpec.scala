@@ -27,7 +27,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels.testSelectedTaxYearNext
-import views.html.individual.incometax.subscription.SignUpComplete
+import views.html.individual.incometax.subscription.{SignUpComplete, SignUpConfirmation}
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -39,6 +39,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockAuditingService {
 
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
+  val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
 
   override def beforeEach(): Unit = {
     reset(mockSignUpComplete)
@@ -49,7 +50,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
-    mockSignUpComplete
+    mockSignUpComplete,
+    mockSignUpConfirmation
   )
 
   val taxQuarter1: (String, String) = ("agent.sign-up.complete.julyUpdate", "2020")

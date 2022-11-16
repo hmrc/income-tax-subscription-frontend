@@ -18,10 +18,11 @@ package controllers.individual.subscription
 
 import auth.individual.PostSubmissionController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ConfirmationPage
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import views.html.individual.incometax.subscription.SignUpComplete
+import views.html.individual.incometax.subscription.{SignUpComplete, SignUpConfirmation}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -30,7 +31,9 @@ import scala.concurrent.ExecutionContext
 class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        val authService: AuthService,
                                        val subscriptionDetailsService: SubscriptionDetailsService,
-                                       signUpComplete: SignUpComplete)
+                                       val signUpComplete: SignUpComplete,
+                                       val signUpConfirmation: SignUpConfirmation
+                                      )
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController with ReferenceRetrieval {
@@ -39,10 +42,16 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
     implicit user =>
       withReference { reference =>
         subscriptionDetailsService.fetchSelectedTaxYear(reference) map { selectedTaxYear =>
-          Ok(signUpComplete(
-            taxYearSelection = selectedTaxYear.map(_.accountingYear),
-            postAction = routes.ConfirmationController.submit
-          ))
+          val view = if (isEnabled(ConfirmationPage)) {
+            signUpConfirmation()
+          } else {
+            signUpComplete(
+              taxYearSelection = selectedTaxYear.map(_.accountingYear),
+              postAction = routes.ConfirmationController.submit
+            )
+          }
+
+          Ok(view)
         }
       }
   }

@@ -16,6 +16,7 @@
 
 package controllers.individual.subscription
 
+import config.featureswitch.FeatureSwitch.ConfirmationPage
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.signOutURI
@@ -25,32 +26,59 @@ import utilities.SubscriptionDataKeys._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
-  "GET /confirmation" should {
-    "return the confirmation page when the user is enrolled and confirm SPS preferences" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubEnrolled()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+  "GET /confirmation" when {
+    "the user is enrolled and confirm SPS preferences" when {
+      "the Sign up confirmation page feature switch is disabled" should {
+        "return the sign up complete page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubEnrolled()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+          And("disable the Sign up confirmation page feature switch")
+          disable(ConfirmationPage)
 
-      When("GET /confirmation is called")
-      val res = IncomeTaxSubscriptionFrontend.confirmation()
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
-      Then("Should return a OK with the confirmation page")
-      res must have(
-        httpStatus(OK),
-        pageTitle(messages("sign-up-complete.heading") + serviceNameGovUk)
-      )
+          When("GET /confirmation is called")
+          val res = IncomeTaxSubscriptionFrontend.confirmation()
+          val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+          Then("Should return a OK with the confirmation page")
+          res must have(
+            httpStatus(OK),
+            pageTitle(messages("sign-up-complete.heading") + serviceNameGovUk)
+          )
+        }
+      }
+
+      "the Sign up confirmation page feature switch is enabled" should {
+        "return the sign up confirmation page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubEnrolled()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+          And("enable the Sign up confirmation page feature switch")
+          enable(ConfirmationPage)
+
+          When("GET /confirmation is called")
+          val res = IncomeTaxSubscriptionFrontend.confirmation()
+          val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+          Then("Should return a OK with the confirmation page")
+          res must have(
+            httpStatus(OK),
+            pageTitle(messages("confirmation.heading") + serviceNameGovUk)
+          )
+        }
+      }
     }
 
-    "return a NOT_FOUND when the user is not enrolled" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
+    "the user is not enrolled" should {
+      "return a NOT_FOUND" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-      When("GET /confirmation is called")
-      val res = IncomeTaxSubscriptionFrontend.confirmation()
+        When("GET /confirmation is called")
+        val res = IncomeTaxSubscriptionFrontend.confirmation()
 
-      Then("Should return a NOT_FOUND status")
-      res must have(
-        httpStatus(NOT_FOUND))
+        Then("Should return a NOT_FOUND status")
+        res must have(
+          httpStatus(NOT_FOUND))
+      }
     }
   }
 
@@ -68,18 +96,20 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         redirectURI(signOutURI)
       )
     }
-    "return a NOT_FOUND when the user is not enrolled" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
 
-      When("GET /confirmation is called")
-      val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
+    "return a NOT_FOUND" when {
+      "the user is not enrolled" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-      Then("Should return a NOT_FOUND status")
-      res must have(
-        httpStatus(NOT_FOUND)
-      )
+        When("GET /confirmation is called")
+        val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
 
+        Then("Should return a NOT_FOUND status")
+        res must have(
+          httpStatus(NOT_FOUND)
+        )
+      }
     }
   }
 
