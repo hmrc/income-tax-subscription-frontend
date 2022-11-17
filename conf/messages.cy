@@ -193,20 +193,20 @@ property.accounting_method.title                                = Pa ddull cyfri
 property.accounting_method.heading                              = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
 property.accounting_method.accordion.summary                    = Rhowch enghraifft i mi
 property.accounting_method.accordion.content.para               = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
-property.accounting_method.accordion.content.bullet1            = mis Mai 2017, rydych yn defnyddio ‘cyfrifyddu arian parod’
-property.accounting_method.accordion.content.bullet2            = mis Mawrth 2017, rydych yn defnyddio ‘cyfrifyddu safonol’
-property.accounting_method.cash                                 = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
-property.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
+property.accounting_method.accordion.content.bullet1            = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’
+property.accounting_method.accordion.content.bullet2            = mis Mawrth 2017, rydych yn defnyddio ‘Cyfrifyddu traddodiadol’
+property.accounting_method.cash                                 = <span class="heading-small">Cyfrifyddu ar sail arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
+property.accounting_method.accruals                             = <span class="heading-small">Cyfrifyddu traddodiadol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hyn hefyd yn cael ei alw’n gyfrifyddu ‘ar sail croniadau’ neu’n gyfrifyddu ‘safonol’..
 
 #Overseas Property accounting method Page
 overseas.property.accounting_method.title                        = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
 overseas.property.accounting_method.heading                      = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
 overseas.property.accounting_method.accordion.summary            = Rhowch enghraifft i mi
 overseas.property.accounting_method.accordion.content.para       = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
-overseas.property.accounting_method.accordion.content.bullet1    = mis Mai 2017, rydych yn defnyddio ‘cyfrifyddu arian parod’
-overseas.property.accounting_method.accordion.content.bullet2    = mis Mawrth 2017, rydych yn defnyddio ‘cyfrifyddu safonol’
-overseas.property.accounting_method.cash                         = <span class="heading-small">Cyfrifyddu arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
-overseas.property.accounting_method.accruals                     = <span class="heading-small">Cyfrifyddu safonol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hwn hefyd yn cael ei alw yn ‘cyfrifyddu croniadau’ neu ‘cyfrifyddu traddodiadol’.
+overseas.property.accounting_method.accordion.content.bullet1    = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’
+overseas.property.accounting_method.accordion.content.bullet2    = mis Mawrth 2017, rydych yn defnyddio ‘Cyfrifyddu traddodiadol’
+overseas.property.accounting_method.cash                         = <span class="heading-small">Cyfrifyddu ar sail arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
+overseas.property.accounting_method.accruals                     = <span class="heading-small">Cyfrifyddu traddodiadol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hyn hefyd yn cael ei alw’n gyfrifyddu ‘ar sail croniadau’ neu’n gyfrifyddu ‘safonol’.
 
 ## Business Name
 business.name.title                                             = Enw’r busnes
@@ -394,8 +394,8 @@ summary.accounting_period                                       = Dyddiadau’ch
 summary.accounting_period.registration                          = Pryd y mae’ch cyfnod cyfrifyddu presennol?
 summary.business_name                                           = Enw eich busnes
 summary.income_type                                             = Dull cyfrifyddu ar gyfer eich incwm o hunangyflogaeth
-summary.income_type.cash                                        = Cyfrifyddu arian parod
-summary.income_type.accruals                                    = Cyfrifyddu safonol
+summary.income_type.cash                                        = Cyfrifyddu ar sail arian parod
+summary.income_type.accruals                                    = Cyfrifyddu traddodiadol
 summary.accounting_method_property                              = Dull cyfrifyddu ar gyfer incwm o eiddo yn y DU
 summary.selected_year                                           = Y flwyddyn dreth yr ydych wedi cofrestru ar ei chyfer
 summary.selected_year.current                                   = Y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
@@ -474,16 +474,16 @@ error.contact_email.maxLength                                   = Mae’r e-bost
 error.contact_email.invalid                                     = Mae’r e-bost yn annilys
 
 error.accounting-method.empty                                   = Dewiswch sut rydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes hunangyflogedig
-error.accounting-method-property.empty                          = Dewiswch sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo
+error.accounting-method-property.empty                          = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 error.accounting-method.invalid                                 = Dewiswch sut rydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes hunangyflogedig
-error.accounting-method-property.invalid                        = Dewiswch sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo
+error.accounting-method-property.invalid                        = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 
 #Overseas Property accounting method errors
-error.overseas_property_accounting_method.invalid               = Dewiswch os ydych yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
-error.overseas_property_accounting_method.empty                 = Dewiswch os ydych yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
+error.overseas_property_accounting_method.invalid               = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
+error.overseas_property_accounting_method.empty                 = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 
 #Agent Overseas Property accounting method errors
-error.agent.overseas_property_accounting_method.empty           = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
+error.agent.overseas_property_accounting_method.empty           = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 
 error.user_details.first_name.empty                             = Nodwch eich enw cyntaf
 error.user_details.last_name.empty                              = Nodwch eich enw olaf
@@ -781,13 +781,13 @@ agent.business.accounting_method.accruals                       = Cyfrifyddu saf
 
 # Agent Property Accounting Method Page
 agent.property.accounting_method.title                          = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
-agent.property.accounting_method.radio.cash                     = Cyfrifyddu arian parod
-agent.property.accounting_method.radio.accruals                 = Cyfrifyddu safonol
+agent.property.accounting_method.radio.cash                     = Cyfrifyddu ar sail arian parod
+agent.property.accounting_method.radio.accruals                 = Cyfrifyddu traddodiadol
 
 # Agent Overseas Property Accounting Method Page
 agent.overseas.property.accounting_method.title                 = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
-agent.overseas.property.accounting_method.radio.cash            = Cyfrifyddu arian parod
-agent.overseas.property.accounting_method.radio.accruals        = Cyfrifyddu safonol
+agent.overseas.property.accounting_method.radio.cash            = Cyfrifyddu ar sail arian parod
+agent.overseas.property.accounting_method.radio.accruals        = Cyfrifyddu traddodiadol
 
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
@@ -844,8 +844,8 @@ agent.summary.accounting_period                                 = Dyddiadau cyfn
 agent.summary.business_name                                     = Beth yw enw busnes eich cleient?
 agent.summary.income_type                                       = Dull cyfrifyddu ar gyfer busnes fel unig fasnachwr
 agent.summary.income_type_property                              = Dull cyfrifyddu ar gyfer ei DU eiddo
-agent.summary.income_type.cash                                  = Cyfrifyddu arian parod
-agent.summary.income_type.accruals                              = Cyfrifyddu safonol
+agent.summary.income_type.cash                                  = Cyfrifyddu ar sail arian parod
+agent.summary.income_type.accruals                              = Cyfrifyddu traddodiadol
 agent.summary.match_tax_year                                    = Mae’r cyfnod cyfrifyddu yn paru â’r flwyddyn dreth
 agent.summary.selected_year                                     = Blwyddyn dreth i ddechrau cyflwyno diweddariadau
 agent.summary.selected_year.current                             = Y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
@@ -930,7 +930,7 @@ agent.error.contact_email.invalid                               = Mae’r e-bost
 agent.error.accounting-method.empty                             = Dewiswch ddull cyfrifyddu
 agent.error.accounting-method.invalid                           = Dewiswch ddull cyfrifyddu
 
-agent.error.accounting-method-property.invalid                  = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu arian parod neu gyfrifyddu safonol
+agent.error.accounting-method-property.invalid                  = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 
 agent.error.not-eligible.empty                                  = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 agent.error.not-eligible.invalid                                = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -1120,8 +1120,8 @@ business.check-your-answers.content.tax-year.question           = Y flwyddyn dre
 business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu arian parod
-business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu safonol
+business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu ar sail arian parod
+business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu traddodiadol
 
 
 ## UK property check your answers

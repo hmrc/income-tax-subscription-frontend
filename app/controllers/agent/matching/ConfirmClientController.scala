@@ -57,7 +57,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     checkYourClientDetails(
       userDetailsModel,
-      routes.ConfirmClientController.submit
+      routes.ConfirmClientController.submit()
     )
 
   private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {

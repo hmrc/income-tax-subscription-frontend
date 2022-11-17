@@ -43,7 +43,7 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
     testNino,
     testDob)
 
-  lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit
+  lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit()
 
   private val checkYourClientDetails = app.injector.instanceOf[CheckYourClientDetails]
 

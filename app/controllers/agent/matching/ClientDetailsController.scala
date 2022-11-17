@@ -67,7 +67,7 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
         clientDetailsForm.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
           clientDetails =>
-            Future.successful(Redirect(routes.ConfirmClientController.show).saveUserDetails(clientDetails))
+            Future.successful(Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails))
         )
       }
   }

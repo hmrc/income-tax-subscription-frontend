@@ -67,7 +67,7 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
     "have a form" in new GetSetup {
       val form: Element = pageContent.getForm
       form.attr("method") mustBe "POST"
-      form.attr("action") mustBe controllers.agent.eligibility.routes.SoleTraderController.submit.url
+      form.attr("action") mustBe controllers.agent.eligibility.routes.SoleTraderController.submit().url
     }
 
     "have a button to submit" in new GetSetup {
@@ -122,7 +122,7 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
         verifyAudit()
         response must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show.url)
+          redirectURI(controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show().url)
         )
       }
 

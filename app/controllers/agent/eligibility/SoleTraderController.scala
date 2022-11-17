@@ -50,7 +50,7 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
   def view(form: Form[YesNo], startDateLimit: LocalDate)(implicit request: Request[_]): Html = {
     areYouASoleTrader(
       soleTraderForm = form,
-      postAction = routes.SoleTraderController.submit,
+      postAction = routes.SoleTraderController.submit(),
       startDateLimit = startDateLimit.toLongDate,
       backUrl = backUrl
     )
@@ -78,7 +78,7 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
               "soleTraderBusinessStartDate", arn))
-            Redirect(routes.PropertyTradingStartAfterController.show)
+            Redirect(routes.PropertyTradingStartAfterController.show())
         }
       )
   }

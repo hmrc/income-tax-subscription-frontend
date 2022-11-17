@@ -28,6 +28,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import utilities.UnitTestTrait
+import scala.language.implicitConversions
 
 import scala.jdk.CollectionConverters._
 

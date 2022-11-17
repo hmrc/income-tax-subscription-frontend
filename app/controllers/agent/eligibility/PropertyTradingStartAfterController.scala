@@ -45,12 +45,12 @@ class PropertyTradingStartAfterController @Inject()(val auditingService: Auditin
 
   private def startDateLimit: LocalDate = LocalDate.now.minusYears(1)
 
-  def backUrl: String = routes.SoleTraderController.show.url
+  def backUrl: String = routes.SoleTraderController.show().url
 
   def view(form: Form[YesNo], startDateLimit: LocalDate)(implicit request: Request[_]): Html = {
     propertyTradingAfter(
       propertyTradingBeforeDateForm = form,
-      postAction = routes.PropertyTradingStartAfterController.submit,
+      postAction = routes.PropertyTradingStartAfterController.submit(),
       startDateLimit = startDateLimit.toLongDate,
       backUrl = backUrl
     )

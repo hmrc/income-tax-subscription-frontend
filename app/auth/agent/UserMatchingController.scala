@@ -21,6 +21,7 @@ import javax.inject.Inject
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
+import scala.language.implicitConversions
 
 abstract class UserMatchingController @Inject()(implicit mcc: MessagesControllerComponents) extends BaseFrontendController {
 
