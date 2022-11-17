@@ -28,7 +28,8 @@ object FeatureSwitch {
     ForeignProperty,
     PrePopulate,
     ThrottlingFeature,
-    ItsaMandationStatus
+    ItsaMandationStatus,
+    ConfirmationPage
   )
 
   def apply(str: String): FeatureSwitch =
@@ -57,5 +58,10 @@ object FeatureSwitch {
   case object ItsaMandationStatus extends FeatureSwitch {
     override val name = s"$prefix.enable-itsa-mandation-status"
     override val displayText = "ITSA mandation status"
+  }
+
+  case object ConfirmationPage extends FeatureSwitch {
+    override val name: String = s"$prefix.enable-confirmation-page"
+    override val displayText: String = "Sign up confirmation page"
   }
 }
