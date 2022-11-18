@@ -17,6 +17,7 @@
 package services.mocks
 
 import connectors.usermatching.mocks.MockCitizenDetailsConnector
+import models.usermatching.CitizenDetails
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -36,20 +37,20 @@ trait TestCitizenDetailsService extends MockCitizenDetailsConnector {
 trait MockCitizenDetailsService extends UnitTestTrait with MockitoSugar {
   val mockCitizenDetailsService: CitizenDetailsService = mock[CitizenDetailsService]
 
-  private def mockLookupUtr(nino: String)(response: Future[Option[String]]): Unit =
+  private def mockLookupUtr(nino: String)(response: Future[CitizenDetails]): Unit =
     when(
-      mockCitizenDetailsService.lookupUtr(
+      mockCitizenDetailsService.lookupCitizenDetails(
         ArgumentMatchers.eq(nino)
       )(
         ArgumentMatchers.any[HeaderCarrier]
       )
     ).thenReturn(response)
 
-  def mockLookupUserWithUtr(nino: String)(utr: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Some(utr)))
+  def mockLookupUserWithUtr(nino: String)(utr: String, name: String): Unit =
+    mockLookupUtr(nino)(Future.successful(CitizenDetails(Some(utr), Some(name))))
 
   def mockLookupUserWithoutUtr(nino: String): Unit =
-    mockLookupUtr(nino)(Future.successful(None))
+    mockLookupUtr(nino)(Future.successful(CitizenDetails(None, None)))
 
   def mockLookupException(nino: String): Unit =
     mockLookupUtr(nino)(Future.failed(testException))

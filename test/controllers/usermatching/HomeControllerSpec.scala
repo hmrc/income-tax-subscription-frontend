@@ -24,12 +24,13 @@ import models.{EligibilityStatus, PrePopData}
 import org.mockito.Mockito.{never, reset, times}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers.{await, _}
+import play.api.test.Helpers._
 import services.ThrottlingService
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys._
 import utilities.individual.TestConstants
+import utilities.individual.TestConstants.testFullName
 
 import scala.concurrent.Future
 
@@ -97,7 +98,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         "the saving of the mtd id is successful" should {
           "redirect to the claim subscription page" in {
             mockNinoAndUtrRetrieval()
-            mockLookupUserWithUtr(testNino)(testUtr)
+            mockLookupUserWithUtr(testNino)(testUtr, testFullName)
             setupMockGetSubscriptionFound(testNino)
             setupMockSubscriptionDetailsSaveFunctions()
             mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -114,7 +115,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         "the saving of the mtd id failed" should {
           "throw an internal server exeception" in {
             mockNinoAndUtrRetrieval()
-            mockLookupUserWithUtr(testNino)(testUtr)
+            mockLookupUserWithUtr(testNino)(testUtr, testFullName)
             setupMockGetSubscriptionFound(testNino)
             setupMockSubscriptionDetailsSaveFunctionsFailure()
             mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -131,7 +132,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       "the user already has an MTDIT subscription on ETMP and the session is in SignUp state" should {
         "redirect to the claim subscription page" in {
           mockNinoAndUtrRetrieval()
-          mockLookupUserWithUtr(testNino)(testUtr)
+          mockLookupUserWithUtr(testNino)(testUtr, testFullName)
           setupMockGetSubscriptionFound(testNino)
           setupMockSubscriptionDetailsSaveFunctions()
           mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -153,7 +154,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               "PrePopulate and ITSA mandation status are on but there is no PrePop data" when {
                 "redirect to SPSHandoff controller" in {
                   mockNinoAndUtrRetrieval()
-                  mockLookupUserWithUtr(testNino)(testUtr)
+                  mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -174,7 +175,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               "PrePopulate and ITSA mandation status are on and there is PrePop data" when {
                 "redirect to SPSHandoff controller after saving prepop informtion" in {
                   mockNinoAndUtrRetrieval()
-                  mockLookupUserWithUtr(testNino)(testUtr)
+                  mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -197,7 +198,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               "PrePopulate is on, ITSA mandation status is off and there is PrePop data" when {
                 "redirect to SPSHandoff controller after saving prepop informtion" in {
                   mockNinoAndUtrRetrieval()
-                  mockLookupUserWithUtr(testNino)(testUtr)
+                  mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -218,7 +219,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               "PrePopulate and ITSA mandation status are off" when {
                 "redirect to SPSHandoff controller" in {
                   mockNinoAndUtrRetrieval()
-                  mockLookupUserWithUtr(testNino)(testUtr)
+                  mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -242,7 +243,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             "the user has a matching utr in CID against their NINO" when {
               "redirect to SPSHandoff controller" in {
                 mockNinoRetrieval()
-                mockLookupUserWithUtr(testNino)(testUtr)
+                mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                 setupMockGetSubscriptionNotFound(testNino)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
@@ -254,6 +255,8 @@ class HomeControllerSpec extends ControllerBaseSpec
                 redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
                 session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+                session(result).get(ITSASessionKeys.FULLNAME) mustBe Some(testFullName)
+
                 verifyGetThrottleStatusCalls(times(1))
               }
             }
@@ -271,6 +274,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show.url
 
                 session(result).get(ITSASessionKeys.UTR) mustBe None
+                session(result).get(ITSASessionKeys.FULLNAME) mustBe None
                 verifyGetThrottleStatusCalls(never())
               }
             }
@@ -281,7 +285,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         "the user is not eligible" should {
           "redirect to the Not eligible page" in {
             mockNinoAndUtrRetrieval()
-            mockLookupUserWithUtr(testNino)(testUtr)
+            mockLookupUserWithUtr(testNino)(testUtr, testFullName)
             setupMockGetSubscriptionNotFound(testNino)
             mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
 
@@ -296,7 +300,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       "the call to check the user's subscription status fails" should {
         "return an error page" in {
           mockNinoAndUtrRetrieval()
-          mockLookupUserWithUtr(testNino)(testUtr)
+          mockLookupUserWithUtr(testNino)(testUtr, testFullName)
           setupMockGetSubscriptionFailure(testNino)
 
           intercept[InternalServerException](await(testHomeController().index(fakeRequest)))

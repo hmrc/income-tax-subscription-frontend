@@ -20,6 +20,8 @@ import play.api.libs.crypto.CookieSigner
 import play.api.libs.ws.{WSCookie, WSResponse}
 import uk.gov.hmrc.crypto.{Crypted, SymmetricCryptoFactory}
 
+import java.net.URLDecoder
+
 trait SessionCookieCrumbler {
   private val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
 
@@ -42,7 +44,12 @@ trait SessionCookieCrumbler {
 
       val Regex = """(.*)=(.*)""".r
       map.split("&").map {
-        case Regex(k, v) => Map(k -> v)
+        case Regex(k, v) => {
+          // Play would do a url decode.  So, so must we!
+          // https://github.com/playframework/playframework/blob/main/core/play/src/main/scala/play/api/mvc/Cookie.scala#L583
+          val vdecoded = URLDecoder.decode(v, "UTF-8")
+          Map(k -> vdecoded)
+        }
         case _ => Map[String, String]()
       }.reduce(_ ++ _)
     }

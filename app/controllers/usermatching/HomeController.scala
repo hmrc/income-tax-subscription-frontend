@@ -17,7 +17,7 @@
 package controllers.usermatching
 
 import auth.individual.JourneyState._
-import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController}
+import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserIdentifiers}
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
@@ -25,6 +25,7 @@ import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
 import models.common.subscription.SubscriptionSuccess
+import models.usermatching.CitizenDetails
 import play.api.mvc._
 import services._
 import services.individual._
@@ -55,34 +56,39 @@ class HomeController @Inject()(val auditingService: AuditingService,
   def index: Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        getUserIdentifiers(user) flatMap {
+        getCompletedUserIdentifiers(user) flatMap {
           // No NINO, should never happen
-          case (None, _, _) => throw new InternalServerException("[HomeController][index] - Could not retrieve nino from user")
+          case UserIdentifiers(None, _, _, _) => throw new InternalServerException("[HomeController][index] - Could not retrieve nino from user")
           // No UTR for NINO. Not registered for self assessment
-          case (_, None, _) => Future.successful(Redirect(routes.NoSAController.show).removingFromSession(JourneyStateKey))
+          case UserIdentifiers(_, None, _, _) => Future.successful(Redirect(routes.NoSAController.show).removingFromSession(JourneyStateKey))
           // Already seen this session, must have pressed back.
-          case (_, Some(_), entityIdMaybe@Some(_)) if request.session.isInState(SignUp) =>
+          case UserIdentifiers(_, Some(_), _, entityIdMaybe@Some(_)) if request.session.isInState(SignUp) =>
             Future.successful(Redirect(controllers.individual.sps.routes.SPSCallbackController.callback(entityIdMaybe)))
           // New user, with relevant information, try to subscribe them
-          case (Some(nino), Some(utr), _) =>
-            throttlingService.throttled(IndividualStartOfJourneyThrottle) {
-              getSubscription(nino) flatMap {
-                // Subscription available, will be throttled
-                case Some(SubscriptionSuccess(mtditId)) =>
-                  claimSubscription(mtditId, nino, utr)
-                // New phone, who dis?
-                case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
-              }
-            }.map { r => r.addingToSession(UTR -> utr) } // Add UTR, mainly for failure case so we don't look it up again.
+          case UserIdentifiers(Some(nino), Some(utr), fullName, _) => tryToSubscribe(nino, utr, fullName)
         }
     }
 
-  private def getUserIdentifiers(user: IncomeTaxSAUser)(implicit request: Request[AnyContent]): Future[(Option[String], Option[String], Option[String])] = {
-    val maybeEntityId = request.session.data.get(SPSEntityId)
-    (user.nino, user.utr, maybeEntityId) match {
-      case (None, _, _) => Future.successful((None, None, None))
-      case (Some(nino), Some(utr), _) => Future.successful((Some(nino), Some(utr), maybeEntityId))
-      case (Some(nino), None, _) => citizenDetailsService.lookupUtr(nino).map(utrMaybe => (Some(nino), utrMaybe, maybeEntityId))
+  private def tryToSubscribe(nino: String, utr: String, fullNameMaybe: Option[String])(implicit request: Request[AnyContent], user: IncomeTaxSAUser) =
+    throttlingService.throttled(IndividualStartOfJourneyThrottle) {
+      getSubscription(nino) flatMap {
+        // Subscription available, will be throttled
+        case Some(SubscriptionSuccess(mtditId)) => claimSubscription(mtditId, nino, utr)
+        // New phone, who dis?
+        case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
+      } map { response =>
+        val cookiesToAdd = fullNameMaybe map (fullName => FULLNAME -> fullName)
+        response.addingToSession(cookiesToAdd.toSeq: _*)
+      }
+    }
+
+  private def getCompletedUserIdentifiers(user: IncomeTaxSAUser)
+                                         (implicit request: Request[AnyContent]): Future[UserIdentifiers] = {
+    user.getUserIdentifiersFromSession() match {
+      case notCompletedLookup@UserIdentifiers(Some(nino), None, _, _) =>
+        citizenDetailsService.lookupCitizenDetails(nino)
+          .map { case CitizenDetails(utrMaybe, nameMaybe) => notCompletedLookup.copy(utrMaybe = utrMaybe).copy(nameMaybe = nameMaybe) }
+      case userIdentifiers => Future.successful(userIdentifiers)
     }
   }
 
@@ -95,7 +101,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
           for {
             _ <- prePopulationService.prePopulate(reference, prepop)
             _ <- handleMandationStatus(reference, nino, utr)
-          } yield (goToSignUp(utr, timestamp, nino))
+          } yield goToSignUp(utr, timestamp, nino)
         }
       case Right(EligibilityStatus(true, _, _)) =>
         withReference(utr) { reference =>

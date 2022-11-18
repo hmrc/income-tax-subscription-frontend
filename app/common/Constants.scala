@@ -16,15 +16,12 @@
 
 package common
 
-import models.DateModel
-
 object Constants {
   val mtdItsaEnrolmentName = "HMRC-MTD-IT"
   val hmrcAsAgent = "HMRC-AS-AGENT"
   val mtdItsaEnrolmentIdentifierKey = "MTDITID"
 
   val agentServiceIdentifierKey = "AgentReferenceNumber"
-  val ninoIdentifierKey = "NINO"
 
   val ninoEnrolmentName = "HMRC-NI"
   val ninoEnrolmentIdentifierKey = "NINO"
@@ -43,12 +40,13 @@ object Constants {
   object ITSASessionKeys {
 
     val ArnKey = "ARN"
-    val MTDITID = mtdItsaEnrolmentIdentifierKey
+    val MTDITID: String = mtdItsaEnrolmentIdentifierKey
     val RequestURI = "Request-URI"
     val FailedClientMatching = "Failed-Client-Matching"
     val JourneyStateKey = "Journey-State"
     val NINO = "NINO"
     val UTR = "UTR"
+    val FULLNAME: String = "FULLNAME"
     val REFERENCE = "reference"
 
     val sessionId = "sessionId"
@@ -56,19 +54,10 @@ object Constants {
     val clientData: Seq[String] = Seq(MTDITID, NINO, UTR)
 
     val StartTime = "StartTime"
-    val FailedUserMatching = "Failed-User-Matching"
-    val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-    val AgentReferenceNumber = "Agent-Reference-Number"
     val ConfirmedAgent = "Confirmed-Agent"
     val IdentityVerificationFlag = "ITSA-Identity-Verification-Flag"
 
     val SPSEntityId: String = "SPS-Entity-ID"
 
   }
-
-
-  val preferencesServiceKey = "mtdfbit"
-
-  val crystallisationTaxYearStart = DateModel("6", "4", "2018")
-
 }

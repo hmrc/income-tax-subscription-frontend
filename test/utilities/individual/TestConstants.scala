@@ -39,6 +39,7 @@ object TestConstants {
   lazy val testNino: String = new Generator().nextNino.nino
   lazy val testId: String = "testId"
   lazy val testUtr: String = UUID.randomUUID().toString
+  lazy val testFullName: String = UUID.randomUUID().toString + " " + UUID.randomUUID().toString
   lazy val testReference: String = "test-reference"
   //Not an actual UTRTestAuthenticatorConnector
   lazy val testArn: String = UUID.randomUUID().toString

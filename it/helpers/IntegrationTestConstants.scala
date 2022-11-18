@@ -42,8 +42,9 @@ object IntegrationTestConstants {
   val SessionId = s"stubbed-${UUID.randomUUID}"
   val userId = s"/auth/oid/1234567890"
   val testUserIdEncoded: String = URLEncoder.encode(userId, "UTF-8")
-  val testFirstName = "Test"
-  val testLastName = "Name"
+  lazy val testFirstName: String = Math.random().toString
+  lazy val testLastName: String = Math.random().toString
+  lazy val testFullName: String = testFirstName + " " + testLastName
   val dateOfBirth: DateModel = DateModel("01", "01", "1980")
   val testId = "12345"
   val testGroupId: String = UUID.randomUUID.toString
@@ -51,16 +52,12 @@ object IntegrationTestConstants {
   val testCredentialId: String = UUID.randomUUID().toString
   val testCredentialId2: String = UUID.randomUUID().toString
   val testCredentialId3: String = UUID.randomUUID().toString
-  val testArn: String = UUID.randomUUID.toString
-  val testAgencyName: String = UUID.randomUUID.toString
-  val testUrl = "/test/url/"
-  val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
-  val tradingStartDate = (DateModel("05", "04", "2017"))
-  val testBusinessName = BusinessNameModel("test business")
-  val testBusinessTradeName = BusinessTradeNameModel("test trade")
-  val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
-  val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
-  val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
+  private val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
+  private val tradingStartDate = DateModel("05", "04", "2017")
+  val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
+  private val testBusinessTradeName = BusinessTradeNameModel("test trade")
+  private val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
+  private val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
   val testAccountMethod: AccountingMethod = Cash
 
   val testAccountingPeriod: AccountingPeriodModel = testAccountingPeriod(testStartDate, testEndDate)
@@ -69,9 +66,9 @@ object IntegrationTestConstants {
                            endDate: DateModel = testEndDate): AccountingPeriodModel =
     AccountingPeriodModel(startDate, endDate)
 
-  val testSoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriod, testAccountMethod, testSelfEmploymentData)
-  val testUkProperty = UkProperty(testAccountingPeriod, tradingStartDate, testAccountMethod)
-  val testOverseasProperty = OverseasProperty(testAccountingPeriod, tradingStartDate, testAccountMethod)
+  val testSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriod, testAccountMethod, testSelfEmploymentData)
+  val testUkProperty: UkProperty = UkProperty(testAccountingPeriod, tradingStartDate, testAccountMethod)
+  val testOverseasProperty: OverseasProperty = OverseasProperty(testAccountingPeriod, tradingStartDate, testAccountMethod)
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
     Seq(SelfEmploymentData
