@@ -20,6 +20,8 @@ import models.common.subscription.EnrolmentKey
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
+import uk.gov.hmrc.auth.core.ConfidenceLevel
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
@@ -71,7 +73,7 @@ trait AppConfig {
   val hasEnabledTestOnlyRoutes: Boolean
   val ggAuthenticationURL: String
   val identityVerificationURL: String
-  val identityVerificationRequiredConfidenceLevel: Int
+  val identityVerificationRequiredConfidenceLevel: ConfidenceLevel
   val contactHmrcLink: String
   val govukGuidanceLink: String
   val govukGuidanceITSASignUpIndivLink: String
@@ -225,12 +227,18 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val ggAuthenticationURL: String = config.baseUrl("gg-authentication")
   override lazy val ggURL: String = config.baseUrl("government-gateway")
 
-  override lazy val identityVerificationRequiredConfidenceLevel: Int = config.getInt("identity-verification-frontend.target-confidence-level")
+  override lazy val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = {
+    ConfidenceLevel.fromInt(config.getInt("identity-verification-frontend.target-confidence-level")).getOrElse(
+      throw new InternalServerException(
+        s"[FrontendAppConfig][identityVerificationRequiredConfidenceLevel] - configured confidence level not a real confidence level"
+      )
+    )
+  }
   override lazy val identityVerificationURL: String = {
     val identityVerificationFrontendBaseUrl: String = config.getString("identity-verification-frontend.url")
     val upliftUri: String = config.getString("identity-verification-frontend.uplift-uri")
     val origin: String = config.getString("identity-verification-frontend.origin")
-    val confidenceLevel: Int = identityVerificationRequiredConfidenceLevel
+    val confidenceLevel: Int = identityVerificationRequiredConfidenceLevel.level
     val successUrl: String = baseUrl + controllers.individual.iv.routes.IVSuccessController.success.url
     val failureUrl: String = baseUrl + controllers.individual.iv.routes.IVFailureController.failure.url
 

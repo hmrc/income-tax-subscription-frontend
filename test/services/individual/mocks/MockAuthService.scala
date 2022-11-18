@@ -111,6 +111,6 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
     "Activated"
   )
 
-  val testConfidenceLevel = ConfidenceLevel.L200
+  val testConfidenceLevel: ConfidenceLevel = ConfidenceLevel.L250
 
 }

@@ -27,7 +27,6 @@ import play.api.Logging
 import play.api.mvc.{Result, Results}
 import services.AuditingService
 import uk.gov.hmrc.auth.core.AffinityGroup._
-import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -43,11 +42,11 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
 
   lazy val alreadyEnrolled: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show)
 
-  val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(alreadyEnrolled))
 
-  val enrolledPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val enrolledPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     if (user.mtdItsaRef.nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.enrolledPredicate")))
 
@@ -59,7 +58,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
 
   lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show)
 
-  val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
       Left(Future.successful(timeoutRoute))
     }
@@ -67,36 +66,36 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
 
   lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show)
 
-  val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     user.affinityGroup match {
       case Some(Individual) | Some(Organisation) => Right(AuthPredicateSuccess)
       case _ => Left(Future.successful(wrongAffinity))
     }
 
-  val signUpJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val signUpJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.isInState(SignUp))
       Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val claimEnrolmentJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val claimEnrolmentJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.isInState(ClaimEnrolment))
       Right(AuthPredicateSuccess)
     else Left(Future.successful(claimEnrolmentRoute))
 
-  val preferencesJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val preferencesJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val administratorRolePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val administratorRolePredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     if (!user.isAssistant) Right(AuthPredicateSuccess)
     else Left(Future.successful(cannotUseServiceRoute))
 
-  val confirmedAgentPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val confirmedAgentPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   val ivPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user => {
-    if (user.confidenceLevel >= ConfidenceLevel.L200) {
+    if (user.confidenceLevel >= appConfig.identityVerificationRequiredConfidenceLevel) {
       Right(AuthPredicateSuccess)
     } else {
       user.affinityGroup match {
@@ -105,7 +104,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
           auditingService.audit(IVHandoffAuditModel(
             handoffReason = "individual",
             currentConfidence = user.confidenceLevel.level,
-            minConfidence = appConfig.identityVerificationRequiredConfidenceLevel
+            minConfidence = appConfig.identityVerificationRequiredConfidenceLevel.level
           ))
           Left(Future.successful(Redirect(appConfig.identityVerificationURL)
             .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
@@ -114,7 +113,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
           auditingService.audit(IVHandoffAuditModel(
             handoffReason = "organisation",
             currentConfidence = user.confidenceLevel.level,
-            minConfidence = appConfig.identityVerificationRequiredConfidenceLevel
+            minConfidence = appConfig.identityVerificationRequiredConfidenceLevel.level
           ))
           Left(Future.successful(Redirect(appConfig.identityVerificationURL)
             .addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")))
@@ -146,7 +145,7 @@ object AuthPredicates extends Results {
 
   lazy val alreadyEnrolledRoute: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show)
 
-  lazy val notEnrolledPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  lazy val notEnrolledPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(alreadyEnrolledRoute))
 
@@ -168,7 +167,7 @@ object AuthPredicates extends Results {
       case _ => Left(Future.successful(wrongAffinity))
     }
 
-  val journeyStatePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val journeyStatePredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if ((request.session get JourneyStateKey).isDefined) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
