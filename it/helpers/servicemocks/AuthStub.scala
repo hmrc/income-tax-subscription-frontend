@@ -27,34 +27,34 @@ import Constants._
 object AuthStub extends WireMockMethods {
   def stubAuthOrgAffinity(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ConfidenceLevel.L200, ninoEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ConfidenceLevel.L250, ninoEnrolment))
   }
 
   def stubAuthOrgAffinityNoEnrolments(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ConfidenceLevel.L200))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ConfidenceLevel.L250))
   }
 
   private val authoriseUri = "/auth/authorise"
 
   def stubAuthSuccess(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L200, ninoEnrolment, utrEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, ninoEnrolment, utrEnrolment))
   }
 
   def stubAuthNoNino(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L200, utrEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, utrEnrolment))
   }
 
   def stubAuthNoUtr(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L200, ninoEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, ninoEnrolment))
   }
 
   def stubEnrolled(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L200, ninoEnrolment, utrEnrolment, mtdidEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, ninoEnrolment, utrEnrolment, mtdidEnrolment))
   }
 
   def stubUnauthorised(): StubMapping = {

@@ -21,6 +21,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Configuration
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utilities.UnitTestTrait
 
 trait MockConfig extends UnitTestTrait with AppConfig {
@@ -68,7 +69,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val ggURL: String = "/gg"
   override val ggAuthenticationURL: String = "/gg-auth"
 
-  override val identityVerificationRequiredConfidenceLevel: Int = 200
+  override val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = ConfidenceLevel.L200
   override val identityVerificationURL: String = ""
 
   override val contactHmrcLink: String = "https://www.gov.uk/contact-hmrc"
