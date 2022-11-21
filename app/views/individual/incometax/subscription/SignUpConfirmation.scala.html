@@ -21,17 +21,19 @@
   govukWarningText : GovukWarningText
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(taxYearSelection: Option[AccountingYear])(implicit request: Request[_], messages: Messages)
 
 @principalMainTemplate(title = messages("sign-up-confirmation.heading")) {
  <h1 class="govuk-heading-l">@messages("sign-up-confirmation.heading")</h1>
 
  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section1.heading")</h2>
 
- @govukWarningText(WarningText(
-  iconFallbackText = "Warning",
-  content = Text(messages("sign-up-confirmation.section1.hint"))
- ))
+ @if(taxYearSelection.contains(Next)) {
+  @govukWarningText(WarningText(
+   iconFallbackText = "Warning",
+   content = Text(messages("sign-up-confirmation.section1.hint"))
+  ))
+ }
 
  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
 }
