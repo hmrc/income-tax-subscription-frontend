@@ -31,11 +31,32 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   "The sign up confirmation view" must {
     "have a heading" in {
-      document().selectHead("h1").text() mustBe SignUpConfirmationMessages.heading
+      document().mainContent.selectHead("h1").text() mustBe SignUpConfirmationMessages.heading
+    }
+
+    "have a section 1" which {
+      "contains a heading" in {
+        document().mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.section1heading
+      }
+
+      "contains a hint" in {
+        document().mainContent.selectHead(".govuk-warning-text .govuk-warning-text__text").text() mustBe SignUpConfirmationMessages.section1hint
+      }
+    }
+
+
+
+    "have a section 2" which {
+      "contains a heading" in {
+        document().mainContent.selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.section2heading
+      }
     }
   }
 
   private object SignUpConfirmationMessages {
     val heading = "Sign up complete"
+    val section1heading = "What you will have to do"
+    val section1hint = "Warning Continue to submit your Self Assessment tax return, as normal, until 2024."
+    val section2heading = "Find software and check your account"
   }
 }

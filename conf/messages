@@ -380,6 +380,13 @@ sign-up-complete.what-now.next-updates                          = Send next quar
 sign-up-complete.what-now.no-penalty                            = There is no penalty if you start making updates mid-way through the current tax year.
 sign-up-complete.what-now.submit-annual                         = Submit your annual updates and declare for the tax year by 31 January {0}.
 
+## Sign Up Confirmation page ##
+
+sign-up-confirmation.heading                                    =  Sign up complete
+sign-up-confirmation.section1.heading                           =  What you will have to do
+sign-up-confirmation.section1.hint                              =  Continue to submit your Self Assessment tax return, as normal, until 2024.
+sign-up-confirmation.section2.heading                           =  Find software and check your account
+
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
 
