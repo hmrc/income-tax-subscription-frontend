@@ -454,6 +454,10 @@ sign-up-confirmation.section2.online-services.next-year.paragraph1 = Go to your 
 sign-up-confirmation.section2.online-services.next-year.paragraph2 = It may take a few hours for new information to appear.
 sign-up-confirmation.section2.online-services.next-year.link       = HMRC online services account
 
+sign-up-confirmation.section2.find-software.heading             = Find software ... but in Welsh
+sign-up-confirmation.section2.find-software.para-1              = Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service. ... but in Welsh
+sign-up-confirmation.section2.find-software.link                = Find software ... but in Welsh
+
 ## Errors ##
 error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 

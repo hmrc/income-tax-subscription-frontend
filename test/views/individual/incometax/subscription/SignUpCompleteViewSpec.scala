@@ -58,7 +58,7 @@ class SignUpCompleteViewSpec extends ViewSpec {
     .build().injector.instanceOf[SignUpComplete]
 
   def page(selectedTaxYear: AccountingYear): Html = signUpComplete(
-    taxYearSelection = Some(selectedTaxYear),
+    taxYearSelectionIsNext = selectedTaxYear == Next,
     postAction = testCall
   )
 

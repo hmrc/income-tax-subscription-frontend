@@ -81,7 +81,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         mockAuthEnrolled()
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
 
-        when(mockSignUpComplete(ArgumentMatchers.eq(Some(testSelectedTaxYearNext.accountingYear)), ArgumentMatchers.any())
+        when(mockSignUpComplete(ArgumentMatchers.eq(true), ArgumentMatchers.any())
         (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime))

@@ -25,11 +25,20 @@
 @(taxYearSelectionIsNext: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @findSoftware = {
- <div class="govuk-grid-column-one-half govuk-!-padding-0 col">
-  <div class="govuk-!-border-1 govuk-!-margin-right-2 boxout govuk-!-padding-3">
-   <h3 class="govuk-heading-m">Find software</h3>
-  </div>
- </div>
+<div class="govuk-grid-column-one-half govuk-!-padding-0 col">
+    <div class="govuk-!-border-1 govuk-!-margin-right-2 boxout govuk-!-padding-3">
+    <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.find-software.heading")</h3>
+
+    @if(!taxYearSelectionIsNext) {
+        <p class="govuk-body">
+            @messages("sign-up-confirmation.section2.find-software.para-1")
+        </p>
+        <p>
+            <a class="govuk-link" href="@{appConfig.softwareUrl}">@messages("sign-up-confirmation.section2.find-software.link")</a>
+        </p>
+    }
+    </div>
+</div>
 }
 
 @checkOnlineServices = {
@@ -73,6 +82,7 @@
    content = Text(messages("sign-up-confirmation.section1.hint"))
   ))
  }
+
 
  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
 

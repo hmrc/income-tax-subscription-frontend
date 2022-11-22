@@ -43,15 +43,15 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
     implicit user =>
       withReference { reference =>
         subscriptionDetailsService.fetchSelectedTaxYear(reference) map { selectedTaxYear =>
-          val taxYearSelectionMaybe = selectedTaxYear.map(_.accountingYear)
+          val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
 
           val view = if (isEnabled(ConfirmationPage)) {
             signUpConfirmation(
-              taxYearSelectionIsNext = taxYearSelectionMaybe.contains(Next)
+              taxYearSelectionIsNext = taxYearSelectionIsNext
             )
           } else {
             signUpComplete(
-              taxYearSelection = taxYearSelectionMaybe,
+              taxYearSelectionIsNext = taxYearSelectionIsNext,
               postAction = routes.ConfirmationController.submit
             )
           }
