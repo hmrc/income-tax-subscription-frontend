@@ -18,7 +18,7 @@ package views.individual.incometax.subscription
 
 import models.{AccountingYear, Current, Next}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.individual.incometax.subscription.SignUpConfirmation
@@ -26,9 +26,9 @@ import views.html.individual.incometax.subscription.SignUpConfirmation
 class SignUpConfirmationViewSpec extends ViewSpec {
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
 
-  def page(selectedTaxYear: Option[AccountingYear]): Html = signUpConfirmation(selectedTaxYear)
+  def page(selectedTaxYearIsNext: Boolean): Html = signUpConfirmation(selectedTaxYearIsNext)
 
-  def document(selectedTaxYear: Option[AccountingYear] = Some(Current)): Document = Jsoup.parse(page(selectedTaxYear).body)
+  def document(selectedTaxYearIsNext: Boolean = false): Document = Jsoup.parse(page(selectedTaxYearIsNext).body)
 
   "The sign up confirmation view" must {
     "have a heading" in {
@@ -48,7 +48,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a hint" when {
         "the Next tax year is selected" in {
-          document(Some(Next)).mainContent.selectHead(".govuk-warning-text .govuk-warning-text__text").text() mustBe SignUpConfirmationMessages.section1hint
+          document(true).mainContent.selectHead(".govuk-warning-text .govuk-warning-text__text").text() mustBe SignUpConfirmationMessages.section1hint
         }
       }
     }
@@ -59,6 +59,22 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a heading" in {
         document().mainContent.selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.section2heading
       }
+
+      "contains the online HMRC services section" which {
+        def onlineHmrcServices: Element = document().mainContent.selectNth(".govuk-grid-column-one-half", 2)
+
+        "contains a heading" in {
+          onlineHmrcServices.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2onlineServicesHeading
+        }
+
+        "contains a paragraph" in {
+          onlineHmrcServices.selectHead("p").text() mustBe SignUpConfirmationMessages.section2onlineServicesParagraph
+        }
+
+        "contains a link" in {
+          onlineHmrcServices.selectHead("a").text() mustBe SignUpConfirmationMessages.section2onlineServicesLink
+        }
+      }
     }
   }
 
@@ -67,5 +83,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section1heading = "What you will have to do"
     val section1hint = "Warning Continue to submit your Self Assessment tax return, as normal, until 2024."
     val section2heading = "Find software and check your account"
+    val section2onlineServicesHeading = "Check HMRC online services"
+    val section2onlineServicesParagraph = "You can review or change the answers you have just entered, and to get updates."
+    val section2onlineServicesLink = "Go to your HMRC online services account"
   }
 }

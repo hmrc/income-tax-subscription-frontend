@@ -15,20 +15,41 @@
  *@
 
 @import views.html.templates.PrincipalMainTemplate
+@import config.AppConfig
 
 @this(
   principalMainTemplate: PrincipalMainTemplate,
   govukWarningText : GovukWarningText
 )
 
-@(taxYearSelection: Option[AccountingYear])(implicit request: Request[_], messages: Messages)
+@(taxYearSelectionIsNext: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@principalMainTemplate(title = messages("sign-up-confirmation.heading")) {
+@findSoftware = {
+ <div class="govuk-grid-column-one-half govuk-!-padding-0 col">
+  <div class="govuk-!-border-1 govuk-!-margin-right-2 boxout govuk-!-padding-3">
+   <h3 class="govuk-heading-m">Find software</h3>
+  </div>
+ </div>
+}
+
+@checkOnlineServices = {
+ <div class="govuk-grid-column-one-half govuk-!-padding-0 col">
+  <div class="govuk-!-border-1 govuk-!-margin-left-2 boxout govuk-!-padding-3">
+   <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.online-services.heading")</h3>
+   <p class="govuk-body">
+   @messages("sign-up-confirmation.section2.online-services.paragraph")
+   </p>
+   <a class="govuk-link" href="@{appConfig.onlineServiceAccountUrl}">@messages("sign-up-confirmation.section2.online-services.link")</a>
+  </div>
+ </div>
+}
+
+@principalMainTemplate(title = messages("sign-up-confirmation.heading"), fullWidth = true) {
  <h1 class="govuk-heading-l">@messages("sign-up-confirmation.heading")</h1>
 
  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section1.heading")</h2>
 
- @if(taxYearSelection.contains(Next)) {
+ @if(taxYearSelectionIsNext) {
   @govukWarningText(WarningText(
    iconFallbackText = "Warning",
    content = Text(messages("sign-up-confirmation.section1.hint"))
@@ -36,4 +57,9 @@
  }
 
  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
+
+ <div class="row govuk-!-margin-bottom-2">
+  @findSoftware
+  @checkOnlineServices
+ </div>
 }

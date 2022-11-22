@@ -20,6 +20,7 @@ import auth.individual.PostSubmissionController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ConfirmationPage
 import controllers.utils.ReferenceRetrieval
+import models.Next
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import views.html.individual.incometax.subscription.{SignUpComplete, SignUpConfirmation}
@@ -46,7 +47,7 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
 
           val view = if (isEnabled(ConfirmationPage)) {
             signUpConfirmation(
-              taxYearSelection = taxYearSelectionMaybe
+              taxYearSelectionIsNext = taxYearSelectionMaybe.contains(Next)
             )
           } else {
             signUpComplete(

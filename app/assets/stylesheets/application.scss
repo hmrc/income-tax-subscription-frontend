@@ -28,3 +28,19 @@ body:not(.js-enabled) {
 .client-details {
   background-color: govuk-colour("light-grey");
 }
+
+.boxout {
+  border-style: solid;
+  border-color: #0b0c0c;
+  border-width: thin;
+  height: calc(100% - 30px);
+}
+
+.row {
+  display: flex;
+  width: 100%;
+}
+
+.col {
+  flex: 1;
+}

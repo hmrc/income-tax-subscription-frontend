@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import views.html.templates.FullWidthMainContentLayout
 
 @this(
     hmrcLayout: HmrcLayout,
@@ -30,10 +31,12 @@
     standardBetaBanner: StandardBetaBanner,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    fullWidthMainContentLayout: FullWidthMainContentLayout,
+    defaultMainContent: TwoThirdsMainContent
 )
 
-@(title: String, serviceName: String, serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, serviceName: String, serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @content = {
 
@@ -64,7 +67,8 @@
     }
 }
 
-@hmrcLayout(
+  @hmrcLayout(
+    mainContentLayout = if(fullWidth) { Some(fullWidthMainContentLayout(_)) } else { Some(defaultMainContent(_)) },
     pageTitle = Some(title),
     additionalHeadBlock = Some(additionalHeadBlock),
     serviceName = Some(serviceName),
@@ -75,3 +79,4 @@
     phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
     userResearchBannerUrl = Some(appConfig.urBannerUrl),
     nonce = None)(content)
+
