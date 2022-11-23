@@ -65,6 +65,7 @@ trait AppConfig {
   val agentAuthUrl: String
   val agentAccountUrl: String
   val shutterPage: String
+  val onlineServiceAccountUrl: String
   val ggURL: String
   val agentServicesUrl: String
   val agentServicesAccountHomeUrl: String
@@ -222,6 +223,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val preferencesUrl: String = config.baseUrl("preferences")
   override lazy val btaBaseUrl: String = config.getString("bta.baseUrl")
   override lazy val shutterPage: String = config.getString("shutter-page.url")
+  override lazy val onlineServiceAccountUrl: String = config.getString("online-services-account.url")
   override val wrongCredentials: String = s"$btaBaseUrl/business-account/wrong-credentials"
   override val haveSaUtr: String = s"$btaBaseUrl/business-account/add-tax/self-assessment/have-sa-utr"
   override lazy val ggAuthenticationURL: String = config.baseUrl("gg-authentication")

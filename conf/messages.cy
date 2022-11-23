@@ -447,6 +447,9 @@ sign-up-confirmation.heading                                    =  Sign up compl
 sign-up-confirmation.section1.heading                           =  What you will have to do
 sign-up-confirmation.section1.hint                              =  Continue to submit your Self Assessment tax return, as normal, until 2024.
 sign-up-confirmation.section2.heading                           =  Find software and check your account
+sign-up-confirmation.section2.online-services.heading           =  Check HMRC online services
+sign-up-confirmation.section2.online-services.paragraph         =  You can review or change the answers you have just entered, and to get updates.
+sign-up-confirmation.section2.online-services.link              =  Go to your HMRC online services account
 
 ## Errors ##
 error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen

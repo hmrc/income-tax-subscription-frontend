@@ -63,6 +63,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
   override lazy val softwareUrl = "https://www.gov.uk/guidance/software-for-sending-income-tax-updates"
   override lazy val shutterPage = "https://www.tax.service.gov.uk/outage-income-tax-subscription/"
+  override lazy val onlineServiceAccountUrl = "https://www.tax.service.gov.uk/account"
   override val matchingAttempts: Int = 3
   override val matchingLockOutSeconds: Int = 60
 
