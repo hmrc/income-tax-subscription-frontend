@@ -16,7 +16,6 @@
 
 package views.individual.incometax.subscription
 
-import models.{AccountingYear, Current, Next}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
@@ -60,7 +59,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         document().mainContent.selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.section2heading
       }
 
-      "contains the online HMRC services section" which {
+      "contains the current tax year online HMRC services section" which {
         def onlineHmrcServices: Element = document().mainContent.selectNth(".govuk-grid-column-one-half", 2)
 
         "contains a heading" in {
@@ -73,6 +72,28 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
         "contains a link" in {
           onlineHmrcServices.selectHead("a").text() mustBe SignUpConfirmationMessages.section2onlineServicesLink
+          onlineHmrcServices.selectHead("a").attr("href") mustBe "https://www.tax.service.gov.uk/account"
+        }
+      }
+
+      "contains the next tax year online HMRC services section" which {
+        def onlineHmrcServices: Element = document(true).mainContent.selectNth(".govuk-grid-column-one-half", 2)
+
+        "contains a heading" in {
+          onlineHmrcServices.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2onlineServicesHeading
+        }
+
+        "contains a paragraph 1" in {
+          onlineHmrcServices.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section2onlineServicesNextYearParagraph1
+        }
+
+        "contains a link" in {
+          onlineHmrcServices.selectHead("a").text() mustBe SignUpConfirmationMessages.section2onlineServicesNextYearParagraph1Link
+          onlineHmrcServices.selectHead("a").attr("href") mustBe "https://www.tax.service.gov.uk/account"
+        }
+
+        "contains a paragraph 2" in {
+          onlineHmrcServices.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section2onlineServicesNextYearParagraph2
         }
       }
     }
@@ -86,5 +107,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section2onlineServicesHeading = "Check HMRC online services"
     val section2onlineServicesParagraph = "You can review or change the answers you have just entered, and to get updates."
     val section2onlineServicesLink = "Go to your HMRC online services account"
+    val section2onlineServicesNextYearParagraph1 = "Go to your HMRC online services account to review or change the answers you have entered," +
+      " and to get updates."
+    val section2onlineServicesNextYearParagraph1Link = "HMRC online services account"
+    val section2onlineServicesNextYearParagraph2 = "It may take a few hours for new information to appear."
   }
 }

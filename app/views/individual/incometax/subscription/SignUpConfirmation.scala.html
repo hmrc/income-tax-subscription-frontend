@@ -33,15 +33,33 @@
 }
 
 @checkOnlineServices = {
- <div class="govuk-grid-column-one-half govuk-!-padding-0 col">
-  <div class="govuk-!-border-1 govuk-!-margin-left-2 boxout govuk-!-padding-3">
-   <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.online-services.heading")</h3>
-   <p class="govuk-body">
-   @messages("sign-up-confirmation.section2.online-services.paragraph")
-   </p>
-   <a class="govuk-link" href="@{appConfig.onlineServiceAccountUrl}">@messages("sign-up-confirmation.section2.online-services.link")</a>
+  <div class="govuk-grid-column-one-half govuk-!-padding-0 col">
+    <div class="govuk-!-border-1 govuk-!-margin-left-2 boxout govuk-!-padding-3">
+      <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.online-services.heading")</h3>
+
+      @if(taxYearSelectionIsNext) {
+        <p class="govuk-body">
+          @Html(
+            messages(
+              "sign-up-confirmation.section2.online-services.next-year.paragraph1",
+              s"""<a class="govuk-link" href="${appConfig.onlineServiceAccountUrl}">${messages("sign-up-confirmation.section2.online-services.next-year.link")}</a>"""
+            )
+          )
+        </p>
+        <p class="govuk-body">
+          @messages("sign-up-confirmation.section2.online-services.next-year.paragraph2")
+        </p>
+      } else {
+        <p class="govuk-body">
+          @messages("sign-up-confirmation.section2.online-services.paragraph")
+        </p>
+        <a class="govuk-link" href="@{
+          appConfig.onlineServiceAccountUrl
+        }">@messages("sign-up-confirmation.section2.online-services.link")</a>
+      }
+
+    </div>
   </div>
- </div>
 }
 
 @principalMainTemplate(title = messages("sign-up-confirmation.heading"), fullWidth = true) {
