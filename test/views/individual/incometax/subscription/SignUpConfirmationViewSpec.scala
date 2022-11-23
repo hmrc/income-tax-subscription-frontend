@@ -16,6 +16,7 @@
 
 package views.individual.incometax.subscription
 
+import models.{AccountingYear, Current, Next}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
@@ -25,9 +26,9 @@ import views.html.individual.incometax.subscription.SignUpConfirmation
 class SignUpConfirmationViewSpec extends ViewSpec {
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
 
-  def page(): Html = signUpConfirmation()
+  def page(selectedTaxYear: Option[AccountingYear]): Html = signUpConfirmation(selectedTaxYear)
 
-  def document(): Document = Jsoup.parse(page().body)
+  def document(selectedTaxYear: Option[AccountingYear] = Some(Current)): Document = Jsoup.parse(page(selectedTaxYear).body)
 
   "The sign up confirmation view" must {
     "have a heading" in {
@@ -39,8 +40,16 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         document().mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.section1heading
       }
 
-      "contains a hint" in {
-        document().mainContent.selectHead(".govuk-warning-text .govuk-warning-text__text").text() mustBe SignUpConfirmationMessages.section1hint
+      "not contains a hint" when {
+        "the Current tax year is selected" in {
+          document().mainContent.select(".govuk-warning-text .govuk-warning-text__text").isEmpty mustBe true
+        }
+      }
+
+      "contains a hint" when {
+        "the Next tax year is selected" in {
+          document(Some(Next)).mainContent.selectHead(".govuk-warning-text .govuk-warning-text__text").text() mustBe SignUpConfirmationMessages.section1hint
+        }
       }
     }
 
