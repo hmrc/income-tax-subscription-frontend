@@ -15,13 +15,12 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.injected.{ButtonHelper}
-@import views.html.templates.PrincipalMainTemplate
+@import services.AccountingPeriodService
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.ImplicitDateFormatterImpl
-@import services.AccountingPeriodService
-@import views.html.helpers.injected.UpdateDeadlineTable
+@import views.html.helpers.injected.{ButtonHelper, UpdateDeadlineTable}
+@import views.html.templates.PrincipalMainTemplate
 
 @this(
         principalMainTemplate: PrincipalMainTemplate,
@@ -57,7 +56,13 @@
     @if(previous.nonEmpty) {
         <li>
             <p class="govuk-body">@messages("sign-up-complete.what-now.previous-updates")</p>
-            @table(previous)
+            @table(
+              updateAndDeadlineDates = previous,
+              tableCaption = messages("sign-up-complete.quarter-table-caption"),
+              fromToFormat = "%s - %s",
+              showTableCaption = false,
+              includeYearInDates = true
+            )
             <p class="govuk-body">@messages("sign-up-complete.what-now.no-penalty")</p>
         </li>
     }
@@ -70,7 +75,13 @@
         } else {
             <p class="govuk-body">@messages("sign-up-complete.what-now.next-updates")</p>
         }
-        @table(next)
+        @table(
+          updateAndDeadlineDates = next,
+          tableCaption = messages("sign-up-complete.quarter-table-caption"),
+          fromToFormat = "%s - %s",
+          showTableCaption = false,
+          includeYearInDates = true
+        )
     </li>
 }
 
