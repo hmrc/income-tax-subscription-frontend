@@ -36,7 +36,7 @@
 	implicit appConfig: AppConfig
 )
 
-@(taxYearSelection: Option[AccountingYear], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(taxYearSelectionIsNext: Boolean, postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
 
@@ -84,7 +84,7 @@
                 args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-complete.what-now.find-software.link"), Some(appConfig.softwareUrl)))
             ))
         </li>
-        @if(taxYearSelection.contains(Next)) {
+        @if(taxYearSelectionIsNext) {
             @nextUpdates(accountingPeriodService.getAllUpdateAndDeadlineDates(Next), isNextYear = true)
             <li>@messages("sign-up-complete.what-now.submit-annual", (accountingPeriodService.currentTaxYear + 2).toString)</li>
         } else {
