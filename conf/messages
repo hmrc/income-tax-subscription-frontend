@@ -411,6 +411,10 @@ sign-up-confirmation.section2.find-software.heading                = Find softwa
 sign-up-confirmation.section2.find-software.para-1                 = Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service.
 sign-up-confirmation.section2.find-software.link                   = Find software
 
+sign-up-confirmation.section2.getting-prepared.heading             = Getting prepared
+sign-up-confirmation.section2.getting-prepared.para-1              = You can not sign up to Making Tax Digital for Income Tax until next year 2024. But, to help you get prepared, we made a service to help you find the right software - so you are ready when you can sign up.
+sign-up-confirmation.section2.getting-prepared.link                = Find software
+
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
 

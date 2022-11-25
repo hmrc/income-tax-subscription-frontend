@@ -472,6 +472,10 @@ sign-up-confirmation.section2.find-software.heading             = Find software 
 sign-up-confirmation.section2.find-software.para-1              = Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service. ... but in Welsh
 sign-up-confirmation.section2.find-software.link                = Find software ... but in Welsh
 
+sign-up-confirmation.section2.getting-prepared.heading             = Getting prepared ... but in Welsh
+sign-up-confirmation.section2.getting-prepared.para-1              = You can not sign up to Making Tax Digital for Income Tax until next year 2024. But, to help you get prepared, we made a service to help you find the right software - so you are ready when you can sign up. ... but in Welsh
+sign-up-confirmation.section2.getting-prepared.link                = Find software ... but in Welsh
+
 ## Errors ##
 error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 

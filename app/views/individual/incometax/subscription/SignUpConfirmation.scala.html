@@ -50,112 +50,117 @@
 }
 
 @quarterlyUpdates = {
-  <div class="govuk-grid-column-full govuk-!-padding-0 col">
-    <div class="govuk-!-border-1 boxout govuk-!-padding-3">
-      @if(taxYearSelectionIsNext) {
-        <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section1.quarterly-updates.next-year.heading")</h3>
-      } else {
+  <div class="boxout col">
+    @if(taxYearSelectionIsNext) {
+      <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section1.quarterly-updates.next-year.heading")</h3>
+    }
 
-      }
+    <p class="govuk-body">
+      @messages("sign-up-confirmation.section1.quarterly-updates.paragraph1")
+    </p>
 
+    @table(
+      updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+      tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption"),
+      fromToFormat = s"%s ${messages("base.to")} %s"
+    )
+
+    @if(taxYearSelectionIsNext) {
       <p class="govuk-body">
-        @messages("sign-up-confirmation.section1.quarterly-updates.paragraph1")
-      </p>
-
-      @table(
-        updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-        tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption"),
-        fromToFormat = s"%s ${messages("base.to")} %s"
-      )
-
-      @if(taxYearSelectionIsNext) {
-        <p class="govuk-body">
         @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2")
-        </p>
-
-        <p class="govuk-body">
+      </p>
+      <p class="govuk-body">
         @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3")
-        </p>
-
-        <p class="govuk-body">
+      </p>
+      <p class="govuk-body">
         @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph4")
-        </p>
-      }
-    </div>
+      </p>
+    }
   </div>
 }
 
 @findSoftware = {
-<div class="govuk-grid-column-one-half govuk-!-padding-0 col">
-    <div class="govuk-!-border-1 govuk-!-margin-right-2 boxout govuk-!-padding-3">
-    <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.find-software.heading")</h3>
-
-    @if(!taxYearSelectionIsNext) {
-        <p class="govuk-body">
-            @messages("sign-up-confirmation.section2.find-software.para-1")
-        </p>
-        <p>
-            <a class="govuk-link" href="@{appConfig.softwareUrl}">@messages("sign-up-confirmation.section2.find-software.link")</a>
-        </p>
-    }
+  @if(!taxYearSelectionIsNext) {
+    <div class="boxout col">
+      <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.find-software.heading")</h3>
+      <p class="govuk-body">
+        @messages("sign-up-confirmation.section2.find-software.para-1")
+      </p>
+      <p>
+        <a class="govuk-link" href="@{appConfig.softwareUrl}">@messages("sign-up-confirmation.section2.find-software.link")</a>
+      </p>
     </div>
-</div>
+  }
 }
 
 @checkOnlineServices = {
-  <div class="govuk-grid-column-one-half govuk-!-padding-0 col">
-    <div class="govuk-!-border-1 govuk-!-margin-left-2 boxout govuk-!-padding-3">
-      <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.online-services.heading")</h3>
+  <div class="col boxout">
+    <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.online-services.heading")</h3>
 
-      @if(taxYearSelectionIsNext) {
-        <p class="govuk-body">
-          @Html(
-            messages(
-              "sign-up-confirmation.section2.online-services.next-year.paragraph1",
-              s"""<a class="govuk-link" href="${appConfig.onlineServiceAccountUrl}">${messages("sign-up-confirmation.section2.online-services.next-year.link")}</a>"""
-            )
+    @if(taxYearSelectionIsNext) {
+      <p class="govuk-body">
+        @Html(
+          messages(
+            "sign-up-confirmation.section2.online-services.next-year.paragraph1",
+            s"""<a class="govuk-link" href="${appConfig.onlineServiceAccountUrl}">${messages("sign-up-confirmation.section2.online-services.next-year.link")}</a>"""
           )
-        </p>
-        <p class="govuk-body">
-          @messages("sign-up-confirmation.section2.online-services.next-year.paragraph2")
-        </p>
-      } else {
-        <p class="govuk-body">
-          @messages("sign-up-confirmation.section2.online-services.paragraph")
-        </p>
-        <a class="govuk-link" href="@{
-          appConfig.onlineServiceAccountUrl
-        }">@messages("sign-up-confirmation.section2.online-services.link")</a>
-      }
-
-    </div>
+        )
+      </p>
+      <p class="govuk-body">
+        @messages("sign-up-confirmation.section2.online-services.next-year.paragraph2")
+      </p>
+    } else {
+      <p class="govuk-body">
+        @messages("sign-up-confirmation.section2.online-services.paragraph")
+      </p>
+      <p>
+        <a class="govuk-link" href="@{appConfig.onlineServiceAccountUrl}">@messages("sign-up-confirmation.section2.online-services.link")</a>
+      </p>
+    }
   </div>
 }
 
+@gettingPrepared = {
+  @if(taxYearSelectionIsNext) {
+    <div class="col boxout">
+      <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.getting-prepared.heading")</h3>
+      <p class="govuk-body">
+        @messages("sign-up-confirmation.section2.getting-prepared.para-1")
+      </p>
+      <p>
+        <a class="govuk-link" href="@{appConfig.softwareUrl}">@messages("sign-up-confirmation.section2.getting-prepared.link")</a>
+      </p>
+    </div>
+  }
+}
+
 @principalMainTemplate(title = messages("sign-up-confirmation.heading"), fullWidth = true) {
+
   @govukPanel(Panel(
     title = Text(messages("sign-up-confirmation.heading")),
     content = HtmlContent(headingPanelContent),
     classes = "govuk-!-margin-bottom-4"
   ))
 
- <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section1.heading")</h2>
+  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section1.heading")</h2>
 
- @if(taxYearSelectionIsNext) {
-  @govukWarningText(WarningText(
-   iconFallbackText = "Warning",
-   content = Text(messages("sign-up-confirmation.section1.hint"))
-  ))
- }
+  @if(taxYearSelectionIsNext) {
+    @govukWarningText(WarningText(
+      iconFallbackText = "Warning",
+      content = Text(messages("sign-up-confirmation.section1.hint"))
+    ))
+  }
 
   <div class="row govuk-!-margin-bottom-2">
     @quarterlyUpdates
   </div>
 
- <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
+  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
 
- <div class="row govuk-!-margin-bottom-2">
-  @findSoftware
-  @checkOnlineServices
- </div>
+  <div class="row">
+    @findSoftware
+    @checkOnlineServices
+    @gettingPrepared
+  </div>
+
 }

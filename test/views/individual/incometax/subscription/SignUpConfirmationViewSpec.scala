@@ -28,6 +28,7 @@ import java.time.Month._
 import scala.util.Random
 
 class SignUpConfirmationViewSpec extends ViewSpec {
+
   val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   import implicitDateFormatter.LongDate
@@ -43,7 +44,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     Jsoup.parse(page(selectedTaxYearIsNext, userNameMaybe).body)
 
   "The sign up confirmation view" when {
+
     for (yearIsNext <- Seq(true, false)) {
+
       s"nextYear flag is $yearIsNext" must {
         val testMainContent = document(yearIsNext).mainContent
         "have a heading panel" which {
@@ -92,7 +95,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
 
           "contains the quarterly updates section" which {
-            def quarterlyUpdates: Element = testMainContent.selectNth(".govuk-grid-column-full .govuk-grid-column-full", 1)
+            def quarterlyUpdates: Element = testMainContent.selectNth(".row", 1).selectNth(".col", 1)
 
             if (yearIsNext) {
               "contains a heading" in {
@@ -137,30 +140,78 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "have a section 2" which {
+
           "contains a heading" in {
             testMainContent.selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.section2heading
           }
 
-          "contains the online HMRC services section" which {
-            def onlineHmrcServices: Element = testMainContent.selectNth(".govuk-grid-column-one-half", 2)
+          if(yearIsNext) {
+            "contains the online HMRC services section in first position" which {
+              def onlineHmrcServices: Element = testMainContent.selectNth(".row", 2).selectNth(".col", 1)
 
-            "contains a heading" in {
-              onlineHmrcServices.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2onlineServicesHeading
-            }
-            if (yearIsNext) {
-              "contains next year paragraph 1" in {
+              "contains a heading" in {
+                onlineHmrcServices.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2onlineServicesHeading
+              }
+
+              "contains a paragraph 1" in {
                 onlineHmrcServices.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section2onlineServicesNextYearParagraph1
               }
 
-              "contains next year link" in {
+              "contains a link" in {
                 onlineHmrcServices.selectHead("a").text() mustBe SignUpConfirmationMessages.section2onlineServicesNextYearParagraph1Link
                 onlineHmrcServices.selectHead("a").attr("href") mustBe "https://www.tax.service.gov.uk/account"
               }
 
-              "contains next year paragraph 2" in {
+              "contains a paragraph 2" in {
                 onlineHmrcServices.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section2onlineServicesNextYearParagraph2
               }
-            } else {
+
+            }
+            "contains the getting prepared section in second position" which {
+              def gettingPrepared: Element = testMainContent.selectNth(".row", 2).selectNth(".col", 2)
+
+              "contains a heading" in {
+                gettingPrepared.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2GettingPreparedHeading
+              }
+
+              "contains a paragraph" in {
+                gettingPrepared.selectHead("p").text() mustBe SignUpConfirmationMessages.section2GettingPreparedParagraph
+              }
+
+              "contains a link" in {
+                val link = gettingPrepared.selectHead("a")
+                link.text() mustBe SignUpConfirmationMessages.section2GettingPreparedLink
+                link.attr("href") mustBe
+                  "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+              }
+
+            }
+          } else {
+            "contains the find software section in first position" which {
+              def findSoftware: Element = testMainContent.selectNth(".row", 2).selectNth(".col", 1)
+
+              "contains a heading" in {
+                findSoftware.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2FindSoftwareHeading
+              }
+
+              "contains a paragraph" in {
+                findSoftware.selectHead("p").text() mustBe SignUpConfirmationMessages.section2FindSoftwareParagraph
+              }
+
+              "contains a link" in {
+                findSoftware.selectHead("a").text() mustBe SignUpConfirmationMessages.section2FindSoftwareLink
+                findSoftware.selectHead("a").attr("href") mustBe
+                  "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+              }
+
+            }
+            "contains the online HMRC services section in second position" which {
+              def onlineHmrcServices: Element = testMainContent.selectNth(".row", 2).selectNth(".col", 2)
+
+              "contains a heading" in {
+                onlineHmrcServices.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2onlineServicesHeading
+              }
+
               "contains this year paragraph" in {
                 onlineHmrcServices.selectHead("p").text() mustBe SignUpConfirmationMessages.section2onlineServicesThisYearParagraph
               }
@@ -169,31 +220,10 @@ class SignUpConfirmationViewSpec extends ViewSpec {
                 onlineHmrcServices.selectHead("a").text() mustBe SignUpConfirmationMessages.section2onlineServicesLink
                 onlineHmrcServices.selectHead("a").attr("href") mustBe "https://www.tax.service.gov.uk/account"
               }
+
             }
           }
-          "contains the find software section" which {
-            def findSoftware: Element = testMainContent.selectNth(".govuk-grid-column-one-half", 1)
 
-            "contains a heading" in {
-              findSoftware.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2FindSoftwareHeading
-            }
-            if (yearIsNext) {
-
-              // Next year "find software" section tests go here.
-
-            } else {
-
-              "contains this year paragraph" in {
-                findSoftware.selectHead("p").text() mustBe SignUpConfirmationMessages.section2FindSoftwareParagraph
-              }
-
-              "contains this year link" in {
-                findSoftware.selectHead("a").text() mustBe SignUpConfirmationMessages.section2FindSoftwareLink
-                findSoftware.selectHead("a").attr("href") mustBe
-                  "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
-              }
-            }
-          }
         }
       }
     }
@@ -229,6 +259,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section2FindSoftwareParagraph =
       "Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service."
     val section2FindSoftwareLink = "Find software"
+
+    val section2GettingPreparedHeading = "Getting prepared"
+    val section2GettingPreparedParagraph: String =
+      "You can not sign up to Making Tax Digital for Income Tax until next year 2024. But, to help you get prepared, " +
+        "we made a service to help you find the right software - so you are ready when you can sign up."
+    val section2GettingPreparedLink = "Find software"
   }
 
   private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)
@@ -238,4 +274,5 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, NOVEMBER, FIFTH))
   private val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, FEBRUARY, FIFTH))
   private val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, MAY, FIFTH))
+
 }
