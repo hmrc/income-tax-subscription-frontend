@@ -445,6 +445,8 @@ sign-up-complete.what-now.submit-annual                         = Cyflwynwch eic
 ## Sign Up Confirmation page ##
 
 sign-up-confirmation.heading                                       = Sign up complete
+sign-up-confirmation.heading.panel                                 = is signed up for Making Tax Digital for Income Tax for the current year
+
 sign-up-confirmation.section1.heading                              = What you will have to do
 
 sign-up-confirmation.section1.hint                                 = Continue to submit your Self Assessment tax return, as normal, until 2024.

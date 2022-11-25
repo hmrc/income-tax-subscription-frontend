@@ -20,8 +20,6 @@ import common.Constants
 import common.Constants.ITSASessionKeys
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
-import IncomeTaxSAUser.fullName
-import IncomeTaxSAUser.spsEntityId
 
 trait IncomeTaxUser {
   val enrolments: Enrolments
@@ -66,7 +64,7 @@ case class IncomeTaxSAUser(enrolments: Enrolments,
   }
 
   def getUserIdentifiersFromSession()(implicit request: Request[AnyContent]): UserIdentifiers =
-    UserIdentifiers(nino, utr, fullName, spsEntityId)
+    UserIdentifiers(nino, utr, IncomeTaxSAUser.fullName, IncomeTaxSAUser.spsEntityId)
 
   lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
 }
