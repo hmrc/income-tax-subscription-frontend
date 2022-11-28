@@ -16,13 +16,22 @@
 
 package views.individual.incometax.subscription
 
+import models.UpdateDeadline
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
-import utilities.ViewSpec
+import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.individual.incometax.subscription.SignUpConfirmation
 
+import java.time.LocalDate
+import java.time.Month._
+import scala.util.Random
+
 class SignUpConfirmationViewSpec extends ViewSpec {
+  val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
+
+  import implicitDateFormatter.LongDate
+
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
 
   def page(selectedTaxYearIsNext: Boolean): Html = signUpConfirmation(selectedTaxYearIsNext)
@@ -49,6 +58,50 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           } else {
             "does not contain a hint" in {
               testMainContent.select(".govuk-warning-text .govuk-warning-text__text").isEmpty mustBe true
+            }
+          }
+
+          "contains the quarterly updates section" which {
+            def quarterlyUpdates: Element = testMainContent.selectNth(".govuk-grid-column-full", 1)
+
+            if (yearIsNext) {
+              "contains a heading" in {
+                quarterlyUpdates.selectHead("h3").text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearHeading
+              }
+            }
+
+            "contains next year paragraph 1" in {
+              quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesParagraph1
+            }
+
+            "contains a table" in {
+              quarterlyUpdates.mustHaveTable(
+                tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
+                tableRows = List(
+                  List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                  List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                  List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                  List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+                ),
+                maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+                hiddenTableCaption = false
+              )
+            }
+
+            if (yearIsNext) {
+              "contains next year paragraph 2" in {
+                quarterlyUpdates.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph2
+              }
+
+              "contains next year paragraph 3" in {
+                quarterlyUpdates.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph3
+              }
+
+              "contains next year paragraph 4" in {
+                quarterlyUpdates.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph4
+              }
+            } else {
+
             }
           }
         }
@@ -122,6 +175,16 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section1hint = "Warning Continue to submit your Self Assessment tax return, as normal, until 2024."
     val section2heading = "Find software and check your account"
 
+    val quarterlyUpdate = "Quarterly update"
+    val deadline = "Deadline"
+    val quarterlyUpdatesTableCaption = "Quarterly updates by the deadline"
+
+    val section1QuarterlyUpdatesNextYearHeading = "1. Then update us every quarter"
+    val section1QuarterlyUpdatesParagraph1 = "You can file as many updates as you want but you must submit them on time, each quarter."
+    val section1QuarterlyUpdatesNextYearParagraph2 = "You can start sending quarterly updates during the next tax year. It will not affect the amount you pay."
+    val section1QuarterlyUpdatesNextYearParagraph3 = "After you have sent an update you will get a year-to-date Income Tax estimate."
+    val section1QuarterlyUpdatesNextYearParagraph4 = "There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed."
+
     val section2onlineServicesHeading = "Check HMRC online services"
     val section2onlineServicesThisYearParagraph = "You can review or change the answers you have just entered, and to get updates."
     val section2onlineServicesLink = "Go to your HMRC online services account"
@@ -135,4 +198,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service."
     val section2FindSoftwareLink = "Find software"
   }
+
+  private val CURRENT_TAX_YEAR: Int = Random.between(1000, 10000)
+  private val FIFTH: Int = 5
+  private val SIXTH: Int = 6
+  private val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  private val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, NOVEMBER, FIFTH))
+  private val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, FEBRUARY, FIFTH))
+  private val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, MAY, FIFTH))
 }

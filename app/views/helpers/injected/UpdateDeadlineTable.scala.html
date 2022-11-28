@@ -21,19 +21,37 @@
   implicitDateFormatter: ImplicitDateFormatterImpl
 )
 
-@(updateAndDeadlineDates: List[UpdateDeadline])(implicit messages: Messages)
+@(
+  updateAndDeadlineDates: List[UpdateDeadline],
+  tableCaption: String,
+  fromToFormat: String,
+  showTableCaption: Boolean = true,
+  includeYearInDates: Boolean = false
+)(implicit messages: Messages)
 
 @import implicitDateFormatter.LongDate
 
 @govukTable(Table(
   rows = updateAndDeadlineDates.map { updateDeadline =>
     Seq(
-      TableRow(content = Text(s"${updateDeadline.updateFrom.toLongDate} - ${updateDeadline.updateTo.toLongDate}")),
-      TableRow(content = Text(updateDeadline.deadline.toLongDate))
+      TableRow(content = Text(
+        if (includeYearInDates) {
+          fromToFormat.format(updateDeadline.updateFrom.toLongDate, updateDeadline.updateTo.toLongDate)
+        } else {
+          fromToFormat.format(updateDeadline.updateFrom.toLongDateNoYear, updateDeadline.updateTo.toLongDateNoYear)
+        }
+      )),
+      TableRow(content = Text(
+        if (includeYearInDates) {
+          updateDeadline.deadline.toLongDate
+        } else {
+          updateDeadline.deadline.toLongDateNoYear
+        }
+      ))
     )
   },
-  caption = Some(messages("agent.sign-up-complete.quarter-table-caption")),
-  captionClasses = "govuk-visually-hidden",
+  caption = Some(tableCaption),
+  captionClasses = if (showTableCaption) {""} else {"govuk-visually-hidden"},
   head = Some(Seq(
     HeadCell(
       content = Text(messages("base.update_heading"))

@@ -364,6 +364,7 @@ sign-up-complete.what-now.sendPreviousUpdates                   = You need to ad
 sign-up-complete.what-now.sendQuarterly                         = Send next quarterly updates using your software by:
 sign-up-complete.whatHappensNext.sendQuarterly                  = You will need to send quarterly updates using your software by:
 sign-up-complete.what-now.submitAnnualUpdates                   = Submit your annual updates and declare for the tax year by 31 January {0}.
+sign-up-complete.quarter-table-caption                          = Submit quarterly updates by the deadline
 sign-up.complete.julyUpdate                                     = 5 July {0}
 sign-up.complete.octoberUpdate                                  = 5 October {0}
 sign-up.complete.januaryUpdate                                  = 5 January {0}
@@ -382,16 +383,26 @@ sign-up-complete.what-now.submit-annual                         = Submit your an
 
 ## Sign Up Confirmation page ##
 
-sign-up-confirmation.heading                                       = Sign up complete
-sign-up-confirmation.section1.heading                              = What you will have to do
-sign-up-confirmation.section1.hint                                 = Continue to submit your Self Assessment tax return, as normal, until 2024.
-sign-up-confirmation.section2.heading                              = Find software and check your account
-sign-up-confirmation.section2.online-services.heading              = Check HMRC online services
-sign-up-confirmation.section2.online-services.paragraph            = You can review or change the answers you have just entered, and to get updates.
-sign-up-confirmation.section2.online-services.link                 = Go to your HMRC online services account
-sign-up-confirmation.section2.online-services.next-year.paragraph1 = Go to your {0} to review or change the answers you have entered, and to get updates.
-sign-up-confirmation.section2.online-services.next-year.paragraph2 = It may take a few hours for new information to appear.
-sign-up-confirmation.section2.online-services.next-year.link       = HMRC online services account
+sign-up-confirmation.heading                                         = Sign up complete
+sign-up-confirmation.section1.heading                                = What you will have to do
+
+sign-up-confirmation.section1.hint                                   = Continue to submit your Self Assessment tax return, as normal, until 2024.
+
+sign-up-confirmation.section1.quarterly-updates.next-year.heading    = 1. Then update us every quarter
+sign-up-confirmation.section1.quarterly-updates.table-caption        = Quarterly updates by the deadline
+sign-up-confirmation.section1.quarterly-updates.paragraph1           = You can file as many updates as you want but you must submit them on time, each quarter.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2 = You can start sending quarterly updates during the next tax year. It will not affect the amount you pay.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3 = After you have sent an update you will get a year-to-date Income Tax estimate.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph4 = There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed.
+
+sign-up-confirmation.section2.heading                                = Find software and check your account
+
+sign-up-confirmation.section2.online-services.heading                = Check HMRC online services
+sign-up-confirmation.section2.online-services.paragraph              = You can review or change the answers you have just entered, and to get updates.
+sign-up-confirmation.section2.online-services.link                   = Go to your HMRC online services account
+sign-up-confirmation.section2.online-services.next-year.paragraph1   = Go to your {0} to review or change the answers you have entered, and to get updates.
+sign-up-confirmation.section2.online-services.next-year.paragraph2   = It may take a few hours for new information to appear.
+sign-up-confirmation.section2.online-services.next-year.link         = HMRC online services account
 
 sign-up-confirmation.section2.find-software.heading                = Find software
 sign-up-confirmation.section2.find-software.para-1                 = Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service.

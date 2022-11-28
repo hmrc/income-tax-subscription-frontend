@@ -425,6 +425,7 @@ sign-up-complete.what-now.sendPreviousUpdates                   = Mae’n rhaid 
 sign-up-complete.what-now.sendQuarterly                         = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd erbyn:
 sign-up-complete.whatHappensNext.sendQuarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
 sign-up-complete.what-now.submitAnnualUpdates                   = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
+sign-up-complete.quarter-table-caption                          = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
 sign-up.complete.julyUpdate                                     = 5 Gorffennaf {0}
 sign-up.complete.octoberUpdate                                  = 5 Hydref {0}
 sign-up.complete.januaryUpdate                                  = 5 Ionawr {0}
@@ -445,8 +446,18 @@ sign-up-complete.what-now.submit-annual                         = Cyflwynwch eic
 
 sign-up-confirmation.heading                                       = Sign up complete
 sign-up-confirmation.section1.heading                              = What you will have to do
+
 sign-up-confirmation.section1.hint                                 = Continue to submit your Self Assessment tax return, as normal, until 2024.
+
+sign-up-confirmation.section1.quarterly-updates.next-year.heading    = 1. Then update us every quarter
+sign-up-confirmation.section1.quarterly-updates.table-caption        = Quarterly updates by the deadline
+sign-up-confirmation.section1.quarterly-updates.paragraph1           = You can file as many updates as you want but you must submit them on time, each quarter.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2 = You can start sending quarterly updates during the next tax year. It will not affect the amount you pay.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3 = After you have sent an update you will get a year-to-date Income Tax estimate.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph4 = There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed.
+
 sign-up-confirmation.section2.heading                              = Find software and check your account
+
 sign-up-confirmation.section2.online-services.heading              = Check HMRC online services
 sign-up-confirmation.section2.online-services.paragraph            = You can review or change the answers you have just entered, and to get updates.
 sign-up-confirmation.section2.online-services.link                 = Go to your HMRC online services account
