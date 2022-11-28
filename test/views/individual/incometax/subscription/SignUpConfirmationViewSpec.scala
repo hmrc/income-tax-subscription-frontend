@@ -54,7 +54,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           "contains a panel body 1" that {
             "has the user full name" when {
               "the user full name is provided to the view" in {
-                testMainContent.selectNth(".govuk-panel__body p", 1).text() mustBe s"$testName &vert; $testNino"
+                testMainContent.selectNth(".govuk-panel__body p", 1).text() mustBe s"$testName | $testNino"
               }
             }
 
