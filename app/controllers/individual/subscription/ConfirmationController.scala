@@ -16,7 +16,7 @@
 
 package controllers.individual.subscription
 
-import auth.individual.PostSubmissionController
+import auth.individual.{IncomeTaxSAUser, PostSubmissionController}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ConfirmationPage
 import controllers.utils.ReferenceRetrieval
@@ -47,7 +47,11 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
 
           val view = if (isEnabled(ConfirmationPage)) {
             signUpConfirmation(
-              taxYearSelectionIsNext = taxYearSelectionIsNext
+              taxYearSelectionIsNext = taxYearSelectionIsNext,
+              individualUserNameMaybe = IncomeTaxSAUser.fullName,
+              individualUserNino = user
+                .nino
+                .getOrElse(throw new Exception("[ConfirmationController][show]-could not retrieve individual nino from session"))
             )
           } else {
             signUpComplete(

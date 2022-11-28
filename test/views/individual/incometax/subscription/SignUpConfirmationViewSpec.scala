@@ -34,16 +34,40 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
 
-  def page(selectedTaxYearIsNext: Boolean): Html = signUpConfirmation(selectedTaxYearIsNext)
+  val testName = "Lisa Khan"
+  val testNino = "QQ123456L"
 
-  def document(selectedTaxYearIsNext: Boolean): Document = Jsoup.parse(page(selectedTaxYearIsNext).body)
+  def page(selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String]): Html = signUpConfirmation(selectedTaxYearIsNext, userNameMaybe, testNino)
+
+  def document(selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String] = Some(testName)): Document =
+    Jsoup.parse(page(selectedTaxYearIsNext, userNameMaybe).body)
 
   "The sign up confirmation view" when {
     for (yearIsNext <- Seq(true, false)) {
       s"nextYear flag is $yearIsNext" must {
         val testMainContent = document(yearIsNext).mainContent
-        "have a heading" in {
-          testMainContent.selectHead("h1").text() mustBe SignUpConfirmationMessages.heading
+        "have a heading panel" which {
+          "contains a page heading" in {
+            testMainContent.selectHead("h1").text() mustBe SignUpConfirmationMessages.heading
+          }
+
+          "contains a panel body 1" that {
+            "has the user full name" when {
+              "the user full name is provided to the view" in {
+                testMainContent.selectNth(".govuk-panel__body p", 1).text() mustBe s"$testName &vert; $testNino"
+              }
+            }
+
+            "doesn't have the user full name" when {
+              "the user full name is not provided to the view" in {
+                document(yearIsNext, None).mainContent.selectNth(".govuk-panel__body p", 1).text() mustBe s"$testNino"
+              }
+            }
+          }
+
+          "contains a panel body 2" in {
+            testMainContent.selectNth(".govuk-panel__body p", 2).text() mustBe SignUpConfirmationMessages.headingPanelBody
+          }
         }
 
         "have a section 1" which {
@@ -62,7 +86,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
 
           "contains the quarterly updates section" which {
-            def quarterlyUpdates: Element = testMainContent.selectNth(".govuk-grid-column-full", 1)
+            def quarterlyUpdates: Element = testMainContent.selectNth(".govuk-grid-column-full .govuk-grid-column-full", 1)
 
             if (yearIsNext) {
               "contains a heading" in {
@@ -171,6 +195,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   private object SignUpConfirmationMessages {
     val heading = "Sign up complete"
+    val headingPanelBody = "is signed up for Making Tax Digital for Income Tax for the current year"
     val section1heading = "What you will have to do"
     val section1hint = "Warning Continue to submit your Self Assessment tax return, as normal, until 2024."
     val section2heading = "Find software and check your account"
