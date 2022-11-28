@@ -663,6 +663,9 @@ agent.property_trading_after.line                               = This includes 
 agent.property_trading_after.line.point1                        = UK properties
 agent.property_trading_after.line.point2                        = overseas properties
 agent.property_trading_after.line.point3                        = holiday properties
+agent.property_trading_after.line2                              = This does not include renting out:
+agent.property_trading_after.line2.point1                       = a room
+agent.property_trading_after.line2.point2                       = part of your property
 agent.property_trading_after.error.summary                      = Select yes if your client owns a property business that began trading on or after {0}
 
 # Client details page
