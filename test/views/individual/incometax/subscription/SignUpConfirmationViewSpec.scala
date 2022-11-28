@@ -92,10 +92,20 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               "contains a heading" in {
                 quarterlyUpdates.selectHead("h3").text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearHeading
               }
+            } else {
+              "contains a heading" in {
+                quarterlyUpdates.selectHead("h3").text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesThisYearHeading
+              }
             }
 
-            "contains next year paragraph 1" in {
-              quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesParagraph1
+            if(yearIsNext){
+              "contains next year paragraph" in {
+                quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesParagraph
+              }
+            } else {
+              "contains this year paragraph" in {
+                quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesParagraph
+              }
             }
 
             "contains a table" in {
@@ -113,19 +123,29 @@ class SignUpConfirmationViewSpec extends ViewSpec {
             }
 
             if (yearIsNext) {
+              "contains next year paragraph 1" in {
+                quarterlyUpdates.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph1
+              }
+
               "contains next year paragraph 2" in {
-                quarterlyUpdates.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph2
+                quarterlyUpdates.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph2
               }
 
               "contains next year paragraph 3" in {
-                quarterlyUpdates.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph3
-              }
-
-              "contains next year paragraph 4" in {
-                quarterlyUpdates.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph4
+                quarterlyUpdates.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesNextYearParagraph3
               }
             } else {
+              "contains this year paragraph 1" in {
+                quarterlyUpdates.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesThisYearParagraph1
+              }
 
+              "contains next year paragragh 2" in {
+                quarterlyUpdates.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesThisYearParagraph2
+              }
+
+               "contains this year paragraph 3" in {
+                 quarterlyUpdates.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesThisYearParagraph3
+               }
             }
           }
         }
@@ -205,10 +225,15 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val quarterlyUpdatesTableCaption = "Quarterly updates by the deadline"
 
     val section1QuarterlyUpdatesNextYearHeading = "1. Then update us every quarter"
-    val section1QuarterlyUpdatesParagraph1 = "You can file as many updates as you want but you must submit them on time, each quarter."
-    val section1QuarterlyUpdatesNextYearParagraph2 = "You can start sending quarterly updates during the next tax year. It will not affect the amount you pay."
-    val section1QuarterlyUpdatesNextYearParagraph3 = "After you have sent an update you will get a year-to-date Income Tax estimate."
-    val section1QuarterlyUpdatesNextYearParagraph4 = "There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed."
+    val section1QuarterlyUpdatesParagraph = "You can file as many updates as you want but you must submit them on time, each quarter."
+    val section1QuarterlyUpdatesNextYearParagraph1 = "You can start sending quarterly updates during the next tax year. It will not affect the amount you pay."
+    val section1QuarterlyUpdatesNextYearParagraph2 = "After you have sent an update you will get a year-to-date Income Tax estimate."
+    val section1QuarterlyUpdatesNextYearParagraph3 = "There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed."
+
+    val section1QuarterlyUpdatesThisYearHeading = "1. Update us every quarter"
+    val section1QuarterlyUpdatesThisYearParagraph1 = "You can start sending quarterly updates during the current tax year. It will not affect the amount you pay."
+    val section1QuarterlyUpdatesThisYearParagraph2 = "After you have sent an update you will get a year-to-date Income Tax estimate."
+    val section1QuarterlyUpdatesThisYearParagraph3 = "There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed."
 
     val section2onlineServicesHeading = "Check HMRC online services"
     val section2onlineServicesThisYearParagraph = "You can review or change the answers you have just entered, and to get updates."
@@ -224,7 +249,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section2FindSoftwareLink = "Find software"
   }
 
-  private val CURRENT_TAX_YEAR: Int = Random.between(1000, 10000)
+  private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)
   private val FIFTH: Int = 5
   private val SIXTH: Int = 6
   private val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))

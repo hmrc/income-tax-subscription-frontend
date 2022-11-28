@@ -453,10 +453,15 @@ sign-up-confirmation.section1.hint                                 = Continue to
 
 sign-up-confirmation.section1.quarterly-updates.next-year.heading    = 1. Then update us every quarter
 sign-up-confirmation.section1.quarterly-updates.table-caption        = Quarterly updates by the deadline
-sign-up-confirmation.section1.quarterly-updates.paragraph1           = You can file as many updates as you want but you must submit them on time, each quarter.
-sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2 = You can start sending quarterly updates during the next tax year. It will not affect the amount you pay.
-sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3 = After you have sent an update you will get a year-to-date Income Tax estimate.
-sign-up-confirmation.section1.quarterly-updates.next-year.paragraph4 = There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed.
+sign-up-confirmation.section1.quarterly-updates.paragraph            = You can file as many updates as you want but you must submit them on time, each quarter.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph1 = You can start sending quarterly updates during the next tax year. It will not affect the amount you pay.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2 = After you have sent an update you will get a year-to-date Income Tax estimate.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3 = There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed.
+
+sign-up-confirmation.section1.quarterly-updates.this-year.heading    = 1. Update us every quarter
+sign-up-confirmation.section1.quarterly-updates.this-year.paragraph1 = You can start sending quarterly updates during the current tax year. It will not affect the amount you pay.
+sign-up-confirmation.section1.quarterly-updates.this-year.paragraph2 = After you have sent an update you will get a year-to-date Income Tax estimate.
+sign-up-confirmation.section1.quarterly-updates.this-year.paragraph3 = There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
 
 sign-up-confirmation.section2.heading                              = Find software and check your account
 
