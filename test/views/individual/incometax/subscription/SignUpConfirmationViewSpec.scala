@@ -64,10 +64,16 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               }
             }
           }
-
-          "contains a panel body 2" in {
-            testMainContent.selectNth(".govuk-panel__body p", 2).text() mustBe SignUpConfirmationMessages.headingPanelBody
+          if (yearIsNext) {
+            "contains a panel body paragraph for next year" in {
+              testMainContent.selectNth(".govuk-panel__body p", 2).text() mustBe SignUpConfirmationMessages.headingPanelBodyNext
+            }
+          } else {
+            "contains a panel body paragraph for current year" in {
+              testMainContent.selectNth(".govuk-panel__body p", 2).text() mustBe SignUpConfirmationMessages.headingPanelBodyCurrent
+            }
           }
+
         }
 
         "have a section 1" which {
@@ -195,7 +201,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   private object SignUpConfirmationMessages {
     val heading = "Sign up complete"
-    val headingPanelBody = "is signed up for Making Tax Digital for Income Tax for the current year"
+    val headingPanelBodyCurrent = "is signed up for Making Tax Digital for Income Tax for the current tax year"
+    val headingPanelBodyNext = "is signed up for Making Tax Digital for Income Tax for the next tax year"
     val section1heading = "What you will have to do"
     val section1hint = "Warning Continue to submit your Self Assessment tax return, as normal, until 2024."
     val section2heading = "Find software and check your account"
@@ -224,7 +231,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section2FindSoftwareLink = "Find software"
   }
 
-  private val CURRENT_TAX_YEAR: Int = Random.between(1000, 10000)
+  private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)
   private val FIFTH: Int = 5
   private val SIXTH: Int = 6
   private val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))

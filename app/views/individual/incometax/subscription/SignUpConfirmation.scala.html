@@ -41,7 +41,11 @@
     <strong>@Html(userDetails)</strong>
   </p>
   <p>
-    @messages("sign-up-confirmation.heading.panel")
+    @if(taxYearSelectionIsNext) {
+      @messages("sign-up-confirmation.heading.panel.next")
+    } else {
+      @messages("sign-up-confirmation.heading.panel.current")
+    }
   </p>
 }
 
