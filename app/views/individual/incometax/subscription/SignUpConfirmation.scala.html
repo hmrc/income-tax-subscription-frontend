@@ -51,33 +51,49 @@
 
 @quarterlyUpdates = {
   <div class="boxout col">
-    @if(taxYearSelectionIsNext) {
-      <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section1.quarterly-updates.next-year.heading")</h3>
-    }
+   @if(taxYearSelectionIsNext) {
+    <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section1.quarterly-updates.next-year.heading")</h3>
+   } else {
+    <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section1.quarterly-updates.this-year.heading")</h3>
+   }
 
-    <p class="govuk-body">
-      @messages("sign-up-confirmation.section1.quarterly-updates.paragraph1")
-    </p>
+   <p class="govuk-body">
+    @messages("sign-up-confirmation.section1.quarterly-updates.paragraph")
+   </p>
 
-    @table(
-      updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-      tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption"),
-      fromToFormat = s"%s ${messages("base.to")} %s"
-    )
+   @table(
+     updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+     tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption"),
+     fromToFormat = s"%s ${messages("base.to")} %s"
+   )
 
-    @if(taxYearSelectionIsNext) {
-      <p class="govuk-body">
-        @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2")
-      </p>
-      <p class="govuk-body">
-        @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3")
-      </p>
-      <p class="govuk-body">
-        @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph4")
-      </p>
-    }
+   @if(taxYearSelectionIsNext) {
+     <p class="govuk-body">
+      @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph1")
+     </p>
+
+     <p class="govuk-body">
+      @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2")
+     </p>
+
+     <p class="govuk-body">
+      @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3")
+     </p>
+   } else {
+     <p class="govuk-body">
+      @messages("sign-up-confirmation.section1.quarterly-updates.this-year.paragraph1")
+     </p>
+
+     <p class="govuk-body">
+      @messages("sign-up-confirmation.section1.quarterly-updates.this-year.paragraph2")
+     </p>
+
+     <p class="govuk-body">
+      @messages("sign-up-confirmation.section1.quarterly-updates.this-year.paragraph3")
+     </p>
+   }
   </div>
-}
+ }
 
 @findSoftware = {
   @if(!taxYearSelectionIsNext) {
