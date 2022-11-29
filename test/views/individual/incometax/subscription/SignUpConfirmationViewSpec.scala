@@ -107,14 +107,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               }
             }
 
-            if(yearIsNext){
-              "contains next year paragraph" in {
-                quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesParagraph
-              }
-            } else {
-              "contains this year paragraph" in {
-                quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesParagraph
-              }
+            "contains Quarterly Updates initial paragraph" in {
+              quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesParagraph
             }
 
             "contains a table" in {
