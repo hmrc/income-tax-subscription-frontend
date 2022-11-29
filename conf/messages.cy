@@ -747,6 +747,9 @@ agent.property_trading_after.line                               = Mae hyn yn cyn
 agent.property_trading_after.line.point1                        = eiddo yn y DU
 agent.property_trading_after.line.point2                        = eiddo tramor
 agent.property_trading_after.line.point3                        = llety gwyliau
+agent.property_trading_after.line2                              = Nid yw hyn yn cynnwys rhoi’r canlynol ar osod:
+agent.property_trading_after.line2.point1                       = ystafell
+agent.property_trading_after.line2.point2                       = rhan o’ch eiddo
 agent.property_trading_after.error.summary                      = Dewiswch ‘Iawn’ os yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ar ôl {0}
 
 # Client details page
