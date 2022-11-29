@@ -33,14 +33,25 @@ body:not(.js-enabled) {
   border-style: solid;
   border-color: #0b0c0c;
   border-width: thin;
-  height: calc(100% - 30px);
+  padding: govuk-spacing(3);
+  margin-bottom: govuk-spacing(2);
+}
+@media (min-width: 40.0625em) {
+
 }
 
-.row {
-  display: flex;
-  width: 100%;
+.boxout:first-child {
+  margin-left: 0;
 }
 
-.col {
-  flex: 1;
+@media (min-width: 40.0625em) {
+    .boxout {
+      margin-left: govuk-spacing(2);
+    }
+    .row {
+      display: flex;
+    }
+    .col {
+      flex: 1;
+    }
 }
