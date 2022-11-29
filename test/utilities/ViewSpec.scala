@@ -104,8 +104,15 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       element.select(selector).asScala.headOption
     }
 
+    def selectSeq(selector: String): Seq[Element] = {
+      element.select(selector).asScala.toSeq
+    }
+
     def selectNth(selector: String, nth: Int): Element = {
-      selectHead(s"$selector:nth-of-type($nth)")
+      selectSeq(selector).lift(nth - 1) match {
+        case Some(element) => element
+        case None => fail(s"Could not retrieve $selector number $nth")
+      }
     }
 
     def content: Element = element.selectHead("article")
@@ -224,7 +231,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
           val caption = table.selectHead("caption")
           caption.text() must be(captionString)
           if (hiddenTableCaption) {
-            caption.attr("class") must be ("govuk-table__caption govuk-visually-hidden")
+            caption.attr("class") must be("govuk-table__caption govuk-visually-hidden")
           }
       }
 

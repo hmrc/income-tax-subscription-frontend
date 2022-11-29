@@ -384,7 +384,8 @@ sign-up-complete.what-now.submit-annual                         = Submit your an
 ## Sign Up Confirmation page ##
 
 sign-up-confirmation.heading                                         = Sign up complete
-sign-up-confirmation.heading.panel                                 = is signed up for Making Tax Digital for Income Tax for the current year
+sign-up-confirmation.heading.panel.current                           = is signed up for Making Tax Digital for Income Tax for the current tax year
+sign-up-confirmation.heading.panel.next                              = is signed up for Making Tax Digital for Income Tax for the next tax year
 
 sign-up-confirmation.section1.heading                                = What you will have to do
 
@@ -415,6 +416,10 @@ sign-up-confirmation.section2.online-services.next-year.link         = HMRC onli
 sign-up-confirmation.section2.find-software.heading                = Find software
 sign-up-confirmation.section2.find-software.para-1                 = Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service.
 sign-up-confirmation.section2.find-software.link                   = Find software
+
+sign-up-confirmation.section2.getting-prepared.heading             = Getting prepared
+sign-up-confirmation.section2.getting-prepared.para-1              = You can not sign up to Making Tax Digital for Income Tax until next year 2024. But, to help you get prepared, we made a service to help you find the right software - so you are ready when you can sign up.
+sign-up-confirmation.section2.getting-prepared.link                = Find software
 
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
