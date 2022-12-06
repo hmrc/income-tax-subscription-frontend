@@ -121,7 +121,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "display max date error on page" in {
-      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day_month_year.max_date", List("11 April 2021"))
+      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.max-date", List("11 April 2021"))
       val doc = document(overseasPropertyStartDateForm = defaultForm.withError(dateValidationError))
       doc.mustHaveGovukDateField(
         "startDate",
@@ -132,7 +132,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "display min date error on page" in {
-      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day_month_year.min_date", List("11 April 2021"))
+      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.min-date", List("11 April 2021"))
       val doc = document(overseasPropertyStartDateForm = defaultForm.withError(dateValidationError))
       doc.mustHaveGovukDateField(
         "startDate",

@@ -62,17 +62,17 @@ class BusinessIncomeSourceFormSpec extends PlaySpec {
       "self employment is selected but it is not available" in new FormTest(
         incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = true, overseasPropertyAvailable = true),
         input = SelfEmployed.toString,
-        expectedResult = Left("agent.what_income_source_to_sign_up.error")
+        expectedResult = Left("agent.income-source.error")
       )
       "uk property is selected but it is not available" in new FormTest(
         incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = false, overseasPropertyAvailable = true),
         input = UkProperty.toString,
-        expectedResult = Left("agent.what_income_source_to_sign_up.error")
+        expectedResult = Left("agent.income-source.error")
       )
       "overseas property is selected but it is not available" in new FormTest(
         incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = false),
         input = OverseasProperty.toString,
-        expectedResult = Left("agent.what_income_source_to_sign_up.error")
+        expectedResult = Left("agent.income-source.error")
       )
     }
 

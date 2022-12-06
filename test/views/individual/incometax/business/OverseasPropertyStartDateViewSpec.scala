@@ -44,9 +44,9 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val taxYearEnd: Int = 2020
   val testError: FormError = FormError("startDate", "testError")
 
-  private val maxDateValidationError = FormError("startDate", "error.overseas.property.day_month_year.max_date", List("11 April 2021"))
+  private val maxDateValidationError = FormError("startDate", "error.overseas.property.day-month-year.max-date", List("11 April 2021"))
 
-  private val minDateValidationError = FormError("startDate", "error.overseas.property.day_month_year.min_date", List("11 April 2021"))
+  private val minDateValidationError = FormError("startDate", "error.overseas.property.day-month-year.min-date", List("11 April 2021"))
 
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
 

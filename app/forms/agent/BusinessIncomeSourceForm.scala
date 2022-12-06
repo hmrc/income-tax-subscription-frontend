@@ -27,7 +27,7 @@ object BusinessIncomeSourceForm {
 
   def businessIncomeSourceForm(incomeSourcesStatus: IncomeSourcesStatus): Form[BusinessIncomeSource] = Form(
     single(
-      incomeSourceKey -> BusinessIncomeSourceMapping("agent.what_income_source_to_sign_up.error", incomeSourcesStatus)
+      incomeSourceKey -> BusinessIncomeSourceMapping("agent.income-source.error", incomeSourcesStatus)
     )
   )
 }

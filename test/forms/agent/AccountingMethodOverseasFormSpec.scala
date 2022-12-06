@@ -37,8 +37,8 @@ class AccountingMethodOverseasFormSpec extends PlaySpec with GuiceOneAppPerTest 
     }
 
     "validate income type correctly" should {
-      val empty = "error.agent.overseas_property_accounting_method.empty"
-      val invalid = "error.agent.overseas_property_accounting_method.empty"
+      val empty = "error.agent.overseas-property-accounting-method.empty"
+      val invalid = "error.agent.overseas-property-accounting-method.empty"
 
       "show an empty error when the map is empty" in {
         val emptyInput0 = DataMap.EmptyMap

@@ -30,7 +30,7 @@
 @mainTemplate(title = messages("business.property.name.title"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
     <h1 class="govuk-heading-l">@messages("business.property.name.heading")</h1>
 
-    <p class="govuk-body">@messages("business.property.line_1")</p>
+    <p class="govuk-body">@messages("business.property.line-1")</p>
 
     @form(action = postAction) {
         @dateHelper(
@@ -39,7 +39,7 @@
             isPageHeading = false,
             isLegendVisible = false,
             parentForm = propertyStartDateForm,
-            hintText = Some(messages("business.property.start_date.hint"))
+            hintText = Some(messages("business.property.start-date.hint"))
         )
 
       @saveAndContinueButtonHelper(

@@ -44,7 +44,7 @@
     @if(form.hasErrors) {
         @govukErrorSummary(ErrorSummary(
             errorList = form.errors.asTextErrorLinks,
-            title = Text(messages("base.error_heading"))
+            title = Text(messages("base.error-heading"))
         ))
     }
 }

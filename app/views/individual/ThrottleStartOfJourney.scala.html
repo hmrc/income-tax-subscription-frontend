@@ -28,13 +28,13 @@ continueButton: ContinueButton
 @mainTemplate(title = messages("throttle.title"), backLink = Some(backLink), showSignOutLink = true) {
    <h1 class="govuk-heading-l">@messages("throttle.heading")</h1>
 
-   <p class="govuk-body">@messages("throttle.line_1")</p>
+   <p class="govuk-body">@messages("throttle.line-1")</p>
 
    <p class="govuk-body">@messages("throttle.line_2")</p>
 
    <div class="form-group">
       @form(action = postAction) {
-         @continueButton(Some(messages("base.try_again")))
+         @continueButton(Some(messages("base.try-again")))
       }
    </div>
 }

@@ -45,7 +45,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         Then("Should return a OK with the property accounting method page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("property.accounting_method.title") + serviceNameGovUk),
+          pageTitle(messages("property.accounting-method.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingMethodProperty", selectedRadioButton = Some(expectedText))
         )
       }
@@ -63,7 +63,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
         Then("Should return a OK with the property accounting method page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("property.accounting_method.title") + serviceNameGovUk),
+          pageTitle(messages("property.accounting-method.title") + serviceNameGovUk),
           radioButtonSet(id = "propertyAccountingMethod", selectedRadioButton = None)
         )
       }

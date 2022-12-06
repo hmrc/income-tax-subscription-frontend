@@ -46,7 +46,7 @@
 @optionalSelfEmploymentRadio = @{
   if(incomeSourcesStatus.selfEmploymentAvailable) {
     Some(RadioItem(
-      content = Text(messages("agent.what_income_source_to_sign_up.selfEmployed")),
+      content = Text(messages("agent.income-source.self-employed")),
       value = Some(SELF_EMPLOYED)
     ))
   } else {
@@ -57,7 +57,7 @@
 @optionalUkPropertyRadio = @{
   if(incomeSourcesStatus.ukPropertyAvailable) {
     Some(RadioItem(
-      content = Text(messages("agent.what_income_source_to_sign_up.ukProperty")),
+      content = Text(messages("agent.income-source.uk-property")),
       value = Some(UK_PROPERTY)
     ))
   } else {
@@ -68,7 +68,7 @@
 @optionalOverseasPropertyRadio = @{
   if(incomeSourcesStatus.overseasPropertyAvailable) {
     Some(RadioItem(
-      content = Text(messages("agent.what_income_source_to_sign_up.foreignProperty")),
+      content = Text(messages("agent.income-source.foreign-property")),
       value = Some(OVERSEAS_PROPERTY)
     ))
   } else {
@@ -77,27 +77,27 @@
 }
 
 @agentMainTemplate(
-  title = messages("agent.what_income_source_to_sign_up.heading"),
+  title = messages("agent.income-source.heading"),
   optForm = Some(incomeSourceForm),
   backLink = Some(backUrl)
 ) {
-  <h1 class="govuk-heading-l">@messages("agent.what_income_source_to_sign_up.heading")</h1>
+  <h1 class="govuk-heading-l">@messages("agent.income-source.heading")</h1>
 
   <div class="govuk-inset-text">
     <p class="govuk-body govuk-!-margin-bottom-6">
       @if(featureSwitching.isEnabled(ForeignProperty)) {
-        @messages("agent.what_income_source_to_sign_up.paragraph1-overseas", appConfig.maxSelfEmployments)
+        @messages("agent.income-source.paragraph1-overseas", appConfig.maxSelfEmployments)
       } else {
-        @messages("agent.what_income_source_to_sign_up.paragraph1")
+        @messages("agent.income-source.paragraph1")
       }
     </p>
-    <p class="govuk-body">@messages("agent.what_income_source_to_sign_up.paragraph2")</p>
+    <p class="govuk-body">@messages("agent.income-source.paragraph2")</p>
   </div>
 
   @form(action = postAction) {
     @radioHelper(
       field = incomeSourceForm(BusinessIncomeSourceForm.incomeSourceKey),
-      legend = messages("agent.what_income_source_to_sign_up.heading"),
+      legend = messages("agent.income-source.heading"),
       isPageHeading = false,
       radioItems = Seq(
         optionalSelfEmploymentRadio,

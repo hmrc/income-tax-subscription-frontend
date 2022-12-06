@@ -31,14 +31,14 @@
 
     <h1 class="govuk-heading-l">@messages("overseas.property.name.heading")</h1>
 
-    <p class="govuk-body">@messages("overseas.property.line_1")</p>
+    <p class="govuk-body">@messages("overseas.property.line-1")</p>
 
     @form(action = postAction) {
 
         @dateHelper(
             field = overseasPropertyStartDateForm(startDate),
             legendContent = messages("overseas.property.name.heading"),
-            hintText = Some(messages("overseas.property.start_date.hint")),
+            hintText = Some(messages("overseas.property.start-date.hint")),
             parentForm = overseasPropertyStartDateForm,
             isPageHeading = false,
             isLegendVisible = false

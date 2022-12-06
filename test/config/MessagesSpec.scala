@@ -16,41 +16,45 @@
 
 package config
 
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatestplus.play.PlaySpec
+import utilities.MessagesMatcher
 
 import scala.io.Source
 
-class MessagesSpec extends AnyFunSuite {
+class MessagesSpec extends PlaySpec with MessagesMatcher  {
 
   private val messageKeysEnglish: List[String] = getMessageKeys("messages").toList
-  lazy val messageKeySetEnglish = messageKeysEnglish.toSet
+  private lazy val messageKeySetEnglish = messageKeysEnglish.toSet
 
   private val messageKeysWelsh: List[String] = getMessageKeys("messages.cy").toList
-  lazy val messageKeySetWelsh = messageKeysWelsh.toSet
+  private lazy val messageKeySetWelsh = messageKeysWelsh.toSet
 
-  test("Messages present in Welsh (conf/messages.cy) should also have an English translation (conf/messages)") {
-    val keysInWelshNotEnglish = messageKeySetWelsh -- messageKeySetEnglish
-    keysInWelshNotEnglish foreach println
-    keysInWelshNotEnglish.size mustBe 0
+  "Messages present in Welsh (conf/messages.cy)" should {
+    "also have an English translation (conf/messages)" in {
+      messageKeySetWelsh must allBeIn(messageKeySetEnglish)
+    }
+
+    "not contain duplicate keys" in {
+      messageKeysWelsh must containUniqueKeys
+    }
+
+//    "contain only permitted characters" in {
+//      messageKeysWelsh must containOnlyPermittedCharacters
+//    }
   }
 
-  test("Messages present in English (conf/messages) should also have a Welsh translation (conf/messages.cy)") {
-    val keysInEnglishNotWelsh = messageKeySetEnglish -- messageKeySetWelsh
-    keysInEnglishNotWelsh foreach println
-    keysInEnglishNotWelsh.size mustBe 0
-  }
+  "Messages present in English (conf/messages)" should {
+    "also have a Welsh translation (conf/messages.cy)" in {
+      messageKeySetEnglish must allBeIn(messageKeySetWelsh)
+    }
 
-  test("No duplicate keys in English") {
-    val duplicateMessagesEnglish = messageKeysEnglish.diff(messageKeysEnglish.distinct).distinct
-    duplicateMessagesEnglish foreach println
-    duplicateMessagesEnglish.size mustBe (0)
-  }
+    "not contain duplicate keys" in {
+      messageKeysEnglish must containUniqueKeys
+    }
 
-  test("No duplicate keys in Welsh") {
-    val duplicateMessagesWelsh = messageKeysWelsh.diff(messageKeysWelsh.distinct).distinct
-    duplicateMessagesWelsh foreach println
-    duplicateMessagesWelsh.size mustBe (0)
+//    "contain only permitted characters" in {
+//      messageKeysEnglish must containOnlyPermittedCharacters
+//    }
   }
 
   private def getMessageKeys(fileName: String) = {

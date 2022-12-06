@@ -26,13 +26,13 @@
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("preferences_callback.title")) {
-    <h1 class="govuk-heading-l">@messages("preferences_callback.heading")</h1>
+@mainTemplate(title = messages("preferences-callback.title")) {
+    <h1 class="govuk-heading-l">@messages("preferences-callback.heading")</h1>
 
-    <p class="govuk-body">@messages("preferences_callback.line_1")</p>
+    <p class="govuk-body">@messages("preferences-callback.line-1")</p>
 
     @form(action = postAction) {
-        @continueButton(Some(messages("preferences_callback.button")))
+        @continueButton(Some(messages("preferences-callback.button")))
     }
     <div class="govuk-!-margin-bottom-6">
         @signOutLink()

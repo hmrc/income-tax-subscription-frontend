@@ -1,5 +1,5 @@
 ## Base ##
-base.service_name                                               = Use software to send Income Tax updates
+base.service-name                                               = Use software to send Income Tax updates
 base.back                                                       = Back
 base.continue                                                   = Continue
 base.continue-sign-up                                           = Continue to sign up
@@ -8,38 +8,25 @@ base.sign-out                                                   = Sign out
 base.sign-up                                                    = Sign up
 base.start-now                                                  = Start now
 base.submit                                                     = Submit
-base.startDate                                                  = Start date
-base.endDate                                                    = End date
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
-base.error_heading                                              = There is a problem
+base.error-heading                                              = There is a problem
 base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
-base.go_back                                                    = Go back
-base.userResearch.title                                         = Help to improve our service
-base.userResearch.link                                          = Answer some questions about yourself to join the research panel
+base.go-back                                                    = Go back
 base.save-and-continue                                          = Save and continue
 base.save-and-come-back-later                                   = Save and come back later
 base.confirm-and-continue                                       = Confirm and continue
 base.agree-and-continue                                         = Agree and continue
 base.remove                                                     = Remove
 base.add                                                        = Add
-base.update_heading                                             = Quarterly update
-base.deadline_heading                                           = Deadline
+base.update-heading                                             = Quarterly update
+base.deadline-heading                                           = Deadline
 base.to                                                         = to
-base.caption                                                    = This section is
-base.submit_and_continue                                        = Submit and continue
-base.new_tab_key                                                = {0}
-base.try_again                                                  = Try again
-
-error-notification.prefix                                       = Error:
-
-## base.userResearch.text                                       = This link opens in a new tab. Please note that this service is not available in Welsh.
-base.dismissBanner                                              = No thanks
-base.dismissBanner.screenReader                                 = I don’t want to answer any questions about joining the research panel
-base.date-to-date                                               = {0} to {1}
+base.submit-and-continue                                        = Submit and continue
+base.try-again                                                  = Try again
 base.hour                                                       = hour
 base.hours                                                      = hours
 base.minute                                                     = minute
@@ -47,55 +34,17 @@ base.minutes                                                    = minutes
 base.second                                                     = second
 base.seconds                                                    = seconds
 
-## Hidden content for user detail and final CYA pages
+## Client details CYA
 userdetail.cya.change.firstname                                 = Change first name
 userdetail.cya.change.lastname                                  = Change last name
 userdetail.cya.change.nationalinsurance                         = Change National Insurance number
 userdetail.cya.change.dateofbirth                               = Change Date of Birth
-final.cya.change.taxyearstartfiling                             = Change tax year to start filing updates
-final.cya.change.incomereceived                                 = Change income received from
-final.cya.change.signupbusinessnumber                           = Change number of businesses signed up
-final.cya.change.businessname                                   = Change your business name
-agent.final.cya.change.businessname                             = Change business name
-final.cya.change.businesstradestartdate                         = Change trading start date of business
-final.cya.change.ukpropertystradestartdate                      = Change trading start date of UK property business
-agent.final.cya.change.ukpropertystradestartdate                = Change trading start for UK property
-final.cya.change.overseaspropertytradestartdate                 = Change trading start date of overseas property business
-agent.final.cya.change.overseaspropertytradestartdate           = Change trading start for overseas property
-final.cya.change.soletraderaccountingmethod                     = Change accounting method for your self-employment income
-agent.final.cya.change.soletraderaccountingmethod               = Change accounting method for sole trader business
-final.cya.change.ukpropertyaccountingmethod                     = Change accounting method for UK property income
-agent.final.cya.change.ukpropertyaccountingmethod               = Change accounting method for UK property
-final.cya.change.overseaspropertyaccountingmethod               = Change accounting method for overseas property income
-agent.final.cya.change.overseaspropertyaccountingmethod         = Change accounting method for overseas property
-final.cya.change.soletraderbusinesssignup                       = Change number of sole trader businesses signed up
-
-## Front page
-frontpage.title                                                 = Sign up to report your income and expenses quarterly
-frontpage.heading                                               = Sign up to report your income and expenses quarterly
-frontpage.line_1                                                = By signing up to HM Revenue and Customs secure service, you’re helping to test a new way of working out your tax. You’ll do this by:
-frontpage.bullet_1                                              = using your accounting software to record your income and expenses
-frontpage.bullet_2                                              = sending details to us regularly from May 2017
-frontpage.bullet_3                                              = agreeing to go paperless
-frontpage.line_2                                                = You can sign up if your current accounting period starts after 5 April 2017 and you’re one of the following:
-frontpage.bullet_4                                              = a sole trader with income from one business
-frontpage.bullet_5                                              = you rent out a UK property
-frontpage.bullet_6                                              = a sole trader with income from one business and you rent out a UK property
-frontpage.line_3                                                = If you have income other than those listed above, you won’t be able to report it using this service yet.
-frontpage.sub_heading_1                                         = Sign up using Government Gateway
-frontpage.line_4                                                = You’ll need to enter the user ID and password you got when you signed up to the Self Assessment online service.
-frontpage.sub_heading_2                                         = What happens after you’ve signed up
-frontpage.line_5                                                = You’ll need to:
-frontpage.bullet_7                                              = complete your 2016 to 2017 Self Assessment tax return and pay what you owe by 31 January 2018
-frontpage.bullet_8                                              = send your summary report for the 2017 to 2018 tax year by 31 January 2019
-frontpage.line_6                                                = You can:
-frontpage.bullet_9                                              = use your business tax account from August 2017 to see your reports and what you might owe
 
 ## Preferences call back page
-preferences_callback.title                                      = Do you want to continue?
-preferences_callback.heading                                    = You need to agree to go paperless
-preferences_callback.line_1                                     = To sign up for this service, you need to allow HM Revenue and Customs to send you electronic communications.
-preferences_callback.button                                     = Go back
+preferences-callback.title                                      = Do you want to continue?
+preferences-callback.heading                                    = You need to agree to go paperless
+preferences-callback.line-1                                     = To sign up for this service, you need to allow HM Revenue and Customs to send you electronic communications.
+preferences-callback.button                                     = Go back
 
 # IV Failure Page
 iv-failure.heading                                              = There’s a problem
@@ -104,31 +53,15 @@ iv-failure.took-too-long                                        = you took too l
 iv-failure.failed-questions                                     = you have failed to answer enough questions correctly
 iv-failure.could-not-match-details                              = we could not match your details to our system
 
-# are you self-employed page
-are_you_selfemployed.title                                      = Are you self-employed?
-are_you_selfemployed.heading                                    = Are you self-employed?
-are_you_selfemployed.para1                                      = This does not include if your business is a limited company or partnership.
-
-## Individual income source page
-income_source.title                                             = What are your sources of income?
-income_source.heading                                           = What are your sources of income?
-income_source.para1                                             = Renting out a property includes using a letting agency.
-income_source.selfEmployed                                      = Sole trader with one or more businesses
-income_source.rentUkProperty                                    = Rent out UK properties
-income_source.foreignProperty                                   = Rent out overseas properties
-individual.error.income_source.invalid                          = Select your sources of income
-individual.error.income_source_foreignProperty.invalid          = Select your sources of income
-income_source.checkbox.hint                                     = Select all that apply.
-
 ## Individual what income source to sign up page
-what_income_source_to_sign_up.title                             = What source of income do you want to sign up?
-what_income_source_to_sign_up.heading                           = What source of income do you want to sign up?
-what_income_source_to_sign_up.para1                             = If you are self-employed, you must add all of your sole trader businesses if you have more than one. If you have income from property you must add it, but this is limited to one UK property business.
-what_income_source_to_sign_up.para1-overseas                    = If you are self-employed, you must add all of your sole trader businesses if you have more than one. If you have income from property you must add it. This is limited to one UK property business and one overseas property business.
-what_income_source_to_sign_up.para2                             = Renting out a property includes using a letting agency.
-what_income_source_to_sign_up.selfEmployed                      = Sole trader business
-what_income_source_to_sign_up.ukProperty                        = UK property business
-what_income_source_to_sign_up.foreignProperty                   = Overseas property business
+income-source.title                             = What source of income do you want to sign up?
+income-source.heading                           = What source of income do you want to sign up?
+income-source.para1                             = If you are self-employed, you must add all of your sole trader businesses if you have more than one. If you have income from property you must add it, but this is limited to one UK property business.
+income-source.para1-overseas                    = If you are self-employed, you must add all of your sole trader businesses if you have more than one. If you have income from property you must add it. This is limited to one UK property business and one overseas property business.
+income-source.para2                             = Renting out a property includes using a letting agency.
+income-source.self-employed                      = Sole trader business
+income-source.ukProperty                        = UK property business
+income-source.foreignProperty                   = Overseas property business
 
 error.business-income-source.all-sources                        = Select Sole trader business, UK property rental or Overseas property rental
 error.business-income-source.self-employed-uk-property          = You need to select Sole trader business or UK property rental
@@ -138,162 +71,124 @@ error.business-income-source.self-employed                      = You need to se
 error.business-income-source.uk-property                        = You need to select UK property rental
 error.business-income-source.overseas-property                  = You need to select Overseas property rental
 
-## Rent Uk Property page
-rent_uk_property.title                                          = Do you rent out a UK property?
-rent_uk_property.heading                                        = Do you rent out a UK property?
-rent_uk_property.line_1                                         = This includes if you use a letting agency.
-rent_uk_property.question                                       = Is this your only source of self-employed income?
-
-# Property income page
-property.income.title                                           = How much was your income from property this year?
-property.income.heading                                         = How much was your income from property this year?
-property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
-
 # Cannot Use Service page
 cannot-use-service.title                                        = You cannot use this service
 cannot-use-service.heading                                      = You cannot use this service
 cannot-use-service.line1                                        = You can only sign up if you are an administrator.
 
 # What tax year to sign up
-business.what_year_to_sign_up.title                             = Which tax year do you want to start using software to file updates for?
-business.what_year_to_sign_up.heading                           = Which tax year do you want to start using software to file updates for?
-business.what_year_to_sign_up.line_1                            = You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount of tax you will pay.
-business.what_year_to_sign_up.line_2                            = There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
-business.what_year_to_sign_up.line_3                            = You can file as many updates as you want but you must submit them by these deadlines:
-business.what_year_to_sign_up.table_caption                     = Example of Quarterly dates
-business.what_year_to_sign_up.radio_option_heading              = Select tax year
-business.what_year_to_sign_up.option_1                          = Current tax year (6 April {0} to 5 April {1})
-business.what_year_to_sign_up.option_2                          = Next tax year (6 April {0} to 5 April {1})
-business.what_year_to_sign_up.conditional.1.line_1              = You need to send a quarterly filing update for:
-business.what_year_to_sign_up.conditional.1.line_2              = Send a final declaration by the 31 January {0}.
-business.what_year_to_sign_up.conditional.2.line_1              = You need to send a quarterly filing update for:
-business.what_year_to_sign_up.conditional.2.line_2              = Send a final declaration by 31 January {0} and complete a Self Assessment return for the current tax year as normal.
-
-# Sole trader page
-business.sole_trader.title                                      = Are you a sole trader?
-business.sole_trader.heading                                    = Are you a sole trader?
-business.sole_trader.line_1                                     = As a sole trader, you run your own business as an individual. You can keep all your business’s profits after you’ve paid tax on them. ‘Sole trader’ means you’re responsible for the business, not that you have to work alone.
-business.sole_trader.yes                                        = Yes - I’m a sole trader
-business.sole_trader.no                                         = No - I am a different type of business
-
-## Business Accounting Method page
-business.accounting_method.title                                = How do you record your income and expenses for your self-employed business?
-business.accounting_method.heading                              = How do you record your income and expenses for your self-employed business?
-business.accounting_method.accordion                            = Show me an example
-business.accounting_method.accordion.line_1                     = You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:
-business.accounting_method.accordion.bullet_1                   = May 2017, then you use ‘cash basis’ accounting
-business.accounting_method.accordion.bullet_2                   = March 2017, then you use ‘accruals basis’
-business.accounting_method.cash                                 = <span class="heading-small">Cash accounting</span><br>You record on the date you receive money or pay a bill. Most sole traders and small businesses use this method.
-business.accounting_method.accruals                             = <span class="heading-small">Standard accounting</span><br>You record on the date you send or receive an invoice, even if you do not receive or pay any money. This is also called ‘accruals’ or ‘traditional accounting’.
+business.what-year-to-sign-up.title                             = Which tax year do you want to start using software to file updates for?
+business.what-year-to-sign-up.heading                           = Which tax year do you want to start using software to file updates for?
+business.what-year-to-sign-up.line-1                            = You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount of tax you will pay.
+business.what-year-to-sign-up.line-2                            = There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
+business.what-year-to-sign-up.line-3                            = You can file as many updates as you want but you must submit them by these deadlines:
+business.what-year-to-sign-up.table-caption                     = Example of Quarterly dates
+business.what-year-to-sign-up.radio-option-heading              = Select tax year
+business.what-year-to-sign-up.option-1                          = Current tax year (6 April {0} to 5 April {1})
+business.what-year-to-sign-up.option-2                          = Next tax year (6 April {0} to 5 April {1})
+business.what-year-to-sign-up.conditional.1.line-1              = You need to send a quarterly filing update for:
+business.what-year-to-sign-up.conditional.1.line-2              = Send a final declaration by the 31 January {0}.
+business.what-year-to-sign-up.conditional.2.line-1              = You need to send a quarterly filing update for:
+business.what-year-to-sign-up.conditional.2.line-2              = Send a final declaration by 31 January {0} and complete a Self Assessment return for the current tax year as normal.
 
 # Property Accounting Method Page
-property.accounting_method.title                                = What accounting method do you use for your UK property business?
-property.accounting_method.heading                              = What accounting method do you use for your UK property business?
-property.accounting_method.accordion.summary                    = Show me an example
-property.accounting_method.accordion.content.para               = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
-property.accounting_method.accordion.content.bullet1            = May 2017, you use ‘cash basis accounting’
-property.accounting_method.accordion.content.bullet2            = March 2017, you use ‘traditional accounting’
-property.accounting_method.cash                                 = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-property.accounting_method.accruals                             = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
+property.accounting-method.title                                = What accounting method do you use for your UK property business?
+property.accounting-method.heading                              = What accounting method do you use for your UK property business?
+property.accounting-method.accordion.summary                    = Show me an example
+property.accounting-method.accordion.content.para               = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
+property.accounting-method.accordion.content.bullet1            = May 2017, you use ‘cash basis accounting’
+property.accounting-method.accordion.content.bullet2            = March 2017, you use ‘traditional accounting’
+property.accounting-method.cash                                 = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
+property.accounting-method.accruals                             = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
 
 # Overseas Property accounting method Page
-overseas.property.accounting_method.title                        = What accounting method do you use for your overseas property business?
-overseas.property.accounting_method.heading                      = What accounting method do you use for your overseas property business?
-overseas.property.accounting_method.accordion.summary            = Show me an example
-overseas.property.accounting_method.accordion.content.para       = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
-overseas.property.accounting_method.accordion.content.bullet1    = May 2017, you use ‘cash basis accounting’
-overseas.property.accounting_method.accordion.content.bullet2    = March 2017, you use ‘traditional accounting’
-overseas.property.accounting_method.cash                         = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-overseas.property.accounting_method.accruals                     = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
-
-## Business Name
-business.name.title                                             = Business name
-business.name.heading                                           = What’s the name of your business?
-business.name.signup.line_1                                     = This is the business name you used to register for Self Assessment. If your business doesn’t have a name, enter your own name.
+overseas.property.accounting-method.title                        = What accounting method do you use for your overseas property business?
+overseas.property.accounting-method.heading                      = What accounting method do you use for your overseas property business?
+overseas.property.accounting-method.accordion.summary            = Show me an example
+overseas.property.accounting-method.accordion.content.para       = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
+overseas.property.accounting-method.accordion.content.bullet1    = May 2017, you use ‘cash basis accounting’
+overseas.property.accounting-method.accordion.content.bullet2    = March 2017, you use ‘traditional accounting’
+overseas.property.accounting-method.cash                         = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
+overseas.property.accounting-method.accruals                     = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
 
 ## Property Start Date Date
 business.property.name.title                                    = When did your UK property business start trading?
 business.property.name.heading                                  = When did your UK property business start trading?
-business.property.line_1                                        = This is the date that letting or renting out any UK property first started.
-business.property.start_date.hint                               = For example, 17 8 2014.
+business.property.line-1                                        = This is the date that letting or renting out any UK property first started.
+business.property.start-date.hint                               = For example, 17 8 2014.
 
 # Property Start Date errors
-error.property.day_month_year.empty                             = Enter the date your UK property business started trading
+error.property.day-month-year.empty                             = Enter the date your UK property business started trading
 error.property.day.empty                                        = The date must include a day
 error.property.month.empty                                      = The date must include a month
 error.property.year.empty                                       = The date must include a year
-error.property.day_month.empty                                  = The date must include a day and a month
-error.property.day_year.empty                                   = The date must include a day and a year
-error.property.month_year.empty                                 = The date must include a month and a year
-error.property.day_month_year.max_date                          = The date your UK property business started trading must be the same as or before {0}
-error.property.day_month_year.min_date                          = The date your property business started must be on or after {0}
-error.property.day_month_year.invalid                           = The date must be a real date
+error.property.day-month.empty                                  = The date must include a day and a month
+error.property.day-year.empty                                   = The date must include a day and a year
+error.property.month-year.empty                                 = The date must include a month and a year
+error.property.day-month-year.max-date                          = The date your UK property business started trading must be the same as or before {0}
+error.property.day-month-year.min-date                          = The date your property business started must be on or after {0}
+error.property.day-month-year.invalid                           = The date must be a real date
 error.property.day.invalid                                      = The date must be a real date
 error.property.month.invalid                                    = The date must be a real date
 error.property.year.invalid                                     = The date must be a real date
-error.property.day_month.invalid                                = The date must be a real date
-error.property.day_year.invalid                                 = The date must be a real date
-error.property.month_year.invalid                               = The date must be a real date
+error.property.day-month.invalid                                = The date must be a real date
+error.property.day-year.invalid                                 = The date must be a real date
+error.property.month-year.invalid                               = The date must be a real date
 error.property.year.length                                      = The year must be in four digits. For example, 2020.
 
 # Agent Property Start Date Date
 agent.property.name.heading                                     = When did your client’s UK property business start trading?
-agent.property.line_1                                           = This is the date that letting or renting out any property first started.
-agent.property.start_date.hint                                  = For example, 17 8 2014.
+agent.property.line-1                                           = This is the date that letting or renting out any property first started.
+agent.property.start-date.hint                                  = For example, 17 8 2014.
 
 # Agent Property Start Date errors
-agent.error.property.day_month_year.empty                       = Enter the date your client’s UK property business started trading
+agent.error.property.day-month-year.empty                       = Enter the date your client’s UK property business started trading
 agent.error.property.day.empty                                  = The date must include a day
 agent.error.property.month.empty                                = The date must include a month
 agent.error.property.year.empty                                 = The date must include a year
-agent.error.property.day_month.empty                            = The date must include a day and a month
-agent.error.property.day_year.empty                             = The date must include a day and a year
-agent.error.property.month_year.empty                           = The date must include a month and a year
-agent.error.property.day_month_year.max_date                    = The date the UK property business started trading must be on or before {0}
-agent.error.property.day_month_year.min_date                    = The date your client’s property business started trading must be on or after {0}
-agent.error.property.day_month_year.invalid                     = The date must be a real date
+agent.error.property.day-month.empty                            = The date must include a day and a month
+agent.error.property.day-year.empty                             = The date must include a day and a year
+agent.error.property.month-year.empty                           = The date must include a month and a year
+agent.error.property.day-month-year.max-date                    = The date the UK property business started trading must be on or before {0}
+agent.error.property.day-month-year.min-date                    = The date your client’s property business started trading must be on or after {0}
+agent.error.property.day-month-year.invalid                     = The date must be a real date
 agent.error.property.day.invalid                                = The date must be a real date
 agent.error.property.month.invalid                              = The date must be a real date
 agent.error.property.year.invalid                               = The date must be a real date
-agent.error.property.day_month.invalid                          = The date must be a real date
-agent.error.property.day_year.invalid                           = The date must be a real date
-agent.error.property.month_year.invalid                         = The date must be a real date
+agent.error.property.day-month.invalid                          = The date must be a real date
+agent.error.property.day-year.invalid                           = The date must be a real date
+agent.error.property.month-year.invalid                         = The date must be a real date
 agent.error.property.year.length                                = The year must be in four digits. For example, 2020.
 
 ## Overseas Property Start Date
 overseas.property.name.title                                    = When did your overseas property business start trading?
 overseas.property.name.heading                                  = When did your overseas property business start trading?
-overseas.property.line_1                                        = This is the date that letting or renting out any overseas property first started.
-overseas.property.start_date.hint                               = For example, 17 8 2014.
+overseas.property.line-1                                        = This is the date that letting or renting out any overseas property first started.
+overseas.property.start-date.hint                               = For example, 17 8 2014.
 
 # Agent Overseas Property Start Date
 agent.overseas.property.name.heading                            = When did your client’s overseas property business start trading?
-agent.overseas.property.line_1                                  = This is the date that letting or renting out any overseas property first started.
-agent.overseas.property.start_date.hint                         = For example, 17 8 2014.
+agent.overseas.property.line-1                                  = This is the date that letting or renting out any overseas property first started.
+agent.overseas.property.start-date.hint                         = For example, 17 8 2014.
 
 # Overseas Property Start Date errors
-error.overseas.property.day_month_year.empty                    = Enter the date your overseas property business started trading
+error.overseas.property.day-month-year.empty                    = Enter the date your overseas property business started trading
 error.overseas.property.day.empty                               = The date must include a day
 error.overseas.property.month.empty                             = The date must include a month
 error.overseas.property.year.empty                              = The date must include a year
-error.overseas.property.day_month.empty                         = The date must include a day and a month
-error.overseas.property.day_year.empty                          = The date must include a day and a year
-error.overseas.property.month_year.empty                        = The date must include a month and a year
-error.overseas.property.day_month_year.max_date                 = The date your overseas property business started trading must be the same as or before {0}
-error.overseas.property.day_month_year.min_date                 = The date your property business started must be on or after {0}
-error.overseas.property.day_month_year.invalid                  = The date must be a real date
+error.overseas.property.day-month.empty                         = The date must include a day and a month
+error.overseas.property.day-year.empty                          = The date must include a day and a year
+error.overseas.property.month-year.empty                        = The date must include a month and a year
+error.overseas.property.day-month-year.max-date                 = The date your overseas property business started trading must be the same as or before {0}
+error.overseas.property.day-month-year.min-date                 = The date your property business started must be on or after {0}
+error.overseas.property.day-month-year.invalid                  = The date must be a real date
 error.overseas.property.day.invalid                             = The date must be a real date
 error.overseas.property.month.invalid                           = The date must be a real date
 error.overseas.property.year.invalid                            = The date must be a real date
-error.overseas.property.day_month.invalid                       = The date must be a real date
-error.overseas.property.day_year.invalid                        = The date must be a real date
-error.overseas.property.month_year.invalid                      = The date must be a real date
+error.overseas.property.day-month.invalid                       = The date must be a real date
+error.overseas.property.day-year.invalid                        = The date must be a real date
+error.overseas.property.month-year.invalid                      = The date must be a real date
 error.overseas.property.year.length                             = The year must be in four digits. For example, 2020.
-
-## Contact Email Address page ##
-contact_email.title                                             = Enter your email address
-contact_email.heading                                           = Enter your email address
-contact_email.line_1                                            = We’ll use this to get in touch with updates about your estimated Income Tax calculations.
 
 ## Email Preferences ##
 preferences.returnLinkText                                      = Continue
@@ -318,7 +213,7 @@ summary.title                                                   = Check your ans
 summary.heading                                                 = Check your answers
 summary.heading_hidden                                          = before signing up
 summary.confirm_and_sign_up                                     = Confirm and sign up
-summary.line_1                                                  = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
+summary.line-1                                                  = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
 summary.rent_uk_property_1                                      = You rent out UK property
 summary.rent_uk_property_2                                      = You only receive income from self-employment
 summary.income_source                                           = Income received from
@@ -334,14 +229,14 @@ summary.business_name                                           = Your business 
 summary.income_type                                             = Accounting method for your self-employment income
 summary.income_type.cash                                        = Cash basis accounting
 summary.income_type.accruals                                    = Traditional accounting
-summary.accounting_method_property                              = Accounting method for UK property income
+summary.accounting-method_property                              = Accounting method for UK property income
 summary.selected_year                                           = Tax year to start filing updates
 summary.selected_year.current                                   = Current tax year (6 April {0} to 5 April {1})
 summary.selected_year.next                                      = Next tax year (6 April {0} to 5 April {1})
-summary.property_start_date                              = Trading start date of UK property business
+summary.property_start-date                              = Trading start date of UK property business
 summary.self_employments                                        = Number of businesses signed up
-summary.overseas_property_start_date                      = Trading start date of overseas property business
-summary.accounting_method_foreign_property                      = Accounting method for overseas property income
+summary.overseas_property_start-date                      = Trading start date of overseas property business
+summary.accounting-method_foreign_property                      = Accounting method for overseas property income
 
 
 ## Confirmation page ##
@@ -458,11 +353,11 @@ error.accounting-method.invalid                                 = Select how you
 error.accounting-method-property.invalid                        = Select if you use cash basis accounting or traditional accounting
 
 #Overseas Property accounting method errors
-error.overseas_property_accounting_method.invalid               = Select if you use cash basis accounting or traditional accounting
-error.overseas_property_accounting_method.empty                 = Select if you use cash basis accounting or traditional accounting
+error.overseas_property_accounting-method.invalid               = Select if you use cash basis accounting or traditional accounting
+error.overseas_property_accounting-method.empty                 = Select if you use cash basis accounting or traditional accounting
 
 #Agent Overseas Property accounting method errors
-error.agent.overseas_property_accounting_method.empty           = Select if your client uses cash basis accounting or traditional accounting
+error.agent.overseas_property_accounting-method.empty           = Select if your client uses cash basis accounting or traditional accounting
 
 error.user_details.first_name.empty                             = Enter your first name
 error.user_details.last_name.empty                              = Enter your last name
@@ -474,21 +369,21 @@ error.user_details.last_name.maxLength                          = Enter a last n
 error.nino.invalid                                              = Enter a National Insurance number in the correct format
 error.nino.empty                                                = Enter your National Insurance number
 
-error.user_details.date_of_birth.day_month_year.empty           = Enter your date of birth
+error.user_details.date_of_birth.day-month-year.empty           = Enter your date of birth
 error.user_details.date_of_birth.day.empty                      = Your date of birth must include a day
 error.user_details.date_of_birth.month.empty                    = Your date of birth must include a month
 error.user_details.date_of_birth.year.empty                     = Your date of birth must include a year
-error.user_details.date_of_birth.day_month.empty                = Your date of birth must include a day and a month
-error.user_details.date_of_birth.day_year.empty                 = Your date of birth must include a day and a year
-error.user_details.date_of_birth.month_year.empty               = Your date of birth must include a month and a year
-error.user_details.date_of_birth.day_month_year.not_in_past     = Your date of birth must be in the past
-error.user_details.date_of_birth.day_month_year.invalid         = The date must be a real date
+error.user_details.date_of_birth.day-month.empty                = Your date of birth must include a day and a month
+error.user_details.date_of_birth.day-year.empty                 = Your date of birth must include a day and a year
+error.user_details.date_of_birth.month-year.empty               = Your date of birth must include a month and a year
+error.user_details.date_of_birth.day-month-year.not_in_past     = Your date of birth must be in the past
+error.user_details.date_of_birth.day-month-year.invalid         = The date must be a real date
 error.user_details.date_of_birth.day.invalid                    = The date must be a real date
 error.user_details.date_of_birth.month.invalid                  = The date must be a real date
 error.user_details.date_of_birth.year.invalid                   = The date must be a real date
-error.user_details.date_of_birth.day_month.invalid              = The date must be a real date
-error.user_details.date_of_birth.day_year.invalid               = The date must be a real date
-error.user_details.date_of_birth.month_year.invalid             = The date must be a real date
+error.user_details.date_of_birth.day-month.invalid              = The date must be a real date
+error.user_details.date_of_birth.day-year.invalid               = The date must be a real date
+error.user_details.date_of_birth.month-year.invalid             = The date must be a real date
 error.user_details.date_of_birth.year.length                    = The year must be in four digits. For example, 2020.
 
 
@@ -510,42 +405,42 @@ error.property_accounting_period.minStartDate                   = The date your 
 ## Eligible page ##
 eligible.title                                                  = You can send digital updates
 eligible.heading                                                = You can send digital updates
-eligible.line_1                                                 = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
+eligible.line-1                                                 = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
 eligible.line_2                                                 = You just need to enter a few more details.
 
 ## User Details ##
 user-details.title                                              = Confirm your details
 user-details.heading                                            = Confirm your details
-user-details.line_1                                             = We will check these details with information we currently have.
+user-details.line-1                                             = We will check these details with information we currently have.
 user-details.field_1                                            = First name
 user-details.field_2                                            = Last name
 user-details.field_3                                            = National Insurance number
 user-details.field_4                                            = Date of birth
-user_details.formhint.1.line_1                                  = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
+user_details.formhint.1.line-1                                  = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 user-details.formhint.2                                         = For example, 17 2 1990.
 
 ## Stub User Details ##
 stub.user.details.title                                         = User stubbing service - Use software to send Income Tax updates - GOV.UK
 stub.user.details.heading                                       = User stubbing service
-stub.user.details.line_1                                        = We will check these details with information we currently have.
+stub.user.details.line-1                                        = We will check these details with information we currently have.
 stub.user.details.field_1                                       = First name
 stub.user.details.field_2                                       = Last name
 stub.user.details.field_3                                       = National Insurance number
 stub.user.details.field_4                                       = Self Assessment Unique Tax Reference
 stub.user.details.field_5                                       = Date of birth
-stub.user.details.formhint.1.line_1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
+stub.user.details.formhint.1.line-1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 stub.user.details.formhint.2                                    = For example, 17 2 1990.
 stub.user.details.formhint.3                                    = For example, ’1234546734’.
 
 # User details page
 user-details-error.title                                        = User match error
 user-details-error.heading                                      = We couldn’t confirm your details
-user-details-error.line_1                                       = The details you’ve entered are not on our system.
+user-details-error.line-1                                       = The details you’ve entered are not on our system.
 
 # User Details Lockout
 user-details-lockout.title                                      = You’ve been locked out
 user-details-lockout.heading                                    = You’ve been locked out
-user-details-lockout.line_1                                     = To sign up for quarterly reporting, you’ll have to try again in {0}.
+user-details-lockout.line-1                                     = To sign up for quarterly reporting, you’ll have to try again in {0}.
 
 # Check your details page
 user-details.summary.title                                      = Check your user details
@@ -617,8 +512,8 @@ mtdit-overview.paragraph4                                       = You’ll still
 mtdit-overview.paragraph5                                       = To add this tax, you may need to provide documents that prove your identity.
 
 
-## Base ##
-agent.base.service_name                                         = Sign up your client for quarterly reporting
+## Agent Base ##
+agent.base.service-name                                         = Use software to report your client’s Income Tax
 agent.base.back                                                 = Back
 agent.base.continue                                             = Continue
 agent.base.update                                               = Update
@@ -627,17 +522,12 @@ agent.base.sign-out                                             = Sign out
 agent.base.sign-up                                              = Sign up
 agent.base.start-now                                            = Start now
 agent.base.submit                                               = Submit
-agent.base.startDate                                            = Start date
-agent.base.endDate                                              = End date
 agent.base.day                                                  = Day
 agent.base.month                                                = Month
 agent.base.year                                                 = Year
-agent.base.error_heading                                        = There is a problem
 agent.base.change                                               = Change
 agent.base.yes                                                  = Yes
 agent.base.no                                                   = No
-agent.base.go_back                                              = Go back
-agent.base.try_again                                            = Try again
 
 # Agent front page
 agent.frontpage.title                                           = Sign up to report your client’s income and expenses quarterly
@@ -693,9 +583,10 @@ agent.cannot_take_part.alternative                              = Your client wi
 agent.cannot_take_part.alternative.link                         = self assessment tax return
 
 # Agent accounting period check page
-agent.accounting_period_check.title                             = Do your client’s business accounting periods all run from 6 April to 5 April?
-agent.accounting_period_check.heading                           = Do your client’s business accounting periods all run from 6 April to 5 April?
-agent.accounting_period_check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
+agent.accounting-period-check.title                             = Do your client’s business accounting periods all run from 6 April to 5 April?
+agent.accounting-period-check.heading                           = Do your client’s business accounting periods all run from 6 April to 5 April?
+agent.accounting-period-check.hint                              = The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service.
+agent.accounting-period-check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
 
 # Agent property trading after date page
 agent.property_trading_after.title                              = Did your client start a property business on or after {0}?
@@ -712,12 +603,12 @@ agent.property_trading_after.error.summary                      = Select yes if 
 # Client details page
 agent.client-details-error.title                                = There is a problem
 agent.client-details-error.heading                              = There is a problem
-agent.client-details-error.line_1                               = The details you’ve entered are not on our system.
+agent.client-details-error.line-1                               = The details you’ve entered are not on our system.
 
 # Client Details Lockout
 agent.client-details-lockout.title                              = You’ve been locked out
 agent.client-details-lockout.heading                            = You’ve been locked out
-agent.client-details-lockout.line_1                             = To sign your client up for quarterly reporting, you’ll have to try again in {0}.
+agent.client-details-lockout.line-1                             = To sign your client up for quarterly reporting, you’ll have to try again in {0}.
 
 # Check your client’s details page
 agent.client-details.summary.title                              = Check your answers - client’s details
@@ -728,73 +619,56 @@ agent.client-details.summary.last_name                          = Last name
 agent.client-details.summary.nino                               = National Insurance number
 agent.client-details.summary.dob                                = Date of birth
 
-## agent income source page
-agent.income_source.heading                                     = How does your client receive their income?
-agent.income_source.checkbox.hint                               = Select all that apply.
-agent.income_source.selfEmployed                                = Sole trader with one or more businesses
-agent.income_source.rentUkProperty                              = Rent out UK properties
-agent.income_source.foreignProperty                             = Rent out overseas properties
-agent.error.income_source.invalid                               = Select if your client receives income from self employment or UK property
-agent.error.income_source_foreignProperty.invalid               = Select if your client receives income from self employment, UK property or overseas property
-
 ## agent what income source to sign up page
-agent.what_income_source_to_sign_up.heading                     = What source of income do you want to sign up?
-agent.what_income_source_to_sign_up.paragraph1                  = If your client is self-employed, you must add all of their sole trader businesses if they have more than one. If they have income from property you must add it, but this is limited to one UK property business.
-agent.what_income_source_to_sign_up.paragraph1-overseas         = Your client can have up to {0} sole trader businesses. However, they can have only one UK property business and one overseas property.
-agent.what_income_source_to_sign_up.paragraph2                  = Renting out a property includes using a letting agency.
-agent.what_income_source_to_sign_up.selfEmployed                = Sole trader business
-agent.what_income_source_to_sign_up.ukProperty                  = UK property business
-agent.what_income_source_to_sign_up.foreignProperty             = Overseas property business
-agent.what_income_source_to_sign_up.error                       = Select your client’s source of income
+agent.income-source.heading                     = What source of income do you want to sign up?
+agent.income-source.paragraph1                  = If your client is self-employed, you must add all of their sole trader businesses if they have more than one. If they have income from property you must add it, but this is limited to one UK property business.
+agent.income-source.paragraph1-overseas         = Your client can have up to {0} sole trader businesses. However, they can have only one UK property business and one overseas property.
+agent.income-source.paragraph2                  = Renting out a property includes using a letting agency.
+agent.income-source.self-employed                = Sole trader business
+agent.income-source.uk-property                  = UK property business
+agent.income-source.foreign-property             = Overseas property business
+agent.income-source.error                       = Select your client’s source of income
 
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?
 agent.property.income.heading                                   = How much was your income from property this year?
-agent.property.income.line_1                                    = This is the amount you made before deducting any allowable expenses.
+agent.property.income.line-1                                    = This is the amount you made before deducting any allowable expenses.
 
 
 ## Accounting Year page
-agent.business.what_year_to_sign_up.title                       = Which tax year do you want your client to start filing income tax updates for?
-agent.business.what_year_to_sign_up.heading                     = Which tax year do you want your client to start filing income tax updates for?
-agent.business.what_year_to_sign_up.line_1                      = You can start sending quarterly updates during the current tax year or the next tax year. It will not affect the amount your client pays.
-agent.business.what_year_to_sign_up.line_2                      = There is no penalty if you start making updates for your client mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
-agent.business.what_year_to_sign_up.line_3                      = You can file as many updates as you want. You must submit them by these deadlines:
-agent.business.what_year_to_sign_up.radio_option_heading        = Select tax year
-agent.business.what_year_to_sign_up.option_1                    = Current tax year (6 April {0} to 5 April {1})
-agent.business.what_year_to_sign_up.option_2                    = Next tax year (6 April {0} to 5 April {1})
-agent.business.what_year_to_sign_up.option_current_hint         = You or your client will need to submit a final declaration by the 31 January {0}.
-agent.business.what_year_to_sign_up.option_next_hint            = You or your client will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
+agent.business.what-year-to-sign-up.title                       = Which tax year do you want your client to start filing income tax updates for?
+agent.business.what-year-to-sign-up.heading                     = Which tax year do you want your client to start filing income tax updates for?
+agent.business.what-year-to-sign-up.line-1                      = You can start sending quarterly updates during the current tax year or the next tax year. It will not affect the amount your client pays.
+agent.business.what-year-to-sign-up.line-2                      = There is no penalty if you start making updates for your client mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
+agent.business.what-year-to-sign-up.line-3                      = You can file as many updates as you want. You must submit them by these deadlines:
+agent.business.what-year-to-sign-up.radio-option-heading        = Select tax year
+agent.business.what-year-to-sign-up.option-1                    = Current tax year (6 April {0} to 5 April {1})
+agent.business.what-year-to-sign-up.option-2                    = Next tax year (6 April {0} to 5 April {1})
+agent.business.what-year-to-sign-up.option-current-hint         = You or your client will need to submit a final declaration by the 31 January {0}.
+agent.business.what-year-to-sign-up.option-next-hint            = You or your client will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
 
 # Agent Sole trader page
 agent.eligibility.sole_trader.heading                           = Did your client’s sole trader business start trading on or after {0}?
 
-## Business Income page
-agent.business.accounting_method.title                          = What accounting method does your client use for their self-employed business?
-agent.business.accounting_method.heading                        = What accounting method does your client use for their self-employed business?
-agent.business.accounting_method.heading_hint                   = The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service.
-agent.business.accounting_method.cash                           = Cash accounting
-agent.business.accounting_method.accruals                       = Standard accounting
-
-
 # Agent Property Accounting Method Page
-agent.property.accounting_method.title                          = What accounting method does your client use for their UK property business?
-agent.property.accounting_method.radio.cash                     = Cash basis accounting
-agent.property.accounting_method.radio.accruals                 = Traditional accounting
+agent.property.accounting-method.title                          = What accounting method does your client use for their UK property business?
+agent.property.accounting-method.radio.cash                     = Cash basis accounting
+agent.property.accounting-method.radio.accruals                 = Traditional accounting
 
 # Agent Overseas Property Accounting Method Page
-agent.overseas.property.accounting_method.title                 = What accounting method does your client use for their overseas property business?
-agent.overseas.property.accounting_method.radio.cash            = Cash basis accounting
-agent.overseas.property.accounting_method.radio.accruals        = Traditional accounting
+agent.overseas.property.accounting-method.title                 = What accounting method does your client use for their overseas property business?
+agent.overseas.property.accounting-method.radio.cash            = Cash basis accounting
+agent.overseas.property.accounting-method.radio.accruals        = Traditional accounting
 
 ## Business Name
 agent.business.name.title                                       = Business name
 agent.business.name.heading                                     = What’s the name of your client’s business?
-agent.business.name.line_1                                      = This is the business name they used to register for Self Assessment. If their business doesn’t have a name, enter your client’s name.
+agent.business.name.line-1                                      = This is the business name they used to register for Self Assessment. If their business doesn’t have a name, enter your client’s name.
 
 ## Contact Email Address page ##
 agent.contact_email.title                                       = Enter your email address
 agent.contact_email.heading                                     = Enter your email address
-agent.contact_email.line_1                                      = We’ll use this to get in touch with updates about your estimated Income Tax calculations.
+agent.contact_email.line-1                                      = We’ll use this to get in touch with updates about your estimated Income Tax calculations.
 
 ## Email Preferences ##
 agent.preferences.returnLinkText                                = Continue
@@ -832,7 +706,7 @@ agent.summary.title                                             = Check your ans
 agent.summary.heading                                           = Check your answers
 agent.summary.heading_hidden                                    = Check your answers before signing up
 agent.summary.confirm_and_sign_up                               = Confirm and sign up
-agent.summary.line_1                                            = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
+agent.summary.line-1                                            = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
 agent.summary.income_source                                     = Income received from
 agent.summary.income_source.business                            = Sole trader business
 agent.summary.income_source.uk_property                         = UK property
@@ -847,8 +721,8 @@ agent.summary.match_tax_year                                    = Accounting per
 agent.summary.selected_year                                     = Tax year to start filing updates
 agent.summary.selected_year.current                             = Current tax year (6 April {0} to 5 April {1})
 agent.summary.selected_year.next                                = Next tax year (6 April {0} to 5 April {1})
-agent.summary.property_start_date                               = Trading start for UK property
-agent.summary.overseas_property_start_date                      = Trading start for overseas property
+agent.summary.property_start-date                               = Trading start for UK property
+agent.summary.overseas_property_start-date                      = Trading start for overseas property
 agent.summary.income_type_overseas_property                     = Accounting method for overseas property
 agent.summary.self_employments                                  = Number of businesses signed up
 
@@ -878,23 +752,23 @@ agent.sign-up-complete.whatNow.para2                            = After you’ve
 agent.error.back_to_preferences.empty                           = You must select an option to continue
 
 agent.error.dob_date.invalid_chars                              = Enter a date of birth using numbers 0 to 9
-agent.error.dob_date.day_month_year.empty                       = Enter your client’s date of birth
+agent.error.dob_date.day-month-year.empty                       = Enter your client’s date of birth
 agent.error.dob_date.date.empty                                 = Enter your client’s date of birth
 agent.error.dob_date.day.empty                                  = Their date of birth must include a day
 agent.error.dob_date.month.empty                                = Their date of birth must include a month
 agent.error.dob_date.year.empty                                 = Their date of birth must include a year
-agent.error.dob_date.day_month.empty                            = Their date of birth must include a day and a month
-agent.error.dob_date.day_year.empty                             = Their date of birth must include a day and a year
-agent.error.dob_date.month_year.empty                           = Their date of birth must include a month and a year
-agent.error.dob_date.day_month_year.not_in_past                 = Their date of birth must be in the past
-agent.error.dob_date.day_month_year.invalid                     = The date must be a real date
+agent.error.dob_date.day-month.empty                            = Their date of birth must include a day and a month
+agent.error.dob_date.day-year.empty                             = Their date of birth must include a day and a year
+agent.error.dob_date.month-year.empty                           = Their date of birth must include a month and a year
+agent.error.dob_date.day-month-year.not_in_past                 = Their date of birth must be in the past
+agent.error.dob_date.day-month-year.invalid                     = The date must be a real date
 agent.error.dob_date.date.invalid                               = The date must be a real date
 agent.error.dob_date.day.invalid                                = The date must be a real date
 agent.error.dob_date.month.invalid                              = The date must be a real date
 agent.error.dob_date.year.invalid                               = The date must be a real date
-agent.error.dob_date.day_month.invalid                          = The date must be a real date
-agent.error.dob_date.day_year.invalid                           = The date must be a real date
-agent.error.dob_date.month_year.invalid                         = The date must be a real date
+agent.error.dob_date.day-month.invalid                          = The date must be a real date
+agent.error.dob_date.day-year.invalid                           = The date must be a real date
+agent.error.dob_date.month-year.invalid                         = The date must be a real date
 agent.error.dob_date.year.length                                = The year must be in four digits. For example, 2020.
 
 # Sole Trader Eligibility invalid
@@ -906,9 +780,9 @@ agent.error.match_tax_year.invalid                              = Select yes if 
 agent.error.what-year.empty                                     = Select the tax year you want to sign your client up for
 agent.error.what-year.invalid                                   = Select the tax year you want to sign your client up for
 
-agent.error.start_date.empty                                    = Enter a start date
-agent.error.start_date.invalid_chars                            = Enter a start date using numbers 0 to 9
-agent.error.start_date.invalid                                  = Enter a real start date
+agent.error.start-date.empty                                    = Enter a start date
+agent.error.start-date.invalid_chars                            = Enter a start date using numbers 0 to 9
+agent.error.start-date.invalid                                  = Enter a real start date
 
 agent.error.end_date.empty                                      = Enter an end date
 agent.error.end_date.invalid_chars                              = Enter an end date using numbers 0 to 9
@@ -948,13 +822,13 @@ agent.error.nino.empty                                          = Enter your cli
 ## Eligible page ##
 agent.eligible.title                                            = You can send digital updates
 agent.eligible.heading                                          = You can send digital updates
-agent.eligible.line_1                                           = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
+agent.eligible.line-1                                           = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
 agent.eligible.line_2                                           = You just need to enter a few more details.
 
 ## Not eligible page ##
 agent.not-eligible.title                                        = You can’t send digital updates yet
 agent.not-eligible.heading                                      = You can’t send digital updates yet
-agent.not-eligible.line_1                                       = Your answers mean you’re not eligible to send digital updates to HMRC right now.
+agent.not-eligible.line-1                                       = Your answers mean you’re not eligible to send digital updates to HMRC right now.
 agent.not-eligible.line_2                                       = You can still sign up for the service. HMRC are working to make digital updates available for all sole traders in the coming months. If you sign up now, you will be able to send digital updates to HMRC when you become eligible.
 agent.not-eligible.line_3                                       = If you choose to sign up, we’ll ask you a few questions about your income and contact details.
 agent.not-eligible.question                                     = Choose what you would like to do next
@@ -964,7 +838,7 @@ agent.not-eligible.signout                                      = I don’t want
 ## No NINO page ##
 agent.no-nino.title                                             = Your client can’t use this service yet
 agent.no-nino.heading                                           = Your client can’t use this service yet
-agent.no-nino.line_1                                            = You can sign up later in the year when this service is available to you.
+agent.no-nino.line-1                                            = You can sign up later in the year when this service is available to you.
 
 ## Not Enrolled to Agent Services
 agent.not_enrolled_agent_services.title                         = You can’t use this service yet
@@ -974,17 +848,17 @@ agent.not_enrolled_agent_services.para1                         = To use this se
 ## Client Details ##
 agent.client-details.title                                      = Enter your client’s details
 agent.client-details.heading                                    = Enter your client’s details
-agent.client-details.line_1                                     = We will try to match these details to information we have about your client.
+agent.client-details.line-1                                     = We will try to match these details to information we have about your client.
 agent.client-details.field_1                                    = First name
 agent.client-details.field_2                                    = Last name
 agent.client-details.field_3                                    = National Insurance number
 agent.client-details.field_4                                    = Date of birth
-agent.client_details.formhint.1.line_1                          = For example, ‘QQ 12 34 56 C’.
+agent.client_details.formhint.1.line-1                          = For example, ‘QQ 12 34 56 C’.
 agent.client-details.formhint.2                                 = For example, 17 2 1990.
 
 agent.no-sa.title                                               = Your client is not registered for Self Assessment
 agent.no-sa.heading                                             = Your client is not registered for Self Assessment
-agent.no-sa.line_1                                              = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
+agent.no-sa.line-1                                              = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 # Agent Task List
 agent.business.task-list.title                                        = Your client’s details
@@ -1020,19 +894,19 @@ not_eligible_for_income_tax.heading                             = You cannot use
 not_eligible_for_income_tax.para1                               = This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service in the future.
 
 # Agent Overseas Property Start Date Page errors
-agent.error.overseas.property.day_month_year.empty              = Enter the date your client’s overseas property business started trading
-agent.error.overseas.property.month_year.empty                  = The date must include a month and a year
-agent.error.overseas.property.day_month.empty                   = The date must include a day and a month
-agent.error.overseas.property.day_year.empty                    = The date must include a day and a year
+agent.error.overseas.property.day-month-year.empty              = Enter the date your client’s overseas property business started trading
+agent.error.overseas.property.month-year.empty                  = The date must include a month and a year
+agent.error.overseas.property.day-month.empty                   = The date must include a day and a month
+agent.error.overseas.property.day-year.empty                    = The date must include a day and a year
 agent.error.overseas.property.year.empty                        = The date must include a year
 agent.error.overseas.property.day.empty                         = The date must include a day
 agent.error.overseas.property.month.empty                       = The date must include a month
-agent.error.overseas.property.day_month_year.max_date           = The date the overseas property business started trading must be on or before {0}
-agent.error.overseas.property.day_month_year.min_date           = The date your client’s property business started trading must be on or after {0}
-agent.error.overseas.property.day_month_year.invalid            = The date must be a real date
-agent.error.overseas.property.month_year.invalid                = The date must be a real date
-agent.error.overseas.property.day_month.invalid                 = The date must be a real date
-agent.error.overseas.property.day_year.invalid                  = The date must be a real date
+agent.error.overseas.property.day-month-year.max-date           = The date the overseas property business started trading must be on or before {0}
+agent.error.overseas.property.day-month-year.min-date           = The date your client’s property business started trading must be on or after {0}
+agent.error.overseas.property.day-month-year.invalid            = The date must be a real date
+agent.error.overseas.property.month-year.invalid                = The date must be a real date
+agent.error.overseas.property.day-month.invalid                 = The date must be a real date
+agent.error.overseas.property.day-year.invalid                  = The date must be a real date
 agent.error.overseas.property.year.invalid                      = The date must be a real date
 agent.error.overseas.property.day.invalid                       = The date must be a real date
 agent.error.overseas.property.month.invalid                     = The date must be a real date
@@ -1082,9 +956,6 @@ agent.business.progress-saved.content.paragraph2                      = If you s
 agent.business.progress-saved.content.sign-up-link                    = return to sign up your client’s business for Making Tax Digital for Income Tax
 agent.business.progress-saved.content.sign-out-link                   = sign out and come back later
 agent.business.progress-saved.content.sign-in-link                    = Government Gateway login
-
-## Service Name
-agent_service_name.title                                        = Use software to report your client’s Income Tax
 
 ## Title pattern
 titlePattern.serviceName.govUk                                  = {0} - Use software to send Income Tax updates - GOV.UK
@@ -1221,9 +1092,9 @@ agent.error.remove-overseas-property-business.invalid          = Select yes if y
 # Throttling
 throttle.title                                                 = Your sign up cannot be completed right now
 throttle.heading                                               = Your sign up cannot be completed right now
-throttle.line_1                                                = We are experiencing high levels of applications for this service and cannot complete your sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
+throttle.line-1                                                = We are experiencing high levels of applications for this service and cannot complete your sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
 throttle.line_2                                                = To finish and complete signing up, try again or sign out and come back later.
 agent.throttle.title                                           = Your sign up cannot be completed right now
 agent.throttle.heading                                         = Your sign up cannot be completed right now
-agent.throttle.line_1                                          = We are experiencing high levels of applications for this service and cannot complete your client’s sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
+agent.throttle.line-1                                          = We are experiencing high levels of applications for this service and cannot complete your client’s sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
 agent.throttle.line_2                                          = To finish and complete signing up your client, try again or sign out and come back later.

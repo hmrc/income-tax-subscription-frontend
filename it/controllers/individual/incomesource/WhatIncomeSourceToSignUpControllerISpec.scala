@@ -53,7 +53,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
       Then("Should return a OK with the income source page")
       res must have(
         httpStatus(OK),
-        pageTitle(messages("what_income_source_to_sign_up.title") + serviceNameGovUk)
+        pageTitle(messages("income-source.title") + serviceNameGovUk)
       )
     }
 
@@ -154,7 +154,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          pageTitle(s"Error: ${messages("income-source.title")}$serviceNameGovUk")
         )
       }
 
@@ -181,7 +181,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          pageTitle(s"Error: ${messages("income-source.title")}$serviceNameGovUk")
         )
       }
 
@@ -206,7 +206,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          pageTitle(s"Error: ${messages("income-source.title")}$serviceNameGovUk")
         )
       }
 
@@ -231,7 +231,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          pageTitle(s"Error: ${messages("income-source.title")}$serviceNameGovUk")
         )
       }
 
@@ -250,7 +250,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("what_income_source_to_sign_up.title")}$serviceNameGovUk")
+          pageTitle(s"Error: ${messages("income-source.title")}$serviceNameGovUk")
         )
       }
     }

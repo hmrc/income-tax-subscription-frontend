@@ -38,14 +38,14 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         When("GET /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
 
-        val expectedText = removeHtmlMarkup(messages("agent.overseas.property.accounting_method.radio.cash"))
+        val expectedText = removeHtmlMarkup(messages("agent.overseas.property.accounting-method.radio.cash"))
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
         Then("Should return a OK with the foreign property accounting method page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.overseas.property.accounting_method.title") + serviceNameGovUk),
+          pageTitle(messages("agent.overseas.property.accounting-method.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingMethodOverseasProperty", selectedRadioButton = Some(expectedText))
         )
       }
@@ -66,7 +66,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         Then("Should return a OK with the foreign property accounting method page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.overseas.property.accounting_method.title") + serviceNameGovUk),
+          pageTitle(messages("agent.overseas.property.accounting-method.title") + serviceNameGovUk),
           radioButtonSet(id = "foreignPropertyAccountingMethod", selectedRadioButton = None)
         )
       }

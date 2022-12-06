@@ -39,7 +39,7 @@
 @optionalSelfEmploymentRadio = @{
     if(incomeSourcesStatus.selfEmploymentAvailable) {
         Some(RadioItem(
-            content = Text(messages("what_income_source_to_sign_up.selfEmployed")),
+            content = Text(messages("income-source.self-employed")),
             value = Some(SELF_EMPLOYED)
         ))
     } else {
@@ -50,7 +50,7 @@
 @optionalUkPropertyRadio = @{
     if(incomeSourcesStatus.ukPropertyAvailable) {
         Some(RadioItem(
-            content = Text(messages("what_income_source_to_sign_up.ukProperty")),
+            content = Text(messages("income-source.ukProperty")),
             value = Some(UK_PROPERTY)
         ))
     } else {
@@ -61,7 +61,7 @@
 @optionalOverseasPropertyRadio = @{
     if(incomeSourcesStatus.overseasPropertyAvailable) {
         Some(RadioItem(
-            content = Text(messages("what_income_source_to_sign_up.foreignProperty")),
+            content = Text(messages("income-source.foreignProperty")),
             value = Some(OVERSEAS_PROPERTY)
         ))
     } else {
@@ -70,29 +70,29 @@
 }
 
 @mainTemplate(
-    title = messages("what_income_source_to_sign_up.title"),
+    title = messages("income-source.title"),
     optForm = Some(incomeSourceForm),
     backLink = Some(backUrl)
 ) {
 
-    <h1 class="govuk-heading-l">@messages("what_income_source_to_sign_up.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("income-source.heading")</h1>
 
     <div class="govuk-inset-text">
         <p class="govuk-body govuk-!-margin-bottom-6">
           @if(featureSwitching.isEnabled(ForeignProperty)) {
-            @messages("what_income_source_to_sign_up.para1-overseas", appConfig.maxSelfEmployments)
+            @messages("income-source.para1-overseas", appConfig.maxSelfEmployments)
           } else {
-            @messages("what_income_source_to_sign_up.para1")
+            @messages("income-source.para1")
           }
         </p>
-        <p class="govuk-body">@messages("what_income_source_to_sign_up.para2")</p>
+        <p class="govuk-body">@messages("income-source.para2")</p>
     </div>
 
     @form(action = postAction) {
 
         @radioHelper(
             field = incomeSourceForm(BusinessIncomeSourceForm.incomeSourceKey),
-            legend = messages("what_income_source_to_sign_up.heading"),
+            legend = messages("income-source.heading"),
             isPageHeading = false,
             radioItems = Seq(
                 optionalSelfEmploymentRadio,

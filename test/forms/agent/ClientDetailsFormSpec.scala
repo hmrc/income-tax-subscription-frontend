@@ -172,7 +172,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
             errors must contain(FormError(s"$clientDateOfBirth-dateYear", error))
           }
           "has multiple invalid fields" in {
-            val error = s"$dateErrorContext.day_month.invalid"
+            val error = s"$dateErrorContext.day-month.invalid"
 
             val testInput = setupTestData(dob = DateModel("32", "13", "1980"))
             val errors = clientDetailsForm.bind(testInput).errors
@@ -203,7 +203,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
             errors must contain(FormError(s"$clientDateOfBirth-dateYear", error))
           }
           "has multiple empty fields" in {
-            val error = s"$dateErrorContext.day_month.empty"
+            val error = s"$dateErrorContext.day-month.empty"
 
             val testInput = setupTestData(dob = DateModel("", "", "1980"))
             val errors = clientDetailsForm.bind(testInput).errors
@@ -212,7 +212,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if a date not in the past is supplied" in {
-          val errors = "agent.error.dob_date.day_month_year.not_in_past"
+          val errors = "agent.error.dob_date.day-month-year.not_in_past"
           val futureDate: LocalDate = LocalDate.now
 
           val testInput = setupTestData(dob = DateModel.dateConvert(futureDate))

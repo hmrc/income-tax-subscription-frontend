@@ -35,36 +35,36 @@
 @quarterDayTb = {@table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current))}
 
 @optionCurrentContent = {
-  <p>@messages("agent.business.what_year_to_sign_up.option_current_hint", (endYearOfCurrentTaxPeriod + 1).toString)</p>
+  <p>@messages("agent.business.what-year-to-sign-up.option-current-hint", (endYearOfCurrentTaxPeriod + 1).toString)</p>
 }
 
 @optionNextContent = {
-  <p>@messages("agent.business.what_year_to_sign_up.option_next_hint", (endYearOfCurrentTaxPeriod + 2).toString)</p>
+  <p>@messages("agent.business.what-year-to-sign-up.option-next-hint", (endYearOfCurrentTaxPeriod + 2).toString)</p>
 }
 
-@mainTemplate(title = messages("agent.business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
+@mainTemplate(title = messages("agent.business.what-year-to-sign-up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
   @form(action = postAction) {
-    <h1 class="govuk-heading-l">@messages("agent.business.what_year_to_sign_up.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("agent.business.what-year-to-sign-up.heading")</h1>
 
-    <p class="govuk-body">@messages("agent.business.what_year_to_sign_up.line_1")</p>
-    <p class="govuk-body">@messages("agent.business.what_year_to_sign_up.line_2")</p>
-    <p class="govuk-body">@messages("agent.business.what_year_to_sign_up.line_3")</p>
+    <p class="govuk-body">@messages("agent.business.what-year-to-sign-up.line-1")</p>
+    <p class="govuk-body">@messages("agent.business.what-year-to-sign-up.line-2")</p>
+    <p class="govuk-body">@messages("agent.business.what-year-to-sign-up.line-3")</p>
 
     @quarterDayTb
 
     @radioHelper(
       field = accountingYearForm(AccountingYearForm.accountingYear),
-      legend = messages("agent.business.what_year_to_sign_up.radio_option_heading"),
+      legend = messages("agent.business.what-year-to-sign-up.radio-option-heading"),
       isPageHeading = false,
       headingClasses = "govuk-fieldset__legend--m",
       radioItems = Seq(
         RadioItem(
-          content = Text(messages("agent.business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
+          content = Text(messages("agent.business.what-year-to-sign-up.option-1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
           value = Some(Current.toString),
           hint = Some(Hint(content = HtmlContent(optionCurrentContent))),
         ),
         RadioItem(
-          content = Text(messages("agent.business.what_year_to_sign_up.option_2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)),
+          content = Text(messages("agent.business.what-year-to-sign-up.option-2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)),
           value = Some(Next.toString),
           hint = Some(Hint(content = HtmlContent(optionNextContent))),
         )

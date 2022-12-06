@@ -97,7 +97,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     }
 
     "must display max date error on page" in {
-      val dateValidationError = FormError("startDate", "error.property.day_month_year.max_date", List("11 April 2021"))
+      val dateValidationError = FormError("startDate", "error.property.day-month-year.max-date", List("11 April 2021"))
       val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(dateValidationError)
       document(propertyStartDateForm = formWithError).mustHaveGovukDateField(
         "startDate",
@@ -108,7 +108,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     }
 
     "must display min date error on page" in {
-      val dateValidationError = FormError("startDate", "error.property.day_month_year.min_date", List("11 April 2021"))
+      val dateValidationError = FormError("startDate", "error.property.day-month-year.min-date", List("11 April 2021"))
       val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(dateValidationError)
       document(propertyStartDateForm = formWithError).mustHaveGovukDateField(
         "startDate",

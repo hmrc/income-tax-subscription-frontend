@@ -43,10 +43,7 @@
 
             <ol id="actionList" class="govuk-list govuk-list--number govuk-!-margin-2">
                 <li>
-                    @Html(messages(
-                        key = "base.new_tab_key",
-                        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claimConfirm.content.checklist.item1.link"), Some(appConfig.softwareUrl)))
-                    ))
+                    @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claimConfirm.content.checklist.item1.link"), Some(appConfig.softwareUrl)))
                     @messages(
                         key = "claimConfirm.content.checklist.item1.suffix"
                     )
