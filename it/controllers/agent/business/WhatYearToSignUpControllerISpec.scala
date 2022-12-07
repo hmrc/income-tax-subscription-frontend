@@ -51,12 +51,12 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         val fromYear: String = (AccountingPeriodUtil.getTaxEndYear(LocalDate.now()) - 1).toString
         val toYear: String = AccountingPeriodUtil.getTaxEndYear(LocalDate.now()).toString
 
-        val expectedText = removeHtmlMarkup(messages("agent.business.what_year_to_sign_up.option_1", fromYear, toYear))
+        val expectedText = removeHtmlMarkup(messages("agent.business.what-year-to-sign-up.option-1", fromYear, toYear))
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the What Year To Sign Up page")
         res must have(
           httpStatus(200),
-          pageTitle(messages("agent.business.what_year_to_sign_up.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.business.what-year-to-sign-up.heading") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = Some(expectedText)),
           radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )
@@ -75,7 +75,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the What Year To Sign Up page")
         res must have(
           httpStatus(200),
-          pageTitle(messages("agent.business.what_year_to_sign_up.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.business.what-year-to-sign-up.heading") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = None),
           radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )

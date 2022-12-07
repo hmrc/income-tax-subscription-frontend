@@ -29,7 +29,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         Then("Should return a OK with the foreign property accounting method page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("overseas.property.accounting_method.title") + serviceNameGovUk),
+          pageTitle(messages("overseas.property.accounting-method.title") + serviceNameGovUk),
           radioButtonSet(id = "accountingMethodOverseasProperty", selectedRadioButton = Some(expectedText))
         )
       }
@@ -47,7 +47,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         Then("Should return a OK with the foreign property accounting method page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("overseas.property.accounting_method.title") + serviceNameGovUk),
+          pageTitle(messages("overseas.property.accounting-method.title") + serviceNameGovUk),
           radioButtonSet(id = "foreignPropertyAccountingMethod", selectedRadioButton = None)
         )
       }

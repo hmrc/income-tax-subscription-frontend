@@ -32,17 +32,17 @@ continueButton: ContinueButton
 
 @(accountingPeriodCheckForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@mainTemplate(title = messages("agent.accounting_period_check.title"), optForm = Some(accountingPeriodCheckForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.accounting-period-check.title"), optForm = Some(accountingPeriodCheckForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("agent.accounting_period_check.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("agent.accounting-period-check.heading")</h1>
 
     @form(action = postAction) {
 
         @radioHelper(
             field = accountingPeriodCheckForm(AccountingPeriodCheckForm.accountingPeriodCheck),
-            legend = messages("agent.accounting_period_check.heading"),
+            legend = messages("agent.accounting-period-check.heading"),
             isPageHeading = false,
-            hint = Some(Text(messages("agent.business.accounting_method.heading_hint"))),
+            hint = Some(Text(messages("agent.accounting-period-check.hint"))),
             radioItems = Seq(
                 RadioItem(
                     content = Text(Yes.toMessageString),

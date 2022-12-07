@@ -31,31 +31,31 @@
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("business.what_year_to_sign_up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
+@mainTemplate(title = messages("business.what-year-to-sign-up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
 
-  <h1 class="govuk-heading-l">@messages("business.what_year_to_sign_up.heading")</h1>
+  <h1 class="govuk-heading-l">@messages("business.what-year-to-sign-up.heading")</h1>
 
-  <p class="govuk-body">@messages("business.what_year_to_sign_up.line_1")</p>
-  <p class="govuk-body">@messages("business.what_year_to_sign_up.line_2")</p>
-  <p class="govuk-body">@messages("business.what_year_to_sign_up.line_3")</p>
+  <p class="govuk-body">@messages("business.what-year-to-sign-up.line-1")</p>
+  <p class="govuk-body">@messages("business.what-year-to-sign-up.line-2")</p>
+  <p class="govuk-body">@messages("business.what-year-to-sign-up.line-3")</p>
 
 @table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current))
 
   @form(action = postAction) {
     @radioHelper(
       field = accountingYearForm(AccountingYearForm.accountingYear),
-      legend = messages("business.what_year_to_sign_up.radio_option_heading"),
+      legend = messages("business.what-year-to-sign-up.radio-option-heading"),
       isPageHeading = false,
       headingClasses = "govuk-fieldset__legend--m",
       radioItems = Seq(
         RadioItem(
-          content = Text(messages("business.what_year_to_sign_up.option_1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
-          hint = Some(Hint(content = Text(messages("business.what_year_to_sign_up.conditional.1.line_2", (endYearOfCurrentTaxPeriod + 1).toString)))),
+          content = Text(messages("business.what-year-to-sign-up.option-1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
+          hint = Some(Hint(content = Text(messages("business.what-year-to-sign-up.conditional.1.line-2", (endYearOfCurrentTaxPeriod + 1).toString)))),
           value = Some(Current.toString)
         ),
         RadioItem(
-          content = Text(messages("business.what_year_to_sign_up.option_2", (endYearOfCurrentTaxPeriod).toString, (endYearOfCurrentTaxPeriod + 1).toString)),
-          hint = Some(Hint(content = Text(messages("business.what_year_to_sign_up.conditional.2.line_2", (endYearOfCurrentTaxPeriod + 2).toString)))),
+          content = Text(messages("business.what-year-to-sign-up.option-2", (endYearOfCurrentTaxPeriod).toString, (endYearOfCurrentTaxPeriod + 1).toString)),
+          hint = Some(Hint(content = Text(messages("business.what-year-to-sign-up.conditional.2.line-2", (endYearOfCurrentTaxPeriod + 2).toString)))),
           value = Some(Next.toString)
         )
       )

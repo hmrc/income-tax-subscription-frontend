@@ -31,7 +31,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
   "highlightField" should {
     "return 'true'" when {
       "the day field key is in the empty date error message key" in {
-        DateErrorMapping.highlightField(DayField, "agent.error.property.day_month_year.empty") mustBe true
+        DateErrorMapping.highlightField(DayField, "agent.error.property.day-month-year.empty") mustBe true
       }
 
       "the day field key is in the empty day error message key" in {
@@ -39,11 +39,11 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
       }
 
       "the day field key is in the empty day/month error message key" in {
-        DateErrorMapping.highlightField(DayField, "agent.error.property.day_month.empty") mustBe true
+        DateErrorMapping.highlightField(DayField, "agent.error.property.day-month.empty") mustBe true
       }
 
       "the day field key is in the invalid date error message key" in {
-        DateErrorMapping.highlightField(DayField, "agent.error.property.day_month_year.invalid") mustBe true
+        DateErrorMapping.highlightField(DayField, "agent.error.property.day-month-year.invalid") mustBe true
       }
 
       "the day field key is in the invalid day error message key" in {
@@ -51,21 +51,21 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
       }
 
       "the day field key is in the invalid day/month error message key" in {
-        DateErrorMapping.highlightField(DayField, "agent.error.property.day_month.invalid") mustBe true
+        DateErrorMapping.highlightField(DayField, "agent.error.property.day-month.invalid") mustBe true
       }
 
       "the day field key is in the min date error message key" in {
-        DateErrorMapping.highlightField(MonthField, "agent.error.property.day_month_year.min_date") mustBe true
+        DateErrorMapping.highlightField(MonthField, "agent.error.property.day-month-year.min-date") mustBe true
       }
 
       "the day field key is in the max date error message key" in {
-        DateErrorMapping.highlightField(YearField, "agent.error.property.day_month_year.max_date") mustBe true
+        DateErrorMapping.highlightField(YearField, "agent.error.property.day-month-year.max-date") mustBe true
       }
     }
 
     "return 'false'" when {
       "the day field key not is in the message key" in {
-        DateErrorMapping.highlightField(DayField, "agent.error.today.month_year.empty") mustBe false
+        DateErrorMapping.highlightField(DayField, "agent.error.today.month-year.empty") mustBe false
       }
 
       "the month field key not is in the message key" in {
@@ -88,7 +88,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month_year.min_date")
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month-year.min-date")
         }
 
         "given a TooEarly error with a min date" in {
@@ -99,7 +99,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             errorContext = "test",
             dateFormatter = None,
             minDate = Some(DateModel("1", "1", "2022").toLocalDate)
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month_year.min_date", List("2022-01-01"))
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month-year.min-date", List("2022-01-01"))
         }
 
         "given a TooLate error without a max date" in {
@@ -109,7 +109,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month_year.max_date")
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month-year.max-date")
         }
 
         "given a TooLate error with a max date" in {
@@ -120,7 +120,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             errorContext = "test",
             dateFormatter = None,
             maxDate = Some(DateModel("1", "1", "2022").toLocalDate)
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month_year.max_date", List("2022-01-01"))
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month-year.max-date", List("2022-01-01"))
         }
 
         "given an InvalidDate error" in {
@@ -130,7 +130,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month_year.empty")
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month-year.empty")
         }
 
         "given InvalidDay and InvalidMonth errors" in {
@@ -140,7 +140,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month.invalid")
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month.invalid")
         }
 
         "given InvalidMonth and InvalidYear errors" in {
@@ -150,7 +150,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateMonth", s"${affinityGroupKey(isAgent)}error.test.month_year.invalid")
+          ) mustBe error("test-key-dateMonth", s"${affinityGroupKey(isAgent)}error.test.month-year.invalid")
         }
 
         "given InvalidYear errors" in {
@@ -170,7 +170,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month.empty")
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month.empty")
         }
 
         "given EmptyMonth and EmptyYear errors" in {
@@ -180,7 +180,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateMonth", s"${affinityGroupKey(isAgent)}error.test.month_year.empty")
+          ) mustBe error("test-key-dateMonth", s"${affinityGroupKey(isAgent)}error.test.month-year.empty")
         }
 
         "given an EmptyYear error" in {
@@ -210,7 +210,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month_year.invalid")
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month-year.invalid")
         }
 
         "given InvalidDay, InvalidMonth and InvalidYearLength errors" in {
@@ -220,7 +220,7 @@ class DateErrorMappingSpec extends AnyWordSpec with Matchers {
             isAgent = isAgent,
             errorContext = "test",
             dateFormatter = None
-          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day_month_year.invalid")
+          ) mustBe error("test-key-dateDay", s"${affinityGroupKey(isAgent)}error.test.day-month-year.invalid")
         }
       }
     }

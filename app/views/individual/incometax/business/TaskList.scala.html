@@ -35,7 +35,7 @@
 
 @signUpSectionContent = @{
   if(viewModel.taskListComplete) {
-    continueButton(Some(messages("base.submit_and_continue")))
+    continueButton(Some(messages("base.submit-and-continue")))
   } else {
       <p>
       {messages(s"${messagePrefix}.content.action-needed")}

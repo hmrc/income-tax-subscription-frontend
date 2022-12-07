@@ -30,10 +30,10 @@
 
 @mainTemplate(title = Messages("agent.client-details-error.title")) {
     <h1 class="govuk-heading-l">@Messages("agent.client-details-error.heading")</h1>
-    <p class="govuk-body">@Messages("agent.client-details-error.line_1")</p>
+    <p class="govuk-body">@Messages("agent.client-details-error.line-1")</p>
     <div class="form-group">
     @form(action = postAction) {
-        @continueButton(Some(messages("agent.base.try_again")))
+        @continueButton(Some(messages("base.try-again")))
     }
         @signOutLink()
     </div>

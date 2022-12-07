@@ -32,14 +32,14 @@
 @(accountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
-    messages("agent.property.accounting_method.title")
+    messages("agent.property.accounting-method.title")
 }
 
 @heading(heading: String) = {
     <h1 class="govuk-heading-l">@heading</h1>
 }
 
-@mainTemplate(title = messages("agent.property.accounting_method.title"), optForm = Some(accountingMethodForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.property.accounting-method.title"), optForm = Some(accountingMethodForm), backLink = Some(backUrl)) {
 
     @form(action = postAction) {
 
@@ -51,12 +51,12 @@
             isPageHeading = false,
             radioItems = Seq(
                 RadioItem(
-                    content = Text(messages("agent.property.accounting_method.radio.cash")),
+                    content = Text(messages("agent.property.accounting-method.radio.cash")),
                     hint = None,
                     value = Some(AccountingMethodMapping.option_cash)
                 ),
                 RadioItem(
-                    content = Text(messages("agent.property.accounting_method.radio.accruals")),
+                    content = Text(messages("agent.property.accounting-method.radio.accruals")),
                     hint = None,
                     value = Some(AccountingMethodMapping.option_accruals)
                 )

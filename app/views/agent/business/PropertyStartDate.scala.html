@@ -31,7 +31,7 @@
 @agentMainTemplate(title = messages("agent.property.name.heading"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
   <h1 class="govuk-heading-l">@messages("agent.property.name.heading")</h1>
 
-  <p class="govuk-body">@messages("agent.property.line_1")</p>
+  <p class="govuk-body">@messages("agent.property.line-1")</p>
 
   @form(action = postAction) {
     @dateHelper(
@@ -40,7 +40,7 @@
       isPageHeading = false,
       isLegendVisible = false,
       parentForm = propertyStartDateForm,
-      hintText = Some(messages("agent.property.start_date.hint"))
+      hintText = Some(messages("agent.property.start-date.hint"))
     )
 
     @saveAndContinueButton(isIndividual = false, saveAndReturnReference = None)

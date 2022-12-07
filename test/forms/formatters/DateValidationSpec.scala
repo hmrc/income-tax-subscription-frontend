@@ -31,7 +31,7 @@ class DateValidationSpec extends AnyWordSpec with Matchers {
 
   "DateField" should {
     "reorder in alphabetical order" in {
-      List(YearField, MonthField, DayField, YearField).distinct.sorted.mkString("_") mustBe "day_month_year"
+      List(YearField, MonthField, DayField, YearField).distinct.sorted.mkString("-") mustBe "day-month-year"
     }
   }
 

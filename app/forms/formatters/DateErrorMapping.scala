@@ -45,17 +45,17 @@ object DateErrorMapping {
 
   final case object TooLate extends FieldValidationError(None)
 
-  private val allFields = "day_month_year"
-  private val dateTooEarly = s"$allFields.min_date"
-  private val dateTooLate = s"$allFields.max_date"
+  private val allFields = "day-month-year"
+  private val dateTooEarly = s"$allFields.min-date"
+  private val dateTooLate = s"$allFields.max-date"
   private val emptyDate = s"$allFields.empty"
 
   /*
    * The regex expects the following message key format: s"$errorContext.$fieldKeys.error"
    *
    * Example:
-   *   - agent.error.property.day_month_year.empty
-   *   - agent.error.property.day_month.invalid
+   *   - agent.error.property.day-month-year.empty
+   *   - agent.error.property.day-month.invalid
    *   - error.property.year.length
    */
   def highlightField(fieldKey: DateField, messageKey: String): Boolean =
@@ -92,7 +92,7 @@ object DateErrorMapping {
   }
 
   private def fieldsToMessageKey(fields: List[DateField]): String =
-    fields.distinct.sorted.mkString("_")
+    fields.distinct.sorted.mkString("-")
 
   private def collectInvalidErrors(errors: List[FieldValidationError]): List[DateField] = collectFields(errors, InvalidDay, InvalidMonth, InvalidYear)
 

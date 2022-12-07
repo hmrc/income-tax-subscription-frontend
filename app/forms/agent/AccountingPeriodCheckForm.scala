@@ -29,7 +29,7 @@ object AccountingPeriodCheckForm {
   val accountingPeriodCheckForm: Form[YesNo] = Form(
     single(
       accountingPeriodCheck -> yesNoMapping(
-        yesNoInvalid = Invalid("agent.accounting_period_check.invalid")
+        yesNoInvalid = Invalid("agent.accounting-period-check.invalid")
       )
     )
   )
