@@ -22,7 +22,9 @@ import common.Extractors
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
 
-case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel)
+class IncomeTaxAgentUser(val enrolments: Enrolments,
+                         val affinityGroup: Option[AffinityGroup],
+                         val confidenceLevel: ConfidenceLevel)
   extends IncomeTaxUser with Extractors {
   lazy val arn: Option[String] = getArnFromEnrolments(enrolments)
 

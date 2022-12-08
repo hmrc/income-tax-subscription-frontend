@@ -49,20 +49,27 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
   )
 
   implicit val request: Request[AnyContent] = FakeRequest()
-  implicit val user: IncomeTaxSAUser = IncomeTaxSAUser(
-    enrolments = Enrolments(Set(
-      Enrolment(
-        Constants.ninoEnrolmentName,
-        Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
-        "Activated"
-      )
-    )),
+  private val fullEnrolments: Enrolments = Enrolments(Set(
+    Enrolment(
+      Constants.ninoEnrolmentName,
+      Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
+      "Activated"
+    )
+  ))
+  implicit val user: IncomeTaxSAUser = new IncomeTaxSAUser(
+    enrolments = fullEnrolments,
     affinityGroup = Some(Individual),
     credentialRole = Some(User),
     confidenceLevel = ConfidenceLevel.L200,
     userId = "testUserId"
   )
-  val userWithNoNino: IncomeTaxSAUser = user.copy(enrolments = Enrolments(Set.empty))
+  val userWithNoNino: IncomeTaxSAUser = new IncomeTaxSAUser(
+    enrolments = Enrolments(Set.empty),
+    affinityGroup = Some(Individual),
+    credentialRole = Some(User),
+    confidenceLevel = ConfidenceLevel.L200,
+    userId = "testUserId"
+  )
 
   "claimEnrolment" when {
     "the user doesn't have a nino in their user profile" should {

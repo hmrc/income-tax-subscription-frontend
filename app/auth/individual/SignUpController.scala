@@ -27,7 +27,8 @@ abstract class SignUpController @Inject()(implicit mcc: MessagesControllerCompon
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 
-    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+    override def getUser: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => IncomeTaxSAUser =
+      (enrolments, affinity, credentials, confidence, userId) => new IncomeTaxSAUser(enrolments, affinity, credentials, confidence, userId)
 
     override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(defaultSignUpPredicates)
   }

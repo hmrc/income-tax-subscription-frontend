@@ -55,8 +55,8 @@ class ReferenceRetrievalSpec extends PlaySpec with Matchers with MockSubscriptio
   }
 
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
-  implicit val individualUser: IncomeTaxSAUser = IncomeTaxSAUser(Enrolments(Set()), None, None, ConfidenceLevel.L200, "userId")
-  implicit val agentUser: IncomeTaxAgentUser = IncomeTaxAgentUser(
+  implicit val individualUser: IncomeTaxSAUser = new IncomeTaxSAUser(Enrolments(Set()), None, None, ConfidenceLevel.L200, "userId")
+  implicit val agentUser: IncomeTaxAgentUser = new IncomeTaxAgentUser(
     Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("ARN", "123456")), "activated", None)))
     , None, ConfidenceLevel.L50)
 

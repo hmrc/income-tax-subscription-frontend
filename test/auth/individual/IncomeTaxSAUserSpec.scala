@@ -34,19 +34,20 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
 
       val confidenceLevel = L50
 
-      lazy val user = IncomeTaxSAUser(
-        Enrolments(
-          Set(
-            Enrolment(Constants.ninoEnrolmentName,
-              Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
-              "Activated"
-            ),
-            Enrolment(Constants.utrEnrolmentName,
-              Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, testUtr)),
-              "Activated"
-            )
+      val fullEnrolments = Enrolments(
+        Set(
+          Enrolment(Constants.ninoEnrolmentName,
+            Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
+            "Activated"
+          ),
+          Enrolment(Constants.utrEnrolmentName,
+            Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, testUtr)),
+            "Activated"
           )
-        ),
+        )
+      )
+      lazy val user = new IncomeTaxSAUser(
+        fullEnrolments,
         None,
         None,
         confidenceLevel,
@@ -74,7 +75,7 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
         ITSASessionKeys.UTR -> testUtr
       )
 
-      lazy val user = IncomeTaxSAUser(
+      lazy val user = new IncomeTaxSAUser(
         Enrolments(Set.empty),
         None,
         None,
@@ -97,7 +98,7 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
 
 
     def user(credentialRole: Option[CredentialRole]): IncomeTaxSAUser =
-      IncomeTaxSAUser(
+      new IncomeTaxSAUser(
         Enrolments(Set.empty),
         None,
         credentialRole,
