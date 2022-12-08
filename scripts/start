@@ -22,7 +22,7 @@ sleep 5
 sm --stop INCOME_TAX_SUBSCRIPTION_FRONTEND
 sleep 5
 
-sbt "run $SERVICE_PORT -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"
+sbt "run $SERVICE_PORT -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes"
    
 
  

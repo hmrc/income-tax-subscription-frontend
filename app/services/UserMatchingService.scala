@@ -35,7 +35,7 @@ class UserMatchingService @Inject()(val appConfig: AppConfig,
   *  the True-Client-IP must match the testId in in testonly.core.connectors.Request sent
   *  The hc must not be edited in production
   */
-  def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
+  private def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
     appConfig.hasEnabledTestOnlyRoutes match {
       case true => hc.copy(trueClientIp = Some("ITSA"))
       case false => hc
