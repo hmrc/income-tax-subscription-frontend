@@ -25,8 +25,8 @@
 
 @prefixedTitle = @{
     optForm match {
-        case Some(validationForm) if validationForm.hasErrors => messages("agentBase.title.error", title)
-        case _ => messages("agentTitlePattern.serviceName.govUk", title)
+        case Some(validationForm) if validationForm.hasErrors => messages("agent.base.title-pattern.error", title)
+        case _ => messages("agent.base.title-pattern", title)
     }
 }
 

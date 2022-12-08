@@ -30,7 +30,7 @@ object PropertyTradingStartDateForm {
   def propertyTradingStartDateForm(startDate: String): Form[YesNo] = Form(
     single(
       fieldName -> YesNoMapping.yesNoMapping(
-        yesNoInvalid = Invalid("agent.property_trading_after.error.summary", startDate)
+        yesNoInvalid = Invalid("agent.property-trading-after.error.summary", startDate)
       )
     )
   )

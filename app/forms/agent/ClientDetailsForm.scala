@@ -36,16 +36,16 @@ object ClientDetailsForm {
 
   val nameMaxLength = 105
 
-  val errorContext: String = "dob_date"
+  val errorContext: String = "client-details.date-of-birth"
 
-  val firstNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client_details.first_name.empty")
-  val lastNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client_details.last_name.empty")
+  val firstNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client-details.first-name.empty")
+  val lastNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client-details.last-name.empty")
 
-  val firstNameInvalid: Constraint[String] = invalidFormat("agent.error.client_details.first_name.invalid")
-  val lastNameInvalid: Constraint[String] = invalidFormat("agent.error.client_details.last_name.invalid")
+  val firstNameInvalid: Constraint[String] = invalidFormat("agent.error.client-details.first-name.invalid")
+  val lastNameInvalid: Constraint[String] = invalidFormat("agent.error.client-details.last-name.invalid")
 
-  val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client_details.first_name.maxLength")
-  val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client_details.last_name.maxLength")
+  val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client-details.first-name.max-length")
+  val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client-details.last-name.max-length")
 
   val emptyClientNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
 
@@ -57,7 +57,7 @@ object ClientDetailsForm {
     if (dateModel.toLocalDate.isBefore(LocalDate.now)) {
       Valid
     } else {
-      Invalid(s"agent.error.$errorContext.day-month-year.not_in_past")
+      Invalid(s"agent.error.$errorContext.day-month-year.not-in-past")
     }
   }
 

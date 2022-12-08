@@ -61,7 +61,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           Then("Should return a OK with the confirmation page")
           res must have(
             httpStatus(OK),
-            pageTitle(messages("confirmation.heading") + serviceNameGovUk)
+            pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
           )
         }
       }

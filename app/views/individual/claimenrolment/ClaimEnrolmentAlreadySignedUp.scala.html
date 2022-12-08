@@ -24,21 +24,21 @@ principalMainTemplate: PrincipalMainTemplate
 )
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@principalMainTemplate(title = messages("claim-enrolment.claimAlreadySignedUp.title")) {
+@principalMainTemplate(title = messages("claim-enrolment.claim-already-signed-up.title")) {
 
-<h1 class="govuk-heading-xl">@messages("claim-enrolment.claimAlreadySignedUp.title")</h1>
+<h1 class="govuk-heading-xl">@messages("claim-enrolment.claim-already-signed-up.title")</h1>
 <p class="govuk-body" id="claimAlreadySignedInBody">
-    @messages("claim-enrolment.claimAlreadySignedUp.content")
+    @messages("claim-enrolment.claim-already-signed-up.content")
 </p>
 <ul class="govuk-list govuk-list--bullet">
     <li>
         <a class="govuk-link" href="@appConfig.haveSaUtr" id="checkSaAccount">
-            @messages("claim-enrolment.claimAlreadySignedUp.content.link1")
+            @messages("claim-enrolment.claim-already-signed-up.content.link1")
         </a>
     </li>
     <li>
         <a class="govuk-link" href="@appConfig.wrongCredentials" id="retrieveSaAccountDetails">
-            @messages("claim-enrolment.claimAlreadySignedUp.content.link2")
+            @messages("claim-enrolment.claim-already-signed-up.content.link2")
         </a>
     </li>
 </ul>

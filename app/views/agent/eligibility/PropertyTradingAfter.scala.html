@@ -34,23 +34,23 @@
 
 @(propertyTradingBeforeDateForm: Form[YesNo], postAction: Call, startDateLimit: String, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.property_trading_after.title", startDateLimit), optForm = Some(propertyTradingBeforeDateForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.property-trading-after.title", startDateLimit), optForm = Some(propertyTradingBeforeDateForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("agent.property_trading_after.heading", startDateLimit)</h1>
+    <h1 class="govuk-heading-l">@messages("agent.property-trading-after.heading", startDateLimit)</h1>
 
-    <p class="govuk-body">@messages("agent.property_trading_after.line")</p>
+    <p class="govuk-body">@messages("agent.property-trading-after.line")</p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.property_trading_after.line.point1")</li>
-        <li>@messages("agent.property_trading_after.line.point2")</li>
-        <li>@messages("agent.property_trading_after.line.point3")</li>
+        <li>@messages("agent.property-trading-after.line.point1")</li>
+        <li>@messages("agent.property-trading-after.line.point2")</li>
+        <li>@messages("agent.property-trading-after.line.point3")</li>
     </ul>
 
-    <p class="govuk-body">@messages("agent.property_trading_after.line2")</p>
+    <p class="govuk-body">@messages("agent.property-trading-after.line2")</p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.property_trading_after.line2.point1")</li>
-        <li>@messages("agent.property_trading_after.line2.point2")</li>
+        <li>@messages("agent.property-trading-after.line2.point1")</li>
+        <li>@messages("agent.property-trading-after.line2.point2")</li>
     </ul>
 
 
@@ -58,7 +58,7 @@
 
         @radioHelper(
             field = propertyTradingBeforeDateForm(PropertyTradingStartDateForm.fieldName),
-            legend = messages("agent.property_trading_after.heading", startDateLimit),
+            legend = messages("agent.property-trading-after.heading", startDateLimit),
             isPageHeading = false,
             radioItems = Seq(
                 RadioItem(

@@ -29,8 +29,8 @@ object AccountingMethodOverseasPropertyForm {
   val accountingMethodOverseasPropertyForm: Form[AccountingMethod] = Form(
     single(
       accountingMethodOverseasProperty -> AccountingMethodMapping(
-        errInvalid = Invalid("error.overseas_property_accounting_method.invalid"),
-        errEmpty = Some(Invalid("error.overseas_property_accounting_method.empty"))
+        errInvalid = Invalid("error.overseas-property-accounting-method.invalid"),
+        errEmpty = Some(Invalid("error.overseas-property-accounting-method.empty"))
       )
     )
   )

@@ -40,18 +40,18 @@
     ) {
         @checkYourAnswersRow(
             field = FirstNameId,
-            question = messages("agent.client-details.summary.first_name"),
+            question = messages("agent.client-details.summary.first-name"),
             answer = userDetailsModel.firstName,
             changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-            hiddenContent = messages("userdetail.cya.change.firstname")
+            hiddenContent = messages("check-your-details.change.first-name")
         )
 
         @checkYourAnswersRow(
             field = LastNameId,
-            question = messages("agent.client-details.summary.last_name"),
+            question = messages("agent.client-details.summary.last-name"),
             answer = userDetailsModel.lastName,
             changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-            hiddenContent = messages("userdetail.cya.change.lastname")
+            hiddenContent = messages("check-your-details.change.last-name")
         )
 
         @checkYourAnswersRow(
@@ -59,7 +59,7 @@
             question = messages("agent.client-details.summary.nino"),
             answer = userDetailsModel.ninoInDisplayFormat,
             changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-            hiddenContent = messages("userdetail.cya.change.nationalinsurance")
+            hiddenContent = messages("check-your-details.change.national-insurance")
         )
 
         @checkYourAnswersRow(
@@ -67,7 +67,7 @@
             question = messages("agent.client-details.summary.dob"),
             answer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat,
             changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-            hiddenContent = messages("userdetail.cya.change.dateofbirth")
+            hiddenContent = messages("check-your-details.change.date-of-birth")
         )
     }
 }

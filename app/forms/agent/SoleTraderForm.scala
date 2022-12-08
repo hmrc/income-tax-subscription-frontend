@@ -33,7 +33,7 @@ object SoleTraderForm {
   def soleTraderForm(startDate: String): Form[YesNo] = Form(
     single(
       fieldName -> YesNoMapping.yesNoMapping(
-        yesNoInvalid = Invalid("agent.error.eligibility.sole_trader.invalid", startDate)
+        yesNoInvalid = Invalid("agent.error.eligibility.sole-trader.invalid", startDate)
       )
     )
   )

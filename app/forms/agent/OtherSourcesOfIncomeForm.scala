@@ -29,7 +29,7 @@ object OtherSourcesOfIncomeForm {
   val otherSourcesOfIncomeForm: Form[YesNo] = Form(
     single(
       fieldName -> YesNoMapping.yesNoMapping(
-        yesNoInvalid = Invalid("agent.other_sources_of_income.invalid")
+        yesNoInvalid = Invalid("agent.other-sources-of-income.invalid")
       )
     )
   )

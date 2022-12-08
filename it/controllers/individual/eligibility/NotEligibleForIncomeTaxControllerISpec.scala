@@ -34,7 +34,7 @@ class NotEligibleForIncomeTaxControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the cannot use service yet page")
       res must have(
         httpStatus(OK),
-        pageTitle(messages("not_eligible_for_income_tax.title") + serviceNameGovUk)
+        pageTitle(messages("not-eligible-for-income-tax.title") + serviceNameGovUk)
       )
     }
   }
